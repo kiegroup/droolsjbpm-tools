@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension point="org.eclipse.ui.views">
+      <category
+         name="Drools"
+         id="org.drools.ide.views">
+      </category>
+      <view
+         name="Working Memory View"
+         icon="icons/drools.gif"
+         category="org.drools.ide.views"
+         class="org.drools.ide.debug.WorkingMemoryView"
+         id="org.drools.ide.debug.WorkingMemoryView">
+      </view>
+      <view
+         name="Agenda View"
+         icon="icons/drools.gif"
+         category="org.drools.ide.views"
+         class="org.drools.ide.debug.AgendaView"
+         id="org.drools.ide.debug.AgendaView">
+      </view>
+      <view
+         name="Application Data View"
+         icon="icons/drools.gif"
+         category="org.drools.ide.views"
+         class="org.drools.ide.debug.ApplicationDataView"
+         id="org.drools.ide.debug.ApplicationDataView">
+      </view>
+      <view
+         name="Audit View"
+         icon="icons/drools.gif"
+         category="org.drools.ide.views"
+         class="org.drools.ide.debug.AuditView"
+         id="org.drools.ide.debug.AuditView">
+      </view>
+   </extension>
+   
+   <extension
+         point="org.eclipse.debug.core.logicalStructureTypes">
+      <logicalStructureType
+        id="org.drools.ide.debug.AgendaLogicalStructures"
+        class="org.drools.ide.debug.AgendaLogicalStructureDelegate"
+        modelIdentifier="org.eclipse.jdt.debug"
+        description="Agenda Item">
+      </logicalStructureType>
+   </extension>
+</plugin>
