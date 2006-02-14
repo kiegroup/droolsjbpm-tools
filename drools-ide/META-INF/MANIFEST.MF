@@ -4,7 +4,7 @@ Bundle-Name: 0 Plug-in
 Bundle-SymbolicName: DroolsIDE3.0; singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.drools.ide.DroolsIDEPlugin
-Bundle-Vendor: krisv
+Bundle-Vendor: krisv,mic
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -14,7 +14,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.workbench.texteditor,
  org.eclipse.jdt.debug,
  org.eclipse.jdt.core,
- org.eclipse.core.resources
+ org.eclipse.core.resources,
+ org.eclipse.ui.editors
 Eclipse-LazyStart: true
 Bundle-ClassPath: lib/xstream-1.1.3.jar,
  lib/xpp3-1.1.3.4d_b4_min.jar,
