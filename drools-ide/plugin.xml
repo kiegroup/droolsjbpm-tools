@@ -50,7 +50,7 @@
       <editor
             class="org.drools.ide.editors.DRLRuleSetEditor"
             contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
-            extensions="drl,jbrule,drools"
+            extensions="drl,jbrule,drools,rule"
             icon="icons/drools.gif"
             id="org.eclipse.ui.editors.text.DRLEditor"
             name="DRLEditor"/>

@@ -2,14 +2,11 @@ package org.drools.ide.editors;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Properties;
 
 /**
  * Keyword reading utility.
- * This will also slice up the keywords into the appropriate place where they should be shown in the editor.
  * TODO: hook in with the drools compiler, so the same keywords are used.
  * 
  * @author Michael Neale
