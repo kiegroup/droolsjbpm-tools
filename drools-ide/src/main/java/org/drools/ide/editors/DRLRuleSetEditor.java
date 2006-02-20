@@ -14,22 +14,16 @@ import org.eclipse.ui.texteditor.TextOperationAction;
  * @author Michael Neale
  */
 public class DRLRuleSetEditor extends TextEditor {
-
-    
     
 	public DRLRuleSetEditor()
 	{
 		super();
-		
 		setSourceViewerConfiguration(new DRLSourceViewerConfig());
         setDocumentProvider(new DRLDocumentProvider());
 	}
 
     public void dispose() {
-        
-        
         super.dispose();
-        
     }
     
     /** For user triggered content assistance */
@@ -44,8 +38,6 @@ public class DRLRuleSetEditor extends TextEditor {
         a.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_CONTEXT_INFORMATION);
         setAction("ContentAssistTip", a); 
         
-//        a= new DefineFoldingRegionAction(RuleEditorMessages.getResourceBundle(), "DefineFoldingRegion.", this); //$NON-NLS-1$
-//        setAction("DefineFoldingRegion", a); //$NON-NLS-1$
     }    
     
     
