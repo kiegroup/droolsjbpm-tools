@@ -53,6 +53,33 @@
             extensions="drl,jbrule,drools,rule"
             icon="icons/drools.gif"
             id="org.eclipse.ui.editors.text.DRLEditor"
-            name="DRLEditor"/>
+            name="Rule Editor"/>
+      <editor
+            class="org.drools.ide.dsl.editor.PropertyFileEditor"  
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            extensions="dsl,dsl.properties"
+            icon="icons/dsl.png"            
+            id="org.drools.ide.editors.text.DSLEditor"
+            name="DSL Editor"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            category="org.drools.ide.new"
+            class="org.drools.ide.wizard.rule.NewRulePackageWizard"
+            descriptionImage="icons/drools.gif"
+            icon="icons/drools.gif"
+            id="org.drools.ide.new.file"
+            name="New Rule resource"/>
+      <wizard
+            category="org.drools.ide.new"
+            class="org.drools.ide.wizard.dsl.NewDSLFileWizard"
+            descriptionImage="icons/dsl-large.png"
+            icon="icons/dsl.png"
+            id="org.drools.ide.new.dsl"
+            name="New Domain Specific Language"/>
+      <category
+            id="org.drools.ide.new"
+            name="JBoss Rules"/>
    </extension>
 </plugin>
