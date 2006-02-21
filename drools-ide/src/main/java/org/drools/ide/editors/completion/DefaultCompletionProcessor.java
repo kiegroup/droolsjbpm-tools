@@ -3,7 +3,6 @@ package org.drools.ide.editors.completion;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.ide.editors.Keywords;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
@@ -29,7 +28,20 @@ import org.eclipse.jface.text.contentassist.IContextInformationValidator;
  */
 public class DefaultCompletionProcessor implements IContentAssistProcessor {
 
-	
+    //TODO: move this into an external template
+    private static final String NEW_RULE_TEMPLATE = "rule \"new rule\"\n\n\twhen\n\n\tthen\n\nend";
+
+    /** Subclasses *should* override this to change the list. */
+    protected List getPossibleProposals(ITextViewer viewer, String backText) {
+        List list = new ArrayList();
+        list.add(new RuleCompletionProposal("rule", NEW_RULE_TEMPLATE));
+        list.add(new RuleCompletionProposal("import"));
+        list.add(new RuleCompletionProposal("expander"));
+        list.add(new RuleCompletionProposal("global"));
+        list.add(new RuleCompletionProposal("package"));
+        return list;
+    }
+
 
 	/**
      * This will filter based on what was typed in previously.
@@ -38,8 +50,8 @@ public class DefaultCompletionProcessor implements IContentAssistProcessor {
 		ITextViewer viewer,
 		int documentOffset) {
 
-        partitionDebug( viewer,
-                        documentOffset );
+//        partitionDebug( viewer,
+//                        documentOffset );
 
         Offset offset = new Offset(documentOffset);
         
@@ -51,7 +63,7 @@ public class DefaultCompletionProcessor implements IContentAssistProcessor {
             String backText = readBackwards( offset,
                                            doc );            
 
-            System.out.println("back text: " + backText);
+            //System.out.println("back text: " + backText);
             
             List props = getPossibleProposals(viewer, backText);    
             props = filterProposals( offset,
@@ -100,21 +112,17 @@ public class DefaultCompletionProcessor implements IContentAssistProcessor {
                                               Offset offset,
                                               List props,
                                               int i) {
-        String replacement = (String) props.get(i);
-        return new CompletionProposal(replacement, 
-        				documentOffset - offset.getPrefixLength(), offset.getPrefixLength(), replacement.length());
+        RuleCompletionProposal proposal = (RuleCompletionProposal) props.get(i);
+        
+//        return new CompletionProposal(replacement, 
+//        				documentOffset - offset.getPrefixLength(), offset.getPrefixLength(), replacement.length());
+        return new CompletionProposal(proposal.getContent(), 
+          documentOffset - offset.getPrefixLength(), offset.getPrefixLength(), proposal.getContent().length(), 
+              null, proposal.getDisplay(), null, null);
+        
     }
 
 
-    /** Subclasses *should* override this to change the list. */
-    protected List getPossibleProposals(ITextViewer viewer, String backText) {
-        Keywords keys = Keywords.getInstance();
-        List list = new ArrayList();
-        list.add(keys.lookup("rule"));
-        list.add(keys.lookup("import"));
-        list.add(keys.lookup("expander"));
-        return list;
-    }
 
 
     /** Filter the proposals based on what was typed. */
@@ -159,8 +167,8 @@ public class DefaultCompletionProcessor implements IContentAssistProcessor {
         
         List result = new ArrayList();
         for ( int i = 0; i < list.size(); i++ ) {
-            String item = (String) list.get(i);
-            if (item.startsWith(prefix)) {
+            RuleCompletionProposal item = (RuleCompletionProposal) list.get(i);
+            if (item.getDisplay().startsWith(prefix)) {
                 result.add(item);
             }
         }

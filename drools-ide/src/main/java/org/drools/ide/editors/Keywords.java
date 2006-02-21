@@ -1,20 +1,19 @@
 package org.drools.ide.editors;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Properties;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Keyword reading utility.
- * TODO: hook in with the drools compiler, so the same keywords are used.
- * 
+ * This provides a list of keywords for syntax highlighting.
+ * Uses a pseudo properties file format.
  * @author Michael Neale
  */
 public class Keywords {
 
-    private Properties keywords;
-    
     private String[] all;
     private static Keywords instance;
     
@@ -26,32 +25,26 @@ public class Keywords {
     }
     
     
-    /** 
-     * @return A flat list of ALL keywords.
-     */
     public String[] getAll() {
-        if (all == null) {
-            all = new String[keywords.values().size()];
-            keywords.values().toArray(all);
-            Arrays.sort(all);
-            return all;
-        }             
         return all;
     }
     
     
-    /**
-     * Returns a keyword from the configured RULE ASSEMBLY grammar.
-     */
-    public String lookup(String key) {
-        return keywords.getProperty(key);
-    }
-    
     private Keywords() {
-        keywords = new Properties();
         InputStream stream = this.getClass().getResourceAsStream("keywords.properties");
         try {
-            keywords.load(stream);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+            
+            List list = new ArrayList();
+            
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+               if (!line.startsWith( "#" ))  list.add( line ); 
+            }
+            
+            all = new String[list.size()];
+            list.toArray( all );
+                     
             
         }
         catch ( IOException e ) {

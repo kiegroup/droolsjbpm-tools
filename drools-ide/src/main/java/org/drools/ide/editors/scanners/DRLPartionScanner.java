@@ -42,7 +42,7 @@ public class DRLPartionScanner extends RuleBasedPartitionScanner {
         Keywords keys = Keywords.getInstance();
 
         List rules = new ArrayList();
-        rules.add(new MultiLineRule("\n" + keys.lookup("rule"), "\n" + keys.lookup("end"), rulePartition));
+        rules.add(new MultiLineRule("\nrule", "\nend", rulePartition));
         
         IPredicateRule[] rulez = new IPredicateRule[rules.size()];
         rules.toArray(rulez);

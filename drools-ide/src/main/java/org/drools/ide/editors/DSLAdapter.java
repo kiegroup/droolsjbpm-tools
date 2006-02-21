@@ -3,6 +3,7 @@ package org.drools.ide.editors;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.ide.editors.completion.RuleCompletionProposal;
 import org.eclipse.jface.text.ITextViewer;
 
 /**
@@ -28,9 +29,9 @@ public class DSLAdapter {
         //but probably want to eventually get bound items anyway.
         
         List list = new ArrayList();
-        list.add("Cart contains {item}");
-        list.add("There exists {Person} with name {name} and age of {age}");
-        list.add("The date of {event} is before {cutoff}");
+        list.add(new RuleCompletionProposal("Cart contains {item}"));
+        list.add(new RuleCompletionProposal("There exists {Person} with name {name} and age of {age}"));
+        list.add(new RuleCompletionProposal("The date of {event} is before {cutoff}"));
         return list;
     }
     
@@ -42,9 +43,9 @@ public class DSLAdapter {
         //but probably want to eventually get bound items anyway.
         
         List list = new ArrayList();
-        list.add("Change status to {status}");
-        list.add("Send notification to {person} with message {message}");
-        list.add("Set {field} of {variable} to {value}");
+        list.add(new RuleCompletionProposal("Change status to {status}"));
+        list.add(new RuleCompletionProposal("Send notification to {person} with message {message}"));
+        list.add(new RuleCompletionProposal("Set {field} of {variable} to {value}"));
         return list;
     }    
     

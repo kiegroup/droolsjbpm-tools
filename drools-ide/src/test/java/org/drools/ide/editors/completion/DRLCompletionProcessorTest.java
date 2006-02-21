@@ -31,16 +31,16 @@ public class DRLCompletionProcessorTest extends TestCase {
         DefaultCompletionProcessor proc = new DefaultCompletionProcessor();
 
         List raw = new ArrayList();
-        raw.add("aardvark");
-        raw.add("smeg");
-        raw.add("apple");
-        raw.add("ape");
+        raw.add(new RuleCompletionProposal("aardvark", "something"));
+        raw.add(new RuleCompletionProposal("smeg"));
+        raw.add(new RuleCompletionProposal("apple"));
+        raw.add(new RuleCompletionProposal("ape", "zzzzz"));
         
         List result = proc.filterList(raw, "a");
         assertEquals(3, result.size());
-        assertEquals("aardvark", result.get(0));
-        assertEquals("apple", result.get(1));
-        assertEquals("ape", result.get(2));
+        assertEquals("something", result.get(0).toString());
+        assertEquals("apple", result.get(1).toString());
+        assertEquals("zzzzz", result.get(2).toString());
 
         
         result = proc.filterList(raw, "xzyz");

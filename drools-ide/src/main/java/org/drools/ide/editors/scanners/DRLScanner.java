@@ -20,7 +20,7 @@ import org.eclipse.swt.graphics.Color;
 
 
 /**
- * Basic keyword scanner. 
+ * Basic keyword scanner for syntax highlighting.
  * 
  * @author Michael Neale
  */

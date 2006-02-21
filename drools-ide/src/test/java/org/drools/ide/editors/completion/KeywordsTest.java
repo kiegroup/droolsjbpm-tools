@@ -10,8 +10,8 @@ public class KeywordsTest extends TestCase {
         Keywords keys = Keywords.getInstance();
         String[] all = keys.getAll();
         assertTrue(all.length > 0);
-        String[] all2 = keys.getAll();
-        assertEquals(all2, all); //check caching
+        assertEquals("when", all[0]);
+
     }
     
 }

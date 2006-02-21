@@ -22,44 +22,33 @@ import org.eclipse.jface.text.ITextViewer;
  */
 public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
-    static final Pattern condition = Pattern.compile(".*\\W" 
-                                                + Keywords.getInstance().lookup("when") 
-                                                + "\\W.*", Pattern.DOTALL);
+    static final Pattern condition = Pattern.compile(".*\\Wwhen\\W.*", Pattern.DOTALL);
 
-    static final Pattern consequence = Pattern.compile(".*\\W" + Keywords.getInstance().lookup("then") 
-                                                + "\\W.*", Pattern.DOTALL);
+    static final Pattern consequence = Pattern.compile(".*\\Wthen\\W.*", Pattern.DOTALL);
 
     
     
     protected List getPossibleProposals(ITextViewer viewer, String backText) {
 
-        Keywords keys = Keywords.getInstance();
         List list = new ArrayList();
         
         //now load from DSL
         DSLAdapter adapter = new DSLAdapter(viewer);
+        
         if (consequence.matcher(backText).matches()) {
             list.addAll(adapter.loadConsequenceItems());
-            list.add(keys.lookup("end"));
-            list.add(keys.lookup("modify"));
-            list.add(keys.lookup("retract"));
-            list.add(keys.lookup("assert"));
-
-            
+            list.add(new RuleCompletionProposal("end"));
+            list.add(new RuleCompletionProposal("modify"));
+            list.add(new RuleCompletionProposal("retract"));
+            list.add(new RuleCompletionProposal("assert"));
         } else if (condition.matcher(backText).matches()) {
             list.addAll(adapter.loadConditionItems());
-            list.add(keys.lookup("then"));
-
-        } else { 
-            
-            //some defaults
-            list.add(keys.lookup("salience"));
-            list.add(keys.lookup("when"));
-
+            list.add(new RuleCompletionProposal("then", "then\n\t"));
+        } else {             
+            //we are in rule header
+            list.add(new RuleCompletionProposal("salience"));
+            list.add(new RuleCompletionProposal("when", "when\n\t"));
         }
-        
-        
-
         
         return list;           
     }
