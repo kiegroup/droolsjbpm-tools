@@ -23,7 +23,7 @@ import org.eclipse.jface.text.contentassist.IContextInformationValidator;
  * Subclasses enhance this when a user is actually editing a rule.
  * 
  * This processor will also read behind the current editing position, to provide some context to 
- * help provide thepop up list.
+ * help provide the pop up list.
  * 
  * @author Michael Neale
  */
@@ -38,8 +38,8 @@ public class DefaultCompletionProcessor implements IContentAssistProcessor {
 		ITextViewer viewer,
 		int documentOffset) {
 
-//        partitionDebug( viewer,
-//                        documentOffset );
+        partitionDebug( viewer,
+                        documentOffset );
 
         Offset offset = new Offset(documentOffset);
         
@@ -50,6 +50,8 @@ public class DefaultCompletionProcessor implements IContentAssistProcessor {
             
             String backText = readBackwards( offset,
                                            doc );            
+
+            System.out.println("back text: " + backText);
             
             List props = getPossibleProposals(viewer, backText);    
             props = filterProposals( offset,
@@ -73,24 +75,25 @@ public class DefaultCompletionProcessor implements IContentAssistProcessor {
 	}
 
 
-//    /**
-//     * Just used for debugging, when it all gets to much.
-//     */
-//    private void partitionDebug(ITextViewer viewer,
-//                                int documentOffset) {
-//        try {
-//            ITypedRegion region = viewer.getDocument().getPartition(documentOffset);
-//            System.out.println("Offset: " + documentOffset);
-//            System.out.println("Region offset: " + region.getOffset());
-//            System.out.println("Region length: " + region.getLength());
-//            
-//            
-//        }
-//        catch ( BadLocationException e1 ) {
-//            
-//            e1.printStackTrace();
-//        }
-//    }
+    /**
+     * Just used for debugging, when it all gets to much.
+     */
+    private void partitionDebug(ITextViewer viewer,
+                                int documentOffset) {
+        try {
+            ITypedRegion region = viewer.getDocument().getPartition(documentOffset);
+            System.out.println("Region type: " + region.getType());
+            System.out.println("Offset: " + documentOffset);
+            System.out.println("Region offset: " + region.getOffset());
+            System.out.println("Region length: " + region.getLength());
+            
+            
+        }
+        catch ( BadLocationException e1 ) {
+            
+            e1.printStackTrace();
+        }
+    }
 
 
     protected CompletionProposal makeProposal(int documentOffset,
@@ -140,8 +143,9 @@ public class DefaultCompletionProcessor implements IContentAssistProcessor {
         if (startPart == 0) {
             if (offset.documentOffset < 32) {
                 startPart = 0;
+            } else {
+                startPart = offset.documentOffset - 32;
             }
-            startPart = offset.documentOffset - 32;
         }
         
         String prefix = doc.get(startPart, 

@@ -8,6 +8,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.IPredicateRule;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.MultiLineRule;
+import org.eclipse.jface.text.rules.PatternRule;
 import org.eclipse.jface.text.rules.RuleBasedPartitionScanner;
 import org.eclipse.jface.text.rules.Token;
 
@@ -36,20 +37,13 @@ public class DRLPartionScanner extends RuleBasedPartitionScanner {
     }
     
     private void initialise() {
-        
 
-        IToken consequence = new Token(RULE_PART_CONTENT);
+        IToken rulePartition = new Token(RULE_PART_CONTENT);
         Keywords keys = Keywords.getInstance();
 
         List rules = new ArrayList();
-//Note: at the moment, rule and end must be at the start and finish of each line.
-//        rules.add(new MultiLineRule(" " + keys.lookup("rule"), "\n" + keys.lookup("end"), consequence));
-//        rules.add(new MultiLineRule(" " + keys.lookup("rule"), " " + keys.lookup("end"), consequence));
-//        rules.add(new MultiLineRule("\t" + keys.lookup("rule"), "\n" + keys.lookup("end"), consequence));
-//        rules.add(new MultiLineRule("\t" + keys.lookup("rule"), " " + keys.lookup("end"), consequence));
-//        rules.add(new MultiLineRule("\n" + keys.lookup("rule"), "\n" + keys.lookup("end"), consequence));
-//        rules.add(new MultiLineRule("\n" + keys.lookup("rule"), " " + keys.lookup("end"), consequence));
-        rules.add(new MultiLineRule("\n" + keys.lookup("rule"), "\n" + keys.lookup("end"), consequence));
+        rules.add(new MultiLineRule("\n" + keys.lookup("rule"), "\n" + keys.lookup("end"), rulePartition));
+        
         IPredicateRule[] rulez = new IPredicateRule[rules.size()];
         rules.toArray(rulez);
         setPredicateRules(rulez);

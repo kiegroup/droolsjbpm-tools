@@ -3,7 +3,7 @@ package org.drools.ide.editors.scanners;
 import org.eclipse.jface.text.rules.IWhitespaceDetector;
 
 /**
- * A java aware white space detector.
+ * A rule aware white space detector.
  */
 public class WhitespaceDetector implements IWhitespaceDetector {
 
