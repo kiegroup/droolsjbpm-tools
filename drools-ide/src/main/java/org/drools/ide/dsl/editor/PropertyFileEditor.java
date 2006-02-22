@@ -25,7 +25,9 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.viewers.ColumnLayoutData;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.TableLayout;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.TableTree;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyEvent;
@@ -78,7 +80,7 @@ public class PropertyFileEditor extends EditorPart
     private HashMap i_dataMap;
     private Collection i_initData;
 
-    private Table i_propertiesTable;
+    private Table mappingTable;
     private Composite i_composite;
 
     private Label i_commentLabel;
@@ -97,7 +99,7 @@ public class PropertyFileEditor extends EditorPart
 
     private boolean i_isDirty;
 
-    private Image i_image;
+    private Image icon;
 
     private boolean i_isReadOnly;
 
@@ -123,6 +125,7 @@ public class PropertyFileEditor extends EditorPart
      */
     public void doSave(IProgressMonitor progressMonitor)
     {
+        
         final FileEditorInput input = (FileEditorInput) getEditorInput();
 
         WorkspaceModifyOperation operation = new WorkspaceModifyOperation()
@@ -211,23 +214,23 @@ public class PropertyFileEditor extends EditorPart
     /**
      * @see org.eclipse.ui.IEditorPart#init(IEditorSite, IEditorInput)
      */
-    public void init(IEditorSite site, IEditorInput input) throws PartInitException
+    public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException
     {
-        FileEditorInput fei = (FileEditorInput)input;
+        FileEditorInput input = (FileEditorInput)editorInput;
         setSite(site);
-        setInput(input);
+        setInput(editorInput);
 
         // set the file's name
-        i_fileName = fei.getName();
+        i_fileName = input.getName();
 
         // determine whether the file is read-only
-        i_isReadOnly = fei.getFile().isReadOnly();
+        i_isReadOnly = input.getFile().isReadOnly();
 
         // set the title of the editor to the file's name
         setTitle(i_fileName);
 
         // get the file as java.io.File object
-        i_file = fei.getFile().getLocation().toFile();
+        i_file = input.getFile().getLocation().toFile();
         i_propertiesFileService = new PropertyFileService(i_file);
 
         // read the data from the properties file ans validate the file at the same time
@@ -256,7 +259,7 @@ public class PropertyFileEditor extends EditorPart
         }
 
         // create the image after getting the image reference from the "plugin.xml" file
-        i_image = fei.getImageDescriptor().createImage();
+        icon = input.getImageDescriptor().createImage();
     }
 
     /**
@@ -290,28 +293,34 @@ public class PropertyFileEditor extends EditorPart
         gridLayout.numColumns = 3;
         parent.setLayout (gridLayout);
 
+        createEditWidgets( parent );
+        
         // create the table
-        i_propertiesTable = new Table(parent, SWT.BORDER | SWT.H_SCROLL | SWT.FULL_SELECTION | SWT.CHECK);
-        i_propertiesTable.setVisible(false);
-        i_propertiesTable.setLinesVisible (true);
-        i_propertiesTable.setRedraw(false);
-        i_propertiesTable.setLinesVisible(true);
-        i_propertiesTable.setHeaderVisible(true);
-        i_propertiesTable.addSelectionListener(this);
-        i_propertiesTable.addMouseListener(this);
-        i_propertiesTable.setToolTipText("Check to comment out this property");
+        mappingTable = new Table(parent, SWT.BORDER | SWT.H_SCROLL | SWT.FULL_SELECTION );//| SWT.CHECK);
+        mappingTable.setToolTipText("Double click to edit a mapping.");
+        mappingTable.setLinesVisible(true);
+        mappingTable.setVisible(false);
+        mappingTable.setLinesVisible (true);
+        mappingTable.setHeaderVisible(true);
+        mappingTable.addSelectionListener(this);
+        mappingTable.addMouseListener(this);
+        mappingTable.setRedraw(false);
+        
+        
         GridData data = new GridData ();
         data.horizontalAlignment = GridData.FILL;
         data.verticalAlignment = GridData.FILL;
         data.horizontalSpan = 3;
         data.grabExcessVerticalSpace = true;
-        i_propertiesTable.setLayoutData(data);
+        mappingTable.setLayoutData(data);
 
        // create the columns
-        TableColumn keyColumn = new TableColumn(i_propertiesTable, SWT.LEFT);
-        TableColumn valueColumn = new TableColumn(i_propertiesTable, SWT.LEFT);
-        keyColumn.setText("Key");
-        valueColumn.setText("Value");
+        TableColumn scopeColumn = new TableColumn(mappingTable, SWT.LEFT);
+        TableColumn keyColumn = new TableColumn(mappingTable, SWT.LEFT);
+        TableColumn valueColumn = new TableColumn(mappingTable, SWT.LEFT);
+        keyColumn.setText("Language expression");
+        valueColumn.setText("Rule language mapping");
+        scopeColumn.setText( "Scope" );
         keyColumn.setResizable(true);
         valueColumn.setResizable(true);
 
@@ -319,14 +328,69 @@ public class PropertyFileEditor extends EditorPart
         ColumnLayoutData keyColumnLayout = new ColumnPixelData(350, true);//ColumnWeightData(50, true);
         // value column
         ColumnLayoutData valueColumnLayout = new ColumnPixelData(350, false);//ColumnWeightData(50, false);
-
+        ColumnLayoutData scopeColumnLayout = new ColumnPixelData(200, false);
+        
+        
         // set columns in Table layout
-        TableLayout layout = new TableLayout();
-        layout.addColumnData(keyColumnLayout);
-        layout.addColumnData(valueColumnLayout);
-        i_propertiesTable.setLayout(layout);
-        i_propertiesTable.layout();
+        TableLayout layout = new TableLayout();        
+        layout.addColumnData( keyColumnLayout );
+        layout.addColumnData( valueColumnLayout );
+        layout.addColumnData( scopeColumnLayout );
+        
+        mappingTable.setLayout(layout);
+        mappingTable.layout();
 
+        parent.pack();
+
+        // initialize and populate the table with the data of the file received from
+        // the PropertyFileService object
+        initPropertiesTable(i_initData);
+
+        //set the icon on the editor
+        setTitleImage(icon);
+
+        if(isReadOnly())
+        {
+            i_commentText.setEditable(false);
+            i_valueText.setEditable(false);
+            i_newButton.setEnabled(false);
+            i_delButton.setEnabled(false);
+        }
+
+        // set the widgets visible
+        mappingTable.setVisible(true);
+        i_commentLabel.setVisible(true);
+        i_valueLabel.setVisible(true);
+        i_commentText.setVisible(true);
+        i_valueText.setVisible(true);
+        i_newButton.setVisible(true);
+        i_delButton.setVisible(true);
+
+        // set the focus on the table and select the first item if existing
+        mappingTable.select(0);
+//        i_propertiesTable.setFocus();
+
+        TableItem[] firstItem = mappingTable.getSelection();
+        if(firstItem.length > 0)
+        {
+            String key = firstItem[0].getText(0);
+            PropertyLineWrapper propertiesLine = (PropertyLineWrapper)i_dataMap.get(key);
+            i_commentText.setText(propertiesLine.getCommentString());
+            i_valueText.setText(propertiesLine.getValueString());
+            i_lastSelectedProperty = propertiesLine;
+            i_lastSelectedIndex = 0;
+            setFocusOnRow();
+        }
+
+        // this is necessary because the other buttons would respond if you hit "Enter" with opening the dialogs
+        i_nullButton = new Button (parent, SWT.PUSH);
+        i_nullButton.addTraverseListener(this);
+        i_nullButton.setVisible(false);
+        getSite().getShell().setDefaultButton(i_nullButton);
+    }
+
+    private void createEditWidgets(Composite parent) {
+        GridData data;
         // create the comment's label
         i_commentLabel = new Label (parent, SWT.NONE);
         i_commentLabel.setVisible(false);
@@ -388,54 +452,6 @@ public class PropertyFileEditor extends EditorPart
         data.horizontalAlignment = GridData.END;
         data.verticalAlignment = GridData.BEGINNING;
         i_delButton.setLayoutData (data);
-
-        parent.pack();
-
-        // initialize and populate the table with the data of the file received from
-        // the PropertyFileService object
-        initPropertiesTable(i_initData);
-
-        //set the icon on the editor
-        setTitleImage(i_image);
-
-        if(isReadOnly())
-        {
-            i_commentText.setEditable(false);
-            i_valueText.setEditable(false);
-            i_newButton.setEnabled(false);
-            i_delButton.setEnabled(false);
-        }
-
-        // set the widgets visible
-        i_propertiesTable.setVisible(true);
-        i_commentLabel.setVisible(true);
-        i_valueLabel.setVisible(true);
-        i_commentText.setVisible(true);
-        i_valueText.setVisible(true);
-        i_newButton.setVisible(true);
-        i_delButton.setVisible(true);
-
-        // set the focus on the table and select the first item if existing
-        i_propertiesTable.select(0);
-//        i_propertiesTable.setFocus();
-
-        TableItem[] firstItem = i_propertiesTable.getSelection();
-        if(firstItem.length > 0)
-        {
-            String key = firstItem[0].getText(0);
-            PropertyLineWrapper propertiesLine = (PropertyLineWrapper)i_dataMap.get(key);
-            i_commentText.setText(propertiesLine.getCommentString());
-            i_valueText.setText(propertiesLine.getValueString());
-            i_lastSelectedProperty = propertiesLine;
-            i_lastSelectedIndex = 0;
-            setFocusOnRow();
-        }
-
-        // this is necessary because the other buttons would respond if you hit "Enter" with opening the dialogs
-        i_nullButton = new Button (parent, SWT.PUSH);
-        i_nullButton.addTraverseListener(this);
-        i_nullButton.setVisible(false);
-        getSite().getShell().setDefaultButton(i_nullButton);
     }
 
     /**
@@ -451,12 +467,12 @@ public class PropertyFileEditor extends EditorPart
         while (iter.hasNext())
         {
             PropertyLineWrapper element = (PropertyLineWrapper) iter.next();
-            TableItem keyValueItem = new TableItem(i_propertiesTable, SWT.NONE);
+            TableItem keyValueItem = new TableItem(mappingTable, SWT.NONE);
             keyValueItem.setText(new String[]{element.getKeyString().trim(), element.getValueString()});
-            keyValueItem.setChecked(element.isCommentedProperty());
+            //keyValueItem.setChecked(element.isCommentedProperty());
             i_dataMap.put(element.getKeyString(), element);
         }
-        i_propertiesTable.setRedraw(true);
+        mappingTable.setRedraw(true);
         i_initData = null;
     }
 
@@ -475,17 +491,17 @@ public class PropertyFileEditor extends EditorPart
         getTableSelection();
         if(!isReadOnly())
         {
-            if(e.getSource() == i_propertiesTable)
+            if(e.getSource() == mappingTable)
             {
                 updateData();
             }
         }
         else
         {
-            if(e.getSource() == i_propertiesTable)
+            if(e.getSource() == mappingTable)
             {
 
-                TableItem[] tableItems = i_propertiesTable.getItems();
+                TableItem[] tableItems = mappingTable.getItems();
                 for(int i = 0; i < tableItems.length; i++)
                 {
                     TableItem tableItem = tableItems[i];
@@ -505,7 +521,7 @@ public class PropertyFileEditor extends EditorPart
     {
         if(!isReadOnly())
         {
-            if(e.getSource() == i_propertiesTable)
+            if(e.getSource() == mappingTable)
             {
                 openEditPropertyDialog();
             }
@@ -531,7 +547,7 @@ public class PropertyFileEditor extends EditorPart
 
             if(e.getSource() == i_delButton)
             {
-                TableItem[] tableItems = i_propertiesTable.getSelection();
+                TableItem[] tableItems = mappingTable.getSelection();
 
                 String keyString = null;
                 if (tableItems.length != 0)
@@ -569,8 +585,8 @@ public class PropertyFileEditor extends EditorPart
                         removeProperty((PropertyLineWrapper) i_dataMap.get(keyString));
                     }
                 }
-                i_propertiesTable.setFocus();
-                i_propertiesTable.select(0);
+                mappingTable.setFocus();
+                mappingTable.select(0);
             }
         }
     }
@@ -603,7 +619,7 @@ public class PropertyFileEditor extends EditorPart
     {
         i_propertiesFileDialog = new NewMapping(this, getSite().getShell());
 
-        TableItem[] tableItems = i_propertiesTable.getSelection();
+        TableItem[] tableItems = mappingTable.getSelection();
         String keyString = tableItems[0].getText(0).trim();
         PropertyLineWrapper propertiesLineWrapper = (PropertyLineWrapper) i_dataMap.get(keyString);
         String valueString = propertiesLineWrapper.getValueString();
@@ -763,7 +779,7 @@ public class PropertyFileEditor extends EditorPart
         setDirty(true);
         firePropertyChange(PROP_DIRTY);
         i_lastSelectedIndex = 0;
-        i_propertiesTable.select(i_lastSelectedIndex);
+        mappingTable.select(i_lastSelectedIndex);
         getTableSelection();
     }
 
@@ -778,7 +794,7 @@ public class PropertyFileEditor extends EditorPart
         setDirty(true);
         firePropertyChange(PROP_DIRTY);
         i_lastSelectedIndex = 0;
-        i_propertiesTable.select(i_lastSelectedIndex);
+        mappingTable.select(i_lastSelectedIndex);
         getTableSelection();
     }
 
@@ -787,18 +803,19 @@ public class PropertyFileEditor extends EditorPart
      */
     private void updatePropertiesTable()
     {
-        i_propertiesTable.setRedraw(false);
-        i_propertiesTable.removeAll();
+        
+        mappingTable.setRedraw(false);
+        mappingTable.removeAll();
 
         Iterator iter = PropertyFileUtil.getSortedIterator(i_dataMap.values());
         while (iter.hasNext())
         {
             PropertyLineWrapper element = (PropertyLineWrapper) iter.next();
-            TableItem keyValueItem = new TableItem(i_propertiesTable, SWT.NONE);
+            TableItem keyValueItem = new TableItem(mappingTable, SWT.NONE);
             keyValueItem.setText(new String[] { element.getKeyString().trim(), element.getValueString()});
             keyValueItem.setChecked(element.isCommentedProperty());
         }
-        i_propertiesTable.setRedraw(true);
+        mappingTable.setRedraw(true);
     }
 
     /**
@@ -816,7 +833,7 @@ public class PropertyFileEditor extends EditorPart
      */
     public void focusGained(FocusEvent e)
     {
-        if (e.getSource() == i_propertiesTable)
+        if (e.getSource() == mappingTable)
         {
             setFocusOnRow();
         }
@@ -842,7 +859,7 @@ public class PropertyFileEditor extends EditorPart
                 i_lastSelectedProperty.setValueString(i_valueText.getText());
                 addNewProperty(i_lastSelectedProperty, null);
             }
-            i_propertiesTable.select(i_lastSelectedIndex);
+            mappingTable.select(i_lastSelectedIndex);
             getTableSelection();
         }
     }
@@ -853,8 +870,8 @@ public class PropertyFileEditor extends EditorPart
      */
     public void setFocusOnRow()
     {
-        i_propertiesTable.setFocus();
-        i_propertiesTable.select(i_lastSelectedIndex);
+        mappingTable.setFocus();
+        mappingTable.select(i_lastSelectedIndex);
     }
 
     /**
@@ -862,7 +879,7 @@ public class PropertyFileEditor extends EditorPart
      */
     private void getTableSelection()
     {
-        TableItem[] tableItems = i_propertiesTable.getSelection();
+        TableItem[] tableItems = mappingTable.getSelection();
         if(tableItems.length > 0)
         {
             String keyString = tableItems[0].getText(0);
@@ -871,7 +888,7 @@ public class PropertyFileEditor extends EditorPart
             String commentString = propertiesLineWrapper.getCommentString();
             i_valueText.setText(valueString);
             i_commentText.setText(commentString);
-            i_lastSelectedIndex = i_propertiesTable.getSelectionIndex();
+            i_lastSelectedIndex = mappingTable.getSelectionIndex();
             i_lastSelectedProperty = propertiesLineWrapper;
         }
     }
@@ -882,7 +899,7 @@ public class PropertyFileEditor extends EditorPart
      */
     public Image getLogo()
     {
-        return i_image;
+        return icon;
     }
 
     /**
@@ -949,7 +966,7 @@ public class PropertyFileEditor extends EditorPart
      */
     private void updateData()
     {
-        TableItem[] tableItems = i_propertiesTable.getItems();
+        TableItem[] tableItems = mappingTable.getItems();
         for(int i = 0; i < tableItems.length; i++)
         {
         	TableItem tableItem = tableItems[i];
