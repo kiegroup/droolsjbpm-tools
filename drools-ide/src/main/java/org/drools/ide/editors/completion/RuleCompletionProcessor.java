@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.drools.ide.editors.DRLRuleSetEditor;
 import org.drools.ide.editors.DSLAdapter;
 import org.drools.ide.editors.Keywords;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.ui.part.FileEditorInput;
 
 
 
@@ -26,23 +30,25 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
     static final Pattern consequence = Pattern.compile(".*\\Wthen\\W.*", Pattern.DOTALL);
 
+    private DRLRuleSetEditor editor;
     
+    public RuleCompletionProcessor(DRLRuleSetEditor editor) {
+        this.editor = editor;
+    }
     
     protected List getPossibleProposals(ITextViewer viewer, String backText) {
 
         List list = new ArrayList();
-        
-        //now load from DSL
-        DSLAdapter adapter = new DSLAdapter(viewer);
+        DSLAdapter adapter = getDSLAdapter(viewer, editor);
         
         if (consequence.matcher(backText).matches()) {
-            list.addAll(adapter.loadConsequenceItems());
+            list.addAll(adapter.listConsequenceItems());
             list.add(new RuleCompletionProposal("end"));
             list.add(new RuleCompletionProposal("modify"));
             list.add(new RuleCompletionProposal("retract"));
             list.add(new RuleCompletionProposal("assert"));
         } else if (condition.matcher(backText).matches()) {
-            list.addAll(adapter.loadConditionItems());
+            list.addAll(adapter.listConditionItems());
             list.add(new RuleCompletionProposal("then", "then\n\t"));
         } else {             
             //we are in rule header
@@ -51,6 +57,24 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         }
         
         return list;           
+    }
+
+    /** 
+     * Get the adapter for DSLs, and cache it with the editor for future reference.
+     * If it is unable to load a DSL, it will try again next time.
+     * But once it has found and loaded one, it will keep it until the editor is closed.
+     *  
+     */
+    private DSLAdapter getDSLAdapter(ITextViewer viewer, DRLRuleSetEditor editor) {
+        DSLAdapter adapter = editor.getDSLAdapter();
+        if (adapter == null) {
+            String content = viewer.getDocument().get();
+            adapter = new DSLAdapter(content, (FileEditorInput) editor.getEditorInput());
+            if (adapter.isValid()) {
+                editor.setDSLAdapter( adapter );
+            }
+        }
+        return adapter;
     }
 
 	

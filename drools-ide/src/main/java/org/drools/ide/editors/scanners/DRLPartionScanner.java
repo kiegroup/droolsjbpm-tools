@@ -39,7 +39,6 @@ public class DRLPartionScanner extends RuleBasedPartitionScanner {
     private void initialise() {
 
         IToken rulePartition = new Token(RULE_PART_CONTENT);
-        Keywords keys = Keywords.getInstance();
 
         List rules = new ArrayList();
         rules.add(new MultiLineRule("\nrule", "\nend", rulePartition));

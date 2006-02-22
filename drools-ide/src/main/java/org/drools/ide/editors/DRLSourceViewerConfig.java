@@ -27,9 +27,11 @@ import org.eclipse.swt.graphics.Color;
 public class DRLSourceViewerConfig extends SourceViewerConfiguration {
 	private DRLScanner scanner;
 	private static Color DEFAULT_COLOR = ColorManager.getInstance().getColor(ColorManager.DEFAULT);
-		
-	public DRLSourceViewerConfig() {
-	}
+	private DRLRuleSetEditor editor;	
+    
+	public DRLSourceViewerConfig(DRLRuleSetEditor editor) {
+        this.editor = editor;
+	}  
 
 	protected DRLScanner getScanner() {
 		if (scanner == null) {
@@ -74,7 +76,7 @@ public class DRLSourceViewerConfig extends SourceViewerConfiguration {
 		                                    IDocument.DEFAULT_CONTENT_TYPE);
         
         
-        assistant.setContentAssistProcessor(new RuleCompletionProcessor(),
+        assistant.setContentAssistProcessor(new RuleCompletionProcessor(editor),
                                             DRLPartionScanner.RULE_PART_CONTENT);
         
 

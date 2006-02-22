@@ -4,7 +4,6 @@ import org.drools.ide.editors.scanners.RuleEditorMessages;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.editors.text.TextEditor;
-
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.TextOperationAction;
 
@@ -15,10 +14,12 @@ import org.eclipse.ui.texteditor.TextOperationAction;
  */
 public class DRLRuleSetEditor extends TextEditor {
     
+    //used to provide additional content assistance/popups when DSLs are used.
+    private DSLAdapter dslAdapter;
+    
 	public DRLRuleSetEditor()
 	{
-		super();
-		setSourceViewerConfiguration(new DRLSourceViewerConfig());
+		setSourceViewerConfiguration(new DRLSourceViewerConfig(this));
         setDocumentProvider(new DRLDocumentProvider());
 	}
 
@@ -39,6 +40,17 @@ public class DRLRuleSetEditor extends TextEditor {
         setAction("ContentAssistTip", a); 
         
     }    
+    
+    /** Return the DSL adapter if one is present */
+    public DSLAdapter getDSLAdapter() {
+        return dslAdapter;
+    }
+    
+    /** Set the DSL adapter, used for content assistance */
+    public void setDSLAdapter(DSLAdapter adapter) {
+        dslAdapter = adapter;
+    }
+    
     
     
 }
