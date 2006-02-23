@@ -246,7 +246,9 @@ public class AuditView extends AbstractDebugView {
     
     public void init(IViewSite site, IMemento memento) throws PartInitException {
         super.init(site, memento);
-		logFileName = memento.getString(LOG_FILE_NAME);
+        if (memento != null) {
+        	logFileName = memento.getString(LOG_FILE_NAME);
+        }
     }
     
 	public class Event {
