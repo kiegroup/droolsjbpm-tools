@@ -6,6 +6,8 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.TextOperationAction;
+import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 
 /**
@@ -17,6 +19,8 @@ public class DRLRuleSetEditor extends TextEditor {
     //used to provide additional content assistance/popups when DSLs are used.
     private DSLAdapter dslAdapter;
     
+	private ContentOutlinePage ruleContentOutline = null;
+
 	public DRLRuleSetEditor()
 	{
 		setSourceViewerConfiguration(new DRLSourceViewerConfig(this));
@@ -50,8 +54,20 @@ public class DRLRuleSetEditor extends TextEditor {
     public void setDSLAdapter(DSLAdapter adapter) {
         dslAdapter = adapter;
     }
-    
-    
-    
+
+	@Override
+	public Object getAdapter(Class adapter) {
+		if(adapter.equals(IContentOutlinePage.class)) {
+			return getContentOutline();
+		}
+		return super.getAdapter(adapter);
+	}
+
+	protected ContentOutlinePage getContentOutline() {
+		if(ruleContentOutline == null) {
+			ruleContentOutline = new RuleContentOutlinePage();
+		}
+		return ruleContentOutline;
+	}
 }
 
