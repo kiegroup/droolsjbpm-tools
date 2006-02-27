@@ -55,7 +55,6 @@ public class DRLRuleSetEditor extends TextEditor {
         dslAdapter = adapter;
     }
 
-	@Override
 	public Object getAdapter(Class adapter) {
 		if(adapter.equals(IContentOutlinePage.class)) {
 			return getContentOutline();
