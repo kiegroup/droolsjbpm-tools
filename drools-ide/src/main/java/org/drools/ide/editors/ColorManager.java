@@ -23,8 +23,7 @@ public class ColorManager {
     public static final RGB JAVADOC_TAG= new RGB(128, 128, 128);
     public static final RGB JAVADOC_LINK= new RGB(128, 128, 128);
     public static final RGB JAVADOC_DEFAULT= new RGB(0, 128, 128);    
-      
-    
+
 	protected Map fColorTable = new HashMap(10);
 
 	void dispose() {
