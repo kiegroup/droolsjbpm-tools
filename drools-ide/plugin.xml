@@ -55,11 +55,12 @@
             id="org.eclipse.ui.editors.text.DRLEditor"
             name="Rule Editor"/>
       <editor
-            class="org.drools.ide.dsl.editor.PropertyFileEditor"  
-            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
-            extensions="dsl,dsl.properties"
-            icon="icons/dsl.GIF"            
-            id="org.drools.ide.editors.text.DSLEditor"
+            class="org.drools.ide.dsl.editor.DSLEditor"
+            contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
+            default="false"
+            extensions="dsl,lang"
+            icon="icons/dsl.GIF"
+            id="org.drools.ide.editor.DomainSpecLangEditor"
             name="DSL Editor"/>
    </extension>
    <extension
