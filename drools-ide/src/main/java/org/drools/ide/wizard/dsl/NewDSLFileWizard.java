@@ -6,7 +6,7 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
 /**
- * A wizard to create a new .drl file.
+ * A wizard to create a new Domain Specific Language.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  * @author Michael Neale

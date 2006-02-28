@@ -18,7 +18,8 @@ import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 import org.eclipse.ui.ide.IDE;
 
 /**
- * A page to create a new .drl file.
+ * A page to create a new Domain Specific Language configuration.
+ * There may be additional options here in future.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  * @author Michael Neale

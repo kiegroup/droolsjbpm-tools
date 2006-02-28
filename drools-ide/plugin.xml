@@ -83,4 +83,22 @@
             id="org.drools.ide.new"
             name="JBoss Rules"/>
    </extension>
+   <extension
+         id="org.drools.ide.actionSet"
+         name="JBoss Rules"
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.drools.ide.workbenchMenu"
+            label="JBoss Rules"
+            visible="true">
+         <action
+               class="org.drools.ide.menu.RuleHelperActionDelegate"
+               icon="icons/drools.gif"
+               id="org.drools.ide.openRulesWorkbench"
+               label="JBoss Rules wizards"
+               style="pulldown"
+               toolbarPath="Normal/additions"
+               tooltip="JBoss Rules workbench"/>
+      </actionSet>
+   </extension>
 </plugin>

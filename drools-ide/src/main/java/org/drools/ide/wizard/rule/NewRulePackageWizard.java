@@ -6,7 +6,7 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
 /**
- * A wizard to create a new .drl file.
+ * This is a wizard to create a new .drl file (for example a rule or a whole rule package).
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  * @author Michael Neale
