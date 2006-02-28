@@ -29,8 +29,10 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
 
     private IDocumentProvider    ruleDocumentProvider;
 
-    private static final Pattern rule = Pattern.compile( "rule\\s*\"?([^\"]+)\"?.*",
-                                                         Pattern.DOTALL );
+    private static final Pattern rulePattern    = Pattern.compile( "rule\\s*\"?([^\"]+)\"?.*",
+                                                                   Pattern.DOTALL );
+    private static final Pattern packagePattern = Pattern.compile( "package\\s*([^\"]+)",
+                                                                   Pattern.DOTALL );
 
     public RuleContentOutlinePage(IDocumentProvider provider) {
         super();
@@ -75,7 +77,8 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
         implements
         ITreeContentProvider {
 
-        protected List elements = new ArrayList();
+        protected List      packageElements = new ArrayList();
+        private PackageNode packageNode;
 
         protected void parse(IDocument document) {
 
@@ -85,11 +88,17 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
             try {
                 String st = bufferedReader.readLine();
                 while ( st != null ) {
-                    Matcher matcher = rule.matcher( st );
+                    Matcher ruleMatcher = rulePattern.matcher( st );
 
-                    if ( matcher.matches() ) {
-                        String rule = matcher.group( 1 );
-                        elements.add( rule );
+                    if ( ruleMatcher.matches() ) {
+                        String rule = ruleMatcher.group( 1 );
+                        packageElements.add( new RuleNode( rule ) );
+                    }
+
+                    Matcher packageMatcher = packagePattern.matcher( st );
+                    if ( packageMatcher.matches() ) {
+                        String packageName = packageMatcher.group( 1 );
+                        packageNode = new PackageNode( packageName );
                     }
                     st = bufferedReader.readLine();
                 }
@@ -104,7 +113,7 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
                                  Object oldInput,
                                  Object newInput) {
 
-            elements.clear();
+            packageElements.clear();
 
             if ( newInput != null ) {
                 IDocument document = ruleDocumentProvider.getDocument( newInput );
@@ -118,9 +127,9 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
          * @see IContentProvider#dispose
          */
         public void dispose() {
-            if ( elements != null ) {
-                elements.clear();
-                elements = null;
+            if ( packageElements != null ) {
+                packageElements.clear();
+                packageElements = null;
             }
         }
 
@@ -135,20 +144,21 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
          * @see IStructuredContentProvider#getElements(Object)
          */
         public Object[] getElements(Object element) {
-            return elements.toArray();
+            return new Object[]{packageNode};
         }
 
         /*
          * @see ITreeContentProvider#hasChildren(Object)
          */
         public boolean hasChildren(Object element) {
-            return element == fileEditorInput;
+            return element == packageNode;
         }
 
         /*
          * @see ITreeContentProvider#getParent(Object)
          */
         public Object getParent(Object element) {
+            if ( element instanceof RuleNode ) return packageNode;
             return null;
         }
 
@@ -156,8 +166,33 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
          * @see ITreeContentProvider#getChildren(Object)
          */
         public Object[] getChildren(Object element) {
-            if ( element == fileEditorInput ) return elements.toArray();
+            if ( element == fileEditorInput ) return packageElements.toArray();
+            if ( element == packageNode ) return packageElements.toArray();
             return new Object[0];
         }
+    }
+}
+
+class PackageNode {
+    private final String packageName;
+
+    PackageNode(String packageName) {
+        this.packageName = packageName;
+    }
+
+    public String toString() {
+        return packageName;
+    }
+}
+
+class RuleNode {
+    private final String ruleName;
+
+    RuleNode(String ruleName) {
+        this.ruleName = ruleName;
+    }
+
+    public String toString() {
+        return "Rule: " + ruleName;
     }
 }
