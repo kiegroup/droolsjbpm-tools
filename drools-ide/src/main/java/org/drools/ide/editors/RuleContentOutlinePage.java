@@ -1,96 +1,163 @@
 package org.drools.ide.editors;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.model.IWorkbenchAdapter;
-import org.eclipse.ui.model.WorkbenchContentProvider;
-import org.eclipse.ui.model.WorkbenchLabelProvider;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
 /**
- * This is very much nothing more than a stubbed up starting place at
- * this point...
+ * This is very much nothing more than a stubbed up starting place at this
+ * point...
  * 
  * @author "Jeff Brown" <brown_j@ociweb.com>
  */
 public class RuleContentOutlinePage extends ContentOutlinePage {
 
-	public void createControl(Composite parent) {
-		super.createControl(parent);
-		TreeViewer viewer = getTreeViewer();
-		viewer.setContentProvider(new WorkbenchContentProvider());
-		viewer.setLabelProvider(new WorkbenchLabelProvider());
+    private IDocumentProvider    ruleDocumentProvider;
 
-		viewer.setInput(getTreeStuff());
-		viewer.expandAll();
-	}
+    private static final Pattern rule = Pattern.compile( "rule\\s*\"?([^\"]+)\"?.*",
+                                                         Pattern.DOTALL );
 
-	private Object getTreeStuff() {
-		DummyNode dummyNode = new DummyNode("Root");
-		DummyNode rule1 = new DummyNode("Rule 1");
-		dummyNode.addChild(rule1);
-		rule1.addChild(new DummyNode("Some Rule Detail..."));
-		rule1.addChild(new DummyNode("Some Rule Detail..."));
-		DummyNode rule2 = new DummyNode("Rule 2");
-		dummyNode.addChild(rule2);
-		rule2.addChild(new DummyNode("Some Rule Detail..."));
-		DummyNode rule3 = new DummyNode("Rule 3");
-		dummyNode.addChild(rule3);
-		rule3.addChild(new DummyNode("Some Rule Detail..."));
-		rule3.addChild(new DummyNode("Some Rule Detail..."));
-		rule3.addChild(new DummyNode("Some Rule Detail..."));
-		rule3.addChild(new DummyNode("Some Rule Detail..."));
-		rule3.addChild(new DummyNode("Some Rule Detail..."));
-		return dummyNode;
-	}
-}
+    public RuleContentOutlinePage(IDocumentProvider provider) {
+        super();
+        ruleDocumentProvider = provider;
+    }
 
-class DummyNode implements IWorkbenchAdapter, IAdaptable {
+    public void createControl(Composite parent) {
+        super.createControl( parent );
+        TreeViewer viewer = getTreeViewer();
+        viewer.setContentProvider( new ContentProvider() );
+        viewer.setLabelProvider( new LabelProvider() );
 
-	private Object parent;
+        if ( fileEditorInput != null ) viewer.setInput( fileEditorInput );
+        update();
+    }
 
-	private String label;
+    private IFileEditorInput fileEditorInput = null;
 
-	private List children = new ArrayList();
+    public void setInput(IFileEditorInput input) {
+        fileEditorInput = input;
+        update();
+    }
 
-	DummyNode(String label) {
-		this.label = label;
-	}
+    /**
+     * Updates the outline page.
+     */
+    public void update() {
+        TreeViewer viewer = getTreeViewer();
 
-	public Object getAdapter(Class adapter) {
-		if (adapter == IWorkbenchAdapter.class) {
-			return this;
-		}
-		return null;
-	}
+        if ( viewer != null ) {
+            Control control = viewer.getControl();
+            if ( control != null && !control.isDisposed() ) {
+                control.setRedraw( false );
+                viewer.setInput( fileEditorInput );
+                viewer.expandAll();
+                control.setRedraw( true );
+            }
+        }
+    }
 
-	public void setParent(Object o) {
-		parent = o;
-	}
+    class ContentProvider
+        implements
+        ITreeContentProvider {
 
-	public void addChild(DummyNode o) {
-		o.setParent(this);
-		children.add(o);
-	}
+        protected List elements = new ArrayList();
 
-	public Object[] getChildren(Object o) {
-		return children.toArray();
-	}
+        protected void parse(IDocument document) {
 
-	public ImageDescriptor getImageDescriptor(Object object) {
-		return null;
-	}
+            String ruleFileContents = document.get();
+            StringReader stringReader = new StringReader( ruleFileContents );
+            BufferedReader bufferedReader = new BufferedReader( stringReader );
+            try {
+                String st = bufferedReader.readLine();
+                while ( st != null ) {
+                    Matcher matcher = rule.matcher( st );
 
-	public String getLabel(Object o) {
-		return label;
-	}
+                    if ( matcher.matches() ) {
+                        String rule = matcher.group( 1 );
+                        elements.add( rule );
+                    }
+                    st = bufferedReader.readLine();
+                }
+            } catch ( IOException e ) {
+            }
+        }
 
-	public Object getParent(Object o) {
-		return parent;
-	}
+        /*
+         * @see IContentProvider#inputChanged(Viewer, Object, Object)
+         */
+        public void inputChanged(Viewer viewer,
+                                 Object oldInput,
+                                 Object newInput) {
+
+            elements.clear();
+
+            if ( newInput != null ) {
+                IDocument document = ruleDocumentProvider.getDocument( newInput );
+                if ( document != null ) {
+                    parse( document );
+                }
+            }
+        }
+
+        /*
+         * @see IContentProvider#dispose
+         */
+        public void dispose() {
+            if ( elements != null ) {
+                elements.clear();
+                elements = null;
+            }
+        }
+
+        /*
+         * @see IContentProvider#isDeleted(Object)
+         */
+        public boolean isDeleted(Object element) {
+            return false;
+        }
+
+        /*
+         * @see IStructuredContentProvider#getElements(Object)
+         */
+        public Object[] getElements(Object element) {
+            return elements.toArray();
+        }
+
+        /*
+         * @see ITreeContentProvider#hasChildren(Object)
+         */
+        public boolean hasChildren(Object element) {
+            return element == fileEditorInput;
+        }
+
+        /*
+         * @see ITreeContentProvider#getParent(Object)
+         */
+        public Object getParent(Object element) {
+            return null;
+        }
+
+        /*
+         * @see ITreeContentProvider#getChildren(Object)
+         */
+        public Object[] getChildren(Object element) {
+            if ( element == fileEditorInput ) return elements.toArray();
+            return new Object[0];
+        }
+    }
 }
