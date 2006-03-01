@@ -3,25 +3,21 @@ package org.drools.ide.editors;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
 /**
- * This is very much nothing more than a stubbed up starting place at this
- * point...
  * 
  * @author "Jeff Brown" <brown_j@ociweb.com>
  */
@@ -29,8 +25,13 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
 
     private IDocumentProvider    ruleDocumentProvider;
 
-    private static final Pattern rule = Pattern.compile( "rule\\s*\"?([^\"]+)\"?.*",
-                                                         Pattern.DOTALL );
+    private static final Pattern rulePattern     = Pattern.compile( "rule\\s*\"?([^\"]+)\"?.*",
+                                                                    Pattern.DOTALL );
+
+    private static final Pattern packagePattern  = Pattern.compile( "package\\s*([^\"]+)",
+                                                                    Pattern.DOTALL );
+
+    private PackageTreeNode      packageTreeNode = new PackageTreeNode();
 
     public RuleContentOutlinePage(IDocumentProvider provider) {
         super();
@@ -41,7 +42,7 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
         super.createControl( parent );
         TreeViewer viewer = getTreeViewer();
         viewer.setContentProvider( new ContentProvider() );
-        viewer.setLabelProvider( new LabelProvider() );
+        viewer.setLabelProvider( new WorkbenchLabelProvider() );
 
         if ( fileEditorInput != null ) viewer.setInput( fileEditorInput );
         update();
@@ -75,8 +76,6 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
         implements
         ITreeContentProvider {
 
-        protected List elements = new ArrayList();
-
         protected void parse(IDocument document) {
 
             String ruleFileContents = document.get();
@@ -85,11 +84,15 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
             try {
                 String st = bufferedReader.readLine();
                 while ( st != null ) {
-                    Matcher matcher = rule.matcher( st );
+                    Matcher matcher = rulePattern.matcher( st );
 
                     if ( matcher.matches() ) {
                         String rule = matcher.group( 1 );
-                        elements.add( rule );
+                        packageTreeNode.addRule( rule );
+                    }
+                    matcher = packagePattern.matcher( st );
+                    if ( matcher.matches() ) {
+                        packageTreeNode.setPackageName( matcher.group( 1 ) );
                     }
                     st = bufferedReader.readLine();
                 }
@@ -104,7 +107,7 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
                                  Object oldInput,
                                  Object newInput) {
 
-            elements.clear();
+            packageTreeNode = new PackageTreeNode();
 
             if ( newInput != null ) {
                 IDocument document = ruleDocumentProvider.getDocument( newInput );
@@ -114,49 +117,32 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
             }
         }
 
-        /*
-         * @see IContentProvider#dispose
-         */
         public void dispose() {
-            if ( elements != null ) {
-                elements.clear();
-                elements = null;
-            }
         }
 
-        /*
-         * @see IContentProvider#isDeleted(Object)
-         */
         public boolean isDeleted(Object element) {
             return false;
         }
 
-        /*
-         * @see IStructuredContentProvider#getElements(Object)
-         */
         public Object[] getElements(Object element) {
-            return elements.toArray();
+            return new Object[]{packageTreeNode};
         }
 
-        /*
-         * @see ITreeContentProvider#hasChildren(Object)
-         */
         public boolean hasChildren(Object element) {
-            return element == fileEditorInput;
+            boolean hasChildren = element == fileEditorInput || element == packageTreeNode;
+            return hasChildren;
         }
 
-        /*
-         * @see ITreeContentProvider#getParent(Object)
-         */
         public Object getParent(Object element) {
+            if ( element instanceof RuleTreeNode ) return packageTreeNode;
             return null;
         }
 
-        /*
-         * @see ITreeContentProvider#getChildren(Object)
-         */
         public Object[] getChildren(Object element) {
-            if ( element == fileEditorInput ) return elements.toArray();
+            if ( element == packageTreeNode ) {
+                return packageTreeNode.getChildren( element );
+            }
+
             return new Object[0];
         }
     }
