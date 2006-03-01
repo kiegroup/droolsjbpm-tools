@@ -63,7 +63,7 @@ public class DSLAdapter {
                     readConfig( stream );
                     valid = true;
                 } catch ( Exception e ) {
-                    throw new IllegalStateException("Unable to open DSL config file.", e);
+                    throw new IllegalStateException("Unable to open DSL config file. (Exception: " + e.getMessage() + ")");
                 } finally {
                     closeStream( stream );
                 }

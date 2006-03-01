@@ -67,9 +67,9 @@ public class DSLEditor extends EditorPart {
             writer.close();
             input.getFile().getProject().refreshLocal(IResource.DEPTH_INFINITE, monitor);            
         } catch ( IOException e ) {
-            throw new IllegalStateException("Unable to save DSL configuration file.", e);
+            throw new IllegalStateException("Unable to save DSL configuration file. (IOException: " + e.getMessage() + ")");
         } catch ( CoreException e ) {
-            throw new IllegalStateException("Unable to resync workbench after DSL save.", e);
+            throw new IllegalStateException("Unable to resync workbench after DSL save. (CoreException: " + e.getMessage() + ")");
         }
     }
 
@@ -97,9 +97,9 @@ public class DSLEditor extends EditorPart {
             stream.close();
             
         } catch ( CoreException e ) {
-            throw new IllegalStateException("Unable to load DSL configuration file.", e);
+            throw new IllegalStateException("Unable to load DSL configuration file. (CoreException: " + e.getMessage() + ")");
         } catch ( IOException e ) {
-            throw new IllegalStateException("Unabel to close stream fo DSL config file.", e);
+            throw new IllegalStateException("Unabel to close stream fo DSL config file. (IOException: " + e.getMessage() + ")");
         }
         
     }
