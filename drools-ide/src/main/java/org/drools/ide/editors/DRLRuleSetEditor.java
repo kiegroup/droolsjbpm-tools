@@ -4,8 +4,6 @@ import org.drools.ide.editors.scanners.RuleEditorMessages;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.TextOperationAction;
@@ -71,13 +69,8 @@ public class DRLRuleSetEditor extends TextEditor {
 
     protected ContentOutlinePage getContentOutline() {
         if ( ruleContentOutline == null ) {
-            
-            
             ruleContentOutline = new RuleContentOutlinePage( this );
-            IEditorInput editorInput = getEditorInput();
-            if ( editorInput instanceof IFileEditorInput ) {
-                ruleContentOutline.setInput( (IFileEditorInput) editorInput );
-            }
+            ruleContentOutline.update();
         }
         return ruleContentOutline;
     }
