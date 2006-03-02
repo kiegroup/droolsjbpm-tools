@@ -54,6 +54,7 @@ public class NewRulePackagePage extends WizardNewFileCreationPage {
     public void createControl(Composite parent) {
         super.createControl(parent);
         setPageComplete(true);
+        super.setMessage( "Hint: Press CTRL+SPACE when editing rules to get content sensitive assistance/popups.");
     }
     
     
@@ -106,7 +107,7 @@ public class NewRulePackagePage extends WizardNewFileCreationPage {
         expander = new Button(container, SWT.CHECK);
         expander.setSelection( false );
         expander.setLayoutData( new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING) );
-        expander.setToolTipText( "Domain Specific Language: allows you to create your own domain specific languages." );
+        expander.setToolTipText( "Domain Specific Language: allows you to create your own domain specific languages\n for use in rules." );
     }
 
     private void createType(Composite container) {
