@@ -10,6 +10,7 @@ import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
+import org.eclipse.jface.text.rules.BufferedRuleBasedScanner;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -44,24 +45,47 @@ public class DRLSourceViewerConfig extends SourceViewerConfiguration {
 
 	/**
 	 * Define reconciler - this has to be done for each partition.
+     * Currently there are 3 partitions, Inside rule, outside rule and inside comment.
 	 */
 	public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
         
         
 		PresentationReconciler reconciler = new PresentationReconciler();
         
+        //bucket partition... (everything else outside a rule)
 		DefaultDamagerRepairer dr = new DefaultDamagerRepairer(getScanner());
 		reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
 		reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
         
 
+        //inside a rule partition
         dr = new DefaultDamagerRepairer(getScanner());
         reconciler.setDamager(dr, DRLPartionScanner.RULE_PART_CONTENT);
         reconciler.setRepairer(dr, DRLPartionScanner.RULE_PART_CONTENT);        
+
+        
+        //finally, inside a multi line comment.
+        dr = new DefaultDamagerRepairer(new SingleTokenScanner(new TextAttribute(
+                                                                                 ColorManager.getInstance().getColor( 
+                                                                                                                      ColorManager.SINGLE_LINE_COMMENT )
+                                                                                                                      )));
+        reconciler.setDamager(dr, DRLPartionScanner.RULE_COMMENT);
+        reconciler.setRepairer(dr, DRLPartionScanner.RULE_COMMENT);
+        
         
         return reconciler;
 	}
 	
+    
+    /**
+     * Single token scanner, used for scanning for multiline comments mainly.
+     */
+    static class SingleTokenScanner extends BufferedRuleBasedScanner {
+        public SingleTokenScanner(TextAttribute attribute) {
+            setDefaultReturnToken(new Token(attribute));
+        }
+    } 
+    
     /**
      * Get the appropriate content assistance, for each partition.
      */

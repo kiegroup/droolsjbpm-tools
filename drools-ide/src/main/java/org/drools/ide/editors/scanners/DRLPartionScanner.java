@@ -26,9 +26,10 @@ public class DRLPartionScanner extends RuleBasedPartitionScanner {
 
     
     public static final String RULE_PART_CONTENT = "__partition_rule_content";
+    public static final String RULE_COMMENT = "__partition_multiline_comment";
     
     
-    public static final String[] LEGAL_CONTENT_TYPES = {IDocument.DEFAULT_CONTENT_TYPE,  RULE_PART_CONTENT};
+    public static final String[] LEGAL_CONTENT_TYPES = {IDocument.DEFAULT_CONTENT_TYPE,  RULE_PART_CONTENT, RULE_COMMENT};
     
     
     public DRLPartionScanner() {
@@ -39,8 +40,10 @@ public class DRLPartionScanner extends RuleBasedPartitionScanner {
     private void initialise() {
 
         IToken rulePartition = new Token(RULE_PART_CONTENT);
-
+        IToken comment = new Token(RULE_COMMENT);
+        
         List rules = new ArrayList();
+        rules.add( new MultiLineRule("/*", "*/", comment, (char) 0, true));
         rules.add(new MultiLineRule("\nrule", "\nend", rulePartition));
         
         IPredicateRule[] rulez = new IPredicateRule[rules.size()];
