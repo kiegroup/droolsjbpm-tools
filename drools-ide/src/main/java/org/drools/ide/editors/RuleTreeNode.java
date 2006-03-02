@@ -1,13 +1,10 @@
 package org.drools.ide.editors;
 
-import org.eclipse.core.runtime.IAdaptable;
+import org.drools.ide.DroolsIDEPlugin;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
-public class RuleTreeNode
-    implements
-    IWorkbenchAdapter,
-    IAdaptable {
+public class RuleTreeNode extends OutlineNode implements Comparable {
 
     private final PackageTreeNode packageTreeNode;
     private final String          ruleName;
@@ -31,7 +28,7 @@ public class RuleTreeNode
     }
 
     public ImageDescriptor getImageDescriptor(Object object) {
-        return null;
+        return DroolsIDEPlugin.getImageDescriptor( "icons/drools.gif" );
     }
 
     public String getLabel(Object o) {
@@ -40,6 +37,15 @@ public class RuleTreeNode
 
     public Object getParent(Object o) {
         return packageTreeNode;
+    }
+
+    public int compareTo(Object obj) {
+        if (obj instanceof RuleTreeNode) {
+            RuleTreeNode other = (RuleTreeNode) obj;
+            return this.ruleName.compareTo( other.ruleName );
+        } else {
+            return 0;
+        }
     }
 
 }

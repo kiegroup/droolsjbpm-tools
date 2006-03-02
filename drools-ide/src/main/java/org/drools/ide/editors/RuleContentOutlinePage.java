@@ -7,35 +7,47 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
-import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
 /**
+ * Simple outline view of a DRL file. At present this is not wired in with the Parser, so it is fault
+ * tolerant of incorrect syntax. 
+ * Should provide navigation assistance in large rule files.
  * 
  * @author "Jeff Brown" <brown_j@ociweb.com>
  */
 public class RuleContentOutlinePage extends ContentOutlinePage {
 
-    private IDocumentProvider    ruleDocumentProvider;
+    //the editor that this outline view is linked to.
+    private DRLRuleSetEditor     editor;
 
+    //the "root" node
+    private PackageTreeNode      packageTreeNode = new PackageTreeNode();
+    
+    ///////////////////////////////////
+    // Patterns that the parser uses
+    ///////////////////////////////////
     private static final Pattern rulePattern     = Pattern.compile( "rule\\s*\"?([^\"]+)\"?.*",
                                                                     Pattern.DOTALL );
 
     private static final Pattern packagePattern  = Pattern.compile( "package\\s*([^\"]+)",
                                                                     Pattern.DOTALL );
 
-    private PackageTreeNode      packageTreeNode = new PackageTreeNode();
+    
 
-    public RuleContentOutlinePage(IDocumentProvider provider) {
+    public RuleContentOutlinePage(DRLRuleSetEditor editor) {
         super();
-        ruleDocumentProvider = provider;
+        this.editor = editor;
     }
 
     public void createControl(Composite parent) {
@@ -46,6 +58,21 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
 
         if ( fileEditorInput != null ) viewer.setInput( fileEditorInput );
         update();
+
+        //add the listener for navigation of the rule document.
+        super.addSelectionChangedListener( new ISelectionChangedListener() {
+            public void selectionChanged(SelectionChangedEvent event) {
+                Object selectionObj = event.getSelection();
+                if ( selectionObj != null && selectionObj instanceof StructuredSelection ) {
+                    StructuredSelection sel = (StructuredSelection) selectionObj;
+                    OutlineNode node = (OutlineNode) sel.getFirstElement();
+                    if ( node != null ) {
+                        editor.selectAndReveal( node.getOffset(),
+                                                node.getLength() );
+                    }
+                }
+            }
+        } );
     }
 
     private IFileEditorInput fileEditorInput = null;
@@ -72,29 +99,45 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
         }
     }
 
+    /**
+     * Simple content provider for a primitive understanding of a rule DRL file.
+     * The day may come where we hook into an official AST,
+     * But that is not this day. This day, we parse ! (apologies to J.R.R. Tolkien).
+     */
     class ContentProvider
         implements
         ITreeContentProvider {
 
+        /** 
+         * A simple line by line parse of the document, using the precompiled regex to tease out a rule structure.
+         * In future, this may hook into the AST from the parser/incremental compiler, thus rendering the regex obsolete.
+         */
         protected void parse(IDocument document) {
 
             String ruleFileContents = document.get();
             StringReader stringReader = new StringReader( ruleFileContents );
             BufferedReader bufferedReader = new BufferedReader( stringReader );
             try {
-                String st = bufferedReader.readLine();
-                while ( st != null ) {
+                int offset = 0;
+                String st;
+                while ( (st = bufferedReader.readLine()) != null ) {
+
                     Matcher matcher = rulePattern.matcher( st );
 
                     if ( matcher.matches() ) {
                         String rule = matcher.group( 1 );
-                        packageTreeNode.addRule( rule );
+                        packageTreeNode.addRule( rule,
+                                                 offset,
+                                                 st.length() );
                     }
                     matcher = packagePattern.matcher( st );
                     if ( matcher.matches() ) {
-                        packageTreeNode.setPackageName( matcher.group( 1 ) );
+                        String packageName = matcher.group( 1 );
+                        packageTreeNode.setPackageName( packageName );
+                        packageTreeNode.setOffset( offset );
+                        packageTreeNode.setLength( st.length() );
                     }
-                    st = bufferedReader.readLine();
+                    offset += st.length() + 1; //+1 for the newline
                 }
             } catch ( IOException e ) {
             }
@@ -110,7 +153,7 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
             packageTreeNode = new PackageTreeNode();
 
             if ( newInput != null ) {
-                IDocument document = ruleDocumentProvider.getDocument( newInput );
+                IDocument document = editor.getDocumentProvider().getDocument( newInput );
                 if ( document != null ) {
                     parse( document );
                 }

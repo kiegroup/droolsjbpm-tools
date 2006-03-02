@@ -71,8 +71,9 @@ public class DRLRuleSetEditor extends TextEditor {
 
     protected ContentOutlinePage getContentOutline() {
         if ( ruleContentOutline == null ) {
-            getDocumentProvider();
-            ruleContentOutline = new RuleContentOutlinePage( getDocumentProvider() );
+            
+            
+            ruleContentOutline = new RuleContentOutlinePage( this );
             IEditorInput editorInput = getEditorInput();
             if ( editorInput instanceof IFileEditorInput ) {
                 ruleContentOutline.setInput( (IFileEditorInput) editorInput );
