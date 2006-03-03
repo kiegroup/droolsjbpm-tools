@@ -1,6 +1,7 @@
 package org.drools.ide.editors;
 
 import org.drools.ide.editors.scanners.RuleEditorMessages;
+import org.drools.ide.outline.RuleContentOutlinePage;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.source.ISourceViewer;

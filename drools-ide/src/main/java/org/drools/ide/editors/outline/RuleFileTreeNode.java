@@ -1,4 +1,4 @@
-package org.drools.ide.editors;
+package org.drools.ide.outline;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
