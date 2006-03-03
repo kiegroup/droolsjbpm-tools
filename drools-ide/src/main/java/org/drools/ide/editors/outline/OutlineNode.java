@@ -1,4 +1,4 @@
-package org.drools.ide.outline;
+package org.drools.ide.editors.outline;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ui.model.IWorkbenchAdapter;

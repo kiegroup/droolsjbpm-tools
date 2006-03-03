@@ -1,4 +1,4 @@
-package org.drools.ide.outline;
+package org.drools.ide.editors.outline;
 
 import java.util.ArrayList;
 import java.util.Collections;

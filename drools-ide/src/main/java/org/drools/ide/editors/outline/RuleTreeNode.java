@@ -1,4 +1,4 @@
-package org.drools.ide.outline;
+package org.drools.ide.editors.outline;
 
 import org.drools.ide.DroolsIDEPlugin;
 import org.eclipse.jface.resource.ImageDescriptor;
