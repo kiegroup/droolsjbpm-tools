@@ -3,12 +3,10 @@ package org.drools.ide.editors.scanners;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.ide.editors.Keywords;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.IPredicateRule;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.MultiLineRule;
-import org.eclipse.jface.text.rules.PatternRule;
 import org.eclipse.jface.text.rules.RuleBasedPartitionScanner;
 import org.eclipse.jface.text.rules.Token;
 

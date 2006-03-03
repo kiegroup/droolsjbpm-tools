@@ -6,9 +6,6 @@ import java.util.regex.Pattern;
 
 import org.drools.ide.editors.DRLRuleSetEditor;
 import org.drools.ide.editors.DSLAdapter;
-import org.drools.ide.editors.Keywords;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.ui.part.FileEditorInput;
 

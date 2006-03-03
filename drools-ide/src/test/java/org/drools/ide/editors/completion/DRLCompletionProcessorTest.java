@@ -1,10 +1,7 @@
 package org.drools.ide.editors.completion;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
-import org.drools.ide.editors.completion.DefaultCompletionProcessor;
 
 import junit.framework.TestCase;
 
