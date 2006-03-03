@@ -35,4 +35,12 @@ public abstract class OutlineNode implements
     public void setOffset(int offset) {
         this.offset = offset;
     }
+
+
+    public Object getAdapter(Class adapter) {
+        if ( adapter == IWorkbenchAdapter.class ) {
+            return this;
+        }
+        return null;
+    }
 }

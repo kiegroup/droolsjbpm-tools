@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.drools.ide.DroolsIDEPlugin;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.model.IWorkbenchAdapter;
 
 /**
  * This represents a package in the outline view. 
@@ -57,13 +56,6 @@ public class PackageTreeNode extends OutlineNode {
     }
 
     public Object getParent(Object o) {
-        return null;
-    }
-
-    public Object getAdapter(Class adapter) {
-        if ( adapter == IWorkbenchAdapter.class ) {
-            return this;
-        }
         return null;
     }
 }

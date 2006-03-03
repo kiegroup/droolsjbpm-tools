@@ -2,7 +2,6 @@ package org.drools.ide.editors.outline;
 
 import org.drools.ide.DroolsIDEPlugin;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.model.IWorkbenchAdapter;
 
 public class RuleTreeNode extends OutlineNode implements Comparable {
 
@@ -14,13 +13,6 @@ public class RuleTreeNode extends OutlineNode implements Comparable {
         packageTreeNode = parent;
         this.ruleName = ruleName;
 
-    }
-
-    public Object getAdapter(Class adapter) {
-        if ( adapter == IWorkbenchAdapter.class ) {
-            return this;
-        }
-        return null;
     }
 
     public Object[] getChildren(Object o) {

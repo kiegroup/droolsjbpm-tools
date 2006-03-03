@@ -1,7 +1,6 @@
 package org.drools.ide.editors.outline;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.model.IWorkbenchAdapter;
 
 /**
  * This represents a rule file in the outline view. 
@@ -26,13 +25,6 @@ public class RuleFileTreeNode extends OutlineNode {
     }
 
     public Object getParent(Object o) {
-        return null;
-    }
-
-    public Object getAdapter(Class adapter) {
-        if ( adapter == IWorkbenchAdapter.class ) {
-            return this;
-        }
         return null;
     }
 
