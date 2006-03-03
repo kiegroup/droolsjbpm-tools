@@ -17,6 +17,8 @@ public class PackageTreeNode extends OutlineNode {
 
     private List   rules       = new ArrayList();
 
+    private List   functions   = new ArrayList();
+
     private String packageName = "<unknown package name>";
 
     public String getPackageName() {
@@ -28,11 +30,25 @@ public class PackageTreeNode extends OutlineNode {
     }
 
     /** Add a rule node to the outline. Keeping track of where it was seen in the document (offset) */
-    public void addRule(String ruleName, int offset, int length) {
-        RuleTreeNode node = new RuleTreeNode( this, ruleName );
+    public void addRule(String ruleName,
+                        int offset,
+                        int length) {
+        RuleTreeNode node = new RuleTreeNode( this,
+                                              ruleName );
         node.setOffset( offset );
         node.setLength( length );
         rules.add( node );
+    }
+
+    /** Add a function node to the outline. Keeping track of where it was seen in the document (offset) */
+    public void addFunction(String functionLabel,
+                            int offset,
+                            int length) {
+        FunctionTreeNode node = new FunctionTreeNode( this,
+                                                      functionLabel );
+        node.setOffset( offset );
+        node.setLength( length );
+        functions.add( node );
     }
 
     /** 
@@ -40,15 +56,23 @@ public class PackageTreeNode extends OutlineNode {
      * Rules should appear at the top, sorted, as they are the most important assets.
      * */
     public Object[] getChildren(Object o) {
+        List children = new ArrayList();
+
         //sort and add rules
         Collections.sort( rules );
-        return rules.toArray();
+        children.addAll( rules );
+
+        // sort and add functions
+        Collections.sort( functions );
+        children.addAll( functions );
+
+        return children.toArray();
     }
 
     public ImageDescriptor getImageDescriptor(Object object) {
         ImageDescriptor des = DroolsIDEPlugin.getImageDescriptor( "icons/package_obj.gif" );
         return des;
-        
+
     }
 
     public String getLabel(Object o) {
@@ -58,4 +82,5 @@ public class PackageTreeNode extends OutlineNode {
     public Object getParent(Object o) {
         return null;
     }
+
 }

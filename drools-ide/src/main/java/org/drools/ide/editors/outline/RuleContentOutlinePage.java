@@ -33,16 +33,19 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
     private DRLRuleSetEditor       editor;
 
     //the "root" node
-    private final RuleFileTreeNode ruleFileTreeNode = new RuleFileTreeNode();
+    private final RuleFileTreeNode ruleFileTreeNode    = new RuleFileTreeNode();
 
     ///////////////////////////////////
     // Patterns that the parser uses
     ///////////////////////////////////
-    private static final Pattern   rulePattern      = Pattern.compile( "rule\\s*\"?([^\"]+)\"?.*",
-                                                                       Pattern.DOTALL );
+    private static final Pattern   rulePattern         = Pattern.compile( "rule\\s+\"?([^\"]+)\"?.*",
+                                                                          Pattern.DOTALL );
 
-    private static final Pattern   packagePattern   = Pattern.compile( "package\\s*([^\"]+)",
-                                                                       Pattern.DOTALL );
+    private static final Pattern   packagePattern      = Pattern.compile( "package\\s+([^\"]+)",
+                                                                          Pattern.DOTALL );
+
+    private static final Pattern   functionNamePattern = Pattern.compile( "function\\s+([^\\s\\(]+).*",
+                                                                          Pattern.DOTALL );
 
     public RuleContentOutlinePage(DRLRuleSetEditor editor) {
         super();
@@ -133,6 +136,14 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
                     packageTreeNode.setOffset( offset );
                     packageTreeNode.setLength( st.length() );
                 }
+                matcher = functionNamePattern.matcher( st );
+                if ( matcher.matches() ) {
+                    String functionName = matcher.group( 1 );
+                    packageTreeNode.addFunction( functionName + "()",
+                                                 offset,
+                                                 st.length() );
+                }
+
                 offset += st.length() + 1; //+1 for the newline
             }
         } catch ( IOException e ) {
