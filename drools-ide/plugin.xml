@@ -79,6 +79,15 @@
             icon="icons/dsl.GIF"
             id="org.drools.ide.new.dsl"
             name="New Domain Specific Language"/>
+      <wizard
+            id = "org.drools.ide.wizards.new.project"
+            name = "New Rule Project"
+            class= "org.drools.ide.wizard.project.NewDroolsProjectWizard"
+            category= "org.drools.ide.new"
+            project= "true"
+            icon= "icons/drools.gif">
+         <description>This wizard creates a new Rule project.</description>
+      </wizard>
       <category
             id="org.drools.ide.new"
             name="JBoss Rules"/>
@@ -101,4 +110,24 @@
                tooltip="JBoss Rules workbench"/>
       </actionSet>
    </extension>
+   
+   <extension
+      id="droolsbuilder" name="Drools Builder" point="org.eclipse.core.resources.builders">
+      <builder>
+         <run class="org.drools.ide.builder.DroolsBuilder"/>
+      </builder>
+   </extension>
+
+   <extension
+         id="problem"
+         point="org.eclipse.core.resources.markers"
+         name="Drools error">
+      <super type="org.eclipse.core.resources.problemmarker"/>
+      <persistent value="true" />
+   </extension>
+
+   <extension point="org.eclipse.jdt.core.classpathContainerInitializer">
+       <classpathContainerInitializer class="org.drools.ide.util.DroolsClasspathContainerInitializer" id="DROOLS" /> 
+   </extension>
+   
 </plugin>

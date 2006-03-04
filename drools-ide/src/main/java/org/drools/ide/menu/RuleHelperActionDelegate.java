@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.ide.wizard.dsl.NewDSLFileWizard;
+import org.drools.ide.wizard.project.NewDroolsProjectWizard;
 import org.drools.ide.wizard.rule.NewRulePackageWizard;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -41,6 +42,9 @@ public class RuleHelperActionDelegate
         Menu menu = new Menu( parent );
         
         final Shell shell = parent.getShell();
+        addProjectWizard( menu,
+                shell );
+
         addRuleWizard( menu,
                        shell );
 
@@ -49,6 +53,21 @@ public class RuleHelperActionDelegate
         
         return menu;
     }
+
+    private void addProjectWizard(Menu menu, final Shell shell) {
+		MenuItem rule = new MenuItem(menu, SWT.NONE);
+		rule.setText("New Rule Project");
+
+		rule.addSelectionListener(new SelectionListener() {
+			public void widgetSelected(SelectionEvent e) {
+				NewDroolsProjectWizard wizard = new NewDroolsProjectWizard();
+				launchWizard(shell, wizard);
+			}
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
+		});
+	}
 
     private void addRuleWizard(Menu menu,
                                final Shell shell) {
