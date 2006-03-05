@@ -12,12 +12,14 @@ import org.eclipse.ui.part.FileEditorInput;
 
 
 /**
- * For handling withing consequences, including DSLs.
+ * For handling within rules, including DSLs.
+ * At present this provides a fixed list, plus what is available
+ * in the DSL configuration. 
  * 
- *        
- *TODO: make this "look back" in the viewer to get context,
- *rather then rely on partitioning. Then can
- *provide more relevant pop ups. 
+ * TODO: This can be enhanced to look back for declarations, and introspect to get
+ * field names. (More can be done as well, this would just be the first step).
+ * 
+ * This also handles queries, as they are just a type of rule essentially.
  * 
  * @author Michael Neale
  */
@@ -26,6 +28,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
     static final Pattern condition = Pattern.compile(".*\\Wwhen\\W.*", Pattern.DOTALL);
 
     static final Pattern consequence = Pattern.compile(".*\\Wthen\\W.*", Pattern.DOTALL);
+    static final Pattern query = Pattern.compile(".*\\Wquery\\W.*", Pattern.DOTALL);
 
     private DRLRuleSetEditor editor;
     
@@ -38,7 +41,9 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         List list = new ArrayList();
         DSLAdapter adapter = getDSLAdapter(viewer, editor);
         
-        if (consequence.matcher(backText).matches()) {
+        if (query.matcher( backText ).matches()) {
+            list.addAll(adapter.listConditionItems());
+        } else if (consequence.matcher(backText).matches()) {
             list.addAll(adapter.listConsequenceItems());
             list.add(new RuleCompletionProposal("end"));
             list.add(new RuleCompletionProposal("modify"));

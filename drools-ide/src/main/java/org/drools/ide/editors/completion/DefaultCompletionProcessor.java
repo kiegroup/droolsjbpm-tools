@@ -28,8 +28,9 @@ import org.eclipse.jface.text.contentassist.IContextInformationValidator;
  */
 public class DefaultCompletionProcessor implements IContentAssistProcessor {
 
-    //TODO: move this into an external template
+    //TODO: move this into an external template (using string template etc).
     private static final String NEW_RULE_TEMPLATE = "rule \"new rule\"\n\n\twhen\n\n\tthen\n\nend";
+    private static final String NEW_QUERY_TEMPLATE = "query \"query name\"\n\t#conditions\nend";
 
     /** Subclasses *should* override this to change the list. */
     protected List getPossibleProposals(ITextViewer viewer, String backText) {
@@ -39,6 +40,7 @@ public class DefaultCompletionProcessor implements IContentAssistProcessor {
         list.add(new RuleCompletionProposal("expander"));
         list.add(new RuleCompletionProposal("global"));
         list.add(new RuleCompletionProposal("package"));
+        list.add(new RuleCompletionProposal("query", NEW_QUERY_TEMPLATE));
         return list;
     }
 

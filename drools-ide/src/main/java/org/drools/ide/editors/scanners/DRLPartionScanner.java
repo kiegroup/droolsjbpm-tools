@@ -44,6 +44,9 @@ public class DRLPartionScanner extends RuleBasedPartitionScanner {
         rules.add( new MultiLineRule("/*", "*/", comment, (char) 0, true));
         rules.add(new MultiLineRule("\nrule", "\nend", rulePartition));
         
+        //a query is really just a rule for most purposes.
+        rules.add(new MultiLineRule("\nquery", "\nend", rulePartition));
+        
         IPredicateRule[] rulez = new IPredicateRule[rules.size()];
         rules.toArray(rulez);
         setPredicateRules(rulez);
