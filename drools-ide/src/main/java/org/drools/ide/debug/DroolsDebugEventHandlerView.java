@@ -7,7 +7,7 @@ import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.debug.internal.ui.VariablesViewModelPresentation;
 import org.eclipse.debug.internal.ui.contexts.DebugContextManager;
-import org.eclipse.debug.internal.ui.contexts.IDebugContextListener;
+import org.eclipse.debug.internal.ui.contexts.provisional.IDebugContextListener;
 import org.eclipse.debug.ui.AbstractDebugView;
 import org.eclipse.debug.ui.IDebugModelPresentation;
 import org.eclipse.debug.ui.IDebugUIConstants;
