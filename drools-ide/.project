@@ -1,7 +1,8 @@
 <projectDescription>
-  <name>drools-ide</name>
-  <comment/>
-  <projects/>
+	<name>Drools IDE</name>
+	<comment></comment>
+	<projects>
+	</projects>
 	<buildSpec>
 		<buildCommand>
 			<name>org.eclipse.jdt.core.javabuilder</name>
