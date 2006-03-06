@@ -48,7 +48,7 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="org.drools.ide.editors.DRLRuleSetEditor"
+            class="org.drools.ide.editors.DRLRuleEditor"
             contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
             extensions="drl,jbrule,drools,rule"
             icon="icons/drools.gif"

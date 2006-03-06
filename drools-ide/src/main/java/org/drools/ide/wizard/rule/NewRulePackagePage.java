@@ -24,7 +24,7 @@ import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 import org.eclipse.ui.ide.IDE;
 
 /**
- * A page to create a new .drl ruleset/package file.
+ * A page to create a new .drl package/package file.
  * There is only one page for this wizard, its very simple.
  * 
  * Enhancements may be made to allow configuration of semantic languages, DSLs (locate a DSL) and other 

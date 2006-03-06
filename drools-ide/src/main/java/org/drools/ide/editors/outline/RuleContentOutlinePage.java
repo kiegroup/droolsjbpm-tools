@@ -6,7 +6,7 @@ import java.io.StringReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.ide.editors.DRLRuleSetEditor;
+import org.drools.ide.editors.DRLRuleEditor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -30,7 +30,7 @@ import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 public class RuleContentOutlinePage extends ContentOutlinePage {
 
     //the editor that this outline view is linked to.
-    private DRLRuleSetEditor       editor;
+    private DRLRuleEditor       editor;
 
     //the "root" node
     private final RuleFileTreeNode ruleFileTreeNode    = new RuleFileTreeNode();
@@ -47,7 +47,7 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
     private static final Pattern   functionNamePattern = Pattern.compile( "function\\s+([^\\s\\(]+).*",
                                                                           Pattern.DOTALL );
 
-    public RuleContentOutlinePage(DRLRuleSetEditor editor) {
+    public RuleContentOutlinePage(DRLRuleEditor editor) {
         super();
         this.editor = editor;
     }

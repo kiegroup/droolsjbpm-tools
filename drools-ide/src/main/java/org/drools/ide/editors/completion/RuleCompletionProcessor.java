@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.drools.ide.editors.DRLRuleSetEditor;
+import org.drools.ide.editors.DRLRuleEditor;
 import org.drools.ide.editors.DSLAdapter;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.ui.part.FileEditorInput;
@@ -30,9 +30,9 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
     static final Pattern consequence = Pattern.compile(".*\\Wthen\\W.*", Pattern.DOTALL);
     static final Pattern query = Pattern.compile(".*\\Wquery\\W.*", Pattern.DOTALL);
 
-    private DRLRuleSetEditor editor;
+    private DRLRuleEditor editor;
     
-    public RuleCompletionProcessor(DRLRuleSetEditor editor) {
+    public RuleCompletionProcessor(DRLRuleEditor editor) {
         this.editor = editor;
     }
     
@@ -67,7 +67,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
      * But once it has found and loaded one, it will keep it until the editor is closed.
      *  
      */
-    private DSLAdapter getDSLAdapter(ITextViewer viewer, DRLRuleSetEditor editor) {
+    private DSLAdapter getDSLAdapter(ITextViewer viewer, DRLRuleEditor editor) {
         DSLAdapter adapter = editor.getDSLAdapter();
         if (adapter == null) {
             String content = viewer.getDocument().get();

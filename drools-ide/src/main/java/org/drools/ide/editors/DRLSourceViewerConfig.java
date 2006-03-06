@@ -28,9 +28,9 @@ import org.eclipse.swt.graphics.Color;
 public class DRLSourceViewerConfig extends SourceViewerConfiguration {
 	private DRLScanner scanner;
 	private static Color DEFAULT_COLOR = ColorManager.getInstance().getColor(ColorManager.DEFAULT);
-	private DRLRuleSetEditor editor;	
+	private DRLRuleEditor editor;	
     
-	public DRLSourceViewerConfig(DRLRuleSetEditor editor) {
+	public DRLSourceViewerConfig(DRLRuleEditor editor) {
         this.editor = editor;
 	}  
 
