@@ -161,7 +161,7 @@ public class NewRulePackagePage extends WizardNewFileCreationPage {
     protected InputStream getInitialContents() {
         
         try {
-
+        	
             DRLGenerator gen = new DRLGenerator();
             if (this.ruleFileType.getSelectionIndex() == TYPE_RULE) {
                 InputStream template = getTemplate("org/drools/ide/wizard/rule/new_rule.drl.template");                
@@ -184,5 +184,10 @@ public class NewRulePackagePage extends WizardNewFileCreationPage {
     private InputStream getTemplate(String templatePath) throws IOException {
         return DroolsIDEPlugin.getDefault().getBundle().getResource(templatePath).openStream();
     }
+    
+
+    
+    
+    
 
 }

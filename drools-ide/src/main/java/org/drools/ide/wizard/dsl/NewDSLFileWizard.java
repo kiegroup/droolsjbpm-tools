@@ -1,5 +1,7 @@
 package org.drools.ide.wizard.dsl;
 
+import org.drools.ide.DroolsIDEPlugin;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
@@ -21,6 +23,8 @@ public class NewDSLFileWizard extends Wizard implements INewWizard {
         this.workbench = workbench;
         this.selection = selection;
         setWindowTitle("New Domain Specific Language configuration");
+    	ImageDescriptor desc = DroolsIDEPlugin.getImageDescriptor("icons/dsl-large.png");
+        setDefaultPageImageDescriptor(desc);        
     }
     
     public void addPages() {
@@ -31,5 +35,7 @@ public class NewDSLFileWizard extends Wizard implements INewWizard {
     public boolean performFinish() {
         return mainPage.finish();
     }
+    
+
 
 }

@@ -276,8 +276,9 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
     }
 
     protected void initializeDefaultPageImageDescriptor() {
-        ImageDescriptor desc = AbstractUIPlugin.imageDescriptorFromPlugin(
-                "org.eclipse.ui.ide", "icons/full/wizban/newprj_wiz.gif");
+//        ImageDescriptor desc = AbstractUIPlugin.imageDescriptorFromPlugin(
+//                "org.eclipse.ui.ide", "icons/full/wizban/newprj_wiz.gif");
+    	ImageDescriptor desc = DroolsIDEPlugin.getImageDescriptor("icons/drools-large.PNG");
         setDefaultPageImageDescriptor(desc);
     }
 

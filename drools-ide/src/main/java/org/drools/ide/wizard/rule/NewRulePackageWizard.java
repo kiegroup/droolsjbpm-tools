@@ -1,5 +1,7 @@
 package org.drools.ide.wizard.rule;
 
+import org.drools.ide.DroolsIDEPlugin;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
@@ -21,6 +23,9 @@ public class NewRulePackageWizard extends Wizard implements INewWizard {
         this.workbench = workbench;
         this.selection = selection;
         setWindowTitle("New Rule Package...");
+        
+    	ImageDescriptor desc = DroolsIDEPlugin.getImageDescriptor("icons/drools-large.PNG");
+        setDefaultPageImageDescriptor(desc);
     }
     
     public void addPages() {
@@ -31,5 +36,6 @@ public class NewRulePackageWizard extends Wizard implements INewWizard {
     public boolean performFinish() {
         return mainPage.finish();
     }
+    
 
 }

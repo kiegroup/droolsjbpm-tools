@@ -106,7 +106,7 @@ public class DroolsIDEPlugin extends AbstractUIPlugin {
         ImageRegistry reg = plugin.getImageRegistry();
         ImageDescriptor des = reg.getDescriptor( path );
         if (des == null) {
-            des = AbstractUIPlugin.imageDescriptorFromPlugin("DroolsIDE3.0", path);
+            des = AbstractUIPlugin.imageDescriptorFromPlugin("org.drools.ide", path);
             reg.put( path, des );
         }
 		return des;
