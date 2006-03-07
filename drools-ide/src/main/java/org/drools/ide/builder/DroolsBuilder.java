@@ -7,6 +7,9 @@ import java.util.Map;
 
 import org.drools.ide.DroolsIDEPlugin;
 import org.drools.ide.util.ProjectClassLoader;
+import org.drools.rule.Rule;
+import org.drools.semantics.java.BuilderResult;
+import org.drools.semantics.java.RuleBaseManager;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -98,7 +101,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                 // do nothing
             }
 
-            // TODO create reader
+            RuleBaseManager manager = new RuleBaseManager();
             try {
                 ClassLoader oldLoader = Thread.currentThread()
                         .getContextClassLoader();
@@ -109,18 +112,16 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                 }
                 try {
                     Thread.currentThread().setContextClassLoader(newLoader);
-                    List errors = new ArrayList();
-                    List warnings = new ArrayList();
-                    // TODO read file + get errors
-                    System.out.println("Parsing file ...");
-                    for ( Iterator iter = errors.iterator(); iter.hasNext(); ) {
-                        // TODO check exception
-                        SAXParseException e = (SAXParseException) iter.next();                                            
-                        createMarker(res, e.getMessage(), e.getLineNumber(), e.getColumnNumber());
-                    }
-                    for (Iterator iter = warnings.iterator(); iter.hasNext(); ) {
-                        SAXParseException e = (SAXParseException) iter.next();
-                        createWarning(res, e.getMessage(), e.getLineNumber(), e.getColumnNumber());
+                    manager.addDrl(((IFile) res).getContents());
+                    manager.getResults().entrySet();
+                    for ( Iterator iter = manager.getResults().entrySet().iterator(); iter.hasNext(); ) {
+                    	Map.Entry entry = (Map.Entry) iter.next();
+                    	Rule rule = (Rule) entry.getKey();
+                    	List results = (List) entry.getValue();
+                    	for ( Iterator iter2 = results.iterator(); iter2.hasNext(); ) {
+                    		BuilderResult result = (BuilderResult) iter2.next();
+                            createMarker(res, rule.getName() + ":" + result.getMessage(), -1, -1);
+                    	}
                     }
                 } catch (Exception t) {
                     throw t;
@@ -128,6 +129,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                     Thread.currentThread().setContextClassLoader(oldLoader);
                 }
             } catch (Throwable t) {
+            	t.printStackTrace();
                 // TODO create markers for exceptions containing line number etc.
                 createMarker(res, t.getMessage(), -1, -1);
             }
