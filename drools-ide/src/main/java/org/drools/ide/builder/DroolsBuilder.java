@@ -1,15 +1,19 @@
 package org.drools.ide.builder;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.compiler.DrlParser;
+import org.drools.compiler.DroolsError;
+import org.drools.compiler.GlobalError;
+import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.ParserError;
+import org.drools.compiler.RuleError;
 import org.drools.ide.DroolsIDEPlugin;
 import org.drools.ide.util.ProjectClassLoader;
+import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Rule;
-import org.drools.semantics.java.BuilderResult;
-import org.drools.semantics.java.RuleBaseManager;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -17,6 +21,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -24,7 +30,6 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.xml.sax.SAXParseException;
 
 /**
  * Automatically syntax checks .drl files and adds possible
@@ -101,7 +106,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                 // do nothing
             }
 
-            RuleBaseManager manager = new RuleBaseManager();
+            DrlParser parser = new DrlParser();
             try {
                 ClassLoader oldLoader = Thread.currentThread()
                         .getContextClassLoader();
@@ -112,15 +117,23 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                 }
                 try {
                     Thread.currentThread().setContextClassLoader(newLoader);
-                    manager.addDrl(((IFile) res).getContents());
-                    manager.getResults().entrySet();
-                    for ( Iterator iter = manager.getResults().entrySet().iterator(); iter.hasNext(); ) {
-                    	Map.Entry entry = (Map.Entry) iter.next();
-                    	Rule rule = (Rule) entry.getKey();
-                    	List results = (List) entry.getValue();
-                    	for ( Iterator iter2 = results.iterator(); iter2.hasNext(); ) {
-                    		BuilderResult result = (BuilderResult) iter2.next();
-                            createMarker(res, rule.getName() + ":" + result.getMessage(), -1, -1);
+                    PackageDescr packageDescr = parser.parse(new String(Util.getResourceContentsAsCharArray((IFile) res)));
+                    PackageBuilder builder = new PackageBuilder();
+                    builder.addPackage(packageDescr);
+                    DroolsError[] errors = builder.getErrors();
+                    for (int i = 0; i < errors.length; i++ ) {
+                    	DroolsError error = errors[i];
+                    	if (error instanceof GlobalError) {
+                    		GlobalError globalError = (GlobalError) error;
+                    		createMarker(res, globalError.getGlobal(), -1, -1);
+                    	} else if (error instanceof RuleError) {
+                    		RuleError ruleError = (RuleError) error;
+                    		createMarker(res, ruleError.getRule() + ":" + ruleError.getMessage(), -1, -1);
+                    	} else if (error instanceof ParserError) {
+                    		ParserError parserError = (ParserError) error;
+                    		createMarker(res, parserError.getMessage(), parserError.getRow(), parserError.getCol());
+                    	} else {
+                    		createMarker(res, "Unknown DroolsError " + error.getClass() + ": " + error, -1, -1);
                     	}
                     }
                 } catch (Exception t) {
@@ -138,29 +151,39 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         return true;
     }
     
-    private static void createMarker(IResource res, String message, int lineNumber, int charStart) {
+    private static void createMarker(final IResource res, final String message, final int lineNumber, final int charStart) {
         try {
-            IMarker marker = res
-                    .createMarker(IDroolsModelMarker.DROOLS_MODEL_PROBLEM_MARKER);
-            marker.setAttribute(IMarker.MESSAGE, message);
-            marker.setAttribute(IMarker.SEVERITY,
-                    IMarker.SEVERITY_ERROR);
-            marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
-            marker.setAttribute(IMarker.CHAR_START, charStart);
+        	IWorkspaceRunnable r= new IWorkspaceRunnable() {
+        		public void run(IProgressMonitor monitor) throws CoreException {
+            		IMarker marker = res
+                    	.createMarker(IDroolsModelMarker.DROOLS_MODEL_PROBLEM_MARKER);
+		            marker.setAttribute(IMarker.MESSAGE, message);
+		            marker.setAttribute(IMarker.SEVERITY,
+		                    IMarker.SEVERITY_ERROR);
+		            marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
+		            marker.setAttribute(IMarker.CHAR_START, charStart);
+	    		}
+			};
+			res.getWorkspace().run(r, null, IWorkspace.AVOID_UPDATE, null);
         } catch (CoreException e) {
             DroolsIDEPlugin.log(e);
         }
     }
     
-    private static void createWarning(IResource res, String message, int lineNumber, int charStart) {
+    private static void createWarning(final IResource res, final String message, final int lineNumber, final int charStart) {
         try {
-            IMarker marker = res
-                    .createMarker(IDroolsModelMarker.DROOLS_MODEL_PROBLEM_MARKER);
-            marker.setAttribute(IMarker.MESSAGE, message);
-            marker.setAttribute(IMarker.SEVERITY,
-                    IMarker.SEVERITY_WARNING);
-            marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
-            marker.setAttribute(IMarker.CHAR_START, charStart);
+        	IWorkspaceRunnable r= new IWorkspaceRunnable() {
+        		public void run(IProgressMonitor monitor) throws CoreException {
+		            IMarker marker = res
+		                    .createMarker(IDroolsModelMarker.DROOLS_MODEL_PROBLEM_MARKER);
+		            marker.setAttribute(IMarker.MESSAGE, message);
+		            marker.setAttribute(IMarker.SEVERITY,
+		                    IMarker.SEVERITY_WARNING);
+		            marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
+		            marker.setAttribute(IMarker.CHAR_START, charStart);
+	    		}
+			};
+			res.getWorkspace().run(r, null, IWorkspace.AVOID_UPDATE, null);
         } catch (CoreException e) {
             DroolsIDEPlugin.log(e);
         }
