@@ -1,7 +1,5 @@
 package org.drools.ide.builder;
 
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.DrlParser;
@@ -13,7 +11,6 @@ import org.drools.compiler.RuleError;
 import org.drools.ide.DroolsIDEPlugin;
 import org.drools.ide.util.ProjectClassLoader;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.rule.Rule;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -121,19 +118,22 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                     PackageBuilder builder = new PackageBuilder();
                     builder.addPackage(packageDescr);
                     DroolsError[] errors = builder.getErrors();
+                    // TODO are there warnings too?
                     for (int i = 0; i < errors.length; i++ ) {
                     	DroolsError error = errors[i];
                     	if (error instanceof GlobalError) {
                     		GlobalError globalError = (GlobalError) error;
-                    		createMarker(res, globalError.getGlobal(), -1, -1);
+                    		createMarker(res, globalError.getGlobal(), -1);
                     	} else if (error instanceof RuleError) {
                     		RuleError ruleError = (RuleError) error;
-                    		createMarker(res, ruleError.getRule().getName() + ":" + ruleError.getMessage(), -1, -1);
+                    		// TODO try to retrieve line numner (or even character start-end
+                    		createMarker(res, ruleError.getRule().getName() + ":" + ruleError.getMessage(), -1);
                     	} else if (error instanceof ParserError) {
                     		ParserError parserError = (ParserError) error;
-                    		createMarker(res, parserError.getMessage(), parserError.getRow(), parserError.getCol());
+                    		// TODO try to retrieve character start-end
+                    		createMarker(res, parserError.getMessage(), parserError.getRow());
                     	} else {
-                    		createMarker(res, "Unknown DroolsError " + error.getClass() + ": " + error, -1, -1);
+                    		createMarker(res, "Unknown DroolsError " + error.getClass() + ": " + error, -1);
                     	}
                     }
                 } catch (Exception t) {
@@ -144,14 +144,14 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             } catch (Throwable t) {
             	t.printStackTrace();
                 // TODO create markers for exceptions containing line number etc.
-                createMarker(res, t.getMessage(), -1, -1);
+                createMarker(res, t.getMessage(), -1);
             }
             return false;
         }
         return true;
     }
     
-    private static void createMarker(final IResource res, final String message, final int lineNumber, final int charStart) {
+    private static void createMarker(final IResource res, final String message, final int lineNumber) {
         try {
         	IWorkspaceRunnable r= new IWorkspaceRunnable() {
         		public void run(IProgressMonitor monitor) throws CoreException {
@@ -161,7 +161,6 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
 		            marker.setAttribute(IMarker.SEVERITY,
 		                    IMarker.SEVERITY_ERROR);
 		            marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
-		            marker.setAttribute(IMarker.CHAR_START, charStart);
 	    		}
 			};
 			res.getWorkspace().run(r, null, IWorkspace.AVOID_UPDATE, null);
