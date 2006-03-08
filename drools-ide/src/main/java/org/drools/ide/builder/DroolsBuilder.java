@@ -128,7 +128,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                     		createMarker(res, globalError.getGlobal(), -1, -1);
                     	} else if (error instanceof RuleError) {
                     		RuleError ruleError = (RuleError) error;
-                    		createMarker(res, ruleError.getRule() + ":" + ruleError.getMessage(), -1, -1);
+                    		createMarker(res, ruleError.getRule().getName() + ":" + ruleError.getMessage(), -1, -1);
                     	} else if (error instanceof ParserError) {
                     		ParserError parserError = (ParserError) error;
                     		createMarker(res, parserError.getMessage(), parserError.getRow(), parserError.getCol());
