@@ -50,6 +50,7 @@ import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
  */
 public class NewDroolsProjectWizard extends BasicNewResourceWizard {
 
+    private static final String JBOSS_RULES_NAME = "JBoss Rules";
     private IProject newProject;
     private WizardNewProjectCreationPage mainPage;
     
@@ -231,7 +232,7 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
     }
 
     private String getDroolsNamePref() {
-        return "Drools 2.5";
+        return JBOSS_RULES_NAME;
     }
 
     private void addDroolsLibraries(IJavaProject project)
@@ -246,38 +247,41 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
 
     private void createInitialContent(IJavaProject project)
             throws CoreException, JavaModelException, IOException {
-		createRulesProject(project);
+		createRuleSampleLauncher(project);
 		createRule(project);
 	}
 
-    private void createRulesProject(IJavaProject project)
+    /**
+     * Create the sample launcher file.
+     */
+    private void createRuleSampleLauncher(IJavaProject project)
             throws JavaModelException, IOException {
-        // TODO create a new rules project file for drools 3.0
-//        String s = "org/drools/ide/resource/DroolsTest.java.template";
-//        IFolder folder = project.getProject().getFolder("src/java");
-//        IPackageFragmentRoot packageFragmentRoot = project
-//                .getPackageFragmentRoot(folder);
-//        IPackageFragment packageFragment = packageFragmentRoot
-//                .createPackageFragment("com.sample", true, null);
-//        InputStream inputstream = getClass().getClassLoader()
-//                .getResourceAsStream(s);
-//        packageFragment.createCompilationUnit("DroolsTest.java", new String(
-//                readStream(inputstream)), true, null);
+        
+        String s = "org/drools/ide/wizard/project/RuleLauncherSample.java.template";
+        IFolder folder = project.getProject().getFolder("src/java");
+        IPackageFragmentRoot packageFragmentRoot = project
+                .getPackageFragmentRoot(folder);
+        IPackageFragment packageFragment = packageFragmentRoot
+                .createPackageFragment("com.sample", true, null);
+        InputStream inputstream = getClass().getClassLoader()
+                .getResourceAsStream(s);
+        packageFragment.createCompilationUnit("DroolsTest.java", new String(
+                readStream(inputstream)), true, null);
     }
-    
+
+    /**
+     * Create the sample rule file.
+     */
     private void createRule(IJavaProject project)
             throws CoreException {
-        // TODO create a new rules file for drools 3.0
-//        String fileName = "org/drools/ide/resource/Rules.java.drl.template";
-//        IFolder folder = project.getProject().getFolder("src/rules");
-//        IFile file = folder.getFile("Rules.java.drl");
-//        InputStream inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
-//        file.create(inputstream, true, null);
+        String fileName = "org/drools/ide/wizard/project/Sample.drl.template";
+        IFolder folder = project.getProject().getFolder("src/rules");
+        IFile file = folder.getFile("Sample.drl");
+        InputStream inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
+        file.create(inputstream, true, null);
     }
 
     protected void initializeDefaultPageImageDescriptor() {
-//        ImageDescriptor desc = AbstractUIPlugin.imageDescriptorFromPlugin(
-//                "org.eclipse.ui.ide", "icons/full/wizban/newprj_wiz.gif");
     	ImageDescriptor desc = DroolsIDEPlugin.getImageDescriptor("icons/drools-large.PNG");
         setDefaultPageImageDescriptor(desc);
     }

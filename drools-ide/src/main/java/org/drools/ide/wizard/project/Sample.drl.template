@@ -1,0 +1,12 @@
+#this is a sample rule
+package SamplePackage
+
+import java.lang.String
+
+
+rule "Sample rule"
+	when
+		message : String()
+	then
+		System.out.println("hello " + message);
+end
