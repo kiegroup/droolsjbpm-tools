@@ -72,7 +72,10 @@ public class MappingEditor extends TitleAreaDialog {
 
     protected void okPressed() {
         this.cancelled = false;
-        this.model.setNaturalTemplate( this.exprText.getText() );
+        this.model.setNaturalTemplate( 
+                                       NLGrammarModel.normaliseSpaces( 
+                                                                     this.exprText.getText() 
+                                                                     ));
         this.model.setTargetTemplate( this.mappingText.getText() );
         this.model.setScope( this.scopeCombo.getText() );
         super.okPressed();

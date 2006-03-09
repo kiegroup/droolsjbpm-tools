@@ -31,4 +31,24 @@ public class NLGrammarModel extends NLGrammar {
     public void addChangeListener(IMappingListViewer viewer) {
         changeListeners.add(viewer);
     }
+    
+    /** This will normalise all whitespace in a string. */
+    public static String normaliseSpaces(String withWhiteSpace) {
+        char[] chars = withWhiteSpace.toCharArray();
+        StringBuffer normalised = new StringBuffer();
+        boolean space = false;
+        for ( int i = 0; i < chars.length; i++ ) {
+            char c = chars[i];
+            if (Character.isWhitespace( c )) {
+                if (!space) {
+                    normalised.append( ' ' );
+                    space = true;
+                }
+            } else {
+                normalised.append( c );
+                space = false;
+            }
+        }
+        return normalised.toString();        
+    }
 }
