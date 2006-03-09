@@ -1,8 +1,6 @@
-#this is a sample rule
-package SamplePackage
+package SamplePackage;
 
-import java.lang.String
-
+import java.lang.String;
 
 rule "Sample rule"
 	when
