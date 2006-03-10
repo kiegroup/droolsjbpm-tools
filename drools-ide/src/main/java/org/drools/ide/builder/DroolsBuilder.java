@@ -2,8 +2,10 @@ package org.drools.ide.builder;
 
 import java.util.Map;
 
+import org.antlr.runtime.RecognitionException;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
+import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.GlobalError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.ParserError;
@@ -113,7 +115,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                     newLoader = ProjectClassLoader.getProjectClassLoader(project);
                 }
                 try {
-                    Thread.currentThread().setContextClassLoader(newLoader);
+                    Thread.currentThread().setContextClassLoader(newLoader);                    
                     PackageDescr packageDescr = parser.parse(new String(Util.getResourceContentsAsCharArray((IFile) res)));
                     PackageBuilder builder = new PackageBuilder();
                     builder.addPackage(packageDescr);
@@ -127,7 +129,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                     	} else if (error instanceof RuleError) {
                     		RuleError ruleError = (RuleError) error;
                     		// TODO try to retrieve line numner (or even character start-end
-                    		createMarker(res, ruleError.getRule().getName() + ":" + ruleError.getMessage(), -1);
+                    		createMarker(res, ruleError.getRule().getName() + ":" + ruleError.getMessage(), ruleError.getDescr().getLine());
                     	} else if (error instanceof ParserError) {
                     		ParserError parserError = (ParserError) error;
                     		// TODO try to retrieve character start-end
@@ -136,6 +138,9 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                     		createMarker(res, "Unknown DroolsError " + error.getClass() + ": " + error, -1);
                     	}
                     }
+                } catch (DroolsParserException e) {
+                    handleAntlrException( res,
+                                          e );
                 } catch (Exception t) {
                     throw t;
                 } finally {
@@ -149,6 +154,16 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             return false;
         }
         return true;
+    }
+
+    private static void handleAntlrException(IResource res,
+                                             DroolsParserException e) {
+        //we have an error thrown from DrlParser
+        Throwable cause = e.getCause();
+        if (cause instanceof RecognitionException ) {
+            RecognitionException recogErr = (RecognitionException) cause;
+            createMarker(res, recogErr.getMessage(), recogErr.line); //flick back the line number
+        }
     }
     
     private static void createMarker(final IResource res, final String message, final int lineNumber) {

@@ -1,10 +1,11 @@
 package SamplePackage
-
+ 
 import java.lang.String
+ 
 
 rule "Sample rule"
 	when
-		message : String()
+		String()
 	then
-		System.out.println("hello " + message);
+		System.out.println("hello world"); 
 end
