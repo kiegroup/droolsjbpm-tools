@@ -45,7 +45,19 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
                                                                           Pattern.DOTALL );
 
     private static final Pattern   functionNamePattern = Pattern.compile( "function\\s+([^\\s\\(]+).*",
-                                                                          Pattern.DOTALL );
+            															  Pattern.DOTALL );
+
+    private static final Pattern   importNamePattern   = Pattern.compile( "import\\s+([^\"]+)",
+			                                                              Pattern.DOTALL );
+
+    private static final Pattern   expanderNamePattern = Pattern.compile( "expander\\s+([^\"]+);?",
+                                                         Pattern.DOTALL );
+
+    private static final Pattern   globalNamePattern   = Pattern.compile( "global\\s+([^\"]+);?",
+                                                         Pattern.DOTALL );
+
+    private static final Pattern   queryNamePattern    = Pattern.compile( "query\\s+\"?([^\"]+)\"?.*",
+                                                         Pattern.DOTALL );
 
     public RuleContentOutlinePage(DRLRuleEditor editor) {
         super();
@@ -142,6 +154,34 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
                     packageTreeNode.addFunction( functionName + "()",
                                                  offset,
                                                  st.length() );
+                }
+                matcher = expanderNamePattern.matcher( st );
+                if ( matcher.matches() ) {
+                    String expanderName = matcher.group( 1 );
+                    packageTreeNode.addExpander( expanderName,
+                                                 offset,
+                                                 st.length() );
+                }
+                matcher = importNamePattern.matcher( st );
+                if ( matcher.matches() ) {
+                    String importName = matcher.group( 1 );
+                    packageTreeNode.addImport( importName,
+                                               offset,
+                                               st.length() );
+                }
+                matcher = globalNamePattern.matcher( st );
+                if ( matcher.matches() ) {
+                    String globalName = matcher.group( 1 );
+                    packageTreeNode.addGlobal( globalName,
+                                               offset,
+                                               st.length() );
+                }
+                matcher = queryNamePattern.matcher( st );
+                if ( matcher.matches() ) {
+                    String queryName = matcher.group( 1 );
+                    packageTreeNode.addQuery( queryName,
+                                              offset,
+                                              st.length() );
                 }
 
                 offset += st.length() + 1; //+1 for the newline
