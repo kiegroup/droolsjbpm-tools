@@ -149,7 +149,11 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             } catch (Throwable t) {
             	t.printStackTrace();
                 // TODO create markers for exceptions containing line number etc.
-                createMarker(res, t.getMessage(), -1);
+                String message = t.getMessage();
+                if (message == null || message.trim().equals( "" )) {
+                    message = "Error: " + t.getClass().getName();
+                }
+                createMarker(res, message, -1);
             }
             return false;
         }
