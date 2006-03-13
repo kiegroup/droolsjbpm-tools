@@ -30,7 +30,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.workbench.texteditor
 Eclipse-LazyStart: true
 Bundle-ClassPath: lib/antlr-2.7.6.jar,
- lib/antlr3-3.0ea7.jar,
+ lib/antlr3-3.0ea8.jar,
  lib/colt-1.2.0.jar,
  lib/commons-collections-3.1.jar,
  lib/commons-lang-2.1.jar,
@@ -45,7 +45,7 @@ Bundle-ClassPath: lib/antlr-2.7.6.jar,
  lib/jparsec-0.01.jar,
  lib/jung-1.7.2.jar,
  lib/junit-3.8.1.jar,
- lib/stringtemplate-2.2-20060301.jar,
+ lib/stringtemplate-2.3b6.jar,
  lib/xercesImpl-2.6.2.jar,
  lib/xpp3-1.1.3.4d_b4_min.jar,
  lib/xstream-1.1.3.jar

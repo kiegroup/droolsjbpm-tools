@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/test/java"/>
-	<classpathentry exported="true" kind="lib" path="lib/xpp3-1.1.3.4d_b4_min.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
@@ -10,7 +9,7 @@
 	<classpathentry kind="lib" path="lib/drools-compiler.jar"/>
 	<classpathentry kind="lib" path="lib/drools-core.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang-2.1.jar"/>
-	<classpathentry kind="lib" path="lib/antlr3-3.0ea7.jar"/>
 	<classpathentry kind="lib" path="lib/jci-SNAPSHOT-378493+patch.jar"/>
+	<classpathentry kind="lib" path="lib/antlr3-3.0ea8.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
