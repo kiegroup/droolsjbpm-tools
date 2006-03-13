@@ -4,12 +4,15 @@ import org.drools.ide.editors.completion.DefaultCompletionProcessor;
 import org.drools.ide.editors.completion.RuleCompletionProcessor;
 import org.drools.ide.editors.scanners.DRLPartionScanner;
 import org.drools.ide.editors.scanners.DRLScanner;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
+import org.eclipse.jface.text.reconciler.IReconciler;
+import org.eclipse.jface.text.reconciler.MonoReconciler;
 import org.eclipse.jface.text.rules.BufferedRuleBasedScanner;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.rules.Token;
@@ -117,6 +120,15 @@ public class DRLSourceViewerConfig extends SourceViewerConfiguration {
         return DRLPartionScanner.LEGAL_CONTENT_TYPES;
     }
 
-    
+    public IReconciler getReconciler(ISourceViewer sourceViewer)
+    {
+    	MonoReconciler reconciler = null;
+        if (sourceViewer != null) {
+        	reconciler = new MonoReconciler(new DRLReconcilingStrategy(sourceViewer, editor), false);
+        	reconciler.setDelay(500);
+        	reconciler.setProgressMonitor(new NullProgressMonitor());
+        }
+        return reconciler;
+    }
     
 }

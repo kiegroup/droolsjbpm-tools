@@ -1,8 +1,11 @@
 package org.drools.ide.builder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.antlr.runtime.RecognitionException;
+import org.apache.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
@@ -90,87 +93,100 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         }
     }
     
-    public static boolean parseResource(IResource res) {
+    private boolean parseResource(IResource res) {
+        try {
+            IJavaProject project = JavaCore.create(res.getProject());
+            // exclude files that are located in the output directory,
+            // unless the ouput directory is the same as the project location
+            if (!project.getOutputLocation().equals(project.getPath())
+                    && project.getOutputLocation().isPrefixOf(res.getFullPath())) {
+                return false;
+            }
+        } catch (JavaModelException e) {
+            // do nothing
+        }
+
         if (res instanceof IFile && "drl".equals(res.getFileExtension())) {
             removeProblemsFor(res);
             try {
-                IJavaProject project = JavaCore.create(res.getProject());
-                // exclude files that are located in the output directory,
-                // unless the ouput directory is the same as the project location
-                if (!project.getOutputLocation().equals(project.getPath())
-                        && project.getOutputLocation().isPrefixOf(res.getFullPath())) {
-                    return false;
-                }
-            } catch (JavaModelException e) {
-                // do nothing
-            }
-
-            DrlParser parser = new DrlParser();
-            try {
-                ClassLoader oldLoader = Thread.currentThread()
-                        .getContextClassLoader();
-                ClassLoader newLoader = DroolsBuilder.class.getClassLoader();
-                if (res.getProject().getNature("org.eclipse.jdt.core.javanature") != null) {
-                    IJavaProject project = JavaCore.create(res.getProject());
-                    newLoader = ProjectClassLoader.getProjectClassLoader(project);
-                }
-                try {
-                    Thread.currentThread().setContextClassLoader(newLoader);                    
-                    PackageDescr packageDescr = parser.parse(new String(Util.getResourceContentsAsCharArray((IFile) res)));
-                    PackageBuilder builder = new PackageBuilder();
-                    builder.addPackage(packageDescr);
-                    DroolsError[] errors = builder.getErrors();
-                    // TODO are there warnings too?
-                    for (int i = 0; i < errors.length; i++ ) {
-                    	DroolsError error = errors[i];
-                    	if (error instanceof GlobalError) {
-                    		GlobalError globalError = (GlobalError) error;
-                    		createMarker(res, globalError.getGlobal(), -1);
-                    	} else if (error instanceof RuleError) {
-                    		RuleError ruleError = (RuleError) error;
-                    		// TODO try to retrieve line numner (or even character start-end
-                    		createMarker(res, ruleError.getRule().getName() + ":" + ruleError.getMessage(), ruleError.getDescr().getLine());
-                    	} else if (error instanceof ParserError) {
-                    		ParserError parserError = (ParserError) error;
-                    		// TODO try to retrieve character start-end
-                    		createMarker(res, parserError.getMessage(), parserError.getRow());
-                    	} else {
-                    		createMarker(res, "Unknown DroolsError " + error.getClass() + ": " + error, -1);
-                    	}
-                    }
-                } catch (DroolsParserException e) {
-                    handleAntlrException( res,
-                                          e );
-                } catch (Exception t) {
-                    throw t;
-                } finally {
-                    Thread.currentThread().setContextClassLoader(oldLoader);
-                }
+            	DroolsBuildMarker[] markers = parseFile((IFile) res, new String(Util.getResourceContentsAsCharArray((IFile) res)));
+		        for (int i = 0; i < markers.length; i++) {
+		        	createMarker(res, markers[i].getText(), markers[i].getLine());
+		        }
             } catch (Throwable t) {
-            	t.printStackTrace();
-                // TODO create markers for exceptions containing line number etc.
-                String message = t.getMessage();
-                if (message == null || message.trim().equals( "" )) {
-                    message = "Error: " + t.getClass().getName();
-                }
-                createMarker(res, message, -1);
+            	createMarker(res, t.getMessage(), -1);
             }
             return false;
         }
         return true;
     }
-
-    private static void handleAntlrException(IResource res,
-                                             DroolsParserException e) {
-        //we have an error thrown from DrlParser
-        Throwable cause = e.getCause();
-        if (cause instanceof RecognitionException ) {
-            RecognitionException recogErr = (RecognitionException) cause;
-            createMarker(res, recogErr.getMessage(), recogErr.line); //flick back the line number
-        }
-    }
     
-    private static void createMarker(final IResource res, final String message, final int lineNumber) {
+    public static DroolsBuildMarker[] parseFile(IFile file, String content) {
+    	List markers = new ArrayList();
+        DrlParser parser = new DrlParser();
+        try {
+            ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+            ClassLoader newLoader = DroolsBuilder.class.getClassLoader();
+            if (file.getProject().getNature("org.eclipse.jdt.core.javanature") != null) {
+                IJavaProject project = JavaCore.create(file.getProject());
+                newLoader = ProjectClassLoader.getProjectClassLoader(project);
+            }
+            try {
+                Thread.currentThread().setContextClassLoader(newLoader);                    
+                PackageDescr packageDescr = parser.parse(content);
+                PackageBuilder builder = new PackageBuilder();
+                builder.addPackage(packageDescr);
+                DroolsError[] errors = builder.getErrors();
+                // TODO are there warnings too?
+                for (int i = 0; i < errors.length; i++ ) {
+                	DroolsError error = errors[i];
+                	if (error instanceof GlobalError) {
+                		GlobalError globalError = (GlobalError) error;
+                		markers.add(new DroolsBuildMarker(globalError.getGlobal(), -1));
+                	} else if (error instanceof RuleError) {
+                		RuleError ruleError = (RuleError) error;
+                		// TODO try to retrieve line numner (or even character start-end
+                		if (ruleError.getObject() instanceof CompilationProblem[]) {
+                			CompilationProblem[] problems = (CompilationProblem[]) ruleError.getObject();
+                			for (int j = 0; j < problems.length; j++) {
+                				markers.add(new DroolsBuildMarker(problems[j].getMessage(), problems[j].getStartLine()));
+                			}
+                		} else {
+                			markers.add(new DroolsBuildMarker(ruleError.getRule().getName() + ":" + ruleError.getMessage(), ruleError.getDescr() == null ? -1 : ruleError.getDescr().getLine()));
+                		}
+                	} else if (error instanceof ParserError) {
+                		ParserError parserError = (ParserError) error;
+                		// TODO try to retrieve character start-end
+                		markers.add(new DroolsBuildMarker(parserError.getMessage(), parserError.getRow()));
+                	} else {
+                		markers.add(new DroolsBuildMarker("Unknown DroolsError " + error.getClass() + ": " + error));
+                	}
+                }
+            } catch (DroolsParserException e) {
+                //we have an error thrown from DrlParser
+                Throwable cause = e.getCause();
+                if (cause instanceof RecognitionException ) {
+                    RecognitionException recogErr = (RecognitionException) cause;
+                    markers.add(new DroolsBuildMarker(recogErr.getMessage(), recogErr.line)); //flick back the line number
+                }
+            } catch (Exception t) {
+                throw t;
+            } finally {
+                Thread.currentThread().setContextClassLoader(oldLoader);
+            }
+        } catch (Throwable t) {
+        	t.printStackTrace();
+            // TODO create markers for exceptions containing line number etc.
+            String message = t.getMessage();
+            if (message == null || message.trim().equals( "" )) {
+                message = "Error: " + t.getClass().getName();
+            }
+            markers.add(new DroolsBuildMarker(message));
+        }
+        return (DroolsBuildMarker[]) markers.toArray(new DroolsBuildMarker[markers.size()]);
+    }
+
+    private void createMarker(final IResource res, final String message, final int lineNumber) {
         try {
         	IWorkspaceRunnable r= new IWorkspaceRunnable() {
         		public void run(IProgressMonitor monitor) throws CoreException {
@@ -188,7 +204,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         }
     }
     
-    private static void createWarning(final IResource res, final String message, final int lineNumber, final int charStart) {
+    private void createWarning(final IResource res, final String message, final int lineNumber, final int charStart) {
         try {
         	IWorkspaceRunnable r= new IWorkspaceRunnable() {
         		public void run(IProgressMonitor monitor) throws CoreException {
@@ -207,7 +223,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         }
     }
     
-    public static void removeProblemsFor(IResource resource) {
+    private void removeProblemsFor(IResource resource) {
         try {
             if (resource != null && resource.exists()) {
                 resource.deleteMarkers(

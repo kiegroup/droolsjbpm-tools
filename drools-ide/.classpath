@@ -11,5 +11,6 @@
 	<classpathentry kind="lib" path="lib/drools-core.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang-2.1.jar"/>
 	<classpathentry kind="lib" path="lib/antlr3-3.0ea7.jar"/>
+	<classpathentry kind="lib" path="lib/jci-SNAPSHOT-378493+patch.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

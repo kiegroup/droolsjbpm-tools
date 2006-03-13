@@ -131,4 +131,8 @@
        <classpathContainerInitializer class="org.drools.ide.util.DroolsClasspathContainerInitializer" id="DROOLS" /> 
    </extension>
    
+   <extension point="org.eclipse.ui.editors.annotationTypes">
+      <type super="org.eclipse.ui.workbench.texteditor.error" markerSeverity="2" markerType="org.eclipse.core.resources.problemmarker" name="org.drools.ide.editors.error_annotation"/>
+   </extension>
+
 </plugin>
