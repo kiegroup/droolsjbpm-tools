@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: 0 Plug-in
+Bundle-Name: Drools IDE Plug-in
 Bundle-SymbolicName: org.drools.ide;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.drools.ide.DroolsIDEPlugin
@@ -29,7 +29,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.views,
  org.eclipse.ui.workbench.texteditor
 Eclipse-LazyStart: true
-Bundle-ClassPath: lib/antlr-2.7.6.jar,
+Bundle-ClassPath: ide.jar,
+ lib/antlr-2.7.6.jar,
  lib/antlr3-3.0ea8.jar,
  lib/colt-1.2.0.jar,
  lib/commons-collections-3.1.jar,
