@@ -13,6 +13,7 @@ import org.eclipse.debug.ui.IDebugModelPresentation;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jdt.debug.core.IJavaObject;
 import org.eclipse.jdt.debug.core.IJavaStackFrame;
+import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -29,6 +30,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
 
 /**
@@ -160,6 +162,7 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
     }
 
     protected void fillContextMenu(IMenuManager menu) {
+		menu.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
     }
 
 	public void contextActivated(ISelection selection, IWorkbenchPart part) {

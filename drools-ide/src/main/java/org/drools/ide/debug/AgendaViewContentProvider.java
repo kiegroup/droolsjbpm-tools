@@ -69,6 +69,7 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
         		IVariable agendaGroupVar = agendaGroupVarArray[j];
         		if ("name".equals(agendaGroupVar.getName())) {
         			name = agendaGroupVar.getValue().getValueString();
+        			break;
         		}
         	}
 			IJavaArray activations = (IJavaArray) DebugUtil.getValueByExpression("return getActivations();", agendaGroup);
