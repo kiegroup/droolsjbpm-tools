@@ -56,7 +56,7 @@ public class AgendaLogicalStructureDelegate implements ILogicalStructureTypeDele
         if (!providesLogicalStructure(value)) {
             return null;
         }
-        IJavaArray ruleParameters = (IJavaArray) DebugUtil.getValueByExpression("return getRule().getDeclarations().toArray();", value);
+        IJavaArray ruleParameters = (IJavaArray) DebugUtil.getValueByExpression("return getRule().getDeclarations();", value);
         List variables = new ArrayList();
         variables.add(new VariableWrapper("ruleName", (IJavaValue) DebugUtil.getValueByExpression("return getRule().getName();", value)));
         
@@ -68,7 +68,7 @@ public class AgendaLogicalStructureDelegate implements ILogicalStructureTypeDele
                 IVariable declarationVar = vars[k];
                 if ("identifier".equals(declarationVar.getName())) {
                     String paramName = declarationVar.getValue().getValueString();
-                    IJavaValue varValue = (IJavaValue) DebugUtil.getValueByExpression("return getTuple().get(getRule().getDeclaration(\"" + paramName + "\"));", value);
+                    IJavaValue varValue = (IJavaValue) DebugUtil.getValueByExpression("return ((org.drools.reteoo.FactHandleImpl) getTuple().get(getRule().getDeclaration(\"" + paramName + "\"))).getObject();", value);
                     if (varValue != null) {
                     	variables.add(new VariableWrapper(paramName, varValue));
                     }
