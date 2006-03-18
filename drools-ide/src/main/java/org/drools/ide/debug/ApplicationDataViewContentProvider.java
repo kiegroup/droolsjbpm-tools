@@ -65,7 +65,7 @@ public class ApplicationDataViewContentProvider extends DroolsDebugViewContentPr
                 
                 IVariable[] vars = mapEntry.getVariables();
                 for ( int j = 0; j < vars.length; j++ ) {
-                    IVariable var = vars[i];
+                    IVariable var = vars[j];
                     if ("key".equals(var.getName())) {
                         key = var.getValue().getValueString();
                     } else if ("value".equals(var.getName())) {
@@ -74,7 +74,7 @@ public class ApplicationDataViewContentProvider extends DroolsDebugViewContentPr
                 }
                 result.add(new VariableWrapper(key, value));
             }
-            return (IVariable[]) result.toArray(new IVariable[0]);
+            return (IVariable[]) result.toArray(new IVariable[result.size()]);
         }
         return null;
     }    
