@@ -59,6 +59,7 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
         mainPage.setTitle("New Drools Project");
         mainPage.setDescription("Create a new Drools Project");
         this.addPage(mainPage);
+        setNeedsProgressMonitor(true);
     }
 
     public boolean performFinish() {
@@ -71,23 +72,27 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
     }
 
     private void createDroolsProject() {
+        newProject = createNewProject();
+        WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
+            protected void execute(IProgressMonitor monitor)
+                    throws CoreException {
+                try {
+                	IJavaProject project = JavaCore.create(newProject);
+                    createOutputLocation(project, monitor);
+                    addJavaBuilder(project, monitor);
+                    setClasspath(project, monitor);
+                    createInitialContent(project, monitor);
+                	newProject.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
+                } catch (IOException _ex) {
+                	ErrorDialog.openError(getShell(), "Problem creating Drools project",
+                        null, null);
+                }
+            }
+        };
         try {
-            newProject = createNewProject();
-            IJavaProject project = JavaCore.create(newProject);
-            createOutputLocation(project);
-            addJavaBuilder(project);
-            setClasspath(project);
-            createInitialContent(project);
-            newProject.build(IncrementalProjectBuilder.FULL_BUILD, null);
-        } catch (JavaModelException javamodelexception) {
-            ErrorDialog.openError(getShell(), "Problem creating Drools project",
-                null, javamodelexception.getStatus());
-        } catch (CoreException coreexception) {
-            ErrorDialog.openError(getShell(), "Problem creating Drools project",
-                null, coreexception.getStatus());
-        } catch (IOException _ex) {
-            ErrorDialog.openError(getShell(), "Problem creating Drools project",
-                null, null);
+            getContainer().run(true, true, op);
+        } catch (Throwable t) {
+            DroolsIDEPlugin.log(t);
         }
     }
     
@@ -168,15 +173,15 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
         }
     }
     
-    private void createOutputLocation(IJavaProject project)
+    private void createOutputLocation(IJavaProject project, IProgressMonitor monitor)
             throws JavaModelException, CoreException {
-        IFolder ifolder = project.getProject().getFolder("bin");
-        createFolder(ifolder);
-        IPath ipath = ifolder.getFullPath();
-        project.setOutputLocation(ipath, null);
+        IFolder folder = project.getProject().getFolder("bin");
+        createFolder(folder, monitor);
+        IPath path = folder.getFullPath();
+        project.setOutputLocation(path, null);
     }
 
-    private void addJavaBuilder(IJavaProject project) throws CoreException {
+    private void addJavaBuilder(IJavaProject project, IProgressMonitor monitor) throws CoreException {
         IProjectDescription description = project.getProject().getDescription();
         ICommand[] commands = description.getBuildSpec();
         ICommand[] newCommands = new ICommand[commands.length + 2];
@@ -191,63 +196,63 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
         newCommands[commands.length + 1] = droolsCommand;
         
         description.setBuildSpec(newCommands);
-        project.getProject().setDescription(description, null);
+        project.getProject().setDescription(description, monitor);
     }
 
-    private void setClasspath(IJavaProject project)
+    private void setClasspath(IJavaProject project, IProgressMonitor monitor)
             throws JavaModelException, CoreException {
-        project.setRawClasspath(new IClasspathEntry[0], null);
-        addSourceFolders(project);
-        addJRELibraries(project);
-        addDroolsLibraries(project);
+        project.setRawClasspath(new IClasspathEntry[0], monitor);
+        addSourceFolders(project, monitor);
+        addJRELibraries(project, monitor);
+        addDroolsLibraries(project, monitor);
     }
 
-    private void addSourceFolders(IJavaProject project) throws JavaModelException, CoreException {
+    private void addSourceFolders(IJavaProject project, IProgressMonitor monitor) throws JavaModelException, CoreException {
         List list = new ArrayList();
         list.addAll(Arrays.asList(project.getRawClasspath()));
-        addSourceFolder(project, list, "src/java");
-        addSourceFolder(project, list, "src/rules");
+        addSourceFolder(project, list, "src/java", monitor);
+        addSourceFolder(project, list, "src/rules", monitor);
         project.setRawClasspath((IClasspathEntry[]) list.toArray(new IClasspathEntry[list.size()]), null);
     }
     
-    private void addJRELibraries(IJavaProject project) throws JavaModelException {
+    private void addJRELibraries(IJavaProject project, IProgressMonitor monitor) throws JavaModelException {
         List list = new ArrayList();
         list.addAll(Arrays.asList(project.getRawClasspath()));
         list.addAll(Arrays.asList(PreferenceConstants.getDefaultJRELibrary()));
         project.setRawClasspath((IClasspathEntry[]) list
-            .toArray(new IClasspathEntry[list.size()]), null);
+            .toArray(new IClasspathEntry[list.size()]), monitor);
     }
 
     private IPath getClassPathContainerPath() {
         return new Path("DROOLS/" + getDroolsNamePref());
     }
 
-    private void createDroolsLibraryContainer(IJavaProject project)
+    private void createDroolsLibraryContainer(IJavaProject project, IProgressMonitor monitor)
             throws JavaModelException {
         JavaCore.setClasspathContainer(getClassPathContainerPath(),
             new IJavaProject[] { project },
             new IClasspathContainer[] { new DroolsClasspathContainer(
-                    project, getClassPathContainerPath()) }, null);
+                    project, getClassPathContainerPath()) }, monitor);
     }
 
     private String getDroolsNamePref() {
         return JBOSS_RULES_NAME;
     }
 
-    private void addDroolsLibraries(IJavaProject project)
+    private void addDroolsLibraries(IJavaProject project, IProgressMonitor monitor)
             throws JavaModelException {
-        createDroolsLibraryContainer(project);
+        createDroolsLibraryContainer(project, monitor);
         List list = new ArrayList();
         list.addAll(Arrays.asList(project.getRawClasspath()));
         list.add(JavaCore.newContainerEntry(getClassPathContainerPath()));
         project.setRawClasspath((IClasspathEntry[]) list
-            .toArray(new IClasspathEntry[list.size()]), null);
+            .toArray(new IClasspathEntry[list.size()]), monitor);
     }
 
-    private void createInitialContent(IJavaProject project)
+    private void createInitialContent(IJavaProject project, IProgressMonitor monitor)
             throws CoreException, JavaModelException, IOException {
 		createRuleSampleLauncher(project);
-		createRule(project);
+		createRule(project, monitor);
 	}
 
     /**
@@ -271,13 +276,17 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
     /**
      * Create the sample rule file.
      */
-    private void createRule(IJavaProject project)
+    private void createRule(IJavaProject project, IProgressMonitor monitor)
             throws CoreException {
         String fileName = "org/drools/ide/wizard/project/Sample.drl.template";
         IFolder folder = project.getProject().getFolder("src/rules");
         IFile file = folder.getFile("Sample.drl");
         InputStream inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
-        file.create(inputstream, true, null);
+        if (!file.exists()) {
+        	file.create(inputstream, true, monitor);
+        } else {
+        	file.setContents(inputstream, true, false, monitor);
+        }
     }
 
     protected void initializeDefaultPageImageDescriptor() {
@@ -302,19 +311,20 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
 		return bytes;
 	}
     
-    private void addSourceFolder(IJavaProject project, List list, String s) throws CoreException {
+    private void addSourceFolder(IJavaProject project, List list, String s, IProgressMonitor monitor) throws CoreException {
         IFolder folder = project.getProject().getFolder(s);
-        createFolder(folder);
+        createFolder(folder, monitor);
         IPackageFragmentRoot ipackagefragmentroot = project.getPackageFragmentRoot(folder);
         list.add(JavaCore.newSourceEntry(ipackagefragmentroot.getPath()));
     }
     
-    private void createFolder(IFolder folder) throws CoreException {
+    private void createFolder(IFolder folder, IProgressMonitor monitor) throws CoreException {
         IContainer container = folder.getParent();
         if (container != null && !container.exists()
                 && (container instanceof IFolder))
-            createFolder((IFolder) container);
-        folder.create(true, true, null);
+            createFolder((IFolder) container, monitor);
+        if (!folder.exists()) {
+        	folder.create(true, true, monitor);
+        }
     }
-
 }
