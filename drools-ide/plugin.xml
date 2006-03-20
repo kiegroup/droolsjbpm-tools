@@ -21,7 +21,7 @@
          id="org.drools.ide.debug.AgendaView">
       </view>
       <view
-         name="Application Data View"
+         name="Global Data View"
          icon="icons/drools.gif"
          category="org.drools.ide.views"
          class="org.drools.ide.debug.ApplicationDataView"
@@ -71,7 +71,7 @@
             descriptionImage="icons/drools-large.PNG"
             icon="icons/drools.gif"
             id="org.drools.ide.new.file"
-            name="New Rule resource"/>
+            name="New Rule Resource"/>
       <wizard
             category="org.drools.ide.new"
             class="org.drools.ide.wizard.dsl.NewDSLFileWizard"
@@ -134,5 +134,13 @@
    <extension point="org.eclipse.ui.editors.annotationTypes">
       <type super="org.eclipse.ui.workbench.texteditor.error" markerSeverity="2" markerType="org.eclipse.core.resources.problemmarker" name="org.drools.ide.editors.error_annotation"/>
    </extension>
-
+   
+   <extension point="org.eclipse.help.toc">
+      <toc file="toc.xml" primary="true" />
+   </extension>
+   
+   <extension point="org.eclipse.help.toc">
+       <toc file="help/debug/debug.toc" />
+   </extension>
+   
 </plugin>

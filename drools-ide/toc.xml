@@ -1,0 +1,7 @@
+<toc label="Drools Help" topic="help/drools.html">
+	<topic label="Editor" href="help/editor/editor.html">
+	</topic>
+	<topic label="Debugging" href="help/debug/debug.html">
+		<link toc="help/debug/debug.toc" />
+	</topic>
+</toc>

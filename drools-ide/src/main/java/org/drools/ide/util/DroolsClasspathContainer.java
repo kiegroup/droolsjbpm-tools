@@ -34,7 +34,7 @@ public class DroolsClasspathContainer implements IClasspathContainer {
     }
 
     public String getDescription() {
-        return "Drools Library [2.5]";
+        return "Drools Library [3.0]";
     }
 
     public int getKind() {
