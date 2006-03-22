@@ -6,6 +6,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 /**
  * Generic rule editor for drools.
@@ -51,4 +52,7 @@ public class DRLRuleEditor2 extends FormEditor {
 		return textEditor.isSaveAsAllowed();
 	}
 
+    public Object getAdapter(Class adapter) {
+        return textEditor.getAdapter(adapter);
+    }
 }
