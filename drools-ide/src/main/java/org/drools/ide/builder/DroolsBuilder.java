@@ -1,5 +1,7 @@
 package org.drools.ide.builder;
 
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +16,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.ParserError;
 import org.drools.compiler.RuleError;
 import org.drools.ide.DroolsIDEPlugin;
+import org.drools.ide.editors.DSLAdapter;
 import org.drools.ide.util.ProjectClassLoader;
 import org.drools.lang.descr.PackageDescr;
 import org.eclipse.core.resources.IFile;
@@ -35,7 +38,7 @@ import org.eclipse.jdt.core.JavaModelException;
 
 /**
  * Automatically syntax checks .drl files and adds possible
- * errors or warnings to the problem list.
+ * errors or warnings to the problem list. Nominally is triggerd on save.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  */
@@ -125,6 +128,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
     	List markers = new ArrayList();
         DrlParser parser = new DrlParser();
         try {
+            Reader dslReader = DSLAdapter.getDSLContent(content, file);
             ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
             ClassLoader newLoader = DroolsBuilder.class.getClassLoader();
             if (file.getProject().getNature("org.eclipse.jdt.core.javanature") != null) {
@@ -132,8 +136,9 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                 newLoader = ProjectClassLoader.getProjectClassLoader(project);
             }
             try {
-                Thread.currentThread().setContextClassLoader(newLoader);                    
-                PackageDescr packageDescr = parser.parse(content);
+                Thread.currentThread().setContextClassLoader(newLoader);
+                PackageDescr packageDescr = null;
+                packageDescr = parsePackage( content, parser, dslReader );
                 PackageBuilder builder = new PackageBuilder();
                 builder.addPackage(packageDescr);
                 DroolsError[] errors = builder.getErrors();
@@ -184,6 +189,16 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             markers.add(new DroolsBuildMarker(message));
         }
         return (DroolsBuildMarker[]) markers.toArray(new DroolsBuildMarker[markers.size()]);
+    }
+
+    /** Actually parse the rules into the AST */
+    private static PackageDescr parsePackage(String content,
+                                             DrlParser parser,
+                                             Reader dslReader) throws DroolsParserException {
+        if (dslReader != null) 
+            return parser.parse(content, dslReader);
+        else
+            return parser.parse( content );
     }
 
     private void createMarker(final IResource res, final String message, final int lineNumber) {

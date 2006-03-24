@@ -45,12 +45,20 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
             list.addAll(adapter.listConditionItems());
         } else if (consequence.matcher(backText).matches()) {
             list.addAll(adapter.listConsequenceItems());
-            list.add(new RuleCompletionProposal("end"));
-            list.add(new RuleCompletionProposal("modify"));
-            list.add(new RuleCompletionProposal("retract"));
-            list.add(new RuleCompletionProposal("assert"));
+            if (!adapter.hasConsequences()) {
+                list.add(new RuleCompletionProposal("modify", "modify( );"));
+                list.add(new RuleCompletionProposal("retract", "retract( );"));
+                list.add(new RuleCompletionProposal("assert", "assert( );"));
+            }
         } else if (condition.matcher(backText).matches()) {
             list.addAll(adapter.listConditionItems());
+            if (!adapter.hasConditions()) {
+                list.add( new RuleCompletionProposal("exists") );
+                list.add( new RuleCompletionProposal("not") );
+                list.add( new RuleCompletionProposal("and") );
+                list.add( new RuleCompletionProposal("or") );
+                list.add( new RuleCompletionProposal("eval", "eval(   )") );
+            }
             list.add(new RuleCompletionProposal("then", "then\n\t"));
         } else {             
             //we are in rule header
@@ -62,16 +70,17 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
     }
 
     /** 
-     * Get the adapter for DSLs, and cache it with the editor for future reference.
+     * Lazily get the adapter for DSLs, and cache it with the editor for future reference.
      * If it is unable to load a DSL, it will try again next time.
      * But once it has found and loaded one, it will keep it until the editor is closed.
-     *  
+     * 
+     * This delegates to DSLAdapter to poke around the project to try and load the DSL.
      */
     private DSLAdapter getDSLAdapter(ITextViewer viewer, DRLRuleEditor editor) {
         DSLAdapter adapter = editor.getDSLAdapter();
         if (adapter == null) {
             String content = viewer.getDocument().get();
-            adapter = new DSLAdapter(content, (FileEditorInput) editor.getEditorInput());
+            adapter = new DSLAdapter(content, ((FileEditorInput) editor.getEditorInput()).getFile());
             if (adapter.isValid()) {
                 editor.setDSLAdapter( adapter );
             }

@@ -3,6 +3,7 @@ package org.drools.ide.editors;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -40,20 +41,39 @@ public class DSLAdapter {
     //to dig out the expander, without using the parser.
     private static final Pattern expander = Pattern.compile( "^.*expander\\s*(.*)\\.dsl.*", 
                                                              Pattern.DOTALL | Pattern.MULTILINE );
-    
-    public DSLAdapter(String content, FileEditorInput input) {
+    /**
+     * This will sniff out the DSL config file name from the content.
+     * It will then use the IFile input to search around for the file itself.
+     * TODO: provide an alternative that just loads off a stream (for non IDEs workbenches like jlibrary).
+     * @param content Rule source
+     * @param input File from the FileEditorInput
+     */
+    public DSLAdapter(String content, IFile input) {
         
         dslConfigName = findDSLConfigName( content );
         if (dslConfigName == null) return;
         loadConfig( input );
-        
-        
+    }
+    
+    /** Get a reader to the DSL contents */
+    public static Reader getDSLContent(String ruleSource, IFile input) throws CoreException {
+        String dslFileName = findDSLConfigName( ruleSource );
+        if (dslFileName == null) return null;
+        IResource res = findDSLResource( input, dslFileName );
+        if (res instanceof IFile) {
+            IFile dslConf = (IFile) res;
+            if (dslConf.exists()) {
+                return new InputStreamReader(dslConf.getContents());
+            }
+        }
+        return null;
     }
 
-    private void loadConfig(FileEditorInput input) {
-        IResource res = input.getFile().getParent().findMember( dslConfigName );
-        if (res == null) res = input.getFile().getParent().getParent().findMember( dslConfigName ); //try parent directory
-        if (res == null) res = input.getFile().getProject().findMember( dslConfigName ); //try root of project.
+    /**
+     * This does the hunting around the projec to find the .dsl file.
+     */
+    private void loadConfig(IFile input) {
+        IResource res = findDSLResource( input, dslConfigName );
         if (res instanceof IFile) {
             IFile dslConf = (IFile) res;
             if (dslConf.exists()) {
@@ -70,6 +90,13 @@ public class DSLAdapter {
                 
             }
         }
+    }
+
+    private static IResource findDSLResource(IFile input, String dslFileName) {
+        IResource res = input.getParent().findMember( dslFileName );
+        if (res == null) res = input.getParent().getParent().findMember( dslFileName ); //try parent directory
+        if (res == null) res = input.getProject().findMember( dslFileName ); //try root of project.
+        return res;
     }
 
     
@@ -107,7 +134,8 @@ public class DSLAdapter {
         
     }
 
-    String findDSLConfigName(String content) {
+    /** Sniffs out the expander/DSL config name as best it can. */
+    static String findDSLConfigName(String content) {
         String name = null;
         Matcher matches = expander.matcher( content );
         if (matches.matches()) {
@@ -126,6 +154,14 @@ public class DSLAdapter {
         return valid;
     }
     
+    
+    public boolean hasConditions() {
+        return conditionProposals.size() > 0;
+    }
+    
+    public boolean hasConsequences() {
+        return consequenceProposals.size() > 0;
+    }
     
     public List listConditionItems() {
         return conditionProposals;
