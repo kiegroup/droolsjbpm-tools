@@ -184,7 +184,7 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
                                               st.length() );
                 }
 
-                offset += st.length() + 1; //+1 for the newline
+                offset += st.length() + 2; //+2 for the newline
             }
         } catch ( IOException e ) {
         }
