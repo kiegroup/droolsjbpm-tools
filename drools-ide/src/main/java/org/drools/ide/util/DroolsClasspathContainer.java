@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.ide.DroolsIDEPlugin;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -78,7 +79,7 @@ public class DroolsClasspathContainer implements IClasspathContainer {
 
     private String getDroolsLocation() {
         try {
-            return Platform.asLocalURL(Platform.getBundle("org.drools.ide")
+            return FileLocator.toFileURL(Platform.getBundle("org.drools.ide")
                 .getEntry("/")).getFile().toString();
         } catch (IOException e) {
             DroolsIDEPlugin.log(e);

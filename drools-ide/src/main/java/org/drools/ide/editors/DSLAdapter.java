@@ -16,7 +16,6 @@ import org.drools.lang.dsl.template.NLMappingItem;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ui.part.FileEditorInput;
 
 /**
  * This holds the DSL configuration for an editor instance.

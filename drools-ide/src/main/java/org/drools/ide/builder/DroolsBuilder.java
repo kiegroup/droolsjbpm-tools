@@ -1,7 +1,6 @@
 package org.drools.ide.builder;
 
 import java.io.Reader;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -137,8 +136,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             }
             try {
                 Thread.currentThread().setContextClassLoader(newLoader);
-                PackageDescr packageDescr = null;
-                packageDescr = parsePackage( content, parser, dslReader );
+                PackageDescr packageDescr = parsePackage( content, parser, dslReader );
                 PackageBuilder builder = new PackageBuilder();
                 builder.addPackage(packageDescr);
                 DroolsError[] errors = builder.getErrors();
@@ -150,11 +148,13 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                 		markers.add(new DroolsBuildMarker(globalError.getGlobal(), -1));
                 	} else if (error instanceof RuleError) {
                 		RuleError ruleError = (RuleError) error;
-                		// TODO try to retrieve line numner (or even character start-end
+                		// TODO try to retrieve line number (or even character start-end)
+                		// disabled for now because line number are those of the rule class,
+                		// not the rule file itself
                 		if (ruleError.getObject() instanceof CompilationProblem[]) {
                 			CompilationProblem[] problems = (CompilationProblem[]) ruleError.getObject();
                 			for (int j = 0; j < problems.length; j++) {
-                				markers.add(new DroolsBuildMarker(problems[j].getMessage(), problems[j].getStartLine()));
+                				markers.add(new DroolsBuildMarker(problems[j].getMessage() /*, problems[j].getStartLine()*/));
                 			}
                 		} else {
                 			markers.add(new DroolsBuildMarker(ruleError.getRule().getName() + ":" + ruleError.getMessage(), ruleError.getDescr() == null ? -1 : ruleError.getDescr().getLine()));
@@ -180,7 +180,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                 Thread.currentThread().setContextClassLoader(oldLoader);
             }
         } catch (Throwable t) {
-        	t.printStackTrace();
+        	// t.printStackTrace();
             // TODO create markers for exceptions containing line number etc.
             String message = t.getMessage();
             if (message == null || message.trim().equals( "" )) {
@@ -211,25 +211,6 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
 		            marker.setAttribute(IMarker.SEVERITY,
 		                    IMarker.SEVERITY_ERROR);
 		            marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
-	    		}
-			};
-			res.getWorkspace().run(r, null, IWorkspace.AVOID_UPDATE, null);
-        } catch (CoreException e) {
-            DroolsIDEPlugin.log(e);
-        }
-    }
-    
-    private void createWarning(final IResource res, final String message, final int lineNumber, final int charStart) {
-        try {
-        	IWorkspaceRunnable r= new IWorkspaceRunnable() {
-        		public void run(IProgressMonitor monitor) throws CoreException {
-		            IMarker marker = res
-		                    .createMarker(IDroolsModelMarker.DROOLS_MODEL_PROBLEM_MARKER);
-		            marker.setAttribute(IMarker.MESSAGE, message);
-		            marker.setAttribute(IMarker.SEVERITY,
-		                    IMarker.SEVERITY_WARNING);
-		            marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
-		            marker.setAttribute(IMarker.CHAR_START, charStart);
 	    		}
 			};
 			res.getWorkspace().run(r, null, IWorkspace.AVOID_UPDATE, null);

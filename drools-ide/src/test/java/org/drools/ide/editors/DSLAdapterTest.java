@@ -15,12 +15,12 @@ public class DSLAdapterTest extends TestCase {
         String pat = "\nexpander  \t abc.dsl";
         
         DSLAdapter ad = new DSLAdapter();
-        assertEquals("abc.dsl", ad.findDSLConfigName( pat ));
+        assertEquals("abc.dsl", DSLAdapter.findDSLConfigName( pat ));
         
         
-        assertEquals("abc.dsl", ad.findDSLConfigName( buf.toString() ));
+        assertEquals("abc.dsl", DSLAdapter.findDSLConfigName( buf.toString() ));
         
-        assertEquals(null, ad.findDSLConfigName( "abc /n/n" ));
+        assertEquals(null, DSLAdapter.findDSLConfigName( "abc /n/n" ));
         
         ad = new DSLAdapter("fdfds", null);
         assertEquals(null, ad.getDSLConfigName());
