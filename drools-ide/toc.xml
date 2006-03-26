@@ -1,4 +1,4 @@
-<toc label="Drools Help" topic="help/drools.html">
+<toc label="JBoss Rules Help" topic="help/drools.html">
 	<topic label="Editor" href="help/editor/editor.html" />
 	<topic label="Debugging" href="help/debug/debug.html">
 		<link toc="help/debug/debug.toc" />
