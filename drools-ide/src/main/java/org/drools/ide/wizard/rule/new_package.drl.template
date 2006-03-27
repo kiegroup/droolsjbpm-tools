@@ -1,8 +1,11 @@
 #created on: $date$
 $package$
-//import any classes here
+#list any import classes here.
+
 $expander$
-//declare any globals here
+
+#declare any global variables here
+
 $functions$
 
 
