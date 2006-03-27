@@ -1,7 +1,10 @@
 #created on: $date$
 $package$
-$functions$
+//import any classes here
 $expander$
+//declare any globals here
+$functions$
+
 
 rule "Your First Rule"
 	
