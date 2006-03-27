@@ -63,6 +63,9 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         } else {             
             //we are in rule header
             list.add(new RuleCompletionProposal("salience"));
+            list.add(new RuleCompletionProposal("no-loop"));
+            list.add(new RuleCompletionProposal("agenda-group"));
+            list.add(new RuleCompletionProposal("duration"));            
             list.add(new RuleCompletionProposal("when", "when\n\t"));
         }
         
