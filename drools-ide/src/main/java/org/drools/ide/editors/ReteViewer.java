@@ -7,11 +7,16 @@ import org.drools.RuleBase;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
 import org.drools.ide.DroolsIDEPlugin;
+import org.drools.ide.builder.DroolsBuilder;
+import org.drools.ide.util.ProjectClassLoader;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.reteoo.RuleBaseImpl;
 import org.drools.rule.Package;
 import org.drools.visualize.ReteooJungViewerPanel;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -69,20 +74,37 @@ public class ReteViewer extends EditorPart {
 	private RuleBase getRuleBase() {
 		if (getEditorInput() instanceof IFileEditorInput) {
 			try {
-				System.out.println(documentProvider);
 				String contents = documentProvider.getDocument(getEditorInput()).get();
-				DrlParser parser = new DrlParser();
-				PackageDescr packageDescr = parser.parse(contents);
 
-				//pre build the package
-				PackageBuilder builder = new PackageBuilder();
-				builder.addPackage(packageDescr);
-				Package pkg = builder.getPackage();
+	            ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+	            ClassLoader newLoader = DroolsBuilder.class.getClassLoader();
+	            IFile file = ((IFileEditorInput) getEditorInput()).getFile();
+	            if (file.getProject().getNature("org.eclipse.jdt.core.javanature") != null) {
+	                IJavaProject project = JavaCore.create(file.getProject());
+	                newLoader = ProjectClassLoader.getProjectClassLoader(project);
+	            }
+	            
+	            try {
+	                Thread.currentThread().setContextClassLoader(newLoader);
 
-				//add the package to a rulebase
-				RuleBaseImpl ruleBase = new RuleBaseImpl();
-				ruleBase.addPackage(pkg);
-				return ruleBase;
+	                DrlParser parser = new DrlParser();
+					PackageDescr packageDescr = parser.parse(contents);
+
+					//pre build the package
+					PackageBuilder builder = new PackageBuilder();
+					builder.addPackage(packageDescr);
+					Package pkg = builder.getPackage();
+
+					//add the package to a rulebase
+					RuleBaseImpl ruleBase = new RuleBaseImpl();
+					ruleBase.addPackage(pkg);
+					return ruleBase;
+					
+	            } catch (Exception t) {
+	                throw t;
+	            } finally {
+	                Thread.currentThread().setContextClassLoader(oldLoader);
+	            }
 			} catch (Throwable t) {
 				t.printStackTrace();
 			}
