@@ -66,6 +66,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
             list.add(new RuleCompletionProposal("no-loop"));
             list.add(new RuleCompletionProposal("agenda-group"));
             list.add(new RuleCompletionProposal("duration"));            
+            list.add(new RuleCompletionProposal("auto-focus"));            
             list.add(new RuleCompletionProposal("when", "when\n\t"));
         }
         
