@@ -36,7 +36,7 @@ public class DefaultCompletionProcessor implements IContentAssistProcessor {
     /** Subclasses *should* override this to change the list. */
     protected List getPossibleProposals(ITextViewer viewer, String backText) {
         List list = new ArrayList();
-        list.add(new RuleCompletionProposal("rule", NEW_RULE_TEMPLATE));
+        list.add(new RuleCompletionProposal("rule", NEW_RULE_TEMPLATE, 6));
         list.add(new RuleCompletionProposal("import"));
         list.add(new RuleCompletionProposal("expander"));
         list.add(new RuleCompletionProposal("global"));
@@ -121,7 +121,7 @@ public class DefaultCompletionProcessor implements IContentAssistProcessor {
 //        return new CompletionProposal(replacement, 
 //        				documentOffset - offset.getPrefixLength(), offset.getPrefixLength(), replacement.length());
         return new CompletionProposal(proposal.getContent(), 
-          documentOffset - offset.getPrefixLength(), offset.getPrefixLength(), proposal.getContent().length(), 
+          documentOffset - offset.getPrefixLength(), offset.getPrefixLength(), proposal.getOffset(), 
               null, proposal.getDisplay(), null, null);
         
     }
