@@ -4,9 +4,9 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 
 import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
-import org.drools.reteoo.RuleBaseImpl;
 import org.drools.rule.Package;
 
 /**
@@ -44,6 +44,7 @@ public class DroolsTest {
 
 		//Use package builder to build up a rule package.
 		//An alternative lower level class called "DrlParser" can also be used...
+		
 		PackageBuilder builder = new PackageBuilder();
 
 		//this wil parse and compile in one step
@@ -57,7 +58,7 @@ public class DroolsTest {
 		Package pkg = builder.getPackage();
 		
 		//add the package to a rulebase (deploy the rule package).
-		RuleBase ruleBase = new RuleBaseImpl();
+		RuleBase ruleBase = RuleBaseFactory.getInstance().newRuleBase();
 		ruleBase.addPackage( pkg );
 		return ruleBase;
 	}
