@@ -2,8 +2,6 @@ package org.drools.ide;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
@@ -29,13 +27,11 @@ public class DroolsPluginImages {
     public static final String CREATE_ACTIVATION = "CreateActivation";
     public static final String CANCEL_ACTIVATION = "CancelActivation";
     public static final String EXECUTE_ACTIVATION = "ExecuteActivation";
+    
     private static ImageRegistry imageRegistry;
-    private static Map imageDescriptors;
-    private static URL ICON_BASE_URL= null;
-    static {
-        String pathSuffix = "icons/";
-        ICON_BASE_URL= DroolsIDEPlugin.getDefault().getBundle().getEntry(pathSuffix);
-    }
+    private static final String PATH_SUFFIX = "/icons/";
+    private static final URL ICON_BASE_URL =
+    	DroolsIDEPlugin.getDefault().getBundle().getEntry(PATH_SUFFIX);
     
     private static void declareImages() {
         declareRegistryImage(IMG_LOGICAL, "logical_structure.gif");
@@ -45,12 +41,12 @@ public class DroolsPluginImages {
         declareRegistryImage(OPEN_LOG, "open.gif");
         declareRegistryImage(DELETE_LOG, "clear.gif");
         declareRegistryImage(DELETE_LOG_DISABLED, "clear_disabled.gif");
-        declareRegistryImage(ASSERT_OBJECT, "greensquare.gif");
-        declareRegistryImage(MODIFY_OBJECT, "yellowsquare.gif");
-        declareRegistryImage(RETRACT_OBJECT, "redsquare.gif");
-        declareRegistryImage(CREATE_ACTIVATION, "arrowright.gif");
-        declareRegistryImage(CANCEL_ACTIVATION, "arrowleft.gif");
-        declareRegistryImage(EXECUTE_ACTIVATION, "bluediamond.gif");
+        declareRegistryImage(ASSERT_OBJECT, "greensquare.GIF");
+        declareRegistryImage(MODIFY_OBJECT, "yellowsquare.GIF");
+        declareRegistryImage(RETRACT_OBJECT, "redsquare.GIF");
+        declareRegistryImage(CREATE_ACTIVATION, "arrowright.GIF");
+        declareRegistryImage(CANCEL_ACTIVATION, "arrowleft.GIF");
+        declareRegistryImage(EXECUTE_ACTIVATION, "bluediamond.GIF");
     }
 
     /**
@@ -67,7 +63,6 @@ public class DroolsPluginImages {
             DroolsIDEPlugin.log(e);
         }
         imageRegistry.put(key, desc);
-        imageDescriptors.put(key, desc);
     }
     
     /**
@@ -81,8 +76,7 @@ public class DroolsPluginImages {
     }
 
     public static ImageRegistry initializeImageRegistry() {
-        imageRegistry= new ImageRegistry();
-        imageDescriptors = new HashMap(30);
+        imageRegistry = new ImageRegistry();
         declareImages();
         return imageRegistry;
     }
@@ -100,10 +94,7 @@ public class DroolsPluginImages {
      * or <code>null</code> if it does not exist.
      */
     public static ImageDescriptor getImageDescriptor(String key) {
-        if (imageDescriptors == null) {
-            initializeImageRegistry();
-        }
-        return (ImageDescriptor)imageDescriptors.get(key);
+		return getImageRegistry().getDescriptor(key);
     }
     
     private static URL makeIconFileURL(String iconPath) throws MalformedURLException {
