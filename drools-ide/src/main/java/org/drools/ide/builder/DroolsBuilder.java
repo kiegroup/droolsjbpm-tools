@@ -31,6 +31,7 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
@@ -70,17 +71,19 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             marker.setAttribute(IMarker.MESSAGE, "Error when trying to build Drools project: " + e.getLocalizedMessage());
             marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
         }
-        return null;
+        return getRequiredProjects(currentProject);
     }
     
-    protected void fullBuild(final IProgressMonitor monitor)
+    protected void fullBuild(IProgressMonitor monitor)
             throws CoreException {
         getProject().accept(new DroolsBuildVisitor());
     }
     
     protected void incrementalBuild(IResourceDelta delta,
             IProgressMonitor monitor) throws CoreException {
-        delta.accept(new DroolsBuildDeltaVisitor());
+        // delta.accept(new DroolsBuildDeltaVisitor());
+    	// to make sure that all rules are checked when a java file is changed 
+    	fullBuild(monitor);
     }
 
     private class DroolsBuildVisitor implements IResourceVisitor {
@@ -231,4 +234,24 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         }
     }
     
+    private IProject[] getRequiredProjects(IProject project) {
+    	IJavaProject javaProject = JavaCore.create(project);
+    	List projects = new ArrayList();
+    	try {
+    		IClasspathEntry[] entries = javaProject.getResolvedClasspath(true);
+    		for (int i = 0, l = entries.length; i < l; i++) {
+    			IClasspathEntry entry = entries[i];
+    			if (entry.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
+					IProject p = project.getWorkspace().getRoot().getProject(entry.getPath().lastSegment()); // missing projects are considered too
+	    			if (p != null && !projects.contains(p)) {
+	    				projects.add(p);
+	    			}
+    			}
+    		}
+    	} catch(JavaModelException e) {
+    		return new IProject[0];
+    	}
+    	return (IProject[]) projects.toArray(new IProject[projects.size()]);
+    }
+
 }
