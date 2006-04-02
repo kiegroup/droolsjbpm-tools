@@ -1,11 +1,10 @@
 package org.drools.ide.editors;
 
 import org.drools.ide.editors.scanners.DRLPartionScanner;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.rules.FastPartitioner;
-import org.eclipse.ui.editors.text.FileDocumentProvider;
+import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 
 
 /**
@@ -13,10 +12,10 @@ import org.eclipse.ui.editors.text.FileDocumentProvider;
  * @author Michael Neale
  */
 public class DRLDocumentProvider
-    extends FileDocumentProvider {
+    extends TextFileDocumentProvider {
     
-    protected IDocument createDocument(Object element) throws CoreException {
-        IDocument document = super.createDocument(element);
+    public IDocument getDocument(Object element) {
+        IDocument document = super.getDocument(element);
         if (document != null) {
             IDocumentPartitioner partitioner =
                 new FastPartitioner(
