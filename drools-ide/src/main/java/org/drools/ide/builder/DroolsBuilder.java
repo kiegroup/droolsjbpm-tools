@@ -157,10 +157,10 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                 		if (ruleError.getObject() instanceof CompilationProblem[]) {
                 			CompilationProblem[] problems = (CompilationProblem[]) ruleError.getObject();
                 			for (int j = 0; j < problems.length; j++) {
-                				markers.add(new DroolsBuildMarker(problems[j].getMessage() /*, problems[j].getStartLine()*/));
+                				markers.add(new DroolsBuildMarker(problems[j].getMessage(), ruleError.getLine()));
                 			}
                 		} else {
-                			markers.add(new DroolsBuildMarker(ruleError.getRule().getName() + ":" + ruleError.getMessage(), ruleError.getDescr() == null ? -1 : ruleError.getDescr().getLine()));
+                			markers.add(new DroolsBuildMarker(ruleError.getRule().getName() + ":" + ruleError.getMessage(), ruleError.getLine()));
                 		}
                 	} else if (error instanceof ParserError) {
                 		ParserError parserError = (ParserError) error;
