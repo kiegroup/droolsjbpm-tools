@@ -91,6 +91,13 @@
       <category
             id="org.drools.ide.new"
             name="JBoss Rules"/>
+      <wizard
+            category="org.drools.ide.new"
+            class="org.drools.ide.wizard.decisiontable.NewDTFileWizard"
+            descriptionImage="icons/dt_large.gif"
+            icon="icons/dt_small.gif"
+            id="org.drools.ide.new.decisiontable"
+            name="New Decision Table"/>
    </extension>
    <extension
          id="org.drools.ide.actionSet"

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.ide.wizard.decisiontable.NewDTFileWizard;
 import org.drools.ide.wizard.dsl.NewDSLFileWizard;
 import org.drools.ide.wizard.project.NewDroolsProjectWizard;
 import org.drools.ide.wizard.rule.NewRulePackageWizard;
@@ -51,7 +52,26 @@ public class RuleHelperActionDelegate
         addDSLWizard( menu,
                       shell );
         
+        addDTWizard( menu,
+                      shell );        
+        
         return menu;
+    }
+
+    private void addDTWizard(Menu menu,
+                             final Shell shell) {
+        MenuItem dsl = new MenuItem( menu,
+                                     SWT.NONE );
+        dsl.setText( "New Decision Table" );
+        dsl.addSelectionListener( new SelectionListener() {
+
+            public void widgetSelected(SelectionEvent e) {
+                NewDTFileWizard wizard = new NewDTFileWizard();
+                launchWizard( shell, wizard );
+            }
+            public void widgetDefaultSelected(SelectionEvent e) {}
+        });
+        
     }
 
     private void addProjectWizard(Menu menu, final Shell shell) {
