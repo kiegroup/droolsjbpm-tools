@@ -8,7 +8,7 @@ public class RuleWordDetector implements IWordDetector {
          * Method declared on IWordDetector.
          */
         public boolean isWordPart(char character) {            
-            return Character.isJavaIdentifierPart(character);
+            return Character.isJavaIdentifierPart(character) || character == '-';
         }
         
         /* (non-Javadoc)
