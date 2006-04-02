@@ -22,7 +22,9 @@ public class DroolsTest {
             WorkingMemory workingMemory = ruleBase.newWorkingMemory();
             
             //go !
-            String message = "Dearest user !";
+            Message message = new Message();
+            message.setMessage(  "Hello World" );
+            message.setStatus( Message.HELLO );
             workingMemory.assertObject( message );
             workingMemory.fireAllRules();   
             
@@ -61,6 +63,31 @@ public class DroolsTest {
 		RuleBase ruleBase = RuleBaseFactory.getInstance().newRuleBase();
 		ruleBase.addPackage( pkg );
 		return ruleBase;
+	}
+	
+	public static class Message {
+		public static final int HELLO = 0;
+		public static final int GOODBYE = 1;
+		
+		private String message;
+		
+		private int status;
+		
+		public String getMessage() {
+			return this.message;
+		}
+		
+		public void setMessage(String message) {
+			this.message = message;
+		}
+		
+		public int getStatus() {
+			return this.status;
+		}
+		
+		public void setStatus( int status ) {
+			this.status = status;
+		}
 	}
     
 }

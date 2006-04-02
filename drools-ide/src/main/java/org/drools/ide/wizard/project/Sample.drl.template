@@ -1,11 +1,22 @@
-package SamplePackage
+package com.sample
  
-import java.lang.String
+import com.sample.DroolsTest.Message;
  
-
-rule "Sample rule"
+rule "Hello World"
 	when
-		String()
+		m : Message( status == Message.HELLO, message : message )
 	then
-		System.out.println("hello world"); 
+		System.out.println( message ); 
+		m.setMessage( "Goodbye cruel world" );
+		m.setStatus( Message.GOODBYE );
+		modify( m );
+end
+
+rule GoodBye
+	no-loop true
+	when
+		m : Message( status == Message.GOODBYE, message : message )
+	then
+		System.out.println( message ); 
+		m.setMessage( message );
 end
