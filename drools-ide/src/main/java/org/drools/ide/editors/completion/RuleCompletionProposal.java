@@ -19,7 +19,7 @@ public class RuleCompletionProposal {
 
     /** This is used when a different display value is shown to what is put in when selected. */
     public RuleCompletionProposal(String display, String content) {
-        this(content, display, content.length());
+        this(display, content, content.length());
     }
 
     /** This is used when a different display value is shown to what is put in when selected. */
