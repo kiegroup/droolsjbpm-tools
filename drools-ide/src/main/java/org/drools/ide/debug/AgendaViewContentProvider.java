@@ -54,42 +54,44 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
     }
     
     private Object[] getAgendaElements(IJavaObject workingMemoryImpl) throws DebugException {
+        List result = new ArrayList();
         IValue agendaGroupObjects = DebugUtil.getValueByExpression("return getAgenda().getAgendaGroups();", workingMemoryImpl);
         IValue stackObjects = DebugUtil.getValueByExpression("return getAgenda().getStack();", workingMemoryImpl);
-        IJavaArray agendaGroupArray = (IJavaArray) agendaGroupObjects;
-        IJavaArray stackArray = (IJavaArray) stackObjects;
-        List result = new ArrayList();
-    	IJavaValue[] agendaGroupValueArray = agendaGroupArray.getValues();
-        for (int i = 0; i < agendaGroupValueArray.length; i++) {
-        	IJavaValue agendaGroup = agendaGroupValueArray[i];
-        	String name = "";
-		    List activationsResult = new ArrayList();
-		    IVariable[] agendaGroupVarArray = agendaGroup.getVariables();
-        	for (int j = 0; j < agendaGroupVarArray.length; j++) {
-        		IVariable agendaGroupVar = agendaGroupVarArray[j];
-        		if ("name".equals(agendaGroupVar.getName())) {
-        			name = agendaGroupVar.getValue().getValueString();
-        			break;
-        		}
-        	}
-			IJavaArray activations = (IJavaArray) DebugUtil.getValueByExpression("return getActivations();", agendaGroup);
-			IJavaValue[] activationArray = activations.getValues();
-            for (int l = 0; l < activationArray.length; l++) {
-            	IJavaValue activation = activationArray[l];
-            	if (activation.getJavaType() != null) {
-            		activationsResult.add(new VariableWrapper("[" + l + "]", activation));
-            	}
-            }
-        	boolean active = false;
-        	IJavaValue[] stackValueArray = stackArray.getValues();
-            for (int j = 0; j < stackValueArray.length; j++) {
-            	if (agendaGroup.equals(stackValueArray[j])) {
-            		active = true;
-            	}
-            }
-            result.add(new VariableWrapper(name + "[" + (active ? "focus" : "nofocus") + "]", 
-            		new ObjectWrapper((IJavaObject) agendaGroup,
-        				(IJavaVariable[]) activationsResult.toArray(new IJavaVariable[activationsResult.size()]))));
+        if (agendaGroupObjects instanceof IJavaArray && stackObjects instanceof IJavaArray) {
+	        IJavaArray agendaGroupArray = (IJavaArray) agendaGroupObjects;
+	        IJavaArray stackArray = (IJavaArray) stackObjects;
+	    	IJavaValue[] agendaGroupValueArray = agendaGroupArray.getValues();
+	        for (int i = 0; i < agendaGroupValueArray.length; i++) {
+	        	IJavaValue agendaGroup = agendaGroupValueArray[i];
+	        	String name = "";
+			    List activationsResult = new ArrayList();
+			    IVariable[] agendaGroupVarArray = agendaGroup.getVariables();
+	        	for (int j = 0; j < agendaGroupVarArray.length; j++) {
+	        		IVariable agendaGroupVar = agendaGroupVarArray[j];
+	        		if ("name".equals(agendaGroupVar.getName())) {
+	        			name = agendaGroupVar.getValue().getValueString();
+	        			break;
+	        		}
+	        	}
+				IJavaArray activations = (IJavaArray) DebugUtil.getValueByExpression("return getActivations();", agendaGroup);
+				IJavaValue[] activationArray = activations.getValues();
+	            for (int l = 0; l < activationArray.length; l++) {
+	            	IJavaValue activation = activationArray[l];
+	            	if (activation.getJavaType() != null) {
+	            		activationsResult.add(new VariableWrapper("[" + l + "]", activation));
+	            	}
+	            }
+	        	boolean active = false;
+	        	IJavaValue[] stackValueArray = stackArray.getValues();
+	            for (int j = 0; j < stackValueArray.length; j++) {
+	            	if (agendaGroup.equals(stackValueArray[j])) {
+	            		active = true;
+	            	}
+	            }
+	            result.add(new VariableWrapper(name + "[" + (active ? "focus" : "nofocus") + "]", 
+	            		new ObjectWrapper((IJavaObject) agendaGroup,
+	        				(IJavaVariable[]) activationsResult.toArray(new IJavaVariable[activationsResult.size()]))));
+	        }
         }
         return result.toArray(new IVariable[0]);
     }
