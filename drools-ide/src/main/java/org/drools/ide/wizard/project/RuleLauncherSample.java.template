@@ -60,7 +60,7 @@ public class DroolsTest {
 		Package pkg = builder.getPackage();
 		
 		//add the package to a rulebase (deploy the rule package).
-		RuleBase ruleBase = RuleBaseFactory.getInstance().newRuleBase();
+		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 		ruleBase.addPackage( pkg );
 		return ruleBase;
 	}
