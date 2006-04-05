@@ -2,6 +2,7 @@ package org.drools.ide.builder;
 
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -139,37 +140,21 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             }
             try {
                 Thread.currentThread().setContextClassLoader(newLoader);
+                
+                //First we parse the source
                 PackageDescr packageDescr = parsePackage( content, parser, dslReader );
+                //parser errors
+                markParseErrors( markers,
+                                 parser );  
+                
+                //now we compile the AST to binary, and process any downstream errors.
                 PackageBuilder builder = new PackageBuilder();
                 builder.addPackage(packageDescr);
-                DroolsError[] errors = builder.getErrors();
-                // TODO are there warnings too?
-                for (int i = 0; i < errors.length; i++ ) {
-                	DroolsError error = errors[i];
-                	if (error instanceof GlobalError) {
-                		GlobalError globalError = (GlobalError) error;
-                		markers.add(new DroolsBuildMarker(globalError.getGlobal(), -1));
-                	} else if (error instanceof RuleError) {
-                		RuleError ruleError = (RuleError) error;
-                		// TODO try to retrieve line number (or even character start-end)
-                		// disabled for now because line number are those of the rule class,
-                		// not the rule file itself
-                		if (ruleError.getObject() instanceof CompilationProblem[]) {
-                			CompilationProblem[] problems = (CompilationProblem[]) ruleError.getObject();
-                			for (int j = 0; j < problems.length; j++) {
-                				markers.add(new DroolsBuildMarker(problems[j].getMessage(), ruleError.getLine()));
-                			}
-                		} else {
-                			markers.add(new DroolsBuildMarker(ruleError.getRule().getName() + ":" + ruleError.getMessage(), ruleError.getLine()));
-                		}
-                	} else if (error instanceof ParserError) {
-                		ParserError parserError = (ParserError) error;
-                		// TODO try to retrieve character start-end
-                		markers.add(new DroolsBuildMarker(parserError.getMessage(), parserError.getRow()));
-                	} else {
-                		markers.add(new DroolsBuildMarker("Unknown DroolsError " + error.getClass() + ": " + error));
-                	}
-                }
+                //downstream errors
+                markOtherErrors( markers,
+                                 builder );
+              
+                
             } catch (DroolsParserException e) {
                 //we have an error thrown from DrlParser
                 Throwable cause = e.getCause();
@@ -192,6 +177,56 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             markers.add(new DroolsBuildMarker(message));
         }
         return (DroolsBuildMarker[]) markers.toArray(new DroolsBuildMarker[markers.size()]);
+    }
+
+    /**
+     * This will create markers for ALL errors that happen AFTER parsing.
+     * In some cases, these may be bogus if parse errors exist.
+     */
+    private static void markOtherErrors(List markers,
+                                        PackageBuilder builder) {
+        DroolsError[] errors = builder.getErrors();
+        // TODO are there warnings too?
+        for (int i = 0; i < errors.length; i++ ) {
+        	DroolsError error = errors[i];
+        	if (error instanceof GlobalError) {
+        		GlobalError globalError = (GlobalError) error;
+        		markers.add(new DroolsBuildMarker(globalError.getGlobal(), -1));
+        	} else if (error instanceof RuleError) {
+        		RuleError ruleError = (RuleError) error;
+        		// TODO try to retrieve line number (or even character start-end)
+        		// disabled for now because line number are those of the rule class,
+        		// not the rule file itself
+        		if (ruleError.getObject() instanceof CompilationProblem[]) {
+        			CompilationProblem[] problems = (CompilationProblem[]) ruleError.getObject();
+        			for (int j = 0; j < problems.length; j++) {
+        				markers.add(new DroolsBuildMarker(problems[j].getMessage(), ruleError.getLine()));
+        			}
+        		} else {
+        			markers.add(new DroolsBuildMarker(ruleError.getRule().getName() + ":" + ruleError.getMessage(), ruleError.getLine()));
+        		}
+        	} else if (error instanceof ParserError) {
+        		ParserError parserError = (ParserError) error;
+        		// TODO try to retrieve character start-end
+        		markers.add(new DroolsBuildMarker(parserError.getMessage(), parserError.getRow()));
+        	} else {
+        		markers.add(new DroolsBuildMarker("Unknown DroolsError " + error.getClass() + ": " + error));
+        	}
+        }
+    }
+
+    /**
+     * This will create markers for parse errors.
+     * Parse errors mean that antlr has picked up some major typos in the input source.
+     */
+    private static void markParseErrors(List markers,
+                                        DrlParser parser) {
+        if (parser.hasErrors()) {
+            for ( Iterator iter = parser.getErrors().iterator(); iter.hasNext(); ) {
+                ParserError err = (ParserError) iter.next();
+                markers.add(new DroolsBuildMarker(err.getMessage(), err.getRow()));
+            }
+        }
     }
 
     /** Actually parse the rules into the AST */
