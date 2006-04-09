@@ -12,7 +12,7 @@ rule "Hello World"
 		modify( m );
 end
 
-rule GoodBye
+rule "GoodBye"
 	no-loop true
 	when
 		m : Message( status == Message.GOODBYE, message : message )
