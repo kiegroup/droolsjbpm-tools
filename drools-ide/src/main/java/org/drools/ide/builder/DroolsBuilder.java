@@ -82,9 +82,9 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
     
     protected void incrementalBuild(IResourceDelta delta,
             IProgressMonitor monitor) throws CoreException {
-        // delta.accept(new DroolsBuildDeltaVisitor());
+        delta.accept(new DroolsBuildDeltaVisitor());
     	// to make sure that all rules are checked when a java file is changed 
-    	fullBuild(monitor);
+    	// fullBuild(monitor);
     }
 
     private class DroolsBuildVisitor implements IResourceVisitor {
