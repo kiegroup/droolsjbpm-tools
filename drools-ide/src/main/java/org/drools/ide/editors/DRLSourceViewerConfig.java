@@ -99,7 +99,7 @@ public class DRLSourceViewerConfig extends SourceViewerConfiguration {
         //setup the content assistance, which is
         //sensitive to the partition that it is in.
         
-		assistant.setContentAssistProcessor(new DefaultCompletionProcessor(),
+		assistant.setContentAssistProcessor(new DefaultCompletionProcessor(editor),
 		                                    IDocument.DEFAULT_CONTENT_TYPE);
         
         

@@ -33,6 +33,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
     private DRLRuleEditor editor;
     
     public RuleCompletionProcessor(DRLRuleEditor editor) {
+    	super(editor);
         this.editor = editor;
     }
     

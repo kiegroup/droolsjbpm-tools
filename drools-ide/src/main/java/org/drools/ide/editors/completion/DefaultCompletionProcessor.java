@@ -2,7 +2,13 @@ package org.drools.ide.editors.completion;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
+import org.drools.ide.DroolsIDEPlugin;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.jdt.core.CompletionRequestor;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
@@ -12,6 +18,9 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.part.EditorPart;
 
 
 /**
@@ -31,8 +40,14 @@ public class DefaultCompletionProcessor implements IContentAssistProcessor {
     private static final String NEW_RULE_TEMPLATE = "rule \"new rule\"\n\n\twhen\n\n\tthen\n\nend";
     private static final String NEW_QUERY_TEMPLATE = "query \"query name\"\n\t#conditions\nend";
     private static final String NEW_FUNCTION_TEMPLATE = "function void yourFunction(Type arg) {\n\t/* code goes here*/\n}";
+    private static final Pattern IMPORT_PATTERN = Pattern.compile(".*\\Wimport\\W[^;]*", Pattern.DOTALL);
 
-
+    private EditorPart editor;
+    
+    public DefaultCompletionProcessor(EditorPart editor) {
+    	this.editor = editor;
+    }
+    
     /** Subclasses *should* override this to change the list. */
     protected List getPossibleProposals(ITextViewer viewer, String backText) {
         List list = new ArrayList();
@@ -69,10 +84,19 @@ public class DefaultCompletionProcessor implements IContentAssistProcessor {
 
             //System.out.println("back text: " + backText);
             
-            List props = getPossibleProposals(viewer, backText);    
-            props = filterProposals( offset,
-                                     props,
-                                     backText );
+            if (doesPrefixExist(backText)) {
+                String prefix = stripWhiteSpace(backText);
+                offset.prefix = prefix;
+            }
+            
+            List props = null;
+            if (IMPORT_PATTERN.matcher(backText).matches()) {
+            	String classNameStart = backText.substring(backText.lastIndexOf("import") + 7);
+            	props = getAllClassProposals(classNameStart);
+            } else {
+            	props = getPossibleProposals(viewer, backText);
+                props = filterProposals(offset, props);
+            }
             
             ICompletionProposal[] result = new ICompletionProposal[props.size()];
             for (int i = 0; i < props.size(); i++) {
@@ -91,7 +115,31 @@ public class DefaultCompletionProcessor implements IContentAssistProcessor {
 	}
 
 
-    /**
+	private List getAllClassProposals(String classNameStart) {
+		final List list = new ArrayList();
+		IEditorInput input = editor.getEditorInput();
+		if (input instanceof IFileEditorInput) {
+			IProject project = ((IFileEditorInput) input).getFile().getProject();
+			IJavaProject javaProject = JavaCore.create(project);
+			
+			CompletionRequestor requestor = new CompletionRequestor() {
+				public void accept(org.eclipse.jdt.core.CompletionProposal proposal) {
+					String className = new String(proposal.getCompletion());
+					String completion = className + (proposal.getKind() == org.eclipse.jdt.core.CompletionProposal.PACKAGE_REF ? ".*" : "") + ";";
+					list.add(new RuleCompletionProposal(className, completion));
+				}
+			};
+
+			try {
+				javaProject.newEvaluationContext().codeComplete("import " + classNameStart, classNameStart.length() + 4, requestor);
+			} catch (Throwable t) {
+				DroolsIDEPlugin.log(t);
+			}
+		}
+		return list;
+	}
+			
+   /**
      * Just used for debugging, when it all gets to much.
      */
     private void partitionDebug(ITextViewer viewer,
@@ -130,14 +178,9 @@ public class DefaultCompletionProcessor implements IContentAssistProcessor {
 
 
     /** Filter the proposals based on what was typed. */
-    private List filterProposals(Offset offset,
-                                     List props,
-                                     String prefix) throws BadLocationException {
-
-        if (doesPrefixExist(prefix)) {
-            prefix = stripWhiteSpace(prefix);
-            offset.prefix = prefix;
-            props = filterList(props, prefix);
+    private List filterProposals(Offset offset, List props) throws BadLocationException {
+        if (offset.prefix != null) {
+            props = filterList(props, offset.prefix);
         }
         return props;
     }
