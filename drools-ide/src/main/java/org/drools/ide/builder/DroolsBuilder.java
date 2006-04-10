@@ -147,13 +147,14 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                 markParseErrors( markers,
                                  parser );  
                 
-                //now we compile the AST to binary, and process any downstream errors.
-                PackageBuilder builder = new PackageBuilder();
-                builder.addPackage(packageDescr);
-                //downstream errors
-                markOtherErrors( markers,
-                                 builder );
-              
+                if (!parser.hasErrors()) {
+                    //now we compile the AST to binary, and process any downstream errors.
+                    PackageBuilder builder = new PackageBuilder();
+                    builder.addPackage(packageDescr);
+                    //downstream errors
+                    markOtherErrors( markers,
+                                     builder );
+                }
                 
             } catch (DroolsParserException e) {
                 //we have an error thrown from DrlParser
