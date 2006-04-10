@@ -1,6 +1,7 @@
 package org.drools.ide.editors.completion;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -97,6 +98,7 @@ public class DefaultCompletionProcessor implements IContentAssistProcessor {
             	props = getPossibleProposals(viewer, backText);
                 props = filterProposals(offset, props);
             }
+            Collections.sort(props, new RuleCompletionProposal.RuleCompletionProposalComparator());
             
             ICompletionProposal[] result = new ICompletionProposal[props.size()];
             for (int i = 0; i < props.size(); i++) {
@@ -125,13 +127,13 @@ public class DefaultCompletionProcessor implements IContentAssistProcessor {
 			CompletionRequestor requestor = new CompletionRequestor() {
 				public void accept(org.eclipse.jdt.core.CompletionProposal proposal) {
 					String className = new String(proposal.getCompletion());
-					String completion = className + (proposal.getKind() == org.eclipse.jdt.core.CompletionProposal.PACKAGE_REF ? ".*" : "") + ";";
+					String completion = className + (proposal.getKind() == org.eclipse.jdt.core.CompletionProposal.PACKAGE_REF ? "." : ";");
 					list.add(new RuleCompletionProposal(className, completion));
 				}
 			};
 
 			try {
-				javaProject.newEvaluationContext().codeComplete("import " + classNameStart, classNameStart.length() + 4, requestor);
+				javaProject.newEvaluationContext().codeComplete("import " + classNameStart, classNameStart.length() + 7, requestor);
 			} catch (Throwable t) {
 				DroolsIDEPlugin.log(t);
 			}

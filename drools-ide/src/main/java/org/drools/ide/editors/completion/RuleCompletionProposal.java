@@ -1,5 +1,7 @@
 package org.drools.ide.editors.completion;
 
+import java.util.Comparator;
+
 /**
  * Holds a completion proposal to be popped up.
  * 
@@ -43,6 +45,13 @@ public class RuleCompletionProposal {
     
     public String toString() {
         return content;
+    }
+    
+    public static class RuleCompletionProposalComparator implements Comparator {
+		public int compare(Object arg0, Object arg1) {
+			return ((RuleCompletionProposal) arg0).getDisplay()
+				.compareTo(((RuleCompletionProposal) arg1).getDisplay());
+		}
     }
     
 }
