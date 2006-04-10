@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 public class DRLCompletionProcessorTest extends TestCase {
 
     public void testLookBehind() {
-        DefaultCompletionProcessor proc = new DefaultCompletionProcessor();
+        DefaultCompletionProcessor proc = new DefaultCompletionProcessor(null);
         
         assertEquals("something", proc.stripWhiteSpace(" something"));
         assertEquals("another", proc.stripWhiteSpace("another"));
@@ -19,13 +19,13 @@ public class DRLCompletionProcessorTest extends TestCase {
     }
     
     public void testPrefixExist() {
-        DefaultCompletionProcessor proc = new DefaultCompletionProcessor();
+        DefaultCompletionProcessor proc = new DefaultCompletionProcessor(null);
         assertFalse(proc.doesPrefixExist("something "));
         assertTrue(proc.doesPrefixExist("y"));
     }
     
     public void testPrefixFiltering() {
-        DefaultCompletionProcessor proc = new DefaultCompletionProcessor();
+        DefaultCompletionProcessor proc = new DefaultCompletionProcessor(null);
 
         List raw = new ArrayList();
         raw.add(new RuleCompletionProposal("aardvark", "something"));
