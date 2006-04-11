@@ -11,15 +11,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.audit.event.ActivationLogEvent;
+import org.drools.audit.event.LogEvent;
+import org.drools.audit.event.ObjectLogEvent;
 import org.drools.ide.DroolsIDEPlugin;
 import org.drools.ide.DroolsPluginImages;
 import org.drools.ide.debug.actions.DeleteLogAction;
 import org.drools.ide.debug.actions.OpenLogAction;
 import org.drools.ide.debug.actions.RefreshLogAction;
 import org.drools.ide.debug.actions.ShowEventCauseAction;
-import org.drools.reteoo.event.ActivationLogEvent;
-import org.drools.reteoo.event.LogEvent;
-import org.drools.reteoo.event.ObjectLogEvent;
 import org.eclipse.debug.ui.AbstractDebugView;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
