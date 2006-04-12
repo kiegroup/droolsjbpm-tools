@@ -44,7 +44,7 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
     private static final Pattern   packagePattern      = Pattern.compile( "package\\s+([^\"]+)",
                                                                           Pattern.DOTALL );
 
-    private static final Pattern   functionNamePattern = Pattern.compile( "function\\s+([^\\s\\(]+).*",
+    private static final Pattern   functionNamePattern = Pattern.compile( "function\\s+(.*)\\s+(.*)\\(.*\\).*",
             															  Pattern.DOTALL );
 
     private static final Pattern   importNamePattern   = Pattern.compile( "import\\s+([^\"]+)",
@@ -115,7 +115,7 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
      */
     private PackageTreeNode createPackageTreeNode() {
         PackageTreeNode packageTreeNode = new PackageTreeNode();
-        populatePackageTreeNode( packageTreeNode );
+        populatePackageTreeNode( packageTreeNode, getRuleFileContents() );
         return packageTreeNode;
     }
 
@@ -124,8 +124,7 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
      * 
      * @param packageTreeNode the node to populate
      */
-    private void populatePackageTreeNode(PackageTreeNode packageTreeNode) {
-        String ruleFileContents = getRuleFileContents();
+    public void populatePackageTreeNode(PackageTreeNode packageTreeNode, String ruleFileContents) {
         StringReader stringReader = new StringReader( ruleFileContents );
         BufferedReader bufferedReader = new BufferedReader( stringReader );
         try {
@@ -150,7 +149,7 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
                 }
                 matcher = functionNamePattern.matcher( st );
                 if ( matcher.matches() ) {
-                    String functionName = matcher.group( 1 );
+                    String functionName = matcher.group( matcher.groupCount() );
                     packageTreeNode.addFunction( functionName + "()",
                                                  offset,
                                                  st.length() );
