@@ -44,6 +44,9 @@ public class DefaultCompletionProcessor implements IContentAssistProcessor {
     private static final Pattern IMPORT_PATTERN = Pattern.compile(".*\\Wimport\\W[^;]*", Pattern.DOTALL);
 
     private EditorPart editor;
+   
+    public DefaultCompletionProcessor() {
+    }    
     
     public DefaultCompletionProcessor(EditorPart editor) {
     	this.editor = editor;
