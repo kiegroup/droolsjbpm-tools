@@ -56,10 +56,9 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
     private Object[] getAgendaElements(IJavaObject workingMemoryImpl) throws DebugException {
         List result = new ArrayList();
         IValue agendaGroupObjects = DebugUtil.getValueByExpression("return getAgenda().getAgendaGroups();", workingMemoryImpl);
-        IValue stackObjects = DebugUtil.getValueByExpression("return getAgenda().getStack();", workingMemoryImpl);
-        if (agendaGroupObjects instanceof IJavaArray && stackObjects instanceof IJavaArray) {
+        IValue focus = DebugUtil.getValueByExpression("return getAgenda().getFocus();", workingMemoryImpl);
+        if (agendaGroupObjects instanceof IJavaArray) {
 	        IJavaArray agendaGroupArray = (IJavaArray) agendaGroupObjects;
-	        IJavaArray stackArray = (IJavaArray) stackObjects;
 	    	IJavaValue[] agendaGroupValueArray = agendaGroupArray.getValues();
 	        for (int i = 0; i < agendaGroupValueArray.length; i++) {
 	        	IJavaValue agendaGroup = agendaGroupValueArray[i];
@@ -82,11 +81,8 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
 	            	}
 	            }
 	        	boolean active = false;
-	        	IJavaValue[] stackValueArray = stackArray.getValues();
-	            for (int j = 0; j < stackValueArray.length; j++) {
-	            	if (agendaGroup.equals(stackValueArray[j])) {
-	            		active = true;
-	            	}
+            	if (agendaGroup.equals(focus)) {
+            		active = true;
 	            }
 	            result.add(new VariableWrapper(name + "[" + (active ? "focus" : "nofocus") + "]", 
 	            		new ObjectWrapper((IJavaObject) agendaGroup,
