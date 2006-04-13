@@ -17,6 +17,7 @@ import org.drools.compiler.ParserError;
 import org.drools.compiler.RuleError;
 import org.drools.ide.DroolsIDEPlugin;
 import org.drools.ide.editors.DSLAdapter;
+import org.drools.ide.preferences.IDroolsConstants;
 import org.drools.ide.util.ProjectClassLoader;
 import org.drools.lang.descr.PackageDescr;
 import org.eclipse.core.resources.IFile;
@@ -82,9 +83,13 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
     
     protected void incrementalBuild(IResourceDelta delta,
             IProgressMonitor monitor) throws CoreException {
-        delta.accept(new DroolsBuildDeltaVisitor());
-    	// to make sure that all rules are checked when a java file is changed 
-    	// fullBuild(monitor);
+    	boolean buildAll = DroolsIDEPlugin.getDefault().getPreferenceStore().getBoolean(IDroolsConstants.BUILD_ALL);
+        if (buildAll) {
+        	// to make sure that all rules are checked when a java file is changed 
+        	fullBuild(monitor);
+        } else {
+        	delta.accept(new DroolsBuildDeltaVisitor());
+        }
     }
 
     private class DroolsBuildVisitor implements IResourceVisitor {

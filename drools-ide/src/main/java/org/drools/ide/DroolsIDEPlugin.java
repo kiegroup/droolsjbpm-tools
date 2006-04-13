@@ -6,9 +6,11 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.drools.ide.preferences.IDroolsConstants;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugException;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Color;
@@ -143,4 +145,9 @@ public class DroolsIDEPlugin extends AbstractUIPlugin {
 	public void setColor(String type, Color color) {
 		colors.put(type, color);
 	}
+	
+	protected void initializeDefaultPreferences(IPreferenceStore store) {
+		store.setDefault(IDroolsConstants.BUILD_ALL, false);
+	}
+
 }
