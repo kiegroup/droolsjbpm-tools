@@ -5,9 +5,18 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
+import org.drools.ide.DroolsIDEPlugin;
+import org.drools.ide.builder.IDroolsModelMarker;
+import org.drools.lang.dsl.template.MappingError;
 import org.drools.lang.dsl.template.NLMappingItem;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -59,7 +68,9 @@ public class DSLEditor extends EditorPart {
 
     private void saveFile(IProgressMonitor monitor,
                           File outputFile, FileEditorInput input) {
-        try {            
+        try {
+            validate( input ); 
+            
             FileWriter writer = new FileWriter(outputFile);
             model.save( writer );
             
@@ -73,6 +84,51 @@ public class DSLEditor extends EditorPart {
         }
     }
 
+    private void validate(FileEditorInput input) {
+        removeProblemsFor( input.getFile() );
+        List errs = new ArrayList();
+        for ( Iterator iter = model.getMappings().iterator(); iter.hasNext(); ) {
+            NLMappingItem item = (NLMappingItem) iter.next();
+            errs.addAll( model.validateMapping( item ) );
+        }
+        if (errs.size() > 0) {
+            for ( Iterator iter = errs.iterator(); iter.hasNext(); ) {
+                MappingError mapEr = (MappingError) iter.next();
+                createMarker( input.getFile(), mapEr.getMessage() + "  From [" + mapEr.getTemplateText() + "]", -1 );
+            }
+        }
+    }
+
+    private void createMarker(final IResource res, final String message, final int lineNumber) {
+        try {
+            IWorkspaceRunnable r= new IWorkspaceRunnable() {
+                public void run(IProgressMonitor monitor) throws CoreException {
+                    IMarker marker = res
+                        .createMarker(IDroolsModelMarker.DROOLS_MODEL_PROBLEM_MARKER);
+                    marker.setAttribute(IMarker.MESSAGE, message);
+                    marker.setAttribute(IMarker.SEVERITY,
+                            IMarker.SEVERITY_ERROR);
+                    marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
+                }
+            };
+            res.getWorkspace().run(r, null, IWorkspace.AVOID_UPDATE, null);
+        } catch (CoreException e) {
+            DroolsIDEPlugin.log(e);
+        }
+    }
+    
+    private void removeProblemsFor(IResource resource) {
+        try {
+            if (resource != null && resource.exists()) {
+                resource.deleteMarkers(
+                        IDroolsModelMarker.DROOLS_MODEL_PROBLEM_MARKER, false,
+                        IResource.DEPTH_INFINITE);
+            }
+        } catch (CoreException e) {
+            DroolsIDEPlugin.log(e);
+        }
+    }    
+    
     void makeClean() {
         this.dirty = false;
         firePropertyChange( PROP_DIRTY );
