@@ -2,6 +2,8 @@ package org.drools.ide.editors.completion;
 
 import java.util.Comparator;
 
+import org.eclipse.swt.graphics.Image;
+
 /**
  * Holds a completion proposal to be popped up.
  * 
@@ -12,23 +14,26 @@ public class RuleCompletionProposal {
 	
     private String content;
     private String display;
-    private int offset;
+    private int replacementLength;
+    private int cursorPosition;
+    private Image image;
     
     /** This is used when the stuff that is displayed, is the stuff that is used. */
-    public RuleCompletionProposal(String content) {
-        this(content, content);
+    public RuleCompletionProposal(int replacementLength, String content) {
+        this(replacementLength, content, content);
     }
 
     /** This is used when a different display value is shown to what is put in when selected. */
-    public RuleCompletionProposal(String display, String content) {
-        this(display, content, content.length());
+    public RuleCompletionProposal(int replacementLength, String display, String content) {
+        this(replacementLength, display, content, content.length());
     }
 
     /** This is used when a different display value is shown to what is put in when selected. */
-    public RuleCompletionProposal(String display, String content, int offset) {
+    public RuleCompletionProposal(int replacementLength, String display, String content, int cursorPosition) {
+    	this.replacementLength = replacementLength;
         this.content = content;
         this.display = display;
-        this.offset = offset;
+        this.cursorPosition = cursorPosition;
     }
 
     public String getContent() {
@@ -39,9 +44,21 @@ public class RuleCompletionProposal {
         return display;
     }
     
-    public int getOffset() {
-    	return offset;
+    public int getReplacementLength() {
+		return replacementLength;
+	}
+
+	public int getCursorPosition() {
+    	return cursorPosition;
     }
+    
+	public Image getImage() {
+		return image;
+	}
+
+	public void setImage(Image image) {
+		this.image = image;
+	}
     
     public String toString() {
         return content;
@@ -53,5 +70,4 @@ public class RuleCompletionProposal {
 				.compareTo(((RuleCompletionProposal) arg1).getDisplay());
 		}
     }
-    
 }

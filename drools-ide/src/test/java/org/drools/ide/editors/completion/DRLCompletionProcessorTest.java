@@ -18,32 +18,28 @@ public class DRLCompletionProcessorTest extends TestCase {
         
     }
     
-    public void testPrefixExist() {
-        DefaultCompletionProcessor proc = new DefaultCompletionProcessor(null);
-        assertFalse(proc.doesPrefixExist("something "));
-        assertTrue(proc.doesPrefixExist("y"));
-    }
-    
     public void testPrefixFiltering() {
         DefaultCompletionProcessor proc = new DefaultCompletionProcessor(null);
 
-        List raw = new ArrayList();
-        raw.add(new RuleCompletionProposal("aardvark", "something"));
-        raw.add(new RuleCompletionProposal("smeg"));
-        raw.add(new RuleCompletionProposal("apple"));
-        raw.add(new RuleCompletionProposal("ape", "zzzzz"));
+        List list = new ArrayList();
+        list.add(new RuleCompletionProposal(0, "aardvark", "something"));
+        list.add(new RuleCompletionProposal(0, "smeg"));
+        list.add(new RuleCompletionProposal(0, "apple"));
+        list.add(new RuleCompletionProposal(0, "ape", "ape"));
         
-        List result = proc.filterList(raw, "a");
-        assertEquals(3, result.size());
-        assertEquals("something", result.get(0).toString());
-        assertEquals("apple", result.get(1).toString());
-        assertEquals("zzzzz", result.get(2).toString());
+        proc.filterProposalsOnPrefix("a", list);
+        assertEquals(2, list.size());
+        assertEquals("apple", list.get(0).toString());
+        assertEquals("ape", list.get(1).toString());
 
         
-        result = proc.filterList(raw, "xzyz");
-        assertEquals(0, result.size());
-        
-        
+        list = new ArrayList();
+        list.add(new RuleCompletionProposal(0, "aardvark", "something"));
+        list.add(new RuleCompletionProposal(0, "smeg"));
+        list.add(new RuleCompletionProposal(0, "apple"));
+        list.add(new RuleCompletionProposal(0, "ape", "zzzzz"));
+        proc.filterProposalsOnPrefix("xzyz", list);
+        assertEquals(0, list.size());
     }
     
 }

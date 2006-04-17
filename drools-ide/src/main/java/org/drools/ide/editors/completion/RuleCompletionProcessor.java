@@ -4,9 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.drools.ide.DroolsIDEPlugin;
 import org.drools.ide.editors.DRLRuleEditor;
 import org.drools.ide.editors.DSLAdapter;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.jdt.core.CompletionRequestor;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 
 
@@ -25,53 +33,88 @@ import org.eclipse.ui.part.FileEditorInput;
  */
 public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
-    static final Pattern condition = Pattern.compile(".*\\Wwhen\\W.*", Pattern.DOTALL);
+    private static final Pattern condition = Pattern.compile(".*\\Wwhen\\W.*", Pattern.DOTALL);
+    private static final Pattern consequence = Pattern.compile(".*\\Wthen\\W.*", Pattern.DOTALL);
+    private static final Pattern query = Pattern.compile(".*\\Wquery\\W.*", Pattern.DOTALL);
 
-    static final Pattern consequence = Pattern.compile(".*\\Wthen\\W.*", Pattern.DOTALL);
-    static final Pattern query = Pattern.compile(".*\\Wquery\\W.*", Pattern.DOTALL);
-
-    private DRLRuleEditor editor;
-    
     public RuleCompletionProcessor(DRLRuleEditor editor) {
     	super(editor);
-        this.editor = editor;
     }
     
-    protected List getPossibleProposals(ITextViewer viewer, String backText) {
-
-        List list = new ArrayList();
-        DSLAdapter adapter = getDSLAdapter(viewer, editor);
-        
-        if (query.matcher( backText ).matches()) {
-            list.addAll(adapter.listConditionItems());
-        } else if (consequence.matcher(backText).matches()) {
-            list.addAll(adapter.listConsequenceItems());
-            if (!adapter.hasConsequences()) {
-                list.add(new RuleCompletionProposal("modify", "modify( );"));
-                list.add(new RuleCompletionProposal("retract", "retract( );"));
-                list.add(new RuleCompletionProposal("assert", "assert( );"));
-            }
-        } else if (condition.matcher(backText).matches()) {
-            list.addAll(adapter.listConditionItems());
-            if (!adapter.hasConditions()) {
-                list.add( new RuleCompletionProposal("exists") );
-                list.add( new RuleCompletionProposal("not") );
-                list.add( new RuleCompletionProposal("and") );
-                list.add( new RuleCompletionProposal("or") );
-                list.add( new RuleCompletionProposal("eval", "eval(   )") );
-            }
-            list.add(new RuleCompletionProposal("then", "then\n\t"));
-        } else {             
-            //we are in rule header
-            list.add(new RuleCompletionProposal("salience"));
-            list.add(new RuleCompletionProposal("no-loop"));
-            list.add(new RuleCompletionProposal("agenda-group"));
-            list.add(new RuleCompletionProposal("duration"));            
-            list.add(new RuleCompletionProposal("auto-focus"));            
-            list.add(new RuleCompletionProposal("when", "when\n\t"));
+    protected DRLRuleEditor getDRLEditor() {
+    	return (DRLRuleEditor) getEditor();
+    }
+    
+	protected List getCompletionProposals(ITextViewer viewer, final int documentOffset) {
+        try {
+	        final List list = new ArrayList();
+	        DSLAdapter adapter = getDSLAdapter(viewer);
+	        
+	        IDocument doc = viewer.getDocument();
+	        String backText = readBackwards(documentOffset, doc);            
+	
+	        final String prefix = stripWhiteSpace(backText);
+	        
+	        if (query.matcher(backText).matches()) {
+	            list.addAll(adapter.listConditionItems());
+	        } else if (consequence.matcher(backText).matches()) {
+	            list.addAll(adapter.listConsequenceItems());
+	            if (!adapter.hasConsequences()) {
+	                list.add(new RuleCompletionProposal(prefix.length(), "modify", "modify( );"));
+	                list.add(new RuleCompletionProposal(prefix.length(), "retract", "retract( );"));
+	                list.add(new RuleCompletionProposal(prefix.length(), "assert", "assert( );"));
+	                filterProposalsOnPrefix(prefix, list);
+	
+//	                IEditorInput input = getEditor().getEditorInput();
+//	        		if (input instanceof IFileEditorInput) {
+//	        			IProject project = ((IFileEditorInput) input).getFile().getProject();
+//	        			IJavaProject javaProject = JavaCore.create(project);
+//	        			
+//	        			CompletionRequestor requestor = new CompletionRequestor() {
+//	        				public void accept(org.eclipse.jdt.core.CompletionProposal proposal) {
+//	        					String display = new String(proposal.getCompletion());
+//	        					String completion = display;
+//	        					if (prefix.lastIndexOf(".") != -1) {
+//	        						completion = prefix.substring(0, prefix.lastIndexOf(".") + 1) + completion;
+//	        					}
+//	        					System.out.println(completion);
+//	        					list.add(new RuleCompletionProposal(documentOffset, prefix.length(), display, completion));
+//	        				}
+//	        			};
+//	
+//	        			try {
+//	        				javaProject.newEvaluationContext().codeComplete(backText, backText.length(), requestor);
+//	        			} catch (Throwable t) {
+//	        				DroolsIDEPlugin.log(t);
+//	        			}
+//	        		}
+	            }
+	        } else if (condition.matcher(backText).matches()) {
+	            list.addAll(adapter.listConditionItems());
+	            if (!adapter.hasConditions()) {
+	                list.add(new RuleCompletionProposal(prefix.length(), "exists"));
+	                list.add(new RuleCompletionProposal(prefix.length(), "not"));
+	                list.add(new RuleCompletionProposal(prefix.length(), "and"));
+	                list.add(new RuleCompletionProposal(prefix.length(), "or"));
+	                list.add(new RuleCompletionProposal(prefix.length(), "eval", "eval(   )"));
+	            }
+	            list.add(new RuleCompletionProposal(prefix.length(), "then", "then\n\t"));
+	            filterProposalsOnPrefix(prefix, list);
+	        } else {             
+	            //we are in rule header
+	            list.add(new RuleCompletionProposal(prefix.length(), "salience"));
+	            list.add(new RuleCompletionProposal(prefix.length(), "no-loop"));
+	            list.add(new RuleCompletionProposal(prefix.length(), "agenda-group"));
+	            list.add(new RuleCompletionProposal(prefix.length(), "duration"));            
+	            list.add(new RuleCompletionProposal(prefix.length(), "auto-focus"));            
+	            list.add(new RuleCompletionProposal(prefix.length(), "when", "when\n\t"));
+	            filterProposalsOnPrefix(prefix, list);
+	        }
+	        return list;           
+        } catch (Throwable t) {
+        	DroolsIDEPlugin.log(t);
         }
-        
-        return list;           
+        return null;
     }
 
     /** 
@@ -81,16 +124,20 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
      * 
      * This delegates to DSLAdapter to poke around the project to try and load the DSL.
      */
-    private DSLAdapter getDSLAdapter(ITextViewer viewer, DRLRuleEditor editor) {
-        DSLAdapter adapter = editor.getDSLAdapter();
-        if (adapter == null) {
-            String content = viewer.getDocument().get();
-            adapter = new DSLAdapter(content, ((FileEditorInput) editor.getEditorInput()).getFile());
-            if (adapter.isValid()) {
-                editor.setDSLAdapter( adapter );
-            }
-        }
-        return adapter;
+    private DSLAdapter getDSLAdapter(ITextViewer viewer) {
+    	// TODO: cache DSL adapter in plugin, and reset when dsl file saved
+    	// retrieve dsl name always (might have changed) and try retrieving
+    	// cached dsl from plugin first
+    	return new DSLAdapter(viewer.getDocument().get(), ((FileEditorInput) getEditor().getEditorInput()).getFile());
+//        DSLAdapter adapter = getDRLEditor().getDSLAdapter();
+//        if (adapter == null) {
+//            String content = viewer.getDocument().get();
+//            adapter = new DSLAdapter(content, ((FileEditorInput) getEditor().getEditorInput()).getFile());
+//            if (adapter.isValid()) {
+//            	getDRLEditor().setDSLAdapter(adapter);
+//            }
+//        }
+//        return adapter;
     }
 
 	

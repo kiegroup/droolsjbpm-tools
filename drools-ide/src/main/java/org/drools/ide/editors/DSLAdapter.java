@@ -107,20 +107,18 @@ public class DSLAdapter {
         List conditions = grammar.getMappings( "when" );
         List consequences = grammar.getMappings( "then" );
         
-        conditionProposals = new ArrayList(conditions.size());
-        consequenceProposals = new ArrayList(consequences.size());
-        
-        buildProposals( conditions, conditionProposals );
-        buildProposals( consequences, consequenceProposals );
-
+        conditionProposals = buildProposals(conditions);
+        consequenceProposals = buildProposals(consequences);
     }
 
-    private void buildProposals(List suggestions, List proposals) {
-        for ( Iterator iter = suggestions.iterator(); iter.hasNext(); ) {
-            NLMappingItem text = (NLMappingItem) iter.next();
-            RuleCompletionProposal proposal = new RuleCompletionProposal(text.getNaturalTemplate());
-            proposals.add(proposal);
+    private List buildProposals(List suggestions) {
+    	List result = new ArrayList(suggestions.size());
+    	Iterator iterator = suggestions.iterator();
+        while (iterator.hasNext()) {
+            NLMappingItem text = (NLMappingItem) iterator.next();
+            result.add(text.getNaturalTemplate());
         }
+        return result;
     }
 
     private void closeStream(InputStream stream) {

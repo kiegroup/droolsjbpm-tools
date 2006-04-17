@@ -27,6 +27,8 @@ public class DroolsPluginImages {
     public static final String CREATE_ACTIVATION = "CreateActivation";
     public static final String CANCEL_ACTIVATION = "CancelActivation";
     public static final String EXECUTE_ACTIVATION = "ExecuteActivation";
+    public static final String CLASS = "Class";
+    public static final String PACKAGE = "Package";
     
     private static ImageRegistry imageRegistry;
     private static final String PATH_SUFFIX = "/icons/";
@@ -47,6 +49,8 @@ public class DroolsPluginImages {
         declareRegistryImage(CREATE_ACTIVATION, "arrowright.GIF");
         declareRegistryImage(CANCEL_ACTIVATION, "arrowleft.GIF");
         declareRegistryImage(EXECUTE_ACTIVATION, "bluediamond.GIF");
+        declareRegistryImage(CLASS, "class_obj.gif");
+        declareRegistryImage(PACKAGE, "package_obj.gif");
     }
 
     /**
