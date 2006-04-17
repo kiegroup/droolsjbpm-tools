@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.ide.editors.completion.RuleCompletionProposal;
 import org.drools.lang.dsl.template.NLGrammar;
 import org.drools.lang.dsl.template.NLMappingItem;
 import org.eclipse.core.resources.IFile;

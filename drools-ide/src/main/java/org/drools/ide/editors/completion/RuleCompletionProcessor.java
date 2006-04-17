@@ -7,17 +7,9 @@ import java.util.regex.Pattern;
 import org.drools.ide.DroolsIDEPlugin;
 import org.drools.ide.editors.DRLRuleEditor;
 import org.drools.ide.editors.DSLAdapter;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.jdt.core.CompletionRequestor;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
-
-
 
 /**
  * For handling within rules, including DSLs.
