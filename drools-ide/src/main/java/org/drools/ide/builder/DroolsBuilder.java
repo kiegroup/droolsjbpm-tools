@@ -11,6 +11,7 @@ import org.apache.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.FunctionError;
 import org.drools.compiler.GlobalError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.ParserError;
@@ -215,6 +216,18 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         		ParserError parserError = (ParserError) error;
         		// TODO try to retrieve character start-end
         		markers.add(new DroolsBuildMarker(parserError.getMessage(), parserError.getRow()));
+        	} else if (error instanceof FunctionError) {
+        		FunctionError functionError = (FunctionError) error;
+        		// TODO add line to function error
+        		// TODO try to retrieve character start-end
+        		if (functionError.getObject() instanceof CompilationProblem[]) {
+        			CompilationProblem[] problems = (CompilationProblem[]) functionError.getObject();
+        			for (int j = 0; j < problems.length; j++) {
+        				markers.add(new DroolsBuildMarker(problems[j].getMessage(), -1));
+        			}
+        		} else {
+        			markers.add(new DroolsBuildMarker(functionError.getFunctionDescr().getName() + ":" + functionError.getMessage(), -1));
+        		}
         	} else {
         		markers.add(new DroolsBuildMarker("Unknown DroolsError " + error.getClass() + ": " + error));
         	}
@@ -236,7 +249,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
     }
 
     /** Actually parse the rules into the AST */
-    private static PackageDescr parsePackage(String content,
+    public static PackageDescr parsePackage(String content,
                                              DrlParser parser,
                                              Reader dslReader) throws DroolsParserException {
         if (dslReader != null) 
