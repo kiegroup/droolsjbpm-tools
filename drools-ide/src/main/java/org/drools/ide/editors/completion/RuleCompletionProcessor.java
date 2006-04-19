@@ -1,14 +1,24 @@
 package org.drools.ide.editors.completion;
 
+import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.drools.compiler.DrlParser;
 import org.drools.ide.DroolsIDEPlugin;
+import org.drools.ide.DroolsPluginImages;
+import org.drools.ide.builder.DroolsBuilder;
 import org.drools.ide.editors.DRLRuleEditor;
 import org.drools.ide.editors.DSLAdapter;
+import org.drools.lang.descr.PackageDescr;
+import org.drools.semantics.java.ClassTypeResolver;
+import org.drools.util.asm.ClassFieldInspector;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.part.FileEditorInput;
 
 /**
@@ -52,9 +62,9 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 	        } else if (consequence.matcher(backText).matches()) {
 	            list.addAll(adapter.listConsequenceItems());
 	            if (!adapter.hasConsequences()) {
-	                list.add(new RuleCompletionProposal(prefix.length(), "modify", "modify( );"));
-	                list.add(new RuleCompletionProposal(prefix.length(), "retract", "retract( );"));
-	                list.add(new RuleCompletionProposal(prefix.length(), "assert", "assert( );"));
+	                list.add(new RuleCompletionProposal(prefix.length(), "modify", "modify();", 7));
+	                list.add(new RuleCompletionProposal(prefix.length(), "retract", "retract();", 8));
+	                list.add(new RuleCompletionProposal(prefix.length(), "assert", "assert();", 7));
 	                filterProposalsOnPrefix(prefix, list);
 	
 //	                IEditorInput input = getEditor().getEditorInput();
@@ -83,23 +93,67 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 	            }
 	        } else if (condition.matcher(backText).matches()) {
 	            list.addAll(adapter.listConditionItems());
+	            Image image = DroolsPluginImages.getImage(DroolsPluginImages.DROOLS);
 	            if (!adapter.hasConditions()) {
-	                list.add(new RuleCompletionProposal(prefix.length(), "exists"));
-	                list.add(new RuleCompletionProposal(prefix.length(), "not"));
-	                list.add(new RuleCompletionProposal(prefix.length(), "and"));
-	                list.add(new RuleCompletionProposal(prefix.length(), "or"));
-	                list.add(new RuleCompletionProposal(prefix.length(), "eval", "eval(   )"));
+	            	RuleCompletionProposal prop = new RuleCompletionProposal(prefix.length(), "exists", "exists ");
+	            	prop.setImage(image);
+	                list.add(prop);
+	                prop = new RuleCompletionProposal(prefix.length(), "not", "not ");
+	            	prop.setImage(image);
+	                list.add(prop);
+	                prop = new RuleCompletionProposal(prefix.length(), "and", "and ");
+	            	prop.setImage(image);
+	                list.add(prop);
+	                prop = new RuleCompletionProposal(prefix.length(), "or", "or ");
+	            	prop.setImage(image);
+	                list.add(prop);
+	                prop = new RuleCompletionProposal(prefix.length(), "eval", "eval()", 5);
+	            	prop.setImage(image);
+	                list.add(prop);
 	            }
-	            list.add(new RuleCompletionProposal(prefix.length(), "then", "then\n\t"));
+	            RuleCompletionProposal prop = new RuleCompletionProposal(prefix.length(), "then", "then\n\t");
+            	prop.setImage(image);
+	            list.add(prop);
+	            
+	            String content = viewer.getDocument().get();
+	            Reader dslReader = DSLAdapter.getDSLContent(content, ((FileEditorInput) getEditor().getEditorInput()).getFile());
+	            DrlParser parser = new DrlParser();
+	            PackageDescr descr = DroolsBuilder.parsePackage(content, parser, dslReader);
+	            List imports = descr.getImports();
+	            Iterator iterator = imports.iterator();
+	            while (iterator.hasNext()) {
+		            String name = (String) iterator.next();
+		            int index = name.lastIndexOf(".");
+		            if (index != -1) {
+		            	String className = name.substring(index + 1);
+		            	prop = new RuleCompletionProposal(prefix.length(), className, className + "()", className.length() + 1);
+		            	prop.setPriority(-1);
+		            	prop.setImage(DroolsPluginImages.getImage(DroolsPluginImages.CLASS));
+		            	list.add(prop);
+		            }
+	            }
+//	            if (true) {
+//	            	String className = "";
+//	            	ClassTypeResolver resolver = new ClassTypeResolver(imports);
+//	            	Class conditionClass = resolver.resolveType(className);
+//	            	ClassFieldInspector inspector = new ClassFieldInspector(conditionClass);
+//	            	Map fields = inspector.getFieldNames();
+//	            	Iterator iterator2 = fields.keySet().iterator();
+//	            	while (iterator2.hasNext()) {
+//	            		String varName = (String) iterator2.next();
+//	            		list.add(new RuleCompletionProposal(prefix.length(), varName, varName + " "));
+//	            	}
+//	            }
+	            
 	            filterProposalsOnPrefix(prefix, list);
 	        } else {             
 	            //we are in rule header
-	            list.add(new RuleCompletionProposal(prefix.length(), "salience"));
-	            list.add(new RuleCompletionProposal(prefix.length(), "no-loop"));
-	            list.add(new RuleCompletionProposal(prefix.length(), "agenda-group"));
-	            list.add(new RuleCompletionProposal(prefix.length(), "duration"));            
-	            list.add(new RuleCompletionProposal(prefix.length(), "auto-focus"));            
-	            list.add(new RuleCompletionProposal(prefix.length(), "when", "when\n\t"));
+	            list.add(new RuleCompletionProposal(prefix.length(), "salience", "salience "));
+	            list.add(new RuleCompletionProposal(prefix.length(), "no-loop", "no-loop "));
+	            list.add(new RuleCompletionProposal(prefix.length(), "agenda-group", "agenda-group "));
+	            list.add(new RuleCompletionProposal(prefix.length(), "duration", "duration "));            
+	            list.add(new RuleCompletionProposal(prefix.length(), "auto-focus", "auto-focus "));            
+	            list.add(new RuleCompletionProposal(prefix.length(), "when", "when\n\t "));
 	            filterProposalsOnPrefix(prefix, list);
 	        }
 	        return list;           
