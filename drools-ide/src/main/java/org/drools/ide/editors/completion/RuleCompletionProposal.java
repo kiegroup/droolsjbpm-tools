@@ -17,6 +17,7 @@ public class RuleCompletionProposal {
     private int replacementLength;
     private int cursorPosition;
     private Image image;
+    private int priority;
     
     /** This is used when the stuff that is displayed, is the stuff that is used. */
     public RuleCompletionProposal(int replacementLength, String content) {
@@ -60,14 +61,29 @@ public class RuleCompletionProposal {
 		this.image = image;
 	}
     
+	public int getPriority() {
+		return priority;
+	}
+
+	public void setPriority(int priority) {
+		this.priority = priority;
+	}
+    
     public String toString() {
         return content;
     }
     
     public static class RuleCompletionProposalComparator implements Comparator {
 		public int compare(Object arg0, Object arg1) {
-			return ((RuleCompletionProposal) arg0).getDisplay()
-				.compareTo(((RuleCompletionProposal) arg1).getDisplay());
+			RuleCompletionProposal prop0 = (RuleCompletionProposal) arg0;
+			RuleCompletionProposal prop1 = (RuleCompletionProposal) arg1;
+			if (prop0.getPriority() == prop1.getPriority()) {
+				return prop0.getDisplay().compareTo(prop1.getDisplay());
+			} else if (prop0.getPriority() > prop1.getPriority()) {
+				return -1;
+			} else {
+				return 1;
+			}
 		}
     }
 }
