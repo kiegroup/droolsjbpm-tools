@@ -110,40 +110,41 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 	                prop = new RuleCompletionProposal(prefix.length(), "eval", "eval()", 5);
 	            	prop.setImage(image);
 	                list.add(prop);
+
+		            String content = viewer.getDocument().get();
+		            Reader dslReader = DSLAdapter.getDSLContent(content, ((FileEditorInput) getEditor().getEditorInput()).getFile());
+		            DrlParser parser = new DrlParser();
+		            PackageDescr descr = DroolsBuilder.parsePackage(content, parser, dslReader);
+		            List imports = descr.getImports();
+		            Iterator iterator = imports.iterator();
+		            while (iterator.hasNext()) {
+			            String name = (String) iterator.next();
+			            int index = name.lastIndexOf(".");
+			            if (index != -1) {
+			            	String className = name.substring(index + 1);
+			            	prop = new RuleCompletionProposal(prefix.length(), className, className + "()", className.length() + 1);
+			            	prop.setPriority(-1);
+			            	prop.setImage(DroolsPluginImages.getImage(DroolsPluginImages.CLASS));
+			            	list.add(prop);
+			            }
+		            }
+//		            if (true) {
+//		            	String className = "";
+//		            	ClassTypeResolver resolver = new ClassTypeResolver(imports);
+//		            	Class conditionClass = resolver.resolveType(className);
+//		            	ClassFieldInspector inspector = new ClassFieldInspector(conditionClass);
+//		            	Map fields = inspector.getFieldNames();
+//		            	Iterator iterator2 = fields.keySet().iterator();
+//		            	while (iterator2.hasNext()) {
+//		            		String varName = (String) iterator2.next();
+//		            		list.add(new RuleCompletionProposal(prefix.length(), varName, varName + " "));
+//		            	}
+//		            }
+		            
 	            }
 	            RuleCompletionProposal prop = new RuleCompletionProposal(prefix.length(), "then", "then\n\t");
             	prop.setImage(image);
 	            list.add(prop);
-	            
-	            String content = viewer.getDocument().get();
-	            Reader dslReader = DSLAdapter.getDSLContent(content, ((FileEditorInput) getEditor().getEditorInput()).getFile());
-	            DrlParser parser = new DrlParser();
-	            PackageDescr descr = DroolsBuilder.parsePackage(content, parser, dslReader);
-	            List imports = descr.getImports();
-	            Iterator iterator = imports.iterator();
-	            while (iterator.hasNext()) {
-		            String name = (String) iterator.next();
-		            int index = name.lastIndexOf(".");
-		            if (index != -1) {
-		            	String className = name.substring(index + 1);
-		            	prop = new RuleCompletionProposal(prefix.length(), className, className + "()", className.length() + 1);
-		            	prop.setPriority(-1);
-		            	prop.setImage(DroolsPluginImages.getImage(DroolsPluginImages.CLASS));
-		            	list.add(prop);
-		            }
-	            }
-//	            if (true) {
-//	            	String className = "";
-//	            	ClassTypeResolver resolver = new ClassTypeResolver(imports);
-//	            	Class conditionClass = resolver.resolveType(className);
-//	            	ClassFieldInspector inspector = new ClassFieldInspector(conditionClass);
-//	            	Map fields = inspector.getFieldNames();
-//	            	Iterator iterator2 = fields.keySet().iterator();
-//	            	while (iterator2.hasNext()) {
-//	            		String varName = (String) iterator2.next();
-//	            		list.add(new RuleCompletionProposal(prefix.length(), varName, varName + " "));
-//	            	}
-//	            }
 	            
 	            filterProposalsOnPrefix(prefix, list);
 	        } else {             
