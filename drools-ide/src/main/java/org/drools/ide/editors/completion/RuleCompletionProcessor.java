@@ -60,7 +60,14 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 	        if (query.matcher(backText).matches()) {
 	            list.addAll(adapter.listConditionItems());
 	        } else if (consequence.matcher(backText).matches()) {
-	            list.addAll(adapter.listConsequenceItems());
+	        	List dslConsequences = adapter.listConsequenceItems();
+	        	Iterator iterator = dslConsequences.iterator();
+	        	while (iterator.hasNext()) {
+	        		String consequence = (String) iterator.next();
+		            list.add(new RuleCompletionProposal(prefix.length(), consequence));
+	                // TODO prefix should be from beginning of line, not just last word ?
+		            filterProposalsOnPrefix(prefix, list);
+	        	}
 	            if (!adapter.hasConsequences()) {
 	                list.add(new RuleCompletionProposal(prefix.length(), "modify", "modify();", 7));
 	                list.add(new RuleCompletionProposal(prefix.length(), "retract", "retract();", 8));
@@ -92,7 +99,14 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 //	        		}
 	            }
 	        } else if (condition.matcher(backText).matches()) {
-	            list.addAll(adapter.listConditionItems());
+	        	List dslConditions = adapter.listConditionItems();
+	        	Iterator iterator = dslConditions.iterator();
+	        	while (iterator.hasNext()) {
+	        		String condition = (String) iterator.next();
+		            list.add(new RuleCompletionProposal(prefix.length(), condition));
+	                // TODO prefix should be from beginning of line, not just last word ?
+		            filterProposalsOnPrefix(prefix, list);
+	        	}
 	            Image image = DroolsPluginImages.getImage(DroolsPluginImages.DROOLS);
 	            if (!adapter.hasConditions()) {
 	            	RuleCompletionProposal prop = new RuleCompletionProposal(prefix.length(), "exists", "exists ");
@@ -116,7 +130,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		            DrlParser parser = new DrlParser();
 		            PackageDescr descr = DroolsBuilder.parsePackage(content, parser, dslReader);
 		            List imports = descr.getImports();
-		            Iterator iterator = imports.iterator();
+		            iterator = imports.iterator();
 		            while (iterator.hasNext()) {
 			            String name = (String) iterator.next();
 			            int index = name.lastIndexOf(".");
