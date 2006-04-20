@@ -4,7 +4,6 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.drools.compiler.DrlParser;
@@ -15,8 +14,6 @@ import org.drools.ide.builder.DroolsBuilder;
 import org.drools.ide.editors.DRLRuleEditor;
 import org.drools.ide.editors.DSLAdapter;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.semantics.java.ClassTypeResolver;
-import org.drools.util.asm.ClassFieldInspector;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
