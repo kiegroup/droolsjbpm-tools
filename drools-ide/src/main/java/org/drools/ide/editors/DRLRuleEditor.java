@@ -1,7 +1,9 @@
 package org.drools.ide.editors;
 
-import org.drools.ide.editors.scanners.RuleEditorMessages;
+import java.util.List;
+
 import org.drools.ide.editors.outline.RuleContentOutlinePage;
+import org.drools.ide.editors.scanners.RuleEditorMessages;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -19,6 +21,7 @@ public class DRLRuleEditor extends TextEditor {
 
     //used to provide additional content assistance/popups when DSLs are used.
     private DSLAdapter             dslAdapter;
+    private List imports;
 
     private RuleContentOutlinePage ruleContentOutline = null;
 
@@ -30,7 +33,7 @@ public class DRLRuleEditor extends TextEditor {
     public void dispose() {
         super.dispose();
     }
-
+    
     /** For user triggered content assistance */
     protected void createActions() {
         super.createActions();
@@ -60,6 +63,14 @@ public class DRLRuleEditor extends TextEditor {
     public void setDSLAdapter(DSLAdapter adapter) {
         dslAdapter = adapter;
     }
+    
+    public void setImports(List imports) {
+    	this.imports = imports;
+    }
+    
+    public List getImports() {
+    	return imports;
+    }
 
     public Object getAdapter(Class adapter) {
         if ( adapter.equals( IContentOutlinePage.class ) ) {
@@ -78,7 +89,11 @@ public class DRLRuleEditor extends TextEditor {
 
     public void doSave(IProgressMonitor monitor) {
         super.doSave( monitor );
-        if ( ruleContentOutline != null ) ruleContentOutline.update();
+        if ( ruleContentOutline != null ) {
+        	ruleContentOutline.update();
+        }
+        dslAdapter = null;
+        imports = null;
     }
 
 }

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.drools.compiler.DrlParser;
+import org.drools.compiler.DroolsParserException;
 import org.drools.ide.DroolsIDEPlugin;
 import org.drools.ide.DroolsPluginImages;
 import org.drools.ide.builder.DroolsBuilder;
@@ -16,6 +17,7 @@ import org.drools.ide.editors.DSLAdapter;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.semantics.java.ClassTypeResolver;
 import org.drools.util.asm.ClassFieldInspector;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.swt.graphics.Image;
@@ -125,11 +127,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 	            	prop.setImage(image);
 	                list.add(prop);
 
-		            String content = viewer.getDocument().get();
-		            Reader dslReader = DSLAdapter.getDSLContent(content, ((FileEditorInput) getEditor().getEditorInput()).getFile());
-		            DrlParser parser = new DrlParser();
-		            PackageDescr descr = DroolsBuilder.parsePackage(content, parser, dslReader);
-		            List imports = descr.getImports();
+	                List imports = getImports(viewer);
 		            iterator = imports.iterator();
 		            while (iterator.hasNext()) {
 			            String name = (String) iterator.next();
@@ -189,19 +187,30 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
     	// TODO: cache DSL adapter in plugin, and reset when dsl file saved
     	// retrieve dsl name always (might have changed) and try retrieving
     	// cached dsl from plugin first
-    	return new DSLAdapter(viewer.getDocument().get(), ((FileEditorInput) getEditor().getEditorInput()).getFile());
-//        DSLAdapter adapter = getDRLEditor().getDSLAdapter();
-//        if (adapter == null) {
-//            String content = viewer.getDocument().get();
-//            adapter = new DSLAdapter(content, ((FileEditorInput) getEditor().getEditorInput()).getFile());
-//            if (adapter.isValid()) {
-//            	getDRLEditor().setDSLAdapter(adapter);
-//            }
-//        }
-//        return adapter;
+//    	return new DSLAdapter(viewer.getDocument().get(), ((FileEditorInput) getEditor().getEditorInput()).getFile());
+        DSLAdapter adapter = getDRLEditor().getDSLAdapter();
+        if (adapter == null) {
+            String content = viewer.getDocument().get();
+            adapter = new DSLAdapter(content, ((FileEditorInput) getEditor().getEditorInput()).getFile());
+            if (adapter.isValid()) {
+            	getDRLEditor().setDSLAdapter(adapter);
+            }
+        }
+        return adapter;
     }
 
-	
+	private List getImports(ITextViewer viewer) throws CoreException, DroolsParserException {
+		List imports = getDRLEditor().getImports();
+        if (imports == null) {
+            String content = viewer.getDocument().get();
+            Reader dslReader = DSLAdapter.getDSLContent(content, ((FileEditorInput) getEditor().getEditorInput()).getFile());
+            DrlParser parser = new DrlParser();
+            PackageDescr descr = DroolsBuilder.parsePackage(content, parser, dslReader);
+            imports = descr.getImports();
+            getDRLEditor().setImports(imports);
+        }
+        return imports;
+	}
 
 
 }
