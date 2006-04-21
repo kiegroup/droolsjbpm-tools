@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTError;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -65,10 +66,16 @@ public class ReteViewer extends EditorPart {
 			}
 		});
 
-		Composite frameParent = new Composite(parent, SWT.EMBEDDED);
-		frameParent.setLayoutData(new GridData(GridData.FILL_BOTH));
-		frame = SWT_AWT.new_Frame(frameParent);
-		frame.setLayout(new BorderLayout());
+		try {
+			Composite frameParent = new Composite(parent, SWT.EMBEDDED);
+			frameParent.setLayoutData(new GridData(GridData.FILL_BOTH));
+			frame = SWT_AWT.new_Frame(frameParent);
+			frame.setLayout(new BorderLayout());
+		} catch (SWTError exc) {
+			// it is possible that this exception is thrown if 
+			// SWT is not supported, e.g. in Mac
+			DroolsIDEPlugin.log(exc);
+		}
 	}
 
 	private RuleBase getRuleBase() {
@@ -127,7 +134,9 @@ public class ReteViewer extends EditorPart {
 	}
 
 	public void clear() {
-		frame.removeAll();
+		if (frame != null) { // possible if frame creation failed
+			frame.removeAll();
+		}
 	}
 
 	public boolean isDirty() {
@@ -145,21 +154,23 @@ public class ReteViewer extends EditorPart {
 	}
 
 	private void generateReteView() {
-		clear();
-		try {
-			RuleBase ruleBase = getRuleBase();
-			if (ruleBase == null) {
-				// TODO signal user that rule cannot be parsed
-			} else {
-				ReteooJungViewerPanel viewer = new ReteooJungViewerPanel(
-						ruleBase);
-				frame.add(viewer);
-				frame.validate();
-				parent.layout();
+		if (frame != null) { // possible if frame creation failed
+			clear();
+			try {
+				RuleBase ruleBase = getRuleBase();
+				if (ruleBase == null) {
+					// TODO signal user that rule cannot be parsed
+				} else {
+					ReteooJungViewerPanel viewer = new ReteooJungViewerPanel(
+							ruleBase);
+					frame.add(viewer);
+					frame.validate();
+					parent.layout();
+				}
+			} catch (Throwable t) {
+				t.printStackTrace();
+				DroolsIDEPlugin.log(t);
 			}
-		} catch (Throwable t) {
-			t.printStackTrace();
-			DroolsIDEPlugin.log(t);
 		}
 	}
 }
