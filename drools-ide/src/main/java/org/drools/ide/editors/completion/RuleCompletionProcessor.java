@@ -13,6 +13,7 @@ import org.drools.ide.DroolsPluginImages;
 import org.drools.ide.builder.DroolsBuilder;
 import org.drools.ide.editors.DRLRuleEditor;
 import org.drools.ide.editors.DSLAdapter;
+import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
@@ -68,9 +69,27 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		            filterProposalsOnPrefix(prefix, list);
 	        	}
 	            if (!adapter.hasConsequences()) {
-	                list.add(new RuleCompletionProposal(prefix.length(), "modify", "modify();", 7));
-	                list.add(new RuleCompletionProposal(prefix.length(), "retract", "retract();", 8));
-	                list.add(new RuleCompletionProposal(prefix.length(), "assert", "assert();", 7));
+	            	Image image = DroolsPluginImages.getImage(DroolsPluginImages.DROOLS);
+	            	RuleCompletionProposal prop = new RuleCompletionProposal(prefix.length(), "modify", "modify();", 7);
+	            	prop.setImage(image);
+            		list.add(prop);
+            		prop = new RuleCompletionProposal(prefix.length(), "retract", "retract();", 8);
+	            	prop.setImage(image);
+            		list.add(prop);
+            		prop = new RuleCompletionProposal(prefix.length(), "assert", "assert();", 7);
+	            	prop.setImage(image);
+        			list.add(prop);
+        			
+        			List functions = getFunctions(viewer);
+		            iterator = functions.iterator();
+		            while (iterator.hasNext()) {
+			            String name = (String) iterator.next() + "()";
+		            	prop = new RuleCompletionProposal(prefix.length(), name, name + ";", name.length() - 1);
+		            	prop.setPriority(-1);
+		            	prop.setImage(DroolsPluginImages.getImage(DroolsPluginImages.METHOD));
+		            	list.add(prop);
+		            }
+		            
 	                filterProposalsOnPrefix(prefix, list);
 	
 //	                IEditorInput input = getEditor().getEditorInput();
@@ -199,15 +218,36 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 	private List getImports(ITextViewer viewer) throws CoreException, DroolsParserException {
 		List imports = getDRLEditor().getImports();
         if (imports == null) {
-            String content = viewer.getDocument().get();
-            Reader dslReader = DSLAdapter.getDSLContent(content, ((FileEditorInput) getEditor().getEditorInput()).getFile());
-            DrlParser parser = new DrlParser();
-            PackageDescr descr = DroolsBuilder.parsePackage(content, parser, dslReader);
-            imports = descr.getImports();
-            getDRLEditor().setImports(imports);
+            loadImportsAndFunctions(viewer);
+            imports = getDRLEditor().getFunctions();
         }
         return imports;
 	}
+	
+	private void loadImportsAndFunctions(ITextViewer viewer) throws CoreException, DroolsParserException {
+		String content = viewer.getDocument().get();
+        Reader dslReader = DSLAdapter.getDSLContent(content, ((FileEditorInput) getEditor().getEditorInput()).getFile());
+        DrlParser parser = new DrlParser();
+        PackageDescr descr = DroolsBuilder.parsePackage(content, parser, dslReader);
+        // imports
+        getDRLEditor().setImports(descr.getImports());
+        // functions
+        List functionDescrs = descr.getFunctions();
+        List functions = new ArrayList(functionDescrs.size());
+        Iterator iterator = functionDescrs.iterator();
+        while (iterator.hasNext()) {
+			functions.add(((FunctionDescr) iterator.next()).getName());
+		}
+        getDRLEditor().setFunctions(functions);
+	}
 
+	private List getFunctions(ITextViewer viewer) throws CoreException, DroolsParserException {
+		List functions = getDRLEditor().getFunctions();
+        if (functions == null) {
+            loadImportsAndFunctions(viewer);
+            functions = getDRLEditor().getFunctions();
+        }
+        return functions;
+	}
 
 }

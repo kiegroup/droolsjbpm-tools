@@ -22,6 +22,7 @@ public class DRLRuleEditor extends TextEditor {
     //used to provide additional content assistance/popups when DSLs are used.
     private DSLAdapter             dslAdapter;
     private List imports;
+    private List functions;
 
     private RuleContentOutlinePage ruleContentOutline = null;
 
@@ -72,6 +73,14 @@ public class DRLRuleEditor extends TextEditor {
     	return imports;
     }
 
+    public void setFunctions(List functions) {
+    	this.functions = functions;
+    }
+    
+    public List getFunctions() {
+    	return functions;
+    }
+
     public Object getAdapter(Class adapter) {
         if ( adapter.equals( IContentOutlinePage.class ) ) {
             return getContentOutline();
@@ -94,6 +103,7 @@ public class DRLRuleEditor extends TextEditor {
         }
         dslAdapter = null;
         imports = null;
+        functions = null;
     }
 
 }
