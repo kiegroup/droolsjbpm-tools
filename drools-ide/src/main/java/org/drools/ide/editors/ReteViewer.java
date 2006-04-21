@@ -2,6 +2,7 @@ package org.drools.ide.editors;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
+import java.io.Reader;
 
 import org.drools.RuleBase;
 import org.drools.compiler.DrlParser;
@@ -91,11 +92,19 @@ public class ReteViewer extends EditorPart {
 	                newLoader = ProjectClassLoader.getProjectClassLoader(project);
 	            }
 	            
+	            Reader dslReader = DSLAdapter.getDSLContent(contents, file);
+	            
 	            try {
 	                Thread.currentThread().setContextClassLoader(newLoader);
 
 	                DrlParser parser = new DrlParser();
-					PackageDescr packageDescr = parser.parse(contents);
+	                
+	                PackageDescr packageDescr = null;
+	                if (dslReader == null) {
+	                	packageDescr = parser.parse(contents);
+	                } else {
+	                	packageDescr = parser.parse(contents, dslReader);
+	                }
 
 					//pre build the package
 					PackageBuilder builder = new PackageBuilder();
