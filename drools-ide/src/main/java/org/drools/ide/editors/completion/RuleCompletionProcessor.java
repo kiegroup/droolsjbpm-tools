@@ -31,14 +31,18 @@ import org.eclipse.ui.part.FileEditorInput;
  * 
  * This also handles queries, as they are just a type of rule essentially.
  * 
- * @author Michael Neale
+ * @author Michael Neale, Kris Verlanen
  */
 public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
     private static final Pattern condition = Pattern.compile(".*\\Wwhen\\W.*", Pattern.DOTALL);
     private static final Pattern consequence = Pattern.compile(".*\\Wthen\\W.*", Pattern.DOTALL);
     private static final Pattern query = Pattern.compile(".*\\Wquery\\W.*", Pattern.DOTALL);
-
+    private static final Image droolsIcon = DroolsPluginImages.getImage(DroolsPluginImages.DROOLS);
+    private static final Image dslIcon = DroolsPluginImages.getImage( DroolsPluginImages.DSL_EXPRESSION );
+    private static final Image methodIcon = DroolsPluginImages.getImage(DroolsPluginImages.METHOD);
+    private static final Image classIcon = DroolsPluginImages.getImage(DroolsPluginImages.CLASS);
+    
     public RuleCompletionProcessor(DRLRuleEditor editor) {
     	super(editor);
     }
@@ -56,28 +60,26 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 	        String backText = readBackwards(documentOffset, doc);            
 	
 	        final String prefix = stripWhiteSpace(backText);
-	        
+            
+            
 	        if (query.matcher(backText).matches()) {
 	            list.addAll(adapter.listConditionItems());
 	        } else if (consequence.matcher(backText).matches()) {
 	        	List dslConsequences = adapter.listConsequenceItems();
-	        	Iterator iterator = dslConsequences.iterator();
-	        	while (iterator.hasNext()) {
-	        		String consequence = (String) iterator.next();
-		            list.add(new RuleCompletionProposal(prefix.length(), consequence));
-	                // TODO prefix should be from beginning of line, not just last word ?
-		            filterProposalsOnPrefix(prefix, list);
-	        	}
+	        	Iterator iterator;
+                addDSLProposals( list,
+                                 prefix,
+                                 dslConsequences );
 	            if (!adapter.hasConsequences()) {
-	            	Image image = DroolsPluginImages.getImage(DroolsPluginImages.DROOLS);
+
 	            	RuleCompletionProposal prop = new RuleCompletionProposal(prefix.length(), "modify", "modify();", 7);
-	            	prop.setImage(image);
+	            	prop.setImage(droolsIcon);
             		list.add(prop);
             		prop = new RuleCompletionProposal(prefix.length(), "retract", "retract();", 8);
-	            	prop.setImage(image);
+	            	prop.setImage(droolsIcon);
             		list.add(prop);
             		prop = new RuleCompletionProposal(prefix.length(), "assert", "assert();", 7);
-	            	prop.setImage(image);
+	            	prop.setImage(droolsIcon);
         			list.add(prop);
         			
         			List functions = getFunctions(viewer);
@@ -86,61 +88,24 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			            String name = (String) iterator.next() + "()";
 		            	prop = new RuleCompletionProposal(prefix.length(), name, name + ";", name.length() - 1);
 		            	prop.setPriority(-1);
-		            	prop.setImage(DroolsPluginImages.getImage(DroolsPluginImages.METHOD));
+		            	prop.setImage(methodIcon);
 		            	list.add(prop);
 		            }
-		            
-	                filterProposalsOnPrefix(prefix, list);
-	
-//	                IEditorInput input = getEditor().getEditorInput();
-//	        		if (input instanceof IFileEditorInput) {
-//	        			IProject project = ((IFileEditorInput) input).getFile().getProject();
-//	        			IJavaProject javaProject = JavaCore.create(project);
-//	        			
-//	        			CompletionRequestor requestor = new CompletionRequestor() {
-//	        				public void accept(org.eclipse.jdt.core.CompletionProposal proposal) {
-//	        					String display = new String(proposal.getCompletion());
-//	        					String completion = display;
-//	        					if (prefix.lastIndexOf(".") != -1) {
-//	        						completion = prefix.substring(0, prefix.lastIndexOf(".") + 1) + completion;
-//	        					}
-//	        					System.out.println(completion);
-//	        					list.add(new RuleCompletionProposal(documentOffset, prefix.length(), display, completion));
-//	        				}
-//	        			};
-//	
-//	        			try {
-//	        				javaProject.newEvaluationContext().codeComplete(backText, backText.length(), requestor);
-//	        			} catch (Throwable t) {
-//	        				DroolsIDEPlugin.log(t);
-//	        			}
-//	        		}
 	            }
 	        } else if (condition.matcher(backText).matches()) {
 	        	List dslConditions = adapter.listConditionItems();
-	        	Iterator iterator = dslConditions.iterator();
-	        	while (iterator.hasNext()) {
-	        		String condition = (String) iterator.next();
-		            list.add(new RuleCompletionProposal(prefix.length(), condition));
-	                // TODO prefix should be from beginning of line, not just last word ?
-		            filterProposalsOnPrefix(prefix, list);
-	        	}
-	            Image image = DroolsPluginImages.getImage(DroolsPluginImages.DROOLS);
+	        	Iterator iterator;
+	        	addDSLProposals( list,
+                                 prefix,
+                                 dslConditions );
+	            Image droolsIcon = DroolsPluginImages.getImage(DroolsPluginImages.DROOLS);
 	            if (!adapter.hasConditions()) {
-	            	RuleCompletionProposal prop = new RuleCompletionProposal(prefix.length(), "exists", "exists ");
-	            	prop.setImage(image);
-	                list.add(prop);
-	                prop = new RuleCompletionProposal(prefix.length(), "not", "not ");
-	            	prop.setImage(image);
-	                list.add(prop);
-	                prop = new RuleCompletionProposal(prefix.length(), "and", "and ");
-	            	prop.setImage(image);
-	                list.add(prop);
-	                prop = new RuleCompletionProposal(prefix.length(), "or", "or ");
-	            	prop.setImage(image);
-	                list.add(prop);
-	                prop = new RuleCompletionProposal(prefix.length(), "eval", "eval()", 5);
-	            	prop.setImage(image);
+	            	list.add( new RuleCompletionProposal(prefix.length(), "exists", "exists ", droolsIcon));
+	                list.add( new RuleCompletionProposal(prefix.length(), "not", "not ", droolsIcon));
+	                list.add( new RuleCompletionProposal(prefix.length(), "and", "and ", droolsIcon));
+	                list.add( new RuleCompletionProposal(prefix.length(), "or", "or ", droolsIcon));
+	                RuleCompletionProposal prop = new RuleCompletionProposal(prefix.length(), "eval", "eval()", 5);
+	            	prop.setImage(droolsIcon);
 	                list.add(prop);
 
 	                List imports = getImports(viewer);
@@ -150,46 +115,53 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			            int index = name.lastIndexOf(".");
 			            if (index != -1) {
 			            	String className = name.substring(index + 1);
-			            	prop = new RuleCompletionProposal(prefix.length(), className, className + "()", className.length() + 1);
-			            	prop.setPriority(-1);
-			            	prop.setImage(DroolsPluginImages.getImage(DroolsPluginImages.CLASS));
-			            	list.add(prop);
+			            	RuleCompletionProposal p = new RuleCompletionProposal(prefix.length(), className, className + "()", className.length() + 1);
+			            	p.setPriority(-1);
+			            	p.setImage(classIcon);
+			            	list.add(p);
 			            }
 		            }
-//		            if (true) {
-//		            	String className = "";
-//		            	ClassTypeResolver resolver = new ClassTypeResolver(imports);
-//		            	Class conditionClass = resolver.resolveType(className);
-//		            	ClassFieldInspector inspector = new ClassFieldInspector(conditionClass);
-//		            	Map fields = inspector.getFieldNames();
-//		            	Iterator iterator2 = fields.keySet().iterator();
-//		            	while (iterator2.hasNext()) {
-//		            		String varName = (String) iterator2.next();
-//		            		list.add(new RuleCompletionProposal(prefix.length(), varName, varName + " "));
-//		            	}
-//		            }
 		            
 	            }
 	            RuleCompletionProposal prop = new RuleCompletionProposal(prefix.length(), "then", "then\n\t");
-            	prop.setImage(image);
+            	prop.setImage(droolsIcon);
 	            list.add(prop);
 	            
-	            filterProposalsOnPrefix(prefix, list);
+	            
 	        } else {             
 	            //we are in rule header
-	            list.add(new RuleCompletionProposal(prefix.length(), "salience", "salience "));
-	            list.add(new RuleCompletionProposal(prefix.length(), "no-loop", "no-loop "));
-	            list.add(new RuleCompletionProposal(prefix.length(), "agenda-group", "agenda-group "));
-	            list.add(new RuleCompletionProposal(prefix.length(), "duration", "duration "));            
-	            list.add(new RuleCompletionProposal(prefix.length(), "auto-focus", "auto-focus "));            
-	            list.add(new RuleCompletionProposal(prefix.length(), "when", "when\n\t "));
-	            filterProposalsOnPrefix(prefix, list);
+	            addRuleHeaderItems( list,
+                                    prefix );
 	        }
+            
+            filterProposalsOnPrefix(prefix, list);
 	        return list;           
         } catch (Throwable t) {
         	DroolsIDEPlugin.log(t);
         }
         return null;
+    }
+
+    private void addRuleHeaderItems(final List list,
+                                    final String prefix) {
+        list.add(new RuleCompletionProposal(prefix.length(), "salience", "salience ", droolsIcon));
+        list.add(new RuleCompletionProposal(prefix.length(), "no-loop", "no-loop ", droolsIcon));
+        list.add(new RuleCompletionProposal(prefix.length(), "agenda-group", "agenda-group ", droolsIcon));
+        list.add(new RuleCompletionProposal(prefix.length(), "duration", "duration ", droolsIcon));           
+        list.add(new RuleCompletionProposal(prefix.length(), "auto-focus", "auto-focus ", droolsIcon));           
+        list.add(new RuleCompletionProposal(prefix.length(), "when", "when\n\t ", droolsIcon));
+    }
+
+    private void addDSLProposals(final List list,
+                                 final String prefix,
+                                 List dslItems) {
+        Iterator iterator = dslItems.iterator();
+        while (iterator.hasNext()) {
+        	String consequence = (String) iterator.next();
+            RuleCompletionProposal p = new RuleCompletionProposal(prefix.length(), consequence);
+            p.setImage( dslIcon );
+            list.add(p);
+        }
     }
 
     /** 

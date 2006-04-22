@@ -46,6 +46,7 @@ public class DroolsPluginImages {
     public static final String PACKAGE = "Package";
     public static final String METHOD = "Method";
     public static final String DROOLS = "Drools";
+    public static final String DSL_EXPRESSION = "DslExpression";
     
     private static ImageRegistry imageRegistry;
     private static final String PATH_SUFFIX = "/icons/";
@@ -70,6 +71,7 @@ public class DroolsPluginImages {
         declareRegistryImage(PACKAGE, "package_obj.gif");
         declareRegistryImage(METHOD, "methpub_obj.gif");
         declareRegistryImage(DROOLS, "drools.gif");
+        declareRegistryImage(DSL_EXPRESSION, "dsl_expression.gif");
     }
 
     /**

@@ -107,7 +107,7 @@ public class DSLEditor extends EditorPart {
                         .createMarker(IDroolsModelMarker.DROOLS_MODEL_PROBLEM_MARKER);
                     marker.setAttribute(IMarker.MESSAGE, message);
                     marker.setAttribute(IMarker.SEVERITY,
-                            IMarker.SEVERITY_ERROR);
+                            IMarker.SEVERITY_WARNING);
                     marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
                 }
             };
