@@ -71,7 +71,6 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
 			CompletionRequestor requestor = new CompletionRequestor() {
 				public void accept(org.eclipse.jdt.core.CompletionProposal proposal) {
 					String className = new String(proposal.getCompletion());
-					System.out.println(className);
 					if (proposal.getKind() == org.eclipse.jdt.core.CompletionProposal.PACKAGE_REF) {
 						RuleCompletionProposal prop = new RuleCompletionProposal(classNameStart.length(), className, className + ".");
 						prop.setImage(DroolsPluginImages.getImage(DroolsPluginImages.PACKAGE));
