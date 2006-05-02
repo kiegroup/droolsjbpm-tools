@@ -49,7 +49,7 @@
          point="org.eclipse.ui.editors">
       <editor
             class="org.drools.ide.editors.DRLRuleEditor2"
-            contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
+            contributorClass="org.drools.ide.editors.DRLRuleEditorActionContributor"
             extensions="drl,jbrule,drools,rule"
             icon="icons/drools.gif"
             id="org.eclipse.ui.editors.text.DRLEditor"
