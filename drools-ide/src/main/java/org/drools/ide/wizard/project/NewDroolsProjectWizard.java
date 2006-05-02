@@ -210,8 +210,8 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
     private void addSourceFolders(IJavaProject project, IProgressMonitor monitor) throws JavaModelException, CoreException {
         List list = new ArrayList();
         list.addAll(Arrays.asList(project.getRawClasspath()));
-        addSourceFolder(project, list, "src/main/java", monitor);
-        addSourceFolder(project, list, "src/main/rules", monitor);
+        addSourceFolder(project, list, "src/java", monitor);
+        addSourceFolder(project, list, "src/rules", monitor);
         project.setRawClasspath((IClasspathEntry[]) list.toArray(new IClasspathEntry[list.size()]), null);
     }
     
