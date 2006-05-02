@@ -18,7 +18,6 @@ public class DRLRuleEditorActionContributor extends MultiPageEditorActionBarCont
 		
 	public void setActivePage(IEditorPart activeEditor) {
 		IActionBars bars = getActionBars();
-		System.out.println(bars);
 		if (activeEditor instanceof ITextEditor) {
 			if (bars != null) {
 				contributor.setActiveEditor(activeEditor);
