@@ -55,7 +55,7 @@ public class DRLScanner extends RuleBasedScanner {
         rules.add(new SingleLineRule("'", "'", string, '\\'));         
         
         //for unfilled "holes"    
-        rules.add(new SingleLineRule("{", "}", comment));
+        //rules.add(new SingleLineRule("{", "}", comment));
         
         // Add generic whitespace rule.
         rules.add(new WhitespaceRule(new WhitespaceDetector()));
