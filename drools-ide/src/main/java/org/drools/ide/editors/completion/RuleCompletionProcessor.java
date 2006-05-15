@@ -66,31 +66,18 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 	            list.addAll(adapter.listConditionItems());
 	        } else if (consequence.matcher(backText).matches()) {
 	        	List dslConsequences = adapter.listConsequenceItems();
-	        	Iterator iterator;
                 addDSLProposals( list,
                                  prefix,
                                  dslConsequences );
 	            if (!adapter.hasConsequences()) {
 
-	            	RuleCompletionProposal prop = new RuleCompletionProposal(prefix.length(), "modify", "modify();", 7);
-	            	prop.setImage(droolsIcon);
-            		list.add(prop);
-            		prop = new RuleCompletionProposal(prefix.length(), "retract", "retract();", 8);
-	            	prop.setImage(droolsIcon);
-            		list.add(prop);
-            		prop = new RuleCompletionProposal(prefix.length(), "assert", "assert();", 7);
-	            	prop.setImage(droolsIcon);
-        			list.add(prop);
+	            	
+                    addRHSCompletionProposals( list,
+                                               prefix );                    
         			
-        			List functions = getFunctions(viewer);
-		            iterator = functions.iterator();
-		            while (iterator.hasNext()) {
-			            String name = (String) iterator.next() + "()";
-		            	prop = new RuleCompletionProposal(prefix.length(), name, name + ";", name.length() - 1);
-		            	prop.setPriority(-1);
-		            	prop.setImage(methodIcon);
-		            	list.add(prop);
-		            }
+        			addRHSFunctionCompletionProposals( viewer,
+                                                       list,
+                                                       prefix );
 	            }
 	        } else if (condition.matcher(backText).matches()) {
 	        	List dslConditions = adapter.listConditionItems();
@@ -140,6 +127,39 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         	DroolsIDEPlugin.log(t);
         }
         return null;
+    }
+
+    private void addRHSFunctionCompletionProposals(ITextViewer viewer,
+                                                   final List list,
+                                                   final String prefix) throws CoreException,
+                                                                       DroolsParserException {
+        Iterator iterator;
+        RuleCompletionProposal prop;
+        List functions = getFunctions(viewer);
+        iterator = functions.iterator();
+        while (iterator.hasNext()) {
+            String name = (String) iterator.next() + "()";
+        	prop = new RuleCompletionProposal(prefix.length(), name, name + ";", name.length() - 1);
+        	prop.setPriority(-1);
+        	prop.setImage(methodIcon);
+        	list.add(prop);
+        }
+    }
+
+    private void addRHSCompletionProposals(final List list,
+                                           final String prefix) {
+        RuleCompletionProposal prop = new RuleCompletionProposal(prefix.length(), "modify", "modify();", 7);
+        prop.setImage(droolsIcon);
+        list.add(prop);
+        prop = new RuleCompletionProposal(prefix.length(), "retract", "retract();", 8);
+        prop.setImage(droolsIcon);
+        list.add(prop);
+        prop = new RuleCompletionProposal(prefix.length(), "assert", "assert();", 7);
+        prop.setImage(droolsIcon);
+        list.add(prop);
+        prop = new RuleCompletionProposal(prefix.length(), "assertLogical", "assertLogical();", 14);
+        prop.setImage(droolsIcon);
+        list.add(prop);
     }
 
     private void addRuleHeaderItems(final List list,

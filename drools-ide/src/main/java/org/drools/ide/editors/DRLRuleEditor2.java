@@ -8,8 +8,9 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 
 /**
- * Generic rule editor for drools.
- * @author Michael Neale
+ * This is a multi table editor wrapper for both the text editor and the RETE
+ * viewer.
+ * @author Kris.
  */
 public class DRLRuleEditor2 extends FormEditor {
 
