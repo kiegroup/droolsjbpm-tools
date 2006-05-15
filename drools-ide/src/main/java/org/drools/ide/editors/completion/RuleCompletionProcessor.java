@@ -170,7 +170,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         list.add(new RuleCompletionProposal(prefix.length(), "duration", "duration ", droolsIcon));           
         list.add(new RuleCompletionProposal(prefix.length(), "auto-focus", "auto-focus ", droolsIcon));           
         list.add(new RuleCompletionProposal(prefix.length(), "when", "when\n\t ", droolsIcon));
-        list.add(new RuleCompletionProposal(prefix.length(), "xor-group", "xor-group ", droolsIcon));        
+        list.add(new RuleCompletionProposal(prefix.length(), "activation-group", "activation-group ", droolsIcon));        
     }
 
     private void addDSLProposals(final List list,
