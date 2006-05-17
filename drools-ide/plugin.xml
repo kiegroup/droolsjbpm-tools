@@ -146,10 +146,6 @@
       <toc file="help/eclipse/toc.xml" primary="true" />
    </extension>
    
-   <extension point="org.eclipse.help.toc">
-       <toc file="help/debug/debug.toc" />
-   </extension>
-   
    <extension point = "org.eclipse.ui.preferencePages">
        <page id="org.drools.ide.preferences.DroolsPreferencePage"
 	    	 class="org.drools.ide.preferences.DroolsPreferencePage"
