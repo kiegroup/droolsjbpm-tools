@@ -61,6 +61,9 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 	
 	        final String prefix = stripWhiteSpace(backText);
             
+	        if (backText.length() < 5) {
+	        	return list;
+	        }
             
 	        if (query.matcher(backText).matches()) {
 	            list.addAll(adapter.listConditionItems());
