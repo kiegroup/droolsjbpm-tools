@@ -1,7 +1,0 @@
-<toc label="JBoss Rules Help" topic="help/drools.html">
-	<topic label="Editor" href="help/editor/editor.html" />
-	<topic label="Debugging" href="help/debug/debug.html">
-		<link toc="help/debug/debug.toc" />
-	</topic>
-	<topic label="Audit" href="help/audit/audit.html" />
-</toc>

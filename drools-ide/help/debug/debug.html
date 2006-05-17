@@ -1,9 +1,0 @@
-<HTML>
-  <H1>Drools Debugging</H1>
-  When debugging an application using a Drools engine, three new views can be used to check the state of the Drools engine itself: the Working Memory View, the Agenda View and the Global Data View. To be able to use these views, create breakpoints in your code invoking the working memory. For example, the line where you call workingMemory.fireAllRules() is a good candidate.  If the debugger halts at that joinpoint, you should select the working memory variable in the debug variables view.  The following rules can then be used to show the details of the selected working memory:
-  <UL>
-    <LI>The <A href="workingMemory.html">Working Memory</A> shows all elements in the working memory of the Drools working memory.</LI>
-    <LI>The <A href="agenda.html">Agenda View</A> shows all elements on the agenda. For each rule on the agenda, the rule name and bound variables are shown.</LI>
-    <LI>The <A href="applicationData.html">Global Data View</A> shows all global data currently defined in the Drools working memory.</LI>
-  </UL>
-</HTML>

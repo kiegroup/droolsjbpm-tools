@@ -1,5 +1,0 @@
-<toc label="Drools Debugging">
-   <topic label="Working Memory View" href="help/debug/workingMemory.html"/>
-   <topic label="Agenda View" href="help/debug/agenda.html"/>
-   <topic label="Global Data View" href="help/debug/applicationData.html"/>
-</toc>
