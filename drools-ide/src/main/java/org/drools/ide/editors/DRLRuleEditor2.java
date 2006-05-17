@@ -25,7 +25,16 @@ public class DRLRuleEditor2 extends FormEditor {
 
 	protected void addPages() {
 		try {
-			textEditor = new DRLRuleEditor();
+			textEditor = new DRLRuleEditor() {
+				public void close(boolean save) {
+					super.close(save);
+					DRLRuleEditor2.this.close(save);
+				}
+				protected void setPartName(String partName) {
+					super.setPartName(partName);
+					DRLRuleEditor2.this.setPartName(partName);
+			    }
+			};
 			reteViewer = new ReteViewer(this, textEditor.getDocumentProvider());
 
 			int text = addPage(textEditor, getEditorInput());
