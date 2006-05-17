@@ -128,6 +128,9 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
 
     /** Looks behind, gets stuff after the white space. Basically ripping out the last word.*/
     protected String stripWhiteSpace(String prefix) {
+    	if ("".equals(prefix)) { 
+    		return prefix;
+    	}
     	if (prefix.charAt(prefix.length() - 1) == ' ') {
     		return "";
     	} else {
