@@ -63,7 +63,7 @@ public class DebugUtil {
                 if (type instanceof JDIReferenceType) {
                     String[] sourcePaths = ((JDIReferenceType) type)
                             .getSourcePaths(null);
-                    if (sourcePaths.length > 0) {
+                    if (sourcePaths != null && sourcePaths.length > 0) {
                         sourceElement = ((ISourceLookupDirector) locator)
                                 .getSourceElement(sourcePaths[0]);
                     }
