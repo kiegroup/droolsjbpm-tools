@@ -1,7 +1,10 @@
 package org.drools.ide.editors.completion;
 
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.drools.ide.editors.DRLRuleEditor;
 
 import junit.framework.TestCase;
 
@@ -27,5 +30,8 @@ public class ContextScanningTest extends TestCase {
     }
     
     
+
+
+
     
 }

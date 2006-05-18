@@ -4,6 +4,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
 import org.drools.compiler.DrlParser;
@@ -35,8 +36,6 @@ import org.eclipse.ui.part.FileEditorInput;
  */
 public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
-    private static final Pattern condition = Pattern.compile(".*\\Wwhen\\W.*", Pattern.DOTALL);
-    private static final Pattern consequence = Pattern.compile(".*\\Wthen\\W.*", Pattern.DOTALL);
     private static final Pattern query = Pattern.compile(".*\\Wquery\\W.*", Pattern.DOTALL);
     private static final Image droolsIcon = DroolsPluginImages.getImage(DroolsPluginImages.DROOLS);
     private static final Image dslIcon = DroolsPluginImages.getImage( DroolsPluginImages.DSL_EXPRESSION );
@@ -65,9 +64,9 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 	        	return list;
 	        }
             
-	        if (query.matcher(backText).matches()) {
+	        if (query(backText)) {
 	            list.addAll(adapter.listConditionItems());
-	        } else if (consequence.matcher(backText).matches()) {
+	        } else if (consequence(backText)) {
 	        	List dslConsequences = adapter.listConsequenceItems();
                 addDSLProposals( list,
                                  prefix,
@@ -82,40 +81,12 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                                        list,
                                                        prefix );
 	            }
-	        } else if (condition.matcher(backText).matches()) {
+	        } else if (condition(backText)) {
 	        	List dslConditions = adapter.listConditionItems();
-	        	Iterator iterator;
 	        	addDSLProposals( list,
                                  prefix,
                                  dslConditions );
-	            Image droolsIcon = DroolsPluginImages.getImage(DroolsPluginImages.DROOLS);
-	            if (!adapter.hasConditions()) {
-	            	list.add( new RuleCompletionProposal(prefix.length(), "exists", "exists ", droolsIcon));
-	                list.add( new RuleCompletionProposal(prefix.length(), "not", "not ", droolsIcon));
-	                list.add( new RuleCompletionProposal(prefix.length(), "and", "and ", droolsIcon));
-	                list.add( new RuleCompletionProposal(prefix.length(), "or", "or ", droolsIcon));
-	                RuleCompletionProposal prop = new RuleCompletionProposal(prefix.length(), "eval", "eval()", 5);
-	            	prop.setImage(droolsIcon);
-	                list.add(prop);
-
-	                List imports = getImports(viewer);
-		            iterator = imports.iterator();
-		            while (iterator.hasNext()) {
-			            String name = (String) iterator.next();
-			            int index = name.lastIndexOf(".");
-			            if (index != -1) {
-			            	String className = name.substring(index + 1);
-			            	RuleCompletionProposal p = new RuleCompletionProposal(prefix.length(), className, className + "()", className.length() + 1);
-			            	p.setPriority(-1);
-			            	p.setImage(classIcon);
-			            	list.add(p);
-			            }
-		            }
-		            
-	            }
-	            RuleCompletionProposal prop = new RuleCompletionProposal(prefix.length(), "then", "then\n\t");
-            	prop.setImage(droolsIcon);
-	            list.add(prop);
+	            addLHSCompletionProposals(viewer, list, adapter, prefix);
 	            
 	            
 	        } else {             
@@ -131,6 +102,63 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         }
         return null;
     }
+
+	private void addLHSCompletionProposals(ITextViewer viewer, final List list, DSLAdapter adapter, final String prefix) throws CoreException, DroolsParserException {
+		Iterator iterator;
+		Image droolsIcon = DroolsPluginImages.getImage(DroolsPluginImages.DROOLS);
+		if (!adapter.hasConditions()) {
+			list.add( new RuleCompletionProposal(prefix.length(), "exists", "exists ", droolsIcon));
+		    list.add( new RuleCompletionProposal(prefix.length(), "not", "not ", droolsIcon));
+		    list.add( new RuleCompletionProposal(prefix.length(), "and", "and ", droolsIcon));
+		    list.add( new RuleCompletionProposal(prefix.length(), "or", "or ", droolsIcon));
+		    RuleCompletionProposal prop = new RuleCompletionProposal(prefix.length(), "eval", "eval()", 5 );
+			prop.setImage(droolsIcon);
+		    list.add(prop);
+
+		    List imports = getImports(viewer);
+		    iterator = imports.iterator();
+		    while (iterator.hasNext()) {
+		        String name = (String) iterator.next();
+		        int index = name.lastIndexOf(".");
+		        if (index != -1) {
+		        	String className = name.substring(index + 1);
+		        	RuleCompletionProposal p = new RuleCompletionProposal(prefix.length(), className, className + "()", className.length() + 1);
+		        	p.setPriority(-1);
+		        	p.setImage(classIcon);
+		        	list.add(p);
+		        }
+		    }
+		    
+		}
+		RuleCompletionProposal prop = new RuleCompletionProposal(prefix.length(), "then", "then\n\t");
+		prop.setImage(droolsIcon);
+		list.add(prop);
+	}
+
+	private boolean consequence(String backText) {
+		return isKeywordOnLine(backText, "then");
+	}
+
+	private boolean condition(String backText) {
+		return isKeywordOnLine(backText, "when");
+	}
+
+	boolean query(String backText) {
+		return query.matcher(backText).matches();
+	}
+	
+	/**
+	 * Check to see if the keyword appears on a line by itself.
+	 */
+	private boolean isKeywordOnLine(String chunk, String keyword) {
+		StringTokenizer st = new StringTokenizer(chunk, "\n\t");
+    	while(st.hasMoreTokens()) {
+    		if (st.nextToken().trim().equals(keyword)) {
+    			return true;
+    		}    		
+    	}
+    	return false;
+	}
 
     private void addRHSFunctionCompletionProposals(ITextViewer viewer,
                                                    final List list,
