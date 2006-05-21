@@ -14,7 +14,8 @@ import java.util.List;
  */
 public class Keywords {
 
-    private String[] all;
+    private String[] allDrools;
+    private String[] allJava;
     private static Keywords instance;
     
     public static Keywords getInstance() {
@@ -25,13 +26,22 @@ public class Keywords {
     }
     
     
-    public String[] getAll() {
-        return all;
+    public String[] getAllDroolsKeywords() {
+        return allDrools;
+    }
+    
+    public String[] getAllJavaKeywords() {
+        return allJava;
     }
     
     
     private Keywords() {
-        InputStream stream = this.getClass().getResourceAsStream("keywords.properties");
+    	allDrools = readKeywords("keywords.properties");
+    	allJava = readKeywords("java_keywords.properties");
+    }
+    
+    private String[] readKeywords(String fileName) {
+        InputStream stream = this.getClass().getResourceAsStream(fileName);
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
             
@@ -42,10 +52,7 @@ public class Keywords {
                if (!line.startsWith( "#" ))  list.add( line ); 
             }
             
-            all = new String[list.size()];
-            list.toArray( all );
-                     
-            
+            return (String[]) list.toArray( new String[list.size()] );
         }
         catch ( IOException e ) {
             throw new IllegalArgumentException("Could not load keywords for editor.");
@@ -58,7 +65,6 @@ public class Keywords {
                 throw new IllegalStateException("Error closing stream.");
             }
         }
-        
     }
     
     

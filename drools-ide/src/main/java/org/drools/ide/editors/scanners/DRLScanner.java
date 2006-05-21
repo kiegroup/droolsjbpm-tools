@@ -31,11 +31,12 @@ public class DRLScanner extends RuleBasedScanner {
     private static Color STRING_COLOR = ColorManager.getInstance().getColor(ColorManager.STRING);
     private static Color DEFAULT = ColorManager.getInstance().getColor(ColorManager.DEFAULT);
     
-    private static String[] fgKeywords= Keywords.getInstance().getAll();
+    private static String[] fgDroolsKeywords= Keywords.getInstance().getAllDroolsKeywords();
+    private static String[] fgJavaKeywords= Keywords.getInstance().getAllJavaKeywords();
 
-    private static String[] fgTypes= {  }; 
+    private static String[] fgTypes= { "void", "boolean", "char", "byte", "short", "strictfp", "int", "long", "float", "double" }; 
 
-    private static String[] fgConstants= { "false", "true" }; 
+    private static String[] fgConstants= { "false", "true", "null" }; 
     
 
 	public DRLScanner() {
@@ -62,8 +63,10 @@ public class DRLScanner extends RuleBasedScanner {
 
         // Add word rule for keywords, types, and constants.
         WordRule wordRule= new WordRule(new RuleWordDetector(), other);
-        for (int i= 0; i < fgKeywords.length; i++)
-            wordRule.addWord(fgKeywords[i], keyword);
+        for (int i= 0; i < fgDroolsKeywords.length; i++)
+            wordRule.addWord(fgDroolsKeywords[i], keyword);
+        for (int i= 0; i < fgJavaKeywords.length; i++)
+            wordRule.addWord(fgJavaKeywords[i], keyword);
         for (int i= 0; i < fgTypes.length; i++)
             wordRule.addWord(fgTypes[i], keyword);
         for (int i= 0; i < fgConstants.length; i++)
@@ -74,9 +77,6 @@ public class DRLScanner extends RuleBasedScanner {
         rules.toArray(result);        
         
 		setRules(result);
-        
-
 	}
-    
   
 }
