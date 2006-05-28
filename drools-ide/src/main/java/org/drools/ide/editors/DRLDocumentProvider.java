@@ -1,9 +1,13 @@
 package org.drools.ide.editors;
 
 import org.drools.ide.editors.scanners.DRLPartionScanner;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.rules.FastPartitioner;
+import org.eclipse.jface.text.source.IAnnotationModel;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 
 
@@ -25,6 +29,9 @@ public class DRLDocumentProvider
             document.setDocumentPartitioner(partitioner);
         }
         return document;
-    }    
-
+    }
+    
+    protected IAnnotationModel createAnnotationModel(IFile file) {
+        return new DRLAnnotationModel(file);
+	}
 }

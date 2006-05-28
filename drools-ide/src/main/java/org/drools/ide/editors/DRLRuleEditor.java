@@ -2,10 +2,17 @@ package org.drools.ide.editors;
 
 import java.util.List;
 
+import org.drools.ide.DroolsIDEPlugin;
+import org.drools.ide.debug.core.IDroolsDebugConstants;
 import org.drools.ide.editors.outline.RuleContentOutlinePage;
 import org.drools.ide.editors.scanners.RuleEditorMessages;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.debug.ui.actions.IToggleBreakpointsTarget;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
@@ -19,91 +26,110 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
  */
 public class DRLRuleEditor extends TextEditor {
 
-    //used to provide additional content assistance/popups when DSLs are used.
-    private DSLAdapter             dslAdapter;
-    private List imports;
-    private List functions;
+	//used to provide additional content assistance/popups when DSLs are used.
+	private DSLAdapter dslAdapter;
+	private List imports;
+	private List functions;
+	private RuleContentOutlinePage ruleContentOutline = null;
 
-    private RuleContentOutlinePage ruleContentOutline = null;
+	public DRLRuleEditor() {
+		setSourceViewerConfiguration(new DRLSourceViewerConfig(this));
+		setDocumentProvider(new DRLDocumentProvider());
+	}
 
-    public DRLRuleEditor() {
-        setSourceViewerConfiguration( new DRLSourceViewerConfig( this ) );
-        setDocumentProvider( new DRLDocumentProvider() );
-    }
+	/** For user triggered content assistance */
+	protected void createActions() {
+		super.createActions();
 
-    public void dispose() {
-        super.dispose();
-    }
-    
-    /** For user triggered content assistance */
-    protected void createActions() {
-        super.createActions();
+		IAction a = new TextOperationAction(RuleEditorMessages
+				.getResourceBundle(), "ContentAssistProposal.", this,
+				ISourceViewer.CONTENTASSIST_PROPOSALS);
+		a
+				.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
+		setAction("ContentAssistProposal", a);
 
-        IAction a = new TextOperationAction( RuleEditorMessages.getResourceBundle(),
-                                             "ContentAssistProposal.",
-                                             this,
-                                             ISourceViewer.CONTENTASSIST_PROPOSALS );
-        a.setActionDefinitionId( ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS );
-        setAction( "ContentAssistProposal",
-                   a );
+		a = new TextOperationAction(
+				RuleEditorMessages.getResourceBundle(),
+				"ContentAssistTip.", this, ISourceViewer.CONTENTASSIST_CONTEXT_INFORMATION); //$NON-NLS-1$
+		a
+				.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_CONTEXT_INFORMATION);
+		setAction("ContentAssistTip", a);
+	}
 
-        a = new TextOperationAction( RuleEditorMessages.getResourceBundle(),
-                                     "ContentAssistTip.", this, ISourceViewer.CONTENTASSIST_CONTEXT_INFORMATION ); //$NON-NLS-1$
-        a.setActionDefinitionId( ITextEditorActionDefinitionIds.CONTENT_ASSIST_CONTEXT_INFORMATION );
-        setAction( "ContentAssistTip",
-                   a );
+	/** Return the DSL adapter if one is present */
+	public DSLAdapter getDSLAdapter() {
+		return dslAdapter;
+	}
 
-    }
+	/** Set the DSL adapter, used for content assistance */
+	public void setDSLAdapter(DSLAdapter adapter) {
+		dslAdapter = adapter;
+	}
 
-    /** Return the DSL adapter if one is present */
-    public DSLAdapter getDSLAdapter() {
-        return dslAdapter;
-    }
+	public void setImports(List imports) {
+		this.imports = imports;
+	}
 
-    /** Set the DSL adapter, used for content assistance */
-    public void setDSLAdapter(DSLAdapter adapter) {
-        dslAdapter = adapter;
-    }
-    
-    public void setImports(List imports) {
-    	this.imports = imports;
-    }
-    
-    public List getImports() {
-    	return imports;
-    }
+	public List getImports() {
+		return imports;
+	}
 
-    public void setFunctions(List functions) {
-    	this.functions = functions;
-    }
-    
-    public List getFunctions() {
-    	return functions;
-    }
+	public void setFunctions(List functions) {
+		this.functions = functions;
+	}
 
-    public Object getAdapter(Class adapter) {
-        if ( adapter.equals( IContentOutlinePage.class ) ) {
-            return getContentOutline();
-        }
-        return super.getAdapter( adapter );
-    }
+	public List getFunctions() {
+		return functions;
+	}
 
-    protected ContentOutlinePage getContentOutline() {
-        if ( ruleContentOutline == null ) {
-            ruleContentOutline = new RuleContentOutlinePage( this );
-            ruleContentOutline.update();
-        }
-        return ruleContentOutline;
-    }
+	public Object getAdapter(Class adapter) {
+		if (adapter.equals(IContentOutlinePage.class)) {
+			return getContentOutline();
+		} else if (adapter.equals(IToggleBreakpointsTarget.class)) {
+			return getBreakpointAdapter();
+		}
+		return super.getAdapter(adapter);
+	}
 
-    public void doSave(IProgressMonitor monitor) {
-        super.doSave( monitor );
-        if ( ruleContentOutline != null ) {
-        	ruleContentOutline.update();
-        }
-        dslAdapter = null;
-        imports = null;
-        functions = null;
-    }
+	protected ContentOutlinePage getContentOutline() {
+		if (ruleContentOutline == null) {
+			ruleContentOutline = new RuleContentOutlinePage(this);
+			ruleContentOutline.update();
+		}
+		return ruleContentOutline;
+	}
 
+	private Object getBreakpointAdapter() {
+		return new DroolsLineBreakpointAdapter();
+	}
+
+	public void doSave(IProgressMonitor monitor) {
+		super.doSave(monitor);
+		if (ruleContentOutline != null) {
+			ruleContentOutline.update();
+		}
+		dslAdapter = null;
+		imports = null;
+		functions = null;
+	}
+
+	public void gotoMarker(IMarker marker) {
+		try {
+			if (marker.getType().equals(IDroolsDebugConstants.DROOLS_MARKER_TYPE)) {
+				int line = marker.getAttribute(IDroolsDebugConstants.DRL_LINE_NUMBER, -1);
+	            if (line > -1)
+	            	--line;
+	                try {
+	                    IDocument document = getDocumentProvider().getDocument(getEditorInput());
+	                    selectAndReveal(document.getLineOffset(line), document.getLineLength(line));
+	                } catch(BadLocationException exc) {
+	                	DroolsIDEPlugin.log(exc);
+	                }
+			} else {
+				super.gotoMarker(marker);
+			}
+		} catch (CoreException exc) {
+			DroolsIDEPlugin.log(exc);
+		}
+	}
 }

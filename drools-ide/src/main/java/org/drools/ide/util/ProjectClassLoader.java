@@ -16,8 +16,21 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IFileEditorInput;
 
 public class ProjectClassLoader {
+	
+	public static URLClassLoader getProjectClassLoader(IEditorPart editor) {
+		IEditorInput input = editor.getEditorInput();
+		if (input instanceof IFileEditorInput) {
+			IProject project = ((IFileEditorInput) input).getFile().getProject();
+			IJavaProject javaProject = JavaCore.create(project);
+			return getProjectClassLoader(javaProject);
+		}
+		return null;
+	}
 
     public static URLClassLoader getProjectClassLoader(IJavaProject project) {
         List pathElements = getProjectClassPathURLs(project);

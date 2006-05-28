@@ -134,6 +134,22 @@
       <persistent value="true" />
    </extension>
 
+   <extension
+         id="droolsBreakpointMarker"
+         point="org.eclipse.core.resources.markers"
+         name="Drools Breakpoint Marker">
+	  <super type="org.eclipse.debug.core.breakpointMarker"/>
+      <persistent value="true"/>
+	</extension>
+
+   <extension point="org.eclipse.debug.core.breakpoints">
+      <breakpoint
+         id="droolsBreakpoint"
+         markerType="org.drools.ide.droolsBreakpointMarker"
+         class="org.drools.ide.debug.core.DroolsLineBreakpoint">
+      </breakpoint>
+   </extension>
+
    <extension point="org.eclipse.jdt.core.classpathContainerInitializer">
        <classpathContainerInitializer class="org.drools.ide.util.DroolsClasspathContainerInitializer" id="DROOLS" /> 
    </extension>
@@ -147,10 +163,75 @@
    </extension>
    
    <extension point = "org.eclipse.ui.preferencePages">
-       <page id="org.drools.ide.preferences.DroolsPreferencePage"
-	    	 class="org.drools.ide.preferences.DroolsPreferencePage"
-             name="JBoss Rules Preferences">
-       </page>
+      <page id="org.drools.ide.preferences.DroolsPreferencePage"
+         class="org.drools.ide.preferences.DroolsPreferencePage"
+         name="JBoss Rules Preferences">
+      </page>
    </extension>
+   
+   <!-- Extensions for the interactive debugger
+   
+   <extension point = "org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+   	     id="org.drools.ide.launching.DroolsLaunchConfigurationDelegate"
+         name="Drools Application"
+         delegate="org.drools.ide.launching.DroolsLaunchConfigurationDelegate"
+         sourceLocatorId="org.drools.ide.launching.DroolsSourceLookupDirector"
+         sourcePathComputerId="org.drools.ide.launching.DroolsSourcePathComputerDelegate"
+         modes= "debug" />
+   </extension>
+   
+   <extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+         icon="icons/drools.gif"
+         configTypeID="org.drools.ide.launching.DroolsLaunchConfigurationDelegate"
+         id="org.drools.ide.launching.DroolsLaunchConfigurationDelegate.Image">
+      </launchConfigurationTypeImage>
+   </extension>
+   
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            type="org.drools.ide.launching.DroolsLaunchConfigurationDelegate"
+            class="org.eclipse.jdt.internal.debug.ui.launcher.LocalJavaApplicationTabGroup"
+            id="org.eclipse.jdt.debug.ui.launchConfigurationTabGroup.localJavaApplication">
+            <launchMode 
+                  mode="debug"
+                  perspective="org.eclipse.debug.ui.DebugPerspective"
+                  description="Debug a JBoss Rules application">
+            </launchMode>
+            <launchMode
+                  mode="run"
+                  description="Run a JBoss Rules application">
+            </launchMode>
+      </launchConfigurationTabGroup>
+   </extension>
+   
+   <extension
+         point="org.eclipse.debug.core.sourceLocators">
+      <sourceLocator
+         name="Drools Source Lookup Director"
+         class="org.drools.ide.launching.DroolsSourceLookupDirector"
+         id="org.drools.ide.launching.DroolsSourceLookupDirector">
+      </sourceLocator>
+   </extension>
+   
+   <extension
+         point="org.eclipse.debug.core.sourcePathComputers">
+      <sourcePathComputer
+         class="org.drools.ide.launching.DroolsSourcePathComputerDelegate"
+         id="org.drools.ide.launching.DroolsSourcePathComputerDelegate">
+      </sourcePathComputer>
+   </extension>
+   
+   <extension
+         point="org.eclipse.debug.ui.debugModelPresentations"> 
+      <debugModelPresentation 
+         class="org.drools.ide.debug.core.DroolsDebugModelPresentation"
+         id="org.drools.ide.debug">
+      </debugModelPresentation> 
+   </extension>
+   
+   -->
    
 </plugin>
