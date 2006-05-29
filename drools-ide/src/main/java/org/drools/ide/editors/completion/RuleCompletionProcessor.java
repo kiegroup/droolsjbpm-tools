@@ -98,7 +98,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                                        list,
                                                        prefix );
         			
-        			addRHSJavaCompletionProposals(list, backText, prefix);
+//        			addRHSJavaCompletionProposals(list, backText, prefix);
 	            }
 	        } else if (condition(backText)) {
 	        	List dslConditions = adapter.listConditionItems();
