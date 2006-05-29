@@ -98,7 +98,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                                        list,
                                                        prefix );
         			
-        			// addRHSJavaCompletionProposals(list, backText, prefix);
+        			addRHSJavaCompletionProposals(list, backText, prefix);
 	            }
 	        } else if (condition(backText)) {
 	        	List dslConditions = adapter.listConditionItems();
@@ -152,7 +152,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 				        	list.add(p);
 				        }
 				    }
-					prop = new RuleCompletionProposal(prefix.length(), "then", "then\n\t");
+					prop = new RuleCompletionProposal(prefix.length(), "then", "then" + System.getProperty("line.separator") + "\t");
 					prop.setImage(droolsIcon);
 					list.add(prop);
 				    break;
@@ -263,7 +263,6 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
     		// do nothing
     	}
     	String consequence = backText.substring(thenPosition + 4);
-    	System.out.println(consequence);
     	list.addAll(getRHSJavaCompletionProposals(consequence, prefix));
     }
     
@@ -308,7 +307,6 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 				if (imports != null && imports.size() > 0) {
 					evalContext.setImports((String[]) imports.toArray(new String[imports.size()]));
 				}
-				// TODO set variables
 				evalContext.codeComplete(consequenceStart, consequenceStart.length(), requestor);
 			} catch (Throwable t) {
 				DroolsIDEPlugin.log(t);
@@ -324,7 +322,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         list.add(new RuleCompletionProposal(prefix.length(), "agenda-group", "agenda-group ", droolsIcon));
         list.add(new RuleCompletionProposal(prefix.length(), "duration", "duration ", droolsIcon));           
         list.add(new RuleCompletionProposal(prefix.length(), "auto-focus", "auto-focus ", droolsIcon));           
-        list.add(new RuleCompletionProposal(prefix.length(), "when", "when\n\t ", droolsIcon));
+        list.add(new RuleCompletionProposal(prefix.length(), "when", "when" + System.getProperty("line.separator") + "\t ", droolsIcon));
         list.add(new RuleCompletionProposal(prefix.length(), "activation-group", "activation-group ", droolsIcon));        
     }
 

@@ -30,9 +30,9 @@ import org.eclipse.ui.part.EditorPart;
  */
 public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
 
-    private static final String NEW_RULE_TEMPLATE = "rule \"new rule\"\n\n\twhen\n\n\tthen\n\nend";
-    private static final String NEW_QUERY_TEMPLATE = "query \"query name\"\n\t#conditions\nend";
-    private static final String NEW_FUNCTION_TEMPLATE = "function void yourFunction(Type arg) {\n\t/* code goes here*/\n}";
+    private static final String NEW_RULE_TEMPLATE = "rule \"new rule\"" + System.getProperty("line.separator") + "\twhen" + System.getProperty("line.separator") + "\t\t" + System.getProperty("line.separator") + "\tthen" + System.getProperty("line.separator") + "\t\t" + System.getProperty("line.separator") + "end";
+    private static final String NEW_QUERY_TEMPLATE = "query \"query name\"" + System.getProperty("line.separator") + "\t#conditions" + System.getProperty("line.separator") + "end";
+    private static final String NEW_FUNCTION_TEMPLATE = "function void yourFunction(Type arg) {" + System.getProperty("line.separator") + "\t/* code goes here*/" + System.getProperty("line.separator") + "}";
     private static final Pattern IMPORT_PATTERN = Pattern.compile(".*\\Wimport\\W[^;]*", Pattern.DOTALL);
 
     public DefaultCompletionProcessor(EditorPart editor) {

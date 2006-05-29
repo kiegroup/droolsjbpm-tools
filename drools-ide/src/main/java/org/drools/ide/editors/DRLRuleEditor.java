@@ -1,5 +1,6 @@
 package org.drools.ide.editors;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.drools.ide.DroolsIDEPlugin;
@@ -13,7 +14,14 @@ import org.eclipse.debug.ui.actions.IToggleBreakpointsTarget;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.IVerticalRuler;
+import org.eclipse.jface.text.source.projection.ProjectionAnnotation;
+import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
+import org.eclipse.jface.text.source.projection.ProjectionSupport;
+import org.eclipse.jface.text.source.projection.ProjectionViewer;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.TextOperationAction;
@@ -32,9 +40,46 @@ public class DRLRuleEditor extends TextEditor {
 	private List functions;
 	private RuleContentOutlinePage ruleContentOutline = null;
 
+	private Annotation[] oldAnnotations;
+	private ProjectionAnnotationModel annotationModel;
+	
 	public DRLRuleEditor() {
 		setSourceViewerConfiguration(new DRLSourceViewerConfig(this));
 		setDocumentProvider(new DRLDocumentProvider());
+	}
+
+	public void createPartControl(Composite parent) {
+		super.createPartControl(parent);
+		ProjectionViewer viewer = (ProjectionViewer) getSourceViewer();
+		ProjectionSupport projectionSupport = new ProjectionSupport(viewer,
+			getAnnotationAccess(), getSharedColors());
+		projectionSupport.install();
+		// turn projection mode on
+		viewer.doOperation(ProjectionViewer.TOGGLE);
+		annotationModel = viewer.getProjectionAnnotationModel();
+	}
+	
+	protected ISourceViewer createSourceViewer(Composite parent,
+			IVerticalRuler ruler, int styles) {
+		ISourceViewer viewer = new ProjectionViewer(parent, ruler,
+				getOverviewRuler(), isOverviewRulerVisible(), styles);
+		// ensure decoration support has been created and configured.
+		getSourceViewerDecorationSupport(viewer);
+		return viewer;
+	}
+
+	public void updateFoldingStructure(List positions) {
+		Annotation[] annotations = new Annotation[positions.size()];
+		// this will hold the new annotations along
+		// with their corresponding positions
+		HashMap newAnnotations = new HashMap();
+		for (int i = 0; i < positions.size(); i++) {
+			ProjectionAnnotation annotation = new ProjectionAnnotation();
+			newAnnotations.put(annotation, positions.get(i));
+			annotations[i] = annotation;
+		}
+		annotationModel.modifyAnnotations(oldAnnotations, newAnnotations, null);
+		oldAnnotations = annotations;
 	}
 
 	/** For user triggered content assistance */
