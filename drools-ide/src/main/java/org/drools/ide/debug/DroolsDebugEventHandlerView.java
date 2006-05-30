@@ -64,7 +64,7 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
                 IJavaObject stackObj = ((IJavaStackFrame) context).getThis();
                 if ((stackObj != null)
                         && (stackObj.getJavaType() != null)
-                        && ("org.drools.reteoo.WorkingMemoryImpl".equals(
+                        && ("org.drools.reteoo.ReteooWorkingMemory".equals(
                             stackObj.getJavaType().getName()))) {
                     input = stackObj;
                 }
@@ -84,7 +84,7 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
                         IJavaObject stackObj = ((IJavaStackFrame) stack).getThis();
                         if ((stackObj != null)
                                 && (stackObj.getJavaType() != null)
-                                && ("org.drools.reteoo.WorkingMemoryImpl".equals(
+                                && ("org.drools.reteoo.ReteooWorkingMemory".equals(
                                     stackObj.getJavaType().getName()))) {
                             input = stackObj;
                         }
@@ -97,7 +97,7 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
                 try {
                     IValue value = ((IVariable) context).getValue();
                     if (value != null && value instanceof IJavaObject
-                            && "org.drools.reteoo.WorkingMemoryImpl".equals(
+                            && "org.drools.reteoo.ReteooWorkingMemory".equals(
                                 variable.getValue().getReferenceTypeName())) {
                         input = value;
                     }

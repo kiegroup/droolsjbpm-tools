@@ -28,7 +28,7 @@ public class ApplicationDataViewContentProvider extends DroolsDebugViewContentPr
         try {
             IVariable[] variables = null;
             if (obj != null && obj instanceof IJavaObject
-                    && "org.drools.reteoo.WorkingMemoryImpl".equals(
+                    && "org.drools.reteoo.ReteooWorkingMemory".equals(
                         ((IJavaObject) obj).getReferenceTypeName())) {
                 variables = getApplicationDataElements((IJavaObject) obj);
             } else if (obj instanceof IVariable) {

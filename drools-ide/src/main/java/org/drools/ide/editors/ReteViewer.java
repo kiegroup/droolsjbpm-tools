@@ -11,7 +11,7 @@ import org.drools.ide.DroolsIDEPlugin;
 import org.drools.ide.builder.DroolsBuilder;
 import org.drools.ide.util.ProjectClassLoader;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.reteoo.RuleBaseImpl;
+import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Package;
 import org.drools.visualize.ReteooJungViewerPanel;
 import org.eclipse.core.resources.IFile;
@@ -112,7 +112,7 @@ public class ReteViewer extends EditorPart {
 					Package pkg = builder.getPackage();
 
 					//add the package to a rulebase
-					RuleBaseImpl ruleBase = new RuleBaseImpl();
+                    ReteooRuleBase ruleBase = new ReteooRuleBase();
 					ruleBase.addPackage(pkg);
 					return ruleBase;
 					
