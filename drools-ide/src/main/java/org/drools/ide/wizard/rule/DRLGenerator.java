@@ -39,12 +39,12 @@ public class DRLGenerator {
         String temp = readTemplate( template );
         temp = doHeader(packageName, temp );
         if (functions) {
-            temp = functionsDec.matcher( temp ).replaceFirst( "function myFunction( ... ) \n    #function content (can have multiple functions) \nend\n");
+            temp = functionsDec.matcher( temp ).replaceFirst( "function myFunction( ... ) " + System.getProperty("line.separator") + "    #function content (can have multiple functions) " + System.getProperty("line.separator") + "end" + System.getProperty("line.separator"));
         } else {
             temp = functionsDec.matcher( temp ).replaceFirst( "");
         }
         if (expander) {
-            temp = expanderDec.matcher( temp ).replaceFirst( "expander customLanguage.dsl\n");
+            temp = expanderDec.matcher( temp ).replaceFirst( "expander customLanguage.dsl" + System.getProperty("line.separator") + "");
         } else {
             temp = expanderDec.matcher( temp ).replaceFirst( "");
         }
@@ -60,7 +60,7 @@ public class DRLGenerator {
 
     private String doHeader(String packageName,
                             String temp) {
-        temp = packageDec.matcher( temp ).replaceFirst( "package " + packageName + "\n" );
+        temp = packageDec.matcher( temp ).replaceFirst( "package " + packageName + System.getProperty("line.separator") );
         temp = dateDec.matcher( temp ).replaceFirst( DateFormat.getDateInstance().format( new Date()) );
         return temp;
     }
@@ -70,7 +70,7 @@ public class DRLGenerator {
         String line = null;
         StringBuffer buf = new StringBuffer();
         while ((line = reader.readLine())  != null) {
-            buf.append(line + "\n");
+            buf.append(line + System.getProperty("line.separator"));
         }
         String temp = buf.toString();
         return temp;
