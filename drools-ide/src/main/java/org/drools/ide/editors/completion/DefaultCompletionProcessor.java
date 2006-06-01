@@ -137,7 +137,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
 	        char[] c = prefix.toCharArray();
 	        int start = 0;
 	        for (int i = c.length - 1; i >=0; i-- ) {
-	            if (Character.isWhitespace(c[i])) {
+	            if (Character.isWhitespace(c[i]) || c[i] == '(') {
 	                start = i + 1;
 	                break;
 	            }
