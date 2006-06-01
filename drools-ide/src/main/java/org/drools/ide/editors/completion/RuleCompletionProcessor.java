@@ -365,7 +365,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		List imports = getDRLEditor().getImports();
         if (imports == null) {
             loadImportsAndFunctions(viewer);
-            imports = getDRLEditor().getFunctions();
+            imports = getDRLEditor().getImports();
         }
         return imports;
 	}
