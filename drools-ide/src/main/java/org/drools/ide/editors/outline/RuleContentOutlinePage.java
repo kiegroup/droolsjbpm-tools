@@ -38,26 +38,32 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
     ///////////////////////////////////
     // Patterns that the parser uses
     ///////////////////////////////////
-    private static final Pattern   rulePattern         = Pattern.compile( "rule\\s+\"?([^\"]+)\"?.*",
+    private static final Pattern   rulePattern1        = Pattern.compile( "\\s*rule\\s+\"([^\"]+)\".*",
                                                                           Pattern.DOTALL );
 
-    private static final Pattern   packagePattern      = Pattern.compile( "package\\s+([^\"]+)",
+    private static final Pattern   rulePattern2        = Pattern.compile( "\\s*rule\\s+([^\\s;#\"]+).*",
                                                                           Pattern.DOTALL );
 
-    private static final Pattern   functionNamePattern = Pattern.compile( "function\\s+(.*)\\s+(.*)\\(.*\\).*",
+    private static final Pattern   packagePattern      = Pattern.compile( "\\s*package\\s+([^\\s;#]+);?.*",
+                                                                          Pattern.DOTALL );
+
+    private static final Pattern   functionNamePattern = Pattern.compile( "\\s*function\\s+(\\S+)\\s+(\\S+)\\(.*\\).*",
             															  Pattern.DOTALL );
 
-    private static final Pattern   importNamePattern   = Pattern.compile( "import\\s+([^\"]+)",
+    private static final Pattern   importNamePattern   = Pattern.compile( "\\s*import\\s+([^\\s;#]+);?.*",
 			                                                              Pattern.DOTALL );
 
-    private static final Pattern   expanderNamePattern = Pattern.compile( "expander\\s+([^\"]+);?",
-                                                         Pattern.DOTALL );
+    private static final Pattern   expanderNamePattern = Pattern.compile( "\\s*expander\\s+([^\\s;#]+);?.*",
+                                                                          Pattern.DOTALL );
 
-    private static final Pattern   globalNamePattern   = Pattern.compile( "global\\s+([^\"]+);?",
-                                                         Pattern.DOTALL );
+    private static final Pattern   globalNamePattern   = Pattern.compile( "\\s*global\\s+(\\S+)\\s+([^\\s;#]+);?.*",
+                                                                          Pattern.DOTALL );
 
-    private static final Pattern   queryNamePattern    = Pattern.compile( "query\\s+\"?([^\"]+)\"?.*",
-                                                         Pattern.DOTALL );
+    private static final Pattern   queryNamePattern1   = Pattern.compile( "\\s*query\\s+\"([^\"]+)\".*",
+                                                                          Pattern.DOTALL );
+    
+    private static final Pattern   queryNamePattern2   = Pattern.compile( "\\s*query\\s+([^\\s;#\"]+).*",
+                                                                          Pattern.DOTALL );
 
     public RuleContentOutlinePage(DRLRuleEditor editor) {
         super();
@@ -132,14 +138,20 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
             String st;
             while ( (st = bufferedReader.readLine()) != null ) {
 
-                Matcher matcher = rulePattern.matcher( st );
-
+                Matcher matcher = rulePattern1.matcher( st );
                 if ( matcher.matches() ) {
                     String rule = matcher.group( 1 );
                     packageTreeNode.addRule( rule,
                                              offset,
                                              st.length() );
                 }
+                matcher = rulePattern2.matcher( st );
+            	if ( matcher.matches() ) {
+                    String rule = matcher.group( 1 );
+                    packageTreeNode.addRule( rule,
+                                             offset,
+                                             st.length() );
+                } 
                 matcher = packagePattern.matcher( st );
                 if ( matcher.matches() ) {
                     String packageName = matcher.group( 1 );
@@ -149,7 +161,7 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
                 }
                 matcher = functionNamePattern.matcher( st );
                 if ( matcher.matches() ) {
-                    String functionName = matcher.group( matcher.groupCount() );
+                    String functionName = matcher.group( 2 );
                     packageTreeNode.addFunction( functionName + "()",
                                                  offset,
                                                  st.length() );
@@ -170,12 +182,21 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
                 }
                 matcher = globalNamePattern.matcher( st );
                 if ( matcher.matches() ) {
-                    String globalName = matcher.group( 1 );
-                    packageTreeNode.addGlobal( globalName,
+                	String globalType = matcher.group( 1 );
+                    String globalName = matcher.group( 2 );
+                    String name = globalName + " : " + globalType;
+                    packageTreeNode.addGlobal( name,
                                                offset,
                                                st.length() );
                 }
-                matcher = queryNamePattern.matcher( st );
+                matcher = queryNamePattern1.matcher( st );
+                if ( matcher.matches() ) {
+                    String queryName = matcher.group( 1 );
+                    packageTreeNode.addQuery( queryName,
+                                              offset,
+                                              st.length() );
+                }
+                matcher = queryNamePattern2.matcher( st );
                 if ( matcher.matches() ) {
                     String queryName = matcher.group( 1 );
                     packageTreeNode.addQuery( queryName,
