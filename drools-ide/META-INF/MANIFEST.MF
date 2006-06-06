@@ -52,7 +52,7 @@ Bundle-ClassPath: ide.jar,
  lib/commons-jci-eclipse-3.2.0.666.jar,
  lib/commons-jci-janino-2.4.3.jar,
  lib/janino-2.4.3.jar,
- lib/drools-compiler-3.0.jar,
- lib/drools-core-3.0.jar,
- lib/drools-decisiontables-3.0.jar,
- lib/drools-jsr94-3.0.jar
+ lib/drools-compiler.jar,
+ lib/drools-core.jar,
+ lib/drools-decisiontables.jar,
+ lib/drools-jsr94.jar
