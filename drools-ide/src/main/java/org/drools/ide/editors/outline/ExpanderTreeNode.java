@@ -22,7 +22,7 @@ public class ExpanderTreeNode extends OutlineNode
     }
 
     public ImageDescriptor getImageDescriptor(Object object) {
-        return DroolsIDEPlugin.getImageDescriptor( "icons/dsl.gif" );
+        return DroolsIDEPlugin.getImageDescriptor( "icons/dsl.GIF" );
     }
 
     public String getLabel(Object o) {
