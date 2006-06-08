@@ -66,14 +66,16 @@ public class DroolsClasspathContainer implements IClasspathContainer {
     }
 
     private void addJarNames(File file, List list) {
-        if (file.isDirectory()) {
-            File afile[] = file.listFiles();
-            for (int i = 0; i < afile.length; i++)
-                addJarNames(afile[i], list);
-
-        }
-        if (file.getPath().endsWith(".jar")) {
-            list.add(file.getAbsolutePath());
+        File[] files = file.listFiles();
+        for (int i = 0; i < files.length; i++) {
+	        if (files[i].isDirectory() && files[i].getName().equals("lib")) {
+	            File[] jarFiles = files[i].listFiles();
+	            for (int j = 0; j < jarFiles.length; j++) {
+	                if (jarFiles[j].getPath().endsWith(".jar")) {
+	                    list.add(jarFiles[j].getAbsolutePath());
+	                }
+	            }
+            }
         }
     }
 
