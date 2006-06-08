@@ -1,7 +1,5 @@
 package org.drools.ide.editors;
 
-import java.util.Map;
-
 import org.drools.ide.DroolsIDEPlugin;
 import org.drools.ide.debug.core.IDroolsDebugConstants;
 import org.eclipse.core.resources.IMarker;
@@ -23,7 +21,6 @@ public class DRLAnnotationModel extends ResourceMarkerAnnotationModel {
 	            return super.createPositionFromMarker(marker);
 	        }
 	        int line = marker.getAttribute(IDroolsDebugConstants.DRL_LINE_NUMBER, -1);
-	        Map attributes = marker.getAttributes();
 	        try {
 	        	return new Position(fDocument.getLineOffset(line - 1));
 	        } catch (BadLocationException exc) {

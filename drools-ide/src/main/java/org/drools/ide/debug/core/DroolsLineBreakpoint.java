@@ -3,7 +3,6 @@ package org.drools.ide.debug.core;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.internal.debug.core.breakpoints.JavaLineBreakpoint;

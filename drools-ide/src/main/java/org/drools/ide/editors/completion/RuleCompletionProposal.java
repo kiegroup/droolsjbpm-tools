@@ -30,18 +30,21 @@ public class RuleCompletionProposal {
     }
     
     /** Also allows an icon to be used */
-    public RuleCompletionProposal(int replacementLength, String display, String content, Image icon) {
-        this(replacementLength, display, content, content.length());
-        this.image = icon;
-        
+    public RuleCompletionProposal(int replacementLength, String display, String content, Image image) {
+        this(replacementLength, display, content, content.length(), image);
     }
 
-    /** This is used when a different display value is shown to what is put in when selected. */
     public RuleCompletionProposal(int replacementLength, String display, String content, int cursorPosition) {
+    	this(replacementLength, display, content, cursorPosition, null);
+    }
+    
+    /** This is used when a different display value is shown to what is put in when selected. */
+    public RuleCompletionProposal(int replacementLength, String display, String content, int cursorPosition, Image image) {
     	this.replacementLength = replacementLength;
         this.content = content;
         this.display = display;
         this.cursorPosition = cursorPosition;
+        this.image = image;
     }
 
     public String getContent() {

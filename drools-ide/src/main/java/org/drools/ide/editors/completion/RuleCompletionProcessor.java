@@ -1,7 +1,6 @@
 package org.drools.ide.editors.completion;
 
 import java.io.IOException;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,13 +13,11 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.ide.DroolsIDEPlugin;
 import org.drools.ide.DroolsPluginImages;
-import org.drools.ide.builder.DroolsBuilder;
 import org.drools.ide.editors.DRLRuleEditor;
 import org.drools.ide.editors.DSLAdapter;
 import org.drools.ide.util.ProjectClassLoader;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.FieldBindingDescr;
-import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
@@ -98,7 +95,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                                        list,
                                                        prefix );
         			
-//        			addRHSJavaCompletionProposals(list, backText, prefix);
+        			addRHSJavaCompletionProposals(list, backText, prefix);
 	            }
 	        } else if (condition(backText)) {
 	        	List dslConditions = adapter.listConditionItems();
@@ -135,18 +132,31 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 				    list.add( new RuleCompletionProposal(prefix.length(), "not", "not ", droolsIcon));
 				    list.add( new RuleCompletionProposal(prefix.length(), "and", "and ", droolsIcon));
 				    list.add( new RuleCompletionProposal(prefix.length(), "or", "or ", droolsIcon));
-				    RuleCompletionProposal prop = new RuleCompletionProposal(prefix.length(), "eval", "eval()", 5 );
+				    RuleCompletionProposal prop = new RuleCompletionProposal(prefix.length(), "eval", "eval(  )", 6 );
 					prop.setImage(droolsIcon);
 				    list.add(prop);
 				    // and add imported classes
-				    List imports = getImports(viewer);
+				    List imports = getDRLEditor().getImports();
 				    iterator = imports.iterator();
 				    while (iterator.hasNext()) {
 				        String name = (String) iterator.next();
 				        int index = name.lastIndexOf(".");
 				        if (index != -1) {
 				        	String className = name.substring(index + 1);
-				        	RuleCompletionProposal p = new RuleCompletionProposal(prefix.length(), className, className + "()", className.length() + 1);
+				        	RuleCompletionProposal p = new RuleCompletionProposal(prefix.length(), className, className + "(  )", className.length() + 2);
+				        	p.setPriority(-1);
+				        	p.setImage(classIcon);
+				        	list.add(p);
+				        }
+				    }
+				    List classesInPackage = getDRLEditor().getClassesInPackage();
+				    iterator = classesInPackage.iterator();
+				    while (iterator.hasNext()) {
+				        String name = (String) iterator.next();
+				        int index = name.lastIndexOf(".");
+				        if (index != -1) {
+				        	String className = name.substring(index + 1);
+				        	RuleCompletionProposal p = new RuleCompletionProposal(prefix.length(), className, className + "(  )", className.length() + 2);
 				        	p.setPriority(-1);
 				        	p.setImage(classIcon);
 				        	list.add(p);
@@ -159,14 +169,14 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 				case LocationDeterminator.LOCATION_INSIDE_CONDITION_START :
 					String className = (String) location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME);
 					if (className != null) {
-						ClassTypeResolver resolver = new ClassTypeResolver(getImports(viewer), ProjectClassLoader.getProjectClassLoader(getEditor()));
+						ClassTypeResolver resolver = new ClassTypeResolver(getDRLEditor().getImports(), ProjectClassLoader.getProjectClassLoader(getEditor()));
 						try {
 							Class clazz = resolver.resolveType(className);
 							if (clazz != null) {
 								Iterator iterator2 = new ClassFieldInspector(clazz).getFieldNames().keySet().iterator();
 								while (iterator2.hasNext()) {
 							        String name = (String) iterator2.next();
-						        	RuleCompletionProposal p = new RuleCompletionProposal(prefix.length(), name);
+						        	RuleCompletionProposal p = new RuleCompletionProposal(prefix.length(), name, name + " ");
 						        	p.setImage(methodIcon);
 						        	list.add(p);
 							    }
@@ -178,6 +188,73 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 						}
 					}
 					break;
+				case LocationDeterminator.LOCATION_INSIDE_CONDITION_OPERATOR :
+					list.add( new RuleCompletionProposal(prefix.length(), "<", "< ", droolsIcon));
+				    list.add( new RuleCompletionProposal(prefix.length(), "<=", "<= ", droolsIcon));
+				    list.add( new RuleCompletionProposal(prefix.length(), ">", "> ", droolsIcon));
+				    list.add( new RuleCompletionProposal(prefix.length(), ">=", ">= ", droolsIcon));
+				    list.add( new RuleCompletionProposal(prefix.length(), "==", "== ", droolsIcon));
+				    list.add( new RuleCompletionProposal(prefix.length(), "!=", "!= ", droolsIcon));
+				    list.add( new RuleCompletionProposal(prefix.length(), "matches", "matches ", droolsIcon));
+				    list.add( new RuleCompletionProposal(prefix.length(), "contains", "contains ", droolsIcon));
+				    list.add( new RuleCompletionProposal(prefix.length(), "excludes", "excludes ", droolsIcon));
+					list.add( new RuleCompletionProposal(prefix.length(), ":", ": ", droolsIcon));
+				    list.add( new RuleCompletionProposal(prefix.length(), "->", "-> (  )", 5, droolsIcon));
+				    break;
+				case LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT :
+					// determine type
+					className = (String) location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME);
+					String property = (String) location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME);
+					String type = null;
+					if (className != null) {
+						ClassTypeResolver resolver = new ClassTypeResolver(getDRLEditor().getImports(), ProjectClassLoader.getProjectClassLoader(getEditor()));
+						try {
+							Class clazz = resolver.resolveType(className);
+							if (clazz != null) {
+								Class clazzz = (Class) new ClassFieldInspector(clazz).getFieldTypes().get(property);
+								if (clazzz != null) {
+									type = clazzz.getName();
+								}
+							}
+						} catch (IOException exc) {
+							// Do nothing
+						} catch (ClassNotFoundException exc) {
+							// Do nothing
+						}
+					}
+
+				    list.add( new RuleCompletionProposal(prefix.length(), "null", "null", droolsIcon));
+					if (type == null || "boolean".equals(type)) {
+					    list.add( new RuleCompletionProposal(prefix.length(), "true", "true", droolsIcon));
+					    list.add( new RuleCompletionProposal(prefix.length(), "false", "false", droolsIcon));
+					}
+					if (type == null || "java.lang.String".equals(type)) {
+						list.add( new RuleCompletionProposal(prefix.length(), "\"\"", "\"\"", 1, droolsIcon));
+					}
+					if (type == null || "java.util.Date".equals(type)) {
+						list.add( new RuleCompletionProposal(prefix.length(), "\"dd-mmm-yyyy\"", "\"dd-mmm-yyyy\"", 1, droolsIcon));
+					}
+				    list.add( new RuleCompletionProposal(prefix.length(), "()", "(  )", 2, droolsIcon));
+			    	DrlParser parser = new DrlParser();
+			    	try {
+			    		PackageDescr descr = parser.parse(backText);
+			    		List rules = descr.getRules();
+			    		if (rules != null && rules.size() == 1) {
+			    			Map result = new HashMap();
+			    			getRuleParameters(result, ((RuleDescr) rules.get(0)).getLhs().getDescrs());
+			    			Iterator iterator2 = result.keySet().iterator();
+			    			while (iterator2.hasNext()) {
+			    				String name = (String) iterator2.next();
+			    				RuleCompletionProposal proposal = new RuleCompletionProposal(prefix.length(), name);
+			    				proposal.setPriority(-1);
+			    				proposal.setImage(methodIcon);
+								list.add(proposal);
+			    			}
+			    		}
+			    	} catch (DroolsParserException exc) {
+			    		// do nothing
+			    	}
+				    break;
 			}
 		}
 	}
@@ -213,7 +290,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                                                        DroolsParserException {
         Iterator iterator;
         RuleCompletionProposal prop;
-        List functions = getFunctions(viewer);
+        List functions = getDRLEditor().getFunctions();
         iterator = functions.iterator();
         while (iterator.hasNext()) {
             String name = (String) iterator.next() + "()";
@@ -262,8 +339,8 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
     	} catch (DroolsParserException exc) {
     		// do nothing
     	}
-    	String consequence = backText.substring(thenPosition + 4);
-    	list.addAll(getRHSJavaCompletionProposals(consequence, prefix));
+    	// String consequence = backText.substring(thenPosition + 4);
+    	// list.addAll(getRHSJavaCompletionProposals(consequence, prefix));
     }
     
     private void getRuleParameters(Map result, List descrs) {
@@ -360,40 +437,5 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         }
         return adapter;
     }
-
-	private List getImports(ITextViewer viewer) throws CoreException, DroolsParserException {
-		List imports = getDRLEditor().getImports();
-        if (imports == null) {
-            loadImportsAndFunctions(viewer);
-            imports = getDRLEditor().getImports();
-        }
-        return imports;
-	}
-	
-	private void loadImportsAndFunctions(ITextViewer viewer) throws CoreException, DroolsParserException {
-		String content = viewer.getDocument().get();
-        Reader dslReader = DSLAdapter.getDSLContent(content, ((FileEditorInput) getEditor().getEditorInput()).getFile());
-        DrlParser parser = new DrlParser();
-        PackageDescr descr = DroolsBuilder.parsePackage(content, parser, dslReader);
-        // imports
-        getDRLEditor().setImports(descr.getImports());
-        // functions
-        List functionDescrs = descr.getFunctions();
-        List functions = new ArrayList(functionDescrs.size());
-        Iterator iterator = functionDescrs.iterator();
-        while (iterator.hasNext()) {
-			functions.add(((FunctionDescr) iterator.next()).getName());
-		}
-        getDRLEditor().setFunctions(functions);
-	}
-
-	private List getFunctions(ITextViewer viewer) throws CoreException, DroolsParserException {
-		List functions = getDRLEditor().getFunctions();
-        if (functions == null) {
-            loadImportsAndFunctions(viewer);
-            functions = getDRLEditor().getFunctions();
-        }
-        return functions;
-	}
 
 }
