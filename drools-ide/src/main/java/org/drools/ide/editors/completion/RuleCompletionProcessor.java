@@ -128,13 +128,22 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 				case LocationDeterminator.LOCATION_BEGIN_OF_CONDITION: 
 					// if we are at the beginning of a new condition
 					// add drools keywords
-					list.add( new RuleCompletionProposal(prefix.length(), "exists", "exists ", droolsIcon));
-				    list.add( new RuleCompletionProposal(prefix.length(), "not", "not ", droolsIcon));
 				    list.add( new RuleCompletionProposal(prefix.length(), "and", "and ", droolsIcon));
 				    list.add( new RuleCompletionProposal(prefix.length(), "or", "or ", droolsIcon));
 				    RuleCompletionProposal prop = new RuleCompletionProposal(prefix.length(), "eval", "eval(  )", 6 );
 					prop.setImage(droolsIcon);
 				    list.add(prop);
+					prop = new RuleCompletionProposal(prefix.length(), "then", "then" + System.getProperty("line.separator") + "\t");
+					prop.setImage(droolsIcon);
+					list.add(prop);
+				    // we do not break but also add all elements that are needed for and/or
+				case LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_AND_OR:
+				    list.add( new RuleCompletionProposal(prefix.length(), "not", "not ", droolsIcon));
+				    // we do not break but also add all elements that are needed for not
+				case LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_NOT:
+					list.add( new RuleCompletionProposal(prefix.length(), "exists", "exists ", droolsIcon));
+				    // we do not break but also add all elements that are needed for exists
+				case LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_EXISTS:
 				    // and add imported classes
 				    List imports = getDRLEditor().getImports();
 				    iterator = imports.iterator();
@@ -162,10 +171,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 				        	list.add(p);
 				        }
 				    }
-					prop = new RuleCompletionProposal(prefix.length(), "then", "then" + System.getProperty("line.separator") + "\t");
-					prop.setImage(droolsIcon);
-					list.add(prop);
-				    break;
+					break;
 				case LocationDeterminator.LOCATION_INSIDE_CONDITION_START :
 					String className = (String) location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME);
 					if (className != null) {
@@ -255,6 +261,27 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			    		// do nothing
 			    	}
 				    break;
+				case LocationDeterminator.LOCATION_INSIDE_EVAL :
+					try {
+				    	parser = new DrlParser();
+			    		PackageDescr descr = parser.parse(backText);
+			    		List rules = descr.getRules();
+			    		if (rules != null && rules.size() == 1) {
+			    			Map result = new HashMap();
+			    			getRuleParameters(result, ((RuleDescr) rules.get(0)).getLhs().getDescrs());
+			    			Iterator iterator2 = result.keySet().iterator();
+			    			while (iterator2.hasNext()) {
+			    				String name = (String) iterator2.next();
+			    				RuleCompletionProposal proposal = new RuleCompletionProposal(prefix.length(), name);
+			    				proposal.setPriority(-1);
+			    				proposal.setImage(methodIcon);
+								list.add(proposal);
+			    			}
+			    		}
+			    	} catch (DroolsParserException exc) {
+			    		// do nothing
+			    	}
+			    	break;
 			}
 		}
 	}

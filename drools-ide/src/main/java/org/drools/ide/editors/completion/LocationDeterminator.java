@@ -8,9 +8,11 @@ import java.util.regex.Pattern;
 
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
+import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.NotDescr;
+import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
@@ -24,13 +26,22 @@ public class LocationDeterminator {
     static final Pattern COLUMN_PATTERN_EXCLUDES_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+excludes\\s+", Pattern.DOTALL);
     static final Pattern COLUMN_PATTERN_COMPARATOR_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s*([<>=!]+)\\s*[^\\s<>!=:]*", Pattern.DOTALL);
 
+    static final Pattern EXISTS_PATTERN = Pattern.compile(".*\\s+exists\\s*\\(?\\s*((\\S*)\\s*:)?\\s*\\S*", Pattern.DOTALL);
+    static final Pattern NOT_PATTERN = Pattern.compile(".*\\s+not\\s*\\(?\\s*((\\S*)\\s*:)?\\s*\\S*", Pattern.DOTALL);
+    static final Pattern EVAL_PATTERN = Pattern.compile(".*\\s+eval\\s*\\(\\s*[^)]*", Pattern.DOTALL);
+    
 	static final int LOCATION_UNKNOWN = 0;
 	static final int LOCATION_BEGIN_OF_CONDITION = 1;
+	static final int LOCATION_BEGIN_OF_CONDITION_EXISTS = 2;
+	static final int LOCATION_BEGIN_OF_CONDITION_AND_OR = 3;
+	static final int LOCATION_BEGIN_OF_CONDITION_NOT = 4;
 	
 	static final int LOCATION_INSIDE_CONDITION_START = 100;
 	static final int LOCATION_INSIDE_CONDITION_OPERATOR = 101;
 	static final int LOCATION_INSIDE_CONDITION_ARGUMENT = 102;
 
+	static final int LOCATION_INSIDE_EVAL = 200;
+	
 	static final String LOCATION_PROPERTY_CLASS_NAME = "ClassName";
 	static final String LOCATION_PROPERTY_PROPERTY_NAME = "PropertyName";
 	
@@ -81,6 +92,18 @@ public class LocationDeterminator {
 			}
 			PatternDescr subDescr = (PatternDescr) subDescrs.get(subDescrs.size() - 1);
 			if (subDescr == null) {
+				Matcher matcher = EXISTS_PATTERN.matcher(backText);
+				if (matcher.matches()) {
+					return new Location(LOCATION_BEGIN_OF_CONDITION_EXISTS);
+				}
+				matcher = NOT_PATTERN.matcher(backText);
+				if (matcher.matches()) {
+					return new Location(LOCATION_BEGIN_OF_CONDITION_NOT);
+				}
+				matcher = EVAL_PATTERN.matcher(backText);
+				if (matcher.matches()) {
+					return new Location(LOCATION_INSIDE_EVAL);
+				}
 				return new Location(LOCATION_BEGIN_OF_CONDITION);
 			}
 			if (subDescr.getEndLine() != 0 || subDescr.getEndColumn() != 0) {
@@ -145,36 +168,94 @@ public class LocationDeterminator {
 		} else if (descr instanceof ExistsDescr) {
 			List subDescrs = ((ExistsDescr) descr).getDescrs();
 			if (subDescrs.size() == 0) {
-				return new Location(LOCATION_BEGIN_OF_CONDITION);
+				return new Location(LOCATION_BEGIN_OF_CONDITION_EXISTS);
 			}
 			if (subDescrs.size() == 1) {
 				PatternDescr subDescr = (PatternDescr) subDescrs.get(0);
 				if (subDescr == null) {
-					return new Location(LOCATION_BEGIN_OF_CONDITION);
+					return new Location(LOCATION_BEGIN_OF_CONDITION_EXISTS);
 				}
-				if (subDescr.getEndLine() != 0 || subDescr.getEndColumn() != 0) {
-					return new Location(LOCATION_BEGIN_OF_CONDITION);
-				}
+				// not needed because an exist description is ended if subdescr is ended
+				// if (subDescr.getEndLine() != 0 || subDescr.getEndColumn() != 0) {
+				// 	return new Location(LOCATION_BEGIN_OF_CONDITION);
+				// }
 				return determineLocationForDescr(subDescr, backText);
 			}
 			return determineLocationForDescr(descr, backText);
 		} else if (descr instanceof NotDescr) {
 			List subDescrs = ((NotDescr) descr).getDescrs();
 			if (subDescrs.size() == 0) {
-				return new Location(LOCATION_BEGIN_OF_CONDITION);
+				return new Location(LOCATION_BEGIN_OF_CONDITION_NOT);
 			}
 			if (subDescrs.size() == 1) {
 				PatternDescr subDescr = (PatternDescr) subDescrs.get(0);
 				if (subDescr == null) {
-					return new Location(LOCATION_BEGIN_OF_CONDITION);
+					return new Location(LOCATION_BEGIN_OF_CONDITION_NOT);
 				}
-				if (subDescr.getEndLine() != 0 || subDescr.getEndColumn() != 0) {
-					return new Location(LOCATION_BEGIN_OF_CONDITION);
+				// not needed because a not description is ended if subdescr is ended
+				// if (subDescr.getEndLine() != 0 || subDescr.getEndColumn() != 0) {
+				// 	return new Location(LOCATION_BEGIN_OF_CONDITION);
+				// }
+				Location location = determineLocationForDescr(subDescr, backText);
+				if (location.getType() == LOCATION_BEGIN_OF_CONDITION) {
+					return new Location(LOCATION_BEGIN_OF_CONDITION_NOT);
 				}
-				return determineLocationForDescr(subDescr, backText);
+				return location;
 			}
 			return determineLocationForDescr(descr, backText);
-			
+		} else if (descr instanceof AndDescr) {
+			List subDescrs = ((AndDescr) descr).getDescrs();
+			int size = subDescrs.size();
+			if (size == 2) {
+				PatternDescr subDescr = (PatternDescr) subDescrs.get(1);
+				if (subDescr == null) {
+					Matcher matcher = EXISTS_PATTERN.matcher(backText);
+					if (matcher.matches()) {
+						return new Location(LOCATION_BEGIN_OF_CONDITION_EXISTS);
+					}
+					matcher = NOT_PATTERN.matcher(backText);
+					if (matcher.matches()) {
+						return new Location(LOCATION_BEGIN_OF_CONDITION_NOT);
+					}
+					return new Location(LOCATION_BEGIN_OF_CONDITION_AND_OR);
+				// not needed because an and description is ended if subdescr is ended
+				// } else if (subDescr.getEndLine() != 0 || subDescr.getEndColumn() != 0) {
+				// 	return new Location(LOCATION_BEGIN_OF_CONDITION);
+				} else {
+					Location location = determineLocationForDescr(subDescr, backText);
+					if (location.getType() == LOCATION_BEGIN_OF_CONDITION) {
+						return new Location(LOCATION_BEGIN_OF_CONDITION_AND_OR);
+					}
+					return location;
+				}
+			}
+			return new Location(LOCATION_UNKNOWN);
+		} else if (descr instanceof OrDescr) {
+			List subDescrs = ((OrDescr) descr).getDescrs();
+			int size = subDescrs.size();
+			if (size == 2) {
+				PatternDescr subDescr = (PatternDescr) subDescrs.get(1);
+				if (subDescr == null) {
+					Matcher matcher = EXISTS_PATTERN.matcher(backText);
+					if (matcher.matches()) {
+						return new Location(LOCATION_BEGIN_OF_CONDITION_EXISTS);
+					}
+					matcher = NOT_PATTERN.matcher(backText);
+					if (matcher.matches()) {
+						return new Location(LOCATION_BEGIN_OF_CONDITION_NOT);
+					}return new Location(LOCATION_BEGIN_OF_CONDITION_AND_OR);
+				// not needed because an or description is ended if subdescr is ended
+				// } else if (subDescr.getEndLine() != 0 || subDescr.getEndColumn() != 0) {
+				// 	return new Location(LOCATION_BEGIN_OF_CONDITION);
+				} else {
+					Location location = determineLocationForDescr(subDescr, backText);
+					if (location.getType() == LOCATION_BEGIN_OF_CONDITION) {
+						return new Location(LOCATION_BEGIN_OF_CONDITION_AND_OR);
+					}
+					return location;
+				}
+			}
+			return new Location(LOCATION_UNKNOWN);
 		}
 		
 		return new Location(LOCATION_UNKNOWN);

@@ -342,15 +342,43 @@ public class LocationDeterminatorTest extends TestCase {
         	"	when \n" +
         	"		exists ";
         location = LocationDeterminator.getLocationInCondition(input);
-        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION, location.getType());
-    
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_EXISTS, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		exists ( ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_EXISTS, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		exists(";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_EXISTS, location.getType());
+
         input = 
         	"rule MyRule \n" +
         	"	when \n" +
         	"		exists Cl";
         location = LocationDeterminator.getLocationInCondition(input);
-        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION, location.getType());
-    
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_EXISTS, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		exists ( Cl";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_EXISTS, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		exists ( name : Cl";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_EXISTS, location.getType());
+
         input = 
         	"rule MyRule \n" +
         	"	when \n" +
@@ -358,29 +386,43 @@ public class LocationDeterminatorTest extends TestCase {
         location = LocationDeterminator.getLocationInCondition(input);
         assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_START, location.getType());
         assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-    
+
         input = 
         	"rule MyRule \n" +
         	"	when \n" +
-        	"		exists Class () \n" + 
-        	"		";
+        	"		exists Class ( ) \n" +
+        	"       ";
         location = LocationDeterminator.getLocationInCondition(input);
         assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION, location.getType());
-    
+
         /** NOT */
         input = 
         	"rule MyRule \n" +
         	"	when \n" +
         	"		not ";
         location = LocationDeterminator.getLocationInCondition(input);
-        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION, location.getType());
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_NOT, location.getType());
     
         input = 
         	"rule MyRule \n" +
         	"	when \n" +
         	"		not Cl";
         location = LocationDeterminator.getLocationInCondition(input);
-        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION, location.getType());
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_NOT, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		not exists ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_EXISTS, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		not exists Cl";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_EXISTS, location.getType());
 
         input = 
         	"rule MyRule \n" +
@@ -390,11 +432,291 @@ public class LocationDeterminatorTest extends TestCase {
         assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_START, location.getType());
         assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
 
+// TODO        
+//        input = 
+//        	"rule MyRule \n" +
+//        	"	when \n" +
+//        	"		not exists Class (";
+//        location = LocationDeterminator.getLocationInCondition(input);
+//        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_START, location.getType());
+//        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
+//
+//        input = 
+//        	"rule MyRule \n" +
+//        	"	when \n" +
+//        	"		not exists name : Class (";
+//        location = LocationDeterminator.getLocationInCondition(input);
+//        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_START, location.getType());
+//        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
+
         input = 
         	"rule MyRule \n" +
         	"	when \n" +
         	"		not Class () \n" +
         	"		";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION, location.getType());
+    
+        /** AND */
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( ) and ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_AND_OR, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( ) &&  ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_AND_OR, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class () and   ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_AND_OR, location.getType());
+    
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		name : Class ( name: property ) and ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_AND_OR, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( name: property ) \n" + 
+        	"       and ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_AND_OR, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( ) and Cl";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_AND_OR, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( ) and name : Cl";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_AND_OR, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( ) && name : Cl";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_AND_OR, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( ) and Class ( ) \n" +
+        	"       ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( ) and not Class ( ) \n" +
+        	"       ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( ) and exists Class ( ) \n" +
+        	"       ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( ) and Class ( ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_START, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( ) and Class ( name ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_OPERATOR, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( ) and Class ( name == ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		exists Class ( ) and not ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_NOT, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		exists Class ( ) and exists ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_EXISTS, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( ) and not Class ( ) \n" +
+        	"       ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION, location.getType());
+
+        /** OR */
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( ) or ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_AND_OR, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( ) || ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_AND_OR, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class () or   ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_AND_OR, location.getType());
+    
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		name : Class ( name: property ) or ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_AND_OR, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( name: property ) \n" + 
+        	"       or ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_AND_OR, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( ) or Cl";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_AND_OR, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( ) or name : Cl";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_AND_OR, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( ) || name : Cl";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_AND_OR, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( ) or Class ( ) \n" +
+        	"       ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( ) or Class ( ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_START, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( ) or Class ( name ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_OPERATOR, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( ) or Class ( name == ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		exists Class ( ) or not ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_NOT, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		exists Class ( ) or exists ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_EXISTS, location.getType());
+
+        /** EVAL */
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		eval ( ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_INSIDE_EVAL, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		eval(";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_INSIDE_EVAL, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		eval( myCla";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_INSIDE_EVAL, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		eval( true )";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		eval( true ) \n" +
+        	"       ";
         location = LocationDeterminator.getLocationInCondition(input);
         assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION, location.getType());
     }
