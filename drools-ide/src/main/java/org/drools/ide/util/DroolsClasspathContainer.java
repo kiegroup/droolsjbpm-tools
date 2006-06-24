@@ -2,6 +2,7 @@ package org.drools.ide.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.osgi.framework.Bundle;
 
 public class DroolsClasspathContainer implements IClasspathContainer {
 
@@ -53,6 +55,16 @@ public class DroolsClasspathContainer implements IClasspathContainer {
             Path path = new Path((String) jarNames.get(i));
             list.add(JavaCore.newLibraryEntry(
                 path, path, null));
+        }
+        // also add jdt core jar from eclipse itself
+        String pluginRootString = Platform.getInstallLocation().getURL().getPath() + "plugins/";
+        File pluginRoot = new Path(pluginRootString).toFile();
+        File[] files = pluginRoot.listFiles();
+        for (int i = 0; i < files.length; i++) {
+	        if (files[i].getAbsolutePath().contains("org.eclipse.jdt.core_")) {
+	        	Path path = new Path(files[i].getAbsolutePath());
+	        	list.add(JavaCore.newLibraryEntry(path, path, null));
+	        }
         }
         return (IClasspathEntry[]) list.toArray(new IClasspathEntry[list.size()]);
     }
