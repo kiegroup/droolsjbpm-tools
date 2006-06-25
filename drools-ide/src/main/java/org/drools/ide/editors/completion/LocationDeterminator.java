@@ -10,6 +10,7 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
@@ -106,7 +107,7 @@ public class LocationDeterminator {
 				}
 				return new Location(LOCATION_BEGIN_OF_CONDITION);
 			}
-			if (subDescr.getEndLine() != 0 || subDescr.getEndColumn() != 0) {
+			if (endReached(subDescr)) {
 				return new Location(LOCATION_BEGIN_OF_CONDITION);
 			}
 			return determineLocationForDescr(subDescr, backText);
@@ -175,10 +176,6 @@ public class LocationDeterminator {
 				if (subDescr == null) {
 					return new Location(LOCATION_BEGIN_OF_CONDITION_EXISTS);
 				}
-				// not needed because an exist description is ended if subdescr is ended
-				// if (subDescr.getEndLine() != 0 || subDescr.getEndColumn() != 0) {
-				// 	return new Location(LOCATION_BEGIN_OF_CONDITION);
-				// }
 				return determineLocationForDescr(subDescr, backText);
 			}
 			return determineLocationForDescr(descr, backText);
@@ -192,10 +189,6 @@ public class LocationDeterminator {
 				if (subDescr == null) {
 					return new Location(LOCATION_BEGIN_OF_CONDITION_NOT);
 				}
-				// not needed because a not description is ended if subdescr is ended
-				// if (subDescr.getEndLine() != 0 || subDescr.getEndColumn() != 0) {
-				// 	return new Location(LOCATION_BEGIN_OF_CONDITION);
-				// }
 				Location location = determineLocationForDescr(subDescr, backText);
 				if (location.getType() == LOCATION_BEGIN_OF_CONDITION) {
 					return new Location(LOCATION_BEGIN_OF_CONDITION_NOT);
@@ -218,9 +211,6 @@ public class LocationDeterminator {
 						return new Location(LOCATION_BEGIN_OF_CONDITION_NOT);
 					}
 					return new Location(LOCATION_BEGIN_OF_CONDITION_AND_OR);
-				// not needed because an and description is ended if subdescr is ended
-				// } else if (subDescr.getEndLine() != 0 || subDescr.getEndColumn() != 0) {
-				// 	return new Location(LOCATION_BEGIN_OF_CONDITION);
 				} else {
 					Location location = determineLocationForDescr(subDescr, backText);
 					if (location.getType() == LOCATION_BEGIN_OF_CONDITION) {
@@ -244,9 +234,6 @@ public class LocationDeterminator {
 					if (matcher.matches()) {
 						return new Location(LOCATION_BEGIN_OF_CONDITION_NOT);
 					}return new Location(LOCATION_BEGIN_OF_CONDITION_AND_OR);
-				// not needed because an or description is ended if subdescr is ended
-				// } else if (subDescr.getEndLine() != 0 || subDescr.getEndColumn() != 0) {
-				// 	return new Location(LOCATION_BEGIN_OF_CONDITION);
 				} else {
 					Location location = determineLocationForDescr(subDescr, backText);
 					if (location.getType() == LOCATION_BEGIN_OF_CONDITION) {
@@ -259,5 +246,47 @@ public class LocationDeterminator {
 		}
 		
 		return new Location(LOCATION_UNKNOWN);
+	}
+	
+	private static boolean endReached(PatternDescr descr) {
+		if (descr instanceof ColumnDescr) {
+			return (descr.getEndLine() != 0 || descr.getEndColumn() != 0);
+		} else if (descr instanceof ExistsDescr) {
+			List descrs = ((ExistsDescr) descr).getDescrs();
+			if (descrs.isEmpty()) {
+				return false;
+			}
+			return endReached((PatternDescr) descrs.get(0));
+		} else if (descr instanceof NotDescr) {
+			List descrs = ((NotDescr) descr).getDescrs();
+			if (descrs.isEmpty()) {
+				return false;
+			}
+			return endReached((PatternDescr) descrs.get(0));
+		} else if (descr instanceof NotDescr) {
+			List descrs = ((NotDescr) descr).getDescrs();
+			if (descrs.isEmpty()) {
+				return false;
+			}
+			return endReached((PatternDescr) descrs.get(0));
+		} else if (descr instanceof AndDescr) {
+			List descrs = ((AndDescr) descr).getDescrs();
+			if (descrs.size() != 2) {
+				return false;
+			}
+			return endReached((PatternDescr) descrs.get(0))
+				&& endReached((PatternDescr) descrs.get(1));
+		} else if (descr instanceof OrDescr) {
+			List descrs = ((OrDescr) descr).getDescrs();
+			if (descrs.size() != 2) {
+				return false;
+			}
+			return endReached((PatternDescr) descrs.get(0))
+				&& endReached((PatternDescr) descrs.get(1));
+		} if (descr instanceof EvalDescr) {
+			// EvalDescr are only added once the end has been reached 
+			return true;
+		}
+		return false;
 	}
 }
