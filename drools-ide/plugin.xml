@@ -169,6 +169,16 @@
       </page>
    </extension>
    
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+         name="JBoss Rules"
+         icon="icons/drools.gif"
+         class="org.drools.ide.DroolsPerspective"
+         id="org.drools.ide.DroolsPerspective">
+      </perspective>
+   </extension>
+   
    <!-- Extensions for the interactive debugger
    
    <extension point = "org.eclipse.debug.core.launchConfigurationTypes">
