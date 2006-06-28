@@ -22,9 +22,9 @@ public class LocationDeterminator {
 
     static final Pattern COLUMN_PATTERN_START = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*[^\\s<>!=:]*", Pattern.DOTALL);
     static final Pattern COLUMN_PATTERN_OPERATOR = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+", Pattern.DOTALL);
-    static final Pattern COLUMN_PATTERN_CONTAINS_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+contains\\s+", Pattern.DOTALL);
-    static final Pattern COLUMN_PATTERN_MATCHES_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+matches\\s+", Pattern.DOTALL);
-    static final Pattern COLUMN_PATTERN_EXCLUDES_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+excludes\\s+", Pattern.DOTALL);
+    static final Pattern COLUMN_PATTERN_CONTAINS_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+contains\\s+[^\\s<>!=:]*", Pattern.DOTALL);
+    static final Pattern COLUMN_PATTERN_MATCHES_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+matches\\s+[^\\s<>!=:]*", Pattern.DOTALL);
+    static final Pattern COLUMN_PATTERN_EXCLUDES_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+excludes\\s+[^\\s<>!=:]*", Pattern.DOTALL);
     static final Pattern COLUMN_PATTERN_COMPARATOR_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s*([<>=!]+)\\s*[^\\s<>!=:]*", Pattern.DOTALL);
 
     static final Pattern EXISTS_PATTERN = Pattern.compile(".*\\s+exists\\s*\\(?\\s*((\\S*)\\s*:)?\\s*\\S*", Pattern.DOTALL);
@@ -45,6 +45,7 @@ public class LocationDeterminator {
 	
 	static final String LOCATION_PROPERTY_CLASS_NAME = "ClassName";
 	static final String LOCATION_PROPERTY_PROPERTY_NAME = "PropertyName";
+	static final String LOCATION_PROPERTY_OPERATOR = "Operator";
 	
     private LocationDeterminator() {
 	}
@@ -114,7 +115,7 @@ public class LocationDeterminator {
 		} else if (descr instanceof ColumnDescr) {
 			ColumnDescr columnDescr = (ColumnDescr) descr;
 			// TODO: this is not completely safe, there are rare occasions where this could fail
-			Pattern pattern = Pattern.compile(".*(" + columnDescr.getObjectType() + ")\\s*\\((.*)");
+			Pattern pattern = Pattern.compile(".*(" + columnDescr.getObjectType() + ")\\s*\\((.*)", Pattern.DOTALL);
 			Matcher matcher = pattern.matcher(backText);
 			String columnContents = null;
 			while (matcher.find()) {
@@ -127,6 +128,7 @@ public class LocationDeterminator {
 	        if (matcher.matches()) {
 				Location location = new Location(LOCATION_INSIDE_CONDITION_OPERATOR);
 				location.setProperty(LOCATION_PROPERTY_CLASS_NAME, columnDescr.getObjectType());
+				location.setProperty(LOCATION_PROPERTY_PROPERTY_NAME, matcher.group(3));
 				return location;
 	        }
 	        matcher = COLUMN_PATTERN_COMPARATOR_ARGUMENT.matcher(columnContents);
@@ -134,6 +136,7 @@ public class LocationDeterminator {
 				Location location = new Location(LOCATION_INSIDE_CONDITION_ARGUMENT);
 				location.setProperty(LOCATION_PROPERTY_CLASS_NAME, columnDescr.getObjectType());
 				location.setProperty(LOCATION_PROPERTY_PROPERTY_NAME, matcher.group(3));
+				location.setProperty(LOCATION_PROPERTY_OPERATOR, matcher.group(4));
 				return location;
 	        }
 	        matcher = COLUMN_PATTERN_CONTAINS_ARGUMENT.matcher(columnContents);
@@ -141,6 +144,7 @@ public class LocationDeterminator {
 				Location location = new Location(LOCATION_INSIDE_CONDITION_ARGUMENT);
 				location.setProperty(LOCATION_PROPERTY_CLASS_NAME, columnDescr.getObjectType());
 				location.setProperty(LOCATION_PROPERTY_PROPERTY_NAME, matcher.group(3));
+				location.setProperty(LOCATION_PROPERTY_OPERATOR, "contains");
 				return location;
 	        }
 	        matcher = COLUMN_PATTERN_EXCLUDES_ARGUMENT.matcher(columnContents);
@@ -148,6 +152,7 @@ public class LocationDeterminator {
 				Location location = new Location(LOCATION_INSIDE_CONDITION_ARGUMENT);
 				location.setProperty(LOCATION_PROPERTY_CLASS_NAME, columnDescr.getObjectType());
 				location.setProperty(LOCATION_PROPERTY_PROPERTY_NAME, matcher.group(3));
+				location.setProperty(LOCATION_PROPERTY_OPERATOR, "excludes");
 				return location;
 	        }
 	        matcher = COLUMN_PATTERN_MATCHES_ARGUMENT.matcher(columnContents);
@@ -155,6 +160,7 @@ public class LocationDeterminator {
 				Location location = new Location(LOCATION_INSIDE_CONDITION_ARGUMENT);
 				location.setProperty(LOCATION_PROPERTY_CLASS_NAME, columnDescr.getObjectType());
 				location.setProperty(LOCATION_PROPERTY_PROPERTY_NAME, matcher.group(3));
+				location.setProperty(LOCATION_PROPERTY_OPERATOR, "matches");
 				return location;
 	        }
 			matcher = COLUMN_PATTERN_START.matcher(columnContents);

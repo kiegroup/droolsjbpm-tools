@@ -197,6 +197,7 @@ public class LocationDeterminatorTest extends TestCase {
         location = LocationDeterminator.getLocationInCondition(input);
         assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_OPERATOR, location.getType());
         assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
+        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
         
         input = 
         	"rule MyRule \n" +
@@ -205,6 +206,7 @@ public class LocationDeterminatorTest extends TestCase {
         location = LocationDeterminator.getLocationInCondition(input);
         assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_OPERATOR, location.getType());
         assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
+        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
         
         input = 
         	"rule MyRule \n" +
@@ -213,6 +215,7 @@ public class LocationDeterminatorTest extends TestCase {
         location = LocationDeterminator.getLocationInCondition(input);
         assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_OPERATOR, location.getType());
         assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
+        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
 
         input = 
         	"rule MyRule \n" +
@@ -221,6 +224,7 @@ public class LocationDeterminatorTest extends TestCase {
         location = LocationDeterminator.getLocationInCondition(input);
         assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_OPERATOR, location.getType());
         assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
+        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
 
         input = 
         	"rule MyRule \n" +
@@ -229,6 +233,7 @@ public class LocationDeterminatorTest extends TestCase {
         location = LocationDeterminator.getLocationInCondition(input);
         assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_OPERATOR, location.getType());
         assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
+        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
 
         input = 
         	"rule MyRule \n" +
@@ -237,6 +242,7 @@ public class LocationDeterminatorTest extends TestCase {
         location = LocationDeterminator.getLocationInCondition(input);
         assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_OPERATOR, location.getType());
         assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
+        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
 
         input = 
         	"rule MyRule \n" +
@@ -245,6 +251,7 @@ public class LocationDeterminatorTest extends TestCase {
         location = LocationDeterminator.getLocationInCondition(input);
         assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_OPERATOR, location.getType());
         assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
+        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
 
         input = 
         	"rule MyRule \n" +
@@ -253,6 +260,7 @@ public class LocationDeterminatorTest extends TestCase {
         location = LocationDeterminator.getLocationInCondition(input);
         assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_OPERATOR, location.getType());
         assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
+        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
 
         input = 
         	"rule MyRule \n" +
@@ -262,6 +270,7 @@ public class LocationDeterminatorTest extends TestCase {
         location = LocationDeterminator.getLocationInCondition(input);
         assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_OPERATOR, location.getType());
         assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
+        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
 
         /** Inside of condition: argument */
         input = 
@@ -272,6 +281,7 @@ public class LocationDeterminatorTest extends TestCase {
         assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT, location.getType());
         assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
         assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
+        assertEquals("==", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_OPERATOR));
         
         input = 
         	"rule MyRule \n" +
@@ -281,24 +291,27 @@ public class LocationDeterminatorTest extends TestCase {
         assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT, location.getType());
         assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
         assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
+        assertEquals("==", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_OPERATOR));
         
         input = 
         	"rule MyRule \n" +
         	"	when \n" +
-        	"		Class ( name : property == ";
+        	"		Class ( name : property <= ";
         location = LocationDeterminator.getLocationInCondition(input);
         assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT, location.getType());
         assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
         assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
+        assertEquals("<=", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_OPERATOR));
         
         input = 
         	"rule MyRule \n" +
         	"	when \n" +
-        	"		Class ( name:property == ";
+        	"		Class ( name:property != ";
         location = LocationDeterminator.getLocationInCondition(input);
         assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT, location.getType());
         assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
         assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
+        assertEquals("!=", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_OPERATOR));
         
         input = 
         	"rule MyRule \n" +
@@ -308,6 +321,7 @@ public class LocationDeterminatorTest extends TestCase {
         assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT, location.getType());
         assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
         assertEquals("property2", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
+        assertEquals("==", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_OPERATOR));
         
         input = 
         	"rule MyRule \n" +
@@ -317,6 +331,7 @@ public class LocationDeterminatorTest extends TestCase {
         assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT, location.getType());
         assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
         assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
+        assertEquals("==", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_OPERATOR));
         
         input = 
         	"rule MyRule \n" +
@@ -326,6 +341,7 @@ public class LocationDeterminatorTest extends TestCase {
         assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT, location.getType());
         assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
         assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
+        assertEquals("==", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_OPERATOR));
         
         input = 
         	"rule MyRule \n" +
@@ -335,6 +351,37 @@ public class LocationDeterminatorTest extends TestCase {
         assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT, location.getType());
         assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
         assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
+        assertEquals("==", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_OPERATOR));
+        
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property contains ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT, location.getType());
+        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
+        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
+        assertEquals("contains", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_OPERATOR));
+        
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property excludes ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT, location.getType());
+        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
+        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
+        assertEquals("excludes", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_OPERATOR));
+        
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property matches \"prop";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT, location.getType());
+        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
+        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
+        assertEquals("matches", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_OPERATOR));
         
         /** EXISTS */
         input = 
@@ -552,6 +599,7 @@ public class LocationDeterminatorTest extends TestCase {
         	"		Class ( ) and Class ( name ";
         location = LocationDeterminator.getLocationInCondition(input);
         assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_OPERATOR, location.getType());
+        assertEquals("name", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
 
         input = 
         	"rule MyRule \n" +
@@ -661,6 +709,7 @@ public class LocationDeterminatorTest extends TestCase {
         	"		Class ( ) or Class ( name ";
         location = LocationDeterminator.getLocationInCondition(input);
         assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_OPERATOR, location.getType());
+        assertEquals("name", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
 
         input = 
         	"rule MyRule \n" +

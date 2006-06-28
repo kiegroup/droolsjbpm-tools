@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.drools.compiler.DrlParser;
@@ -16,8 +17,12 @@ import org.drools.ide.DroolsPluginImages;
 import org.drools.ide.editors.DRLRuleEditor;
 import org.drools.ide.editors.DSLAdapter;
 import org.drools.ide.util.ProjectClassLoader;
+import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldBindingDescr;
+import org.drools.lang.descr.NotDescr;
+import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
@@ -195,49 +200,54 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 					}
 					break;
 				case LocationDeterminator.LOCATION_INSIDE_CONDITION_OPERATOR :
-					list.add( new RuleCompletionProposal(prefix.length(), "<", "< ", droolsIcon));
-				    list.add( new RuleCompletionProposal(prefix.length(), "<=", "<= ", droolsIcon));
-				    list.add( new RuleCompletionProposal(prefix.length(), ">", "> ", droolsIcon));
-				    list.add( new RuleCompletionProposal(prefix.length(), ">=", ">= ", droolsIcon));
+					className = (String) location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME);
+					String property = (String) location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME);
+					String type = getPropertyClass(className, property);
+					
 				    list.add( new RuleCompletionProposal(prefix.length(), "==", "== ", droolsIcon));
 				    list.add( new RuleCompletionProposal(prefix.length(), "!=", "!= ", droolsIcon));
-				    list.add( new RuleCompletionProposal(prefix.length(), "matches", "matches ", droolsIcon));
-				    list.add( new RuleCompletionProposal(prefix.length(), "contains", "contains ", droolsIcon));
-				    list.add( new RuleCompletionProposal(prefix.length(), "excludes", "excludes ", droolsIcon));
 					list.add( new RuleCompletionProposal(prefix.length(), ":", ": ", droolsIcon));
 				    list.add( new RuleCompletionProposal(prefix.length(), "->", "-> (  )", 5, droolsIcon));
+				    
+				    if (isComparable(type)) {
+						list.add( new RuleCompletionProposal(prefix.length(), "<", "< ", droolsIcon));
+					    list.add( new RuleCompletionProposal(prefix.length(), "<=", "<= ", droolsIcon));
+					    list.add( new RuleCompletionProposal(prefix.length(), ">", "> ", droolsIcon));
+					    list.add( new RuleCompletionProposal(prefix.length(), ">=", ">= ", droolsIcon));
+				    }
+				    if (type.equals("java.lang.String")) {
+				    	list.add( new RuleCompletionProposal(prefix.length(), "matches", "matches \"\"", 9, droolsIcon));
+				    }
+				    if (isSubtypeOf(type, "java.util.Collection")) {
+					    list.add( new RuleCompletionProposal(prefix.length(), "contains", "contains ", droolsIcon));
+					    list.add( new RuleCompletionProposal(prefix.length(), "excludes", "excludes ", droolsIcon));
+				    }
 				    break;
 				case LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT :
 					// determine type
 					className = (String) location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME);
-					String property = (String) location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME);
-					String type = null;
-					if (className != null) {
-						ClassTypeResolver resolver = new ClassTypeResolver(getDRLEditor().getImports(), ProjectClassLoader.getProjectClassLoader(getEditor()));
-						try {
-							Class clazz = resolver.resolveType(className);
-							if (clazz != null) {
-								Class clazzz = (Class) new ClassFieldInspector(clazz).getFieldTypes().get(property);
-								if (clazzz != null) {
-									type = clazzz.getName();
-								}
-							}
-						} catch (IOException exc) {
-							// Do nothing
-						} catch (ClassNotFoundException exc) {
-							// Do nothing
-						}
+					property = (String) location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME);
+					String operator = (String) location.getProperty(LocationDeterminator.LOCATION_PROPERTY_OPERATOR);
+					type = getPropertyClass(className, property);
+					
+					if ("contains".equals(operator) || "excludes".equals(operator)) {
+						type = "java.lang.Object";
+					}
+					
+					boolean isObject = false;
+					if ("java.lang.Object".equals(type)) {
+						isObject = true;
 					}
 
 				    list.add( new RuleCompletionProposal(prefix.length(), "null", "null", droolsIcon));
-					if (type == null || "boolean".equals(type)) {
+					if ("boolean".equals(type)) {
 					    list.add( new RuleCompletionProposal(prefix.length(), "true", "true", droolsIcon));
 					    list.add( new RuleCompletionProposal(prefix.length(), "false", "false", droolsIcon));
 					}
-					if (type == null || "java.lang.String".equals(type)) {
+					if (isObject || "java.lang.String".equals(type)) {
 						list.add( new RuleCompletionProposal(prefix.length(), "\"\"", "\"\"", 1, droolsIcon));
 					}
-					if (type == null || "java.util.Date".equals(type)) {
+					if (isObject || "java.util.Date".equals(type)) {
 						list.add( new RuleCompletionProposal(prefix.length(), "\"dd-mmm-yyyy\"", "\"dd-mmm-yyyy\"", 1, droolsIcon));
 					}
 				    list.add( new RuleCompletionProposal(prefix.length(), "()", "(  )", 2, droolsIcon));
@@ -248,13 +258,17 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			    		if (rules != null && rules.size() == 1) {
 			    			Map result = new HashMap();
 			    			getRuleParameters(result, ((RuleDescr) rules.get(0)).getLhs().getDescrs());
-			    			Iterator iterator2 = result.keySet().iterator();
+			    			Iterator iterator2 = result.entrySet().iterator();
 			    			while (iterator2.hasNext()) {
-			    				String name = (String) iterator2.next();
-			    				RuleCompletionProposal proposal = new RuleCompletionProposal(prefix.length(), name);
-			    				proposal.setPriority(-1);
-			    				proposal.setImage(methodIcon);
-								list.add(proposal);
+			    				Map.Entry entry = (Map.Entry) iterator2.next();
+			    				String paramName = (String) entry.getKey();
+			    				String paramType = (String) entry.getValue();
+			    				if (isSubtypeOf(paramType, type)) {
+			    					RuleCompletionProposal proposal = new RuleCompletionProposal(prefix.length(), paramName);
+				    				proposal.setPriority(-1);
+				    				proposal.setImage(methodIcon);
+									list.add(proposal);
+			    				}
 			    			}
 			    		}
 			    	} catch (DroolsParserException exc) {
@@ -283,6 +297,65 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			    	}
 			    	break;
 			}
+		}
+	}
+	
+	private String getPropertyClass(String className, String propertyName) {
+		if (className != null) {
+			ClassTypeResolver resolver = new ClassTypeResolver(getDRLEditor().getImports(), ProjectClassLoader.getProjectClassLoader(getEditor()));
+			try {
+				Class clazz = resolver.resolveType(className);
+				if (clazz != null) {
+					Class clazzz = (Class) new ClassFieldInspector(clazz).getFieldTypes().get(propertyName);
+					if (clazzz != null) {
+						return clazzz.getName();
+					}
+				}
+			} catch (IOException exc) {
+				// Do nothing
+			} catch (ClassNotFoundException exc) {
+				// Do nothing
+			}
+		}
+		return null;
+	}
+	
+	private boolean isComparable(String type) {
+		if (type == null) {
+			return false;
+		}
+		if (type.equals("byte") || type.equals("short")
+				|| type.equals("int") || type.equals("long")
+				|| type.equals("float") || type.equals("double")
+				|| type.equals("char")) {
+			return true;
+		}
+		if (isSubtypeOf(type, "java.lang.Comparable")) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Returns true if the first class is the same or a subtype of the second class.
+	 * @param class1
+	 * @param class2
+	 * @return
+	 */
+	private boolean isSubtypeOf(String class1, String class2) {
+		if (class1 == null || class2 == null) {
+			return false;
+		}
+		ClassTypeResolver resolver = new ClassTypeResolver(getDRLEditor().getImports(), ProjectClassLoader.getProjectClassLoader(getEditor()));
+		try {
+			Class clazz1 = resolver.resolveType(class1);
+			Class clazz2 = resolver.resolveType(class2);
+			if (clazz1 == null || clazz2 == null) {
+				return false;
+			}
+			return clazz2.isAssignableFrom(clazz1);
+		} catch (ClassNotFoundException exc) {
+			return false;
 		}
 	}
 	
@@ -371,23 +444,47 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
     }
     
     private void getRuleParameters(Map result, List descrs) {
+    	if (descrs == null) {
+    		return;
+    	}
     	Iterator iterator = descrs.iterator();
     	while (iterator.hasNext()) {
     		PatternDescr descr = (PatternDescr) iterator.next();
-			if (descr instanceof ColumnDescr) {
+    		if (descr instanceof ColumnDescr) {
 				String name = ((ColumnDescr) descr).getIdentifier();
 				if (name != null) {
 					result.put(name, ((ColumnDescr) descr).getObjectType());
 				}
-				getRuleParameters(result, ((ColumnDescr) descr).getDescrs());
-			} else if (descr instanceof FieldBindingDescr) {
-				String name = ((FieldBindingDescr) descr).getIdentifier();
-				if (name != null) {
-					// TODO retrieve type
-					result.put(name, null);
-				}
+				getRuleSubParameters(result, ((ColumnDescr) descr).getDescrs(), ((ColumnDescr) descr).getObjectType());
+			} else if (descr instanceof AndDescr) {
+				getRuleParameters(result, ((AndDescr) descr).getDescrs());
+			} else if (descr instanceof OrDescr) {
+				getRuleParameters(result, ((OrDescr) descr).getDescrs());
+			} else if (descr instanceof ExistsDescr) {
+				getRuleParameters(result, ((ExistsDescr) descr).getDescrs());
+			} else if (descr instanceof NotDescr) {
+				getRuleParameters(result, ((NotDescr) descr).getDescrs());
 			}
 		}
+    }
+    
+    private void getRuleSubParameters(Map result, List descrs, String clazz) {
+    	if (descrs == null) {
+    		return;
+    	}
+    	Iterator iterator = descrs.iterator();
+    	while (iterator.hasNext()) {
+    		PatternDescr descr = (PatternDescr) iterator.next();
+    		if (descr instanceof FieldBindingDescr) {
+				FieldBindingDescr fieldDescr = (FieldBindingDescr) descr;
+				String name = fieldDescr.getIdentifier();
+				String field = fieldDescr.getFieldName();
+				String type = getPropertyClass(clazz, field);
+				if (name != null) {
+					result.put(name, type);
+				}
+			}
+    	}
     }
 
 	private List getRHSJavaCompletionProposals(final String consequenceStart, final String prefix) {
