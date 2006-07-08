@@ -14,6 +14,7 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.FunctionError;
 import org.drools.compiler.GlobalError;
 import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.ParserError;
 import org.drools.compiler.RuleError;
 import org.drools.ide.DroolsIDEPlugin;
@@ -133,6 +134,13 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         return true;
     }
     
+    private static PackageBuilderConfiguration builder_configuration = new PackageBuilderConfiguration();
+    
+    public static void setupPackageBuilder(IJavaProject project) {
+    	String level = project.getOption(JavaCore.COMPILER_COMPLIANCE, true);
+    	builder_configuration.setJavaLanguageLevel(level);
+    }
+    
     public static DroolsBuildMarker[] parseFile(IFile file, String content) {
     	List markers = new ArrayList();
         DrlParser parser = new DrlParser();
@@ -143,8 +151,10 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             if (file.getProject().getNature("org.eclipse.jdt.core.javanature") != null) {
                 IJavaProject project = JavaCore.create(file.getProject());
                 newLoader = ProjectClassLoader.getProjectClassLoader(project);
+                setupPackageBuilder(project);
             }
             try {
+            	builder_configuration.setClassLoader(newLoader);
                 Thread.currentThread().setContextClassLoader(newLoader);
                 
                 //First we parse the source
@@ -155,7 +165,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                 
                 if (!parser.hasErrors()) {
                     //now we compile the AST to binary, and process any downstream errors.
-                    PackageBuilder builder = new PackageBuilder();
+                    PackageBuilder builder = new PackageBuilder(builder_configuration);
                     builder.addPackage(packageDescr);
                     //downstream errors
                     markOtherErrors( markers,
