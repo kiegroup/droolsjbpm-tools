@@ -5,6 +5,7 @@ import java.awt.Frame;
 import java.io.Reader;
 
 import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
 import org.drools.ide.DroolsIDEPlugin;
@@ -112,7 +113,7 @@ public class ReteViewer extends EditorPart {
 					Package pkg = builder.getPackage();
 
 					//add the package to a rulebase
-                    ReteooRuleBase ruleBase = new ReteooRuleBase();
+                    RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 					ruleBase.addPackage(pkg);
 					return ruleBase;
 					
