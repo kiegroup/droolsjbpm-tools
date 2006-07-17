@@ -45,6 +45,7 @@ public class DroolsPluginImages {
     public static final String CLASS = "Class";
     public static final String PACKAGE = "Package";
     public static final String METHOD = "Method";
+    public static final String VARIABLE = "Variable";
     public static final String DROOLS = "Drools";
     public static final String DSL_EXPRESSION = "DslExpression";
     
@@ -70,6 +71,7 @@ public class DroolsPluginImages {
         declareRegistryImage(CLASS, "class_obj.gif");
         declareRegistryImage(PACKAGE, "package_obj.gif");
         declareRegistryImage(METHOD, "methpub_obj.gif");
+        declareRegistryImage(VARIABLE, "field_private_obj.gif");
         declareRegistryImage(DROOLS, "drools.gif");
         declareRegistryImage(DSL_EXPRESSION, "dsl_expression.gif");
     }

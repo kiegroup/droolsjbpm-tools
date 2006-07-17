@@ -29,7 +29,7 @@ public class LocationDeterminator {
 
     static final Pattern EXISTS_PATTERN = Pattern.compile(".*\\s+exists\\s*\\(?\\s*((\\S*)\\s*:)?\\s*\\S*", Pattern.DOTALL);
     static final Pattern NOT_PATTERN = Pattern.compile(".*\\s+not\\s*\\(?\\s*((\\S*)\\s*:)?\\s*\\S*", Pattern.DOTALL);
-    static final Pattern EVAL_PATTERN = Pattern.compile(".*\\s+eval\\s*\\(\\s*[^)]*", Pattern.DOTALL);
+    static final Pattern EVAL_PATTERN = Pattern.compile(".*\\s+eval\\s*\\(\\s*([(^\\))(\\([^\\)]*\\)?)]*)", Pattern.DOTALL);
     
 	static final int LOCATION_UNKNOWN = 0;
 	static final int LOCATION_BEGIN_OF_CONDITION = 1;
@@ -46,6 +46,7 @@ public class LocationDeterminator {
 	static final String LOCATION_PROPERTY_CLASS_NAME = "ClassName";
 	static final String LOCATION_PROPERTY_PROPERTY_NAME = "PropertyName";
 	static final String LOCATION_PROPERTY_OPERATOR = "Operator";
+	static final String LOCATION_EVAL_CONTENT = "EvalContent";
 	
     private LocationDeterminator() {
 	}
@@ -104,7 +105,10 @@ public class LocationDeterminator {
 				}
 				matcher = EVAL_PATTERN.matcher(backText);
 				if (matcher.matches()) {
-					return new Location(LOCATION_INSIDE_EVAL);
+					String content = matcher.group(1);
+					Location location = new Location(LOCATION_INSIDE_EVAL);
+					location.setProperty(LOCATION_EVAL_CONTENT, content);
+					return location;
 				}
 				return new Location(LOCATION_BEGIN_OF_CONDITION);
 			}

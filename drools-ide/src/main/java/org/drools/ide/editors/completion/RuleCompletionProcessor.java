@@ -1,4 +1,4 @@
-package org.drools.ide.editors.completion;
+package org.drools.ide.editors.completion; 
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.drools.compiler.DrlParser;
@@ -28,17 +27,10 @@ import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.semantics.java.ClassTypeResolver;
 import org.drools.util.asm.ClassFieldInspector;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.CompletionRequestor;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.eval.IEvaluationContext;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 
 /**
@@ -58,15 +50,10 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
     private static final Pattern query = Pattern.compile(".*\\Wquery\\W.*", Pattern.DOTALL);
     private static final Image droolsIcon = DroolsPluginImages.getImage(DroolsPluginImages.DROOLS);
     private static final Image dslIcon = DroolsPluginImages.getImage( DroolsPluginImages.DSL_EXPRESSION );
-    private static final Image methodIcon = DroolsPluginImages.getImage(DroolsPluginImages.METHOD);
     private static final Image classIcon = DroolsPluginImages.getImage(DroolsPluginImages.CLASS);
     
     public RuleCompletionProcessor(DRLRuleEditor editor) {
     	super(editor);
-    }
-    
-    protected DRLRuleEditor getDRLEditor() {
-    	return (DRLRuleEditor) getEditor();
     }
     
 	protected List getCompletionProposals(ITextViewer viewer, final int documentOffset) {
@@ -83,9 +70,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 	        	return list;
 	        }
             
-	        if (query(backText)) {
-	            list.addAll(adapter.listConditionItems());
-	        } else if (consequence(backText)) {
+        	if (consequence(backText)) {
 	        	List dslConsequences = adapter.listConsequenceItems();
                 addDSLProposals( list,
                                  prefix,
@@ -102,16 +87,13 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         			
         			addRHSJavaCompletionProposals(list, backText, prefix);
 	            }
-	        } else if (condition(backText)) {
+	        } else if (condition(backText) || query(backText)) {
 	        	List dslConditions = adapter.listConditionItems();
-	        	addDSLProposals( list,
-                                 prefix,
-                                 dslConditions );
+	        	addDSLProposals(list, prefix, dslConditions);
 	            addLHSCompletionProposals(viewer, list, adapter, prefix, backText);
 	        } else {             
 	            //we are in rule header
-	            addRuleHeaderItems( list,
-                                    prefix );
+	            addRuleHeaderItems(list, prefix);
 	        }
             
             filterProposalsOnPrefix(prefix, list);
@@ -124,7 +106,6 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
 	private void addLHSCompletionProposals(ITextViewer viewer, final List list, DSLAdapter adapter, final String prefix, String backText) throws CoreException, DroolsParserException {
 		Iterator iterator;
-		Image droolsIcon = DroolsPluginImages.getImage(DroolsPluginImages.DROOLS);
 		if (!adapter.hasConditions()) {
 			// determine location in condition
 			LocationDeterminator.Location location = LocationDeterminator.getLocationInCondition(backText);
@@ -276,25 +257,29 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			    	}
 				    break;
 				case LocationDeterminator.LOCATION_INSIDE_EVAL :
+					String content = (String) location.getProperty(LocationDeterminator.LOCATION_EVAL_CONTENT);
+	    			Map params = new HashMap();
 					try {
 				    	parser = new DrlParser();
 			    		PackageDescr descr = parser.parse(backText);
 			    		List rules = descr.getRules();
 			    		if (rules != null && rules.size() == 1) {
-			    			Map result = new HashMap();
-			    			getRuleParameters(result, ((RuleDescr) rules.get(0)).getLhs().getDescrs());
-			    			Iterator iterator2 = result.keySet().iterator();
-			    			while (iterator2.hasNext()) {
-			    				String name = (String) iterator2.next();
-			    				RuleCompletionProposal proposal = new RuleCompletionProposal(prefix.length(), name);
-			    				proposal.setPriority(-1);
-			    				proposal.setImage(methodIcon);
-								list.add(proposal);
-			    			}
+			    			getRuleParameters(params, ((RuleDescr) rules.get(0)).getLhs().getDescrs());
+			    			// rule params are already added by JavaCompletionProposals
+			    			// 
+			    			// Iterator iterator2 = params.keySet().iterator();
+			    			// while (iterator2.hasNext()) {
+			    			// 	String name = (String) iterator2.next();
+			    			// 	RuleCompletionProposal proposal = new RuleCompletionProposal(prefix.length(), name);
+			    			// 	proposal.setPriority(-1);
+			    			// 	proposal.setImage(methodIcon);
+							// 	list.add(proposal);
+			    			// }
 			    		}
 			    	} catch (DroolsParserException exc) {
 			    		// do nothing
 			    	}
+			    	list.addAll(getJavaCompletionProposals(content, prefix, params));
 			    	break;
 			}
 		}
@@ -324,16 +309,25 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		if (type == null) {
 			return false;
 		}
-		if (type.equals("byte") || type.equals("short")
-				|| type.equals("int") || type.equals("long")
-				|| type.equals("float") || type.equals("double")
-				|| type.equals("char")) {
+		if (isPrimitiveNumericType(type)) {
 			return true;
 		}
 		if (isSubtypeOf(type, "java.lang.Comparable")) {
 			return true;
 		}
 		return false;
+	}
+	
+	private boolean isPrimitiveType(String type) {
+		return isPrimitiveNumericType(type)
+			|| type.equals("boolean");
+	}
+	
+	private boolean isPrimitiveNumericType(String type) {
+		return type.equals("byte") || type.equals("short")
+				|| type.equals("int") || type.equals("long")
+				|| type.equals("float") || type.equals("double")
+				|| type.equals("char");
 	}
 	
 	/**
@@ -346,6 +340,9 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		if (class1 == null || class2 == null) {
 			return false;
 		}
+		class1 = convertToNonPrimitiveClass(class1);
+		class2 = convertToNonPrimitiveClass(class2);
+		// TODO add code to take primitive types into account
 		ClassTypeResolver resolver = new ClassTypeResolver(getDRLEditor().getImports(), ProjectClassLoader.getProjectClassLoader(getEditor()));
 		try {
 			Class clazz1 = resolver.resolveType(class1);
@@ -357,6 +354,31 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		} catch (ClassNotFoundException exc) {
 			return false;
 		}
+	}
+	
+	private String convertToNonPrimitiveClass(String clazz) {
+		if (!isPrimitiveType(clazz)) {
+			return clazz;
+		}
+		if ("byte".equals(clazz)) {
+			return "java.lang.Byte";
+		} else if ("short".equals(clazz)) {
+			return "java.lang.Short";
+		} else if ("int".equals(clazz)) {
+			return "java.lang.Integer";
+		} else if ("long".equals(clazz)) {
+			return "java.lang.Long";
+		} else if ("float".equals(clazz)) {
+			return "java.lang.Float";
+		} else if ("double".equals(clazz)) {
+			return "java.lang.Double";
+		} else if ("char".equals(clazz)) {
+			return "java.lang.Char";
+		} else if ("boolean".equals(clazz)) {
+			return "java.lang.Boolean";
+		}
+		// should never occur
+		return null;
 	}
 	
 	private boolean consequence(String backText) {
@@ -420,27 +442,29 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
     private void addRHSJavaCompletionProposals(List list, String backText, String prefix) {
     	int thenPosition = backText.lastIndexOf("then");
     	String conditions = backText.substring(0, thenPosition);
+		Map params = new HashMap();
     	DrlParser parser = new DrlParser();
     	try {
     		PackageDescr descr = parser.parse(conditions);
     		List rules = descr.getRules();
     		if (rules != null && rules.size() == 1) {
-    			Map result = new HashMap();
-    			getRuleParameters(result, ((RuleDescr) rules.get(0)).getLhs().getDescrs());
-    			Iterator iterator = result.keySet().iterator();
-    			while (iterator.hasNext()) {
-    				String name = (String) iterator.next();
-    				RuleCompletionProposal prop = new RuleCompletionProposal(prefix.length(), name, name + ".");
-					prop.setPriority(-1);
-					prop.setImage(methodIcon);
-					list.add(prop);
-    			}
+    			getRuleParameters(params, ((RuleDescr) rules.get(0)).getLhs().getDescrs());
+    			// rule params are already added by JavaCompletionProposals
+    			// 
+    			// Iterator iterator = params.keySet().iterator();
+    			// while (iterator.hasNext()) {
+    			// 	String name = (String) iterator.next();
+    			// 	RuleCompletionProposal prop = new RuleCompletionProposal(prefix.length(), name, name + ".");
+				// 	prop.setPriority(-1);
+				// 	prop.setImage(methodIcon);
+				// 	list.add(prop);
+    			// }
     		}
     	} catch (DroolsParserException exc) {
     		// do nothing
     	}
-    	// String consequence = backText.substring(thenPosition + 4);
-    	// list.addAll(getRHSJavaCompletionProposals(consequence, prefix));
+    	String consequence = backText.substring(thenPosition + 4);
+    	list.addAll(getJavaCompletionProposals(consequence, prefix, params));
     }
     
     private void getRuleParameters(Map result, List descrs) {
@@ -487,35 +511,6 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
     	}
     }
 
-	private List getRHSJavaCompletionProposals(final String consequenceStart, final String prefix) {
-		final List list = new ArrayList();
-		IEditorInput input = getEditor().getEditorInput();
-		if (input instanceof IFileEditorInput) {
-			IProject project = ((IFileEditorInput) input).getFile().getProject();
-			IJavaProject javaProject = JavaCore.create(project);
-			
-			CompletionRequestor requestor = new CompletionRequestor() {
-				public void accept(org.eclipse.jdt.core.CompletionProposal proposal) {
-					String completion = new String(proposal.getCompletion());
-					RuleCompletionProposal prop = new RuleCompletionProposal(prefix.length(), completion);
-					list.add(prop);
-				}
-			};
-
-			try {
-				IEvaluationContext evalContext = javaProject.newEvaluationContext();
-				List imports = getDRLEditor().getImports();
-				if (imports != null && imports.size() > 0) {
-					evalContext.setImports((String[]) imports.toArray(new String[imports.size()]));
-				}
-				evalContext.codeComplete(consequenceStart, consequenceStart.length(), requestor);
-			} catch (Throwable t) {
-				DroolsIDEPlugin.log(t);
-			}
-		}
-		return list;
-	}
-			
     private void addRuleHeaderItems(final List list,
                                     final String prefix) {
         list.add(new RuleCompletionProposal(prefix.length(), "salience", "salience ", droolsIcon));

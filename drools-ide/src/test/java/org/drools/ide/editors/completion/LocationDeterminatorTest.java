@@ -739,6 +739,7 @@ public class LocationDeterminatorTest extends TestCase {
         	"		eval ( ";
         location = LocationDeterminator.getLocationInCondition(input);
         assertEquals(LocationDeterminator.LOCATION_INSIDE_EVAL, location.getType());
+        assertEquals("", location.getProperty(LocationDeterminator.LOCATION_EVAL_CONTENT));
 
         input = 
         	"rule MyRule \n" +
@@ -746,6 +747,7 @@ public class LocationDeterminatorTest extends TestCase {
         	"		eval(";
         location = LocationDeterminator.getLocationInCondition(input);
         assertEquals(LocationDeterminator.LOCATION_INSIDE_EVAL, location.getType());
+        assertEquals("", location.getProperty(LocationDeterminator.LOCATION_EVAL_CONTENT));
 
         input = 
         	"rule MyRule \n" +
@@ -753,11 +755,81 @@ public class LocationDeterminatorTest extends TestCase {
         	"		eval( myCla";
         location = LocationDeterminator.getLocationInCondition(input);
         assertEquals(LocationDeterminator.LOCATION_INSIDE_EVAL, location.getType());
+        assertEquals("myCla", location.getProperty(LocationDeterminator.LOCATION_EVAL_CONTENT));
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		eval( param.getMetho";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_INSIDE_EVAL, location.getType());
+        assertEquals("param.getMetho", location.getProperty(LocationDeterminator.LOCATION_EVAL_CONTENT));
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		eval( param.getMethod(";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_INSIDE_EVAL, location.getType());
+        assertEquals("param.getMethod(", location.getProperty(LocationDeterminator.LOCATION_EVAL_CONTENT));
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		eval( param.getMethod().get";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_INSIDE_EVAL, location.getType());
+        assertEquals("param.getMethod().get", location.getProperty(LocationDeterminator.LOCATION_EVAL_CONTENT));
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		eval( param.getMethod(\"someStringWith)))\").get";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_INSIDE_EVAL, location.getType());
+        assertEquals("param.getMethod(\"someStringWith)))\").get", location.getProperty(LocationDeterminator.LOCATION_EVAL_CONTENT));
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		eval( param.getMethod(\"someStringWith(((\").get";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_INSIDE_EVAL, location.getType());
+        assertEquals("param.getMethod(\"someStringWith(((\").get", location.getProperty(LocationDeterminator.LOCATION_EVAL_CONTENT));
 
         input = 
         	"rule MyRule \n" +
         	"	when \n" +
         	"		eval( true )";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		eval( param.getProperty(name).isTrue() )";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		eval( param.getProperty(\"someStringWith(((\").isTrue() )";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		eval( param.getProperty((((String) s) )";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_INSIDE_EVAL, location.getType());
+        assertEquals("param.getProperty((((String) s) )", location.getProperty(LocationDeterminator.LOCATION_EVAL_CONTENT));
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		eval( param.getProperty((((String) s))))";
         location = LocationDeterminator.getLocationInCondition(input);
         assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION, location.getType());
 
