@@ -51,6 +51,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
     private static final Image droolsIcon = DroolsPluginImages.getImage(DroolsPluginImages.DROOLS);
     private static final Image dslIcon = DroolsPluginImages.getImage( DroolsPluginImages.DSL_EXPRESSION );
     private static final Image classIcon = DroolsPluginImages.getImage(DroolsPluginImages.CLASS);
+    private static final Pattern START_OF_CONSEQUENCE = Pattern.compile(".*then\\s*", Pattern.DOTALL);
     
     public RuleCompletionProcessor(DRLRuleEditor editor) {
     	super(editor);
@@ -72,19 +73,15 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
             
         	if (consequence(backText)) {
 	        	List dslConsequences = adapter.listConsequenceItems();
-                addDSLProposals( list,
-                                 prefix,
-                                 dslConsequences );
+                addDSLProposals(list, prefix, dslConsequences);
 	            if (!adapter.hasConsequences()) {
-
-	            	
-                    addRHSCompletionProposals( list,
-                                               prefix );                    
-        			
-        			addRHSFunctionCompletionProposals( viewer,
-                                                       list,
-                                                       prefix );
-        			
+	            	// only add functions and keywords if at the beginning of a new statement
+	            	String backTextWithoutPrefix = backText.substring(0, backText.length() - prefix.length());
+	            	if (START_OF_CONSEQUENCE.matcher(backTextWithoutPrefix).matches()
+	            			|| START_OF_NEW_JAVA_STATEMENT.matcher(backTextWithoutPrefix).matches()) {
+            			addRHSCompletionProposals(list, prefix);                    
+            			addRHSFunctionCompletionProposals(viewer, list, prefix);
+	            	}
         			addRHSJavaCompletionProposals(list, backText, prefix);
 	            }
 	        } else if (condition(backText) || query(backText)) {

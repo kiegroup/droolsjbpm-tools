@@ -46,6 +46,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
     private static final Pattern FUNCTION_PATTERN = Pattern.compile( ".*\n\\W*function\\s+(\\S+)\\s+(\\S+)\\s*\\(([^\\)]*)\\)\\s*\\{([^\\}]*)", Pattern.DOTALL);
     protected static final Image VARIABLE_ICON = DroolsPluginImages.getImage(DroolsPluginImages.VARIABLE);
     protected static final Image methodIcon = DroolsPluginImages.getImage(DroolsPluginImages.METHOD);
+    protected static final Pattern START_OF_NEW_JAVA_STATEMENT = Pattern.compile(".*[;{}]\\s*", Pattern.DOTALL);
 
     public DefaultCompletionProcessor(DRLRuleEditor editor) {
     	super(editor);
@@ -174,7 +175,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
 	        char[] c = prefix.toCharArray();
 	        int start = 0;
 	        for (int i = c.length - 1; i >=0; i-- ) {
-	            if (Character.isWhitespace(c[i]) || c[i] == '(' || c[i] == ':' || c[i] == '=' || c[i] == '<' || c[i] == '>' || c[i] == '.' || c[i] == '{' || c[i] == '}') {
+	            if (Character.isWhitespace(c[i]) || c[i] == '(' || c[i] == ':' || c[i] == ';' || c[i] == '=' || c[i] == '<' || c[i] == '>' || c[i] == '.' || c[i] == '{' || c[i] == '}') {
 	                start = i + 1;
 	                break;
 	            }
@@ -202,7 +203,8 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
 							break;
 						case CompletionProposal.METHOD_REF:
 							// TODO: Object methods are proposed when in the start of a line
-							if ("".equals(javaText)) {
+							String javaTextWithoutPrefix = javaText.substring(0, javaText.length() - prefix.length());
+							if ("".equals(javaTextWithoutPrefix.trim()) || START_OF_NEW_JAVA_STATEMENT.matcher(javaTextWithoutPrefix).matches()) {
 								return;
 							}
 							prop.setImage(methodIcon);
