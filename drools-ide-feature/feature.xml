@@ -2,7 +2,7 @@
 <feature
       id="org.drools.ide.feature"
       label="JBossRules Feature"
-      version="1.0.0"
+      version="3.0.3"
       provider-name="JBoss, Inc.">
 
    <description url="http://www.example.com/description">
