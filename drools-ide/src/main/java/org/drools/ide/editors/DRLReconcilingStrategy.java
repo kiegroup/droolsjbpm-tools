@@ -1,8 +1,5 @@
 package org.drools.ide.editors;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -27,11 +24,10 @@ import org.eclipse.swt.widgets.Display;
 
 public class DRLReconcilingStrategy implements IReconcilingStrategy {
 
-    private static final Pattern RULE_PATTERN = Pattern.compile("\\s*rule\\s+\"?([^\"]+)\"?.*", Pattern.DOTALL);
-    private static final Pattern QUERY_PATTERN = Pattern.compile("\\s*query\\s+\"?([^\"]+)\"?.*", Pattern.DOTALL);
-    private static final Pattern FUNCTION_PATTERN = Pattern.compile("\\s*function\\s+(.*)\\s+(.*)\\(.*\\).*", Pattern.DOTALL);
-    private static final Pattern END_PATTERN = Pattern.compile("\\s*end.*", Pattern.DOTALL);
-    private static final Pattern IMPORT_PATTERN = Pattern.compile("\\s*import\\s.*", Pattern.DOTALL);
+    private static final Pattern RULE_PATTERN = Pattern.compile("\\n\\s*(rule\\s+.*?\\n\\s*end)", Pattern.DOTALL);
+    private static final Pattern QUERY_PATTERN = Pattern.compile("\\n\\s*(query\\s+.*?\\n\\s*end)", Pattern.DOTALL);
+    private static final Pattern FUNCTION_PATTERN = Pattern.compile("\\n\\s*(function\\s+[^\\{]*\\{)", Pattern.DOTALL);
+    private static final Pattern IMPORT_PATTERN = Pattern.compile("\\n\\s*((\\s*import\\s+[^\\s;]+;?[\\t\\x0B\\f\\r]*\\n)+)", Pattern.DOTALL);
     
 	private ISourceViewer sourceViewer;
 	private DRLRuleEditor editor;
@@ -111,109 +107,39 @@ public class DRLReconcilingStrategy implements IReconcilingStrategy {
     protected void calculateFolding(String input) {
     	// TODO replace this parsing by getting this input from the parsed rule file
     	final List positions = new ArrayList();
-        StringReader stringReader = new StringReader( input );
-        BufferedReader bufferedReader = new BufferedReader( stringReader );
-        try {
-            int offset = 0;
-            String st = bufferedReader.readLine();
-            int start = -1;
-            while ( st != null ) {
-                Matcher matcher = RULE_PATTERN.matcher(st);
-                if (matcher.matches()) {
-                	start = offset + matcher.start();
-                	offset += st.length() + System.getProperty("line.separator").length(); // + for the newline
-                    st = bufferedReader.readLine();
-                	while (st != null) {
-                		Matcher matcher2 = END_PATTERN.matcher(st);
-                		if (matcher2.matches()) {
-                			int end = offset + matcher2.end();
-                            offset += st.length() + System.getProperty("line.separator").length(); // + for the newline
-                            st = bufferedReader.readLine();
-                			positions.add(new Position(start, end - start + (st == null ? 0 : System.getProperty("line.separator").length()))); // + for the newline
-                			break;
-                		}
-                        offset += st.length() + System.getProperty("line.separator").length(); // + for the newline
-                        st = bufferedReader.readLine();
-	                }
-                } else {
-                	matcher = QUERY_PATTERN.matcher(st);
-                    if (matcher.matches()) {
-                    	start = offset + matcher.start();
-                    	offset += st.length() + System.getProperty("line.separator").length(); // + for the newline
-                        st = bufferedReader.readLine();
-                    	while (st != null) {
-                    		Matcher matcher2 = END_PATTERN.matcher(st);
-                    		if (matcher2.matches()) {
-                    			int end = offset + matcher2.end();
-                                offset += st.length() + System.getProperty("line.separator").length(); // + for the newline
-                                st = bufferedReader.readLine();
-                    			positions.add(new Position(start, end - start + (st == null ? 0 : System.getProperty("line.separator").length()))); // + for the newline
-                    			break;
-                    		}
-                            offset += st.length() + System.getProperty("line.separator").length(); // + for the newline
-                            st = bufferedReader.readLine();
-    	                }
-                    } else {
-	                	matcher = FUNCTION_PATTERN.matcher(st);
-	                    if (matcher.matches()) {
-	                    	start = offset + matcher.start();
-	                    	int nbOpenBrackets = 1;
-	                    	offset += st.length() + System.getProperty("line.separator").length(); // + for the newline
-                            st = bufferedReader.readLine();
-	                    	while (st != null) {
-	                    		byte[] bytes = st.getBytes();
-	                    		for (int i = 0; i < bytes.length; i++) {
-	                    			if (bytes[i] == '{') {
-	                    				nbOpenBrackets++;
-	                    			} else if (bytes[i] == '}') {
-	                    				if (--nbOpenBrackets == 0) {
-	    	                    			int end = offset + i + 1;
-	    		                            offset += st.length() + System.getProperty("line.separator").length(); // + for the newline
-	    		                            st = bufferedReader.readLine();
-	    	                    			positions.add(new Position(start, end - start + (st == null ? 0 : System.getProperty("line.separator").length()))); // + for the newline
-	    	                    			break;
-	                    				}
-	                    			}
-	                    		}
-	                    		if (nbOpenBrackets == 0) {
-	                    			break;
-	                    		}
-	                            offset += st.length() + System.getProperty("line.separator").length(); // + for the newline
-	                            st = bufferedReader.readLine();
-	    	                }
-	                    } else {
-		                	matcher = IMPORT_PATTERN.matcher(st);
-		                    if (matcher.matches()) {
-		                    	start = offset + matcher.start();
-		                    	offset += st.length() + System.getProperty("line.separator").length(); // + for the newline
-	                            st = bufferedReader.readLine();
-		                    	while (st != null) {
-		                    		Matcher matcher2 = IMPORT_PATTERN.matcher(st);
-		                    		if (!matcher2.matches()) {
-		                    			int end = offset;
-		                    			positions.add(new Position(start, end - start));
-		                    			break;
-		                    		}
-		                            offset += st.length() + System.getProperty("line.separator").length(); // + for the newline
-		                            st = bufferedReader.readLine();
-		    	                }
-		                    } else {
-		                    	offset += st.length() + System.getProperty("line.separator").length(); // + for the newline
-	                            st = bufferedReader.readLine();
-		                    }
-	                    }
-                    }
-                }
-            }
-        } catch ( IOException e ) {
-        	// do nothing
+        Matcher matcher = RULE_PATTERN.matcher(input);
+        while (matcher.find()) {
+			positions.add(new Position(matcher.start(1), matcher.end(1) - matcher.start(1)));
         }
-
+        matcher = QUERY_PATTERN.matcher(input);
+        while (matcher.find()) {
+			positions.add(new Position(matcher.start(1), matcher.end(1) - matcher.start(1)));
+        }
+        matcher = IMPORT_PATTERN.matcher(input);
+        while (matcher.find()) {
+			positions.add(new Position(matcher.start(1), matcher.end(1) - matcher.start(1)));
+        }
+        matcher = FUNCTION_PATTERN.matcher(input);
+        while (matcher.find()) {
+        	int start = matcher.start(1);
+        	// TODO also take comments, strings etc. in consideration
+        	// use JavaPairMatcher or similar
+        	int nbOpenBrackets = 1;
+        	for (int i = matcher.end(); i < input.length(); i++) {
+    			if (input.charAt(i) == '{') {
+    				nbOpenBrackets++;
+    			} else if (input.charAt(i) == '}') {
+    				if (--nbOpenBrackets == 0) {
+            			positions.add(new Position(start, i - start + 1));
+            			break;
+    				}
+    			}
+        	}
+        }
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				editor.updateFoldingStructure(positions);
 			}
 		});
 	}
-
 }
