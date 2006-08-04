@@ -1,12 +1,22 @@
 package org.drools.ide.editors.outline;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
+import java.io.Reader;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.drools.compiler.DrlParser;
+import org.drools.ide.builder.DroolsBuilder;
 import org.drools.ide.editors.DRLRuleEditor;
+import org.drools.ide.editors.DSLAdapter;
+import org.drools.ide.util.ProjectClassLoader;
+import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.RuleDescr;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -15,6 +25,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.texteditor.IDocumentProvider;
@@ -34,36 +45,38 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
 
     //the "root" node
     private final RuleFileTreeNode ruleFileTreeNode    = new RuleFileTreeNode();
+    private Map rules;
+//    private Map lineToCharactersMapping;
 
     ///////////////////////////////////
     // Patterns that the parser uses
     ///////////////////////////////////
-    private static final Pattern   rulePattern1        = Pattern.compile( "\\s*rule\\s+\"([^\"]+)\".*",
-                                                                          Pattern.DOTALL );
+    private static final Pattern RULE_PATTERN1 = Pattern.compile(
+			"\\n\\s*rule\\s+\"([^\"]+)\"", Pattern.DOTALL);
 
-    private static final Pattern   rulePattern2        = Pattern.compile( "\\s*rule\\s+([^\\s;#\"]+).*",
-                                                                          Pattern.DOTALL );
+    private static final Pattern RULE_PATTERN2 = Pattern.compile(
+			"\\n\\s*rule\\s+([^\\s;#\"]+)", Pattern.DOTALL);
 
-    private static final Pattern   packagePattern      = Pattern.compile( "\\s*package\\s+([^\\s;#]+);?.*",
-                                                                          Pattern.DOTALL );
+    private static final Pattern PACKAGE_PATTERN = Pattern.compile(
+			"\\s*package\\s+([^\\s;#]+);?", Pattern.DOTALL);
 
-    private static final Pattern   functionNamePattern = Pattern.compile( "\\s*function\\s+(\\S+)\\s+(\\S+)\\(.*\\).*",
-            															  Pattern.DOTALL );
+	private static final Pattern FUNCTION_PATTERN = Pattern.compile(
+			"\\n\\s*function\\s+(\\S+)\\s+(\\S+)\\(.*\\)", Pattern.DOTALL);
 
-    private static final Pattern   importNamePattern   = Pattern.compile( "\\s*import\\s+([^\\s;#]+);?.*",
-			                                                              Pattern.DOTALL );
+	private static final Pattern IMPORT_PATTERN = Pattern.compile(
+			"\\n\\s*import\\s+([^\\s;#]+);?", Pattern.DOTALL);
 
-    private static final Pattern   expanderNamePattern = Pattern.compile( "\\s*expander\\s+([^\\s;#]+);?.*",
-                                                                          Pattern.DOTALL );
+	private static final Pattern EXPANDER_PATTERN = Pattern.compile(
+			"\\n\\s*expander\\s+([^\\s;#]+);?", Pattern.DOTALL);
 
-    private static final Pattern   globalNamePattern   = Pattern.compile( "\\s*global\\s+(\\S+)\\s+([^\\s;#]+);?.*",
-                                                                          Pattern.DOTALL );
+	private static final Pattern GLOBAL_PATTERN = Pattern.compile(
+			"\\n\\s*global\\s+(\\S+)\\s+([^\\s;#]+);?", Pattern.DOTALL);
 
-    private static final Pattern   queryNamePattern1   = Pattern.compile( "\\s*query\\s+\"([^\"]+)\".*",
-                                                                          Pattern.DOTALL );
-    
-    private static final Pattern   queryNamePattern2   = Pattern.compile( "\\s*query\\s+([^\\s;#\"]+).*",
-                                                                          Pattern.DOTALL );
+	private static final Pattern QUERY_PATTERN1 = Pattern.compile(
+			"\\n\\s*query\\s+\"([^\"]+)\"", Pattern.DOTALL);
+
+	private static final Pattern QUERY_PATTERN2 = Pattern.compile(
+			"\\n\\s*query\\s+([^\\s;#\"]+)", Pattern.DOTALL);
 
     public RuleContentOutlinePage(DRLRuleEditor editor) {
         super();
@@ -79,7 +92,7 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
         viewer.setInput( ruleFileTreeNode );
         update();
 
-        //add the listener for navigation of the rule document.
+        // add the listener for navigation of the rule document.
         super.addSelectionChangedListener( new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
                 Object selectionObj = event.getSelection();
@@ -108,7 +121,7 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
                 ruleFileTreeNode.setPackageTreeNode( packageTreeNode );
                 viewer.refresh();
                 control.setRedraw( false );
-                viewer.expandAll();
+                viewer.expandToLevel(2);
                 control.setRedraw( true );
             }
         }
@@ -121,7 +134,9 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
      */
     private PackageTreeNode createPackageTreeNode() {
         PackageTreeNode packageTreeNode = new PackageTreeNode();
-        populatePackageTreeNode( packageTreeNode, getRuleFileContents() );
+        String ruleFileContents = getRuleFileContents();
+        initRules(ruleFileContents);
+        populatePackageTreeNode(packageTreeNode, ruleFileContents);
         return packageTreeNode;
     }
 
@@ -131,86 +146,124 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
      * @param packageTreeNode the node to populate
      */
     public void populatePackageTreeNode(PackageTreeNode packageTreeNode, String ruleFileContents) {
-        StringReader stringReader = new StringReader( ruleFileContents );
-        BufferedReader bufferedReader = new BufferedReader( stringReader );
-        try {
-            int offset = 0;
-            String st;
-            while ( (st = bufferedReader.readLine()) != null ) {
-
-                Matcher matcher = rulePattern1.matcher( st );
-                if ( matcher.matches() ) {
-                    String rule = matcher.group( 1 );
-                    packageTreeNode.addRule( rule,
-                                             offset,
-                                             st.length() );
-                }
-                matcher = rulePattern2.matcher( st );
-            	if ( matcher.matches() ) {
-                    String rule = matcher.group( 1 );
-                    packageTreeNode.addRule( rule,
-                                             offset,
-                                             st.length() );
-                } 
-                matcher = packagePattern.matcher( st );
-                if ( matcher.matches() ) {
-                    String packageName = matcher.group( 1 );
-                    packageTreeNode.setPackageName( packageName );
-                    packageTreeNode.setOffset( offset );
-                    packageTreeNode.setLength( st.length() );
-                }
-                matcher = functionNamePattern.matcher( st );
-                if ( matcher.matches() ) {
-                    String functionName = matcher.group( 2 );
-                    packageTreeNode.addFunction( functionName + "()",
-                                                 offset,
-                                                 st.length() );
-                }
-                matcher = expanderNamePattern.matcher( st );
-                if ( matcher.matches() ) {
-                    String expanderName = matcher.group( 1 );
-                    packageTreeNode.addExpander( expanderName,
-                                                 offset,
-                                                 st.length() );
-                }
-                matcher = importNamePattern.matcher( st );
-                if ( matcher.matches() ) {
-                    String importName = matcher.group( 1 );
-                    packageTreeNode.addImport( importName,
-                                               offset,
-                                               st.length() );
-                }
-                matcher = globalNamePattern.matcher( st );
-                if ( matcher.matches() ) {
-                	String globalType = matcher.group( 1 );
-                    String globalName = matcher.group( 2 );
-                    String name = globalName + " : " + globalType;
-                    packageTreeNode.addGlobal( name,
-                                               offset,
-                                               st.length() );
-                }
-                matcher = queryNamePattern1.matcher( st );
-                if ( matcher.matches() ) {
-                    String queryName = matcher.group( 1 );
-                    packageTreeNode.addQuery( queryName,
-                                              offset,
-                                              st.length() );
-                }
-                matcher = queryNamePattern2.matcher( st );
-                if ( matcher.matches() ) {
-                    String queryName = matcher.group( 1 );
-                    packageTreeNode.addQuery( queryName,
-                                              offset,
-                                              st.length() );
-                }
-
-                offset += st.length() + System.getProperty("line.separator").length(); // + for the newline
+        Matcher matcher = RULE_PATTERN1.matcher(ruleFileContents);
+        while (matcher.find()) {
+            String ruleName = matcher.group(1);
+            RuleDescr ruleDescr = (RuleDescr) rules.get(ruleName);
+            if (ruleDescr == null) {
+                packageTreeNode.addRule(ruleName, matcher.start(1), matcher.end(1) - matcher.start(1));
+            } else {
+            	packageTreeNode.addRule(ruleName, matcher.start(1), matcher.end(1) - matcher.start(1), ruleDescr.getAttributes());
             }
-        } catch ( IOException e ) {
         }
+        matcher = RULE_PATTERN2.matcher(ruleFileContents);
+        while (matcher.find()) {
+            String ruleName = matcher.group(1);
+            RuleDescr ruleDescr = (RuleDescr) rules.get(ruleName);
+            if (ruleDescr == null) {
+                packageTreeNode.addRule(ruleName, matcher.start(1), matcher.end(1) - matcher.start(1));
+            } else {
+            	packageTreeNode.addRule(ruleName, matcher.start(1), matcher.end(1) - matcher.start(1), ruleDescr.getAttributes());
+            }
+         } 
+        matcher = PACKAGE_PATTERN.matcher(ruleFileContents);
+        if (matcher.find()) {
+            String packageName = matcher.group(1);
+            packageTreeNode.setPackageName(packageName);
+            packageTreeNode.setOffset(matcher.start(1));
+            packageTreeNode.setLength(matcher.end(1) - matcher.start(1));
+        }
+        matcher = FUNCTION_PATTERN.matcher(ruleFileContents);
+		while (matcher.find()) {
+			String functionName = matcher.group(2);
+			packageTreeNode.addFunction(functionName + "()",
+					matcher.start(2), matcher.end(2) - matcher.start(2));
+		}
+		matcher = EXPANDER_PATTERN.matcher(ruleFileContents);
+		if (matcher.find()) {
+			String expanderName = matcher.group(1);
+			packageTreeNode.addExpander(expanderName, 
+					matcher.start(1), matcher.end(1) - matcher.start(1));
+		}
+		matcher = IMPORT_PATTERN.matcher(ruleFileContents);
+		while (matcher.find()) {
+			String importName = matcher.group(1);
+			packageTreeNode.addImport(importName, 
+					matcher.start(1), matcher.end(1) - matcher.start(1));
+		}
+		matcher = GLOBAL_PATTERN.matcher(ruleFileContents);
+		while (matcher.find()) {
+			String globalType = matcher.group(1);
+			String globalName = matcher.group(2);
+			String name = globalName + " : " + globalType;
+			packageTreeNode.addGlobal(name, 
+					matcher.start(2), matcher.end(2) - matcher.start(2));
+		}
+		matcher = QUERY_PATTERN1.matcher(ruleFileContents);
+		while (matcher.find()) {
+			String queryName = matcher.group(1);
+			packageTreeNode.addQuery(queryName, 
+					matcher.start(1), matcher.end(1) - matcher.start(1));
+		}
+		matcher = QUERY_PATTERN2.matcher(ruleFileContents);
+		while (matcher.find()) {
+			String queryName = matcher.group(1);
+			packageTreeNode.addQuery(queryName, 
+					matcher.start(1), matcher.end(1) - matcher.start(1));
+		}
     }
 
-    /**
+    public void initRules(String ruleFileContents) {
+    	rules = new HashMap();
+    	PackageDescr packageDescr = getPackageDescr(ruleFileContents);
+    	if (packageDescr != null) {
+    		Iterator iterator = packageDescr.getRules().iterator();
+    		while (iterator.hasNext()) {
+    			RuleDescr ruleDescr = (RuleDescr) iterator.next();
+    			rules.put(ruleDescr.getName(), ruleDescr);
+    		}
+    	}
+    }
+    
+	private PackageDescr getPackageDescr(String ruleFileContents) {
+		if (editor.getEditorInput() instanceof IFileEditorInput) {
+			try {
+	            ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+	            ClassLoader newLoader = DroolsBuilder.class.getClassLoader();
+	            IFile file = ((IFileEditorInput) editor.getEditorInput()).getFile();
+	            if (file.getProject().getNature("org.eclipse.jdt.core.javanature") != null) {
+	                IJavaProject project = JavaCore.create(file.getProject());
+	                newLoader = ProjectClassLoader.getProjectClassLoader(project);
+	            }
+	            
+	            Reader dslReader = DSLAdapter.getDSLContent(ruleFileContents, file);
+	            
+	            try {
+	                Thread.currentThread().setContextClassLoader(newLoader);
+
+	                DrlParser parser = new DrlParser();
+	                
+	                PackageDescr packageDescr = null;
+	                if (dslReader == null) {
+	                	packageDescr = parser.parse(ruleFileContents);
+	                } else {
+	                	packageDescr = parser.parse(ruleFileContents, dslReader);
+	                }
+
+                	return packageDescr;
+	            } catch (Exception t) {
+	                throw t;
+	            } finally {
+	                Thread.currentThread().setContextClassLoader(oldLoader);
+	            }
+			} catch (Throwable t) {
+				t.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
+	/**
      * 
      * @return the current contents of the document
      */

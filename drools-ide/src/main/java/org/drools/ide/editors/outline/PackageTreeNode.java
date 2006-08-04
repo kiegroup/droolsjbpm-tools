@@ -1,10 +1,12 @@
 package org.drools.ide.editors.outline;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Collections;
 import java.util.List;
 
 import org.drools.ide.DroolsIDEPlugin;
+import org.drools.lang.descr.AttributeDescr;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 /**
@@ -41,13 +43,30 @@ public class PackageTreeNode extends OutlineNode {
     public void addRule(String ruleName,
                         int offset,
                         int length) {
+    	addRule(ruleName, offset, length, null);
+    }
+
+    /** Add a rule node to the outline. Keeping track of where it was seen in the document (offset) */
+    public void addRule(String ruleName,
+                        int offset,
+                        int length,
+                        List attributes) {
         RuleTreeNode node = new RuleTreeNode( this,
                                               ruleName );
         node.setOffset( offset );
         node.setLength( length );
+        if (attributes != null) {
+        	Iterator iterator = attributes.iterator();
+        	while (iterator.hasNext()) {
+        		AttributeDescr descr = (AttributeDescr) iterator.next();
+        		if (descr != null) { // this is possible when attributes contain errors
+        			node.addAttribute(descr.getName(), descr.getValue(), offset, length);
+        		}
+        	}
+        }
         rules.add( node );
     }
-
+    
     /** Add a function node to the outline. Keeping track of where it was seen in the document (offset) */
     public void addFunction(String functionLabel,
                             int offset,

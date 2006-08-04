@@ -1,12 +1,17 @@
 package org.drools.ide.editors.outline;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.drools.ide.DroolsIDEPlugin;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 public class RuleTreeNode extends OutlineNode implements Comparable {
 
     private final PackageTreeNode packageTreeNode;
-    private final String          ruleName;
+    private final String ruleName;
+    private List attributes = new ArrayList();
 
     public RuleTreeNode(PackageTreeNode parent,
                         String ruleName) {
@@ -15,8 +20,16 @@ public class RuleTreeNode extends OutlineNode implements Comparable {
 
     }
 
+    public void addAttribute(String name, Object value, int offset, int length) {
+		RuleAttributeTreeNode node = new RuleAttributeTreeNode(this, name, value);
+		node.setOffset(offset);
+		node.setLength(length);
+		attributes.add(node);
+	}
+
     public Object[] getChildren(Object o) {
-        return new Object[0];
+        Collections.sort( attributes );
+        return attributes.toArray();
     }
 
     public ImageDescriptor getImageDescriptor(Object object) {
