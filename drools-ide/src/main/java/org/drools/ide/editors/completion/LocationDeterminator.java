@@ -12,10 +12,12 @@ import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
+import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;
+import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.RuleDescr;
 
 public class LocationDeterminator {
@@ -26,6 +28,10 @@ public class LocationDeterminator {
     static final Pattern COLUMN_PATTERN_MATCHES_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+matches\\s+[^\\s<>!=:]*", Pattern.DOTALL);
     static final Pattern COLUMN_PATTERN_EXCLUDES_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+excludes\\s+[^\\s<>!=:]*", Pattern.DOTALL);
     static final Pattern COLUMN_PATTERN_COMPARATOR_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s*([<>=!]+)\\s*[^\\s<>!=:]*", Pattern.DOTALL);
+    static final Pattern COLUMN_PATTERN_CONTAINS_END = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+contains\\s+[^\\s<>!=:,]+\\s+", Pattern.DOTALL);
+    static final Pattern COLUMN_PATTERN_MATCHES_END = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+matches\\s+[^\\s<>!=:,]+\\s+", Pattern.DOTALL);
+    static final Pattern COLUMN_PATTERN_EXCLUDES_END = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+excludes\\s+[^\\s<>!=:,]+\\s+", Pattern.DOTALL);
+    static final Pattern COLUMN_PATTERN_COMPARATOR_END = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s*([<>=!]+)\\s*[^\\s<>!=:,]+\\s+", Pattern.DOTALL);
 
     static final Pattern EXISTS_PATTERN = Pattern.compile(".*\\s+exists\\s*\\(?\\s*((\\S*)\\s*:)?\\s*\\S*", Pattern.DOTALL);
     static final Pattern NOT_PATTERN = Pattern.compile(".*\\s+not\\s*\\(?\\s*((\\S*)\\s*:)?\\s*\\S*", Pattern.DOTALL);
@@ -40,6 +46,7 @@ public class LocationDeterminator {
 	static final int LOCATION_INSIDE_CONDITION_START = 100;
 	static final int LOCATION_INSIDE_CONDITION_OPERATOR = 101;
 	static final int LOCATION_INSIDE_CONDITION_ARGUMENT = 102;
+	static final int LOCATION_INSIDE_CONDITION_END = 103;
 
 	static final int LOCATION_INSIDE_EVAL = 200;
 	
@@ -128,6 +135,32 @@ public class LocationDeterminator {
 			if (columnContents == null) {
 				return new Location(LOCATION_BEGIN_OF_CONDITION);
 			}
+			List subDescrs = columnDescr.getDescrs();
+			if (subDescrs.size() > 0) {
+				Object lastDescr = subDescrs.get(subDescrs.size() - 1);
+				if (lastDescr instanceof FieldConstraintDescr) {
+					FieldConstraintDescr lastFieldDescr = (FieldConstraintDescr) lastDescr;
+					List restrictions = lastFieldDescr.getRestrictions();
+					if (restrictions.size() > 1) {
+						// if there are multiple restrictions, filter out all the rest so that
+						// only the last one remains
+						Object last = restrictions.get(restrictions.size() - 1);
+						if (last instanceof RestrictionConnectiveDescr) {
+							RestrictionConnectiveDescr lastRestr = (RestrictionConnectiveDescr) last;
+							char connective = '&';
+							if (lastRestr.getConnective() == RestrictionConnectiveDescr.OR) {
+								connective = '|';
+							}
+							int connectiveLocation = columnContents.lastIndexOf(connective);
+							columnContents = "( " + lastFieldDescr.getFieldName() + " " + columnContents.substring(connectiveLocation + 1);
+						} else {
+							Location location = new Location(LOCATION_INSIDE_CONDITION_END);
+							location.setProperty(LOCATION_PROPERTY_CLASS_NAME, columnDescr.getObjectType());
+							return location;
+						}
+					}
+				}
+			}
 			matcher = COLUMN_PATTERN_OPERATOR.matcher(columnContents);
 	        if (matcher.matches()) {
 				Location location = new Location(LOCATION_INSIDE_CONDITION_OPERATOR);
@@ -165,6 +198,30 @@ public class LocationDeterminator {
 				location.setProperty(LOCATION_PROPERTY_CLASS_NAME, columnDescr.getObjectType());
 				location.setProperty(LOCATION_PROPERTY_PROPERTY_NAME, matcher.group(3));
 				location.setProperty(LOCATION_PROPERTY_OPERATOR, "matches");
+				return location;
+	        }
+	        matcher = COLUMN_PATTERN_CONTAINS_END.matcher(columnContents);
+	        if (matcher.matches()) {
+				Location location = new Location(LOCATION_INSIDE_CONDITION_END);
+				location.setProperty(LOCATION_PROPERTY_CLASS_NAME, columnDescr.getObjectType());
+				return location;
+	        }
+	        matcher = COLUMN_PATTERN_MATCHES_END.matcher(columnContents);
+	        if (matcher.matches()) {
+				Location location = new Location(LOCATION_INSIDE_CONDITION_END);
+				location.setProperty(LOCATION_PROPERTY_CLASS_NAME, columnDescr.getObjectType());
+				return location;
+	        }
+	        matcher = COLUMN_PATTERN_EXCLUDES_END.matcher(columnContents);
+	        if (matcher.matches()) {
+				Location location = new Location(LOCATION_INSIDE_CONDITION_END);
+				location.setProperty(LOCATION_PROPERTY_CLASS_NAME, columnDescr.getObjectType());
+				return location;
+	        }
+	        matcher = COLUMN_PATTERN_COMPARATOR_END.matcher(columnContents);
+	        if (matcher.matches()) {
+				Location location = new Location(LOCATION_INSIDE_CONDITION_END);
+				location.setProperty(LOCATION_PROPERTY_CLASS_NAME, columnDescr.getObjectType());
 				return location;
 	        }
 			matcher = COLUMN_PATTERN_START.matcher(columnContents);

@@ -217,10 +217,10 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 						isObject = true;
 					}
 
-				    list.add( new RuleCompletionProposal(prefix.length(), "null", "null", droolsIcon));
+				    list.add( new RuleCompletionProposal(prefix.length(), "null", "null ", droolsIcon));
 					if ("boolean".equals(type)) {
-					    list.add( new RuleCompletionProposal(prefix.length(), "true", "true", droolsIcon));
-					    list.add( new RuleCompletionProposal(prefix.length(), "false", "false", droolsIcon));
+					    list.add( new RuleCompletionProposal(prefix.length(), "true", "true ", droolsIcon));
+					    list.add( new RuleCompletionProposal(prefix.length(), "false", "false ", droolsIcon));
 					}
 					if (isObject || "java.lang.String".equals(type)) {
 						list.add( new RuleCompletionProposal(prefix.length(), "\"\"", "\"\"", 1, droolsIcon));
@@ -278,6 +278,10 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			    	}
 			    	list.addAll(getJavaCompletionProposals(content, prefix, params));
 			    	break;
+				case LocationDeterminator.LOCATION_INSIDE_CONDITION_END :
+				    list.add( new RuleCompletionProposal(prefix.length(), "&", "& ", droolsIcon));
+				    list.add( new RuleCompletionProposal(prefix.length(), "|", "| ", droolsIcon));
+				    list.add( new RuleCompletionProposal(prefix.length(), ",", ", ", droolsIcon));
 			}
 		}
 	}
