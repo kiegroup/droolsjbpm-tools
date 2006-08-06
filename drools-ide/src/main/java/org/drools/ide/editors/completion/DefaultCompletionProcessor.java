@@ -41,6 +41,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
     private static final String NEW_RULE_TEMPLATE = "rule \"new rule\"" + System.getProperty("line.separator") + "\twhen" + System.getProperty("line.separator") + "\t\t" + System.getProperty("line.separator") + "\tthen" + System.getProperty("line.separator") + "\t\t" + System.getProperty("line.separator") + "end";
     private static final String NEW_QUERY_TEMPLATE = "query \"query name\"" + System.getProperty("line.separator") + "\t#conditions" + System.getProperty("line.separator") + "end";
     private static final String NEW_FUNCTION_TEMPLATE = "function void yourFunction(Type arg) {" + System.getProperty("line.separator") + "\t/* code goes here*/" + System.getProperty("line.separator") + "}";
+    private static final String NEW_TEMPLATE_TEMPLATE = "template Name" + System.getProperty("line.separator") + "\t" + System.getProperty("line.separator") + "end";
     private static final Pattern IMPORT_PATTERN = Pattern.compile(".*\n\\W*import\\W[^;\\s]*", Pattern.DOTALL);
     // TODO: doesn't work for { inside functions
     private static final Pattern FUNCTION_PATTERN = Pattern.compile( ".*\n\\W*function\\s+(\\S+)\\s+(\\S+)\\s*\\(([^\\)]*)\\)\\s*\\{([^\\}]*)", Pattern.DOTALL);
@@ -140,6 +141,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
         list.add(new RuleCompletionProposal(prefix.length(), "package", "package "));
         list.add(new RuleCompletionProposal(prefix.length(), "query", NEW_QUERY_TEMPLATE));
         list.add(new RuleCompletionProposal(prefix.length(), "function", NEW_FUNCTION_TEMPLATE, 14));
+        list.add(new RuleCompletionProposal(prefix.length(), "template", NEW_TEMPLATE_TEMPLATE, 9));
         filterProposalsOnPrefix(prefix, list);
         return list;
     }

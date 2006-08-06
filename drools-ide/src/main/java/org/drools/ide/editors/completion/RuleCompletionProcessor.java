@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
@@ -19,7 +20,9 @@ import org.drools.ide.util.ProjectClassLoader;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.ExistsDescr;
+import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FieldBindingDescr;
+import org.drools.lang.descr.FieldTemplateDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -28,9 +31,13 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.semantics.java.ClassTypeResolver;
 import org.drools.util.asm.ClassFieldInspector;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 
 /**
@@ -154,26 +161,38 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 				        	list.add(p);
 				        }
 				    }
+				    Set templates = getDRLEditor().getTemplates();
+				    iterator = templates.iterator();
+				    while (iterator.hasNext()) {
+				        String name = (String) iterator.next();
+			        	RuleCompletionProposal p = new RuleCompletionProposal(prefix.length(), name, name + "(  )", name.length() + 2);
+			        	p.setPriority(-1);
+			        	p.setImage(classIcon);
+			        	list.add(p);
+				    }
 					break;
 				case LocationDeterminator.LOCATION_INSIDE_CONDITION_START :
 					String className = (String) location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME);
 					if (className != null) {
-						ClassTypeResolver resolver = new ClassTypeResolver(getDRLEditor().getImports(), ProjectClassLoader.getProjectClassLoader(getEditor()));
-						try {
-							Class clazz = resolver.resolveType(className);
-							if (clazz != null) {
-								Iterator iterator2 = new ClassFieldInspector(clazz).getFieldNames().keySet().iterator();
-								while (iterator2.hasNext()) {
-							        String name = (String) iterator2.next();
-						        	RuleCompletionProposal p = new RuleCompletionProposal(prefix.length(), name, name + " ");
-						        	p.setImage(methodIcon);
-						        	list.add(p);
-							    }
+						boolean isTemplate = addFactTemplatePropertyProposals(prefix, className, list);
+						if (!isTemplate) {
+							ClassTypeResolver resolver = new ClassTypeResolver(getDRLEditor().getImports(), ProjectClassLoader.getProjectClassLoader(getEditor()));
+							try {
+								Class clazz = resolver.resolveType(className);
+								if (clazz != null) {
+									Iterator iterator2 = new ClassFieldInspector(clazz).getFieldNames().keySet().iterator();
+									while (iterator2.hasNext()) {
+								        String name = (String) iterator2.next();
+							        	RuleCompletionProposal p = new RuleCompletionProposal(prefix.length(), name, name + " ");
+							        	p.setImage(methodIcon);
+							        	list.add(p);
+								    }
+								}
+							} catch (IOException exc) {
+								// Do nothing
+							} catch (ClassNotFoundException exc) {
+								// Do nothing
 							}
-						} catch (IOException exc) {
-							// Do nothing
-						} catch (ClassNotFoundException exc) {
-							// Do nothing
 						}
 					}
 					break;
@@ -287,21 +306,46 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 	}
 	
 	private String getPropertyClass(String className, String propertyName) {
-		if (className != null) {
-			ClassTypeResolver resolver = new ClassTypeResolver(getDRLEditor().getImports(), ProjectClassLoader.getProjectClassLoader(getEditor()));
-			try {
-				Class clazz = resolver.resolveType(className);
-				if (clazz != null) {
-					Class clazzz = (Class) new ClassFieldInspector(clazz).getFieldTypes().get(propertyName);
-					if (clazzz != null) {
-						return clazzz.getName();
+		if (className != null && propertyName != null) {
+			FactTemplateDescr template = getDRLEditor().getTemplate(className);
+			if (template != null) {
+		    	Iterator iterator = template.getFields().iterator();
+		    	while (iterator.hasNext()) {
+		    		FieldTemplateDescr field = (FieldTemplateDescr) iterator.next();
+		    		if (propertyName.equals(field.getName())) {
+		    			String type = field.getClassType();
+		    			if (isPrimitiveType(type)) {
+		    				return type;
+		    			}
+		    			ClassTypeResolver resolver = new ClassTypeResolver(getDRLEditor().getImports(), ProjectClassLoader.getProjectClassLoader(getEditor()));
+						try {
+							Class clazz = resolver.resolveType(type);
+							if (clazz != null) {
+								return clazz.getName();
+							}
+						} catch (ClassNotFoundException exc) {
+							exc.printStackTrace();
+							// Do nothing
+						}
+		    		}
+		    	}
+		    	// if not found, return null
+			} else {
+				ClassTypeResolver resolver = new ClassTypeResolver(getDRLEditor().getImports(), ProjectClassLoader.getProjectClassLoader(getEditor()));
+				try {
+					Class clazz = resolver.resolveType(className);
+					if (clazz != null) {
+						Class clazzz = (Class) new ClassFieldInspector(clazz).getFieldTypes().get(propertyName);
+						if (clazzz != null) {
+							return clazzz.getName();
+						}
 					}
+				} catch (IOException exc) {
+					// Do nothing
+				} catch (ClassNotFoundException exc) {
+					// Do nothing
 				}
-			} catch (IOException exc) {
-				// Do nothing
-			} catch (ClassNotFoundException exc) {
-				// Do nothing
-			}
+			} 
 		}
 		return null;
 	}
@@ -311,6 +355,9 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			return false;
 		}
 		if (isPrimitiveNumericType(type)) {
+			return true;
+		}
+		if (isObjectNumericType(type)) {
 			return true;
 		}
 		if (isSubtypeOf(type, "java.lang.Comparable")) {
@@ -329,6 +376,13 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 				|| type.equals("int") || type.equals("long")
 				|| type.equals("float") || type.equals("double")
 				|| type.equals("char");
+	}
+	
+	private boolean isObjectNumericType(String type) {
+		return type.equals("java.lang.Byte") || type.equals("java.lang.Short")
+				|| type.equals("java.lang.Integer") || type.equals("java.lang.Long")
+				|| type.equals("java.lang.Float") || type.equals("java.lang.Double")
+				|| type.equals("java.lang.Char");
 	}
 	
 	/**
@@ -557,5 +611,20 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         }
         return adapter;
     }
-
+    
+    private boolean addFactTemplatePropertyProposals(String prefix, String templateName, List list) {
+    	FactTemplateDescr descr = getDRLEditor().getTemplate(templateName);
+    	if (descr == null) {
+    		return false;
+    	}
+    	Iterator iterator = descr.getFields().iterator();
+    	while (iterator.hasNext()) {
+    		FieldTemplateDescr field = (FieldTemplateDescr) iterator.next();
+	        String fieldName = field.getName();
+        	RuleCompletionProposal p = new RuleCompletionProposal(prefix.length(), fieldName, fieldName + " ");
+        	p.setImage(methodIcon);
+        	list.add(p);
+    	}
+    	return true;
+    }
 }

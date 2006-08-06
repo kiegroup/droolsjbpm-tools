@@ -118,6 +118,13 @@ public class PackageTreeNode extends OutlineNode {
         queries.add( node );
     }
 
+    public void addTemplate(String templateLabel, int offset, int length) {
+		TemplateTreeNode node = new TemplateTreeNode( this, templateLabel );
+		node.setOffset( offset );
+		node.setLength( length );
+		queries.add( node );
+	}
+
     /** 
      * This will return the child nodes, as they are to be displayed on screen (sorted an all !) 
      * Rules should appear at the top, sorted, as they are the most important assets.

@@ -63,6 +63,9 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
 	private static final Pattern FUNCTION_PATTERN = Pattern.compile(
 			"\\n\\s*function\\s+(\\S+)\\s+(\\S+)\\(.*\\)", Pattern.DOTALL);
 
+	private static final Pattern TEMPLATE_PATTERN = Pattern.compile(
+			"\\n\\s*template\\s+([^\\s;#\"]+)", Pattern.DOTALL);
+
 	private static final Pattern IMPORT_PATTERN = Pattern.compile(
 			"\\n\\s*import\\s+([^\\s;#]+);?", Pattern.DOTALL);
 
@@ -209,6 +212,12 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
 		while (matcher.find()) {
 			String queryName = matcher.group(1);
 			packageTreeNode.addQuery(queryName, 
+					matcher.start(1), matcher.end(1) - matcher.start(1));
+		}
+		matcher = TEMPLATE_PATTERN.matcher(ruleFileContents);
+		while (matcher.find()) {
+			String templateName = matcher.group(1);
+			packageTreeNode.addTemplate(templateName, 
 					matcher.start(1), matcher.end(1) - matcher.start(1));
 		}
     }

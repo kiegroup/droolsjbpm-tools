@@ -11,6 +11,8 @@ import org.apache.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.FactTemplateError;
+import org.drools.compiler.FieldTemplateError;
 import org.drools.compiler.FunctionError;
 import org.drools.compiler.GlobalError;
 import org.drools.compiler.PackageBuilder;
@@ -180,6 +182,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                     markers.add(new DroolsBuildMarker(recogErr.getMessage(), recogErr.line)); //flick back the line number
                 }
             } catch (Exception t) {
+            	t.printStackTrace();
                 throw t;
             } finally {
                 Thread.currentThread().setContextClassLoader(oldLoader);
@@ -238,6 +241,10 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         		} else {
         			markers.add(new DroolsBuildMarker(functionError.getFunctionDescr().getName() + ":" + functionError.getMessage(), -1));
         		}
+        	} else if (error instanceof FieldTemplateError) {
+        		markers.add(new DroolsBuildMarker(error.getMessage(), ((FieldTemplateError) error).getLine()));
+        	} else if (error instanceof FactTemplateError) {
+        		markers.add(new DroolsBuildMarker(error.getMessage(), ((FactTemplateError) error).getLine()));
         	} else {
         		markers.add(new DroolsBuildMarker("Unknown DroolsError " + error.getClass() + ": " + error));
         	}

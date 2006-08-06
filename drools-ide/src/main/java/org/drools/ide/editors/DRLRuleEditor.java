@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
@@ -13,6 +15,7 @@ import org.drools.ide.builder.DroolsBuilder;
 import org.drools.ide.debug.core.IDroolsDebugConstants;
 import org.drools.ide.editors.outline.RuleContentOutlinePage;
 import org.drools.ide.editors.scanners.RuleEditorMessages;
+import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.eclipse.core.resources.IMarker;
@@ -53,6 +56,7 @@ public class DRLRuleEditor extends TextEditor {
 	private DSLAdapter dslAdapter;
 	private List imports;
 	private List functions;
+	private Map templates;
 	private String packageName;
 	private List classesInPackage;
 	private RuleContentOutlinePage ruleContentOutline = null;
@@ -158,12 +162,19 @@ public class DRLRuleEditor extends TextEditor {
 			}
 	        // functions
 	        List functionDescrs = descr.getFunctions();
-	        List functions = new ArrayList(functionDescrs.size());
+	        functions = new ArrayList(functionDescrs.size());
 	        iterator = functionDescrs.iterator();
 	        while (iterator.hasNext()) {
 				functions.add(((FunctionDescr) iterator.next()).getName());
 			}
-	        this.functions = functions;
+	        // templates
+	        List templateDescrs = descr.getFactTemplates();
+	        templates = new HashMap(templateDescrs.size());
+	        iterator = templateDescrs.iterator();
+	        while (iterator.hasNext()) {
+	        	FactTemplateDescr template = (FactTemplateDescr) iterator.next();
+	        	templates.put(template.getName(), template);
+			}
 		} catch (CoreException exc) {
 			DroolsIDEPlugin.log(exc);
 		} catch (DroolsParserException exc) {
@@ -176,6 +187,20 @@ public class DRLRuleEditor extends TextEditor {
 			loadImportsAndFunctions();
 		}
 		return functions;
+	}
+	
+	public Set getTemplates() {
+		if (templates == null) {
+			loadImportsAndFunctions();
+		}
+		return templates.keySet();
+	}
+	
+	public FactTemplateDescr getTemplate(String name) {
+		if (templates == null) {
+			loadImportsAndFunctions();
+		}
+		return (FactTemplateDescr) templates.get(name);
 	}
 	
 	public String getPackage() {
@@ -250,6 +275,7 @@ public class DRLRuleEditor extends TextEditor {
 		dslAdapter = null;
 		imports = null;
 		functions = null;
+		templates = null;
 		packageName = null;
 		classesInPackage = null;
 	}

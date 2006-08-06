@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Display;
 public class DRLReconcilingStrategy implements IReconcilingStrategy {
 
     private static final Pattern RULE_PATTERN = Pattern.compile("\\n\\s*(rule\\s+.*?\\n\\s*end)", Pattern.DOTALL);
+    private static final Pattern TEMPLATE_PATTERN = Pattern.compile("\\n\\s*(template\\s+.*?\\n\\s*end)", Pattern.DOTALL);
     private static final Pattern QUERY_PATTERN = Pattern.compile("\\n\\s*(query\\s+.*?\\n\\s*end)", Pattern.DOTALL);
     private static final Pattern FUNCTION_PATTERN = Pattern.compile("\\n\\s*(function\\s+[^\\{]*\\{)", Pattern.DOTALL);
     private static final Pattern IMPORT_PATTERN = Pattern.compile("\\n\\s*((\\s*import\\s+[^\\s;]+;?[\\t\\x0B\\f\\r]*\\n)+)", Pattern.DOTALL);
@@ -112,6 +113,10 @@ public class DRLReconcilingStrategy implements IReconcilingStrategy {
 			positions.add(new Position(matcher.start(1), matcher.end(1) - matcher.start(1)));
         }
         matcher = QUERY_PATTERN.matcher(input);
+        while (matcher.find()) {
+			positions.add(new Position(matcher.start(1), matcher.end(1) - matcher.start(1)));
+        }
+        matcher = TEMPLATE_PATTERN.matcher(input);
         while (matcher.find()) {
 			positions.add(new Position(matcher.start(1), matcher.end(1) - matcher.start(1)));
         }
