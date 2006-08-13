@@ -52,13 +52,16 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
     private static final String JBOSS_RULES_NAME = "JBoss Rules";
     private IProject newProject;
     private WizardNewProjectCreationPage mainPage;
+    private NewDroolsProjectWizardPage extraPage;
     
     public void addPages() {
         super.addPages();
         mainPage = new WizardNewProjectCreationPage("basicNewProjectPage");
-        mainPage.setTitle("New Drools Project");
-        mainPage.setDescription("Create a new Drools Project");
+        mainPage.setTitle("New JBoss Rules Project");
+        mainPage.setDescription("Create a new JBoss Rules Project");
         this.addPage(mainPage);
+        extraPage = new NewDroolsProjectWizardPage();
+        addPage(extraPage);
         setNeedsProgressMonitor(true);
     }
 
@@ -251,12 +254,26 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
 
     private void createInitialContent(IJavaProject project, IProgressMonitor monitor)
             throws CoreException, JavaModelException, IOException {
-		createRuleSampleLauncher(project);
-		createRule(project, monitor);
+    	try {
+	    	if (extraPage.createJavaRuleFile()) {
+	    		createRuleSampleLauncher(project);
+	    	}
+	    	if (extraPage.createRuleFile()) {
+	    		createRule(project, monitor);
+	    	}
+	    	if (extraPage.createDecisionTableFile()) {
+	    		createDecisionTable(project, monitor);
+	    	}
+	    	if (extraPage.createJavaDecisionTableFile()) {
+	    		createDecisionTableSampleLauncher(project);
+	    	}
+    	} catch (Throwable t) {
+    		t.printStackTrace();
+    	}
 	}
 
     /**
-     * Create the sample launcher file.
+     * Create the sample rule launcher file.
      */
     private void createRuleSampleLauncher(IJavaProject project)
             throws JavaModelException, IOException {
@@ -274,6 +291,24 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
     }
 
     /**
+     * Create the sample decision table launcher file.
+     */
+    private void createDecisionTableSampleLauncher(IJavaProject project)
+            throws JavaModelException, IOException {
+        
+        String s = "org/drools/ide/wizard/project/DecisionTableLauncherSample.java.template";
+        IFolder folder = project.getProject().getFolder("src/java");
+        IPackageFragmentRoot packageFragmentRoot = project
+                .getPackageFragmentRoot(folder);
+        IPackageFragment packageFragment = packageFragmentRoot
+                .createPackageFragment("com.sample", true, null);
+        InputStream inputstream = getClass().getClassLoader()
+                .getResourceAsStream(s);
+        packageFragment.createCompilationUnit("DecisionTableTest.java", new String(
+                readStream(inputstream)), true, null);
+    }
+
+    /**
      * Create the sample rule file.
      */
     private void createRule(IJavaProject project, IProgressMonitor monitor)
@@ -281,6 +316,22 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
         String fileName = "org/drools/ide/wizard/project/Sample.drl.template";
         IFolder folder = project.getProject().getFolder("src/rules");
         IFile file = folder.getFile("Sample.drl");
+        InputStream inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
+        if (!file.exists()) {
+        	file.create(inputstream, true, monitor);
+        } else {
+        	file.setContents(inputstream, true, false, monitor);
+        }
+    }
+
+    /**
+     * Create the sample decision table file.
+     */
+    private void createDecisionTable(IJavaProject project, IProgressMonitor monitor)
+            throws CoreException {
+        String fileName = "org/drools/ide/wizard/project/Sample.xls.template";
+        IFolder folder = project.getProject().getFolder("src/rules");
+        IFile file = folder.getFile("Sample.xls");
         InputStream inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
         if (!file.exists()) {
         	file.create(inputstream, true, monitor);
