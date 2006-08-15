@@ -36,11 +36,12 @@ public class RuleHelperActionDelegate
     IWorkbenchWindowPulldownDelegate {
 
     private IWorkbench workbench;
+    private Menu menu;
 
     /** Return a menu which launches the various wizards */
     public Menu getMenu(Control parent) {
 
-        Menu menu = new Menu( parent );
+        setMenu( new Menu( parent ) );
         
         final Shell shell = parent.getShell();
         addProjectWizard( menu,
@@ -56,6 +57,13 @@ public class RuleHelperActionDelegate
                       shell );        
         
         return menu;
+    }
+    
+    private void setMenu(Menu menu) {
+        if (this.menu != null) {
+            this.menu.dispose();
+        }
+        this.menu = menu;
     }
 
     private void addDTWizard(Menu menu,
