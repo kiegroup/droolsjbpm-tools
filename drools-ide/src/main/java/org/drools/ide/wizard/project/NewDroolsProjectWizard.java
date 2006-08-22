@@ -226,11 +226,11 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
             .toArray(new IClasspathEntry[list.size()]), monitor);
     }
 
-    private IPath getClassPathContainerPath() {
+    private static IPath getClassPathContainerPath() {
         return new Path("DROOLS/" + getDroolsNamePref());
     }
 
-    private void createDroolsLibraryContainer(IJavaProject project, IProgressMonitor monitor)
+    private static void createDroolsLibraryContainer(IJavaProject project, IProgressMonitor monitor)
             throws JavaModelException {
         JavaCore.setClasspathContainer(getClassPathContainerPath(),
             new IJavaProject[] { project },
@@ -238,11 +238,11 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
                     project, getClassPathContainerPath()) }, monitor);
     }
 
-    private String getDroolsNamePref() {
+    private static String getDroolsNamePref() {
         return JBOSS_RULES_NAME;
     }
 
-    private void addDroolsLibraries(IJavaProject project, IProgressMonitor monitor)
+    public static void addDroolsLibraries(IJavaProject project, IProgressMonitor monitor)
             throws JavaModelException {
         createDroolsLibraryContainer(project, monitor);
         List list = new ArrayList();

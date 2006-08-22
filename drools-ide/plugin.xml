@@ -244,4 +244,20 @@
    
    -->
    
+   <extension point = "org.eclipse.ui.popupMenus">
+     <objectContribution
+        	id="org.drools.ide.action.ConvertToDroolsProject"
+        	objectClass="org.eclipse.core.resources.IFile"
+        	nameFilter=".project">
+	    <action id="org.drools.ide.action.ConvertToDroolsProjectAction"
+	       label="Convert to JBoss Rules Project"
+	       icon="icons/drools.gif"
+	       menubarPath="additions"
+	       class="org.drools.ide.action.ConvertToDroolsProjectAction"	
+           definitionId="org.drools.ide.action.ConvertToDroolsProjectAction"
+	       enablesFor="1">
+	    </action>
+	 </objectContribution>
+   </extension>
+   
 </plugin>
