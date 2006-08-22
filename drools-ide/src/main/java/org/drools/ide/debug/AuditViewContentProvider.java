@@ -6,6 +6,10 @@ import org.drools.ide.debug.AuditView.Event;
 
 public class AuditViewContentProvider extends DroolsDebugViewContentProvider {
 
+    protected String getEmptyString() {
+    	return "The selected audit log is empty.";
+    }
+
     public Object[] getChildren(Object obj) {
 		if (obj instanceof List) {
 			return ((List) obj).toArray();

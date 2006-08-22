@@ -25,6 +25,10 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
         this.view = view;
     }
     
+    protected String getEmptyString() {
+    	return "The selected working memory has an empty agenda.";
+    }
+
     public Object[] getChildren(Object obj) {
         try {
             Object[] variables = null;

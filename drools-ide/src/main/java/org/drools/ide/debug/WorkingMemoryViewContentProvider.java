@@ -29,6 +29,10 @@ public class WorkingMemoryViewContentProvider extends DroolsDebugViewContentProv
         this.view = view;
     }
     
+    protected String getEmptyString() {
+    	return "The selected working memory is empty.";
+    }
+
     public Object[] getChildren(Object obj) {
         try {
             IVariable[] variables = null;

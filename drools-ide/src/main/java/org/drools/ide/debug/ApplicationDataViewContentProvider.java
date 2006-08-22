@@ -24,6 +24,10 @@ public class ApplicationDataViewContentProvider extends DroolsDebugViewContentPr
         this.view = view;
     }
     
+    protected String getEmptyString() {
+    	return "The selected working memory has no globals defined.";
+    }
+
     public Object[] getChildren(Object obj) {
         try {
             IVariable[] variables = null;

@@ -35,7 +35,15 @@ public class DroolsDebugViewContentProvider implements ITreeContentProvider {
     }
     
     public Object[] getElements(Object parent) {
-        return getChildren(parent);
+        Object[] result = getChildren(parent);
+        if (result != null && result.length == 0) {
+        	return new Object[] { getEmptyString() };
+        }
+        return result;
+    }
+    
+    protected String getEmptyString() {
+    	return "Empty";
     }
 
     protected void cache(Object parent, Object[] children) {        
