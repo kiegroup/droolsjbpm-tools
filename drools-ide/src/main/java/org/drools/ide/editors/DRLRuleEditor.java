@@ -162,10 +162,24 @@ public class DRLRuleEditor extends TextEditor {
 			}
 	        // functions
 	        List functionDescrs = descr.getFunctions();
+	        List functionImports = descr.getFunctionImports();
 	        functions = new ArrayList(functionDescrs.size());
 	        iterator = functionDescrs.iterator();
 	        while (iterator.hasNext()) {
 				functions.add(((FunctionDescr) iterator.next()).getName());
+			}
+	        iterator = functionImports.iterator();
+	        while (iterator.hasNext()) {
+	        	String functionImport = (String) iterator.next();
+	        	if (functionImport.endsWith(".*")) {
+	        		String className = functionImport.substring(0, functionImport.length() - 2);
+	        		functions.addAll(getAllStaticMethodsInClass(className));
+	        	} else {
+	        		int index = functionImport.lastIndexOf('.');
+	        		if (index != -1) {
+	        			functions.add(functionImport.substring(index + 1));
+	        		}
+	        	}
 			}
 	        // templates
 	        List templateDescrs = descr.getFactTemplates();
@@ -245,7 +259,34 @@ public class DRLRuleEditor extends TextEditor {
 		return list;
 	}
 
-
+	private List getAllStaticMethodsInClass(String className) {
+		final List list = new ArrayList();
+		if (className != null) {
+			IEditorInput input = getEditorInput();
+			if (input instanceof IFileEditorInput) {
+				IProject project = ((IFileEditorInput) input).getFile().getProject();
+				IJavaProject javaProject = JavaCore.create(project);
+				
+				CompletionRequestor requestor = new CompletionRequestor() {
+					public void accept(org.eclipse.jdt.core.CompletionProposal proposal) {
+						String functionName = new String(proposal.getCompletion());
+						if (proposal.getKind() == org.eclipse.jdt.core.CompletionProposal.METHOD_REF) {
+							list.add(functionName.substring(0, functionName.length() - 2)); // remove the ()
+						}
+						// ignore all other proposals
+					}
+				};
+	
+				try {
+					javaProject.newEvaluationContext().codeComplete(className + ".", className.length() + 1, requestor);
+				} catch (Throwable t) {
+					DroolsIDEPlugin.log(t);
+				}
+			}
+		}
+		return list;
+	}
+	
 	public Object getAdapter(Class adapter) {
 		if (adapter.equals(IContentOutlinePage.class)) {
 			return getContentOutline();
