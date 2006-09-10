@@ -179,7 +179,7 @@
       </perspective>
    </extension>
    
-   <!-- Extensions for the interactive debugger
+   <!-- Extensions for the interactive debugger -->
    
    <extension point = "org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
@@ -241,8 +241,6 @@
          id="org.drools.ide.debug">
       </debugModelPresentation> 
    </extension>
-   
-   -->
    
    <extension point = "org.eclipse.ui.popupMenus">
      <objectContribution

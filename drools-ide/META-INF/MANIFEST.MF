@@ -30,7 +30,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.presentations.r21,
  org.eclipse.ui.views,
  org.eclipse.ui.workbench.texteditor,
- org.eclipse.pde.ui
+ org.eclipse.pde.ui,
+ com.ibm.icu
 Eclipse-LazyStart: true
 Bundle-ClassPath: ide.jar,
  lib/antlr-2.7.6.jar,

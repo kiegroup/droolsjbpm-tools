@@ -166,5 +166,13 @@ public class DroolsThread extends JDIThread {
 	protected void setRunning(boolean running) {
 		super.setRunning(running);
 	}
+	
+	protected void dropToFrame(IStackFrame frame) throws DebugException {
+		super.dropToFrame(frame);
+	}
+	
+	protected synchronized void stepToFrame(IStackFrame frame) throws DebugException {
+		super.stepToFrame(frame);
+	}
 
 }
