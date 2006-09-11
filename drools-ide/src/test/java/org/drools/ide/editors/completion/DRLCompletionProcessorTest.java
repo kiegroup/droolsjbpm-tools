@@ -8,14 +8,11 @@ import junit.framework.TestCase;
 public class DRLCompletionProcessorTest extends TestCase {
 
     public void testLookBehind() {
-        DefaultCompletionProcessor proc = new DefaultCompletionProcessor(null);
-        
-        assertEquals("something", proc.stripWhiteSpace(" something"));
-        assertEquals("another", proc.stripWhiteSpace("another"));
+        assertEquals("something", CompletionUtil.stripLastWord(" something"));
+        assertEquals("another", CompletionUtil.stripLastWord("another"));
         
         String s = "rule something \n\nwhen";
-        assertEquals("when", proc.stripWhiteSpace(s));
-        
+        assertEquals("when", CompletionUtil.stripLastWord(s));
     }
     
     public void testPrefixFiltering() {

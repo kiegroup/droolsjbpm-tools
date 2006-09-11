@@ -961,6 +961,61 @@ public class LocationDeterminatorTest extends TestCase {
         	"		Class ( property == \"test\" | == \"test2\" ";
         location = LocationDeterminator.getLocationInCondition(input);
         assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_END, location.getType());
+
+        /** FROM */
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property > 0 ) ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property > 0 ) fr";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property > 0 ) from ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_FROM, location.getType());
+        assertEquals("", location.getProperty(LocationDeterminator.LOCATION_FROM_CONTENT));
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property > 0 ) from myGlob";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_FROM, location.getType());
+        assertEquals("myGlob", location.getProperty(LocationDeterminator.LOCATION_FROM_CONTENT));
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property > 0 ) from myGlobal.get";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_FROM, location.getType());
+        assertEquals("myGlobal.get", location.getProperty(LocationDeterminator.LOCATION_FROM_CONTENT));
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property > 0 ) from myGlobal.getList() \n" +
+        	"       ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property > 0 ) from getDroolsFunction() \n" +
+        	"       ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION, location.getType());
     }
     
 }

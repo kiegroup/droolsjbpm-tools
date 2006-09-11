@@ -23,6 +23,7 @@ import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldTemplateDescr;
+import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -68,7 +69,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 	        IDocument doc = viewer.getDocument();
 	        String backText = readBackwards(documentOffset, doc);            
 	
-	        final String prefix = stripWhiteSpace(backText);
+	        final String prefix = CompletionUtil.stripLastWord(backText);
             
 	        if (backText.length() < 5) {
 	        	return list;
@@ -116,6 +117,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 					// add drools keywords
 				    list.add( new RuleCompletionProposal(prefix.length(), "and", "and ", droolsIcon));
 				    list.add( new RuleCompletionProposal(prefix.length(), "or", "or ", droolsIcon));
+				    list.add( new RuleCompletionProposal(prefix.length(), "from", "from ", droolsIcon));
 				    RuleCompletionProposal prop = new RuleCompletionProposal(prefix.length(), "eval", "eval(  )", 6 );
 					prop.setImage(droolsIcon);
 				    list.add(prop);
@@ -297,6 +299,38 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 				    list.add( new RuleCompletionProposal(prefix.length(), "&", "& ", droolsIcon));
 				    list.add( new RuleCompletionProposal(prefix.length(), "|", "| ", droolsIcon));
 				    list.add( new RuleCompletionProposal(prefix.length(), ",", ", ", droolsIcon));
+				    break;
+				case LocationDeterminator.LOCATION_FROM :
+					String fromText = (String) location.getProperty(LocationDeterminator.LOCATION_FROM_CONTENT);
+					int index = fromText.indexOf('.');
+					if (index == -1) {
+						// add all functions
+						if ("".equals(fromText)) {
+					        List functions = getDRLEditor().getFunctions();
+					        iterator = functions.iterator();
+					        while (iterator.hasNext()) {
+					            String name = (String) iterator.next() + "()";
+					        	prop = new RuleCompletionProposal(prefix.length(), name, name, name.length() - 1);
+					        	prop.setPriority(-1);
+					        	prop.setImage(methodIcon);
+					        	list.add(prop);
+					        }
+						}
+				        
+		    			params = new HashMap();
+						try {
+					    	parser = new DrlParser();
+				    		PackageDescr descr = parser.parse(backText);
+				    		List rules = descr.getRules();
+				    		if (rules != null && rules.size() == 1) {
+				    			getRuleParameters(params, ((RuleDescr) rules.get(0)).getLhs().getDescrs());
+				    		}
+				    	} catch (DroolsParserException exc) {
+				    		// do nothing
+				    	}
+				    	list.addAll(getJavaCompletionProposals(fromText, prefix, params));
+					}
+					break;
 			}
 		}
 	}
@@ -525,22 +559,32 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
     	Iterator iterator = descrs.iterator();
     	while (iterator.hasNext()) {
     		PatternDescr descr = (PatternDescr) iterator.next();
-    		if (descr instanceof ColumnDescr) {
-				String name = ((ColumnDescr) descr).getIdentifier();
-				if (name != null) {
-					result.put(name, ((ColumnDescr) descr).getObjectType());
-				}
-				getRuleSubParameters(result, ((ColumnDescr) descr).getDescrs(), ((ColumnDescr) descr).getObjectType());
-			} else if (descr instanceof AndDescr) {
-				getRuleParameters(result, ((AndDescr) descr).getDescrs());
-			} else if (descr instanceof OrDescr) {
-				getRuleParameters(result, ((OrDescr) descr).getDescrs());
-			} else if (descr instanceof ExistsDescr) {
-				getRuleParameters(result, ((ExistsDescr) descr).getDescrs());
-			} else if (descr instanceof NotDescr) {
-				getRuleParameters(result, ((NotDescr) descr).getDescrs());
-			}
+    		getRuleParameters(result, descr);
 		}
+    }
+    
+    private void getRuleParameters(Map result, PatternDescr descr) {
+		if (descr == null) {
+			return;
+		}
+		if (descr instanceof ColumnDescr) {
+			String name = ((ColumnDescr) descr).getIdentifier();
+			if (name != null) {
+				result.put(name, ((ColumnDescr) descr).getObjectType());
+			}
+			getRuleSubParameters(result, ((ColumnDescr) descr).getDescrs(), ((ColumnDescr) descr).getObjectType());
+		} else if (descr instanceof AndDescr) {
+			getRuleParameters(result, ((AndDescr) descr).getDescrs());
+		} else if (descr instanceof OrDescr) {
+			getRuleParameters(result, ((OrDescr) descr).getDescrs());
+		} else if (descr instanceof ExistsDescr) {
+			getRuleParameters(result, ((ExistsDescr) descr).getDescrs());
+		} else if (descr instanceof NotDescr) {
+			getRuleParameters(result, ((NotDescr) descr).getDescrs());
+		} else if (descr instanceof FromDescr) {
+			getRuleParameters(result, ((FromDescr) descr).getReturnedColumn());
+		}
+
     }
     
     private void getRuleSubParameters(Map result, List descrs, String clazz) {

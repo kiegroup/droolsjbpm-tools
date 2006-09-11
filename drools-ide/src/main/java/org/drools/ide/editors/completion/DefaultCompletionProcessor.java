@@ -63,7 +63,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
 	        String backText = readBackwards( documentOffset, doc );            
 	
 	        String prefix = "";
-	        prefix = stripWhiteSpace(backText);
+	        prefix = CompletionUtil.stripLastWord(backText);
 	        
 	        List props = null;
 	        Matcher matcher = IMPORT_PATTERN.matcher(backText); 
@@ -166,27 +166,6 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
         return prefix;
     }
 
-    /** Looks behind, gets stuff after the white space. Basically ripping out the last word.*/
-    protected String stripWhiteSpace(String prefix) {
-    	if ("".equals(prefix)) { 
-    		return prefix;
-    	}
-    	if (prefix.charAt(prefix.length() - 1) == ' ') {
-    		return "";
-    	} else {
-	        char[] c = prefix.toCharArray();
-	        int start = 0;
-	        for (int i = c.length - 1; i >=0; i-- ) {
-	            if (Character.isWhitespace(c[i]) || c[i] == '(' || c[i] == ':' || c[i] == ';' || c[i] == '=' || c[i] == '<' || c[i] == '>' || c[i] == '.' || c[i] == '{' || c[i] == '}') {
-	                start = i + 1;
-	                break;
-	            }
-	        }
-	        prefix = prefix.substring(start, prefix.length());
-	        return prefix;
-    	}
-    }
-    
 	protected List getJavaCompletionProposals(final String javaText, final String prefix, Map params) {
 		final List list = new ArrayList();
 		IEditorInput input = getEditor().getEditorInput();

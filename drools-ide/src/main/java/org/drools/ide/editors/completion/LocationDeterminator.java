@@ -13,6 +13,7 @@ import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
+import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -36,6 +37,7 @@ public class LocationDeterminator {
     static final Pattern EXISTS_PATTERN = Pattern.compile(".*\\s+exists\\s*\\(?\\s*((\\S*)\\s*:)?\\s*\\S*", Pattern.DOTALL);
     static final Pattern NOT_PATTERN = Pattern.compile(".*\\s+not\\s*\\(?\\s*((\\S*)\\s*:)?\\s*\\S*", Pattern.DOTALL);
     static final Pattern EVAL_PATTERN = Pattern.compile(".*\\s+eval\\s*\\(\\s*([(^\\))(\\([^\\)]*\\)?)]*)", Pattern.DOTALL);
+    static final Pattern FROM_PATTERN = Pattern.compile(".*\\)\\s+from\\s+", Pattern.DOTALL);
     
 	static final int LOCATION_UNKNOWN = 0;
 	static final int LOCATION_BEGIN_OF_CONDITION = 1;
@@ -50,10 +52,13 @@ public class LocationDeterminator {
 
 	static final int LOCATION_INSIDE_EVAL = 200;
 	
+	static final int LOCATION_FROM = 300;
+	
 	static final String LOCATION_PROPERTY_CLASS_NAME = "ClassName";
 	static final String LOCATION_PROPERTY_PROPERTY_NAME = "PropertyName";
 	static final String LOCATION_PROPERTY_OPERATOR = "Operator";
 	static final String LOCATION_EVAL_CONTENT = "EvalContent";
+	static final String LOCATION_FROM_CONTENT = "FromContent";
 	
     private LocationDeterminator() {
 	}
@@ -120,6 +125,12 @@ public class LocationDeterminator {
 				return new Location(LOCATION_BEGIN_OF_CONDITION);
 			}
 			if (endReached(subDescr)) {
+				Matcher matcher = FROM_PATTERN.matcher(backText);
+				if (matcher.matches()) {
+					Location location = new Location(LOCATION_FROM);
+					location.setProperty(LOCATION_FROM_CONTENT, "");
+					return location;
+				}
 				return new Location(LOCATION_BEGIN_OF_CONDITION);
 			}
 			return determineLocationForDescr(subDescr, backText);
@@ -310,6 +321,11 @@ public class LocationDeterminator {
 				}
 			}
 			return new Location(LOCATION_UNKNOWN);
+		} else if (descr instanceof FromDescr) {
+			Location location = new Location(LOCATION_FROM);
+			String content = CompletionUtil.stripWhiteSpace(backText);
+			location.setProperty(LOCATION_FROM_CONTENT, content);
+			return location;
 		}
 		
 		return new Location(LOCATION_UNKNOWN);
@@ -320,12 +336,6 @@ public class LocationDeterminator {
 			return (descr.getEndLine() != 0 || descr.getEndColumn() != 0);
 		} else if (descr instanceof ExistsDescr) {
 			List descrs = ((ExistsDescr) descr).getDescrs();
-			if (descrs.isEmpty()) {
-				return false;
-			}
-			return endReached((PatternDescr) descrs.get(0));
-		} else if (descr instanceof NotDescr) {
-			List descrs = ((NotDescr) descr).getDescrs();
 			if (descrs.isEmpty()) {
 				return false;
 			}
@@ -350,9 +360,11 @@ public class LocationDeterminator {
 			}
 			return endReached((PatternDescr) descrs.get(0))
 				&& endReached((PatternDescr) descrs.get(1));
-		} if (descr instanceof EvalDescr) {
+		} else if (descr instanceof EvalDescr) {
 			// EvalDescr are only added once the end has been reached 
 			return true;
+		} else if (descr instanceof FromDescr) {
+			return ((FromDescr) descr).getDataSource() != null;
 		}
 		return false;
 	}
