@@ -3,6 +3,7 @@ package org.drools.ide.debug;
 import org.drools.ide.DroolsIDEPlugin;
 import org.drools.ide.debug.actions.ShowLogicalStructureAction;
 import org.eclipse.debug.core.DebugException;
+import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.debug.internal.ui.VariablesViewModelPresentation;
@@ -13,6 +14,7 @@ import org.eclipse.debug.ui.IDebugModelPresentation;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jdt.debug.core.IJavaObject;
 import org.eclipse.jdt.debug.core.IJavaStackFrame;
+import org.eclipse.jdt.debug.core.IJavaThread;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -59,54 +61,48 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
 
     protected void setViewerInput(Object context) {
     	Object input = null;
-    	if (context instanceof IJavaStackFrame) {
+    	
+    	// if a working memory has been expressively selected as variable, use this
+    	if (context instanceof IVariable) {
+        	IVariable variable = (IVariable) context;
             try {
-                IJavaObject stackObj = ((IJavaStackFrame) context).getThis();
-                if ((stackObj != null)
-                        && (stackObj.getJavaType() != null)
-                        && ("org.drools.reteoo.ReteooWorkingMemory".equals(
-                            stackObj.getJavaType().getName()))) {
-                    input = stackObj;
+                IValue value = ((IVariable) context).getValue();
+                if (value != null && value instanceof IJavaObject
+                        && "org.drools.reteoo.ReteooWorkingMemory".equals(
+                            variable.getValue().getReferenceTypeName())) {
+                    input = value;
                 }
             } catch (Throwable t) {
                 DroolsIDEPlugin.log(t);
             }
-        } else if (context instanceof IVariable) {
-        	IVariable variable = (IVariable) context;
-        	
-        	// find out if stackFrame is inside a WorkingMemoryImpl
-        	// if so, use that, no matter what variable is selected
-        	ISelection stackSelection = DebugContextManager.getDefault().getActiveContext(getSite().getWorkbenchWindow());
-            if (stackSelection instanceof IStructuredSelection) {
-                Object stack = ((IStructuredSelection) stackSelection).getFirstElement();
-                if (stack instanceof IJavaStackFrame) {
-                    try {
-                        IJavaObject stackObj = ((IJavaStackFrame) stack).getThis();
-                        if ((stackObj != null)
-                                && (stackObj.getJavaType() != null)
-                                && ("org.drools.reteoo.ReteooWorkingMemory".equals(
-                                    stackObj.getJavaType().getName()))) {
-                            input = stackObj;
-                        }
-                    } catch (Throwable t) {
-                        // do nothing
-                    }
-                }
-            }
-            if (input == null) {
-                try {
-                    IValue value = ((IVariable) context).getValue();
-                    if (value != null && value instanceof IJavaObject
-                            && "org.drools.reteoo.ReteooWorkingMemory".equals(
-                                variable.getValue().getReferenceTypeName())) {
-                        input = value;
-                    }
-                } catch (Throwable t) {
-                    DroolsIDEPlugin.log(t);
-                }
-            }
         }
-    	
+    	// else get selected thread and determine if any of the stack frames
+    	// is executing in a working memory, if so, use that one 
+    	if (input == null) {
+    		ISelection stackSelection = DebugContextManager.getDefault().getActiveContext(getSite().getWorkbenchWindow());
+    		if (stackSelection instanceof IStructuredSelection) {
+                Object selection = ((IStructuredSelection) stackSelection).getFirstElement();
+                if (selection instanceof IJavaStackFrame) {
+                	try {
+                    	IJavaThread thread = (IJavaThread) ((IJavaStackFrame) selection).getThread();
+                    	IStackFrame[] frames = thread.getStackFrames();
+                    	for (int i = 0; i < frames.length; i++) {
+                            IJavaObject stackObj = ((IJavaStackFrame) frames[i]).getThis();
+                            if ((stackObj != null)
+                                    && (stackObj.getJavaType() != null)
+                                    && ("org.drools.reteoo.ReteooWorkingMemory".equals(
+                                        stackObj.getJavaType().getName()))) {
+                                input = stackObj;
+                                break;
+                            }
+                    	}
+                    } catch (Throwable t) {
+                        DroolsIDEPlugin.log(t);
+                    }
+                }
+    		}
+    	}
+		
     	Object current = getViewer().getInput();
 				
 		if (current == null && input == null) {

@@ -54,7 +54,7 @@ public class DSLAdapter {
     }
     
     /** Get a reader to the DSL contents */
-    public static Reader getDSLContent(String ruleSource, IFile input) throws CoreException {
+    public static Reader getDSLContent(String ruleSource, IResource input) throws CoreException {
         String dslFileName = findDSLConfigName( ruleSource );
         if (dslFileName == null) return null;
         IResource res = findDSLResource( input, dslFileName );
@@ -90,7 +90,7 @@ public class DSLAdapter {
         }
     }
 
-    private static IResource findDSLResource(IFile input, String dslFileName) {
+    private static IResource findDSLResource(IResource input, String dslFileName) {
         IResource res = input.getParent().findMember( dslFileName );
         if (res == null) res = input.getParent().getParent().findMember( dslFileName ); //try parent directory
         if (res == null) res = input.getProject().findMember( dslFileName ); //try root of project.

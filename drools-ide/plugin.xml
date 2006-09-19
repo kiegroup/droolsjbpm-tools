@@ -52,7 +52,7 @@
             contributorClass="org.drools.ide.editors.DRLRuleEditorActionContributor"
             extensions="drl,jbrule,drools,rule"
             icon="icons/drools.gif"
-            id="org.eclipse.ui.editors.text.DRLEditor"
+            id="org.drools.ide.editors.DRLRuleEditor"
             name="Rule Editor"/>
       <editor
             class="org.drools.ide.dsl.editor.DSLEditor"
@@ -187,7 +187,7 @@
          name="Drools Application"
          delegate="org.drools.ide.launching.DroolsLaunchConfigurationDelegate"
          sourceLocatorId="org.drools.ide.launching.DroolsSourceLookupDirector"
-         sourcePathComputerId="org.drools.ide.launching.DroolsSourcePathComputerDelegate"
+         sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer"
          modes= "debug" />
    </extension>
    
@@ -226,13 +226,21 @@
       </sourceLocator>
    </extension>
    
+   <extension point="org.eclipse.ui.editors.markerUpdaters">
+      <updater 
+         markerType="org.drools.ide.droolsBreakpointMarker" 
+         class="org.drools.ide.debug.core.DroolsLineBreakpointMarkerUpdater" 
+         id="org.drools.ide.debug.core.DroolsLineBreakpointMarkerUpdater" /> 
+   </extension>
+   
+   <!-- not used anymore
    <extension
          point="org.eclipse.debug.core.sourcePathComputers">
       <sourcePathComputer
          class="org.drools.ide.launching.DroolsSourcePathComputerDelegate"
          id="org.drools.ide.launching.DroolsSourcePathComputerDelegate">
       </sourcePathComputer>
-   </extension>
+   </extension> -->
    
    <extension
          point="org.eclipse.debug.ui.debugModelPresentations"> 
@@ -241,6 +249,48 @@
          id="org.drools.ide.debug">
       </debugModelPresentation> 
    </extension>
+   
+   <!-- not working
+   <extension point="org.eclipse.debug.ui.launchShortcuts">
+      <shortcut 
+            label="JBoss Rules Application" 
+            icon="icons/drools.gif" 
+            class="org.drools.ide.launching.DroolsApplicationLaunchShortcut" 
+            modes="debug" 
+            id="org.drools.ide.launching.DroolsApplicationLaunchShortcut">
+         <perspective id="org.eclipse.jdt.ui.JavaPerspective" /> 
+         <perspective id="org.eclipse.jdt.ui.JavaHierarchyPerspective" /> 
+         <perspective id="org.eclipse.jdt.ui.JavaBrowsingPerspective" /> 
+         <perspective id="org.eclipse.debug.ui.DebugPerspective" /> 
+      </shortcut>
+   </extension> -->
+   
+   <!-- not working if using multipage editor
+   <extension point="org.eclipse.ui.editorActions">
+      <editorContribution
+            targetID="org.drools.ide.editors.DRLRuleEditor" 
+            id="org.drools.ide.editors.DRLRuleEditor.RulerActions">
+         <action
+            label="Not Used" 
+            class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate" 
+            style="push"
+            actionID="RulerDoubleClick" 
+            id="org.drools.ide.editors.DRLRuleEditor.ToggleBreakpointRulerAction" /> 
+      </editorContribution>
+   </extension>
+   
+   <extension point="org.eclipse.ui.popupMenus">
+      <viewerContribution
+            targetID="#TextRulerContext"
+            id="org.drools.ide.editors.DRLRuleEditor.RulerPopupActions">
+         <action
+            label="Toggle Breakpoint"
+            class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
+            menubarPath="additions"
+            id="org.drools.ide.editors.DRLRuleEditor.rulerContextMenu.ToggleBreakpointRulerAction">
+         </action>
+      </viewerContribution>
+   </extension> -->
    
    <extension point = "org.eclipse.ui.popupMenus">
      <objectContribution

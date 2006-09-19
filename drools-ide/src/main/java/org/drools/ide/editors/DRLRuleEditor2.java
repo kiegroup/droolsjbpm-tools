@@ -6,6 +6,8 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
+//import org.eclipse.ui.texteditor.IDocumentProvider;
+//import org.eclipse.ui.texteditor.IDocumentProviderExtension;
 
 /**
  * This is a multi table editor wrapper for both the text editor and the RETE
@@ -35,7 +37,12 @@ public class DRLRuleEditor2 extends FormEditor {
 					DRLRuleEditor2.this.setPartName(partName);
 			    }
 			};
-			reteViewer = new ReteViewer(this, textEditor.getDocumentProvider());
+			//IDocumentProvider provider = textEditor.getDocumentProvider();
+			//if (provider instanceof IDocumentProviderExtension) {
+			//	IDocumentProviderExtension extension = (IDocumentProviderExtension) provider;
+			//	extension.isModifiable(getEditorInput());
+			//}
+			reteViewer = new ReteViewer(textEditor, textEditor.getDocumentProvider());
 
 			int text = addPage(textEditor, getEditorInput());
 			int rete = addPage(reteViewer, getEditorInput());

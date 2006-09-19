@@ -1,34 +1,25 @@
 package org.drools.ide.editors.outline;
 
-import java.io.Reader;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.compiler.DrlParser;
-import org.drools.ide.builder.DroolsBuilder;
+import org.drools.compiler.DroolsParserException;
+import org.drools.ide.DRLInfo;
+import org.drools.ide.DroolsIDEPlugin;
 import org.drools.ide.editors.DRLRuleEditor;
-import org.drools.ide.editors.DSLAdapter;
-import org.drools.ide.util.ProjectClassLoader;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
-import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
 /**
@@ -137,9 +128,8 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
      */
     private PackageTreeNode createPackageTreeNode() {
         PackageTreeNode packageTreeNode = new PackageTreeNode();
-        String ruleFileContents = getRuleFileContents();
-        initRules(ruleFileContents);
-        populatePackageTreeNode(packageTreeNode, ruleFileContents);
+        initRules();
+        populatePackageTreeNode(packageTreeNode);
         return packageTreeNode;
     }
 
@@ -148,7 +138,8 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
      * 
      * @param packageTreeNode the node to populate
      */
-    public void populatePackageTreeNode(PackageTreeNode packageTreeNode, String ruleFileContents) {
+    public void populatePackageTreeNode(PackageTreeNode packageTreeNode) {
+    	String ruleFileContents = editor.getContent();
         Matcher matcher = RULE_PATTERN1.matcher(ruleFileContents);
         while (matcher.find()) {
             String ruleName = matcher.group(1);
@@ -222,65 +213,20 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
 		}
     }
 
-    public void initRules(String ruleFileContents) {
+    public void initRules() {
     	rules = new HashMap();
-    	PackageDescr packageDescr = getPackageDescr(ruleFileContents);
-    	if (packageDescr != null) {
-    		Iterator iterator = packageDescr.getRules().iterator();
-    		while (iterator.hasNext()) {
-    			RuleDescr ruleDescr = (RuleDescr) iterator.next();
-    			rules.put(ruleDescr.getName(), ruleDescr);
+    	try {
+    		DRLInfo drlInfo = DroolsIDEPlugin.getDefault().parseResource(editor, true, false);
+    		if (drlInfo != null) {
+		    	PackageDescr packageDescr = drlInfo.getPackageDescr();
+	    		for (Iterator iterator = packageDescr.getRules().iterator(); iterator.hasNext(); ) {
+	    			RuleDescr ruleDescr = (RuleDescr) iterator.next();
+	    			rules.put(ruleDescr.getName(), ruleDescr);
+	    		}
     		}
+    	} catch (DroolsParserException e) {
+    		DroolsIDEPlugin.log(e);
     	}
     }
     
-	private PackageDescr getPackageDescr(String ruleFileContents) {
-		if (editor.getEditorInput() instanceof IFileEditorInput) {
-			try {
-	            ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
-	            ClassLoader newLoader = DroolsBuilder.class.getClassLoader();
-	            IFile file = ((IFileEditorInput) editor.getEditorInput()).getFile();
-	            if (file.getProject().getNature("org.eclipse.jdt.core.javanature") != null) {
-	                IJavaProject project = JavaCore.create(file.getProject());
-	                newLoader = ProjectClassLoader.getProjectClassLoader(project);
-	            }
-	            
-	            Reader dslReader = DSLAdapter.getDSLContent(ruleFileContents, file);
-	            
-	            try {
-	                Thread.currentThread().setContextClassLoader(newLoader);
-
-	                DrlParser parser = new DrlParser();
-	                
-	                PackageDescr packageDescr = null;
-	                if (dslReader == null) {
-	                	packageDescr = parser.parse(ruleFileContents);
-	                } else {
-	                	packageDescr = parser.parse(ruleFileContents, dslReader);
-	                }
-
-                	return packageDescr;
-	            } catch (Exception t) {
-	                throw t;
-	            } finally {
-	                Thread.currentThread().setContextClassLoader(oldLoader);
-	            }
-			} catch (Throwable t) {
-				t.printStackTrace();
-			}
-		}
-		return null;
-	}
-	
-	/**
-     * 
-     * @return the current contents of the document
-     */
-    private String getRuleFileContents() {
-        IDocumentProvider documentProvider = editor.getDocumentProvider();
-        IEditorInput editorInput = editor.getEditorInput();
-        IDocument document = documentProvider.getDocument( editorInput );
-        String ruleFileContents = document.get();
-        return ruleFileContents;
-    }
 }

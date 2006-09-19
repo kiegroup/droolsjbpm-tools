@@ -26,6 +26,7 @@ public class DroolsLaunchConfigurationDelegate extends JavaLaunchDelegate {
 		if (monitor.isCanceled()) {
 			return;
 		}
+		// TODO make sure that all DRLs needed during execution are built and cached
 		super.launch(configuration, mode, launch, monitor);
 		if (mode.equals(ILaunchManager.DEBUG_MODE)) {
 			IBreakpoint[] breakpoints = getDroolsBreakpoints();

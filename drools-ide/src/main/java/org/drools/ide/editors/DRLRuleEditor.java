@@ -1,6 +1,5 @@
 package org.drools.ide.editors;
 
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -8,10 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
+import org.drools.ide.DRLInfo;
 import org.drools.ide.DroolsIDEPlugin;
-import org.drools.ide.builder.DroolsBuilder;
 import org.drools.ide.debug.core.IDroolsDebugConstants;
 import org.drools.ide.editors.outline.RuleContentOutlinePage;
 import org.drools.ide.editors.scanners.RuleEditorMessages;
@@ -20,6 +18,7 @@ import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.ui.actions.IToggleBreakpointsTarget;
@@ -40,7 +39,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
-import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
@@ -120,6 +119,11 @@ public class DRLRuleEditor extends TextEditor {
 		a
 				.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_CONTEXT_INFORMATION);
 		setAction("ContentAssistTip", a);
+		
+		a = getAction("org.eclipse.debug.ui.commands.ToggleBreakpoint");
+		setAction(ITextEditorActionConstants.RULER_DOUBLE_CLICK,
+			a);
+
 	}
 
 	/** Return the DSL adapter if one is present */
@@ -139,14 +143,23 @@ public class DRLRuleEditor extends TextEditor {
 		return imports;
 	}
 	
+	public String getContent() {
+		return getSourceViewer().getDocument().get();
+	}
+	
+	public IResource getResource() {
+		if (getEditorInput() instanceof IFileEditorInput) {
+			return ((IFileEditorInput) getEditorInput()).getFile();
+		}
+		return null;
+	}
+	
 	private void loadImportsAndFunctions() {
 		try {
-			String content = getSourceViewer().getDocument().get();
-	        Reader dslReader = DSLAdapter.getDSLContent(content, ((FileEditorInput) getEditorInput()).getFile());
-	        DrlParser parser = new DrlParser();
-	        PackageDescr descr = DroolsBuilder.parsePackage(content, parser, dslReader);
+	        DRLInfo drlInfo = DroolsIDEPlugin.getDefault().parseResource(this, true, false);
+	        PackageDescr descr = drlInfo.getPackageDescr();
 	        // package
-	        this.packageName = descr.getName();
+	        this.packageName = drlInfo.getPackageName();
 	        // imports
 	        List allImports = descr.getImports();
 	        this.imports = new ArrayList();
@@ -189,10 +202,8 @@ public class DRLRuleEditor extends TextEditor {
 	        	FactTemplateDescr template = (FactTemplateDescr) iterator.next();
 	        	templates.put(template.getName(), template);
 			}
-		} catch (CoreException exc) {
-			DroolsIDEPlugin.log(exc);
-		} catch (DroolsParserException exc) {
-			// do nothing
+		} catch (DroolsParserException e) {
+			DroolsIDEPlugin.log(e);
 		}
 	}
 
@@ -309,10 +320,15 @@ public class DRLRuleEditor extends TextEditor {
 	}
 
 	public void doSave(IProgressMonitor monitor) {
+		// invalidate cached parsed rules
+		DroolsIDEPlugin.getDefault().invalidateResource(getResource());
+		// save
 		super.doSave(monitor);
+		// update outline view
 		if (ruleContentOutline != null) {
 			ruleContentOutline.update();
 		}
+		// remove cached content
 		dslAdapter = null;
 		imports = null;
 		functions = null;

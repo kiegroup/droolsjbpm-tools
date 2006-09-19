@@ -1,13 +1,11 @@
 package org.drools.ide.debug.core;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
+import org.drools.ide.DRLInfo;
 import org.drools.ide.DroolsIDEPlugin;
-import org.drools.ide.RuleInfo;
-import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.RuleDescr;
+import org.drools.ide.DRLInfo.RuleInfo;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -56,51 +54,30 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
 	
 	private static String getRuleClassName(IResource resource, int lineNumber) throws CoreException {
 		try {
-			PackageDescr packageDescr = DroolsIDEPlugin.getDefault().parseResource(resource, true);
-			if (packageDescr != null) {
-				Iterator rules = packageDescr.getRules().iterator();
-				int ruleLine = -1;
-				RuleDescr resultRule = null;
-				while (rules.hasNext()) {
-					RuleDescr rule = (RuleDescr) rules.next();
-					if (rule.getConsequenceLine() > ruleLine && rule.getConsequenceLine() < lineNumber) {
-						ruleLine = rule.getConsequenceLine();
-						resultRule = rule;
-					}
-				}
-				if (resultRule != null && resultRule.getClassName() != null) {
-					return packageDescr.getName() + "." + resultRule.getClassName();
+			DRLInfo drlInfo = DroolsIDEPlugin.getDefault().parseResource(resource, true);
+			if (drlInfo != null) {
+				RuleInfo ruleInfo = drlInfo.getRuleInfo(lineNumber);
+				if (ruleInfo != null) {
+					return ruleInfo.getClassName();
 				}
 			}
 			throw new CoreException(new Status(IStatus.ERROR, DroolsIDEPlugin.getUniqueIdentifier(), 0,
 				"Cannot determine ruleClassName for " + resource + " " + lineNumber, null));
-		} catch(Throwable t) {
+		} catch (Throwable t) {
 			throw new CoreException(new Status(IStatus.ERROR, DroolsIDEPlugin.getUniqueIdentifier(), 0,
 				"Cannot determine ruleClassName for " + resource + " " + lineNumber, t));
 		}
 	}
 	
-	private static int getRuleLineNumber(IResource resource, int lineNumber) throws CoreException {
+	public static int getRuleLineNumber(IResource resource, int lineNumber) throws CoreException {
 		// TODO remove duplicated code
 		try {
-			PackageDescr packageDescr = DroolsIDEPlugin.getDefault().parseResource(resource, true);
-			if (packageDescr != null) {
-				Iterator rules = packageDescr.getRules().iterator();
-				int ruleLine = -1;
-				RuleDescr resultRule = null;
-				while (rules.hasNext()) {
-					RuleDescr rule = (RuleDescr) rules.next();
-					if (rule.getConsequenceLine() > ruleLine && rule.getConsequenceLine() < lineNumber) {
-						ruleLine = rule.getConsequenceLine();
-						resultRule = rule;
-					}
-				}
-				if (resultRule != null && resultRule.getClassName() != null) {
-					String ruleClassName = packageDescr.getName() + "." + resultRule.getClassName();
-					RuleInfo ruleInfo = DroolsIDEPlugin.getDefault().getRuleInfoByClass(ruleClassName);
-					if (ruleInfo != null) {
-						return ruleInfo.getConsequenceJavaLineNumber() + lineNumber - ruleLine;
-					}
+			DRLInfo drlInfo = DroolsIDEPlugin.getDefault().parseResource(resource, true);
+			if (drlInfo != null) {
+				RuleInfo ruleInfo = drlInfo.getRuleInfo(lineNumber);
+				if (ruleInfo != null) {
+					return ruleInfo.getConsequenceJavaLineNumber()
+						+ (lineNumber - ruleInfo.getConsequenceDrlLineNumber());
 				}
 			}
 			throw new CoreException(new Status(IStatus.ERROR, DroolsIDEPlugin.getUniqueIdentifier(), 0,

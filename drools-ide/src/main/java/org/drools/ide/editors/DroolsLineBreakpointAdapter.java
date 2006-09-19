@@ -28,7 +28,7 @@ public class DroolsLineBreakpointAdapter implements IToggleBreakpointsTarget {
 	}
 
 	public void toggleLineBreakpoints(IWorkbenchPart part, ISelection selection) throws CoreException {
-		if (part instanceof DRLRuleEditor2) {
+		if (part instanceof IEditorPart) {
 			IEditorPart editor = (IEditorPart) part;
 			IResource resource = (IResource) editor.getEditorInput().getAdapter(IResource.class);
 			ITextSelection textSelection = (ITextSelection) selection;

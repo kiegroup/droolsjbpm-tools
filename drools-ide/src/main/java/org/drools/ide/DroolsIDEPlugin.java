@@ -23,17 +23,20 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.drools.compiler.DrlParser;
+import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.ide.DRLInfo.RuleInfo;
 import org.drools.ide.builder.DroolsBuilder;
 import org.drools.ide.builder.Util;
+import org.drools.ide.editors.DRLRuleEditor;
 import org.drools.ide.editors.DSLAdapter;
 import org.drools.ide.preferences.IDroolsConstants;
 import org.drools.ide.util.ProjectClassLoader;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.RuleDescr;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugException;
@@ -64,7 +67,7 @@ public class DroolsIDEPlugin extends AbstractUIPlugin {
 	private ResourceBundle resourceBundle;
 	private Map colors = new HashMap();
 	private Map parsedRules = new HashMap();
-	private Map ruleInfoByRuleNameMap = new HashMap();
+	private Map compiledRules = new HashMap();
 	private Map ruleInfoByClassNameMap = new HashMap();
 	
 	/**
@@ -90,6 +93,7 @@ public class DroolsIDEPlugin extends AbstractUIPlugin {
 		plugin = null;
 		resourceBundle = null;
 		parsedRules = null;
+		compiledRules = null;
 		Iterator iterator = colors.values().iterator();
 		while (iterator.hasNext()) {
 			((Color) iterator.next()).dispose();
@@ -186,80 +190,128 @@ public class DroolsIDEPlugin extends AbstractUIPlugin {
 		store.setDefault(IDroolsConstants.EDITOR_FOLDING, true);
 	}
 	
-	public PackageDescr parseResource(IResource resource, boolean compile) {
-		// TODO cache result and clear cache if necessary, taking properties into account
-		PackageDescr result = (PackageDescr) parsedRules.get(resource);
+	public DRLInfo parseResource(IResource resource, boolean compile) throws DroolsParserException {
+		DRLInfo result = (DRLInfo) compiledRules.get(resource);
+		if (result == null && !compile) {
+			result = (DRLInfo) parsedRules.get(resource);
+		}
 		if (result != null) {
 			return result;
 		}
-		result = generateParsedResource(resource, compile);
-		if (result != null) {
-			parsedRules.put(resource, result);
-		}
-		return result;
+		return generateParsedResource(resource, compile);
 	}
 	
-	private PackageDescr generateParsedResource(IResource resource, boolean compile) {
+	public DRLInfo parseResource(DRLRuleEditor editor, boolean useUnsavedContent, boolean compile) throws DroolsParserException {
+		IResource resource = editor.getResource();
+		DRLInfo result = (DRLInfo) compiledRules.get(resource);
+		if (result == null && !compile) {
+			result = (DRLInfo) parsedRules.get(resource);
+		}
+		if (result != null) {
+			return result;
+		}
+		// TODO: can we cache result when using unsaved content as well? 
+		return generateParsedResource(editor.getContent(), resource, !useUnsavedContent, compile);
+	}
+	
+	public void invalidateResource(IResource resource) {
+		DRLInfo cached = (DRLInfo) compiledRules.remove(resource);
+		if (cached != null) {
+			RuleInfo[] ruleInfos = cached.getRuleInfos();
+			for (int i = 0; i < ruleInfos.length; i++) {
+				ruleInfoByClassNameMap.remove(ruleInfos[i].getClassName());
+			}
+		}
+		parsedRules.remove(resource);
+	}
+	
+	private DRLInfo generateParsedResource(IResource resource, boolean compile) throws DroolsParserException {
 		if (resource instanceof IFile) {
 			IFile file = (IFile) resource;
-	        DrlParser parser = new DrlParser();
 	        try {
 	        	String content = new String(Util.getResourceContentsAsCharArray(file));
-	            Reader dslReader = DSLAdapter.getDSLContent(content, file);
-	            ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
-	            ClassLoader newLoader = DroolsBuilder.class.getClassLoader();
-	            PackageBuilderConfiguration builder_configuration = new PackageBuilderConfiguration();
-	            if (file.getProject().getNature("org.eclipse.jdt.core.javanature") != null) {
-	                IJavaProject project = JavaCore.create(file.getProject());
-	                newLoader = ProjectClassLoader.getProjectClassLoader(project);
-	                String level = project.getOption(JavaCore.COMPILER_COMPLIANCE, true);
-	            	builder_configuration.setJavaLanguageLevel(level);
-	            }
-	            try {
-	            	builder_configuration.setClassLoader(newLoader);
-	                Thread.currentThread().setContextClassLoader(newLoader);
-	                
-	                //First we parse the source
-	                PackageDescr packageDescr = null;
-                	if (dslReader != null) { 
+	        	return generateParsedResource(content, file, true, compile);
+	        } catch (CoreException e) {
+	        	log(e);
+	        }
+		}
+		return null;
+	}
+
+	private DRLInfo generateParsedResource(String content, IResource resource, boolean useCache, boolean compile) throws DroolsParserException {
+        DrlParser parser = new DrlParser();
+        try {
+            Reader dslReader = DSLAdapter.getDSLContent(content, resource);
+            ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+            ClassLoader newLoader = DroolsBuilder.class.getClassLoader();
+            PackageBuilderConfiguration builder_configuration = new PackageBuilderConfiguration();
+            if (resource.getProject().getNature("org.eclipse.jdt.core.javanature") != null) {
+                IJavaProject project = JavaCore.create(resource.getProject());
+                newLoader = ProjectClassLoader.getProjectClassLoader(project);
+                String level = project.getOption(JavaCore.COMPILER_COMPLIANCE, true);
+            	builder_configuration.setJavaLanguageLevel(level);
+            }
+            try {
+            	builder_configuration.setClassLoader(newLoader);
+                Thread.currentThread().setContextClassLoader(newLoader);
+                
+                // first parse the source
+                PackageDescr packageDescr = null;
+                if (useCache) {
+                	DRLInfo cachedDrlInfo = (DRLInfo) parsedRules.get(resource);
+                	if (cachedDrlInfo != null) {
+                		packageDescr = cachedDrlInfo.getPackageDescr();
+                	}
+                }
+                if (packageDescr == null) {
+                	if (dslReader != null) {
                 		packageDescr = parser.parse(content, dslReader);
                 	} else {
                 		packageDescr = parser.parse(content);
                 	}
-                	if (compile && !parser.hasErrors()) {
-                        PackageBuilder builder = new PackageBuilder(builder_configuration);
-                        builder.addPackage(packageDescr);
-                        Iterator rules = packageDescr.getRules().iterator();
-                    	while (rules.hasNext()) {
-                    		RuleDescr descr = (RuleDescr) rules.next();
-                    		String className = packageDescr.getName() + "." + descr.getClassName();
-                    		RuleInfo ruleInfo = new RuleInfo(descr.getName(),
-                				packageDescr.getName(), resource.getName(),
-                				resource.getFullPath().toString(), className,
-                				descr.getConsequenceLine(),
-                				builder.getPackage().getPackageCompilationData()
-                					.getLineMappings(className).getOffset());
-                    		ruleInfoByRuleNameMap.put(packageDescr.getName() + "." + descr.getName(), ruleInfo);
-                    		ruleInfoByClassNameMap.put(className, ruleInfo);
-                    	}
-                    }
-                	return packageDescr;
-	            } finally {
-	                Thread.currentThread().setContextClassLoader(oldLoader);
-	            }
-	        } catch (Throwable t) {
-	        	log(t);
-	        }
-		}
+                }
+                PackageBuilder builder = null;
+            	// compile parsed rules if necessary
+            	if (compile && !parser.hasErrors()) {
+                    builder = new PackageBuilder(builder_configuration);
+                    builder.addPackage(packageDescr);
+                }
+        		DRLInfo result = null;
+        		if (compile) {
+        			result = new DRLInfo(
+	    				resource.getProjectRelativePath().toString(),
+	    				packageDescr, parser.getErrors(),
+	    				builder.getPackage(), builder.getErrors());
+        		} else {
+        			result = new DRLInfo(
+    	    				resource.getProjectRelativePath().toString(),
+    	    				packageDescr, parser.getErrors());
+        		}
+        		            		
+            	// cache result
+        		if (useCache) {
+	    			if (compile) {
+	    				compiledRules.put(resource, result);
+	        			RuleInfo[] ruleInfos = result.getRuleInfos();
+	        			for (int i = 0; i < ruleInfos.length; i++) {
+	        				ruleInfoByClassNameMap.put(ruleInfos[i].getClassName(), ruleInfos[i]);
+	        			}
+	    			} else {
+	    				parsedRules.put(resource, result);
+	    			}
+        		}
+            	return result;
+            } finally {
+                Thread.currentThread().setContextClassLoader(oldLoader);
+            }
+        } catch (CoreException e) {
+        	log(e);
+        }
 		return null;
 	}
 	
 	public RuleInfo getRuleInfoByClass(String ruleClassName) {
 		return (RuleInfo) ruleInfoByClassNameMap.get(ruleClassName);
-	}
-
-	public RuleInfo getRuleInfoByRule(String ruleName) {
-		return (RuleInfo) ruleInfoByClassNameMap.get(ruleName);
 	}
 
 }

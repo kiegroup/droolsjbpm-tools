@@ -31,7 +31,6 @@ import org.eclipse.jdt.debug.eval.ICompiledExpression;
 import org.eclipse.jdt.debug.eval.IEvaluationListener;
 import org.eclipse.jdt.debug.eval.IEvaluationResult;
 import org.eclipse.jdt.internal.debug.core.JDIDebugPlugin;
-import org.eclipse.jdt.internal.debug.core.model.JDIReferenceType;
 
 public class DebugUtil {
 
@@ -56,42 +55,37 @@ public class DebugUtil {
                 return null;
             }
 
-            // find the project the snippets will be compiled in.
-            ISourceLocator locator = javaValue.getLaunch().getSourceLocator();
-            Object sourceElement = null;
-            if (locator instanceof ISourceLookupDirector) {
-                if (type instanceof JDIReferenceType) {
-                    String[] sourcePaths = ((JDIReferenceType) type)
-                            .getSourcePaths(null);
-                    if (sourcePaths != null && sourcePaths.length > 0) {
-                        sourceElement = ((ISourceLookupDirector) locator)
-                                .getSourceElement(sourcePaths[0]);
-                    }
-                }
-                if (!(sourceElement instanceof IJavaElement)
-                        && sourceElement instanceof IAdaptable) {
-                    sourceElement = ((IAdaptable) sourceElement)
-                            .getAdapter(IJavaElement.class);
-                }
-            }
-            if (sourceElement == null) {
-                sourceElement = locator.getSourceElement(stackFrame);
-                if (!(sourceElement instanceof IJavaElement)
-                        && sourceElement instanceof IAdaptable) {
-                    sourceElement = ((IAdaptable) sourceElement)
-                            .getAdapter(IJavaElement.class);
-                }
-            }
-            IJavaProject project = null;
-            if (sourceElement instanceof IJavaElement) {
-                project = ((IJavaElement) sourceElement).getJavaProject();
-            } else if (sourceElement instanceof IResource) {
-                IJavaProject resourceProject = JavaCore
-                        .create(((IResource) sourceElement).getProject());
-                if (resourceProject.exists()) {
-                    project = resourceProject;
-                }
-            }
+			// find the project the snippets will be compiled in.
+			ISourceLocator locator= javaValue.getLaunch().getSourceLocator();
+			Object sourceElement= null;
+			if (locator instanceof ISourceLookupDirector) {
+				String[] sourcePaths = ((IJavaClassType) type).getSourcePaths(null);
+				if (sourcePaths != null && sourcePaths.length > 0) {
+					sourceElement = ((ISourceLookupDirector) locator).getSourceElement(sourcePaths[0]);
+				}
+				if (!(sourceElement instanceof IJavaElement) && sourceElement instanceof IAdaptable) {
+					sourceElement = ((IAdaptable) sourceElement).getAdapter(IJavaElement.class);
+				}
+			}
+			if (sourceElement == null) {
+				sourceElement = locator.getSourceElement(stackFrame);
+				if (!(sourceElement instanceof IJavaElement) && sourceElement instanceof IAdaptable) {
+					Object newSourceElement = ((IAdaptable) sourceElement).getAdapter(IJavaElement.class);
+					// if the source is a drl during the execution of the rule
+					if (newSourceElement != null) {
+						sourceElement = newSourceElement;
+					}
+				}
+			}
+			IJavaProject project = null;
+			if (sourceElement instanceof IJavaElement) {
+				project = ((IJavaElement) sourceElement).getJavaProject();
+			} else if (sourceElement instanceof IResource) {
+				IJavaProject resourceProject = JavaCore.create(((IResource) sourceElement).getProject());
+				if (resourceProject.exists()) {
+					project = resourceProject;
+				}
+			}
             if (project == null) {
                 return null;
             }

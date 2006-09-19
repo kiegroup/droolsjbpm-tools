@@ -1,6 +1,6 @@
 package org.drools.ide.launching;
 
-import org.drools.ide.RuleInfo;
+import org.drools.ide.DRLInfo.RuleInfo;
 import org.drools.ide.debug.core.DroolsStackFrame;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.launching.sourcelookup.containers.JavaSourceLookupParticipant;
@@ -11,7 +11,7 @@ public class DroolsSourceLookupParticipant extends JavaSourceLookupParticipant {
 		if (object instanceof DroolsStackFrame) {
 			RuleInfo ruleInfo = ((DroolsStackFrame) object).getExecutingRuleInfo();
 			if (ruleInfo != null) {
-				return ruleInfo.getDrlName();
+				return ruleInfo.getSourcePathName();
 			}
 		}
 		return super.getSourceName(object);

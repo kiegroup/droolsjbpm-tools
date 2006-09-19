@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.ide.DroolsIDEPlugin;
-import org.drools.ide.RuleInfo;
+import org.drools.ide.DRLInfo.RuleInfo;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugEvent;

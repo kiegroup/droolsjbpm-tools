@@ -1,6 +1,5 @@
 package org.drools.ide.builder;
 
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -8,22 +7,18 @@ import java.util.Map;
 
 import org.antlr.runtime.RecognitionException;
 import org.apache.commons.jci.problems.CompilationProblem;
-import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.FactTemplateError;
 import org.drools.compiler.FieldTemplateError;
 import org.drools.compiler.FunctionError;
 import org.drools.compiler.GlobalError;
-import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.ParserError;
 import org.drools.compiler.RuleError;
+import org.drools.ide.DRLInfo;
 import org.drools.ide.DroolsIDEPlugin;
-import org.drools.ide.editors.DSLAdapter;
 import org.drools.ide.preferences.IDroolsConstants;
-import org.drools.ide.util.ProjectClassLoader;
-import org.drools.lang.descr.PackageDescr;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -145,52 +140,22 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
     
     public static DroolsBuildMarker[] parseFile(IFile file, String content) {
     	List markers = new ArrayList();
-        DrlParser parser = new DrlParser();
-        try {
-            Reader dslReader = DSLAdapter.getDSLContent(content, file);
-            ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
-            ClassLoader newLoader = DroolsBuilder.class.getClassLoader();
-            if (file.getProject().getNature("org.eclipse.jdt.core.javanature") != null) {
-                IJavaProject project = JavaCore.create(file.getProject());
-                newLoader = ProjectClassLoader.getProjectClassLoader(project);
-                setupPackageBuilder(project);
+		try {
+            DRLInfo drlInfo =
+            	DroolsIDEPlugin.getDefault().parseResource(file, true);
+            //parser errors
+            markParseErrors(markers, drlInfo.getParserErrors());  
+            markOtherErrors(markers, drlInfo.getBuilderErrors());
+            
+        } catch (DroolsParserException e) {
+            //we have an error thrown from DrlParser
+            Throwable cause = e.getCause();
+            if (cause instanceof RecognitionException ) {
+                RecognitionException recogErr = (RecognitionException) cause;
+                markers.add(new DroolsBuildMarker(recogErr.getMessage(), recogErr.line)); //flick back the line number
             }
-            try {
-            	builder_configuration.setClassLoader(newLoader);
-                Thread.currentThread().setContextClassLoader(newLoader);
-                
-                //First we parse the source
-                PackageDescr packageDescr = parsePackage( content, parser, dslReader );
-                //parser errors
-                markParseErrors( markers,
-                                 parser );  
-                
-                if (!parser.hasErrors()) {
-                    //now we compile the AST to binary, and process any downstream errors.
-                    PackageBuilder builder = new PackageBuilder(builder_configuration);
-                    builder.addPackage(packageDescr);
-                    //downstream errors
-                    markOtherErrors( markers,
-                                     builder );
-                }
-                
-            } catch (DroolsParserException e) {
-                //we have an error thrown from DrlParser
-                Throwable cause = e.getCause();
-                if (cause instanceof RecognitionException ) {
-                    RecognitionException recogErr = (RecognitionException) cause;
-                    markers.add(new DroolsBuildMarker(recogErr.getMessage(), recogErr.line)); //flick back the line number
-                }
-            } catch (Exception t) {
-            	t.printStackTrace();
-                throw t;
-            } finally {
-                Thread.currentThread().setContextClassLoader(oldLoader);
-            }
-        } catch (Throwable t) {
-        	// t.printStackTrace();
-            // TODO create markers for exceptions containing line number etc.
-            String message = t.getMessage();
+        } catch (Exception t) {
+        	String message = t.getMessage();
             if (message == null || message.trim().equals( "" )) {
                 message = "Error: " + t.getClass().getName();
             }
@@ -200,15 +165,24 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
     }
 
     /**
-     * This will create markers for ALL errors that happen AFTER parsing.
-     * In some cases, these may be bogus if parse errors exist.
+     * This will create markers for parse errors.
+     * Parse errors mean that antlr has picked up some major typos in the input source.
+     */
+    private static void markParseErrors(List markers, List parserErrors) {
+        for ( Iterator iter = parserErrors.iterator(); iter.hasNext(); ) {
+            ParserError err = (ParserError) iter.next();
+            markers.add(new DroolsBuildMarker(err.getMessage(), err.getRow()));
+        }
+    }
+
+    /**
+     * This will create markers for build errors that happen AFTER parsing.
      */
     private static void markOtherErrors(List markers,
-                                        PackageBuilder builder) {
-        DroolsError[] errors = builder.getErrors();
+                                        DroolsError[] buildErrors) {
         // TODO are there warnings too?
-        for (int i = 0; i < errors.length; i++ ) {
-        	DroolsError error = errors[i];
+        for (int i = 0; i < buildErrors.length; i++ ) {
+        	DroolsError error = buildErrors[i];
         	if (error instanceof GlobalError) {
         		GlobalError globalError = (GlobalError) error;
         		markers.add(new DroolsBuildMarker(globalError.getGlobal(), -1));
@@ -249,30 +223,6 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         		markers.add(new DroolsBuildMarker("Unknown DroolsError " + error.getClass() + ": " + error));
         	}
         }
-    }
-
-    /**
-     * This will create markers for parse errors.
-     * Parse errors mean that antlr has picked up some major typos in the input source.
-     */
-    private static void markParseErrors(List markers,
-                                        DrlParser parser) {
-        if (parser.hasErrors()) {
-            for ( Iterator iter = parser.getErrors().iterator(); iter.hasNext(); ) {
-                ParserError err = (ParserError) iter.next();
-                markers.add(new DroolsBuildMarker(err.getMessage(), err.getRow()));
-            }
-        }
-    }
-
-    /** Actually parse the rules into the AST */
-    public static PackageDescr parsePackage(String content,
-                                             DrlParser parser,
-                                             Reader dslReader) throws DroolsParserException {
-        if (dslReader != null) 
-            return parser.parse(content, dslReader);
-        else
-            return parser.parse( content );
     }
 
     private void createMarker(final IResource res, final String message, final int lineNumber) {
