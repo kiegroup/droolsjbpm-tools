@@ -48,7 +48,7 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="org.drools.ide.editors.DRLRuleEditor2"
+            class="org.drools.ide.editors.DRLRuleEditor"
             contributorClass="org.drools.ide.editors.DRLRuleEditorActionContributor"
             extensions="drl,jbrule,drools,rule"
             icon="icons/drools.gif"
@@ -265,7 +265,7 @@
       </shortcut>
    </extension> -->
    
-   <!-- not working if using multipage editor
+   <!-- not working if using multipage editor -->
    <extension point="org.eclipse.ui.editorActions">
       <editorContribution
             targetID="org.drools.ide.editors.DRLRuleEditor" 
@@ -279,6 +279,7 @@
       </editorContribution>
    </extension>
    
+   <!-- not working if using multipage editor -->
    <extension point="org.eclipse.ui.popupMenus">
       <viewerContribution
             targetID="#TextRulerContext"
@@ -290,7 +291,7 @@
             id="org.drools.ide.editors.DRLRuleEditor.rulerContextMenu.ToggleBreakpointRulerAction">
          </action>
       </viewerContribution>
-   </extension> -->
+   </extension>
    
    <extension point = "org.eclipse.ui.popupMenus">
      <objectContribution

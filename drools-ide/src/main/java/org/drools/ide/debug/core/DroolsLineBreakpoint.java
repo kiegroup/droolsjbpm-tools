@@ -70,14 +70,15 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
 	}
 	
 	public static int getRuleLineNumber(IResource resource, int lineNumber) throws CoreException {
-		// TODO remove duplicated code
 		try {
 			DRLInfo drlInfo = DroolsIDEPlugin.getDefault().parseResource(resource, true);
 			if (drlInfo != null) {
 				RuleInfo ruleInfo = drlInfo.getRuleInfo(lineNumber);
 				if (ruleInfo != null) {
-					return ruleInfo.getConsequenceJavaLineNumber()
-						+ (lineNumber - ruleInfo.getConsequenceDrlLineNumber());
+					if (ruleInfo.getConsequenceDrlLineNumber() < lineNumber) {
+						return ruleInfo.getConsequenceJavaLineNumber()
+							+ (lineNumber - ruleInfo.getConsequenceDrlLineNumber());
+					}
 				}
 			}
 			throw new CoreException(new Status(IStatus.ERROR, DroolsIDEPlugin.getUniqueIdentifier(), 0,

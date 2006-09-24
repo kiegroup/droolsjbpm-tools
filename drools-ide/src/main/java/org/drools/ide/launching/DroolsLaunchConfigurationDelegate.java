@@ -2,6 +2,7 @@ package org.drools.ide.launching;
 
 import java.text.MessageFormat;
 
+import org.drools.ide.DroolsIDEPlugin;
 import org.drools.ide.debug.core.IDroolsDebugConstants;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -31,6 +32,11 @@ public class DroolsLaunchConfigurationDelegate extends JavaLaunchDelegate {
 		if (mode.equals(ILaunchManager.DEBUG_MODE)) {
 			IBreakpoint[] breakpoints = getDroolsBreakpoints();
 			for (int i = 0; i < breakpoints.length; i++) {
+				try {
+					DroolsIDEPlugin.getDefault().parseResource(breakpoints[i].getMarker().getResource(), true);
+				} catch (Throwable t) {
+					DroolsIDEPlugin.log(t);
+				}
 				launch.getDebugTarget().breakpointAdded(breakpoints[i]);
 			}
 		}

@@ -92,10 +92,10 @@ public class DRLInfo {
 		int ruleLine = -1;
 		RuleInfo result = null;
 		for (int i = 0; i < ruleInfos.length; i++) {
-			int ruleConsequenceDrlLineNumber = ruleInfos[i].getConsequenceDrlLineNumber();
-			if (ruleConsequenceDrlLineNumber > ruleLine
-					&& ruleConsequenceDrlLineNumber < drlLineNumber) {
-				ruleLine = ruleConsequenceDrlLineNumber;
+			int ruleDrlLineNumber = ruleInfos[i].getDrlLineNumber();
+			if (ruleDrlLineNumber > ruleLine
+					&& ruleDrlLineNumber <= drlLineNumber + 1) {
+				ruleLine = ruleDrlLineNumber;
 				result = ruleInfos[i];
 			}
 		}
@@ -130,6 +130,10 @@ public class DRLInfo {
 	    		className = getPackageName() + "." + ruleDescr.getClassName();
 			}
 			return className;
+		}
+
+		public int getDrlLineNumber() {
+			return ruleDescr.getLine();
 		}
 
 		public int getConsequenceDrlLineNumber() {

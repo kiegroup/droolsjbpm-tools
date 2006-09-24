@@ -1,5 +1,8 @@
 package org.drools.ide.editors;
 
+import org.drools.ide.DRLInfo;
+import org.drools.ide.DroolsIDEPlugin;
+import org.drools.ide.DRLInfo.RuleInfo;
 import org.drools.ide.debug.core.DroolsLineBreakpoint;
 import org.drools.ide.debug.core.IDroolsDebugConstants;
 import org.eclipse.core.resources.IResource;
@@ -15,8 +18,26 @@ import org.eclipse.ui.IWorkbenchPart;
 public class DroolsLineBreakpointAdapter implements IToggleBreakpointsTarget {
 
 	public boolean canToggleLineBreakpoints(IWorkbenchPart part, ISelection selection) {
-		// TODO: drools breakpoints can only be created in functions and consequences
-		return true;
+		if (part instanceof IEditorPart) {
+			IEditorPart editor = (IEditorPart) part;
+			IResource resource = (IResource) editor.getEditorInput().getAdapter(IResource.class);
+			ITextSelection textSelection = (ITextSelection) selection;
+			int lineNumber = textSelection.getStartLine();
+			try {
+				DRLInfo drlInfo = DroolsIDEPlugin.getDefault().parseResource(resource, true);
+				if (drlInfo != null) {
+					RuleInfo ruleInfo = drlInfo.getRuleInfo(lineNumber);
+					if (ruleInfo != null) {
+						if (ruleInfo.getConsequenceDrlLineNumber() <= lineNumber) {
+							return true;
+						}
+					}
+				}
+			} catch (Throwable t) {
+					DroolsIDEPlugin.log(t);
+			}
+		}
+		return false;
 	}
 
 	public boolean canToggleMethodBreakpoints(IWorkbenchPart part, ISelection selection) {
