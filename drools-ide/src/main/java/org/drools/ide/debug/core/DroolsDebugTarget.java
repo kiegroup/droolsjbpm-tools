@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.ide.DroolsIDEPlugin;
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugEvent;
@@ -39,6 +40,23 @@ public class DroolsDebugTarget extends JDIDebugTarget {
 	
 	public DroolsDebugTarget(ILaunch launch, VirtualMachine jvm, String name, boolean supportTerminate, boolean supportDisconnect, IProcess process, boolean resume) {
 		super(launch, jvm, name, supportTerminate, supportDisconnect, process, resume);
+	}
+	
+	public void breakpointAdded(IBreakpoint breakpoint) {
+		try {
+			if (breakpoint instanceof DroolsLineBreakpoint) {
+				((DroolsLineBreakpoint) breakpoint).setJavaBreakpointProperties();
+				// only add breakpoint if setting Java properties of DRL
+				// breakpoint does not generate an error
+				super.breakpointAdded(breakpoint);
+			} else {
+				super.breakpointAdded(breakpoint);
+			}
+		} catch (Throwable t) {
+			// Exception will be thrown when trying to use breakpoint
+			// on drl that is incorrect (cannot be parsed or compiled) 
+			DroolsIDEPlugin.log(t);
+		}
 	}
 
 	protected synchronized void initialize() {

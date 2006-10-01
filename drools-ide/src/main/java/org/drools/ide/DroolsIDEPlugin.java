@@ -271,26 +271,24 @@ public class DroolsIDEPlugin extends AbstractUIPlugin {
                 	}
                 }
                 PackageBuilder builder = null;
+        		DRLInfo result = null;
             	// compile parsed rules if necessary
             	if (compile && !parser.hasErrors()) {
                     builder = new PackageBuilder(builder_configuration);
                     builder.addPackage(packageDescr);
-                }
-        		DRLInfo result = null;
-        		if (compile) {
         			result = new DRLInfo(
 	    				resource.getProjectRelativePath().toString(),
 	    				packageDescr, parser.getErrors(),
 	    				builder.getPackage(), builder.getErrors());
         		} else {
         			result = new DRLInfo(
-    	    				resource.getProjectRelativePath().toString(),
-    	    				packageDescr, parser.getErrors());
+	    				resource.getProjectRelativePath().toString(),
+	    				packageDescr, parser.getErrors());
         		}
         		            		
             	// cache result
         		if (useCache) {
-	    			if (compile) {
+	    			if (compile && !parser.hasErrors()) {
 	    				compiledRules.put(resource, result);
 	        			RuleInfo[] ruleInfos = result.getRuleInfos();
 	        			for (int i = 0; i < ruleInfos.length; i++) {

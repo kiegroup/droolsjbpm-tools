@@ -50,7 +50,6 @@ public class DroolsLineBreakpointMarkerUpdater implements IMarkerUpdater {
 		if (!offsetsInitialized || (offsetsChanged && MarkerUtilities.getLineNumber(marker) != -1)) {
 			try {
 				int drlLineNumber = document.getLineOfOffset(position.getOffset()) + 1;
-				MarkerUtilities.setLineNumber(marker, DroolsLineBreakpoint.getRuleLineNumber(marker.getResource(), drlLineNumber));
 				marker.setAttribute(IDroolsDebugConstants.DRL_LINE_NUMBER, drlLineNumber);
 			} catch (Throwable t) {
 				DroolsIDEPlugin.log(t);

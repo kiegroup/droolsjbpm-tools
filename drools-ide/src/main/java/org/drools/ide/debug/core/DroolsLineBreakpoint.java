@@ -6,6 +6,7 @@ import java.util.Map;
 import org.drools.ide.DRLInfo;
 import org.drools.ide.DroolsIDEPlugin;
 import org.drools.ide.DRLInfo.RuleInfo;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -33,8 +34,8 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
 	 */
 	public DroolsLineBreakpoint(IResource resource, int lineNumber)
 			throws CoreException {
-   		super(resource, getRuleClassName(resource, lineNumber), 
-			getRuleLineNumber(resource, lineNumber), -1, -1, 0, true, 
+   		super(resource, "", -1, /*getRuleClassName(resource, lineNumber), 
+			getRuleLineNumber(resource, lineNumber), */ -1, -1, 0, true, 
 			createAttributesMap(lineNumber), IDroolsDebugConstants.DROOLS_MARKER_TYPE);
 	}
 	
@@ -52,7 +53,16 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
 		return IDroolsDebugConstants.ID_DROOLS_DEBUG_MODEL;
 	}
 	
-	private static String getRuleClassName(IResource resource, int lineNumber) throws CoreException {
+	public void setJavaBreakpointProperties() throws CoreException {
+		IMarker marker = getMarker();
+		int drlLineNumber = getDRLLineNumber();
+		if (marker.exists()) {
+			marker.setAttribute(TYPE_NAME, getRuleClassName(marker.getResource(), drlLineNumber));
+			marker.setAttribute(IMarker.LINE_NUMBER, getRuleLineNumber(getMarker().getResource(), drlLineNumber));
+		}
+	}
+	
+	private String getRuleClassName(IResource resource, int lineNumber) throws CoreException {
 		try {
 			DRLInfo drlInfo = DroolsIDEPlugin.getDefault().parseResource(resource, true);
 			if (drlInfo != null) {
@@ -69,7 +79,7 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
 		}
 	}
 	
-	public static int getRuleLineNumber(IResource resource, int lineNumber) throws CoreException {
+	private int getRuleLineNumber(IResource resource, int lineNumber) throws CoreException {
 		try {
 			DRLInfo drlInfo = DroolsIDEPlugin.getDefault().parseResource(resource, true);
 			if (drlInfo != null) {

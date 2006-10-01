@@ -24,7 +24,7 @@ public class DroolsLineBreakpointAdapter implements IToggleBreakpointsTarget {
 			ITextSelection textSelection = (ITextSelection) selection;
 			int lineNumber = textSelection.getStartLine();
 			try {
-				DRLInfo drlInfo = DroolsIDEPlugin.getDefault().parseResource(resource, true);
+				DRLInfo drlInfo = DroolsIDEPlugin.getDefault().parseResource(resource, false);
 				if (drlInfo != null) {
 					RuleInfo ruleInfo = drlInfo.getRuleInfo(lineNumber);
 					if (ruleInfo != null) {
@@ -34,7 +34,7 @@ public class DroolsLineBreakpointAdapter implements IToggleBreakpointsTarget {
 					}
 				}
 			} catch (Throwable t) {
-					DroolsIDEPlugin.log(t);
+				DroolsIDEPlugin.log(t);
 			}
 		}
 		return false;
