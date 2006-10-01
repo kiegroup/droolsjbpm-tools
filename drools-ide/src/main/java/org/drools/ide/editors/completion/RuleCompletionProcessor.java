@@ -304,6 +304,9 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 					String fromText = (String) location.getProperty(LocationDeterminator.LOCATION_FROM_CONTENT);
 					int index = fromText.indexOf('.');
 					if (index == -1) {
+						// add accumulate and collect keyword
+					    list.add( new RuleCompletionProposal(prefix.length(), "accumulate", "accumulate (  , init (  ), action (  ), result (  ) )", 13, droolsIcon));
+					    list.add( new RuleCompletionProposal(prefix.length(), "collect", "collect (  )", 10, droolsIcon));
 						// add all functions
 						if ("".equals(fromText)) {
 					        List functions = getDRLEditor().getFunctions();
