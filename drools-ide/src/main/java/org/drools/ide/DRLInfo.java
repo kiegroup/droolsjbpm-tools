@@ -34,6 +34,7 @@ public class DRLInfo {
 		this.packageDescr = packageDescr;
 		this.parserErrors =
 			parserErrors == null ? EMPTY_LIST : Collections.unmodifiableList(parserErrors);
+		this.builderErrors = EMPTY_DROOLS_ERROR_ARRAY;
 	}
 
 	public DRLInfo(String pathName, PackageDescr packageDescr, List parserErrors, Package compiledPackage, DroolsError[] builderErrors) {

@@ -214,6 +214,14 @@ public class DroolsIDEPlugin extends AbstractUIPlugin {
 		return generateParsedResource(editor.getContent(), resource, !useUnsavedContent, compile);
 	}
 	
+	public DRLInfo parseXLSResource(String content, IResource resource) throws DroolsParserException {
+		DRLInfo result = (DRLInfo) compiledRules.get(resource);
+		if (result != null) {
+			return result;
+		}
+		return generateParsedResource(content, resource, false, true);
+	}
+	
 	public void invalidateResource(IResource resource) {
 		DRLInfo cached = (DRLInfo) compiledRules.remove(resource);
 		if (cached != null) {

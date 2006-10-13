@@ -13,9 +13,10 @@ import org.drools.compiler.FactTemplateError;
 import org.drools.compiler.FieldTemplateError;
 import org.drools.compiler.FunctionError;
 import org.drools.compiler.GlobalError;
-import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.ParserError;
 import org.drools.compiler.RuleError;
+import org.drools.decisiontable.InputType;
+import org.drools.decisiontable.SpreadsheetCompiler;
 import org.drools.ide.DRLInfo;
 import org.drools.ide.DroolsIDEPlugin;
 import org.drools.ide.preferences.IDroolsConstants;
@@ -119,7 +120,18 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         if (res instanceof IFile && "drl".equals(res.getFileExtension())) {
             removeProblemsFor(res);
             try {
-            	DroolsBuildMarker[] markers = parseFile((IFile) res, new String(Util.getResourceContentsAsCharArray((IFile) res)));
+            	DroolsBuildMarker[] markers = parseDRLFile((IFile) res, new String(Util.getResourceContentsAsCharArray((IFile) res)));
+		        for (int i = 0; i < markers.length; i++) {
+		        	createMarker(res, markers[i].getText(), markers[i].getLine());
+		        }
+            } catch (Throwable t) {
+            	createMarker(res, t.getMessage(), -1);
+            }
+            return false;
+        } else if (res instanceof IFile && "xls".equals(res.getFileExtension())) {
+            removeProblemsFor(res);
+            try {
+            	DroolsBuildMarker[] markers = parseXLSFile((IFile) res);
 		        for (int i = 0; i < markers.length; i++) {
 		        	createMarker(res, markers[i].getText(), markers[i].getLine());
 		        }
@@ -128,17 +140,11 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             }
             return false;
         }
+
         return true;
     }
     
-    private static PackageBuilderConfiguration builder_configuration = new PackageBuilderConfiguration();
-    
-    public static void setupPackageBuilder(IJavaProject project) {
-    	String level = project.getOption(JavaCore.COMPILER_COMPLIANCE, true);
-    	builder_configuration.setJavaLanguageLevel(level);
-    }
-    
-    public static DroolsBuildMarker[] parseFile(IFile file, String content) {
+    private DroolsBuildMarker[] parseDRLFile(IFile file, String content) {
     	List markers = new ArrayList();
 		try {
             DRLInfo drlInfo =
@@ -146,9 +152,35 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             //parser errors
             markParseErrors(markers, drlInfo.getParserErrors());  
             markOtherErrors(markers, drlInfo.getBuilderErrors());
-            
         } catch (DroolsParserException e) {
-            //we have an error thrown from DrlParser
+            // we have an error thrown from DrlParser
+            Throwable cause = e.getCause();
+            if (cause instanceof RecognitionException ) {
+                RecognitionException recogErr = (RecognitionException) cause;
+                markers.add(new DroolsBuildMarker(recogErr.getMessage(), recogErr.line)); //flick back the line number
+            }
+        } catch (Exception t) {
+        	String message = t.getMessage();
+            if (message == null || message.trim().equals("")) {
+                message = "Error: " + t.getClass().getName();
+            }
+            markers.add(new DroolsBuildMarker(message));
+        }
+        return (DroolsBuildMarker[]) markers.toArray(new DroolsBuildMarker[markers.size()]);
+    }
+
+    private DroolsBuildMarker[] parseXLSFile(IFile file) {
+    	List markers = new ArrayList();
+		try {
+			SpreadsheetCompiler converter = new SpreadsheetCompiler();
+	        String drl = converter.compile(file.getContents(), InputType.XLS);
+	        DRLInfo drlInfo =
+            	DroolsIDEPlugin.getDefault().parseXLSResource(drl, file);
+            // parser errors
+            markParseErrors(markers, drlInfo.getParserErrors());  
+            markOtherErrors(markers, drlInfo.getBuilderErrors());
+        } catch (DroolsParserException e) {
+            // we have an error thrown from DrlParser
             Throwable cause = e.getCause();
             if (cause instanceof RecognitionException ) {
                 RecognitionException recogErr = (RecognitionException) cause;
@@ -168,7 +200,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
      * This will create markers for parse errors.
      * Parse errors mean that antlr has picked up some major typos in the input source.
      */
-    private static void markParseErrors(List markers, List parserErrors) {
+    private void markParseErrors(List markers, List parserErrors) {
         for ( Iterator iter = parserErrors.iterator(); iter.hasNext(); ) {
             ParserError err = (ParserError) iter.next();
             markers.add(new DroolsBuildMarker(err.getMessage(), err.getRow()));
@@ -178,7 +210,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
     /**
      * This will create markers for build errors that happen AFTER parsing.
      */
-    private static void markOtherErrors(List markers,
+    private void markOtherErrors(List markers,
                                         DroolsError[] buildErrors) {
         // TODO are there warnings too?
         for (int i = 0; i < buildErrors.length; i++ ) {
