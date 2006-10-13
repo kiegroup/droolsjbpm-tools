@@ -10,7 +10,10 @@ import org.eclipse.jface.viewers.IContentProvider;
 public class AgendaView extends DroolsDebugEventHandlerView {
 
     protected IContentProvider createContentProvider() {
-        AgendaViewContentProvider contentProvider = new AgendaViewContentProvider(this);
-        return contentProvider;
+        return new AgendaViewContentProvider(this);
+    }
+    
+    protected int getAutoExpandLevel() {
+    	return 2;
     }
 }

@@ -109,15 +109,15 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
 			return;
 		}
 
-		if (current != null && current.equals(input)) {
-			return;
-		}
-		
-		showViewer();
+		Object[] expandedElements = ((TreeViewer) getViewer()).getExpandedElements();
 		getViewer().setInput(input);
+		if (input != null) {
+			((TreeViewer) getViewer()).setExpandedElements(expandedElements);
+			((TreeViewer) getViewer()).expandToLevel(getAutoExpandLevel());
+		}
     }
 
-    public Viewer createViewer(Composite parent) {
+    protected Viewer createViewer(Composite parent) {
 		TreeViewer variablesViewer = new TreeViewer(parent);
 		variablesViewer.setContentProvider(createContentProvider());
         variablesViewer.setLabelProvider(new VariablesViewLabelProvider(
@@ -126,6 +126,10 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
 		DebugContextManager.getDefault().addDebugContextListener(this, getSite().getWorkbenchWindow());
         getSite().getPage().addSelectionListener(IDebugUIConstants.ID_VARIABLE_VIEW, this);
 		return variablesViewer;
+    }
+    
+    protected int getAutoExpandLevel() {
+    	return 0;
     }
     
     protected abstract IContentProvider createContentProvider();
