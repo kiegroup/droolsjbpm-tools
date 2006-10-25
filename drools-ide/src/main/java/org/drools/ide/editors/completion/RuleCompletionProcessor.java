@@ -19,6 +19,7 @@ import org.drools.ide.editors.DSLAdapter;
 import org.drools.ide.util.ProjectClassLoader;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FactTemplateDescr;
@@ -28,7 +29,6 @@ import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.semantics.java.ClassTypeResolver;
 import org.drools.util.asm.ClassFieldInspector;
@@ -132,7 +132,8 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 				case LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_NOT:
 					list.add( new RuleCompletionProposal(prefix.length(), "exists", "exists ", droolsIcon));
 				    // we do not break but also add all elements that are needed for exists
-				case LocationDeterminator.LOCATION_FROM_ACCUMULATE :
+				case LocationDeterminator.LOCATION_FROM_ACCUMULATE:
+				case LocationDeterminator.LOCATION_FROM_COLLECT :
 				case LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_EXISTS:
 				    // and add imported classes
 				    List imports = getDRLEditor().getImports();
@@ -539,12 +540,12 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
     	}
     	Iterator iterator = descrs.iterator();
     	while (iterator.hasNext()) {
-    		PatternDescr descr = (PatternDescr) iterator.next();
+    		BaseDescr descr = (BaseDescr) iterator.next();
     		getRuleParameters(result, descr);
 		}
     }
     
-    private void getRuleParameters(Map result, PatternDescr descr) {
+    private void getRuleParameters(Map result, BaseDescr descr) {
 		if (descr == null) {
 			return;
 		}
@@ -580,7 +581,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
     	}
     	Iterator iterator = descrs.iterator();
     	while (iterator.hasNext()) {
-    		PatternDescr descr = (PatternDescr) iterator.next();
+    		BaseDescr descr = (BaseDescr) iterator.next();
     		if (descr instanceof FieldBindingDescr) {
 				FieldBindingDescr fieldDescr = (FieldBindingDescr) descr;
 				String name = fieldDescr.getIdentifier();

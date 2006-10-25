@@ -10,6 +10,8 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.CollectDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
@@ -18,7 +20,6 @@ import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.RuleDescr;
 
@@ -44,6 +45,7 @@ public class LocationDeterminator {
     static final Pattern ACCUMULATE_PATTERN_INIT = Pattern.compile(".*,\\s*init\\s*\\(\\s*(.*)", Pattern.DOTALL);
     static final Pattern ACCUMULATE_PATTERN_ACTION = Pattern.compile(".*,\\s*init\\s*\\(\\s*(.*)\\)\\s*,\\s*action\\s*\\(\\s*(.*)", Pattern.DOTALL);
     static final Pattern ACCUMULATE_PATTERN_RESULT = Pattern.compile(".*,\\s*init\\s*\\(\\s*(.*)\\)\\s*,\\s*action\\s*\\(\\s*(.*)\\)\\s*,\\s*result\\s*\\(\\s*(.*)", Pattern.DOTALL);
+    static final Pattern COLLECT_PATTERN = Pattern.compile(".*\\)\\s+from\\s+collect\\s*\\(\\s*", Pattern.DOTALL);
     
 	static final int LOCATION_UNKNOWN = 0;
 	static final int LOCATION_BEGIN_OF_CONDITION = 1;
@@ -115,14 +117,14 @@ public class LocationDeterminator {
     	return new Location(LOCATION_UNKNOWN);
 	}
 	
-	public static Location determineLocationForDescr(PatternDescr descr, String backText) {
+	public static Location determineLocationForDescr(BaseDescr descr, String backText) {
 		if (descr instanceof RuleDescr) {
 			RuleDescr ruleDescr = (RuleDescr) descr;
 			List subDescrs = ruleDescr.getLhs().getDescrs();
 			if (subDescrs.size() == 0) {
 				return new Location(LOCATION_BEGIN_OF_CONDITION);
 			}
-			PatternDescr subDescr = (PatternDescr) subDescrs.get(subDescrs.size() - 1);
+			BaseDescr subDescr = (BaseDescr) subDescrs.get(subDescrs.size() - 1);
 			if (subDescr == null) {
 				Matcher matcher = EXISTS_PATTERN.matcher(backText);
 				if (matcher.matches()) {
@@ -196,7 +198,7 @@ public class LocationDeterminator {
 				return new Location(LOCATION_BEGIN_OF_CONDITION_EXISTS);
 			}
 			if (subDescrs.size() == 1) {
-				PatternDescr subDescr = (PatternDescr) subDescrs.get(0);
+				BaseDescr subDescr = (BaseDescr) subDescrs.get(0);
 				if (subDescr == null) {
 					return new Location(LOCATION_BEGIN_OF_CONDITION_EXISTS);
 				}
@@ -209,7 +211,7 @@ public class LocationDeterminator {
 				return new Location(LOCATION_BEGIN_OF_CONDITION_NOT);
 			}
 			if (subDescrs.size() == 1) {
-				PatternDescr subDescr = (PatternDescr) subDescrs.get(0);
+				BaseDescr subDescr = (BaseDescr) subDescrs.get(0);
 				if (subDescr == null) {
 					return new Location(LOCATION_BEGIN_OF_CONDITION_NOT);
 				}
@@ -224,7 +226,7 @@ public class LocationDeterminator {
 			List subDescrs = ((AndDescr) descr).getDescrs();
 			int size = subDescrs.size();
 			if (size == 2) {
-				PatternDescr subDescr = (PatternDescr) subDescrs.get(1);
+				BaseDescr subDescr = (BaseDescr) subDescrs.get(1);
 				if (subDescr == null) {
 					Matcher matcher = EXISTS_PATTERN.matcher(backText);
 					if (matcher.matches()) {
@@ -248,7 +250,7 @@ public class LocationDeterminator {
 			List subDescrs = ((OrDescr) descr).getDescrs();
 			int size = subDescrs.size();
 			if (size == 2) {
-				PatternDescr subDescr = (PatternDescr) subDescrs.get(1);
+				BaseDescr subDescr = (BaseDescr) subDescrs.get(1);
 				if (subDescr == null) {
 					Matcher matcher = EXISTS_PATTERN.matcher(backText);
 					if (matcher.matches()) {
@@ -307,12 +309,26 @@ public class LocationDeterminator {
 				return getLocationForColumn(columnContents, className);
 			}
 			return new Location(LOCATION_FROM_ACCUMULATE);
+		} else if (descr instanceof CollectDescr) {
+			Matcher matcher = COLLECT_PATTERN.matcher(backText);
+			int end = -1;
+			while (matcher.find()) {
+				end = matcher.end();
+			}
+			String collectText = backText.substring(end);
+			matcher = COLUMN_PATTERN.matcher(collectText);
+			if (matcher.matches()) {
+				String className = matcher.group(3);
+				String columnContents = matcher.group(4);
+				return getLocationForColumn(columnContents, className);
+			}
+			return new Location(LOCATION_FROM_COLLECT);
 		}
 		
 		return new Location(LOCATION_UNKNOWN);
 	}
 	
-	private static boolean endReached(PatternDescr descr) {
+	private static boolean endReached(BaseDescr descr) {
 		if (descr instanceof ColumnDescr) {
 			return (descr.getEndLine() != 0 || descr.getEndColumn() != 0);
 		} else if (descr instanceof ExistsDescr) {
@@ -320,27 +336,27 @@ public class LocationDeterminator {
 			if (descrs.isEmpty()) {
 				return false;
 			}
-			return endReached((PatternDescr) descrs.get(0));
+			return endReached((BaseDescr) descrs.get(0));
 		} else if (descr instanceof NotDescr) {
 			List descrs = ((NotDescr) descr).getDescrs();
 			if (descrs.isEmpty()) {
 				return false;
 			}
-			return endReached((PatternDescr) descrs.get(0));
+			return endReached((BaseDescr) descrs.get(0));
 		} else if (descr instanceof AndDescr) {
 			List descrs = ((AndDescr) descr).getDescrs();
 			if (descrs.size() != 2) {
 				return false;
 			}
-			return endReached((PatternDescr) descrs.get(0))
-				&& endReached((PatternDescr) descrs.get(1));
+			return endReached((BaseDescr) descrs.get(0))
+				&& endReached((BaseDescr) descrs.get(1));
 		} else if (descr instanceof OrDescr) {
 			List descrs = ((OrDescr) descr).getDescrs();
 			if (descrs.size() != 2) {
 				return false;
 			}
-			return endReached((PatternDescr) descrs.get(0))
-				&& endReached((PatternDescr) descrs.get(1));
+			return endReached((BaseDescr) descrs.get(0))
+				&& endReached((BaseDescr) descrs.get(1));
 		} else if (descr instanceof EvalDescr) {
 			// EvalDescr are only added once the end has been reached 
 			return true;
@@ -348,6 +364,8 @@ public class LocationDeterminator {
 			return ((FromDescr) descr).getDataSource() != null;
 		} else if (descr instanceof AccumulateDescr) {
 			return ((AccumulateDescr) descr).getResultCode() != null;
+		} else if (descr instanceof CollectDescr) {
+			return ((CollectDescr) descr).getSourceColumn() != null;
 		}
 		return false;
 	}

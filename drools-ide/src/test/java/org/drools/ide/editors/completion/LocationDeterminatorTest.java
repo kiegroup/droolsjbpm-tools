@@ -6,12 +6,6 @@ import junit.framework.TestCase;
  * Test to check the location determination when doing code completion inside
  * rule condtions.
  * 
- * Possible locations:
- * LOCATION_BEGIN_OF_CONDITION
- * 		-> all drools condition keywords + imported classes
- * LOCATION_INSIDE_CONDITION_START
- * 		-> all properties of specified class
- * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  *
  */
@@ -479,7 +473,7 @@ public class LocationDeterminatorTest extends TestCase {
         assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_START, location.getType());
         assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
 
-// TODO        
+        // TODO        
 //        input = 
 //        	"rule MyRule \n" +
 //        	"	when \n" +
@@ -487,7 +481,7 @@ public class LocationDeterminatorTest extends TestCase {
 //        location = LocationDeterminator.getLocationInCondition(input);
 //        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_START, location.getType());
 //        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//
+
 //        input = 
 //        	"rule MyRule \n" +
 //        	"	when \n" +
@@ -1141,6 +1135,60 @@ public class LocationDeterminatorTest extends TestCase {
         	"	when \n" +
         	"		Class ( property > 0 ) from accumulate( \n" +
         	"			$cheese : Cheese( type == ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT, location.getType());
+        assertEquals("Cheese", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
+        assertEquals("type", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
+
+        /** FROM COLLECT */
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property > 0 ) from collect ( ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_FROM_COLLECT, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property > 0 ) from collect(";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_FROM_COLLECT, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property > 0 ) from collect ( \n" +
+        	"			Cheese( type == $likes )" +
+        	"		) \n" +
+        	"		";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property > 0 ) from collect ( \n" +
+        	"			Cheese( ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_START, location.getType());
+        assertEquals("Cheese", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property > 0 ) from collect ( \n" +
+        	"			Cheese( type ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_OPERATOR, location.getType());
+        assertEquals("Cheese", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
+        assertEquals("type", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property > 0 ) from collect ( \n" +
+        	"			Cheese( type == ";
         location = LocationDeterminator.getLocationInCondition(input);
         assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT, location.getType());
         assertEquals("Cheese", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
