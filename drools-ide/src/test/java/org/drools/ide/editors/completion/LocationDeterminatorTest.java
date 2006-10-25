@@ -1016,6 +1016,135 @@ public class LocationDeterminatorTest extends TestCase {
         	"       ";
         location = LocationDeterminator.getLocationInCondition(input);
         assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION, location.getType());
+
+        /** FROM ACCUMULATE */
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property > 0 ) from accumulate ( ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_FROM_ACCUMULATE, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property > 0 ) from accumulate(";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_FROM_ACCUMULATE, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property > 0 ) from accumulate( \n" +
+        	"			$cheese : Cheese( type == $likes ), \n" +
+        	"			init( int total = 0; ), \n" +
+        	"			action( total += $cheese.getPrice(); ), \n" +
+        	"           result( new Integer( total ) ) \n" +
+        	"		) \n" +
+        	"		";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_BEGIN_OF_CONDITION, location.getType());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property > 0 ) from accumulate( \n" +
+        	"			$cheese : Cheese( type == $likes ), \n" +
+        	"			init( ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_FROM_ACCUMULATE_INIT_INSIDE, location.getType());
+        assertEquals("", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT));
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property > 0 ) from accumulate( \n" +
+        	"			$cheese : Cheese( type == $likes ), \n" +
+        	"			init( int total = 0; ), \n" +
+        	"			action( ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_FROM_ACCUMULATE_ACTION_INSIDE, location.getType());
+        assertEquals("int total = 0; ", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT));
+        assertEquals("", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT));
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property > 0 ) from accumulate( \n" +
+        	"			$cheese : Cheese( type == $likes ), \n" +
+        	"			init( int total = 0; ), \n" +
+        	"			action( total += $cheese.getPrice(); ), \n" +
+        	"           result( ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_FROM_ACCUMULATE_RESULT_INSIDE, location.getType());
+        assertEquals("int total = 0; ", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT));
+        assertEquals("total += $cheese.getPrice(); ", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT));
+        assertEquals("", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_FROM_ACCUMULATE_RESULT_CONTENT));
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property > 0 ) from accumulate( \n" +
+        	"			$cheese : Cheese( type == $likes ), \n" +
+        	"			init( int total =";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_FROM_ACCUMULATE_INIT_INSIDE, location.getType());
+        assertEquals("int total =", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT));
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property > 0 ) from accumulate( \n" +
+        	"			$cheese : Cheese( type == $likes ), \n" +
+        	"			init( int total = 0; ), \n" +
+        	"			action( total += $ch";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_FROM_ACCUMULATE_ACTION_INSIDE, location.getType());
+        assertEquals("int total = 0; ", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT));
+        assertEquals("total += $ch", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT));
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property > 0 ) from accumulate( \n" +
+        	"			$cheese : Cheese( type == $likes ), \n" +
+        	"			init( int total = 0; ), \n" +
+        	"			action( total += $cheese.getPrice(); ), \n" +
+        	"           result( new Integer( tot";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_FROM_ACCUMULATE_RESULT_INSIDE, location.getType());
+        assertEquals("int total = 0; ", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT));
+        assertEquals("total += $cheese.getPrice(); ", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT));
+        assertEquals("new Integer( tot", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_FROM_ACCUMULATE_RESULT_CONTENT));
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property > 0 ) from accumulate( \n" +
+        	"			$cheese : Cheese( ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_START, location.getType());
+        assertEquals("Cheese", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property > 0 ) from accumulate( \n" +
+        	"			$cheese : Cheese( type ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_OPERATOR, location.getType());
+        assertEquals("Cheese", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
+        assertEquals("type", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property > 0 ) from accumulate( \n" +
+        	"			$cheese : Cheese( type == ";
+        location = LocationDeterminator.getLocationInCondition(input);
+        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT, location.getType());
+        assertEquals("Cheese", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
+        assertEquals("type", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
     }
     
 }

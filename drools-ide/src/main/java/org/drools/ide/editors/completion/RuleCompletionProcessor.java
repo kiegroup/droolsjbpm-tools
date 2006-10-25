@@ -17,6 +17,7 @@ import org.drools.ide.DroolsPluginImages;
 import org.drools.ide.editors.DRLRuleEditor;
 import org.drools.ide.editors.DSLAdapter;
 import org.drools.ide.util.ProjectClassLoader;
+import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.ExistsDescr;
@@ -131,6 +132,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 				case LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_NOT:
 					list.add( new RuleCompletionProposal(prefix.length(), "exists", "exists ", droolsIcon));
 				    // we do not break but also add all elements that are needed for exists
+				case LocationDeterminator.LOCATION_FROM_ACCUMULATE :
 				case LocationDeterminator.LOCATION_BEGIN_OF_CONDITION_EXISTS:
 				    // and add imported classes
 				    List imports = getDRLEditor().getImports();
@@ -272,28 +274,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 				    break;
 				case LocationDeterminator.LOCATION_INSIDE_EVAL :
 					String content = (String) location.getProperty(LocationDeterminator.LOCATION_EVAL_CONTENT);
-	    			Map params = new HashMap();
-					try {
-				    	parser = new DrlParser();
-			    		PackageDescr descr = parser.parse(backText);
-			    		List rules = descr.getRules();
-			    		if (rules != null && rules.size() == 1) {
-			    			getRuleParameters(params, ((RuleDescr) rules.get(0)).getLhs().getDescrs());
-			    			// rule params are already added by JavaCompletionProposals
-			    			// 
-			    			// Iterator iterator2 = params.keySet().iterator();
-			    			// while (iterator2.hasNext()) {
-			    			// 	String name = (String) iterator2.next();
-			    			// 	RuleCompletionProposal proposal = new RuleCompletionProposal(prefix.length(), name);
-			    			// 	proposal.setPriority(-1);
-			    			// 	proposal.setImage(methodIcon);
-							// 	list.add(proposal);
-			    			// }
-			    		}
-			    	} catch (DroolsParserException exc) {
-			    		// do nothing
-			    	}
-			    	list.addAll(getJavaCompletionProposals(content, prefix, params));
+	    			list.addAll(getJavaCompletionProposals(content, prefix, getRuleParameters(backText)));
 			    	break;
 				case LocationDeterminator.LOCATION_INSIDE_CONDITION_END :
 				    list.add( new RuleCompletionProposal(prefix.length(), "&", "& ", droolsIcon));
@@ -319,20 +300,23 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 					        	list.add(prop);
 					        }
 						}
-				        
-		    			params = new HashMap();
-						try {
-					    	parser = new DrlParser();
-				    		PackageDescr descr = parser.parse(backText);
-				    		List rules = descr.getRules();
-				    		if (rules != null && rules.size() == 1) {
-				    			getRuleParameters(params, ((RuleDescr) rules.get(0)).getLhs().getDescrs());
-				    		}
-				    	} catch (DroolsParserException exc) {
-				    		// do nothing
-				    	}
-				    	list.addAll(getJavaCompletionProposals(fromText, prefix, params));
+				        list.addAll(getJavaCompletionProposals(fromText, prefix, getRuleParameters(backText)));
 					}
+					break;
+				case LocationDeterminator.LOCATION_FROM_ACCUMULATE_INIT_INSIDE :
+					content = (String) location.getProperty(LocationDeterminator.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT);
+			    	list.addAll(getJavaCompletionProposals(content, prefix, getRuleParameters(backText)));
+					break;
+				case LocationDeterminator.LOCATION_FROM_ACCUMULATE_ACTION_INSIDE :
+					content = (String) location.getProperty(LocationDeterminator.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT);
+					content += (String) location.getProperty(LocationDeterminator.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT);
+			    	list.addAll(getJavaCompletionProposals(content, prefix, getRuleParameters(backText)));
+					break;
+				case LocationDeterminator.LOCATION_FROM_ACCUMULATE_RESULT_INSIDE :
+					content = (String) location.getProperty(LocationDeterminator.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT);
+					content += (String) location.getProperty(LocationDeterminator.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT);
+					content += (String) location.getProperty(LocationDeterminator.LOCATION_PROPERTY_FROM_ACCUMULATE_RESULT_CONTENT);
+			    	list.addAll(getJavaCompletionProposals(content, prefix, getRuleParameters(backText)));
 					break;
 			}
 		}
@@ -381,6 +365,21 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			} 
 		}
 		return null;
+	}
+	
+	private Map getRuleParameters(String backText) {
+		Map result = new HashMap();
+		try {
+	    	DrlParser parser = new DrlParser();
+    		PackageDescr descr = parser.parse(backText);
+    		List rules = descr.getRules();
+    		if (rules != null && rules.size() == 1) {
+    			getRuleParameters(result, ((RuleDescr) rules.get(0)).getLhs().getDescrs());
+    		}
+    	} catch (DroolsParserException exc) {
+    		// do nothing
+    	}
+    	return result;
 	}
 	
 	private boolean isComparable(String type) {
@@ -530,29 +529,8 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
     private void addRHSJavaCompletionProposals(List list, String backText, String prefix) {
     	int thenPosition = backText.lastIndexOf("then");
     	String conditions = backText.substring(0, thenPosition);
-		Map params = new HashMap();
-    	DrlParser parser = new DrlParser();
-    	try {
-    		PackageDescr descr = parser.parse(conditions);
-    		List rules = descr.getRules();
-    		if (rules != null && rules.size() == 1) {
-    			getRuleParameters(params, ((RuleDescr) rules.get(0)).getLhs().getDescrs());
-    			// rule params are already added by JavaCompletionProposals
-    			// 
-    			// Iterator iterator = params.keySet().iterator();
-    			// while (iterator.hasNext()) {
-    			// 	String name = (String) iterator.next();
-    			// 	RuleCompletionProposal prop = new RuleCompletionProposal(prefix.length(), name, name + ".");
-				// 	prop.setPriority(-1);
-				// 	prop.setImage(methodIcon);
-				// 	list.add(prop);
-    			// }
-    		}
-    	} catch (DroolsParserException exc) {
-    		// do nothing
-    	}
-    	String consequence = backText.substring(thenPosition + 4);
-    	list.addAll(getJavaCompletionProposals(consequence, prefix, params));
+		String consequence = backText.substring(thenPosition + 4);
+    	list.addAll(getJavaCompletionProposals(consequence, prefix, getRuleParameters(conditions)));
     }
     
     private void getRuleParameters(Map result, List descrs) {
@@ -586,6 +564,12 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			getRuleParameters(result, ((NotDescr) descr).getDescrs());
 		} else if (descr instanceof FromDescr) {
 			getRuleParameters(result, ((FromDescr) descr).getReturnedColumn());
+		} else if (descr instanceof AccumulateDescr) {
+			AccumulateDescr accumulateDescr = (AccumulateDescr) descr;
+			getRuleParameters(result, accumulateDescr.getResultColumn());
+			if (accumulateDescr.getSourceColumn() != null) {
+				getRuleParameters(result, accumulateDescr.getSourceColumn());
+			}
 		}
 
     }
