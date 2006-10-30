@@ -8,7 +8,6 @@ import org.drools.RuleBaseFactory;
 import org.drools.ide.DRLInfo;
 import org.drools.ide.DroolsIDEPlugin;
 import org.drools.rule.Package;
-import org.drools.visualize.ReteooJungViewerPanel;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
@@ -124,9 +123,9 @@ public class ReteViewer extends EditorPart {
 				if (ruleBase == null) {
 					// TODO signal user that rule cannot be parsed
 				} else {
-					ReteooJungViewerPanel viewer = new ReteooJungViewerPanel(
-							ruleBase);
-					frame.add(viewer);
+//					ReteooJungViewerPanel viewer = new ReteooJungViewerPanel(
+//							ruleBase);
+//					frame.add(viewer);
 					frame.validate();
 					parent.layout();
 				}
