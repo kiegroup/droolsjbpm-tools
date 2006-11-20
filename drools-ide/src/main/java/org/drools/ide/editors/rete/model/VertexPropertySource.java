@@ -5,9 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.reteoo.AccumulateNodeVertex;
 import org.drools.reteoo.AlphaNodeVertex;
 import org.drools.reteoo.BaseVertex;
+import org.drools.reteoo.CollectNodeVertex;
 import org.drools.reteoo.EvalConditionNodeVertex;
+import org.drools.reteoo.ExistsNodeVertex;
+import org.drools.reteoo.FromNodeVertex;
 import org.drools.reteoo.JoinNodeVertex;
 import org.drools.reteoo.LeftInputAdapterNodeVertex;
 import org.drools.reteoo.NotNodeVertex;
@@ -28,6 +32,14 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
 public class VertexPropertySource
     implements
     IPropertySource {
+
+    private static final String       VERTEX_FROM                = "From BaseVertex";
+
+    private static final String       VERTEX_ACCUMULATE          = "Accumulate BaseVertex";
+
+    private static final String       VERTEX_COLLECT             = "Collect BaseVertex";
+
+    private static final String       VERTEX_EXISTS              = "Exists BaseVertex";
 
     private static final String       VERTEX_TERMINAL            = "Terminal BaseVertex";
 
@@ -100,7 +112,23 @@ public class VertexPropertySource
 
         List descriptorList = new ArrayList();
 
-        if ( vertex instanceof TerminalNodeVertex ) {
+        if ( vertex instanceof ExistsNodeVertex ) {
+            initExistsNodeProperties( (ExistsNodeVertex) vertex,
+                                      descriptorList,
+                                      values );
+        } else if ( vertex instanceof FromNodeVertex ) {
+            initFromNodeProperties( (FromNodeVertex) vertex,
+                                    descriptorList,
+                                    values );
+        } else if ( vertex instanceof AccumulateNodeVertex ) {
+            initAccumulateNodeProperties( (AccumulateNodeVertex) vertex,
+                                          descriptorList,
+                                          values );
+        } else if ( vertex instanceof CollectNodeVertex ) {
+            initCollectNodeProperties( (CollectNodeVertex) vertex,
+                                       descriptorList,
+                                       values );
+        } else if ( vertex instanceof TerminalNodeVertex ) {
             initTerminalNodeProperties( (TerminalNodeVertex) vertex,
                                         descriptorList,
                                         values );
@@ -138,6 +166,60 @@ public class VertexPropertySource
         }
 
         descriptors = (IPropertyDescriptor[]) descriptorList.toArray( new IPropertyDescriptor[0] );
+    }
+
+    private void initExistsNodeProperties(ExistsNodeVertex vertex,
+                                          List descriptorList,
+                                          Map valueMap) {
+        addProperty( PROP_NAME,
+                     VERTEX_EXISTS,
+                     descriptorList,
+                     valueMap );
+        addProperty( PROP_ID,
+                     Integer.toString( vertex.getId() ),
+                     descriptorList,
+                     valueMap );
+
+    }
+
+    private void initCollectNodeProperties(CollectNodeVertex vertex,
+                                           List descriptorList,
+                                           Map valueMap) {
+        addProperty( PROP_NAME,
+                     VERTEX_COLLECT,
+                     descriptorList,
+                     valueMap );
+        addProperty( PROP_ID,
+                     Integer.toString( vertex.getId() ),
+                     descriptorList,
+                     valueMap );
+
+    }
+
+    private void initAccumulateNodeProperties(AccumulateNodeVertex vertex,
+                                              List descriptorList,
+                                              Map valueMap) {
+        addProperty( PROP_NAME,
+                     VERTEX_ACCUMULATE,
+                     descriptorList,
+                     valueMap );
+        addProperty( PROP_ID,
+                     Integer.toString( vertex.getId() ),
+                     descriptorList,
+                     valueMap );
+    }
+
+    private void initFromNodeProperties(FromNodeVertex vertex,
+                                        List descriptorList,
+                                        Map valueMap) {
+        addProperty( PROP_NAME,
+                     VERTEX_FROM,
+                     descriptorList,
+                     valueMap );
+        addProperty( PROP_ID,
+                     Integer.toString( vertex.getId() ),
+                     descriptorList,
+                     valueMap );
     }
 
     private void initReteNodeProperties(ReteVertex vertex,

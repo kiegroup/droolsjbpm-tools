@@ -38,6 +38,7 @@ import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooVisitor;
 import org.drools.rule.Package;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.ConnectionLayer;
@@ -117,34 +118,29 @@ public class ReteViewer extends GraphicalEditor {
         return super.getAdapter( type );
     }
 
-    private RuleBase getRuleBase(String contents) {
+    private RuleBase getRuleBase(String contents) throws PackageIntegrationException,
+                                                 DroolsParserException,
+                                                 CoreException {
         if ( getEditorInput() instanceof IFileEditorInput ) {
+            ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+            ClassLoader newLoader = DroolsBuilder.class.getClassLoader();
+            IFile file = ((IFileEditorInput) getEditorInput()).getFile();
+            if ( file.getProject().getNature( JAVA_NATURE ) != null ) {
+                IJavaProject project = JavaCore.create( file.getProject() );
+                newLoader = ProjectClassLoader.getProjectClassLoader( project );
+            }
+
+            Reader dslReader = DSLAdapter.getDSLContent( contents,
+                                                         file );
+
             try {
+                Thread.currentThread().setContextClassLoader( newLoader );
 
-                ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
-                ClassLoader newLoader = DroolsBuilder.class.getClassLoader();
-                IFile file = ((IFileEditorInput) getEditorInput()).getFile();
-                if ( file.getProject().getNature( JAVA_NATURE ) != null ) {
-                    IJavaProject project = JavaCore.create( file.getProject() );
-                    newLoader = ProjectClassLoader.getProjectClassLoader( project );
-                }
+                return parseRuleBase( contents,
+                                      dslReader );
 
-                Reader dslReader = DSLAdapter.getDSLContent( contents,
-                                                             file );
-
-                try {
-                    Thread.currentThread().setContextClassLoader( newLoader );
-
-                    return parseRuleBase( contents,
-                                          dslReader );
-
-                } catch ( Exception t ) {
-                    throw t;
-                } finally {
-                    Thread.currentThread().setContextClassLoader( oldLoader );
-                }
-            } catch ( Throwable t ) {
-                DroolsIDEPlugin.log( t );
+            } finally {
+                Thread.currentThread().setContextClassLoader( oldLoader );
             }
         }
 

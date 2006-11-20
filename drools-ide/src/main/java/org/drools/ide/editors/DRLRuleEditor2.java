@@ -22,8 +22,11 @@ import org.drools.ide.DroolsIDEPlugin;
 import org.drools.ide.editors.rete.ReteViewer;
 import org.drools.ide.editors.rete.model.ReteGraph;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.ui.actions.ZoomComboContributionItem;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.text.DocumentEvent;
@@ -284,13 +287,19 @@ public class DRLRuleEditor2 extends FormEditor {
         if ( cause == null ) {
             cause = t;
         }
-        String message = cause.getMessage();
+        String message = cause.getClass().getName()+": "+cause.getMessage();
         if ( message == null || message.length() == 0 ) {
             message = "Uncategorized Error!";
         }
-        MessageDialog.openError( getSite().getShell(),
-                                 "Rete Tree Error!",
-                                 message );
+        IStatus status = new Status( IStatus.ERROR,
+                                     DroolsIDEPlugin.getUniqueIdentifier(),
+                                     -1,
+                                     message,
+                                     null);
+        ErrorDialog.openError( getSite().getShell(),
+                               "Rete Tree Build Error!",
+                               "Rete Tree Build Error!",
+                               status );
 
     }
 
