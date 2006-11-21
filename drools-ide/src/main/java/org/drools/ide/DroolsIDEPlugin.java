@@ -203,12 +203,17 @@ public class DroolsIDEPlugin extends AbstractUIPlugin {
 	
 	public DRLInfo parseResource(DRLRuleEditor editor, boolean useUnsavedContent, boolean compile) throws DroolsParserException {
 		IResource resource = editor.getResource();
-		DRLInfo result = (DRLInfo) compiledRules.get(resource);
-		if (result == null && !compile) {
-			result = (DRLInfo) parsedRules.get(resource);
+		if (!editor.isDirty() || !useUnsavedContent) {
+			DRLInfo result = (DRLInfo) compiledRules.get(resource);
+			if (result == null && !compile) {
+				result = (DRLInfo) parsedRules.get(resource);
+			}
+			if (result != null) {
+				return result;
+			}
 		}
-		if (result != null) {
-			return result;
+		if (!editor.isDirty()) {
+			return generateParsedResource(editor.getContent(), resource, true, compile);
 		}
 		// TODO: can we cache result when using unsaved content as well? 
 		return generateParsedResource(editor.getContent(), resource, !useUnsavedContent, compile);
@@ -297,6 +302,7 @@ public class DroolsIDEPlugin extends AbstractUIPlugin {
             	// cache result
         		if (useCache) {
 	    			if (compile && !parser.hasErrors()) {
+	    				parsedRules.remove(resource);
 	    				compiledRules.put(resource, result);
 	        			RuleInfo[] ruleInfos = result.getRuleInfos();
 	        			for (int i = 0; i < ruleInfos.length; i++) {

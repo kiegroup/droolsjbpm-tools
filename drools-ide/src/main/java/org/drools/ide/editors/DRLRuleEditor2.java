@@ -85,7 +85,7 @@ public class DRLRuleEditor2 extends FormEditor {
                 }
             };
 
-            reteViewer = new ReteViewer();
+            reteViewer = new ReteViewer(textEditor);
 
             int text = addPage( textEditor,
                                 getEditorInput() );

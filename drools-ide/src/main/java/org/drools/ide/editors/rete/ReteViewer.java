@@ -15,30 +15,21 @@ package org.drools.ide.editors.rete;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
-import org.drools.compiler.DrlParser;
-import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.PackageBuilder;
+import org.drools.ide.DRLInfo;
 import org.drools.ide.DroolsIDEPlugin;
-import org.drools.ide.builder.DroolsBuilder;
-import org.drools.ide.editors.DSLAdapter;
+import org.drools.ide.editors.DRLRuleEditor;
 import org.drools.ide.editors.rete.model.ReteGraph;
 import org.drools.ide.editors.rete.part.VertexEditPartFactory;
-import org.drools.ide.util.ProjectClassLoader;
-import org.drools.lang.descr.PackageDescr;
 import org.drools.reteoo.BaseVertex;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooVisitor;
 import org.drools.rule.Package;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.ConnectionLayer;
@@ -59,10 +50,7 @@ import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.ui.parts.GraphicalEditor;
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.swt.SWT;
-import org.eclipse.ui.IFileEditorInput;
 
 /**
  * GEF-based RETE Viewer
@@ -74,8 +62,6 @@ public class ReteViewer extends GraphicalEditor {
 
     private static final String  MSG_PARSE_ERROR         = "Unable to parse rules to show RETE view!";
 
-    private static final String  JAVA_NATURE             = "org.eclipse.jdt.core.javanature";
-
     private static final int     SIMPLE_ROUTER_MIN_NODES = 100;
 
     ScalableFreeformRootEditPart rootEditPart            = new ScalableFreeformRootEditPart();
@@ -83,14 +69,16 @@ public class ReteViewer extends GraphicalEditor {
     private ReteGraph            diagram                 = new ReteGraph();
 
     private boolean              relayoutRequired        = true;
+    
+    private DRLRuleEditor drlEditor;
 
     /**
      * Constructor.
      * 
      * @param documentProvider documentProvider must contain Document with rules.
      */
-    public ReteViewer() {
-        super();
+    public ReteViewer(DRLRuleEditor drlEditor) {
+        this.drlEditor = drlEditor;
         setEditDomain( new DefaultEditDomain( this ) );
     }
 
@@ -118,67 +106,19 @@ public class ReteViewer extends GraphicalEditor {
         return super.getAdapter( type );
     }
 
-    private RuleBase getRuleBase(String contents) throws PackageIntegrationException,
-                                                 DroolsParserException,
-                                                 CoreException {
-        if ( getEditorInput() instanceof IFileEditorInput ) {
-            ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
-            ClassLoader newLoader = DroolsBuilder.class.getClassLoader();
-            IFile file = ((IFileEditorInput) getEditorInput()).getFile();
-            if ( file.getProject().getNature( JAVA_NATURE ) != null ) {
-                IJavaProject project = JavaCore.create( file.getProject() );
-                newLoader = ProjectClassLoader.getProjectClassLoader( project );
-            }
-
-            Reader dslReader = DSLAdapter.getDSLContent( contents,
-                                                         file );
-
-            try {
-                Thread.currentThread().setContextClassLoader( newLoader );
-
-                return parseRuleBase( contents,
-                                      dslReader );
-
-            } finally {
-                Thread.currentThread().setContextClassLoader( oldLoader );
-            }
+    private RuleBase getRuleBase(String contents) {
+        try {
+        	DRLInfo drlInfo = DroolsIDEPlugin.getDefault().parseResource(drlEditor, true, true);
+        	if (drlInfo != null) {
+        		Package pkg = drlInfo.getPackage();
+        		ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase(RuleBase.RETEOO);
+        		ruleBase.addPackage(pkg);
+        		return ruleBase;
+        	}
+        } catch ( Throwable t ) {
+            DroolsIDEPlugin.log( t );
         }
-
         return null;
-
-    }
-
-    /**
-     * 
-     * 
-     * @param contents
-     * @param dslReader
-     * @return
-     * @throws DroolsParserException
-     * @throws PackageIntegrationException
-     */
-    public static RuleBase parseRuleBase(String contents,
-                                         Reader dslReader) throws DroolsParserException,
-                                                          PackageIntegrationException {
-        DrlParser parser = new DrlParser();
-
-        PackageDescr packageDescr = null;
-        if ( dslReader == null ) {
-            packageDescr = parser.parse( contents );
-        } else {
-            packageDescr = parser.parse( contents,
-                                         dslReader );
-        }
-
-        //pre build the package
-        PackageBuilder builder = new PackageBuilder();
-        builder.addPackage( packageDescr );
-        Package pkg = builder.getPackage();
-
-        //add the package to a rulebase
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase( RuleBase.RETEOO );
-        ruleBase.addPackage( pkg );
-        return ruleBase;
     }
 
     /**
