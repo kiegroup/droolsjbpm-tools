@@ -34,6 +34,13 @@
          class="org.drools.ide.debug.AuditView"
          id="org.drools.ide.debug.AuditView">
       </view>
+      <view
+         name="Rules View"
+         icon="icons/drools.gif"
+         category="org.drools.ide.views"
+         class="org.drools.ide.view.rules.RulesView"
+         id="org.drools.ide.view.rules.RulesView">
+      </view>
    </extension>
    
    <extension
@@ -54,6 +61,14 @@
             icon="icons/drools.gif"
             id="org.drools.ide.editors.DRLRuleEditor"
             name="Rule Editor"/>
+      <!--
+      <editor
+            class="org.drools.ide.editors.dsl.DSLRuleEditor2"
+            contributorClass="org.drools.ide.editors.DRLRuleEditorActionContributor"
+            extensions="dslr,dslrule"
+            icon="icons/drools.gif"
+            id="org.drools.ide.editors.dsl.DSLRuleEditor"
+            name="DSL Rule Editor"/> -->
       <editor
             class="org.drools.ide.dsl.editor.DSLEditor"
             contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"

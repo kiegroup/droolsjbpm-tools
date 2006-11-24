@@ -47,7 +47,12 @@ public class DroolsPluginImages {
     public static final String METHOD = "Method";
     public static final String VARIABLE = "Variable";
     public static final String DROOLS = "Drools";
+    public static final String RULE = "DroolsRule";
+    public static final String QUERY = "DroolsQuery";
     public static final String DSL_EXPRESSION = "DslExpression";
+    public static final String IMPORT = "Import";
+    public static final String DSL = "DSL";
+    public static final String GLOBAL = "Global";
     
     private static ImageRegistry imageRegistry;
     private static final String PATH_SUFFIX = "/icons/";
@@ -73,7 +78,12 @@ public class DroolsPluginImages {
         declareRegistryImage(METHOD, "methpub_obj.gif");
         declareRegistryImage(VARIABLE, "field_private_obj.gif");
         declareRegistryImage(DROOLS, "drools.gif");
+        declareRegistryImage(RULE, "drools-rule.gif");
+        declareRegistryImage(QUERY, "drools-query.gif");
         declareRegistryImage(DSL_EXPRESSION, "dsl_expression.gif");
+        declareRegistryImage(IMPORT, "import.gif");
+        declareRegistryImage(DSL, "dsl.GIF");
+        declareRegistryImage(GLOBAL, "field_public_obj.gif");
     }
 
     /**

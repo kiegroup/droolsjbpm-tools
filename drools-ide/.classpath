@@ -18,7 +18,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/drools-decisiontables.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/drools-jsr94.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/stringtemplate-2.3b6.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.4"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

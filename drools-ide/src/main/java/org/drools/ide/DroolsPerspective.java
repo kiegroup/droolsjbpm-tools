@@ -18,8 +18,12 @@ public class DroolsPerspective implements IPerspectiveFactory {
 		folder.addPlaceholder(JavaUI.ID_TYPE_HIERARCHY);
 		folder.addView(IPageLayout.ID_RES_NAV);
 		
+		IFolderLayout rulesfolder= layout.createFolder("leftbottom", IPageLayout.BOTTOM, (float)0.5, "left"); //$NON-NLS-1$
+		rulesfolder.addView(IDroolsConstants.RULES_VIEW);
+		
 		IFolderLayout outputfolder= layout.createFolder("bottom", IPageLayout.BOTTOM, (float)0.75, editorArea); //$NON-NLS-1$
 		outputfolder.addView(IPageLayout.ID_PROBLEM_VIEW);
+		outputfolder.addView(IPageLayout.ID_PROP_SHEET);
 		outputfolder.addPlaceholder(JavaUI.ID_JAVADOC_VIEW);
 		outputfolder.addPlaceholder(JavaUI.ID_SOURCE_VIEW);
 		outputfolder.addPlaceholder(IConsoleConstants.ID_CONSOLE_VIEW);

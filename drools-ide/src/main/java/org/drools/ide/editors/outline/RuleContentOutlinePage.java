@@ -9,7 +9,16 @@ import java.util.regex.Pattern;
 import org.drools.compiler.DroolsParserException;
 import org.drools.ide.DRLInfo;
 import org.drools.ide.DroolsIDEPlugin;
+import org.drools.ide.core.DroolsElement;
+import org.drools.ide.core.DroolsModelBuilder;
+import org.drools.ide.core.Package;
+import org.drools.ide.core.RuleSet;
+import org.drools.ide.core.ui.DroolsContentProvider;
+import org.drools.ide.core.ui.DroolsLabelProvider;
+import org.drools.ide.core.ui.DroolsTreeSorter;
+import org.drools.ide.core.ui.FilterActionGroup;
 import org.drools.ide.editors.DRLRuleEditor;
+import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -18,8 +27,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.model.WorkbenchContentProvider;
-import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
 /**
@@ -28,16 +35,13 @@ import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
  * Should provide navigation assistance in large rule files.
  * 
  * @author "Jeff Brown" <brown_j@ociweb.com>
+ * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  */
 public class RuleContentOutlinePage extends ContentOutlinePage {
 
-    //the editor that this outline view is linked to.
-    private DRLRuleEditor       editor;
-
-    //the "root" node
-    private final RuleFileTreeNode ruleFileTreeNode    = new RuleFileTreeNode();
+    private DRLRuleEditor editor;
+    private RuleSet ruleSet = DroolsModelBuilder.createRuleSet();
     private Map rules;
-//    private Map lineToCharactersMapping;
 
     ///////////////////////////////////
     // Patterns that the parser uses
@@ -73,33 +77,35 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
 			"\\n\\s*query\\s+([^\\s;#\"]+)", Pattern.DOTALL);
 
     public RuleContentOutlinePage(DRLRuleEditor editor) {
-        super();
         this.editor = editor;
     }
 
     public void createControl(Composite parent) {
-        super.createControl( parent );
+        super.createControl(parent);
         TreeViewer viewer = getTreeViewer();
-        viewer.setContentProvider( new WorkbenchContentProvider() );
-        viewer.setLabelProvider( new WorkbenchLabelProvider() );
-
-        viewer.setInput( ruleFileTreeNode );
+        viewer.setContentProvider(new DroolsContentProvider());
+        viewer.setLabelProvider(new DroolsLabelProvider());
+        viewer.setSorter(new DroolsTreeSorter());
+        viewer.setInput(ruleSet);
+        FilterActionGroup filterActionGroup = new FilterActionGroup(
+    		viewer, "org.drools.ide.editors.outline.RuleContentOutlinePage");
+		filterActionGroup.fillActionBars(getSite().getActionBars());
         update();
 
         // add the listener for navigation of the rule document.
-        super.addSelectionChangedListener( new ISelectionChangedListener() {
+        super.addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
                 Object selectionObj = event.getSelection();
-                if ( selectionObj != null && selectionObj instanceof StructuredSelection ) {
+                if (selectionObj != null && selectionObj instanceof StructuredSelection) {
                     StructuredSelection sel = (StructuredSelection) selectionObj;
-                    OutlineNode node = (OutlineNode) sel.getFirstElement();
-                    if ( node != null ) {
-                        editor.selectAndReveal( node.getOffset(),
-                                                node.getLength() );
+                    DroolsElement element = (DroolsElement) sel.getFirstElement();
+                    if (element != null) {
+                        editor.selectAndReveal(element.getOffset(),
+                                                element.getLength());
                     }
                 }
             }
-        } );
+        });
     }
 
     /**
@@ -107,30 +113,17 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
      */
     public void update() {
         TreeViewer viewer = getTreeViewer();
-
-        if ( viewer != null ) {
+        if (viewer != null) {
             Control control = viewer.getControl();
-            if ( control != null && !control.isDisposed() ) {
-                PackageTreeNode packageTreeNode = createPackageTreeNode();
-                ruleFileTreeNode.setPackageTreeNode( packageTreeNode );
-                viewer.refresh();
-                control.setRedraw( false );
+            if (control != null && !control.isDisposed()) {
+            	initRules();
+            	populatePackageTreeNode();
+            	viewer.refresh();
+                control.setRedraw(false);
                 viewer.expandToLevel(2);
-                control.setRedraw( true );
+                control.setRedraw(true);
             }
         }
-    }
-
-    /**
-     * 
-     * @return a PackageTreeNode representing the current state of the 
-     * document, populated with all of the package's child elements
-     */
-    private PackageTreeNode createPackageTreeNode() {
-        PackageTreeNode packageTreeNode = new PackageTreeNode();
-        initRules();
-        populatePackageTreeNode(packageTreeNode);
-        return packageTreeNode;
     }
 
     /**
@@ -138,79 +131,89 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
      * 
      * @param packageTreeNode the node to populate
      */
-    public void populatePackageTreeNode(PackageTreeNode packageTreeNode) {
+    public void populatePackageTreeNode() {
+    	DroolsModelBuilder.clearRuleSet(ruleSet);
     	String ruleFileContents = editor.getContent();
-        Matcher matcher = RULE_PATTERN1.matcher(ruleFileContents);
+    	Matcher matcher = PACKAGE_PATTERN.matcher(ruleFileContents);
+    	String packageName = null;
+        if (matcher.find()) {
+            packageName = matcher.group(1);
+        }
+        Package pkg = DroolsModelBuilder.addPackage(ruleSet, packageName,
+    		matcher.start(1), matcher.end(1) - matcher.start(1));
+
+        matcher = RULE_PATTERN1.matcher(ruleFileContents);
         while (matcher.find()) {
             String ruleName = matcher.group(1);
-            RuleDescr ruleDescr = (RuleDescr) rules.get(ruleName);
-            if (ruleDescr == null) {
-                packageTreeNode.addRule(ruleName, matcher.start(1), matcher.end(1) - matcher.start(1));
-            } else {
-            	packageTreeNode.addRule(ruleName, matcher.start(1), matcher.end(1) - matcher.start(1), ruleDescr.getAttributes());
-            }
+            DroolsModelBuilder.addRule(pkg, ruleName, null,
+        		matcher.start(1), matcher.end(1) - matcher.start(1),
+        		extractAttributes((RuleDescr) rules.get(ruleName)));
         }
         matcher = RULE_PATTERN2.matcher(ruleFileContents);
         while (matcher.find()) {
             String ruleName = matcher.group(1);
-            RuleDescr ruleDescr = (RuleDescr) rules.get(ruleName);
-            if (ruleDescr == null) {
-                packageTreeNode.addRule(ruleName, matcher.start(1), matcher.end(1) - matcher.start(1));
-            } else {
-            	packageTreeNode.addRule(ruleName, matcher.start(1), matcher.end(1) - matcher.start(1), ruleDescr.getAttributes());
-            }
+            DroolsModelBuilder.addRule(pkg, ruleName, null,
+        		matcher.start(1), matcher.end(1) - matcher.start(1),
+        		extractAttributes((RuleDescr) rules.get(ruleName)));
          } 
-        matcher = PACKAGE_PATTERN.matcher(ruleFileContents);
-        if (matcher.find()) {
-            String packageName = matcher.group(1);
-            packageTreeNode.setPackageName(packageName);
-            packageTreeNode.setOffset(matcher.start(1));
-            packageTreeNode.setLength(matcher.end(1) - matcher.start(1));
-        }
         matcher = FUNCTION_PATTERN.matcher(ruleFileContents);
 		while (matcher.find()) {
 			String functionName = matcher.group(2);
-			packageTreeNode.addFunction(functionName + "()",
-					matcher.start(2), matcher.end(2) - matcher.start(2));
+			DroolsModelBuilder.addFunction(pkg, functionName + "()", null,
+				matcher.start(2), matcher.end(2) - matcher.start(2));
 		}
 		matcher = EXPANDER_PATTERN.matcher(ruleFileContents);
 		if (matcher.find()) {
 			String expanderName = matcher.group(1);
-			packageTreeNode.addExpander(expanderName, 
-					matcher.start(1), matcher.end(1) - matcher.start(1));
+			DroolsModelBuilder.addExpander(pkg, expanderName, null,
+				matcher.start(1), matcher.end(1) - matcher.start(1));
 		}
 		matcher = IMPORT_PATTERN.matcher(ruleFileContents);
 		while (matcher.find()) {
 			String importName = matcher.group(1);
-			packageTreeNode.addImport(importName, 
-					matcher.start(1), matcher.end(1) - matcher.start(1));
+			DroolsModelBuilder.addImport(pkg, importName, null,
+				matcher.start(1), matcher.end(1) - matcher.start(1));
 		}
 		matcher = GLOBAL_PATTERN.matcher(ruleFileContents);
 		while (matcher.find()) {
 			String globalType = matcher.group(1);
 			String globalName = matcher.group(2);
 			String name = globalName + " : " + globalType;
-			packageTreeNode.addGlobal(name, 
-					matcher.start(2), matcher.end(2) - matcher.start(2));
+			DroolsModelBuilder.addGlobal(pkg, name, null,
+				matcher.start(2), matcher.end(2) - matcher.start(2));
 		}
 		matcher = QUERY_PATTERN1.matcher(ruleFileContents);
 		while (matcher.find()) {
 			String queryName = matcher.group(1);
-			packageTreeNode.addQuery(queryName, 
+			DroolsModelBuilder.addQuery(pkg, queryName, null,
 					matcher.start(1), matcher.end(1) - matcher.start(1));
 		}
 		matcher = QUERY_PATTERN2.matcher(ruleFileContents);
 		while (matcher.find()) {
 			String queryName = matcher.group(1);
-			packageTreeNode.addQuery(queryName, 
-					matcher.start(1), matcher.end(1) - matcher.start(1));
+			DroolsModelBuilder.addQuery(pkg, queryName, null,
+				matcher.start(1), matcher.end(1) - matcher.start(1));
 		}
 		matcher = TEMPLATE_PATTERN.matcher(ruleFileContents);
 		while (matcher.find()) {
 			String templateName = matcher.group(1);
-			packageTreeNode.addTemplate(templateName, 
+			DroolsModelBuilder.addTemplate(pkg, templateName, null,
 					matcher.start(1), matcher.end(1) - matcher.start(1));
 		}
+    }
+    
+    private Map extractAttributes(RuleDescr ruleDescr) {
+        Map attributes = null;
+        if (ruleDescr != null) {
+        	attributes = new HashMap();
+        	for (Iterator iterator = ruleDescr.getAttributes().iterator(); iterator.hasNext();) {
+        		AttributeDescr attribute = (AttributeDescr) iterator.next();
+        		if (attribute.getName() != null) {
+        			attributes.put(attribute.getName(), attribute.getValue());
+        		}
+        	}
+        }
+        return attributes;
     }
 
     public void initRules() {
