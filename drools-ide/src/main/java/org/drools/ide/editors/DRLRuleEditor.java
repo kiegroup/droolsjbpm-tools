@@ -22,6 +22,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.ui.actions.IToggleBreakpointsTarget;
+import org.eclipse.debug.ui.actions.ToggleBreakpointAction;
 import org.eclipse.jdt.core.CompletionRequestor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
@@ -120,12 +121,11 @@ public class DRLRuleEditor extends TextEditor {
 				.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_CONTEXT_INFORMATION);
 		setAction("ContentAssistTip", a);
 		
-		a = getAction("org.eclipse.debug.ui.commands.ToggleBreakpoint");
-		setAction(ITextEditorActionConstants.RULER_DOUBLE_CLICK,
-			a);
+		a = new ToggleBreakpointAction(getSite().getPart() , null, getVerticalRuler());
+		setAction(ITextEditorActionConstants.RULER_DOUBLE_CLICK, a);
 
 	}
-
+	
 	/** Return the DSL adapter if one is present */
 	public DSLAdapter getDSLAdapter() {
 		return dslAdapter;
