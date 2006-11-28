@@ -5,7 +5,9 @@ package org.drools.reteoo;
 
 import org.drools.base.ClassFieldExtractor;
 import org.drools.rule.LiteralConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Constraint;
+import org.drools.spi.FieldExtractor;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Color;
 
@@ -33,9 +35,16 @@ public class AlphaNodeVertex extends BaseVertex {
      * @see org.drools.reteoo.BaseNodeVertex#getHtml()
      */
     public String getHtml() {
-        final LiteralConstraint constraint = (LiteralConstraint) this.node.getConstraint();
-        final ClassFieldExtractor extractor = (ClassFieldExtractor) constraint.getFieldExtractor();
-        return NODE_NAME + "<BR/>field : " + extractor.getFieldName() + "<BR/>evaluator : " + constraint.getEvaluator() + "<BR/>value :  " + constraint.getField();
+    	AlphaNodeFieldConstraint constraint = this.node.getConstraint();
+        if (constraint instanceof LiteralConstraint) {
+        	LiteralConstraint literalConstraint = (LiteralConstraint) constraint;
+            FieldExtractor extractor = literalConstraint.getFieldExtractor();
+            if (extractor instanceof ClassFieldExtractor) {
+            	ClassFieldExtractor classFieldExtractor = (ClassFieldExtractor) extractor;
+            	return NODE_NAME + "<BR/>field : " + classFieldExtractor.getFieldName() + "<BR/>evaluator : " + literalConstraint.getEvaluator() + "<BR/>value :  " + literalConstraint.getField();
+            }
+        }
+        return NODE_NAME + "<BR/>";
     }
 
     /* (non-Javadoc)
@@ -59,9 +68,15 @@ public class AlphaNodeVertex extends BaseVertex {
      * @return field name
      */
     public String getFieldName() {
-        LiteralConstraint constraint = (LiteralConstraint) this.node.getConstraint();
-        ClassFieldExtractor extractor = (ClassFieldExtractor) constraint.getFieldExtractor();
-        return extractor.getFieldName();
+    	AlphaNodeFieldConstraint constraint = this.node.getConstraint();
+        if (constraint instanceof LiteralConstraint) {
+        	LiteralConstraint literalConstraint = (LiteralConstraint) constraint;
+            FieldExtractor extractor = literalConstraint.getFieldExtractor();
+            if (extractor instanceof ClassFieldExtractor) {
+            	return ((ClassFieldExtractor) extractor).getFieldName();
+            }
+        }
+        return null;
     }
 
     /**
@@ -70,8 +85,12 @@ public class AlphaNodeVertex extends BaseVertex {
      * @return evaluator string
      */
     public String getEvaluator() {
-        LiteralConstraint constraint = (LiteralConstraint) this.node.getConstraint();
-        return constraint.getEvaluator().toString();
+    	AlphaNodeFieldConstraint constraint = this.node.getConstraint();
+        if (constraint instanceof LiteralConstraint) {
+        	LiteralConstraint literalConstraint = (LiteralConstraint) constraint;
+        	return literalConstraint.getEvaluator().toString();
+        }
+        return null;
     }
 
     /**
@@ -80,8 +99,12 @@ public class AlphaNodeVertex extends BaseVertex {
      * @return field string
      */
     public String getValue() {
-        LiteralConstraint constraint = (LiteralConstraint) this.node.getConstraint();
-        return constraint.getField().toString();
+    	AlphaNodeFieldConstraint constraint = this.node.getConstraint();
+        if (constraint instanceof LiteralConstraint) {
+        	LiteralConstraint literalConstraint = (LiteralConstraint) constraint;
+        	return literalConstraint.getField().toString();
+        }
+        return null;
     }
 
     /**

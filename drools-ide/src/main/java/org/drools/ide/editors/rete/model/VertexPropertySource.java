@@ -16,6 +16,7 @@ import org.drools.reteoo.JoinNodeVertex;
 import org.drools.reteoo.LeftInputAdapterNodeVertex;
 import org.drools.reteoo.NotNodeVertex;
 import org.drools.reteoo.ObjectTypeNodeVertex;
+import org.drools.reteoo.QueryTerminalNodeVertex;
 import org.drools.reteoo.ReteVertex;
 import org.drools.reteoo.RightInputAdapterNodeVertex;
 import org.drools.reteoo.TerminalNodeVertex;
@@ -42,6 +43,8 @@ public class VertexPropertySource
     private static final String       VERTEX_EXISTS              = "Exists BaseVertex";
 
     private static final String       VERTEX_TERMINAL            = "Terminal BaseVertex";
+
+    private static final String       VERTEX_QUERY_TERMINAL      = "Query Terminal BaseVertex";
 
     private static final String       VERTEX_EVAL_CONDITION      = "Eval Condition BaseVertex";
 
@@ -77,6 +80,8 @@ public class VertexPropertySource
     private final IPropertyDescriptor PROP_RULE                  = new PropertyDescriptor( "rule",
                                                                                            "Rule" );
 
+    private final IPropertyDescriptor PROP_QUERY                 = new PropertyDescriptor( "query",
+                                                                                           "Query" );
     // Alpha-specific
     private final IPropertyDescriptor PROP_ALPHA_FIELD_NAME      = new PropertyDescriptor( "fieldName",
                                                                                            "Field Name" );
@@ -130,9 +135,13 @@ public class VertexPropertySource
                                        values );
         } else if ( vertex instanceof TerminalNodeVertex ) {
             initTerminalNodeProperties( (TerminalNodeVertex) vertex,
-                                        descriptorList,
-                                        values );
-        } else if ( vertex instanceof EvalConditionNodeVertex ) {
+                    descriptorList,
+                    values );
+    	} else if ( vertex instanceof QueryTerminalNodeVertex ) {
+            initQueryTerminalNodeProperties( (QueryTerminalNodeVertex) vertex,
+                    descriptorList,
+                    values );
+    	} else if ( vertex instanceof EvalConditionNodeVertex ) {
             initEvalConditionNodeProperties( (EvalConditionNodeVertex) vertex,
                                              descriptorList,
                                              values );
@@ -374,6 +383,25 @@ public class VertexPropertySource
                      valueMap );
 
     }
+
+    private void initQueryTerminalNodeProperties(QueryTerminalNodeVertex node,
+		            List descriptorList,
+		            Map valueMap) {
+		
+		addProperty( PROP_NAME,
+				     VERTEX_QUERY_TERMINAL,
+                     descriptorList,
+                     valueMap );
+		addProperty( PROP_ID,
+                     Integer.toString( node.getId() ),
+                     descriptorList,
+		             valueMap );
+		addProperty( PROP_QUERY,
+		             node.getQueryName(),
+		             descriptorList,
+		             valueMap );
+		
+	}
 
     private void addProperty(IPropertyDescriptor field,
                              String value,
