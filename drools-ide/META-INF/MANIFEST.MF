@@ -43,7 +43,8 @@ Bundle-ClassPath: ide.jar,
  lib/drools-core.jar,
  lib/drools-decisiontables.jar,
  lib/drools-jsr94.jar,
- lib/stringtemplate-2.3b6.jar
+ lib/stringtemplate-2.3b6.jar,
+ lib/jxl-2.4.2.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
 Export-Package: org.drools,
  org.drools.asm,

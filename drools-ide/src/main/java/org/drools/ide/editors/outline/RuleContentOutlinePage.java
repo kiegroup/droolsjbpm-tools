@@ -136,11 +136,15 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
     	String ruleFileContents = editor.getContent();
     	Matcher matcher = PACKAGE_PATTERN.matcher(ruleFileContents);
     	String packageName = null;
+    	int startChar = 0;
+    	int endChar = 0; 
         if (matcher.find()) {
             packageName = matcher.group(1);
+            startChar = matcher.start(1);
+            endChar = matcher.end(1);
         }
         Package pkg = DroolsModelBuilder.addPackage(ruleSet, packageName,
-    		matcher.start(1), matcher.end(1) - matcher.start(1));
+    		startChar, endChar - startChar);
 
         matcher = RULE_PATTERN1.matcher(ruleFileContents);
         while (matcher.find()) {

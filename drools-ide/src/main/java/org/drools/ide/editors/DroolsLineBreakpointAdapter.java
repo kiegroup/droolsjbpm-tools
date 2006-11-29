@@ -18,7 +18,7 @@ import org.eclipse.ui.IWorkbenchPart;
 public class DroolsLineBreakpointAdapter implements IToggleBreakpointsTarget {
 
 	public boolean canToggleLineBreakpoints(IWorkbenchPart part, ISelection selection) {
-		if (part instanceof IEditorPart) {
+		if (part instanceof IEditorPart && selection instanceof ITextSelection) {
 			IEditorPart editor = (IEditorPart) part;
 			IResource resource = (IResource) editor.getEditorInput().getAdapter(IResource.class);
 			ITextSelection textSelection = (ITextSelection) selection;
