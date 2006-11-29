@@ -18,8 +18,6 @@ package com.sample;
 
 import java.io.StringReader;
 
-import junit.framework.TestCase;
-
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
@@ -28,7 +26,7 @@ import org.drools.decisiontable.InputType;
 import org.drools.decisiontable.SpreadsheetCompiler;
 import org.drools.rule.Package;
 
-public class DecisionTableTest extends TestCase {
+public class DecisionTableTest {
 
     public static final void main(String[] args) {
         try {

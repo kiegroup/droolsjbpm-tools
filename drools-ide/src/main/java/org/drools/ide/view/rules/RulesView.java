@@ -84,6 +84,10 @@ public class RulesView extends ViewPart implements IDoubleClickListener, IResour
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 	}
 	
+	public void dispose() {
+		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+	}
+	
 	public void setFocus() {
 		treeViewer.getControl().setFocus();
 	}
