@@ -27,8 +27,6 @@ Require-Bundle: org.eclipse.core.runtime,
  com.ibm.icu
 Eclipse-LazyStart: true
 Bundle-ClassPath: ide.jar,
- lib/antlr-2.7.6.jar,
- lib/antlr-3.0ea8.jar,
  lib/commons-lang-2.1.jar,
  lib/commons-logging-api-1.0.4.jar,
  lib/xml-apis-1.0.b2.jar,
@@ -43,8 +41,10 @@ Bundle-ClassPath: ide.jar,
  lib/drools-core.jar,
  lib/drools-decisiontables.jar,
  lib/drools-jsr94.jar,
- lib/stringtemplate-2.3b6.jar,
- lib/jxl-2.4.2.jar
+ lib/jxl-2.4.2.jar,
+ lib/antlr-2.7.7.jar,
+ lib/antlr-3.0b5.jar,
+ lib/stringtemplate-3.0.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
 Export-Package: org.drools,
  org.drools.asm,
