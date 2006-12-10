@@ -1,0 +1,28 @@
+<project default="rules">
+	
+	<path id="cheese.classpath">
+		<pathelement location="../../../lib/cheese.jar"/>
+	</path>	
+	
+	<path id="drools.classpath">
+		<fileset dir="../../../../repository">
+			<include name="**/*.jar"/>
+		</fileset>		
+		<pathelement location="target"/>
+	</path>	
+	
+	<taskdef name="rulebase" 
+		classname="org.drools.contrib.DroolsAntTask"
+		classpathref="drools.classpath" />  
+
+ 	
+	<target name="rules" >
+		<rulebase 
+			srcdir="../../../src/test/resources/rules" 		
+			tofile="../../../target/cheese.rules"
+			classpathref="cheese.classpath" > 
+			<include name="*.drl" />
+		</rulebase>
+	</target>
+
+</project>

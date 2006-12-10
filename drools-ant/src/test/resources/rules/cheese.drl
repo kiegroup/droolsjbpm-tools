@@ -1,0 +1,12 @@
+#created on: Jul 21, 2006
+package org.drools.test;
+
+import org.drools.contrib.Cheese;
+
+rule "Cheese"
+	when
+		Cheese( type == "stilton" )
+	then 
+	    System.out.println("STILTON");
+end
+
