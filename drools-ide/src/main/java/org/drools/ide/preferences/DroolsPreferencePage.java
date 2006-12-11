@@ -15,12 +15,15 @@ public class DroolsPreferencePage extends PreferencePage implements IWorkbenchPr
 
 	private Button buildAllCheckBox;
 	private Button collapseEditorCheckBox;
+	private Button cacheParsedRulesCheckBox;
 	
 	protected Control createContents(Composite parent) {
 		buildAllCheckBox = createCheckBox(parent,
 			"Automatically reparse all rules if a Java resource is changed.");
 		collapseEditorCheckBox = createCheckBox(parent,
 			"Use code folding in DRL editor.");
+		cacheParsedRulesCheckBox = createCheckBox(parent,
+			"When parsing rules, always cache the result for future use. Warning: when disabled, debugging of rules will not work.");
 
 		initializeValues();
 
@@ -43,12 +46,14 @@ public class DroolsPreferencePage extends PreferencePage implements IWorkbenchPr
         IPreferenceStore store = getPreferenceStore();
         buildAllCheckBox.setSelection(store.getDefaultBoolean(IDroolsConstants.BUILD_ALL));
         collapseEditorCheckBox.setSelection(store.getDefaultBoolean(IDroolsConstants.EDITOR_FOLDING));
+        cacheParsedRulesCheckBox.setSelection(store.getDefaultBoolean(IDroolsConstants.CACHE_PARSED_RULES));
     }
 
 	private void initializeValues() {
         IPreferenceStore store = getPreferenceStore();
         buildAllCheckBox.setSelection(store.getBoolean(IDroolsConstants.BUILD_ALL));
         collapseEditorCheckBox.setSelection(store.getBoolean(IDroolsConstants.EDITOR_FOLDING));
+        cacheParsedRulesCheckBox.setSelection(store.getBoolean(IDroolsConstants.CACHE_PARSED_RULES));
     }
 
 	protected void performDefaults() {
@@ -66,6 +71,7 @@ public class DroolsPreferencePage extends PreferencePage implements IWorkbenchPr
         IPreferenceStore store = getPreferenceStore();
         store.setValue(IDroolsConstants.BUILD_ALL, buildAllCheckBox.getSelection());
         store.setValue(IDroolsConstants.EDITOR_FOLDING, collapseEditorCheckBox.getSelection());
+        store.setValue(IDroolsConstants.CACHE_PARSED_RULES, cacheParsedRulesCheckBox.getSelection());
     }
 
 	public void init(IWorkbench workbench) {

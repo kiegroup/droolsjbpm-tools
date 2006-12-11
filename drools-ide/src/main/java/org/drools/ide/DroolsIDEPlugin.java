@@ -45,6 +45,8 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -69,6 +71,7 @@ public class DroolsIDEPlugin extends AbstractUIPlugin {
 	private Map parsedRules = new HashMap();
 	private Map compiledRules = new HashMap();
 	private Map ruleInfoByClassNameMap = new HashMap();
+	private boolean useCachePreference;
 	
 	/**
 	 * The constructor.
@@ -83,6 +86,21 @@ public class DroolsIDEPlugin extends AbstractUIPlugin {
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+		IPreferenceStore preferenceStore = getPreferenceStore();
+		useCachePreference = preferenceStore.getBoolean(IDroolsConstants.CACHE_PARSED_RULES);
+    	preferenceStore.addPropertyChangeListener(new IPropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent event) {
+				if (IDroolsConstants.CACHE_PARSED_RULES.equals(event.getProperty())) {
+					useCachePreference = ((Boolean) event.getNewValue()).booleanValue();
+					if (!useCachePreference) {
+						parsedRules.clear();
+						compiledRules.clear();
+						ruleInfoByClassNameMap.clear();
+					}
+				}
+			}
+    	});
+
     }
 
 	/**
@@ -188,6 +206,7 @@ public class DroolsIDEPlugin extends AbstractUIPlugin {
 	protected void initializeDefaultPreferences(IPreferenceStore store) {
 		store.setDefault(IDroolsConstants.BUILD_ALL, false);
 		store.setDefault(IDroolsConstants.EDITOR_FOLDING, true);
+		store.setDefault(IDroolsConstants.CACHE_PARSED_RULES, true);
 	}
 	
 	public DRLInfo parseResource(IResource resource, boolean compile) throws DroolsParserException {
@@ -252,6 +271,7 @@ public class DroolsIDEPlugin extends AbstractUIPlugin {
 	}
 
 	private DRLInfo generateParsedResource(String content, IResource resource, boolean useCache, boolean compile) throws DroolsParserException {
+		useCache = useCache && useCachePreference;
         DrlParser parser = new DrlParser();
         try {
             Reader dslReader = DSLAdapter.getDSLContent(content, resource);
@@ -303,13 +323,13 @@ public class DroolsIDEPlugin extends AbstractUIPlugin {
         		if (useCache) {
 	    			if (compile && !parser.hasErrors()) {
 	    				parsedRules.remove(resource);
-	    				compiledRules.put(resource, result);
+    					compiledRules.put(resource, result);
 	        			RuleInfo[] ruleInfos = result.getRuleInfos();
 	        			for (int i = 0; i < ruleInfos.length; i++) {
 	        				ruleInfoByClassNameMap.put(ruleInfos[i].getClassName(), ruleInfos[i]);
 	        			}
 	    			} else {
-	    				parsedRules.put(resource, result);
+    					parsedRules.put(resource, result);
 	    			}
         		}
             	return result;

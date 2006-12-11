@@ -13,6 +13,7 @@ import org.drools.ide.DroolsIDEPlugin;
 import org.drools.ide.debug.core.IDroolsDebugConstants;
 import org.drools.ide.editors.outline.RuleContentOutlinePage;
 import org.drools.ide.editors.scanners.RuleEditorMessages;
+import org.drools.ide.preferences.IDroolsConstants;
 import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -27,6 +28,7 @@ import org.eclipse.jdt.core.CompletionRequestor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.Annotation;
@@ -36,12 +38,14 @@ import org.eclipse.jface.text.source.projection.ProjectionAnnotation;
 import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
 import org.eclipse.jface.text.source.projection.ProjectionSupport;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
+import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -63,10 +67,13 @@ public class DRLRuleEditor extends TextEditor {
 
 	private Annotation[] oldAnnotations;
 	private ProjectionAnnotationModel annotationModel;
+	protected DroolsPairMatcher bracketMatcher = new DroolsPairMatcher();
 	
 	public DRLRuleEditor() {
 		setSourceViewerConfiguration(new DRLSourceViewerConfig(this));
 		setDocumentProvider(new DRLDocumentProvider());
+		getPreferenceStore().setDefault(IDroolsConstants.DRL_EDITOR_MATCHING_BRACKETS, true);
+		PreferenceConverter.setDefault(getPreferenceStore(), IDroolsConstants.DRL_EDITOR_MATCHING_BRACKETS_COLOR, new RGB(192, 192, 192));
 	}
 
 	public void createPartControl(Composite parent) {
@@ -88,7 +95,15 @@ public class DRLRuleEditor extends TextEditor {
 		getSourceViewerDecorationSupport(viewer);
 		return viewer;
 	}
-
+	
+	protected void configureSourceViewerDecorationSupport(SourceViewerDecorationSupport support) {
+		support.setCharacterPairMatcher(bracketMatcher);
+		support.setMatchingCharacterPainterPreferenceKeys(
+			IDroolsConstants.DRL_EDITOR_MATCHING_BRACKETS,
+			IDroolsConstants.DRL_EDITOR_MATCHING_BRACKETS_COLOR);
+		super.configureSourceViewerDecorationSupport(support);
+	}
+	
 	public void updateFoldingStructure(List positions) {
 		Annotation[] annotations = new Annotation[positions.size()];
 		// this will hold the new annotations along
@@ -354,6 +369,14 @@ public class DRLRuleEditor extends TextEditor {
 			}
 		} catch (CoreException exc) {
 			DroolsIDEPlugin.log(exc);
+		}
+	}
+	
+	public void dispose() {
+		super.dispose();
+		if (bracketMatcher != null) {
+			bracketMatcher.dispose();
+			bracketMatcher = null;
 		}
 	}
 }
