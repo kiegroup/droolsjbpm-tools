@@ -1,7 +1,5 @@
 package org.drools.ide.editors;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Stack;
 
 import org.drools.ide.DroolsIDEPlugin;

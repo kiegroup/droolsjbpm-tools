@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.drools.ide.DRLInfo;
 import org.drools.ide.DroolsIDEPlugin;
+import org.drools.ide.DRLInfo.FunctionInfo;
 import org.drools.ide.DRLInfo.RuleInfo;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -34,8 +35,7 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
 	 */
 	public DroolsLineBreakpoint(IResource resource, int lineNumber)
 			throws CoreException {
-   		super(resource, "", -1, /*getRuleClassName(resource, lineNumber), 
-			getRuleLineNumber(resource, lineNumber), */ -1, -1, 0, true, 
+   		super(resource, "", -1,  -1, -1, 0, true, 
 			createAttributesMap(lineNumber), IDroolsDebugConstants.DROOLS_MARKER_TYPE);
 	}
 	
@@ -70,6 +70,10 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
 				if (ruleInfo != null) {
 					return ruleInfo.getClassName();
 				}
+				FunctionInfo functionInfo = drlInfo.getFunctionInfo(lineNumber);
+				if (functionInfo != null) {
+					return functionInfo.getClassName();
+				}
 			}
 			throw new CoreException(new Status(IStatus.ERROR, DroolsIDEPlugin.getUniqueIdentifier(), 0,
 				"Cannot determine ruleClassName for " + resource + " " + lineNumber, null));
@@ -89,6 +93,11 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
 						return ruleInfo.getConsequenceJavaLineNumber()
 							+ (lineNumber - ruleInfo.getConsequenceDrlLineNumber());
 					}
+				}
+				FunctionInfo functionInfo = drlInfo.getFunctionInfo(lineNumber);
+				if (functionInfo != null) {
+					return functionInfo.getJavaLineNumber()
+						+ (lineNumber - functionInfo.getDrlLineNumber());
 				}
 			}
 			throw new CoreException(new Status(IStatus.ERROR, DroolsIDEPlugin.getUniqueIdentifier(), 0,

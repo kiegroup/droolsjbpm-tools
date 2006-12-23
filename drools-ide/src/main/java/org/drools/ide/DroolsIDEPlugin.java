@@ -26,6 +26,7 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.ide.DRLInfo.FunctionInfo;
 import org.drools.ide.DRLInfo.RuleInfo;
 import org.drools.ide.builder.DroolsBuilder;
 import org.drools.ide.builder.Util;
@@ -71,6 +72,7 @@ public class DroolsIDEPlugin extends AbstractUIPlugin {
 	private Map parsedRules = new HashMap();
 	private Map compiledRules = new HashMap();
 	private Map ruleInfoByClassNameMap = new HashMap();
+	private Map functionInfoByClassNameMap = new HashMap();
 	private boolean useCachePreference;
 	
 	/**
@@ -96,6 +98,7 @@ public class DroolsIDEPlugin extends AbstractUIPlugin {
 						parsedRules.clear();
 						compiledRules.clear();
 						ruleInfoByClassNameMap.clear();
+						functionInfoByClassNameMap.clear();
 					}
 				}
 			}
@@ -253,6 +256,10 @@ public class DroolsIDEPlugin extends AbstractUIPlugin {
 			for (int i = 0; i < ruleInfos.length; i++) {
 				ruleInfoByClassNameMap.remove(ruleInfos[i].getClassName());
 			}
+			FunctionInfo[] functionInfos = cached.getFunctionInfos();
+			for (int i = 0; i < functionInfos.length; i++) {
+				functionInfoByClassNameMap.remove(functionInfos[i].getClassName());
+			}
 		}
 		parsedRules.remove(resource);
 	}
@@ -328,6 +335,10 @@ public class DroolsIDEPlugin extends AbstractUIPlugin {
 	        			for (int i = 0; i < ruleInfos.length; i++) {
 	        				ruleInfoByClassNameMap.put(ruleInfos[i].getClassName(), ruleInfos[i]);
 	        			}
+	        			FunctionInfo[] functionInfos = result.getFunctionInfos();
+	        			for (int i = 0; i < functionInfos.length; i++) {
+	        				functionInfoByClassNameMap.put(functionInfos[i].getClassName(), functionInfos[i]);
+	        			}
 	    			} else {
     					parsedRules.put(resource, result);
 	    			}
@@ -344,6 +355,10 @@ public class DroolsIDEPlugin extends AbstractUIPlugin {
 	
 	public RuleInfo getRuleInfoByClass(String ruleClassName) {
 		return (RuleInfo) ruleInfoByClassNameMap.get(ruleClassName);
+	}
+
+	public FunctionInfo getFunctionInfoByClass(String functionClassName) {
+		return (FunctionInfo) functionInfoByClassNameMap.get(functionClassName);
 	}
 
 }

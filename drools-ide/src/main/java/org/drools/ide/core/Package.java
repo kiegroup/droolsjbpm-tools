@@ -1,9 +1,7 @@
 package org.drools.ide.core;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This represents a package. 

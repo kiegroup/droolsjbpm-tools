@@ -2,6 +2,7 @@ package org.drools.ide.editors;
 
 import org.drools.ide.DRLInfo;
 import org.drools.ide.DroolsIDEPlugin;
+import org.drools.ide.DRLInfo.FunctionInfo;
 import org.drools.ide.DRLInfo.RuleInfo;
 import org.drools.ide.debug.core.DroolsLineBreakpoint;
 import org.drools.ide.debug.core.IDroolsDebugConstants;
@@ -29,6 +30,12 @@ public class DroolsLineBreakpointAdapter implements IToggleBreakpointsTarget {
 					RuleInfo ruleInfo = drlInfo.getRuleInfo(lineNumber);
 					if (ruleInfo != null) {
 						if (ruleInfo.getConsequenceDrlLineNumber() <= lineNumber) {
+							return true;
+						}
+					}
+					FunctionInfo functionInfo = drlInfo.getFunctionInfo(lineNumber);
+					if (functionInfo != null) {
+						if (functionInfo.getDrlLineNumber() <= lineNumber) {
 							return true;
 						}
 					}

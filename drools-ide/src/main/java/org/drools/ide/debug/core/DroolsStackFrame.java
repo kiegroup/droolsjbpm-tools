@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.ide.DroolsIDEPlugin;
+import org.drools.ide.DRLInfo.FunctionInfo;
 import org.drools.ide.DRLInfo.RuleInfo;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -59,10 +60,7 @@ public class DroolsStackFrame extends JDIStackFrame {
 	
 	public boolean isExecutingRule() {
 		try {
-			String methodName = getMethodName();
-			String signature = getSignature();
-			String type = getDeclaringTypeName();
-			if ("consequence".equals(methodName) && signature.startsWith(CONSEQUENCE_SIGNATURE)) {
+			if ("consequence".equals(getMethodName()) && getSignature().startsWith(CONSEQUENCE_SIGNATURE)) {
 				return true;
 			}
 		} catch (DebugException exc) {
@@ -85,13 +83,26 @@ public class DroolsStackFrame extends JDIStackFrame {
 		return null;
 	}
 	
+	public FunctionInfo getExecutingFunctionInfo() {
+		try {
+			return DroolsIDEPlugin.getDefault()
+				.getFunctionInfoByClass(getDeclaringTypeName());
+		} catch (DebugException exc) {
+			DroolsIDEPlugin.log(exc);
+		}
+		return null;
+	}
+	
 	public int getLineNumber() throws DebugException {
 		synchronized (fThread) {
 			RuleInfo ruleInfo = getExecutingRuleInfo();
 			if (ruleInfo != null) {
 				return ruleInfo.getConsequenceDrlLineNumber() + (getInternalLineNumber() - ruleInfo.getConsequenceJavaLineNumber());
 			}
-			
+			FunctionInfo functionInfo = getExecutingFunctionInfo();
+			if (functionInfo != null) {
+				return functionInfo.getDrlLineNumber() + (getInternalLineNumber() - functionInfo.getJavaLineNumber());
+			}
 		}
 		return getInternalLineNumber();
 	}
