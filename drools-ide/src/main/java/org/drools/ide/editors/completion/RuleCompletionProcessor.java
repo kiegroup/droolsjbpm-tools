@@ -603,6 +603,9 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         list.add(new RuleCompletionProposal(prefix.length(), "auto-focus", "auto-focus ", droolsIcon));           
         list.add(new RuleCompletionProposal(prefix.length(), "when", "when" + System.getProperty("line.separator") + "\t ", droolsIcon));
         list.add(new RuleCompletionProposal(prefix.length(), "activation-group", "activation-group ", droolsIcon));        
+        list.add(new RuleCompletionProposal(prefix.length(), "date-effective", "date-effective \"dd-MMM-yyyy\"", 16, droolsIcon));        
+        list.add(new RuleCompletionProposal(prefix.length(), "date-expires", "date-expires \"dd-MMM-yyyy\"", 14, droolsIcon));        
+        list.add(new RuleCompletionProposal(prefix.length(), "enabled", "enabled false", droolsIcon));        
     }
 
     private void addDSLProposals(final List list,
