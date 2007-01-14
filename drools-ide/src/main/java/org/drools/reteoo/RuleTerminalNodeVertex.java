@@ -10,18 +10,18 @@ import org.eclipse.swt.graphics.Color;
  * Wraps {@link TerminalNode} and adds visual extras like color information
  *
  */
-public class TerminalNodeVertex extends BaseVertex {
+public class RuleTerminalNodeVertex extends BaseVertex {
     
     private static final String NODE_NAME = "TerminalNode";
     
-    private final TerminalNode node;
+    private final RuleTerminalNode node;
 
     /**
      * Constructor
      * 
      * @param node node to be wrapped
      */
-    public TerminalNodeVertex(final TerminalNode node) {
+    public RuleTerminalNodeVertex(final RuleTerminalNode node) {
         super();
         this.node = node;
     }

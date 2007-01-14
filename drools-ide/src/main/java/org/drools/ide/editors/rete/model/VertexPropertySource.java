@@ -19,7 +19,7 @@ import org.drools.reteoo.ObjectTypeNodeVertex;
 import org.drools.reteoo.QueryTerminalNodeVertex;
 import org.drools.reteoo.ReteVertex;
 import org.drools.reteoo.RightInputAdapterNodeVertex;
-import org.drools.reteoo.TerminalNodeVertex;
+import org.drools.reteoo.RuleTerminalNodeVertex;
 import org.drools.spi.Constraint;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
@@ -133,8 +133,8 @@ public class VertexPropertySource
             initCollectNodeProperties( (CollectNodeVertex) vertex,
                                        descriptorList,
                                        values );
-        } else if ( vertex instanceof TerminalNodeVertex ) {
-            initTerminalNodeProperties( (TerminalNodeVertex) vertex,
+        } else if ( vertex instanceof RuleTerminalNodeVertex ) {
+            initTerminalNodeProperties( (RuleTerminalNodeVertex) vertex,
                     descriptorList,
                     values );
     	} else if ( vertex instanceof QueryTerminalNodeVertex ) {
@@ -365,7 +365,7 @@ public class VertexPropertySource
                      valueMap );
     }
 
-    private void initTerminalNodeProperties(TerminalNodeVertex node,
+    private void initTerminalNodeProperties(RuleTerminalNodeVertex node,
                                             List descriptorList,
                                             Map valueMap) {
 
