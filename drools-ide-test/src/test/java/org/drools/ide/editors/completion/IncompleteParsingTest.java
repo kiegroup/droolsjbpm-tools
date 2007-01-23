@@ -7,10 +7,12 @@ import junit.framework.TestCase;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.descr.VariableRestrictionDescr;
 
 /**
  * Test to check the results from parsing incomplete rule fragments. 
@@ -84,7 +86,8 @@ public class IncompleteParsingTest extends TestCase {
         rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
         column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-        assertTrue(column.getEndLine() != -1 || column.getEndColumn() != -1);
+        // TODO this method does not yet exist
+        // assertTrue(column.getEndCharacter() != -1);
 
         input = 
 	    	"rule MyRule \n" +
@@ -103,7 +106,8 @@ public class IncompleteParsingTest extends TestCase {
         // TODO: this contains 2 null subdescr ???
         // assertEquals(1, rule.getLhs().getDescrs().size());
         column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-        assertTrue(column.getEndLine() != -1 || column.getEndColumn() != -1);
+        // TODO this method does not yet exist
+        // assertTrue(column.getEndCharacter() != -1);
 
         input = 
 			"rule MyRule \n" +
@@ -115,7 +119,8 @@ public class IncompleteParsingTest extends TestCase {
         // TODO column = null
         // assertEquals("class", column.getIdentifier());
         // assertNull(column.getObjectType());
-        // assertTrue(column.getEndLine() == -1 && column.getEndColumn() == -1);
+        // TODO this method does not yet exist
+        // assertEquals(-1, column.getEndCharacter());
 
         input = 
 			"rule MyRule \n" +
@@ -126,8 +131,9 @@ public class IncompleteParsingTest extends TestCase {
         column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("class", column.getIdentifier());
         assertEquals("Cl", column.getObjectType());
-        // TODO endLine and endColumn = 0
-        // assertTrue(column.getEndLine() == -1 && column.getEndColumn() == -1);
+        assertEquals(0, column.getDescrs().size());
+        // TODO this method does not yet exist
+        // assertEquals(-1, column.getEndCharacter());
 
         input = 
 			"rule MyRule \n" +
@@ -138,8 +144,9 @@ public class IncompleteParsingTest extends TestCase {
         column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("class", column.getIdentifier());
         assertEquals("Cl", column.getObjectType());
-        // TODO endLine and endColumn = 0
-        // assertTrue(column.getEndLine() == -1 && column.getEndColumn() == -1);
+        assertEquals(0, column.getDescrs().size());
+        // TODO this method does not yet exist
+        // assertEquals(-1, column.getEndCharacter());
 
         /** Inside of condition: start */
         input = 
@@ -150,8 +157,249 @@ public class IncompleteParsingTest extends TestCase {
         assertEquals(1, rule.getLhs().getDescrs().size());
         column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", column.getObjectType());
-        // TODO endLine and endColumn = 0
-        // assertTrue(column.getEndLine() == -1 && column.getEndColumn() == -1);
+        assertEquals(0, column.getDescrs().size());
+        // TODO this method does not yet exist
+        // assertEquals(-1, column.getEndCharacter());
+
+        input = 
+        	"rule MyRule \n" + 
+        	"	when \n" + 
+        	"		Class ( na";
+        rule = parseRuleString(input);
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", column.getObjectType());
+        // TODO I would like to have access to the "na" as well, but not sure how this could be possible
+        // TODO this method does not yet exist
+        // assertEquals(-1, column.getEndCharacter());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( condition == true, ";
+        rule = parseRuleString(input);
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", column.getObjectType());
+        // TODO this method does not yet exist
+        // assertEquals(-1, column.getEndCharacter());
+        assertEquals(1, column.getDescrs().size());
+        field = (FieldConstraintDescr) column.getDescrs().get(0); 
+        // TODO this method does not yet exist
+        // assertEquals(-1, field.getEndCharacter());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( condition == true, na";
+        rule = parseRuleString(input);
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", column.getObjectType());
+        // TODO this method does not yet exist
+        // assertEquals(-1, column.getEndCharacter());
+        assertEquals(1, column.getDescrs().size());
+        field = (FieldConstraintDescr) column.getDescrs().get(0); 
+        // TODO this method does not yet exist
+        // assertEquals(-1, field.getEndCharacter());
+        // TODO I would like to have access to the "na" as well, but not sure how this could be possible
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( name:";
+        rule = parseRuleString(input);
+        // TODO: this contains 2 subdescr, the second one null ???
+        // assertEquals(1, rule.getLhs().getDescrs().size());
+        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", column.getObjectType());
+        // TODO this method does not yet exist
+        // assertEquals(-1, column.getEndCharacter());
+        // TODO: this contains no subdescr, although it is already known it should be a FieldBindingDescr ??
+        // assertEquals(1, column.getDescrs().size());
+        // FieldBindingDescr binding = (FieldBindingDescr) column.getDescrs().get(0);
+        // assertEquals("name", binding.getIdentifier());
+        // assertNull(binding.getFieldName());
+        
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property ";
+        rule = parseRuleString(input);
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", column.getObjectType());
+        // TODO this method does not yet exist
+        // assertEquals(-1, column.getEndCharacter());
+        // TODO: this contains no subdescr, although it is already known it should be a FieldConstraintDescr ??
+        // assertEquals(1, column.getDescrs().size());
+        // field = (FieldConstraintDescr) column.getDescrs().get(0);
+        // assertEquals("property", field.getFieldName());
+        // assertEquals(0, field.getRestrictions().size());
+        // TODO this method does not yet exist
+        // assertEquals(-1, field.getEndCharacter());
+        
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( name: property ";
+        rule = parseRuleString(input);
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", column.getObjectType());
+        // TODO this method does not yet exist
+        // assertEquals(-1, column.getEndCharacter());
+        // TODO: this contains one subdescr, although it is already known the second one should be a FieldConstraintDescr ??
+        // assertEquals(2, column.getDescrs().size());
+        FieldBindingDescr binding = (FieldBindingDescr) column.getDescrs().get(0);
+        assertEquals("name", binding.getIdentifier());
+        assertEquals("property", binding.getFieldName());
+        // field = (FieldConstraintDescr) column.getDescrs().get(1);
+        // assertEquals("property", field.getFieldName());
+        // assertEquals(0, field.getRestrictions().size());
+        // TODO this method does not yet exist
+        // assertEquals(-1, field.getEndCharacter());
+        
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( name1: property1 == \"value1\", name2: property2 ";
+        rule = parseRuleString(input);
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", column.getObjectType());
+        // TODO this method does not yet exist
+        // assertEquals(-1, column.getEndCharacter());
+        // TODO: this contains three subdescr, although it is already known the fourth one should be a FieldConstraintDescr ??
+        // assertEquals(4, column.getDescrs().size());
+        binding = (FieldBindingDescr) column.getDescrs().get(0);
+        assertEquals("name1", binding.getIdentifier());
+        assertEquals("property1", binding.getFieldName());
+        field = (FieldConstraintDescr) column.getDescrs().get(1);
+        assertEquals("property1", field.getFieldName());
+        assertEquals(1, field.getRestrictions().size());
+        LiteralRestrictionDescr literal = (LiteralRestrictionDescr) field.getRestrictions().get(0);
+        assertEquals("==", literal.getEvaluator());
+        assertEquals("value1", literal.getText());
+        binding = (FieldBindingDescr) column.getDescrs().get(2);
+        assertEquals("name2", binding.getIdentifier());
+        assertEquals("property2", binding.getFieldName());
+        // field = (FieldConstraintDescr) column.getDescrs().get(3);
+        // assertEquals("property2", field.getFieldName());
+        // assertEquals(0, field.getRestrictions().size());
+        // TODO this method does not yet exist
+        // assertEquals(-1, field.getEndCharacter());
+        
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class(name:property==";
+        rule = parseRuleString(input);
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", column.getObjectType());
+        // TODO this method does not yet exist
+        // assertEquals(-1, column.getEndCharacter());
+        assertEquals(2, column.getDescrs().size());
+        binding = (FieldBindingDescr) column.getDescrs().get(0);
+        assertEquals("name", binding.getIdentifier());
+        assertEquals("property", binding.getFieldName());
+        field = (FieldConstraintDescr) column.getDescrs().get(1);
+        assertEquals("property", field.getFieldName());
+        assertEquals(1, field.getRestrictions().size());
+        // now I would like to access the evaluator '==', but this seems
+        // not possible because the parser cannot create this descr yet
+        // since it does not know what class to create (VariableRestrictionDescr
+        // or LiteralRestrictionDescr or ?)
+        // so maybe I should just extract this info myself, based on the
+        // starting character of this FieldConstraintDescr?
+        // TODO this method does not yet exist
+        // assertEquals(-1, field.getEndCharacter());
+        
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class( property == otherPropertyN";
+        rule = parseRuleString(input);
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", column.getObjectType());
+        // TODO this method does not yet exist
+        // assertEquals(-1, column.getEndCharacter());
+        assertEquals(1, column.getDescrs().size());
+        field = (FieldConstraintDescr) column.getDescrs().get(0);
+        assertEquals("property", field.getFieldName());
+        assertEquals(1, field.getRestrictions().size());
+        VariableRestrictionDescr variable = (VariableRestrictionDescr) field.getRestrictions().get(0);
+        assertEquals("==", variable.getEvaluator());
+        assertEquals("otherPropertyN", variable.getIdentifier());
+        // TODO this method does not yet exist
+        // assertEquals(-1, field.getEndCharacter());
+        
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class( property == \"someth";
+        rule = parseRuleString(input);
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", column.getObjectType());
+        // TODO this method does not yet exist
+        // assertEquals(-1, column.getEndCharacter());
+        assertEquals(1, column.getDescrs().size());
+        field = (FieldConstraintDescr) column.getDescrs().get(0);
+        assertEquals("property", field.getFieldName());
+        assertEquals(1, field.getRestrictions().size());
+        literal = (LiteralRestrictionDescr) field.getRestrictions().get(0);
+        // TODO literal should be a LiteralRestrictionDescr with filled in evaluator and text, not null
+        // assertEquals("==", literal.getEvaluator());
+        // assertEquals("someth", literal.getText());
+        // TODO this method does not yet exist
+        // assertEquals(-1, field.getEndCharacter());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class( property contains ";
+        rule = parseRuleString(input);
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", column.getObjectType());
+        // TODO this method does not yet exist
+        // assertEquals(-1, column.getEndCharacter());
+        assertEquals(1, column.getDescrs().size());
+        field = (FieldConstraintDescr) column.getDescrs().get(0);
+        assertEquals("property", field.getFieldName());
+        assertEquals(1, field.getRestrictions().size());
+        // now I would like to access the evaluator 'contains', but this seems
+        // not possible because the parser cannot create this descr yet
+        // since it does not know what class to create (VariableRestrictionDescr
+        // or LiteralRestrictionDescr or ?)
+        // so maybe I should just extract this info myself, based on the
+        // starting character of this FieldConstraintDescr?
+        // TODO this method does not yet exist
+        // assertEquals(-1, field.getEndCharacter());
+        
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class( property matches \"someth";
+        rule = parseRuleString(input);
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", column.getObjectType());
+        // TODO this method does not yet exist
+        // assertEquals(-1, column.getEndCharacter());
+        assertEquals(1, column.getDescrs().size());
+        field = (FieldConstraintDescr) column.getDescrs().get(0);
+        assertEquals("property", field.getFieldName());
+        assertEquals(1, field.getRestrictions().size());
+        literal = (LiteralRestrictionDescr) field.getRestrictions().get(0);
+        // TODO literal should be a LiteralRestrictionDescr with filled in evaluator and text, not null
+        // assertEquals("matches", literal.getEvaluator());
+        // assertEquals("someth", literal.getText());
+        // TODO this method does not yet exist
+        // assertEquals(-1, field.getEndCharacter());
     }
     
     public void testParsingCharactersStartEnd() {
@@ -173,266 +421,6 @@ public class IncompleteParsingTest extends TestCase {
     }
     
 //    public void doTestRemainder() {
-//        
-//        input = 
-//        	"rule MyRule \n" +
-//        	"	when \n" +
-//        	"		Class ( na";
-//        location = LocationDeterminator.getLocationInCondition(input);
-//        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_START, location.getType());
-//        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//    
-//        input = 
-//        	"rule MyRule \n" +
-//        	"	when \n" +
-//        	"		Class ( condition == true, ";
-//        location = LocationDeterminator.getLocationInCondition(input);
-//        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_START, location.getType());
-//        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//    
-//        input = 
-//        	"rule MyRule \n" +
-//        	"	when \n" +
-//        	"		Class ( condition == true, na";
-//        location = LocationDeterminator.getLocationInCondition(input);
-//        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_START, location.getType());
-//        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//    
-//        input = 
-//        	"rule MyRule \n" +
-//        	"	when \n" +
-//        	"		Class ( \n" +
-//        	"			";
-//        location = LocationDeterminator.getLocationInCondition(input);
-//        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_START, location.getType());
-//        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//    
-//        input = 
-//        	"rule MyRule \n" +
-//        	"	when \n" +
-//        	"		Class ( condition == true, \n" +
-//        	"			";
-//        location = LocationDeterminator.getLocationInCondition(input);
-//        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_START, location.getType());
-//        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//    
-//        input = 
-//        	"rule MyRule \n" +
-//        	"	when \n" +
-//        	"		Class ( name : ";
-//        location = LocationDeterminator.getLocationInCondition(input);
-////        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_START, location.getType());
-////        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//    
-//        input = 
-//        	"rule MyRule \n" +
-//        	"	when \n" +
-//        	"		Class ( name: ";
-//        location = LocationDeterminator.getLocationInCondition(input);
-////        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_START, location.getType());
-////        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//    
-//        input = 
-//        	"rule MyRule \n" +
-//        	"	when \n" +
-//        	"		Class ( name:";
-//        location = LocationDeterminator.getLocationInCondition(input);
-////        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_START, location.getType());
-////        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//    
-//        /** Inside of condition: Operator */
-//        input = 
-//        	"rule MyRule \n" +
-//        	"	when \n" +
-//        	"		Class ( property ";
-//        location = LocationDeterminator.getLocationInCondition(input);
-//        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_OPERATOR, location.getType());
-//        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
-//        
-//        input = 
-//        	"rule MyRule \n" +
-//        	"	when \n" +
-//        	"		Class(property ";
-//        location = LocationDeterminator.getLocationInCondition(input);
-//        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_OPERATOR, location.getType());
-//        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
-//        
-//        input = 
-//        	"rule MyRule \n" +
-//        	"	when \n" +
-//        	"		Class ( name : property ";
-//        location = LocationDeterminator.getLocationInCondition(input);
-//        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_OPERATOR, location.getType());
-//        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
-//
-//        input = 
-//        	"rule MyRule \n" +
-//        	"	when \n" +
-//        	"		Class (name:property ";
-//        location = LocationDeterminator.getLocationInCondition(input);
-//        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_OPERATOR, location.getType());
-//        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
-//
-//        input = 
-//        	"rule MyRule \n" +
-//        	"	when \n" +
-//        	"		Class (name:property   ";
-//        location = LocationDeterminator.getLocationInCondition(input);
-//        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_OPERATOR, location.getType());
-//        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
-//
-//        input = 
-//        	"rule MyRule \n" +
-//        	"	when \n" +
-//        	"		Class ( name1 : property1, name : property ";
-//        location = LocationDeterminator.getLocationInCondition(input);
-//        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_OPERATOR, location.getType());
-//        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
-//
-//        input = 
-//        	"rule MyRule \n" +
-//        	"	when \n" +
-//        	"		Class ( name1 : property1 == \"value\", name : property ";
-//        location = LocationDeterminator.getLocationInCondition(input);
-//        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_OPERATOR, location.getType());
-//        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
-//
-//        input = 
-//        	"rule MyRule \n" +
-//        	"	when \n" +
-//        	"		Class ( name1 : property1 == \"value\",property ";
-//        location = LocationDeterminator.getLocationInCondition(input);
-//        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_OPERATOR, location.getType());
-//        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
-//
-//        input = 
-//        	"rule MyRule \n" +
-//        	"	when \n" +
-//        	"		Class ( name1 : property1, \n" + 
-//        	"			name : property ";
-//        location = LocationDeterminator.getLocationInCondition(input);
-//        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_OPERATOR, location.getType());
-//        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
-//
-//        /** Inside of condition: argument */
-//        input = 
-//        	"rule MyRule \n" +
-//        	"	when \n" +
-//        	"		Class ( property == ";
-//        location = LocationDeterminator.getLocationInCondition(input);
-//        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT, location.getType());
-//        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
-//        assertEquals("==", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_OPERATOR));
-//        
-//        input = 
-//        	"rule MyRule \n" +
-//        	"	when \n" +
-//        	"		Class ( property== ";
-//        location = LocationDeterminator.getLocationInCondition(input);
-//        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT, location.getType());
-//        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
-//        assertEquals("==", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_OPERATOR));
-//        
-//        input = 
-//        	"rule MyRule \n" +
-//        	"	when \n" +
-//        	"		Class ( name : property <= ";
-//        location = LocationDeterminator.getLocationInCondition(input);
-//        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT, location.getType());
-//        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
-//        assertEquals("<=", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_OPERATOR));
-//        
-//        input = 
-//        	"rule MyRule \n" +
-//        	"	when \n" +
-//        	"		Class ( name:property != ";
-//        location = LocationDeterminator.getLocationInCondition(input);
-//        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT, location.getType());
-//        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
-//        assertEquals("!=", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_OPERATOR));
-//        
-//        input = 
-//        	"rule MyRule \n" +
-//        	"	when \n" +
-//        	"		Class ( name1 : property1, property2 == ";
-//        location = LocationDeterminator.getLocationInCondition(input);
-//        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT, location.getType());
-//        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//        assertEquals("property2", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
-//        assertEquals("==", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_OPERATOR));
-//        
-//        input = 
-//        	"rule MyRule \n" +
-//        	"	when \n" +
-//        	"		Class (name:property== ";
-//        location = LocationDeterminator.getLocationInCondition(input);
-//        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT, location.getType());
-//        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
-//        assertEquals("==", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_OPERATOR));
-//        
-//        input = 
-//        	"rule MyRule \n" +
-//        	"	when \n" +
-//        	"		Class ( property == otherPropertyN";
-//        location = LocationDeterminator.getLocationInCondition(input);
-//        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT, location.getType());
-//        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
-//        assertEquals("==", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_OPERATOR));
-//        
-//        input = 
-//        	"rule MyRule \n" +
-//        	"	when \n" +
-//        	"		Class ( property == \"someth";
-//        location = LocationDeterminator.getLocationInCondition(input);
-//        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT, location.getType());
-//        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
-//        assertEquals("==", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_OPERATOR));
-//        
-//        input = 
-//        	"rule MyRule \n" +
-//        	"	when \n" +
-//        	"		Class ( property contains ";
-//        location = LocationDeterminator.getLocationInCondition(input);
-//        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT, location.getType());
-//        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
-//        assertEquals("contains", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_OPERATOR));
-//        
-//        input = 
-//        	"rule MyRule \n" +
-//        	"	when \n" +
-//        	"		Class ( property excludes ";
-//        location = LocationDeterminator.getLocationInCondition(input);
-//        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT, location.getType());
-//        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
-//        assertEquals("excludes", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_OPERATOR));
-//        
-//        input = 
-//        	"rule MyRule \n" +
-//        	"	when \n" +
-//        	"		Class ( property matches \"prop";
-//        location = LocationDeterminator.getLocationInCondition(input);
-//        assertEquals(LocationDeterminator.LOCATION_INSIDE_CONDITION_ARGUMENT, location.getType());
-//        assertEquals("Class", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME));
-//        assertEquals("property", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME));
-//        assertEquals("matches", location.getProperty(LocationDeterminator.LOCATION_PROPERTY_OPERATOR));
 //        
 //        /** EXISTS */
 //        input = 
