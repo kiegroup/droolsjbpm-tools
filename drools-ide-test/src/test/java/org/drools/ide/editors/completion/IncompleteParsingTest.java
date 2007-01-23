@@ -86,16 +86,14 @@ public class IncompleteParsingTest extends TestCase {
         rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
         column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-        // TODO this method does not yet exist
-        // assertTrue(column.getEndCharacter() != -1);
+        assertTrue(column.getEndCharacter() != -1);
 
         input = 
 	    	"rule MyRule \n" +
 	    	"  when \n" +
 	    	"    Cl";
         rule = parseRuleString(input);
-        // TODO: this contains 2 null subdescr ???
-        // assertEquals(0, rule.getLhs().getDescrs().size());
+        assertEquals(0, rule.getLhs().getDescrs().size());
 
         input = 
 	    	"rule MyRule \n" +
@@ -103,20 +101,20 @@ public class IncompleteParsingTest extends TestCase {
 	    	"    Class( condition == true ) \n" +
 	    	"    Cl";
         rule = parseRuleString(input);
-        // TODO: this contains 2 null subdescr ???
-        // assertEquals(1, rule.getLhs().getDescrs().size());
+        assertEquals(1, rule.getLhs().getDescrs().size());
         column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-        // TODO this method does not yet exist
-        // assertTrue(column.getEndCharacter() != -1);
+        assertTrue(column.getEndCharacter() != -1);
 
         input = 
 			"rule MyRule \n" +
 			"  when \n" +
 			"    class:";
         rule = parseRuleString(input);
-        assertEquals(1, rule.getLhs().getDescrs().size());
-        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
+        //assertEquals(1, rule.getLhs().getDescrs().size());
+        //column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
         // TODO column = null
+        // KRIS: can we keep it the way it is now? 
+        //       we dont know at this point that there will be a column following the variable
         // assertEquals("class", column.getIdentifier());
         // assertNull(column.getObjectType());
         // TODO this method does not yet exist
@@ -131,9 +129,9 @@ public class IncompleteParsingTest extends TestCase {
         column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("class", column.getIdentifier());
         assertEquals("Cl", column.getObjectType());
+        assertTrue(column.getEndLine() == -1 && column.getEndColumn() == -1);
         assertEquals(0, column.getDescrs().size());
-        // TODO this method does not yet exist
-        // assertEquals(-1, column.getEndCharacter());
+        assertEquals(-1, column.getEndCharacter());
 
         input = 
 			"rule MyRule \n" +
@@ -144,9 +142,9 @@ public class IncompleteParsingTest extends TestCase {
         column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("class", column.getIdentifier());
         assertEquals("Cl", column.getObjectType());
+        assertTrue(column.getEndLine() == -1 && column.getEndColumn() == -1);
         assertEquals(0, column.getDescrs().size());
-        // TODO this method does not yet exist
-        // assertEquals(-1, column.getEndCharacter());
+        assertEquals(-1, column.getEndCharacter());
 
         /** Inside of condition: start */
         input = 
@@ -157,9 +155,9 @@ public class IncompleteParsingTest extends TestCase {
         assertEquals(1, rule.getLhs().getDescrs().size());
         column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", column.getObjectType());
+        assertTrue(column.getEndLine() == -1 && column.getEndColumn() == -1);
         assertEquals(0, column.getDescrs().size());
-        // TODO this method does not yet exist
-        // assertEquals(-1, column.getEndCharacter());
+        assertEquals(-1, column.getEndCharacter());
 
         input = 
         	"rule MyRule \n" + 
@@ -170,8 +168,7 @@ public class IncompleteParsingTest extends TestCase {
         column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", column.getObjectType());
         // TODO I would like to have access to the "na" as well, but not sure how this could be possible
-        // TODO this method does not yet exist
-        // assertEquals(-1, column.getEndCharacter());
+        assertEquals(-1, column.getEndCharacter());
 
         input = 
         	"rule MyRule \n" +
@@ -181,12 +178,10 @@ public class IncompleteParsingTest extends TestCase {
         assertEquals(1, rule.getLhs().getDescrs().size());
         column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", column.getObjectType());
-        // TODO this method does not yet exist
-        // assertEquals(-1, column.getEndCharacter());
+        assertEquals(-1, column.getEndCharacter());
         assertEquals(1, column.getDescrs().size());
         field = (FieldConstraintDescr) column.getDescrs().get(0); 
-        // TODO this method does not yet exist
-        // assertEquals(-1, field.getEndCharacter());
+        assertEquals(-1, field.getEndCharacter());
 
         input = 
         	"rule MyRule \n" +
@@ -196,12 +191,10 @@ public class IncompleteParsingTest extends TestCase {
         assertEquals(1, rule.getLhs().getDescrs().size());
         column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", column.getObjectType());
-        // TODO this method does not yet exist
-        // assertEquals(-1, column.getEndCharacter());
+        assertEquals(-1, column.getEndCharacter());
         assertEquals(1, column.getDescrs().size());
         field = (FieldConstraintDescr) column.getDescrs().get(0); 
-        // TODO this method does not yet exist
-        // assertEquals(-1, field.getEndCharacter());
+        assertEquals(-1, field.getEndCharacter());
         // TODO I would like to have access to the "na" as well, but not sure how this could be possible
 
         input = 
@@ -209,12 +202,10 @@ public class IncompleteParsingTest extends TestCase {
         	"	when \n" +
         	"		Class ( name:";
         rule = parseRuleString(input);
-        // TODO: this contains 2 subdescr, the second one null ???
-        // assertEquals(1, rule.getLhs().getDescrs().size());
+        assertEquals(1, rule.getLhs().getDescrs().size());
         column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", column.getObjectType());
-        // TODO this method does not yet exist
-        // assertEquals(-1, column.getEndCharacter());
+        assertEquals(-1, column.getEndCharacter());
         // TODO: this contains no subdescr, although it is already known it should be a FieldBindingDescr ??
         // assertEquals(1, column.getDescrs().size());
         // FieldBindingDescr binding = (FieldBindingDescr) column.getDescrs().get(0);
@@ -412,12 +403,11 @@ public class IncompleteParsingTest extends TestCase {
         	"    System.out.println(\"Done\") \n" +
         	"end \n";
         RuleDescr rule = parseRuleString(input);
-        // TODO these methods do not yet exist
-        // assertEquals(15, rule.getStartCharacter());
-        // assertEquals(101, rule.getEndCharacter());
+        assertEquals(input.indexOf( "rule" ), rule.getStartCharacter());
+        assertEquals(input.indexOf( "end" )+2, rule.getEndCharacter());
         ColumnDescr column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-        // assertEquals(40, column.getStartCharacter());
-        // assertEquals(66, column.getEndCharacter());
+        assertEquals(input.indexOf( "(" ), column.getStartCharacter());
+        assertEquals(input.indexOf( "true )" )+5, column.getEndCharacter());
     }
     
 //    public void doTestRemainder() {
