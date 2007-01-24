@@ -206,11 +206,10 @@ public class IncompleteParsingTest extends TestCase {
         column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", column.getObjectType());
         assertEquals(-1, column.getEndCharacter());
-        // TODO: this contains no subdescr, although it is already known it should be a FieldBindingDescr ??
-        // assertEquals(1, column.getDescrs().size());
-        // FieldBindingDescr binding = (FieldBindingDescr) column.getDescrs().get(0);
-        // assertEquals("name", binding.getIdentifier());
-        // assertNull(binding.getFieldName());
+        assertEquals(1, column.getDescrs().size());
+        FieldBindingDescr binding1 = (FieldBindingDescr) column.getDescrs().get(0);
+        assertEquals("name", binding1.getIdentifier());
+        assertNull(binding1.getFieldName());
         
         input = 
         	"rule MyRule \n" +
