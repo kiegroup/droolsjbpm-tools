@@ -16,6 +16,8 @@ import org.drools.ide.editors.scanners.RuleEditorMessages;
 import org.drools.ide.preferences.IDroolsConstants;
 import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FunctionDescr;
+import org.drools.lang.descr.FunctionImportDescr;
+import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -180,7 +182,7 @@ public class DRLRuleEditor extends TextEditor {
 	        this.imports = new ArrayList();
 	        Iterator iterator = allImports.iterator();
 	        while (iterator.hasNext()) {
-				String importName = (String) iterator.next();
+				String importName = ((ImportDescr) iterator.next()).getTarget();
 				if (importName.endsWith(".*")) {
 					String packageName = importName.substring(0, importName.length() - 2);
 					imports.addAll(getAllClassesInPackage(packageName));
@@ -198,7 +200,7 @@ public class DRLRuleEditor extends TextEditor {
 			}
 	        iterator = functionImports.iterator();
 	        while (iterator.hasNext()) {
-	        	String functionImport = (String) iterator.next();
+	        	String functionImport = ((FunctionImportDescr) iterator.next()).getTarget();
 	        	if (functionImport.endsWith(".*")) {
 	        		String className = functionImport.substring(0, functionImport.length() - 2);
 	        		functions.addAll(getAllStaticMethodsInClass(className));
