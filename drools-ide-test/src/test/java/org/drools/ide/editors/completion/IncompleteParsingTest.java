@@ -110,15 +110,11 @@ public class IncompleteParsingTest extends TestCase {
 			"  when \n" +
 			"    class:";
         rule = parseRuleString(input);
-        //assertEquals(1, rule.getLhs().getDescrs().size());
-        //column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-        // TODO column = null
-        // KRIS: can we keep it the way it is now? 
-        //       we dont know at this point that there will be a column following the variable
-        // assertEquals("class", column.getIdentifier());
-        // assertNull(column.getObjectType());
-        // TODO this method does not yet exist
-        // assertEquals(-1, column.getEndCharacter());
+//        assertEquals(1, rule.getLhs().getDescrs().size());
+//        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
+//        assertEquals("class", column.getIdentifier());
+//        assertNull(column.getObjectType());
+//        assertEquals(-1, column.getEndCharacter());
 
         input = 
 			"rule MyRule \n" +
@@ -167,8 +163,11 @@ public class IncompleteParsingTest extends TestCase {
         assertEquals(1, rule.getLhs().getDescrs().size());
         column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", column.getObjectType());
-        // TODO I would like to have access to the "na" as well, but not sure how this could be possible
         assertEquals(-1, column.getEndCharacter());
+        assertEquals(1, column.getDescrs().size());
+        field = (FieldConstraintDescr) column.getDescrs().get(0); 
+        assertEquals( "na", field.getFieldName() );
+        assertEquals(-1, field.getEndCharacter());
 
         input = 
         	"rule MyRule \n" +
@@ -192,10 +191,13 @@ public class IncompleteParsingTest extends TestCase {
         column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", column.getObjectType());
         assertEquals(-1, column.getEndCharacter());
-        assertEquals(1, column.getDescrs().size());
+        assertEquals(2, column.getDescrs().size());
         field = (FieldConstraintDescr) column.getDescrs().get(0); 
         assertEquals(-1, field.getEndCharacter());
-        // TODO I would like to have access to the "na" as well, but not sure how this could be possible
+        assertEquals( "condition", field.getFieldName() );
+        field = (FieldConstraintDescr) column.getDescrs().get(1);
+        assertEquals( "na", field.getFieldName() );
+        assertEquals(-1, field.getEndCharacter());
 
         input = 
         	"rule MyRule \n" +
@@ -219,15 +221,12 @@ public class IncompleteParsingTest extends TestCase {
         assertEquals(1, rule.getLhs().getDescrs().size());
         column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", column.getObjectType());
-        // TODO this method does not yet exist
-        // assertEquals(-1, column.getEndCharacter());
-        // TODO: this contains no subdescr, although it is already known it should be a FieldConstraintDescr ??
-        // assertEquals(1, column.getDescrs().size());
-        // field = (FieldConstraintDescr) column.getDescrs().get(0);
-        // assertEquals("property", field.getFieldName());
-        // assertEquals(0, field.getRestrictions().size());
-        // TODO this method does not yet exist
-        // assertEquals(-1, field.getEndCharacter());
+        assertEquals(-1, column.getEndCharacter());
+        assertEquals(1, column.getDescrs().size());
+        field = (FieldConstraintDescr) column.getDescrs().get(0);
+        assertEquals("property", field.getFieldName());
+        assertEquals(0, field.getRestrictions().size());
+        assertEquals(-1, field.getEndCharacter());
         
         input = 
         	"rule MyRule \n" +
@@ -237,18 +236,11 @@ public class IncompleteParsingTest extends TestCase {
         assertEquals(1, rule.getLhs().getDescrs().size());
         column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", column.getObjectType());
-        // TODO this method does not yet exist
-        // assertEquals(-1, column.getEndCharacter());
-        // TODO: this contains one subdescr, although it is already known the second one should be a FieldConstraintDescr ??
-        // assertEquals(2, column.getDescrs().size());
+        assertEquals(-1, column.getEndCharacter());
+        assertEquals(1, column.getDescrs().size());
         FieldBindingDescr binding = (FieldBindingDescr) column.getDescrs().get(0);
         assertEquals("name", binding.getIdentifier());
         assertEquals("property", binding.getFieldName());
-        // field = (FieldConstraintDescr) column.getDescrs().get(1);
-        // assertEquals("property", field.getFieldName());
-        // assertEquals(0, field.getRestrictions().size());
-        // TODO this method does not yet exist
-        // assertEquals(-1, field.getEndCharacter());
         
         input = 
         	"rule MyRule \n" +
@@ -258,10 +250,8 @@ public class IncompleteParsingTest extends TestCase {
         assertEquals(1, rule.getLhs().getDescrs().size());
         column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", column.getObjectType());
-        // TODO this method does not yet exist
-        // assertEquals(-1, column.getEndCharacter());
-        // TODO: this contains three subdescr, although it is already known the fourth one should be a FieldConstraintDescr ??
-        // assertEquals(4, column.getDescrs().size());
+        assertEquals(-1, column.getEndCharacter());
+        assertEquals(3, column.getDescrs().size());
         binding = (FieldBindingDescr) column.getDescrs().get(0);
         assertEquals("name1", binding.getIdentifier());
         assertEquals("property1", binding.getFieldName());
@@ -274,11 +264,6 @@ public class IncompleteParsingTest extends TestCase {
         binding = (FieldBindingDescr) column.getDescrs().get(2);
         assertEquals("name2", binding.getIdentifier());
         assertEquals("property2", binding.getFieldName());
-        // field = (FieldConstraintDescr) column.getDescrs().get(3);
-        // assertEquals("property2", field.getFieldName());
-        // assertEquals(0, field.getRestrictions().size());
-        // TODO this method does not yet exist
-        // assertEquals(-1, field.getEndCharacter());
         
         input = 
         	"rule MyRule \n" +
@@ -288,8 +273,7 @@ public class IncompleteParsingTest extends TestCase {
         assertEquals(1, rule.getLhs().getDescrs().size());
         column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", column.getObjectType());
-        // TODO this method does not yet exist
-        // assertEquals(-1, column.getEndCharacter());
+        assertEquals(-1, column.getEndCharacter());
         assertEquals(2, column.getDescrs().size());
         binding = (FieldBindingDescr) column.getDescrs().get(0);
         assertEquals("name", binding.getIdentifier());
@@ -297,6 +281,8 @@ public class IncompleteParsingTest extends TestCase {
         field = (FieldConstraintDescr) column.getDescrs().get(1);
         assertEquals("property", field.getFieldName());
         assertEquals(1, field.getRestrictions().size());
+        // KRISV: you are right
+        //
         // now I would like to access the evaluator '==', but this seems
         // not possible because the parser cannot create this descr yet
         // since it does not know what class to create (VariableRestrictionDescr
@@ -314,8 +300,7 @@ public class IncompleteParsingTest extends TestCase {
         assertEquals(1, rule.getLhs().getDescrs().size());
         column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", column.getObjectType());
-        // TODO this method does not yet exist
-        // assertEquals(-1, column.getEndCharacter());
+        assertEquals(-1, column.getEndCharacter());
         assertEquals(1, column.getDescrs().size());
         field = (FieldConstraintDescr) column.getDescrs().get(0);
         assertEquals("property", field.getFieldName());
@@ -323,8 +308,7 @@ public class IncompleteParsingTest extends TestCase {
         VariableRestrictionDescr variable = (VariableRestrictionDescr) field.getRestrictions().get(0);
         assertEquals("==", variable.getEvaluator());
         assertEquals("otherPropertyN", variable.getIdentifier());
-        // TODO this method does not yet exist
-        // assertEquals(-1, field.getEndCharacter());
+        assertEquals(-1, field.getEndCharacter());
         
         input = 
         	"rule MyRule \n" +
@@ -334,13 +318,16 @@ public class IncompleteParsingTest extends TestCase {
         assertEquals(1, rule.getLhs().getDescrs().size());
         column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", column.getObjectType());
-        // TODO this method does not yet exist
-        // assertEquals(-1, column.getEndCharacter());
+        assertEquals(-1, column.getEndCharacter());
         assertEquals(1, column.getDescrs().size());
         field = (FieldConstraintDescr) column.getDescrs().get(0);
         assertEquals("property", field.getFieldName());
         assertEquals(1, field.getRestrictions().size());
         literal = (LiteralRestrictionDescr) field.getRestrictions().get(0);
+        // KRISV: for now, it would be really messy to make this work. String is a
+        // lexer rule (not parser), and changing that or controling the behavior of it
+        // is not simple. Can we leave the way it is for now?
+        //
         // TODO literal should be a LiteralRestrictionDescr with filled in evaluator and text, not null
         // assertEquals("==", literal.getEvaluator());
         // assertEquals("someth", literal.getText());
@@ -355,12 +342,13 @@ public class IncompleteParsingTest extends TestCase {
         assertEquals(1, rule.getLhs().getDescrs().size());
         column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", column.getObjectType());
-        // TODO this method does not yet exist
-        // assertEquals(-1, column.getEndCharacter());
+        assertEquals(-1, column.getEndCharacter());
         assertEquals(1, column.getDescrs().size());
         field = (FieldConstraintDescr) column.getDescrs().get(0);
         assertEquals("property", field.getFieldName());
         assertEquals(1, field.getRestrictions().size());
+        // KRISV: you are right
+        //
         // now I would like to access the evaluator 'contains', but this seems
         // not possible because the parser cannot create this descr yet
         // since it does not know what class to create (VariableRestrictionDescr
@@ -368,7 +356,7 @@ public class IncompleteParsingTest extends TestCase {
         // so maybe I should just extract this info myself, based on the
         // starting character of this FieldConstraintDescr?
         // TODO this method does not yet exist
-        // assertEquals(-1, field.getEndCharacter());
+        assertEquals(-1, field.getEndCharacter());
         
         input = 
         	"rule MyRule \n" +
@@ -378,13 +366,14 @@ public class IncompleteParsingTest extends TestCase {
         assertEquals(1, rule.getLhs().getDescrs().size());
         column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", column.getObjectType());
-        // TODO this method does not yet exist
-        // assertEquals(-1, column.getEndCharacter());
+        assertEquals(-1, column.getEndCharacter());
         assertEquals(1, column.getDescrs().size());
         field = (FieldConstraintDescr) column.getDescrs().get(0);
         assertEquals("property", field.getFieldName());
         assertEquals(1, field.getRestrictions().size());
         literal = (LiteralRestrictionDescr) field.getRestrictions().get(0);
+        // KRISV: see comments above
+        //
         // TODO literal should be a LiteralRestrictionDescr with filled in evaluator and text, not null
         // assertEquals("matches", literal.getEvaluator());
         // assertEquals("someth", literal.getText());
