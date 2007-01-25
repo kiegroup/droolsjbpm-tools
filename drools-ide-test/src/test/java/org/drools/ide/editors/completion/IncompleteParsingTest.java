@@ -110,6 +110,12 @@ public class IncompleteParsingTest extends TestCase {
 			"  when \n" +
 			"    class:";
         rule = parseRuleString(input);
+        // KRISV: at this point we don't know if the variable will be bound to a 
+        // simple column, or a FROM result column, or ACCUMULATE result column, etc.
+        // I tried to set a simple column as default, and changing in case it ends up
+        // another thing, but the code is really a hack and made the parser a lot more
+        // complex... can we leave as it is for now?
+        //
 //        assertEquals(1, rule.getLhs().getDescrs().size());
 //        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
 //        assertEquals("class", column.getIdentifier());
