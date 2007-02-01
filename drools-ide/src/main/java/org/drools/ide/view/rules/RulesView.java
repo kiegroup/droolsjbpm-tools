@@ -23,6 +23,7 @@ import org.drools.ide.core.ui.DroolsTreeSorter;
 import org.drools.ide.core.ui.FilterActionGroup;
 import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FunctionDescr;
+import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.eclipse.core.resources.IFile;
@@ -121,7 +122,9 @@ public class RulesView extends ViewPart implements IDoubleClickListener, IResour
     					boolean isQuery = ruleDescr instanceof QueryDescr;
     					String ruleName = ruleDescr.getName();
     					if (!isQuery) {
-    						Rule rule = DroolsModelBuilder.addRule(pkg, ruleName, file, 0, 0, null);
+    						Rule rule = DroolsModelBuilder.addRule(
+								pkg, ruleName, file, ruleDescr.getStartCharacter(),
+								ruleDescr.getEndCharacter() - ruleDescr.getStartCharacter() + 1, null);
 	    					// create link between resource and created rule nodes
 	    					List droolsElements = (List) resourcesMap.get(file);
 	    					if (droolsElements == null) {
@@ -130,7 +133,9 @@ public class RulesView extends ViewPart implements IDoubleClickListener, IResour
 	    					}
 	    					droolsElements.add(rule);
     					} else {
-    						Query query = DroolsModelBuilder.addQuery(pkg, ruleName, file, 0, 0);
+    						Query query = DroolsModelBuilder.addQuery(
+								pkg, ruleName, file, ruleDescr.getStartCharacter(), 
+								ruleDescr.getEndCharacter() - ruleDescr.getStartCharacter() + 1);
 	    					// create link between resource and created rule nodes
 	    					List droolsElements = (List) resourcesMap.get(file);
 	    					if (droolsElements == null) {
@@ -143,8 +148,10 @@ public class RulesView extends ViewPart implements IDoubleClickListener, IResour
     				// add templates
     				List templates = drlInfo.getPackageDescr().getFactTemplates();
     				for (Iterator iterator = templates.iterator(); iterator.hasNext();) {
-    					String templateName = ((FactTemplateDescr) iterator.next()).getName();
-						Template template = DroolsModelBuilder.addTemplate(pkg, templateName, file, 0, 0);
+    					FactTemplateDescr templateDescr = (FactTemplateDescr) iterator.next();
+						Template template = DroolsModelBuilder.addTemplate(
+							pkg, templateDescr.getName(), file, templateDescr.getStartCharacter(),
+							templateDescr.getEndCharacter() - templateDescr.getStartCharacter() + 1);
     					// create link between resource and created rule nodes
     					List droolsElements = (List) resourcesMap.get(file);
     					if (droolsElements == null) {
@@ -154,10 +161,12 @@ public class RulesView extends ViewPart implements IDoubleClickListener, IResour
     					droolsElements.add(template);
     				}
     				// add globals
-    				Map globals = drlInfo.getPackageDescr().getGlobals();
-    				for (Iterator iterator = globals.keySet().iterator(); iterator.hasNext();) {
-    					String globalName = (String) iterator.next();
-    					Global global = DroolsModelBuilder.addGlobal(pkg, globalName, file, 0, 0);
+    				List globals = drlInfo.getPackageDescr().getGlobals();
+    				for (Iterator iterator = globals.iterator(); iterator.hasNext();) {
+    					GlobalDescr globalDescr = (GlobalDescr) iterator.next();
+    					Global global = DroolsModelBuilder.addGlobal(
+							pkg, globalDescr.getIdentifier(), file, globalDescr.getStartCharacter(),
+							globalDescr.getEndCharacter() - globalDescr.getStartCharacter() + 1);
     					// create link between resource and created rule nodes
     					List droolsElements = (List) resourcesMap.get(file);
     					if (droolsElements == null) {
@@ -169,8 +178,11 @@ public class RulesView extends ViewPart implements IDoubleClickListener, IResour
     				// add functions
     				List functions = drlInfo.getPackageDescr().getFunctions();
     				for (Iterator iterator = functions.iterator(); iterator.hasNext();) {
-    					String functionName = ((FunctionDescr) iterator.next()).getName();
-    					Function function = DroolsModelBuilder.addFunction(pkg, functionName, file, 0, 0);
+    					FunctionDescr functionDescr = (FunctionDescr) iterator.next();
+    					String functionName = functionDescr.getName();
+    					Function function = DroolsModelBuilder.addFunction(
+							pkg, functionName, file, functionDescr.getStartCharacter(),
+							functionDescr.getEndCharacter() - functionDescr.getStartCharacter() + 1);
     					// create link between resource and created rule nodes
     					List droolsElements = (List) resourcesMap.get(file);
     					if (droolsElements == null) {
