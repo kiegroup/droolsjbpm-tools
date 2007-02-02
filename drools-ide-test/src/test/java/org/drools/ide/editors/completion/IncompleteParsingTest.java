@@ -71,6 +71,10 @@ public class IncompleteParsingTest extends TestCase {
         assertEquals("Class", column.getObjectType());
         assertTrue(column.getEndLine() != -1 || column.getEndColumn() != -1);
         assertEquals(1, column.getDescrs().size());
+        assertEquals(input.indexOf( "Class" ), column.getStartCharacter());
+        assertEquals(input.indexOf( "(" ), column.getLeftParentCharacter());
+        assertEquals(input.indexOf( ")" ), column.getRightParentCharacter());
+        assertEquals(input.indexOf( ")" ), column.getEndCharacter());
         FieldConstraintDescr field = (FieldConstraintDescr) column.getDescrs().get(0);
         assertEquals("condition", field.getFieldName());
         assertEquals(1, field.getRestrictions().size());
@@ -400,8 +404,10 @@ public class IncompleteParsingTest extends TestCase {
         assertEquals(input.indexOf( "rule" ), rule.getStartCharacter());
         assertEquals(input.indexOf( "end" )+2, rule.getEndCharacter());
         ColumnDescr column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-        assertEquals(input.indexOf( "(" ), column.getStartCharacter());
-        assertEquals(input.indexOf( "true )" )+5, column.getEndCharacter());
+        assertEquals(input.indexOf( "Class" ), column.getStartCharacter());
+        assertEquals(input.indexOf( "(" ), column.getLeftParentCharacter());
+        assertEquals(input.indexOf( ")" ), column.getRightParentCharacter());
+        assertEquals(input.indexOf( ")" ), column.getEndCharacter());
     }
     
 //    public void doTestRemainder() {
