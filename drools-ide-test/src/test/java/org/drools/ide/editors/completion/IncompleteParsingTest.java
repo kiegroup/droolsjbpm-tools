@@ -7,6 +7,7 @@ import junit.framework.TestCase;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
@@ -389,6 +390,17 @@ public class IncompleteParsingTest extends TestCase {
         // assertEquals("someth", literal.getText());
         // TODO this method does not yet exist
         // assertEquals(-1, field.getEndCharacter());
+        
+        input = 
+            "rule MyRule \n" +
+            "   when \n" +
+            "       eval ( ";
+        rule = parseRuleString(input);
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        EvalDescr eval = (EvalDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals(input.indexOf( "eval" ), eval.getStartCharacter());
+        assertEquals(-1, eval.getEndCharacter());
+        
     }
     
     public void testParsingCharactersStartEnd() {
