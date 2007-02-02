@@ -1,6 +1,8 @@
 package org.drools.ide.editors.completion; 
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -57,6 +59,8 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
     private static final Image dslIcon = DroolsPluginImages.getImage( DroolsPluginImages.DSL_EXPRESSION );
     private static final Image classIcon = DroolsPluginImages.getImage(DroolsPluginImages.CLASS);
     private static final Pattern START_OF_CONSEQUENCE = Pattern.compile(".*then\\s*", Pattern.DOTALL);
+    
+    private DSLTree dslTree = new DSLTree();
     
     public RuleCompletionProcessor(DRLRuleEditor editor) {
     	super(editor);
