@@ -90,7 +90,21 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         			addRHSJavaCompletionProposals(list, backText, prefix);
 	            }
 	        } else if (condition(backText) || query(backText)) {
-	        	List dslConditions = adapter.listConditionItems();
+	        	String lastobj = this.getLastNonDashLine(backText);
+	        	String last = this.getLastLine(backText);
+	        	// we have to check if the last line is when. if it is we set 
+	        	// the last line to zero length string
+	        	if (last.equals("when")) {
+	        		last = "";
+	        		lastobj = "*";
+	        	}
+	        	// pass the last string in the backText to getProposals
+	        	List dslConditions = this.getProposals(lastobj,last);
+	        	// if we couldn't find any matches, we add the list from
+	        	// the DSLAdapter so that there's something
+	        	if (dslConditions.size() == 0) {
+		        	dslConditions.addAll(adapter.listConditionItems());
+	        	}
 	        	addDSLProposals(list, prefix, dslConditions);
 	            addLHSCompletionProposals(viewer, list, adapter, prefix, backText);
 	        } else {             
@@ -657,5 +671,91 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         	list.add(p);
     	}
     	return true;
+    }
+    
+    /**
+     * because of how the backText works, we need to get the last line, so
+     * that we can pass it to the DSLUtility
+     * @param backText
+     * @return
+     */
+    public String getLastLine(String backText) {
+    	BufferedReader breader = new BufferedReader(new StringReader(backText));
+    	String last = "";
+    	String line = null;
+    	try {
+        	while ( (line = breader.readLine()) != null) {
+        		// only if the line has text do we set last to it
+        		if (line.length() > 0) {
+            		last = line;
+        		}
+        	}
+    	} catch (IOException e) {
+    		// TODO need to log this.
+    		// I'm leaving this for mic_hat, so he has something to do
+    	}
+    	// now that all the conditions for a single object are on the same line
+    	// we need to check for the left parenthesis
+    	if (last.indexOf("(") > -1) {
+    		last = last.substring(last.lastIndexOf("(") + 1);
+    	}
+    	// if the string has a comma "," we get the substring starting from
+    	// the index after the last comma
+    	if (last.indexOf(",") > -1) {
+    		last = last.substring(last.lastIndexOf(",") + 1);
+    	}
+    	// if the line ends with right parenthesis, we change it to zero length string
+    	if (last.endsWith(")")) {
+    		last = "";
+    	}
+    	return last;
+    }
+    
+    /**
+     * Returns the last line that doesn't start with a dash
+     * @param backText
+     * @return
+     */
+    public String getLastNonDashLine(String backText) {
+    	BufferedReader breader = new BufferedReader(new StringReader(backText));
+    	String last = "";
+    	String line = null;
+    	try {
+        	while ( (line = breader.readLine()) != null) {
+        		// there may be blank lines, so we trim first
+        		line = line.trim();
+        		// only if the line has text do we set last to it
+        		if (line.length() > 0 && !line.startsWith("-")) {
+            		last = line;
+        		}
+        	}
+    	} catch (IOException e) {
+    		// TODO need to log this.
+    		// I'm leaving this for mic_hat, so he has something to do
+    	}
+    	if (last.indexOf("(") > -1 && !last.endsWith(")")) {
+    		last = last.substring(0,last.indexOf("("));
+    	} else if (last.indexOf("(") > -1 && last.endsWith(")")) {
+    		last = "";
+    	}
+    	return last;
+    }
+    
+    /**
+     * The DSLTree is configurable. It can either return just the child
+     * of the last token found, or it can traverse the tree and generate
+     * all the combinations beneath the last matching node.
+     * TODO
+     * I don't know how to add configuration to the editor, so it needs
+     * to be hooked up to the configuration  for the editor later.
+     * 
+     * @param last
+     * @return
+     */
+    protected List getProposals(String obj,String last) {
+    	if (last.length() == 0) {
+    		last = " ";
+    	}
+    	return this.dslTree.getChildrenList(obj,last,false);
     }
 }
