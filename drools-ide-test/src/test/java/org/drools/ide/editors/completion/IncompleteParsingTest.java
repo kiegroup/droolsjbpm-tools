@@ -12,6 +12,8 @@ import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.RestrictionConnectiveDescr;
+import org.drools.lang.descr.RestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
 
@@ -120,12 +122,13 @@ public class IncompleteParsingTest extends TestCase {
         // I tried to set a simple column as default, and changing in case it ends up
         // another thing, but the code is really a hack and made the parser a lot more
         // complex... can we leave as it is for now?
-        //
-//        assertEquals(1, rule.getLhs().getDescrs().size());
-//        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-//        assertEquals("class", column.getIdentifier());
-//        assertNull(column.getObjectType());
-//        assertEquals(-1, column.getEndCharacter());
+        // 
+        // assertEquals(1, rule.getLhs().getDescrs().size());
+        // column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
+        // assertEquals("class", column.getIdentifier());
+        // assertNull(column.getObjectType());
+        // assertEquals(-1, column.getEndCharacter());
+        assertEquals(0, rule.getLhs().getDescrs().size());
 
         input = 
 			"rule MyRule \n" +
@@ -401,6 +404,24 @@ public class IncompleteParsingTest extends TestCase {
         assertEquals(input.indexOf( "eval" ), eval.getStartCharacter());
         assertEquals(-1, eval.getEndCharacter());
         
+        input = 
+            "rule MyRule \n" +
+            "   when \n" +
+            "       Class ( property > 0 & ";
+        rule = parseRuleString(input);
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", column.getObjectType());
+        assertEquals(-1, column.getEndCharacter());
+        assertEquals(1, column.getDescrs().size());
+        field = (FieldConstraintDescr) column.getDescrs().get(0);
+        assertEquals("property", field.getFieldName());
+        assertEquals(2, field.getRestrictions().size());
+        literal = (LiteralRestrictionDescr) field.getRestrictions().get(0);
+        assertEquals(">", literal.getEvaluator());
+        assertEquals("0", literal.getText());
+        RestrictionConnectiveDescr connective = (RestrictionConnectiveDescr) field.getRestrictions().get(1);
+        assertEquals(RestrictionConnectiveDescr.AND, connective.getConnective());
     }
     
     public void testParsingCharactersStartEnd() {
