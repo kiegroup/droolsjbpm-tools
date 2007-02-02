@@ -29,6 +29,7 @@ public class MappingEditor extends TitleAreaDialog {
     
     private Text exprText;
     private Text mappingText;
+    private Text objText;
     private Combo scopeCombo;
     private boolean cancelled;
 
@@ -47,6 +48,7 @@ public class MappingEditor extends TitleAreaDialog {
         setScope( model.getScope() );
         exprText.setText( model.getNaturalTemplate() );
         mappingText.setText( model.getTargetTemplate() );
+        objText.setText( model.getObjectName() );
     }
     
     
@@ -78,6 +80,7 @@ public class MappingEditor extends TitleAreaDialog {
                                                                      ));
         this.model.setTargetTemplate( this.mappingText.getText() );
         this.model.setScope( this.scopeCombo.getText() );
+        this.model.setObjectName( this.objText.getText() );
         super.okPressed();
     }
 
@@ -100,6 +103,7 @@ public class MappingEditor extends TitleAreaDialog {
         //setup fields
         createExpressionField( parent );
         createMappingField( parent );
+        createObjectField( parent );
         createScopeField( parent );
         
         // create the top level composite wrapper
@@ -160,6 +164,25 @@ public class MappingEditor extends TitleAreaDialog {
                 "the place where {name} would appear." );
     }
     
+    private void createObjectField(Composite parent) {
+        Label objectLbl = new Label( parent,
+                                      SWT.NONE );
+        objectLbl.setText( "Object:" );
+        objectLbl.setFont( parent.getFont() );
+        objectLbl.setLayoutData( new GridData(GridData.HORIZONTAL_ALIGN_END) );        
+
+        objText = new Text( parent,
+                                SWT.BORDER );
+        GridData data = new GridData();
+        data.widthHint = 450;
+        data.horizontalAlignment = GridData.FILL;
+        data.grabExcessHorizontalSpace = true;
+        objText.setLayoutData( data );
+
+        objText.setToolTipText( "Enter the name of the object." );
+        
+    }
+
     private void createScopeField(Composite parent) {
         
         //type

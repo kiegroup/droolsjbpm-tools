@@ -10,9 +10,10 @@ import org.eclipse.jface.viewers.ViewerSorter;
  */
 public class DSLMappingSorter extends ViewerSorter {
 
-	public final static int EXPRESSION = 0;
-	public final static int MAPPING = 1;
-	public final static int SCOPE = 2;
+	public final static int OBJECT = 0;
+	public final static int EXPRESSION = 1;
+	public final static int MAPPING = 2;
+	public final static int SCOPE = 3;
 
 	// Criteria that the instance uses 
 	private int criteria;
@@ -37,6 +38,8 @@ public class DSLMappingSorter extends ViewerSorter {
 		NLMappingItem item2 = (NLMappingItem) o2;
 
 		switch (criteria) {
+			case OBJECT:
+				return compareObject(item1, item2);
 			case EXPRESSION :
 				return compareExpressions(item1, item2);
 			case MAPPING :
@@ -65,6 +68,11 @@ public class DSLMappingSorter extends ViewerSorter {
         return item1.getNaturalTemplate().compareTo( item2.getNaturalTemplate() );
     }
 
+    private int compareObject(NLMappingItem item1, 
+    						  NLMappingItem item2) {
+		return item1.getObjectName().compareTo(item2.getObjectName());
+	}
+    
     /**
 	 * @return the sort criterion
 	 */

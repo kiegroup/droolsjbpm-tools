@@ -32,6 +32,9 @@ public class DSLLabelProvider extends LabelProvider
                 result = item.getTargetTemplate();
                 break;
             case 2 :
+            	result = item.getObjectName();
+            	break;
+            case 3 :
                 result = item.getScope();
                 break;
             default :

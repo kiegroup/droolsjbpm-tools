@@ -32,6 +32,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
@@ -56,6 +57,8 @@ public class DSLEditor extends EditorPart {
     private Text exprText; //for language expression
     private Text mappingText; //for target rule expression
     private Text descriptionText; //just a comment field
+    private Text objText; // for the object name
+    private Combo sortCombo; // for the sort field
     
     public void doSave(IProgressMonitor monitor) {
         
@@ -177,6 +180,22 @@ public class DSLEditor extends EditorPart {
         firePropertyChange( PROP_DIRTY );
     }
 
+    /**
+     * The method sorts th e
+     *
+     */
+    public void sortModel() {
+    	if (sortCombo.getSelectionIndex() == DSLMappingSorter.EXPRESSION) {
+            tableViewer.setSorter(new DSLMappingSorter(DSLMappingSorter.EXPRESSION));
+    	} else if (sortCombo.getSelectionIndex() == DSLMappingSorter.OBJECT) {
+            tableViewer.setSorter(new DSLMappingSorter(DSLMappingSorter.OBJECT));
+    	} else if (sortCombo.getSelectionIndex() == DSLMappingSorter.SCOPE) {
+            tableViewer.setSorter(new DSLMappingSorter(DSLMappingSorter.SCOPE));
+    	} else if (sortCombo.getSelectionIndex() == DSLMappingSorter.MAPPING) {
+            tableViewer.setSorter(new DSLMappingSorter(DSLMappingSorter.MAPPING));
+    	}
+    }
+    
     public boolean isSaveAsAllowed() {
         // TODO implement SaveAs
         return false;
@@ -209,9 +228,13 @@ public class DSLEditor extends EditorPart {
         //setup the fields below the table
         createExpressionViewField( parent );    
         createEditButton( parent );
-        createMappingViewField( parent );           
+        createMappingViewField( parent );
         createDeleteButton( parent );
+        createObjectViewField(parent);
         createAddButton( parent );
+        createSortField(parent);
+        createSortButton(parent);
+        createCopyButton(parent);
         
         //listeners on the table...
         createTableListeners();
@@ -238,6 +261,7 @@ public class DSLEditor extends EditorPart {
                 NLMappingItem selected = getCurrentSelected();                
                 exprText.setText( selected.getNaturalTemplate() );   
                 mappingText.setText( selected.getTargetTemplate() );
+                objText.setText(selected.getObjectName());
             }
             
         });
@@ -309,6 +333,39 @@ public class DSLEditor extends EditorPart {
 
     }
 
+    private void createObjectViewField(Composite parent) {
+
+        Label obj = new Label(parent, SWT.NONE);
+        obj.setText( "Object:" );
+        GridData gridData = new GridData (GridData.HORIZONTAL_ALIGN_BEGINNING);
+        gridData.widthHint = 80;
+        obj.setLayoutData(gridData);
+        
+        objText = new Text(parent, SWT.BORDER);
+        objText.setEditable( false );
+        gridData = new GridData (GridData.FILL_HORIZONTAL);
+        
+        objText.setLayoutData(gridData);
+
+    }
+    
+    private void createSortField(Composite parent) {
+        Label sort = new Label(parent, SWT.NONE);
+        sort.setText( "Sort by:" );
+        GridData gridData = new GridData (GridData.HORIZONTAL_ALIGN_BEGINNING);
+        gridData.widthHint = 80;
+        sort.setLayoutData(gridData);
+        
+        sortCombo = new Combo(parent, SWT.READ_ONLY);
+        sortCombo.add("Object", DSLMappingSorter.OBJECT);
+        sortCombo.add("Language Expression", DSLMappingSorter.EXPRESSION);
+        sortCombo.add("Rule Language Meaning", DSLMappingSorter.MAPPING);
+        sortCombo.add("Scope", DSLMappingSorter.SCOPE);
+        gridData = new GridData (GridData.FILL_HORIZONTAL);
+        
+        sortCombo.setLayoutData(gridData);
+    }
+
     /** Refreshes the table do make sure it is up to date with the model. */
     private void refreshModel() {
         tableViewer.setInput( model );
@@ -370,6 +427,25 @@ public class DSLEditor extends EditorPart {
         });
     }    
 
+    private void createSortButton(Composite parent) {
+        // Create and configure the "Add" button
+        Button sort = new Button(parent, SWT.PUSH | SWT.CENTER);
+        sort.setText("Sort");
+
+        GridData gridData = new GridData (GridData.HORIZONTAL_ALIGN_BEGINNING);
+        gridData.widthHint = 80;
+        sort.setLayoutData(gridData);
+        sort.addSelectionListener(new SelectionAdapter() {        
+            // Add a task to the ExampleTaskList and refresh the view
+            public void widgetSelected(SelectionEvent e) {
+            	sortModel();
+                refreshModel();
+                makeDirty();
+            }
+
+
+        });
+    }    
     
     /**
      * Return the selected item from the table grid thingy.
@@ -394,7 +470,7 @@ public class DSLEditor extends EditorPart {
             // Add an item, should pop up the editor
             public void widgetSelected(SelectionEvent e) {  
                 
-                NLMappingItem newItem = new NLMappingItem("", "", "*");
+                NLMappingItem newItem = new NLMappingItem("", "", "*", "");
                 
                 MappingEditor editor = new MappingEditor(getSite().getShell());//shell);
                 editor.create();
@@ -416,6 +492,44 @@ public class DSLEditor extends EditorPart {
     }
 
     
+    private void createCopyButton(Composite parent) {
+        // Create and configure the "Add" button
+        Button copy = new Button(parent, SWT.PUSH | SWT.CENTER);
+        copy.setText("Copy");
+
+        GridData gridData = new GridData (GridData.HORIZONTAL_ALIGN_BEGINNING);
+        gridData.widthHint = 80;
+        copy.setLayoutData(gridData);
+        
+        copy.addSelectionListener(new SelectionAdapter() {
+        
+            // Add an item, should pop up the editor
+            public void widgetSelected(SelectionEvent e) {  
+                
+            	NLMappingItem curr = getCurrentSelected();
+                NLMappingItem newItem = new NLMappingItem(curr
+						.getNaturalTemplate(), curr.getTargetTemplate(), curr
+						.getScope(), curr.getObjectName());
+                
+                MappingEditor editor = new MappingEditor(getSite().getShell());//shell);
+                editor.create();
+                editor.getShell().setText("New language mapping");
+                editor.setTitle( "Create a new language element mapping from a copy." );
+                editor.setTitleImage( getTitleImage() );
+                
+                editor.setNLMappingItem( newItem );
+                
+                editor.open();
+                if (!editor.isCancelled()) {
+                    model.addNLItem( newItem );
+                    refreshModel();
+                    makeDirty();
+                }                
+                
+            }
+        });
+    }
+    
     /**
      * Create the viewer.
      */
@@ -423,7 +537,6 @@ public class DSLEditor extends EditorPart {
         tableViewer = new TableViewer(table);
         tableViewer.setUseHashlookup(true);
         //following is if we want default sorting... my thought is no...
-        //tableViewer.setSorter(new DSLMappingSorter(DSLMappingSorter.EXPRESSION));
     }
 
     /**
@@ -472,6 +585,11 @@ public class DSLEditor extends EditorPart {
 
         // 4th column with task PercentComplete 
         column = new TableColumn(table, SWT.LEFT, 2);
+        column.setText("Object");
+        column.setWidth(80);
+        
+        // 5th column with task PercentComplete 
+        column = new TableColumn(table, SWT.LEFT, 3);
         column.setText("Scope");
         column.setWidth(80);
         
