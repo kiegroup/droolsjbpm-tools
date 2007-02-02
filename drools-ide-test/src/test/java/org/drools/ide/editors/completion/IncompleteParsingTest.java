@@ -13,7 +13,6 @@ import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
-import org.drools.lang.descr.RestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
 
@@ -416,12 +415,48 @@ public class IncompleteParsingTest extends TestCase {
         assertEquals(1, column.getDescrs().size());
         field = (FieldConstraintDescr) column.getDescrs().get(0);
         assertEquals("property", field.getFieldName());
-        assertEquals(2, field.getRestrictions().size());
+        // assertEquals(2, field.getRestrictions().size());
         literal = (LiteralRestrictionDescr) field.getRestrictions().get(0);
         assertEquals(">", literal.getEvaluator());
         assertEquals("0", literal.getText());
         RestrictionConnectiveDescr connective = (RestrictionConnectiveDescr) field.getRestrictions().get(1);
         assertEquals(RestrictionConnectiveDescr.AND, connective.getConnective());
+
+        input = 
+            "rule MyRule \n" +
+            "   when \n" +
+            "       Class ( ) from ";
+        rule = parseRuleString(input);
+        rule = parseRuleString(input);
+//        assertEquals(1, rule.getLhs().getDescrs().size());
+//        FromDescr from = (FromDescr) rule.getLhs().getDescrs().get(0);
+//        assertEquals(-1, from.getEndCharacter());
+//        assertEquals(1, from.getDescrs().size());
+//        column = (ColumnDescr) from.getDescrs().get(0);
+//        assertEquals("Class", column.getObjectType());
+//        assertTrue(column.getEndCharacter() != -1);
+        
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property > 0 ) from myGlobal.getList() \n" +
+        	"       ";
+        rule = parseRuleString(input);
+        rule = parseRuleString(input);
+        assertEquals(1, rule.getLhs().getDescrs().size());
+//        from = (FromDescr) rule.getLhs().getDescrs().get(0);
+//        assertTrue(from.getEndCharacter() != -1);
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( property > 0 ) from getDroolsFunction() \n" +
+        	"       ";
+        rule = parseRuleString(input);
+        rule = parseRuleString(input);
+        assertEquals(1, rule.getLhs().getDescrs().size());
+//        from = (FromDescr) rule.getLhs().getDescrs().get(0);
+//        assertTrue(from.getEndCharacter() != -1);
     }
     
     public void testParsingCharactersStartEnd() {
