@@ -10,6 +10,7 @@ import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
+import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
@@ -415,7 +416,7 @@ public class IncompleteParsingTest extends TestCase {
         assertEquals(1, column.getDescrs().size());
         field = (FieldConstraintDescr) column.getDescrs().get(0);
         assertEquals("property", field.getFieldName());
-        // assertEquals(2, field.getRestrictions().size());
+        assertEquals(2, field.getRestrictions().size());
         literal = (LiteralRestrictionDescr) field.getRestrictions().get(0);
         assertEquals(">", literal.getEvaluator());
         assertEquals("0", literal.getText());
@@ -425,16 +426,15 @@ public class IncompleteParsingTest extends TestCase {
         input = 
             "rule MyRule \n" +
             "   when \n" +
-            "       Class ( ) from ";
+            "       Class ( ) from a";
         rule = parseRuleString(input);
-        rule = parseRuleString(input);
-//        assertEquals(1, rule.getLhs().getDescrs().size());
-//        FromDescr from = (FromDescr) rule.getLhs().getDescrs().get(0);
-//        assertEquals(-1, from.getEndCharacter());
-//        assertEquals(1, from.getDescrs().size());
-//        column = (ColumnDescr) from.getDescrs().get(0);
-//        assertEquals("Class", column.getObjectType());
-//        assertTrue(column.getEndCharacter() != -1);
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        FromDescr from = (FromDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals(-1, from.getEndCharacter());
+        assertNotNull( from.getReturnedColumn() );
+        column = (ColumnDescr) from.getReturnedColumn();
+        assertEquals("Class", column.getObjectType());
+        assertTrue(column.getEndCharacter() != -1);
         
         input = 
         	"rule MyRule \n" +
@@ -444,8 +444,8 @@ public class IncompleteParsingTest extends TestCase {
         rule = parseRuleString(input);
         rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-//        from = (FromDescr) rule.getLhs().getDescrs().get(0);
-//        assertTrue(from.getEndCharacter() != -1);
+        from = (FromDescr) rule.getLhs().getDescrs().get(0);
+        assertTrue(from.getEndCharacter() != -1);
 
         input = 
         	"rule MyRule \n" +
@@ -455,8 +455,8 @@ public class IncompleteParsingTest extends TestCase {
         rule = parseRuleString(input);
         rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-//        from = (FromDescr) rule.getLhs().getDescrs().get(0);
-//        assertTrue(from.getEndCharacter() != -1);
+        from = (FromDescr) rule.getLhs().getDescrs().get(0);
+        assertTrue(from.getEndCharacter() != -1);
     }
     
     public void testParsingCharactersStartEnd() {
