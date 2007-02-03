@@ -247,7 +247,7 @@ public class DSLTree {
      */
     public Node[] getChildren(String obj, String text) {
         Node thenode = this.root.getChild(obj);
-    	if (text.length() > 0) {
+    	if (thenode != null && text.length() > 0) {
             StringTokenizer tokenz = new StringTokenizer(text);
             this.last = this.current;
             while (tokenz.hasMoreTokens()) {

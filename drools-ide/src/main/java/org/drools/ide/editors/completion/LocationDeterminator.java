@@ -122,10 +122,6 @@ public class LocationDeterminator {
 			RuleDescr ruleDescr = (RuleDescr) descr;
 			List subDescrs = ruleDescr.getLhs().getDescrs();
 			if (subDescrs.size() == 0) {
-				return new Location(LOCATION_BEGIN_OF_CONDITION);
-			}
-			BaseDescr subDescr = (BaseDescr) subDescrs.get(subDescrs.size() - 1);
-			if (subDescr == null) {
 				Matcher matcher = EXISTS_PATTERN.matcher(backText);
 				if (matcher.matches()) {
 					return new Location(LOCATION_BEGIN_OF_CONDITION_EXISTS);
@@ -134,17 +130,7 @@ public class LocationDeterminator {
 				if (matcher.matches()) {
 					return new Location(LOCATION_BEGIN_OF_CONDITION_NOT);
 				}
-				matcher = EVAL_PATTERN.matcher(backText);
-				if (matcher.matches()) {
-					String content = matcher.group(1);
-					Location location = new Location(LOCATION_INSIDE_EVAL);
-					location.setProperty(LOCATION_EVAL_CONTENT, content);
-					return location;
-				}
-				return new Location(LOCATION_BEGIN_OF_CONDITION);
-			}
-			if (endReached(subDescr)) {
-				Matcher matcher = FROM_PATTERN.matcher(backText);
+				matcher = FROM_PATTERN.matcher(backText);
 				if (matcher.matches()) {
 					Location location = new Location(LOCATION_FROM);
 					location.setProperty(LOCATION_FROM_CONTENT, "");
@@ -152,9 +138,56 @@ public class LocationDeterminator {
 				}
 				return new Location(LOCATION_BEGIN_OF_CONDITION);
 			}
+			BaseDescr subDescr = (BaseDescr) subDescrs.get(subDescrs.size() - 1);
+			if (subDescr == null) {
+				return new Location(LOCATION_BEGIN_OF_CONDITION);
+			}
+			if (endReached(subDescr)) {
+				return new Location(LOCATION_BEGIN_OF_CONDITION);
+			}
 			return determineLocationForDescr(subDescr, backText);
 		} else if (descr instanceof ColumnDescr) {
 			ColumnDescr columnDescr = (ColumnDescr) descr;
+//			int locationType;
+//			String propertyName = null;
+//			String evaluator = null;
+//			boolean endOfConstraint = false;
+//			List subDescrs = columnDescr.getDescrs();
+//			if (subDescrs.size() > 0) {
+//				BaseDescr lastDescr = (BaseDescr) subDescrs.get(subDescrs.size() - 1);
+//				if (lastDescr.getEndCharacter() != -1) {
+//					endOfConstraint = true;
+//				}
+//				if (lastDescr instanceof FieldConstraintDescr) {
+//					FieldConstraintDescr lastFieldDescr = (FieldConstraintDescr) lastDescr;
+//					propertyName = lastFieldDescr.getFieldName();
+//					List restrictions = lastFieldDescr.getRestrictions();
+//					if (restrictions.size() > 0) {
+//						RestrictionDescr restriction = (RestrictionDescr) restrictions.get(restrictions.size() - 1);
+//						if (restriction instanceof LiteralRestrictionDescr) {
+//							LiteralRestrictionDescr literal = (LiteralRestrictionDescr) restriction;
+//							evaluator = literal.getEvaluator();
+//						} else if (restriction instanceof VariableRestrictionDescr) {
+//							VariableRestrictionDescr variable = (VariableRestrictionDescr) restriction;
+//							evaluator = variable.getEvaluator();
+//						}
+//					}
+//				}
+//			}
+//			if (endOfConstraint) {
+//				locationType = LOCATION_INSIDE_CONDITION_END;
+//			} else if (evaluator != null) {
+//				locationType = LOCATION_INSIDE_CONDITION_ARGUMENT;
+//			} else if (propertyName != null) {
+//				locationType = LOCATION_INSIDE_CONDITION_OPERATOR;
+//			} else {
+//				locationType = LOCATION_INSIDE_CONDITION_START;
+//			}
+//			Location location = new Location(locationType);
+//			location.setProperty(LOCATION_PROPERTY_CLASS_NAME, columnDescr.getObjectType());
+//			location.setProperty(LOCATION_PROPERTY_PROPERTY_NAME, propertyName);
+//			location.setProperty(LOCATION_PROPERTY_OPERATOR, evaluator); 
+//			return location;
 			// TODO: this is not completely safe, there are rare occasions where this could fail
 			Pattern pattern = Pattern.compile(".*(" + columnDescr.getObjectType() + ")\\s*\\((.*)", Pattern.DOTALL);
 			Matcher matcher = pattern.matcher(backText);
@@ -323,16 +356,33 @@ public class LocationDeterminator {
 				return getLocationForColumn(columnContents, className);
 			}
 			return new Location(LOCATION_FROM_COLLECT);
+		} else if (descr instanceof EvalDescr) {
+			Matcher matcher = EVAL_PATTERN.matcher(backText);
+			if (matcher.matches()) {
+				String content = matcher.group(1);
+				Location location = new Location(LOCATION_INSIDE_EVAL);
+				location.setProperty(LOCATION_EVAL_CONTENT, content);
+				return location;
+			}
 		}
 		
 		return new Location(LOCATION_UNKNOWN);
 	}
 	
 	private static boolean endReached(BaseDescr descr) {
+		if (descr == null) {
+			return false;
+		}
 		if (descr instanceof ColumnDescr) {
-			return (descr.getEndLine() != 0 || descr.getEndColumn() != 0);
+			return descr.getEndCharacter() != -1;
 		} else if (descr instanceof ExistsDescr) {
 			List descrs = ((ExistsDescr) descr).getDescrs();
+			if (descrs.isEmpty()) {
+				return false;
+			}
+			return endReached((BaseDescr) descrs.get(0));
+		} else if (descr instanceof NotDescr) {
+			List descrs = ((NotDescr) descr).getDescrs();
 			if (descrs.isEmpty()) {
 				return false;
 			}
@@ -358,16 +408,15 @@ public class LocationDeterminator {
 			return endReached((BaseDescr) descrs.get(0))
 				&& endReached((BaseDescr) descrs.get(1));
 		} else if (descr instanceof EvalDescr) {
-			// EvalDescr are only added once the end has been reached 
-			return true;
-		} else if (descr instanceof FromDescr) {
-			return ((FromDescr) descr).getDataSource() != null;
-		} else if (descr instanceof AccumulateDescr) {
-			return ((AccumulateDescr) descr).getResultCode() != null;
-		} else if (descr instanceof CollectDescr) {
-			return ((CollectDescr) descr).getSourceColumn() != null;
+			return ((EvalDescr) descr).getText() != null;
 		}
-		return false;
+		return descr.getEndCharacter() != -1;
+//		else if (descr instanceof AccumulateDescr) {
+//			return ((AccumulateDescr) descr).getResultCode() != null;
+//		} else if (descr instanceof CollectDescr) {
+//			return ((CollectDescr) descr).getSourceColumn() != null;
+//		}
+//		return false;
 	}
 	
 	private static Location getLocationForColumn(String columnContents, String className) {
