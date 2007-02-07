@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Drools IDE Plug-in
 Bundle-SymbolicName: org.drools.ide;singleton:=true
-Bundle-Version: 3.0.3
+Bundle-Version: 3.1.0
 Bundle-Activator: org.drools.ide.DroolsIDEPlugin
 Bundle-Vendor: krisv,mic
 Bundle-Localization: plugin
