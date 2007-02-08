@@ -78,8 +78,8 @@ public class DroolsPluginImages {
         declareRegistryImage(METHOD, "methpub_obj.gif");
         declareRegistryImage(VARIABLE, "field_private_obj.gif");
         declareRegistryImage(DROOLS, "drools.gif");
-        declareRegistryImage(RULE, "drools-rule.gif");
-        declareRegistryImage(QUERY, "drools-query.gif");
+        declareRegistryImage(RULE, "drools-rule.GIF");
+        declareRegistryImage(QUERY, "drools-query.GIF");
         declareRegistryImage(DSL_EXPRESSION, "dsl_expression.gif");
         declareRegistryImage(IMPORT, "import.gif");
         declareRegistryImage(DSL, "dsl.GIF");
