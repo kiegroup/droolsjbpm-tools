@@ -1,9 +1,9 @@
 package org.drools.ide.action;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.drools.ide.DroolsIDEPlugin;
 import org.drools.ide.builder.DroolsBuilder;
 import org.drools.ide.wizard.project.NewDroolsProjectWizard;
+import org.drools.util.ArrayUtils;
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProjectDescription;
@@ -64,4 +64,5 @@ public class ConvertToDroolsProjectAction implements IObjectActionDelegate {
 	        project.getProject().setDescription(description, monitor);
         }
     }
+            
 }

@@ -8,10 +8,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
 import org.drools.ide.DroolsIDEPlugin;
 import org.drools.ide.DroolsPluginImages;
 import org.drools.ide.editors.DRLRuleEditor;
+import org.drools.util.StringUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.CompletionProposal;
 import org.eclipse.jdt.core.CompletionRequestor;
