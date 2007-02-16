@@ -3,7 +3,7 @@ package org.drools.ide.dsl.editor;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.drools.lang.dsl.template.NLGrammar;
+import org.drools.lang.dsl.DefaultDSLMapping;
 
 /**
  * This extends the compilers DSL grammar implementation to provide
@@ -12,7 +12,7 @@ import org.drools.lang.dsl.template.NLGrammar;
  * @author Michael Neale
  *
  */
-public class NLGrammarModel extends NLGrammar {
+public class NLGrammarModel extends DefaultDSLMapping {
     
     private static final long serialVersionUID = 5449029738300794120L;
     
@@ -32,23 +32,4 @@ public class NLGrammarModel extends NLGrammar {
         changeListeners.add(viewer);
     }
     
-    /** This will normalise all whitespace in a string. */
-    public static String normaliseSpaces(String withWhiteSpace) {
-        char[] chars = withWhiteSpace.toCharArray();
-        StringBuffer normalised = new StringBuffer();
-        boolean space = false;
-        for ( int i = 0; i < chars.length; i++ ) {
-            char c = chars[i];
-            if (Character.isWhitespace( c )) {
-                if (!space) {
-                    normalised.append( ' ' );
-                    space = true;
-                }
-            } else {
-                normalised.append( c );
-                space = false;
-            }
-        }
-        return normalised.toString();        
-    }
 }

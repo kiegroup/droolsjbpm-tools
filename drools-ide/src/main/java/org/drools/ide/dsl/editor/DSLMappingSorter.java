@@ -1,6 +1,6 @@
 package org.drools.ide.dsl.editor;
 
-import org.drools.lang.dsl.template.NLMappingItem;
+import org.drools.lang.dsl.DSLMappingEntry;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 
@@ -34,8 +34,8 @@ public class DSLMappingSorter extends ViewerSorter {
 	 */
 	public int compare(Viewer viewer, Object o1, Object o2) {
 
-		NLMappingItem item1 = (NLMappingItem) o1;
-		NLMappingItem item2 = (NLMappingItem) o2;
+        DSLMappingEntry item1 = (DSLMappingEntry) o1;
+        DSLMappingEntry item2 = (DSLMappingEntry) o2;
 
 		switch (criteria) {
 			case OBJECT:
@@ -53,24 +53,24 @@ public class DSLMappingSorter extends ViewerSorter {
 
 	
 
-	private int compareScope(NLMappingItem item1,
-                             NLMappingItem item2) {
-        return item1.getScope().compareTo( item2.getScope() );
+	private int compareScope(DSLMappingEntry item1,
+                             DSLMappingEntry item2) {
+        return item1.getSection().compareTo( item2.getSection() );
     }
 
-    private int compareMappings(NLMappingItem item1,
-                                NLMappingItem item2) {
-        return item1.getScope().compareTo( item2.getScope() );
+    private int compareMappings(DSLMappingEntry item1,
+                                DSLMappingEntry item2) {
+        return item1.getSection().compareTo( item2.getSection() );
     }
 
-    private int compareExpressions(NLMappingItem item1,
-                                   NLMappingItem item2) {
-        return item1.getNaturalTemplate().compareTo( item2.getNaturalTemplate() );
+    private int compareExpressions(DSLMappingEntry item1,
+                                   DSLMappingEntry item2) {
+        return item1.getMappingKey().compareTo( item2.getMappingKey() );
     }
 
-    private int compareObject(NLMappingItem item1, 
-    						  NLMappingItem item2) {
-		return item1.getObjectName().compareTo(item2.getObjectName());
+    private int compareObject(DSLMappingEntry item1, 
+                              DSLMappingEntry item2) {
+		return item1.getMetaData().compareTo(item2.getMetaData());
 	}
     
     /**

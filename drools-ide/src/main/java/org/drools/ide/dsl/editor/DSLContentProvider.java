@@ -1,6 +1,6 @@
 package org.drools.ide.dsl.editor;
 
-import org.drools.lang.dsl.template.NLMappingItem;
+import org.drools.lang.dsl.DSLMappingEntry;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -35,22 +35,22 @@ public class DSLContentProvider
 
     }
 
-    public void addMapping(NLMappingItem item) {
+    public void addMapping(DSLMappingEntry item) {
         viewer.add( item );
         
     }
 
-    public void removeMapping(NLMappingItem item) {
+    public void removeMapping(DSLMappingEntry item) {
 
         viewer.remove( item );
     }
 
-    public void updateMapping(NLMappingItem item) {
+    public void updateMapping(DSLMappingEntry item) {
         viewer.update( item, null );
     }
 
     public Object[] getElements(Object inputElement) {
-        return model.getMappings().toArray();        
+        return model.getEntries().toArray();        
     }
 
 }

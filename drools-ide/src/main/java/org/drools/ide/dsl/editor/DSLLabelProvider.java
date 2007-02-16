@@ -1,6 +1,6 @@
 package org.drools.ide.dsl.editor;
 
-import org.drools.lang.dsl.template.NLMappingItem;
+import org.drools.lang.dsl.DSLMappingEntry;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -23,19 +23,19 @@ public class DSLLabelProvider extends LabelProvider
     public String getColumnText(Object element,
                                 int columnIndex) {
         String result = "";
-        NLMappingItem item = (NLMappingItem) element;
+        DSLMappingEntry item = (DSLMappingEntry) element;
         switch (columnIndex) {
             case 0:  
-                result = item.getNaturalTemplate();
+                result = item.getMappingKey();
                 break;
             case 1 :
-                result = item.getTargetTemplate();
+                result = item.getMappingValue();
                 break;
             case 2 :
-            	result = item.getObjectName();
+            	result = item.getMetaData().getMetaData();
             	break;
             case 3 :
-                result = item.getScope();
+                result = item.getSection().getSymbol();
                 break;
             default :
                 break;  

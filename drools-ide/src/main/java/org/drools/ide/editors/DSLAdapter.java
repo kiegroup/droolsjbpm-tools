@@ -10,8 +10,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.lang.dsl.template.NLGrammar;
-import org.drools.lang.dsl.template.NLMappingItem;
+import org.drools.lang.dsl.DSLMapping;
+import org.drools.lang.dsl.DSLMappingEntry;
+import org.drools.lang.dsl.DSLMappingFile;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -98,13 +99,14 @@ public class DSLAdapter {
     }
 
     
-    /** This will load in the DSL config file, using the NLGrammar from drools-compiler */
+    /** This will load in the DSL config file, using the DSLMapping from drools-compiler */
     void readConfig(InputStream stream) throws IOException, CoreException {
-        NLGrammar grammar = new NLGrammar();
-        grammar.load( new InputStreamReader(stream) );
+        DSLMappingFile file = new DSLMappingFile();
+        file.parseAndLoad( new InputStreamReader(stream) );
 
-        List conditions = grammar.getMappings( "when" );
-        List consequences = grammar.getMappings( "then" );
+        DSLMapping grammar = file.getMapping();
+        List conditions = grammar.getEntries( DSLMappingEntry.CONDITION );
+        List consequences = grammar.getEntries( DSLMappingEntry.CONSEQUENCE );
         
         conditionProposals = buildProposals(conditions);
         consequenceProposals = buildProposals(consequences);
@@ -114,8 +116,8 @@ public class DSLAdapter {
     	List result = new ArrayList(suggestions.size());
     	Iterator iterator = suggestions.iterator();
         while (iterator.hasNext()) {
-            NLMappingItem text = (NLMappingItem) iterator.next();
-            result.add(text.getNaturalTemplate());
+            DSLMappingEntry text = (DSLMappingEntry) iterator.next();
+            result.add(text.getMappingKey());
         }
         return result;
     }
