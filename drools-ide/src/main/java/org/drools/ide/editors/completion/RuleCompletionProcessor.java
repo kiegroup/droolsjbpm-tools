@@ -18,7 +18,7 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.ide.DroolsIDEPlugin;
 import org.drools.ide.DroolsPluginImages;
-import org.drools.ide.editors.DRLRuleEditor;
+import org.drools.ide.editors.AbstractRuleEditor;
 import org.drools.ide.editors.DSLAdapter;
 import org.drools.ide.util.ProjectClassLoader;
 import org.drools.lang.descr.AccumulateDescr;
@@ -72,7 +72,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
 	private DSLTree dslTree = new DSLTree();
 
-	public RuleCompletionProcessor(DRLRuleEditor editor) {
+	public RuleCompletionProcessor(AbstractRuleEditor editor) {
 		super(editor);
 	}
 

@@ -30,6 +30,7 @@ import org.drools.ide.DRLInfo.FunctionInfo;
 import org.drools.ide.DRLInfo.RuleInfo;
 import org.drools.ide.builder.DroolsBuilder;
 import org.drools.ide.builder.Util;
+import org.drools.ide.editors.AbstractRuleEditor;
 import org.drools.ide.editors.DRLRuleEditor;
 import org.drools.ide.editors.DSLAdapter;
 import org.drools.ide.preferences.IDroolsConstants;
@@ -223,7 +224,7 @@ public class DroolsIDEPlugin extends AbstractUIPlugin {
 		return generateParsedResource(resource, compile);
 	}
 	
-	public DRLInfo parseResource(DRLRuleEditor editor, boolean useUnsavedContent, boolean compile) throws DroolsParserException {
+	public DRLInfo parseResource(AbstractRuleEditor editor, boolean useUnsavedContent, boolean compile) throws DroolsParserException {
 		IResource resource = editor.getResource();
 		if (!editor.isDirty() || !useUnsavedContent) {
 			DRLInfo result = (DRLInfo) compiledRules.get(resource);

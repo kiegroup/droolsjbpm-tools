@@ -31,11 +31,11 @@ public class DRLReconcilingStrategy implements IReconcilingStrategy {
     private static final Pattern IMPORT_PATTERN = Pattern.compile("\\n\\s*((\\s*import\\s+[^\\s;]+;?[\\t\\x0B\\f\\r]*\\n)+)", Pattern.DOTALL);
     
 	private ISourceViewer sourceViewer;
-	private DRLRuleEditor editor;
+	private AbstractRuleEditor editor;
 	private IDocument document;
     private boolean folding;
 
-	public DRLReconcilingStrategy(ISourceViewer sourceViewer, final DRLRuleEditor editor) {
+	public DRLReconcilingStrategy(ISourceViewer sourceViewer, final AbstractRuleEditor editor) {
 		this.sourceViewer = sourceViewer;
 		this.editor = editor;
 		IPreferenceStore preferenceStore = DroolsIDEPlugin.getDefault().getPreferenceStore();

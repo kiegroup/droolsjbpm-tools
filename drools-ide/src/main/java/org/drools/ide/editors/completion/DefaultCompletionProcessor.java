@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 import org.drools.ide.DroolsIDEPlugin;
 import org.drools.ide.DroolsPluginImages;
+import org.drools.ide.editors.AbstractRuleEditor;
 import org.drools.ide.editors.DRLRuleEditor;
 import org.drools.util.StringUtils;
 import org.eclipse.core.resources.IProject;
@@ -49,12 +50,12 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
     protected static final Image methodIcon = DroolsPluginImages.getImage(DroolsPluginImages.METHOD);
     protected static final Pattern START_OF_NEW_JAVA_STATEMENT = Pattern.compile(".*[;{}]\\s*", Pattern.DOTALL);
 
-    public DefaultCompletionProcessor(DRLRuleEditor editor) {
+    public DefaultCompletionProcessor(AbstractRuleEditor editor) {
     	super(editor);
     }
     
-    protected DRLRuleEditor getDRLEditor() {
-    	return (DRLRuleEditor) getEditor();
+    protected AbstractRuleEditor getDRLEditor() {
+    	return (AbstractRuleEditor) getEditor();
     }
     
 	protected List getCompletionProposals(ITextViewer viewer, int documentOffset) {

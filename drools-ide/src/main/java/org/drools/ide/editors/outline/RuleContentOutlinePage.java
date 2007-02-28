@@ -17,6 +17,7 @@ import org.drools.ide.core.ui.DroolsContentProvider;
 import org.drools.ide.core.ui.DroolsLabelProvider;
 import org.drools.ide.core.ui.DroolsTreeSorter;
 import org.drools.ide.core.ui.FilterActionGroup;
+import org.drools.ide.editors.AbstractRuleEditor;
 import org.drools.ide.editors.DRLRuleEditor;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -39,7 +40,7 @@ import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
  */
 public class RuleContentOutlinePage extends ContentOutlinePage {
 
-    private DRLRuleEditor editor;
+    private AbstractRuleEditor editor;
     private RuleSet ruleSet = DroolsModelBuilder.createRuleSet();
     private Map rules;
 
@@ -76,7 +77,7 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
 	private static final Pattern QUERY_PATTERN2 = Pattern.compile(
 			"\\n\\s*query\\s+([^\\s;#\"]+)", Pattern.DOTALL);
 
-    public RuleContentOutlinePage(DRLRuleEditor editor) {
+    public RuleContentOutlinePage(AbstractRuleEditor editor) {
         this.editor = editor;
     }
 

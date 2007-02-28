@@ -36,9 +36,9 @@ public class DRLSourceViewerConfig extends SourceViewerConfiguration {
 	private static Color DEFAULT_COLOR =
 		ColorManager.getInstance().getColor(ColorManager.DEFAULT);
 
-	private DRLRuleEditor editor;
+	private AbstractRuleEditor editor;
 
-	public DRLSourceViewerConfig(DRLRuleEditor editor) {
+	public DRLSourceViewerConfig(AbstractRuleEditor editor) {
 		this.editor = editor;
 	}
 
