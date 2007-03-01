@@ -742,6 +742,8 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 				"date-expires \"dd-MMM-yyyy\"", 14, droolsIcon));
 		list.add(new RuleCompletionProposal(prefix.length(), "enabled",
 				"enabled false", droolsIcon));
+		list.add(new RuleCompletionProposal(prefix.length(), "ruleflow-group",
+				"ruleflow-group \"\"", 16, droolsIcon));
 	}
 
 	private void addDSLProposals(final List list, final String prefix,

@@ -134,7 +134,7 @@
    </extension>
    
    <extension
-      id="droolsbuilder" name="Drools Builder" point="org.eclipse.core.resources.builders">
+      id="droolsbuilder" name="JBoss Rules Builder" point="org.eclipse.core.resources.builders">
       <builder>
          <run class="org.drools.ide.builder.DroolsBuilder"/>
       </builder>
@@ -152,7 +152,7 @@
    <extension
          id="droolsBreakpointMarker"
          point="org.eclipse.core.resources.markers"
-         name="Drools Breakpoint Marker">
+         name="JBoss Rules Breakpoint Marker">
 	  <super type="org.eclipse.debug.core.breakpointMarker"/>
       <persistent value="true"/>
 	</extension>
@@ -199,7 +199,7 @@
    <extension point = "org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
    	     id="org.drools.ide.launching.DroolsLaunchConfigurationDelegate"
-         name="Drools Application"
+         name="JBoss Rules Application"
          delegate="org.drools.ide.launching.DroolsLaunchConfigurationDelegate"
          sourceLocatorId="org.drools.ide.launching.DroolsSourceLookupDirector"
          sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer"
@@ -235,7 +235,7 @@
    <extension
          point="org.eclipse.debug.core.sourceLocators">
       <sourceLocator
-         name="Drools Source Lookup Director"
+         name="JBoss Rules Source Lookup Director"
          class="org.drools.ide.launching.DroolsSourceLookupDirector"
          id="org.drools.ide.launching.DroolsSourceLookupDirector">
       </sourceLocator>
@@ -323,5 +323,51 @@
 	    </action>
 	 </objectContribution>
    </extension>
+   
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="RuleFlow Editor"
+            extensions="rf, ruleflow, rflow"
+            icon="icons/process.gif"
+            contributorClass="org.drools.ide.flow.common.editor.GenericActionBarContributor"
+            class="org.drools.ide.flow.ruleflow.editor.RuleFlowModelEditor"
+            id="org.drools.ide.flow.ruleflow.editor.RuleFlowModelEditor">
+      </editor>
+   </extension>
+
+   <extension
+         point = "org.eclipse.ui.editorActions">
+      <editorContribution 
+            id="org.drools.ide.flow.ruleflow.editor.action.CheckRuleFlowAction" 
+            targetID="org.drools.ide.flow.ruleflow.editor.RuleFlowModelEditor">        
+	     <action
+	        id="org.drools.ide.flow.ruleflow.editor.action.CheckRuleFlowAction" 
+            label="Check RuleFlow" 
+	        toolbarPath="JBoss Rules" 
+            icon="icons/check.gif" 
+            tooltip="Check the ruleflow model" 
+            class="org.drools.ide.flow.ruleflow.editor.action.CheckRuleFlowAction"
+         />
+      </editorContribution>
+   </extension>
+   
+   <extension
+         point = "org.eclipse.ui.newWizards">
+	  <category
+	    id = "org.drools.ide.flow.new"
+	    name="RuleFlow">
+	  </category>
+ 	  <wizard
+	      id = "org.drools.ide.flow.ruleflow.NewRuleFlowFileWizard"
+      	  name = "RuleFlow File"
+	      class="org.drools.ide.flow.ruleflow.NewRuleFlowFileWizard"
+          category="org.drools.ide.new"
+	      icon="icons/process.gif">
+    	<description>A wizard that creates a new ruleflow file</description>
+	    <selection class="org.eclipse.core.resources.IResource"/>
+	  </wizard>
+   </extension>
+   
    
 </plugin>
