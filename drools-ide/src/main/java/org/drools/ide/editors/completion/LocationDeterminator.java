@@ -408,7 +408,7 @@ public class LocationDeterminator {
 			return endReached((BaseDescr) descrs.get(0))
 				&& endReached((BaseDescr) descrs.get(1));
 		} else if (descr instanceof EvalDescr) {
-			return ((EvalDescr) descr).getText() != null;
+			return ((EvalDescr) descr).getContent() != null;
 		}
 		return descr.getEndCharacter() != -1;
 //		else if (descr instanceof AccumulateDescr) {
