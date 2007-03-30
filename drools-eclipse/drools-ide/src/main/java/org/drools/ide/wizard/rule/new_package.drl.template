@@ -1,0 +1,28 @@
+#created on: $date$
+$package$
+#list any import classes here.
+
+$expander$
+
+#declare any global variables here
+
+$functions$
+
+
+rule "Your First Rule"
+	
+	when
+		#conditions
+	then 
+		#actions
+		
+end
+
+rule "Your Second Rule"
+	#include attributes such as "salience" here...
+	when
+		#conditions
+	then 
+		#actions
+		
+end

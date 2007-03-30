@@ -1,0 +1,157 @@
+package org.drools.ide.flow.ruleflow.editor;
+/*
+ * Copyright 2005 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.drools.ide.DroolsIDEPlugin;
+import org.drools.ide.flow.common.editor.core.ElementConnectionFactory;
+import org.drools.ide.flow.ruleflow.core.ConnectionWrapper;
+import org.drools.ide.flow.ruleflow.core.ConnectionWrapperFactory;
+import org.drools.ide.flow.ruleflow.core.EndNodeWrapper;
+import org.drools.ide.flow.ruleflow.core.JoinWrapper;
+import org.drools.ide.flow.ruleflow.core.RuleSetNodeWrapper;
+import org.drools.ide.flow.ruleflow.core.SplitWrapper;
+import org.drools.ide.flow.ruleflow.core.StartNodeWrapper;
+import org.drools.ruleflow.core.IConnection;
+import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
+import org.eclipse.gef.palette.ConnectionCreationToolEntry;
+import org.eclipse.gef.palette.MarqueeToolEntry;
+import org.eclipse.gef.palette.PaletteContainer;
+import org.eclipse.gef.palette.PaletteDrawer;
+import org.eclipse.gef.palette.PaletteGroup;
+import org.eclipse.gef.palette.PaletteRoot;
+import org.eclipse.gef.palette.SelectionToolEntry;
+import org.eclipse.gef.palette.ToolEntry;
+import org.eclipse.gef.requests.CreationFactory;
+import org.eclipse.gef.requests.SimpleFactory;
+import org.eclipse.jface.resource.ImageDescriptor;
+
+/**
+ * Factory for creating a RuleFlow palette.
+ * 
+ * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
+ */
+public class RuleFlowPaletteFactory {
+
+    public static PaletteRoot createPalette() {
+        PaletteRoot flowPalette = new PaletteRoot();
+        flowPalette.addAll(createCategories(flowPalette));
+        return flowPalette;
+    }
+    
+    private static List createCategories(PaletteRoot root) {
+        List categories = new ArrayList();
+        categories.add(createControlGroup(root));
+        categories.add(createComponentsDrawer());
+        return categories;
+    }
+
+    private static PaletteContainer createComponentsDrawer() {
+
+        PaletteDrawer drawer = new PaletteDrawer("Components", null);
+
+        List entries = new ArrayList();
+
+        CombinedTemplateCreationEntry combined = new CombinedTemplateCreationEntry(
+            "Start",
+            "Create a new Start",
+            StartNodeWrapper.class,
+            new SimpleFactory(StartNodeWrapper.class),
+            ImageDescriptor.createFromURL(DroolsIDEPlugin.getDefault().getBundle().getEntry("icons/process_start.gif")),
+            ImageDescriptor.createFromURL(DroolsIDEPlugin.getDefault().getBundle().getEntry("icons/process_start.gif"))
+        );
+        entries.add(combined);
+        
+        combined = new CombinedTemplateCreationEntry(
+            "End",
+            "Create a new End",
+            EndNodeWrapper.class,
+            new SimpleFactory(EndNodeWrapper.class),
+            ImageDescriptor.createFromURL(DroolsIDEPlugin.getDefault().getBundle().getEntry("icons/process_stop.gif")), 
+            ImageDescriptor.createFromURL(DroolsIDEPlugin.getDefault().getBundle().getEntry("icons/process_stop.gif"))
+        );
+        entries.add(combined);
+                
+        combined = new CombinedTemplateCreationEntry(
+            "RuleFlowGroup",
+            "Create a new RuleFlowGroup",
+            RuleSetNodeWrapper.class,
+            new SimpleFactory(RuleSetNodeWrapper.class),
+            ImageDescriptor.createFromURL(DroolsIDEPlugin.getDefault().getBundle().getEntry("icons/activity.gif")), 
+            ImageDescriptor.createFromURL(DroolsIDEPlugin.getDefault().getBundle().getEntry("icons/activity.gif"))
+        );
+        entries.add(combined);
+            
+        combined = new CombinedTemplateCreationEntry(
+            "Split",
+            "Create a new Split",
+            SplitWrapper.class,
+            new SimpleFactory(SplitWrapper.class),
+            ImageDescriptor.createFromURL(DroolsIDEPlugin.getDefault().getBundle().getEntry("icons/split.gif")), 
+            ImageDescriptor.createFromURL(DroolsIDEPlugin.getDefault().getBundle().getEntry("icons/split.gif"))
+        );
+        entries.add(combined);
+                    
+        combined = new CombinedTemplateCreationEntry(
+            "Join",
+            "Create a new Join",
+            JoinWrapper.class,
+            new SimpleFactory(JoinWrapper.class),
+            ImageDescriptor.createFromURL(DroolsIDEPlugin.getDefault().getBundle().getEntry("icons/join.gif")), 
+            ImageDescriptor.createFromURL(DroolsIDEPlugin.getDefault().getBundle().getEntry("icons/join.gif"))
+        );
+        entries.add(combined);
+                        
+        drawer.addAll(entries);
+        return drawer;
+    }
+
+    private static PaletteContainer createControlGroup(PaletteRoot root) {
+        PaletteGroup controlGroup = new PaletteGroup("Control Group");
+
+        List entries = new ArrayList();
+
+        ToolEntry tool = new SelectionToolEntry();
+        entries.add(tool);
+        root.setDefaultEntry(tool);
+
+        tool = new MarqueeToolEntry();
+        entries.add(tool);
+        
+        final ElementConnectionFactory normalConnectionFactory = new ConnectionWrapperFactory(IConnection.TYPE_NORMAL);
+
+        tool = new ConnectionCreationToolEntry(
+            "Connection Creation",
+            "Creating connections",
+            new CreationFactory() {
+                public Object getNewObject() {
+                	return normalConnectionFactory.createElementConnection();
+                }
+                public Object getObjectType() {
+                	return ConnectionWrapper.class;
+                }
+            },
+            ImageDescriptor.createFromURL(DroolsIDEPlugin.getDefault().getBundle().getEntry("icons/connection.gif")), 
+            ImageDescriptor.createFromURL(DroolsIDEPlugin.getDefault().getBundle().getEntry("icons/connection.gif"))
+        );
+        entries.add(tool);
+        
+        controlGroup.addAll(entries);
+        return controlGroup;
+    }
+}

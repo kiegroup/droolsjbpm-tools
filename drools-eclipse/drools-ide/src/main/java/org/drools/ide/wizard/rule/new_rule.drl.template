@@ -1,0 +1,11 @@
+#created on: $date$
+$package$
+rule "A stand alone rule"
+	
+	when
+		#conditions
+	then 
+		#actions
+		
+end
+

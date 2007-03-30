@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension point="org.eclipse.ui.views">
+      <category
+         name="JBoss Rules"
+         id="org.drools.ide.views">
+      </category>
+      <view
+         name="Working Memory View"
+         icon="icons/drools.gif"
+         category="org.drools.ide.views"
+         class="org.drools.ide.debug.WorkingMemoryView"
+         id="org.drools.ide.debug.WorkingMemoryView">
+      </view>
+      <view
+         name="Agenda View"
+         icon="icons/drools.gif"
+         category="org.drools.ide.views"
+         class="org.drools.ide.debug.AgendaView"
+         id="org.drools.ide.debug.AgendaView">
+      </view>
+      <view
+         name="Global Data View"
+         icon="icons/drools.gif"
+         category="org.drools.ide.views"
+         class="org.drools.ide.debug.ApplicationDataView"
+         id="org.drools.ide.debug.ApplicationDataView">
+      </view>
+      <view
+         name="Audit View"
+         icon="icons/drools.gif"
+         category="org.drools.ide.views"
+         class="org.drools.ide.debug.AuditView"
+         id="org.drools.ide.debug.AuditView">
+      </view>
+      <view
+         name="Rules View"
+         icon="icons/drools.gif"
+         category="org.drools.ide.views"
+         class="org.drools.ide.view.rules.RulesView"
+         id="org.drools.ide.view.rules.RulesView">
+      </view>
+   </extension>
+   
+   <extension
+         point="org.eclipse.debug.core.logicalStructureTypes">
+      <logicalStructureType
+        id="org.drools.ide.debug.AgendaLogicalStructures"
+        class="org.drools.ide.debug.AgendaLogicalStructureDelegate"
+        modelIdentifier="org.eclipse.jdt.debug"
+        description="Agenda Item">
+      </logicalStructureType>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.drools.ide.editors.DRLRuleEditor2"
+            contributorClass="org.drools.ide.editors.DRLRuleEditorActionContributor"
+            extensions="drl,jbrule,drools,rule"
+            icon="icons/drools.gif"
+            id="org.drools.ide.editors.DRLRuleEditor"
+            name="Rule Editor"/>
+      <!--
+      <editor
+            class="org.drools.ide.editors.dsl.DSLRuleEditor2"
+            contributorClass="org.drools.ide.editors.DRLRuleEditorActionContributor"
+            extensions="dslr,dslrule"
+            icon="icons/drools.gif"
+            id="org.drools.ide.editors.dsl.DSLRuleEditor"
+            name="DSL Rule Editor"/> -->
+      <editor
+            class="org.drools.ide.dsl.editor.DSLEditor"
+            contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
+            default="false"
+            extensions="dsl,lang"
+            icon="icons/dsl.GIF"
+            id="org.drools.ide.editor.DomainSpecLangEditor"
+            name="DSL Editor"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            category="org.drools.ide.new"
+            class="org.drools.ide.wizard.rule.NewRulePackageWizard"
+            descriptionImage="icons/drools-large.PNG"
+            icon="icons/drools.gif"
+            id="org.drools.ide.new.file"
+            name="New Rule Resource"/>
+      <wizard
+            category="org.drools.ide.new"
+            class="org.drools.ide.wizard.dsl.NewDSLFileWizard"
+            descriptionImage="icons/dsl-large.png"
+            icon="icons/dsl.GIF"
+            id="org.drools.ide.new.dsl"
+            name="New Domain Specific Language"/>
+      <wizard
+            id = "org.drools.ide.wizards.new.project"
+            name = "New Rule Project"
+            class= "org.drools.ide.wizard.project.NewDroolsProjectWizard"
+            category= "org.drools.ide.new"
+            project= "true"
+            icon= "icons/drools.gif">
+         <description>This wizard creates a new Rule project.</description>
+      </wizard>
+      <category
+            id="org.drools.ide.new"
+            name="JBoss Rules"/>
+      <wizard
+            category="org.drools.ide.new"
+            class="org.drools.ide.wizard.decisiontable.NewDTFileWizard"
+            descriptionImage="icons/dt_large.gif"
+            icon="icons/dt_small.gif"
+            id="org.drools.ide.new.decisiontable"
+            name="New Decision Table"/>
+   </extension>
+   <extension
+         id="org.drools.ide.actionSet"
+         name="JBoss Rules"
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.drools.ide.workbenchMenu"
+            label="JBoss Rules"
+            visible="true">
+         <action
+               class="org.drools.ide.menu.RuleHelperActionDelegate"
+               icon="icons/drools.gif"
+               id="org.drools.ide.openRulesWorkbench"
+               label="JBoss Rules wizards"
+               style="pulldown"
+               toolbarPath="Normal/additions"
+               tooltip="JBoss Rules workbench"/>
+      </actionSet>
+   </extension>
+   
+   <extension
+      id="droolsbuilder" name="JBoss Rules Builder" point="org.eclipse.core.resources.builders">
+      <builder>
+         <run class="org.drools.ide.builder.DroolsBuilder"/>
+      </builder>
+   </extension>
+
+   <extension
+         id="problem"
+         point="org.eclipse.core.resources.markers"
+         name="JBoss Rules Error">
+      <super type="org.eclipse.core.resources.problemmarker"/>
+      <super type="org.eclipse.core.resources.textmarker"/>
+      <persistent value="true" />
+   </extension>
+
+   <extension
+         id="droolsBreakpointMarker"
+         point="org.eclipse.core.resources.markers"
+         name="JBoss Rules Breakpoint Marker">
+	  <super type="org.eclipse.debug.core.breakpointMarker"/>
+      <persistent value="true"/>
+	</extension>
+
+   <extension point="org.eclipse.debug.core.breakpoints">
+      <breakpoint
+         id="droolsBreakpoint"
+         markerType="org.drools.ide.droolsBreakpointMarker"
+         class="org.drools.ide.debug.core.DroolsLineBreakpoint">
+      </breakpoint>
+   </extension>
+
+   <extension point="org.eclipse.jdt.core.classpathContainerInitializer">
+       <classpathContainerInitializer class="org.drools.ide.util.DroolsClasspathContainerInitializer" id="DROOLS" /> 
+   </extension>
+   
+   <extension point="org.eclipse.ui.editors.annotationTypes">
+      <type super="org.eclipse.ui.workbench.texteditor.error" markerSeverity="2" markerType="org.eclipse.core.resources.problemmarker" name="org.drools.ide.editors.error_annotation"/>
+   </extension>
+   
+   <extension point="org.eclipse.help.toc">
+      <toc file="help/eclipse/toc.xml" primary="true" />
+   </extension>
+   
+   <extension point = "org.eclipse.ui.preferencePages">
+      <page id="org.drools.ide.preferences.DroolsPreferencePage"
+         class="org.drools.ide.preferences.DroolsPreferencePage"
+         name="JBoss Rules Preferences">
+      </page>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+         name="JBoss Rules"
+         icon="icons/drools.gif"
+         class="org.drools.ide.DroolsPerspective"
+         id="org.drools.ide.DroolsPerspective">
+      </perspective>
+   </extension>
+   
+   <!-- Extensions for the interactive debugger -->
+   
+   <extension point = "org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+   	     id="org.drools.ide.launching.DroolsLaunchConfigurationDelegate"
+         name="JBoss Rules Application"
+         delegate="org.drools.ide.launching.DroolsLaunchConfigurationDelegate"
+         sourceLocatorId="org.drools.ide.launching.DroolsSourceLookupDirector"
+         sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer"
+         modes= "debug" />
+   </extension>
+   
+   <extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+         icon="icons/drools.gif"
+         configTypeID="org.drools.ide.launching.DroolsLaunchConfigurationDelegate"
+         id="org.drools.ide.launching.DroolsLaunchConfigurationDelegate.Image">
+      </launchConfigurationTypeImage>
+   </extension>
+   
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            type="org.drools.ide.launching.DroolsLaunchConfigurationDelegate"
+            class="org.eclipse.jdt.internal.debug.ui.launcher.LocalJavaApplicationTabGroup"
+            id="org.eclipse.jdt.debug.ui.launchConfigurationTabGroup.localJavaApplication">
+            <launchMode 
+                  mode="debug"
+                  perspective="org.eclipse.debug.ui.DebugPerspective"
+                  description="Debug a JBoss Rules application">
+            </launchMode>
+            <launchMode
+                  mode="run"
+                  description="Run a JBoss Rules application">
+            </launchMode>
+      </launchConfigurationTabGroup>
+   </extension>
+   
+   <extension
+         point="org.eclipse.debug.core.sourceLocators">
+      <sourceLocator
+         name="JBoss Rules Source Lookup Director"
+         class="org.drools.ide.launching.DroolsSourceLookupDirector"
+         id="org.drools.ide.launching.DroolsSourceLookupDirector">
+      </sourceLocator>
+   </extension>
+   
+   <extension point="org.eclipse.ui.editors.markerUpdaters">
+      <updater 
+         markerType="org.drools.ide.droolsBreakpointMarker" 
+         class="org.drools.ide.debug.core.DroolsLineBreakpointMarkerUpdater" 
+         id="org.drools.ide.debug.core.DroolsLineBreakpointMarkerUpdater" /> 
+   </extension>
+   
+   <!-- not used anymore
+   <extension
+         point="org.eclipse.debug.core.sourcePathComputers">
+      <sourcePathComputer
+         class="org.drools.ide.launching.DroolsSourcePathComputerDelegate"
+         id="org.drools.ide.launching.DroolsSourcePathComputerDelegate">
+      </sourcePathComputer>
+   </extension> -->
+   
+   <extension
+         point="org.eclipse.debug.ui.debugModelPresentations"> 
+      <debugModelPresentation 
+         class="org.drools.ide.debug.core.DroolsDebugModelPresentation"
+         id="org.drools.ide.debug">
+      </debugModelPresentation> 
+   </extension>
+   
+   <!-- not working
+   <extension point="org.eclipse.debug.ui.launchShortcuts">
+      <shortcut 
+            label="JBoss Rules Application" 
+            icon="icons/drools.gif" 
+            class="org.drools.ide.launching.DroolsApplicationLaunchShortcut" 
+            modes="debug" 
+            id="org.drools.ide.launching.DroolsApplicationLaunchShortcut">
+         <perspective id="org.eclipse.jdt.ui.JavaPerspective" /> 
+         <perspective id="org.eclipse.jdt.ui.JavaHierarchyPerspective" /> 
+         <perspective id="org.eclipse.jdt.ui.JavaBrowsingPerspective" /> 
+         <perspective id="org.eclipse.debug.ui.DebugPerspective" /> 
+      </shortcut>
+   </extension> -->
+   
+   <!-- not working if using multipage editor -->
+   <extension point="org.eclipse.ui.editorActions">
+      <editorContribution
+            targetID="org.drools.ide.editors.DRLRuleEditor" 
+            id="org.drools.ide.editors.DRLRuleEditor.RulerActions">
+         <action
+            label="Not Used" 
+            class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate" 
+            style="push"
+            actionID="RulerDoubleClick" 
+            id="org.drools.ide.editors.DRLRuleEditor.ToggleBreakpointRulerAction" /> 
+      </editorContribution>
+   </extension>
+   
+   <!-- not working if using multipage editor -->
+   <extension point="org.eclipse.ui.popupMenus">
+      <viewerContribution
+            targetID="#TextRulerContext"
+            id="org.drools.ide.editors.DRLRuleEditor.RulerPopupActions">
+         <action
+            label="Toggle Breakpoint"
+            class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
+            menubarPath="additions"
+            id="org.drools.ide.editors.DRLRuleEditor.rulerContextMenu.ToggleBreakpointRulerAction">
+         </action>
+      </viewerContribution>
+   </extension>
+   
+   <extension point = "org.eclipse.ui.popupMenus">
+     <objectContribution
+        	id="org.drools.ide.action.ConvertToDroolsProject"
+        	objectClass="org.eclipse.core.resources.IFile"
+        	nameFilter=".project">
+	    <action id="org.drools.ide.action.ConvertToDroolsProjectAction"
+	       label="Convert to JBoss Rules Project"
+	       icon="icons/drools.gif"
+	       menubarPath="additions"
+	       class="org.drools.ide.action.ConvertToDroolsProjectAction"	
+           definitionId="org.drools.ide.action.ConvertToDroolsProjectAction"
+	       enablesFor="1">
+	    </action>
+	 </objectContribution>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="RuleFlow Editor"
+            extensions="rf, ruleflow, rflow"
+            icon="icons/process.gif"
+            contributorClass="org.drools.ide.flow.common.editor.GenericActionBarContributor"
+            class="org.drools.ide.flow.ruleflow.editor.RuleFlowModelEditor"
+            id="org.drools.ide.flow.ruleflow.editor.RuleFlowModelEditor">
+      </editor>
+   </extension>
+
+   <extension
+         point = "org.eclipse.ui.editorActions">
+      <editorContribution 
+            id="org.drools.ide.flow.ruleflow.editor.action.CheckRuleFlowAction" 
+            targetID="org.drools.ide.flow.ruleflow.editor.RuleFlowModelEditor">        
+	     <action
+	        id="org.drools.ide.flow.ruleflow.editor.action.CheckRuleFlowAction" 
+            label="Check RuleFlow" 
+	        toolbarPath="JBoss Rules" 
+            icon="icons/check.gif" 
+            tooltip="Check the ruleflow model" 
+            class="org.drools.ide.flow.ruleflow.editor.action.CheckRuleFlowAction"
+         />
+      </editorContribution>
+   </extension>
+   
+   <extension
+         point = "org.eclipse.ui.newWizards">
+	  <category
+	    id = "org.drools.ide.flow.new"
+	    name="RuleFlow">
+	  </category>
+ 	  <wizard
+	      id = "org.drools.ide.flow.ruleflow.NewRuleFlowFileWizard"
+      	  name = "RuleFlow File"
+	      class="org.drools.ide.flow.ruleflow.NewRuleFlowFileWizard"
+          category="org.drools.ide.new"
+	      icon="icons/process.gif">
+    	<description>A wizard that creates a new ruleflow file</description>
+	    <selection class="org.eclipse.core.resources.IResource"/>
+	  </wizard>
+   </extension>
+   
+   
+</plugin>
