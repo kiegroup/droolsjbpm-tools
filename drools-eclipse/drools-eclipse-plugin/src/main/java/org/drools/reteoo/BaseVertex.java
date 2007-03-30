@@ -15,7 +15,7 @@
  */
 package org.drools.reteoo;
 
-import org.drools.ide.editors.rete.model.GraphicalVertex;
+import org.drools.eclipse.editors.rete.model.GraphicalVertex;
 
 /**
  * Intermediate class to have a workaround for *Node default visibility  

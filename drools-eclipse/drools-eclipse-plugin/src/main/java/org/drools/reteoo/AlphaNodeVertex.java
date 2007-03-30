@@ -48,7 +48,7 @@ public class AlphaNodeVertex extends BaseVertex {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.ide.editors.rete.model.BaseVertex#toString()
+     * @see org.drools.eclipse.editors.rete.model.BaseVertex#toString()
      */
     public String toString() {
         return this.node.toString();

@@ -1,5 +1,5 @@
 <project name="allElements Delegator">
-	
+
  	<!-- ===================================================================== -->
  	<!-- Run a given ${target} on all elements being built                     -->
  	<!-- Replace element.id with the id of the top level element being built.    -->
@@ -11,10 +11,10 @@
  	<target name="allElementsDelegator">
  		<ant antfile="${genericTargets}" target="${target}">
 	 		<property name="type" value="feature" />
-	 		<property name="id" value="org.drools.ide.feature" />
+	 		<property name="id" value="org.drools.eclipse.feature" />
  		</ant>
  	</target>
- 
+
  	<!-- ===================================================================== -->
  	<!-- Targets to assemble the built elements for particular configurations  -->
  	<!-- These generally call the generated assemble scripts (named in         -->
@@ -22,7 +22,7 @@
  	<!-- Add one target for each root element and each configuration           -->
  	<!-- Replace element.id with the id of the top level element being built   -->
  	<!-- ===================================================================== -->
- 	<target name="assemble.org.drools.ide.feature">
+ 	<target name="assemble.org.drools.eclipse.feature">
  		<property name="archiveName" value="${zipFile}"/>
  		<ant antfile="${assembleScriptName}" dir="${buildDirectory}"/>
  	</target>

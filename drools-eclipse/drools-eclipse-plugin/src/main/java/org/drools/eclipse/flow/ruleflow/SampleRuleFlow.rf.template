@@ -1,0 +1,44 @@
+<org.drools.eclipse.flow.ruleflow.core.WorkflowProcessWrapper id="1" serialization="custom">
+  <org.drools.eclipse.flow.common.editor.core.ProcessWrapper>
+    <default>
+      <elements id="2">
+        <entry>
+          <string>1-Wrapper</string>
+          <org.drools.eclipse.flow.ruleflow.core.StartNodeWrapper id="3" serialization="custom">
+            <org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper>
+              <default>
+                <constraint id="4">
+                  <x>100</x>
+                  <y>100</y>
+                  <width>80</width>
+                  <height>40</height>
+                </constraint>
+                <element class="org.drools.ruleflow.core.impl.StartNode" id="5">
+                  <id>1</id>
+                  <name>Start</name>
+                  <incomingConnections id="6"/>
+                  <outgoingConnections id="7"/>
+                </element>
+                <incomingConnections id="8"/>
+                <outgoingConnections id="9"/>
+              </default>
+            </org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper>
+          </org.drools.eclipse.flow.ruleflow.core.StartNodeWrapper>
+        </entry>
+      </elements>
+      <process class="org.drools.ruleflow.core.impl.RuleFlowProcess" id="10">
+        <nodes id="11">
+          <entry>
+            <long>1</long>
+            <org.drools.ruleflow.core.impl.StartNode reference="5"/>
+          </entry>
+        </nodes>
+        <variables id="12"/>
+        <lastNodeId>1</lastNodeId>
+        <id>0</id>
+        <name>flow</name>
+        <type>Workflow</type>
+      </process>
+    </default>
+  </org.drools.eclipse.flow.common.editor.core.ProcessWrapper>
+</org.drools.eclipse.flow.ruleflow.core.WorkflowProcessWrapper>
