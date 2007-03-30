@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JBoss Rules IDE Plug-in
 Bundle-SymbolicName: org.drools.eclipse;singleton:=true
-Bundle-Version: 3.1.0.1
-Bundle-Activator: org.drools.eclipse.DroolsIDEPlugin
+Bundle-Version: 3.1.0.M1
+Bundle-Activator: org.drools.ide.DroolsIDEPlugin
 Bundle-Vendor: krisv,mic
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
@@ -29,10 +29,10 @@ Eclipse-LazyStart: true
 Bundle-ClassPath: ide.jar,
  lib/antlr-2.7.7.jar,
  lib/antlr-3.0b5.jar,
- lib/drools-compiler.jar,
- lib/drools-core.jar,
- lib/drools-decisiontables.jar,
- lib/drools-jsr94.jar,
+ lib/drools-compile-3.1.0-M1.jar,
+ lib/drools-core-3.1.0-M1.jar,
+ lib/drools-decisiontables-3.1.0-M1.jar,
+ lib/drools-jsr94-3.1.0-M1.jar,
  lib/jsr94-1.1.jar,
  lib/jxl-2.4.2.jar,
  lib/mvel14-1.2beta6.jar,
