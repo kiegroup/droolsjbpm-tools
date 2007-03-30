@@ -9,7 +9,7 @@
 	<target name="allElements">
 		<antcall target="allElementsDelegator" />
 	</target>
-	
+
 	<!-- ===================================================================== -->
 	<!-- ===================================================================== -->
 	<target name="getBaseComponents" depends="checkLocalBase" unless="skipBase">
@@ -71,19 +71,19 @@
 		<antcall target="getBaseComponents" />
 		<mkdir dir="${buildDirectory}/features"/>
 		<mkdir dir="${buildDirectory}/plugins"/>
-		
-		<copy todir="${buildDirectory}/features/org.drools.ide.feature">
-			<fileset dir="${builder}/../drools-ide-feature"/>
+
+		<copy todir="${buildDirectory}/features/org.drools.eclipse.feature">
+			<fileset dir="${builder}/drools-eclipse-feature"/>
 		</copy>
-		
-		<copy todir="${buildDirectory}/plugins/org.drools.ide">
-				<fileset dir="${builder}/../drools-ide"/>
+
+		<copy todir="${buildDirectory}/plugins/org.drools.eclipse">
+				<fileset dir="${builder}/drools-eclipse-plugin"/>
 		</copy>
 		<!--
 		<copy todir="${buildDirectory}/features/com.ibm.eclipse.shootout.tests">
 				<fileset dir="${builder}/../com.ibm.eclipse.shootout.tests-feature"/>
 		</copy>
-		
+
 		<copy todir="${buildDirectory}/plugins/com.ibm.eclipse.shootout.tests">
 			<fileset dir="${builder}/../com.ibm.eclipse.shootout.tests"/>
 		</copy>
