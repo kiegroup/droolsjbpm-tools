@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: JBoss Rules IDE Plug-in
 Bundle-SymbolicName: org.drools.eclipse;singleton:=true
 Bundle-Version: 3.1.0.M1
-Bundle-Activator: org.drools.ide.DroolsIDEPlugin
+Bundle-Activator: org.drools.eclipse.DroolsIDEPlugin
 Bundle-Vendor: krisv,mic
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
@@ -35,7 +35,7 @@ Bundle-ClassPath: ide.jar,
  lib/drools-jsr94-3.1.0-M1.jar,
  lib/jsr94-1.1.jar,
  lib/jxl-2.4.2.jar,
- lib/mvel14-1.2beta6.jar,
+ lib/mvel14-1.2beta15.jar,
  lib/stringtemplate-3.0.jar,
  lib/xml-apis-1.0.b2.jar,
  lib/xpp3-1.1.3.4.O.jar,
