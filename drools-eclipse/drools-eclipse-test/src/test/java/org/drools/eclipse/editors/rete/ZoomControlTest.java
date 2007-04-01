@@ -1,7 +1,6 @@
 package org.drools.eclipse.editors.rete;
 
 import java.io.InputStream;
-import java.io.StringBufferInputStream;
 
 import junit.framework.TestCase;
 
