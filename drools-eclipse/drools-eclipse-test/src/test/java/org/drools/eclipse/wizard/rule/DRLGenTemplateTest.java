@@ -1,4 +1,4 @@
-package org.drools.ide.wizard.rule;
+package org.drools.eclipse.wizard.rule;
 
 import java.io.BufferedReader;
 import java.io.IOException;

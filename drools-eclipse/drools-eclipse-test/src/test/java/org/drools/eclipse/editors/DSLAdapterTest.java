@@ -1,4 +1,4 @@
-package org.drools.ide.editors;
+package org.drools.eclipse.editors;
 
 import junit.framework.TestCase;
 

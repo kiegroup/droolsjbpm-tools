@@ -1,6 +1,6 @@
-package org.drools.ide.editors.completion;
+package org.drools.eclipse.editors.completion;
 
-import org.drools.ide.editors.Keywords;
+import org.drools.eclipse.editors.Keywords;
 
 import junit.framework.TestCase;
 

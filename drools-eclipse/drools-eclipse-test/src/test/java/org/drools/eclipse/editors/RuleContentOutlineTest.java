@@ -1,10 +1,10 @@
-package org.drools.ide.editors;
+package org.drools.eclipse.editors;
 
 import junit.framework.TestCase;
 
-import org.drools.ide.editors.outline.FunctionTreeNode;
-import org.drools.ide.editors.outline.PackageTreeNode;
-import org.drools.ide.editors.outline.RuleContentOutlinePage;
+import org.drools.eclipse.editors.outline.FunctionTreeNode;
+import org.drools.eclipse.editors.outline.PackageTreeNode;
+import org.drools.eclipse.editors.outline.RuleContentOutlinePage;
 
 public class RuleContentOutlineTest extends TestCase {
 

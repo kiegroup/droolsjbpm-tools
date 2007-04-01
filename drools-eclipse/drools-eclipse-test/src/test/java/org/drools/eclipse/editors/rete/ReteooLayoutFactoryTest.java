@@ -1,4 +1,4 @@
-package org.drools.ide.editors.rete;
+package org.drools.eclipse.editors.rete;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -13,7 +13,7 @@ import junit.framework.TestCase;
 import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
 import org.drools.compiler.DroolsParserException;
-import org.drools.ide.editors.rete.model.ReteGraph;
+import org.drools.eclipse.editors.rete.model.ReteGraph;
 import org.drools.reteoo.AlphaNodeVertex;
 import org.drools.reteoo.BaseVertex;
 import org.drools.reteoo.LeftInputAdapterNodeVertex;
@@ -48,7 +48,7 @@ public class ReteooLayoutFactoryTest extends TestCase {
     }
 
     /**
-     * Test method for {@link org.drools.ide.editors.rete.ReteooLayoutFactory#calculateReteRows(org.drools.reteoo.BaseVertex)}.
+     * Test method for {@link org.drools.eclipse.editors.rete.ReteooLayoutFactory#calculateReteRows(org.drools.reteoo.BaseVertex)}.
      * @throws IOException 
      * @throws DroolsParserException 
      * @throws PackageIntegrationException 
@@ -82,7 +82,7 @@ public class ReteooLayoutFactoryTest extends TestCase {
     }
 
     /**
-     * Test method for {@link org.drools.ide.editors.rete.ReteooLayoutFactory#layoutRowList(org.drools.ide.editors.rete.model.ReteGraph, org.drools.ide.editors.rete.RowList)}.
+     * Test method for {@link org.drools.eclipse.editors.rete.ReteooLayoutFactory#layoutRowList(org.drools.eclipse.editors.rete.model.ReteGraph, org.drools.eclipse.editors.rete.RowList)}.
      * 
      * @throws IOException 
      * @throws DroolsParserException 

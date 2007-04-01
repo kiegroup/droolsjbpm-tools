@@ -1,13 +1,13 @@
-package org.drools.ide.editors.rete;
+package org.drools.eclipse.editors.rete;
 
 import java.io.InputStream;
 import java.io.StringBufferInputStream;
 
 import junit.framework.TestCase;
 
-import org.drools.ide.editors.DRLRuleEditor2;
-import org.drools.ide.editors.ZoomInAction2;
-import org.drools.ide.editors.ZoomOutAction2;
+import org.drools.eclipse.editors.DRLRuleEditor2;
+import org.drools.eclipse.editors.ZoomInAction2;
+import org.drools.eclipse.editors.ZoomOutAction2;
 import org.eclipse.core.filebuffers.manipulation.ContainerCreator;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;

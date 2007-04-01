@@ -1,4 +1,4 @@
-package org.drools.ide.editors.completion;
+package org.drools.eclipse.editors.completion;
 
 import java.util.ArrayList;
 import java.util.List;
