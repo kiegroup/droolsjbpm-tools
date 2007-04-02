@@ -278,7 +278,7 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
     private void createRuleSampleLauncher(IJavaProject project)
             throws JavaModelException, IOException {
         
-        String s = "org/drools/ide/wizard/project/RuleLauncherSample.java.template";
+        String s = "org/drools/eclipse/wizard/project/RuleLauncherSample.java.template";
         IFolder folder = project.getProject().getFolder("src/java");
         IPackageFragmentRoot packageFragmentRoot = project
                 .getPackageFragmentRoot(folder);
@@ -296,7 +296,7 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
     private void createDecisionTableSampleLauncher(IJavaProject project)
             throws JavaModelException, IOException {
         
-        String s = "org/drools/ide/wizard/project/DecisionTableLauncherSample.java.template";
+        String s = "org/drools/eclipse/wizard/project/DecisionTableLauncherSample.java.template";
         IFolder folder = project.getProject().getFolder("src/java");
         IPackageFragmentRoot packageFragmentRoot = project
                 .getPackageFragmentRoot(folder);
@@ -313,7 +313,7 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
      */
     private void createRule(IJavaProject project, IProgressMonitor monitor)
             throws CoreException {
-        String fileName = "org/drools/ide/wizard/project/Sample.drl.template";
+        String fileName = "org/drools/eclipse/wizard/project/Sample.drl.template";
         IFolder folder = project.getProject().getFolder("src/rules");
         IFile file = folder.getFile("Sample.drl");
         InputStream inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
@@ -329,7 +329,7 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
      */
     private void createDecisionTable(IJavaProject project, IProgressMonitor monitor)
             throws CoreException {
-        String fileName = "org/drools/ide/wizard/project/Sample.xls.template";
+        String fileName = "org/drools/eclipse/wizard/project/Sample.xls.template";
         IFolder folder = project.getProject().getFolder("src/rules");
         IFile file = folder.getFile("Sample.xls");
         InputStream inputstream = getClass().getClassLoader().getResourceAsStream(fileName);

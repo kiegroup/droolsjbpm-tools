@@ -164,11 +164,11 @@ public class NewRulePackagePage extends WizardNewFileCreationPage {
         	
             DRLGenerator gen = new DRLGenerator();
             if (this.ruleFileType.getSelectionIndex() == TYPE_RULE) {
-                InputStream template = getTemplate("org/drools/ide/wizard/rule/new_rule.drl.template");                
+                InputStream template = getTemplate("org/drools/eclipse/wizard/rule/new_rule.drl.template");                
                 return gen.generateRule( this.packageName.getText(), 
                                          template );
             } else {
-                InputStream template = getTemplate("org/drools/ide/wizard/rule/new_package.drl.template");                
+                InputStream template = getTemplate("org/drools/eclipse/wizard/rule/new_package.drl.template");                
                 return gen.generatePackage( this.packageName.getText(), 
                                             function.getSelection(), 
                                             expander.getSelection(), 

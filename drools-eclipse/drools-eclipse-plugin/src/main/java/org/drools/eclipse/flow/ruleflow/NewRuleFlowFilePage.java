@@ -67,7 +67,7 @@ public class NewRuleFlowFilePage extends WizardNewFileCreationPage {
     }
     
     protected InputStream getInitialContents() {
-        String s = "org/drools/ide/flow/ruleflow/SampleRuleFlow.rf.template";
+        String s = "org/drools/eclipse/flow/ruleflow/SampleRuleFlow.rf.template";
         return getClass().getClassLoader().getResourceAsStream(s);
     }
 }

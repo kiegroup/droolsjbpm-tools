@@ -62,7 +62,7 @@ public class NewDTFilePage extends WizardNewFileCreationPage {
     protected InputStream getInitialContents() {
         try {
             return DroolsEclipsePlugin.getDefault().getBundle().getResource(
-                "org/drools/ide/wizard/decisiontable/template.xls").openStream();
+                "org/drools/eclipse/wizard/decisiontable/template.xls").openStream();
         } catch (IOException e) {
             return null;
         } catch (NullPointerException e) {

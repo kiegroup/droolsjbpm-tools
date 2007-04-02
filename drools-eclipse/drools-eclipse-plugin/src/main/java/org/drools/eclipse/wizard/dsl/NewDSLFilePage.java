@@ -63,7 +63,7 @@ public class NewDSLFilePage extends WizardNewFileCreationPage {
     protected InputStream getInitialContents() {
         try {
             return DroolsEclipsePlugin.getDefault().getBundle().getResource(
-                "org/drools/ide/wizard/dsl/template.dsl").openStream();
+                "org/drools/eclipse/wizard/dsl/template.dsl").openStream();
         } catch (IOException e) {
             return null;
         } catch (NullPointerException e) {
