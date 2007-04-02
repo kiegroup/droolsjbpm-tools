@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -95,7 +95,7 @@ public class DroolsClasspathContainer implements IClasspathContainer {
             return FileLocator.toFileURL(Platform.getBundle("org.drools.eclipse")
                 .getEntry("/")).getFile().toString();
         } catch (IOException e) {
-            DroolsIDEPlugin.log(e);
+            DroolsEclipsePlugin.log(e);
         }
         return null;
     }

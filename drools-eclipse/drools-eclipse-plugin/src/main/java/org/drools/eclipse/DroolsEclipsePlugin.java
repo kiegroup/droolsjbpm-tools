@@ -58,7 +58,7 @@ import org.osgi.framework.BundleContext;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  */
-public class DroolsIDEPlugin extends AbstractUIPlugin {
+public class DroolsEclipsePlugin extends AbstractUIPlugin {
     
     public static final int INTERNAL_ERROR = 120;
     public static final String PLUGIN_ID = "org.drools.eclipse";
@@ -66,7 +66,7 @@ public class DroolsIDEPlugin extends AbstractUIPlugin {
     public static final String BUILD_RESULT_PACKAGE_DESCR = "PackageDescr";
     
 	//The shared instance.
-	private static DroolsIDEPlugin plugin;
+	private static DroolsEclipsePlugin plugin;
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
 	private Map colors = new HashMap();
@@ -79,7 +79,7 @@ public class DroolsIDEPlugin extends AbstractUIPlugin {
 	/**
 	 * The constructor.
 	 */
-	public DroolsIDEPlugin() {
+	public DroolsEclipsePlugin() {
 		super();
 		plugin = this;
 	}
@@ -125,7 +125,7 @@ public class DroolsIDEPlugin extends AbstractUIPlugin {
 	/**
 	 * Returns the shared instance.
 	 */
-	public static DroolsIDEPlugin getDefault() {
+	public static DroolsEclipsePlugin getDefault() {
 		return plugin;
 	}
 
@@ -134,7 +134,7 @@ public class DroolsIDEPlugin extends AbstractUIPlugin {
 	 * or 'key' if not found.
 	 */
 	public static String getResourceString(String key) {
-		ResourceBundle bundle = DroolsIDEPlugin.getDefault().getResourceBundle();
+		ResourceBundle bundle = DroolsEclipsePlugin.getDefault().getResourceBundle();
 		try {
 			return (bundle != null) ? bundle.getString(key) : key;
 		} catch (MissingResourceException e) {
@@ -165,7 +165,7 @@ public class DroolsIDEPlugin extends AbstractUIPlugin {
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
         
-        DroolsIDEPlugin plugin = getDefault();
+        DroolsEclipsePlugin plugin = getDefault();
         ImageRegistry reg = plugin.getImageRegistry();
         ImageDescriptor des = reg.getDescriptor( path );
         if (des == null) {

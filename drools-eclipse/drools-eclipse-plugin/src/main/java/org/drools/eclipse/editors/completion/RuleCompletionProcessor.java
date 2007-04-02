@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 import org.codehaus.jfdi.interpreter.ClassTypeResolver;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
 import org.drools.eclipse.editors.AbstractRuleEditor;
 import org.drools.eclipse.editors.DSLAdapter;
@@ -135,7 +135,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			filterProposalsOnPrefix(prefix, list);
 			return list;
 		} catch (Throwable t) {
-			DroolsIDEPlugin.log(t);
+			DroolsEclipsePlugin.log(t);
 		}
 		return null;
 	}
@@ -789,7 +789,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 						this.dslTree.buildTree(dslContents);
 					}
 				} catch (CoreException e) {
-					DroolsIDEPlugin.log(e);
+					DroolsEclipsePlugin.log(e);
 				}
 			}
 		}

@@ -1,7 +1,7 @@
 package org.drools.eclipse.debug.actions;
 
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
 import org.drools.eclipse.debug.DroolsDebugEventHandlerView;
 import org.eclipse.jface.action.Action;
@@ -24,7 +24,7 @@ public class ShowLogicalStructureAction extends Action {
         setToolTipText("Show Logical Structure");
         setImageDescriptor(DroolsPluginImages.getImageDescriptor(DroolsPluginImages.IMG_LOGICAL));
         setDisabledImageDescriptor(DroolsPluginImages.getImageDescriptor(DroolsPluginImages.IMG_LOGICAL_DISABLED));
-        setId(DroolsIDEPlugin.getUniqueIdentifier() + ".ShowLogicalStructureAction");
+        setId(DroolsEclipsePlugin.getUniqueIdentifier() + ".ShowLogicalStructureAction");
     }
 
     public void run() {

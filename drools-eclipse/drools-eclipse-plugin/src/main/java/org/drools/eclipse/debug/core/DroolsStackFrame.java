@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DRLInfo.FunctionInfo;
 import org.drools.eclipse.DRLInfo.RuleInfo;
 import org.eclipse.core.runtime.IStatus;
@@ -64,7 +64,7 @@ public class DroolsStackFrame extends JDIStackFrame {
 				return true;
 			}
 		} catch (DebugException exc) {
-			DroolsIDEPlugin.log(exc);
+			DroolsEclipsePlugin.log(exc);
 		}
 		return false;
 	}
@@ -75,20 +75,20 @@ public class DroolsStackFrame extends JDIStackFrame {
 			String signature = getSignature();
 			String type = getDeclaringTypeName();
 			if ("consequence".equals(methodName) && signature.startsWith(CONSEQUENCE_SIGNATURE)) {
-				return DroolsIDEPlugin.getDefault().getRuleInfoByClass(type);
+				return DroolsEclipsePlugin.getDefault().getRuleInfoByClass(type);
 			}
 		} catch (DebugException exc) {
-			DroolsIDEPlugin.log(exc);
+			DroolsEclipsePlugin.log(exc);
 		}
 		return null;
 	}
 	
 	public FunctionInfo getExecutingFunctionInfo() {
 		try {
-			return DroolsIDEPlugin.getDefault()
+			return DroolsEclipsePlugin.getDefault()
 				.getFunctionInfoByClass(getDeclaringTypeName());
 		} catch (DebugException exc) {
-			DroolsIDEPlugin.log(exc);
+			DroolsEclipsePlugin.log(exc);
 		}
 		return null;
 	}

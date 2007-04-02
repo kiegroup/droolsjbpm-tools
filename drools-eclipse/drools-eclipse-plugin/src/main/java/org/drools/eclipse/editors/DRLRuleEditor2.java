@@ -18,7 +18,7 @@ package org.drools.eclipse.editors;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.editors.rete.ReteViewer;
 import org.drools.eclipse.editors.rete.model.ReteGraph;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -110,7 +110,7 @@ public class DRLRuleEditor2 extends FormEditor {
             } );
 
         } catch ( PartInitException e ) {
-            DroolsIDEPlugin.log( e );
+            DroolsEclipsePlugin.log( e );
         }
     }
 
@@ -282,7 +282,7 @@ public class DRLRuleEditor2 extends FormEditor {
     }
 
     private void handleError(Throwable t) {
-        DroolsIDEPlugin.log( t );
+        DroolsEclipsePlugin.log( t );
         Throwable cause = t.getCause();
         if ( cause == null ) {
             cause = t;
@@ -292,7 +292,7 @@ public class DRLRuleEditor2 extends FormEditor {
             message = "Uncategorized Error!";
         }
         IStatus status = new Status( IStatus.ERROR,
-                                     DroolsIDEPlugin.getUniqueIdentifier(),
+                                     DroolsEclipsePlugin.getUniqueIdentifier(),
                                      -1,
                                      message,
                                      null);

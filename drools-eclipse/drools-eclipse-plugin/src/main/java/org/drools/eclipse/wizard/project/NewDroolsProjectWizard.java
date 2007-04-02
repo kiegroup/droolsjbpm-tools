@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.builder.DroolsBuilder;
 import org.drools.eclipse.util.DroolsClasspathContainer;
 import org.eclipse.core.resources.ICommand;
@@ -95,7 +95,7 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
         try {
             getContainer().run(true, true, op);
         } catch (Throwable t) {
-            DroolsIDEPlugin.log(t);
+            DroolsEclipsePlugin.log(t);
         }
     }
     
@@ -143,7 +143,7 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
                         ((CoreException) t).getStatus());
                 }
             } else {
-                DroolsIDEPlugin.log(e);
+                DroolsEclipsePlugin.log(e);
             }
             return null;
         }
@@ -341,7 +341,7 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
     }
 
     protected void initializeDefaultPageImageDescriptor() {
-    	ImageDescriptor desc = DroolsIDEPlugin.getImageDescriptor("icons/drools-large.PNG");
+    	ImageDescriptor desc = DroolsEclipsePlugin.getImageDescriptor("icons/drools-large.PNG");
         setDefaultPageImageDescriptor(desc);
     }
 

@@ -3,7 +3,7 @@ package org.drools.eclipse.debug;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IDebugTarget;
@@ -56,7 +56,7 @@ public class WorkingMemoryViewContentProvider extends DroolsDebugViewContentProv
                 return variables;
             }
         } catch (DebugException e) {
-            DroolsIDEPlugin.log(e);
+            DroolsEclipsePlugin.log(e);
             return new Object[0];
         }
     }

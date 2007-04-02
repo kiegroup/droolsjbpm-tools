@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
@@ -54,7 +54,7 @@ public class NewDSLFilePage extends WizardNewFileCreationPage {
             if (page != null)
                 IDE.openEditor(page, newFile, true);
         } catch (PartInitException e) {
-            DroolsIDEPlugin.log(e);
+            DroolsEclipsePlugin.log(e);
             return false;
         }
         return true;
@@ -62,7 +62,7 @@ public class NewDSLFilePage extends WizardNewFileCreationPage {
     
     protected InputStream getInitialContents() {
         try {
-            return DroolsIDEPlugin.getDefault().getBundle().getResource(
+            return DroolsEclipsePlugin.getDefault().getBundle().getResource(
                 "org/drools/ide/wizard/dsl/template.dsl").openStream();
         } catch (IOException e) {
             return null;

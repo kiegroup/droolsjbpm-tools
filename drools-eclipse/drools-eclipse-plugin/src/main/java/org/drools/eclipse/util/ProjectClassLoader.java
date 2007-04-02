@@ -7,7 +7,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -87,9 +87,9 @@ public class ProjectClassLoader {
                 }
             }
         } catch (JavaModelException e) {
-            DroolsIDEPlugin.log(e);
+            DroolsEclipsePlugin.log(e);
         } catch (MalformedURLException e) {
-            DroolsIDEPlugin.log(e);
+            DroolsEclipsePlugin.log(e);
         }
         return pathElements;
     }

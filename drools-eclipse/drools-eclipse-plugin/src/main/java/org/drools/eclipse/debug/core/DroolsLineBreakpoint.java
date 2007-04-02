@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.eclipse.DRLInfo;
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DRLInfo.FunctionInfo;
 import org.drools.eclipse.DRLInfo.RuleInfo;
 import org.eclipse.core.resources.IMarker;
@@ -64,7 +64,7 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
 	
 	private String getRuleClassName(IResource resource, int lineNumber) throws CoreException {
 		try {
-			DRLInfo drlInfo = DroolsIDEPlugin.getDefault().parseResource(resource, true);
+			DRLInfo drlInfo = DroolsEclipsePlugin.getDefault().parseResource(resource, true);
 			if (drlInfo != null) {
 				RuleInfo ruleInfo = drlInfo.getRuleInfo(lineNumber);
 				if (ruleInfo != null) {
@@ -75,17 +75,17 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
 					return functionInfo.getClassName();
 				}
 			}
-			throw new CoreException(new Status(IStatus.ERROR, DroolsIDEPlugin.getUniqueIdentifier(), 0,
+			throw new CoreException(new Status(IStatus.ERROR, DroolsEclipsePlugin.getUniqueIdentifier(), 0,
 				"Cannot determine ruleClassName for " + resource + " " + lineNumber, null));
 		} catch (Throwable t) {
-			throw new CoreException(new Status(IStatus.ERROR, DroolsIDEPlugin.getUniqueIdentifier(), 0,
+			throw new CoreException(new Status(IStatus.ERROR, DroolsEclipsePlugin.getUniqueIdentifier(), 0,
 				"Cannot determine ruleClassName for " + resource + " " + lineNumber, t));
 		}
 	}
 	
 	private int getRuleLineNumber(IResource resource, int lineNumber) throws CoreException {
 		try {
-			DRLInfo drlInfo = DroolsIDEPlugin.getDefault().parseResource(resource, true);
+			DRLInfo drlInfo = DroolsEclipsePlugin.getDefault().parseResource(resource, true);
 			if (drlInfo != null) {
 				RuleInfo ruleInfo = drlInfo.getRuleInfo(lineNumber);
 				if (ruleInfo != null) {
@@ -100,10 +100,10 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
 						+ (lineNumber - functionInfo.getDrlLineNumber());
 				}
 			}
-			throw new CoreException(new Status(IStatus.ERROR, DroolsIDEPlugin.getUniqueIdentifier(), 0,
+			throw new CoreException(new Status(IStatus.ERROR, DroolsEclipsePlugin.getUniqueIdentifier(), 0,
 				"Cannot determine ruleLineNumber for " + resource + " " + lineNumber, null));
 		} catch(Throwable t) {
-			throw new CoreException(new Status(IStatus.ERROR, DroolsIDEPlugin.getUniqueIdentifier(), 0,
+			throw new CoreException(new Status(IStatus.ERROR, DroolsEclipsePlugin.getUniqueIdentifier(), 0,
 				"Cannot determine ruleLineNumber for " + resource + " " + lineNumber, t));
 		}
 	}

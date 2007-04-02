@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.eclipse.DRLInfo;
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.core.DroolsElement;
 import org.drools.eclipse.core.DroolsModelBuilder;
 import org.drools.eclipse.core.Function;
@@ -80,7 +80,7 @@ public class RulesView extends ViewPart implements IDoubleClickListener, IResour
 		try {
 			ResourcesPlugin.getWorkspace().getRoot().accept(this);
 		} catch (CoreException e) {
-			DroolsIDEPlugin.log(e);
+			DroolsEclipsePlugin.log(e);
 		}
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 	}
@@ -109,7 +109,7 @@ public class RulesView extends ViewPart implements IDoubleClickListener, IResour
     				&& javaProject.isOnClasspath(resource)) {
     			try {
     				IFile file = (IFile) resource;
-    				DRLInfo drlInfo = DroolsIDEPlugin.getDefault().parseResource(resource, false);
+    				DRLInfo drlInfo = DroolsEclipsePlugin.getDefault().parseResource(resource, false);
     				String packageName = drlInfo.getPackageName();
     				Package pkg = ruleSet.getPackage(packageName);
     				if (pkg == null) {
@@ -192,7 +192,7 @@ public class RulesView extends ViewPart implements IDoubleClickListener, IResour
     					droolsElements.add(function);
     				}
     			} catch (Throwable t) {
-    				DroolsIDEPlugin.log(t);
+    				DroolsEclipsePlugin.log(t);
     			}
     			return false;
     		}
@@ -246,7 +246,7 @@ public class RulesView extends ViewPart implements IDoubleClickListener, IResour
 				}
 			}
 		} catch (Throwable t) {
-			DroolsIDEPlugin.log(t);
+			DroolsEclipsePlugin.log(t);
 		}
 	}
 	
@@ -278,7 +278,7 @@ public class RulesView extends ViewPart implements IDoubleClickListener, IResour
 								droolsSelected.getOffset(), droolsSelected.getLength());
 						}
 					} catch (Throwable t) {
-						DroolsIDEPlugin.log(t);
+						DroolsEclipsePlugin.log(t);
 					}
 				}
 			}

@@ -1,6 +1,6 @@
 package org.drools.eclipse.preferences;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
@@ -39,7 +39,7 @@ public class DroolsPreferencePage extends PreferencePage implements IWorkbenchPr
     }
 	
 	protected IPreferenceStore doGetPreferenceStore() {
-        return DroolsIDEPlugin.getDefault().getPreferenceStore();
+        return DroolsEclipsePlugin.getDefault().getPreferenceStore();
     }
 	
 	private void initializeDefaults() {
@@ -63,7 +63,7 @@ public class DroolsPreferencePage extends PreferencePage implements IWorkbenchPr
 
 	public boolean performOk() {
         storeValues();
-        DroolsIDEPlugin.getDefault().savePluginPreferences();
+        DroolsEclipsePlugin.getDefault().savePluginPreferences();
         return true;
     }
 	

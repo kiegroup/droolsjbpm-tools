@@ -1,7 +1,7 @@
 package org.drools.eclipse.debug.actions;
 
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
 import org.drools.eclipse.debug.AuditView;
 import org.eclipse.jface.action.Action;
@@ -23,7 +23,7 @@ public class RefreshLogAction extends Action {
         setToolTipText("Refresh Log");
         setImageDescriptor(DroolsPluginImages.getImageDescriptor(DroolsPluginImages.REFRESH_LOG));
         setDisabledImageDescriptor(DroolsPluginImages.getImageDescriptor(DroolsPluginImages.REFRESH_LOG_DISABLED));
-        setId(DroolsIDEPlugin.getUniqueIdentifier() + ".RefreshLogAction");
+        setId(DroolsEclipsePlugin.getUniqueIdentifier() + ".RefreshLogAction");
     }
 
     public void run() {

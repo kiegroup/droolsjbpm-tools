@@ -1,6 +1,6 @@
 package org.drools.eclipse.debug;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.debug.actions.ShowLogicalStructureAction;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IStackFrame;
@@ -73,7 +73,7 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
                     input = value;
                 }
             } catch (Throwable t) {
-                DroolsIDEPlugin.log(t);
+                DroolsEclipsePlugin.log(t);
             }
         }
     	// else get selected thread and determine if any of the stack frames
@@ -97,7 +97,7 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
                             }
                     	}
                     } catch (Throwable t) {
-                        DroolsIDEPlugin.log(t);
+                        DroolsEclipsePlugin.log(t);
                     }
                 }
     		}
@@ -253,7 +253,7 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
                             .get(IDebugUIConstants.PREF_CHANGED_DEBUG_ELEMENT_COLOR);
                     }
                 } catch (DebugException e) {
-                    DroolsIDEPlugin.log(e);
+                    DroolsEclipsePlugin.log(e);
                 }
             }
             return null;

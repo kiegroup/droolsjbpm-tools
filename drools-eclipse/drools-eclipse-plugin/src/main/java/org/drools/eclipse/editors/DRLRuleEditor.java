@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.drools.compiler.DroolsParserException;
 import org.drools.eclipse.DRLInfo;
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.editors.outline.RuleContentOutlinePage;
 import org.drools.eclipse.preferences.IDroolsConstants;
 import org.drools.lang.descr.FactTemplateDescr;
@@ -43,7 +43,7 @@ public class DRLRuleEditor extends AbstractRuleEditor {
 
     protected void loadImportsAndFunctions() {
         try {
-            DRLInfo drlInfo = DroolsIDEPlugin.getDefault().parseResource(this, true, false);
+            DRLInfo drlInfo = DroolsEclipsePlugin.getDefault().parseResource(this, true, false);
             PackageDescr descr = drlInfo.getPackageDescr();
             // package
             this.packageName = drlInfo.getPackageName();
@@ -90,7 +90,7 @@ public class DRLRuleEditor extends AbstractRuleEditor {
                 templates.put(template.getName(), template);
             }
         } catch (DroolsParserException e) {
-            DroolsIDEPlugin.log(e);
+            DroolsEclipsePlugin.log(e);
         }
     }
 

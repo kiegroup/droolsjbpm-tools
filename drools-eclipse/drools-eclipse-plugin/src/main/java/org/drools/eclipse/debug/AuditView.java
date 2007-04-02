@@ -14,7 +14,7 @@ import java.util.Map;
 import org.drools.audit.event.ActivationLogEvent;
 import org.drools.audit.event.LogEvent;
 import org.drools.audit.event.ObjectLogEvent;
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
 import org.drools.eclipse.debug.actions.DeleteLogAction;
 import org.drools.eclipse.debug.actions.OpenLogAction;
@@ -167,7 +167,7 @@ public class AuditView extends AbstractDebugView {
 			setLogFile(null);
 			getViewer().setInput(null);
 		} catch (Throwable t) {
-			DroolsIDEPlugin.log(t);
+			DroolsEclipsePlugin.log(t);
 			getViewer().setInput(null);
 		}
     }
@@ -182,7 +182,7 @@ public class AuditView extends AbstractDebugView {
     			refresh();
     		} catch (Throwable t) {
     			t.printStackTrace();
-    			DroolsIDEPlugin.log(t);
+    			DroolsEclipsePlugin.log(t);
     		}
     	}
     }
@@ -309,10 +309,10 @@ public class AuditView extends AbstractDebugView {
 			Event selected = getSelectedEvent();
 			if (selected != null) {
 				if (element.equals(selected.getCauseEvent())) {
-			        Color color = DroolsIDEPlugin.getDefault().getColor(CAUSE_EVENT_COLOR);
+			        Color color = DroolsEclipsePlugin.getDefault().getColor(CAUSE_EVENT_COLOR);
 			        if (color == null) {
 			        	color = new Color(getControl().getDisplay(), 0, 255, 0); 
-		        		DroolsIDEPlugin.getDefault().setColor(CAUSE_EVENT_COLOR, color);
+		        		DroolsEclipsePlugin.getDefault().setColor(CAUSE_EVENT_COLOR, color);
 			        }
 			        return color;
 				}

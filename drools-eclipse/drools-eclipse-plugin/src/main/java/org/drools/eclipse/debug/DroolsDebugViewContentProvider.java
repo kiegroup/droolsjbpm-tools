@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -88,7 +88,7 @@ public class DroolsDebugViewContentProvider implements ITreeContentProvider {
                 return ((IStackFrame)element).hasVariables();
             }
         } catch (DebugException e) {
-            DroolsIDEPlugin.log(e);
+            DroolsEclipsePlugin.log(e);
             return false;
         }
         return false;

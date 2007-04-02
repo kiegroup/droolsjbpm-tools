@@ -15,7 +15,7 @@ package org.drools.eclipse.flow.ruleflow.view.property.variable;
  * limitations under the License.
  */
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.datatype.DefaultDataTypeRegistry;
 import org.drools.eclipse.flow.common.view.datatype.editor.IDataTypeEditor;
 import org.drools.eclipse.flow.common.view.datatype.editor.impl.DataTypeCombo;
@@ -145,7 +145,7 @@ public class VariableDialog extends EditBeanDialog {
     
     private void showError(String error) {
         ErrorDialog.openError(getShell(), "Error", error, new Status(
-            IStatus.ERROR, DroolsIDEPlugin.getDefault().getBundle().getSymbolicName(),
+            IStatus.ERROR, DroolsEclipsePlugin.getDefault().getBundle().getSymbolicName(),
             IStatus.ERROR, error, null));
     }
 }

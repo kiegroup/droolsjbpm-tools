@@ -1,6 +1,6 @@
 package org.drools.eclipse.debug.core;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -31,7 +31,7 @@ public class DroolsDebugModel {
 		try {
 			ResourcesPlugin.getWorkspace().run(r, null, 0, null);
 		} catch (CoreException exc) {
-			DroolsIDEPlugin.log(exc);
+			DroolsEclipsePlugin.log(exc);
 		}
 		return target[0];
 	}

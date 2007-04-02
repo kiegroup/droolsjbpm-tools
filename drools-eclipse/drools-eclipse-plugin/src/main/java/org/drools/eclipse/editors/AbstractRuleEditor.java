@@ -9,7 +9,7 @@ import java.util.Set;
 
 import org.drools.compiler.DroolsParserException;
 import org.drools.eclipse.DRLInfo;
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.debug.core.IDroolsDebugConstants;
 import org.drools.eclipse.editors.outline.RuleContentOutlinePage;
 import org.drools.eclipse.editors.scanners.RuleEditorMessages;
@@ -226,7 +226,7 @@ public abstract class AbstractRuleEditor extends TextEditor {
 				try {
 					javaProject.newEvaluationContext().codeComplete(packageName + ".", packageName.length() + 1, requestor);
 				} catch (Throwable t) {
-					DroolsIDEPlugin.log(t);
+					DroolsEclipsePlugin.log(t);
 				}
 			}
 		}
@@ -254,7 +254,7 @@ public abstract class AbstractRuleEditor extends TextEditor {
 				try {
 					javaProject.newEvaluationContext().codeComplete(className + ".", className.length() + 1, requestor);
 				} catch (Throwable t) {
-					DroolsIDEPlugin.log(t);
+					DroolsEclipsePlugin.log(t);
 				}
 			}
 		}
@@ -278,7 +278,7 @@ public abstract class AbstractRuleEditor extends TextEditor {
 
 	public void doSave(IProgressMonitor monitor) {
 		// invalidate cached parsed rules
-		DroolsIDEPlugin.getDefault().invalidateResource(getResource());
+		DroolsEclipsePlugin.getDefault().invalidateResource(getResource());
 		// save
 		super.doSave(monitor);
 		// update outline view
@@ -304,13 +304,13 @@ public abstract class AbstractRuleEditor extends TextEditor {
 	                    IDocument document = getDocumentProvider().getDocument(getEditorInput());
 	                    selectAndReveal(document.getLineOffset(line), document.getLineLength(line));
 	                } catch(BadLocationException exc) {
-	                	DroolsIDEPlugin.log(exc);
+	                	DroolsEclipsePlugin.log(exc);
 	                }
 			} else {
 				super.gotoMarker(marker);
 			}
 		} catch (CoreException exc) {
-			DroolsIDEPlugin.log(exc);
+			DroolsEclipsePlugin.log(exc);
 		}
 	}
 	

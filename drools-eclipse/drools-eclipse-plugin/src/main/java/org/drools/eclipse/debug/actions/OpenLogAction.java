@@ -1,7 +1,7 @@
 package org.drools.eclipse.debug.actions;
 
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
 import org.drools.eclipse.debug.AuditView;
 import org.eclipse.jface.action.Action;
@@ -23,7 +23,7 @@ public class OpenLogAction extends Action {
         this.view = view;
         setToolTipText("Open Log");
         setImageDescriptor(DroolsPluginImages.getImageDescriptor(DroolsPluginImages.OPEN_LOG));
-        setId(DroolsIDEPlugin.getUniqueIdentifier() + ".OpenLogAction");
+        setId(DroolsEclipsePlugin.getUniqueIdentifier() + ".OpenLogAction");
     }
 
     public void run() {

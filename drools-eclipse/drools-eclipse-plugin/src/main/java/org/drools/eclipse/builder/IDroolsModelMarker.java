@@ -1,6 +1,6 @@
 package org.drools.eclipse.builder;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 
 /**
  * The drools problem marker id.
@@ -9,7 +9,7 @@ import org.drools.eclipse.DroolsIDEPlugin;
  */
 public interface IDroolsModelMarker {
 
-    public static final String DROOLS_MODEL_PROBLEM_MARKER = DroolsIDEPlugin.PLUGIN_ID
+    public static final String DROOLS_MODEL_PROBLEM_MARKER = DroolsEclipsePlugin.PLUGIN_ID
             + ".problem";
 
 }

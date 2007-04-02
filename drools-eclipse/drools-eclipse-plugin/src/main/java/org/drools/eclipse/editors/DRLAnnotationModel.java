@@ -1,6 +1,6 @@
 package org.drools.eclipse.editors;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.debug.core.IDroolsDebugConstants;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -27,7 +27,7 @@ public class DRLAnnotationModel extends ResourceMarkerAnnotationModel {
 	        	return super.createPositionFromMarker(marker);
 	        }
         } catch (CoreException exc) {
-        	DroolsIDEPlugin.log(exc);
+        	DroolsEclipsePlugin.log(exc);
         	return null;
         }
     }

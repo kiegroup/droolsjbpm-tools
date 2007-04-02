@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
 import org.drools.eclipse.editors.AbstractRuleEditor;
 import org.drools.eclipse.editors.DRLRuleEditor;
@@ -84,7 +84,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
 	        }
 	        return props;
         } catch (Throwable t) {
-        	DroolsIDEPlugin.log(t);
+        	DroolsEclipsePlugin.log(t);
         }
         return null;
 	}
@@ -127,7 +127,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
 			try {
 				javaProject.newEvaluationContext().codeComplete(classNameStart, classNameStart.length(), requestor);
 			} catch (Throwable t) {
-				DroolsIDEPlugin.log(t);
+				DroolsEclipsePlugin.log(t);
 			}
 		}
 		return list;
@@ -215,7 +215,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
 				String text = javaTextWithParams.toString();
 				evalContext.codeComplete(text, text.length(), requestor);
 			} catch (Throwable t) {
-				DroolsIDEPlugin.log(t);
+				DroolsEclipsePlugin.log(t);
 			}
 		}
 		return list;

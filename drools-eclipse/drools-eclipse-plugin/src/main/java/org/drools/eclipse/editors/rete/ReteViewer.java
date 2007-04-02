@@ -22,7 +22,7 @@ import java.util.List;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.eclipse.DRLInfo;
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.editors.DRLRuleEditor;
 import org.drools.eclipse.editors.rete.model.ReteGraph;
 import org.drools.eclipse.editors.rete.part.VertexEditPartFactory;
@@ -108,7 +108,7 @@ public class ReteViewer extends GraphicalEditor {
 
     private RuleBase getRuleBase(String contents) {
         try {
-        	DRLInfo drlInfo = DroolsIDEPlugin.getDefault().parseResource(drlEditor, true, true);
+        	DRLInfo drlInfo = DroolsEclipsePlugin.getDefault().parseResource(drlEditor, true, true);
         	if (drlInfo != null) {
         		Package pkg = drlInfo.getPackage();
         		ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase(RuleBase.RETEOO);
@@ -116,7 +116,7 @@ public class ReteViewer extends GraphicalEditor {
         		return ruleBase;
         	}
         } catch ( Throwable t ) {
-            DroolsIDEPlugin.log( t );
+            DroolsEclipsePlugin.log( t );
         }
         return null;
     }
@@ -174,7 +174,7 @@ public class ReteViewer extends GraphicalEditor {
 
         } catch ( Throwable t ) {
             if ( !(t instanceof InterruptedException) ) {
-                DroolsIDEPlugin.log( t );
+                DroolsEclipsePlugin.log( t );
             }
             throw t;
         }

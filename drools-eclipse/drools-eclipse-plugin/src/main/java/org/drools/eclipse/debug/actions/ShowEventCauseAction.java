@@ -1,7 +1,7 @@
 package org.drools.eclipse.debug.actions;
 
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.debug.AuditView;
 import org.drools.eclipse.debug.AuditView.Event;
 import org.eclipse.jface.action.Action;
@@ -21,7 +21,7 @@ public class ShowEventCauseAction extends Action {
         this.view = view;
         setToolTipText("Show Cause");
         setText("Show Cause");
-        setId(DroolsIDEPlugin.getUniqueIdentifier() + ".ShowEventCause");
+        setId(DroolsEclipsePlugin.getUniqueIdentifier() + ".ShowEventCause");
     }
 
     public void run() {

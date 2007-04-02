@@ -17,7 +17,7 @@ package org.drools.eclipse.flow.common.view.datatype.editor.impl;
 
 import java.io.Serializable;import java.lang.reflect.InvocationTargetException;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.datatype.IDataTypeRegistry;
 import org.drools.eclipse.flow.common.view.datatype.editor.IEditor;
 import org.drools.ruleflow.common.datatype.IDataType;
@@ -53,23 +53,23 @@ public class EditorComposite extends Composite {
                     new Class[] { Composite.class }).newInstance(new Object[] { this });
             } catch (IllegalArgumentException e) {
                 // "Could not find data type info for type " + type.getClass()
-            	DroolsIDEPlugin.log(e);
+            	DroolsEclipsePlugin.log(e);
                 editor = new EmptyEditor(this);
             } catch (InstantiationException e) {
                 // "Could not create editor for editor " + editorClass
-            	DroolsIDEPlugin.log(e);
+            	DroolsEclipsePlugin.log(e);
                 editor = new EmptyEditor(this);
             } catch (NoSuchMethodException e) {
             	// "Could not create editor for editor " + editorClass
-            	DroolsIDEPlugin.log(e);
+            	DroolsEclipsePlugin.log(e);
                 editor = new EmptyEditor(this);
             } catch (InvocationTargetException e) {
             	// "Could not create editor for editor " + editorClass
-            	DroolsIDEPlugin.log(e);
+            	DroolsEclipsePlugin.log(e);
                 editor = new EmptyEditor(this);
             } catch (IllegalAccessException e) {
             	// "Could not create editor for editor " + editorClass
-            	DroolsIDEPlugin.log(e);
+            	DroolsEclipsePlugin.log(e);
                 editor = new EmptyEditor(this);
             }
             editor.setDataType(type);

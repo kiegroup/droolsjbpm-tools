@@ -18,7 +18,7 @@ import org.drools.compiler.RuleError;
 import org.drools.decisiontable.InputType;
 import org.drools.decisiontable.SpreadsheetCompiler;
 import org.drools.eclipse.DRLInfo;
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.preferences.IDroolsConstants;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -83,7 +83,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
     
     protected void incrementalBuild(IResourceDelta delta,
             IProgressMonitor monitor) throws CoreException {
-    	boolean buildAll = DroolsIDEPlugin.getDefault().getPreferenceStore().getBoolean(IDroolsConstants.BUILD_ALL);
+    	boolean buildAll = DroolsEclipsePlugin.getDefault().getPreferenceStore().getBoolean(IDroolsConstants.BUILD_ALL);
         if (buildAll) {
         	// to make sure that all rules are checked when a java file is changed 
         	fullBuild(monitor);
@@ -148,7 +148,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
     	List markers = new ArrayList();
 		try {
             DRLInfo drlInfo =
-            	DroolsIDEPlugin.getDefault().parseResource(file, true);
+            	DroolsEclipsePlugin.getDefault().parseResource(file, true);
             //parser errors
             markParseErrors(markers, drlInfo.getParserErrors());  
             markOtherErrors(markers, drlInfo.getBuilderErrors());
@@ -175,7 +175,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
 			SpreadsheetCompiler converter = new SpreadsheetCompiler();
 	        String drl = converter.compile(file.getContents(), InputType.XLS);
 	        DRLInfo drlInfo =
-            	DroolsIDEPlugin.getDefault().parseXLSResource(drl, file);
+            	DroolsEclipsePlugin.getDefault().parseXLSResource(drl, file);
             // parser errors
             markParseErrors(markers, drlInfo.getParserErrors());  
             markOtherErrors(markers, drlInfo.getBuilderErrors());
@@ -271,7 +271,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
 			};
 			res.getWorkspace().run(r, null, IWorkspace.AVOID_UPDATE, null);
         } catch (CoreException e) {
-            DroolsIDEPlugin.log(e);
+            DroolsEclipsePlugin.log(e);
         }
     }
     
@@ -283,7 +283,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                         IResource.DEPTH_INFINITE);
             }
         } catch (CoreException e) {
-            DroolsIDEPlugin.log(e);
+            DroolsEclipsePlugin.log(e);
         }
     }
     

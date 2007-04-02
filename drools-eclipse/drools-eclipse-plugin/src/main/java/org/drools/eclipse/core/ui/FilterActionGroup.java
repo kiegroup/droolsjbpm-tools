@@ -1,6 +1,6 @@
 package org.drools.eclipse.core.ui;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -39,7 +39,7 @@ public class FilterActionGroup extends ActionGroup {
 	}
 	
 	private FilterAction addFilterForType(int filterType, String tooltip, String imageDescriptorKey) {
-		boolean filterEnabled = DroolsIDEPlugin.getDefault()
+		boolean filterEnabled = DroolsEclipsePlugin.getDefault()
 			.getPreferenceStore().getBoolean(getPreferenceKey(filterType));
 		if (filterEnabled) {
 			filter.addFilter(filterType);
@@ -66,7 +66,7 @@ public class FilterActionGroup extends ActionGroup {
 			int filterProperty= propertyKeys[i];
 			boolean set= propertyValues[i];
 
-			IPreferenceStore store = DroolsIDEPlugin.getDefault().getPreferenceStore();
+			IPreferenceStore store = DroolsEclipsePlugin.getDefault().getPreferenceStore();
 			boolean found = false;
 			for (int j= 0; j < filterActions.length; j++) {
 				int currProperty= filterActions[j].getFilterType();

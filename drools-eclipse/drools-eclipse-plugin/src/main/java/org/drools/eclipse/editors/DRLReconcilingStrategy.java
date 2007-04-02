@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.preferences.IDroolsConstants;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -38,7 +38,7 @@ public class DRLReconcilingStrategy implements IReconcilingStrategy {
 	public DRLReconcilingStrategy(ISourceViewer sourceViewer, final AbstractRuleEditor editor) {
 		this.sourceViewer = sourceViewer;
 		this.editor = editor;
-		IPreferenceStore preferenceStore = DroolsIDEPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore preferenceStore = DroolsEclipsePlugin.getDefault().getPreferenceStore();
     	folding = preferenceStore.getBoolean(IDroolsConstants.EDITOR_FOLDING);
     	preferenceStore.addPropertyChangeListener(new IPropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent event) {

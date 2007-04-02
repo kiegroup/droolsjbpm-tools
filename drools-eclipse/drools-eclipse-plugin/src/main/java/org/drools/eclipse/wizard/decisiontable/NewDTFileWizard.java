@@ -1,6 +1,6 @@
 package org.drools.eclipse.wizard.decisiontable;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
@@ -22,7 +22,7 @@ public class NewDTFileWizard extends Wizard implements INewWizard {
         this.workbench = workbench;
         this.selection = selection;
         setWindowTitle("New Decision Table");
-    	ImageDescriptor desc = DroolsIDEPlugin.getImageDescriptor("icons/dt-large.gif");
+    	ImageDescriptor desc = DroolsEclipsePlugin.getImageDescriptor("icons/dt-large.gif");
         setDefaultPageImageDescriptor(desc);        
     }
     

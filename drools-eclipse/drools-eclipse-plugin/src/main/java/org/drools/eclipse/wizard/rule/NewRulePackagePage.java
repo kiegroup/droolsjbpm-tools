@@ -7,7 +7,7 @@ package org.drools.eclipse.wizard.rule;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -143,7 +143,7 @@ public class NewRulePackagePage extends WizardNewFileCreationPage {
             if (page != null)
                 IDE.openEditor(page, newFile, true);
         } catch (PartInitException e) {
-            DroolsIDEPlugin.log(e);
+            DroolsEclipsePlugin.log(e);
             return false;
         }
         return true;
@@ -182,7 +182,7 @@ public class NewRulePackagePage extends WizardNewFileCreationPage {
     }
 
     private InputStream getTemplate(String templatePath) throws IOException {
-        return DroolsIDEPlugin.getDefault().getBundle().getResource(templatePath).openStream();
+        return DroolsEclipsePlugin.getDefault().getBundle().getResource(templatePath).openStream();
     }
     
 

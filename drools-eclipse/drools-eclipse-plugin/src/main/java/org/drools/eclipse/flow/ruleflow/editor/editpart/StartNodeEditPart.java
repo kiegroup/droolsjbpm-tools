@@ -15,7 +15,7 @@ package org.drools.eclipse.flow.ruleflow.editor.editpart;
  * limitations under the License.
  */
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.editor.editpart.ElementEditPart;
 import org.drools.eclipse.flow.common.editor.editpart.figure.ElementFigure;
 import org.eclipse.draw2d.IFigure;
@@ -37,7 +37,7 @@ public class StartNodeEditPart extends ElementEditPart {
     public static class StartNodeFigure extends ElementFigure {
         
         private static Image icon = ImageDescriptor.createFromURL(
-    		DroolsIDEPlugin.getDefault().getBundle().getEntry("icons/process_start.gif")).createImage();
+    		DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/process_start.gif")).createImage();
         
         protected void customizeFigure() {
             setIcon(icon);

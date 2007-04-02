@@ -24,7 +24,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.EventObject;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -268,7 +268,7 @@ public abstract class GenericModelEditor extends GraphicalEditorWithPalette {
 			InputStream is = file.getContents(false);
 			createInputStream(is);
 		} catch (Exception e) {
-			DroolsIDEPlugin.log(e);
+			DroolsEclipsePlugin.log(e);
 			model = createModel();
 		}
 	}

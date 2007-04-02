@@ -1,7 +1,7 @@
 package org.drools.eclipse.editors;
 
 import org.drools.eclipse.DRLInfo;
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DRLInfo.FunctionInfo;
 import org.drools.eclipse.DRLInfo.RuleInfo;
 import org.drools.eclipse.debug.core.DroolsLineBreakpoint;
@@ -25,7 +25,7 @@ public class DroolsLineBreakpointAdapter implements IToggleBreakpointsTarget {
 			ITextSelection textSelection = (ITextSelection) selection;
 			int lineNumber = textSelection.getStartLine();
 			try {
-				DRLInfo drlInfo = DroolsIDEPlugin.getDefault().parseResource(resource, false);
+				DRLInfo drlInfo = DroolsEclipsePlugin.getDefault().parseResource(resource, false);
 				if (drlInfo != null) {
 					RuleInfo ruleInfo = drlInfo.getRuleInfo(lineNumber);
 					if (ruleInfo != null) {
@@ -41,7 +41,7 @@ public class DroolsLineBreakpointAdapter implements IToggleBreakpointsTarget {
 					}
 				}
 			} catch (Throwable t) {
-				DroolsIDEPlugin.log(t);
+				DroolsEclipsePlugin.log(t);
 			}
 		}
 		return false;

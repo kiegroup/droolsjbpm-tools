@@ -1,6 +1,6 @@
 package org.drools.eclipse.debug.core;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
@@ -52,7 +52,7 @@ public class DroolsLineBreakpointMarkerUpdater implements IMarkerUpdater {
 				int drlLineNumber = document.getLineOfOffset(position.getOffset()) + 1;
 				marker.setAttribute(IDroolsDebugConstants.DRL_LINE_NUMBER, drlLineNumber);
 			} catch (Throwable t) {
-				DroolsIDEPlugin.log(t);
+				DroolsEclipsePlugin.log(t);
 			}
 		}
 		return true;

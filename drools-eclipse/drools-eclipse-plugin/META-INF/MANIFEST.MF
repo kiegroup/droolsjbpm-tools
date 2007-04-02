@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: JBoss Rules IDE Plug-in
 Bundle-SymbolicName: org.drools.eclipse;singleton:=true
 Bundle-Version: 3.1.0.M1
-Bundle-Activator: org.drools.eclipse.DroolsIDEPlugin
+Bundle-Activator: org.drools.eclipse.DroolsEclipsePlugin
 Bundle-Vendor: krisv,mic
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,

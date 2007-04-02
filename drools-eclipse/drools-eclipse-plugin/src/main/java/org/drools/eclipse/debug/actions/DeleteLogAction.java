@@ -1,7 +1,7 @@
 package org.drools.eclipse.debug.actions;
 
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
 import org.drools.eclipse.debug.AuditView;
 import org.eclipse.jface.action.Action;
@@ -23,7 +23,7 @@ public class DeleteLogAction extends Action {
         setToolTipText("Clear Log");
         setImageDescriptor(DroolsPluginImages.getImageDescriptor(DroolsPluginImages.DELETE_LOG));
         setDisabledImageDescriptor(DroolsPluginImages.getImageDescriptor(DroolsPluginImages.DELETE_LOG_DISABLED));
-        setId(DroolsIDEPlugin.getUniqueIdentifier() + ".ClearLogAction");
+        setId(DroolsEclipsePlugin.getUniqueIdentifier() + ".ClearLogAction");
     }
 
     public void run() {

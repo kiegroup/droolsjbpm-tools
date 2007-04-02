@@ -1,6 +1,6 @@
 package org.drools.eclipse.debug;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
@@ -36,7 +36,7 @@ public class DebugUtil {
 
     public static final int INFO_EVALUATION_STACK_FRAME = 111;
     private static IStatus fgNeedStackFrame = new Status(IStatus.INFO,
-        DroolsIDEPlugin.getUniqueIdentifier(), INFO_EVALUATION_STACK_FRAME,
+        DroolsEclipsePlugin.getUniqueIdentifier(), INFO_EVALUATION_STACK_FRAME,
         "Provides thread context for an evaluation", null);
     private static IStatusHandler fgStackFrameProvider;
 
@@ -100,7 +100,7 @@ public class DebugUtil {
             return evaluationBlock.evaluate(expression);
 
         } catch (CoreException e) {
-            DroolsIDEPlugin.log(e);
+            DroolsEclipsePlugin.log(e);
         }
         return null;
     }
@@ -176,7 +176,7 @@ public class DebugUtil {
                     message += errorMessages[i] + "\n";
                 }
                 throw new DebugException(new Status(IStatus.ERROR, 
-                    DroolsIDEPlugin.PLUGIN_ID, DroolsIDEPlugin.INTERNAL_ERROR,
+                    DroolsEclipsePlugin.PLUGIN_ID, DroolsEclipsePlugin.INTERNAL_ERROR,
                     "Error when compiling snippet " + snippet + ": " + message, null));
             }
             fResult = null;

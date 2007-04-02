@@ -18,7 +18,7 @@ package org.drools.eclipse.flow.ruleflow.editor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.editor.core.ElementConnectionFactory;
 import org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper;
 import org.drools.eclipse.flow.ruleflow.core.ConnectionWrapperFactory;
@@ -72,8 +72,8 @@ public class RuleFlowPaletteFactory {
             "Create a new Start",
             StartNodeWrapper.class,
             new SimpleFactory(StartNodeWrapper.class),
-            ImageDescriptor.createFromURL(DroolsIDEPlugin.getDefault().getBundle().getEntry("icons/process_start.gif")),
-            ImageDescriptor.createFromURL(DroolsIDEPlugin.getDefault().getBundle().getEntry("icons/process_start.gif"))
+            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/process_start.gif")),
+            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/process_start.gif"))
         );
         entries.add(combined);
         
@@ -82,8 +82,8 @@ public class RuleFlowPaletteFactory {
             "Create a new End",
             EndNodeWrapper.class,
             new SimpleFactory(EndNodeWrapper.class),
-            ImageDescriptor.createFromURL(DroolsIDEPlugin.getDefault().getBundle().getEntry("icons/process_stop.gif")), 
-            ImageDescriptor.createFromURL(DroolsIDEPlugin.getDefault().getBundle().getEntry("icons/process_stop.gif"))
+            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/process_stop.gif")), 
+            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/process_stop.gif"))
         );
         entries.add(combined);
                 
@@ -92,8 +92,8 @@ public class RuleFlowPaletteFactory {
             "Create a new RuleFlowGroup",
             RuleSetNodeWrapper.class,
             new SimpleFactory(RuleSetNodeWrapper.class),
-            ImageDescriptor.createFromURL(DroolsIDEPlugin.getDefault().getBundle().getEntry("icons/activity.gif")), 
-            ImageDescriptor.createFromURL(DroolsIDEPlugin.getDefault().getBundle().getEntry("icons/activity.gif"))
+            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/activity.gif")), 
+            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/activity.gif"))
         );
         entries.add(combined);
             
@@ -102,8 +102,8 @@ public class RuleFlowPaletteFactory {
             "Create a new Split",
             SplitWrapper.class,
             new SimpleFactory(SplitWrapper.class),
-            ImageDescriptor.createFromURL(DroolsIDEPlugin.getDefault().getBundle().getEntry("icons/split.gif")), 
-            ImageDescriptor.createFromURL(DroolsIDEPlugin.getDefault().getBundle().getEntry("icons/split.gif"))
+            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/split.gif")), 
+            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/split.gif"))
         );
         entries.add(combined);
                     
@@ -112,8 +112,8 @@ public class RuleFlowPaletteFactory {
             "Create a new Join",
             JoinWrapper.class,
             new SimpleFactory(JoinWrapper.class),
-            ImageDescriptor.createFromURL(DroolsIDEPlugin.getDefault().getBundle().getEntry("icons/join.gif")), 
-            ImageDescriptor.createFromURL(DroolsIDEPlugin.getDefault().getBundle().getEntry("icons/join.gif"))
+            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/join.gif")), 
+            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/join.gif"))
         );
         entries.add(combined);
                         
@@ -146,8 +146,8 @@ public class RuleFlowPaletteFactory {
                 	return ConnectionWrapper.class;
                 }
             },
-            ImageDescriptor.createFromURL(DroolsIDEPlugin.getDefault().getBundle().getEntry("icons/connection.gif")), 
-            ImageDescriptor.createFromURL(DroolsIDEPlugin.getDefault().getBundle().getEntry("icons/connection.gif"))
+            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/connection.gif")), 
+            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/connection.gif"))
         );
         entries.add(tool);
         

@@ -3,7 +3,7 @@ package org.drools.eclipse.debug;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
@@ -51,7 +51,7 @@ public class ApplicationDataViewContentProvider extends DroolsDebugViewContentPr
                 return variables;
             }
         } catch (DebugException e) {
-            DroolsIDEPlugin.log(e);
+            DroolsEclipsePlugin.log(e);
             return new Object[0];
         }
     }

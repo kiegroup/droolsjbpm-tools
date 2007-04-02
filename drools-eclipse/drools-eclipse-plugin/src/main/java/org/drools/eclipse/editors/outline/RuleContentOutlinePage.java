@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 import org.drools.compiler.DroolsParserException;
 import org.drools.eclipse.DRLInfo;
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.core.DroolsElement;
 import org.drools.eclipse.core.DroolsModelBuilder;
 import org.drools.eclipse.core.Package;
@@ -224,7 +224,7 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
     public void initRules() {
     	rules = new HashMap();
     	try {
-    		DRLInfo drlInfo = DroolsIDEPlugin.getDefault().parseResource(editor, true, false);
+    		DRLInfo drlInfo = DroolsEclipsePlugin.getDefault().parseResource(editor, true, false);
     		if (drlInfo != null) {
 		    	PackageDescr packageDescr = drlInfo.getPackageDescr();
 	    		for (Iterator iterator = packageDescr.getRules().iterator(); iterator.hasNext(); ) {
@@ -233,7 +233,7 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
 	    		}
     		}
     	} catch (DroolsParserException e) {
-    		DroolsIDEPlugin.log(e);
+    		DroolsEclipsePlugin.log(e);
     	}
     }
     

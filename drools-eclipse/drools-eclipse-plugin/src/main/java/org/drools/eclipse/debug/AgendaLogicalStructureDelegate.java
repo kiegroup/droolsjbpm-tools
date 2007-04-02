@@ -3,7 +3,7 @@ package org.drools.eclipse.debug;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.ILogicalStructureTypeDelegate;
@@ -43,7 +43,7 @@ public class AgendaLogicalStructureDelegate implements ILogicalStructureTypeDele
             }
             return false;
         } catch (DebugException e) {
-            DroolsIDEPlugin.log(e);
+            DroolsEclipsePlugin.log(e);
             return false;
         }
     }

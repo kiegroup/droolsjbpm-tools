@@ -1,6 +1,6 @@
 package org.drools.eclipse.editors.rete.part;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.editors.rete.model.Connection;
 import org.drools.eclipse.editors.rete.model.ReteGraph;
 import org.drools.reteoo.BaseVertex;
@@ -42,7 +42,7 @@ public class VertexEditPartFactory
         if ( modelElement instanceof Connection ) {
             return new ConnectionEditPart();
         }
-        DroolsIDEPlugin.log( new Exception( "Can't create part for model element: " + ((modelElement != null) ? modelElement.getClass().getName() : "null") ) );
+        DroolsEclipsePlugin.log( new Exception( "Can't create part for model element: " + ((modelElement != null) ? modelElement.getClass().getName() : "null") ) );
         return null;
         
     }

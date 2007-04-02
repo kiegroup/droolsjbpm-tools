@@ -15,7 +15,7 @@ package org.drools.eclipse.flow.common.view.datatype.editor.impl;
  * limitations under the License.
  */
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.datatype.IDataTypeRegistry;
 import org.drools.ruleflow.common.datatype.IDataType;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -69,7 +69,7 @@ public class DataTypeCombo extends Composite {
             	dataTypeCombo.setSelection(new StructuredSelection(registry.getDataTypeInfo(dataType.getClass())));
             } catch (IllegalArgumentException e) {
             	// "DataTypeInfo not found in registry: " + dataType.getClass()
-            	DroolsIDEPlugin.log(e);
+            	DroolsEclipsePlugin.log(e);
             }
         }
     }

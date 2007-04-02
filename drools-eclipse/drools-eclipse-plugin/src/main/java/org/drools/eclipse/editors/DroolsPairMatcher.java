@@ -2,7 +2,7 @@ package org.drools.eclipse.editors;
 
 import java.util.Stack;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -30,7 +30,7 @@ public final class DroolsPairMatcher implements ICharacterPairMatcher {
 			    }
 		    }
         } catch (BadLocationException e) {
-        	DroolsIDEPlugin.log(e);
+        	DroolsEclipsePlugin.log(e);
         }
         return null;
     }

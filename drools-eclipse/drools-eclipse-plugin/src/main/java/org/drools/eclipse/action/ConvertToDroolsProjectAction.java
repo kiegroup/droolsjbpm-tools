@@ -1,6 +1,6 @@
 package org.drools.eclipse.action;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.builder.DroolsBuilder;
 import org.drools.eclipse.wizard.project.NewDroolsProjectWizard;
 import org.drools.util.ArrayUtils;
@@ -31,7 +31,7 @@ public class ConvertToDroolsProjectAction implements IObjectActionDelegate {
 				addDroolsBuilder(javaProject, null);
 				NewDroolsProjectWizard.addDroolsLibraries(javaProject, null);
 			} catch (Throwable t) {
-				DroolsIDEPlugin.log(t);
+				DroolsEclipsePlugin.log(t);
 			}
 		}
 

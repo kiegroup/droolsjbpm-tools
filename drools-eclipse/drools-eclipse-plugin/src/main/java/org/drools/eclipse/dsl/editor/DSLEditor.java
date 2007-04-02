@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.builder.IDroolsModelMarker;
 import org.drools.lang.dsl.DSLMappingEntry;
 import org.drools.lang.dsl.DSLMappingFile;
@@ -130,7 +130,7 @@ public class DSLEditor extends EditorPart {
                                     IWorkspace.AVOID_UPDATE,
                                     null );
         } catch ( CoreException e ) {
-            DroolsIDEPlugin.log( e );
+            DroolsEclipsePlugin.log( e );
         }
     }
 
@@ -142,7 +142,7 @@ public class DSLEditor extends EditorPart {
                                         IResource.DEPTH_INFINITE );
             }
         } catch ( CoreException e ) {
-            DroolsIDEPlugin.log( e );
+            DroolsEclipsePlugin.log( e );
         }
     }
 

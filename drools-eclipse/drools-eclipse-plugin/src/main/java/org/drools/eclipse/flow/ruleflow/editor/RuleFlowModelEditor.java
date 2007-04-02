@@ -23,7 +23,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.editor.GenericModelEditor;
 import org.drools.eclipse.flow.ruleflow.core.RuleFlowProcessWrapper;
 import org.drools.eclipse.flow.ruleflow.core.StartNodeWrapper;
@@ -90,7 +90,7 @@ public class RuleFlowModelEditor extends GenericModelEditor {
             }
             writer.close();
         } catch (Throwable t) {
-            DroolsIDEPlugin.log(t);
+            DroolsEclipsePlugin.log(t);
         }
     }
     
@@ -133,7 +133,7 @@ public class RuleFlowModelEditor extends GenericModelEditor {
 	        		true, false, monitor);
 	            out.close();
 	        } catch (Throwable t) {
-	        	DroolsIDEPlugin.log(t);
+	        	DroolsEclipsePlugin.log(t);
 	        }
 		}
     }

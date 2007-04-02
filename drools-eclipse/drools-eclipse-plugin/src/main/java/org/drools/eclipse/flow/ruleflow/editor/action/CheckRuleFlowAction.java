@@ -15,7 +15,7 @@ package org.drools.eclipse.flow.ruleflow.editor.action;
  * limitations under the License.
  */
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.ruleflow.editor.RuleFlowModelEditor;
 import org.drools.ruleflow.core.IRuleFlowProcessValidationError;
 import org.drools.ruleflow.core.impl.RuleFlowProcessValidator;
@@ -63,7 +63,7 @@ public class CheckRuleFlowAction extends ActionDelegate implements IEditorAction
                 "Check RuleFlow", "The RuleFlow model contains errors.", 
                 new Status(
                     IStatus.ERROR,
-                    DroolsIDEPlugin.getDefault().getBundle().getSymbolicName(),
+                    DroolsEclipsePlugin.getDefault().getBundle().getSymbolicName(),
                     IStatus.ERROR,
                     error.toString(),
                     null)

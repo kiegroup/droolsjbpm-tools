@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugEvent;
@@ -55,7 +55,7 @@ public class DroolsDebugTarget extends JDIDebugTarget {
 		} catch (Throwable t) {
 			// Exception will be thrown when trying to use breakpoint
 			// on drl that is incorrect (cannot be parsed or compiled) 
-			DroolsIDEPlugin.log(t);
+			DroolsEclipsePlugin.log(t);
 		}
 	}
 

@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 
-import org.drools.eclipse.DroolsIDEPlugin;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -36,7 +36,7 @@ public class Util {
         try {
             return getInputStreamAsCharArray(stream, -1, encoding);
         } catch (IOException e) {
-            throw new CoreException(new Status(IStatus.ERROR, DroolsIDEPlugin.PLUGIN_ID, IStatus.ERROR, "IOException", e));
+            throw new CoreException(new Status(IStatus.ERROR, DroolsEclipsePlugin.PLUGIN_ID, IStatus.ERROR, "IOException", e));
         } finally {
             try {
                 stream.close();
