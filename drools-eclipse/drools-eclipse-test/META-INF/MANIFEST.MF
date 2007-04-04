@@ -1,12 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Drools IDE Test fragment
-Bundle-SymbolicName: org.drools.ide.test
-Bundle-Version: 3.0.5
+Bundle-Name: JBoss Rules Eclipse Test fragment
+Bundle-SymbolicName: org.drools.eclipse.test
+Bundle-Version: 3.1.0.M1
 Bundle-Vendor: krisv,mic
-Fragment-Host: org.drools.ide;bundle-version="3.0.0"
+Fragment-Host: org.drools.eclipse;bundle-version="3.1.0.M1"
 Bundle-Localization: plugin
 Require-Bundle: org.junit
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
-Eclipse-LazyStart: true

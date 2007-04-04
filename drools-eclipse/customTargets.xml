@@ -79,6 +79,14 @@
 		<copy todir="${buildDirectory}/plugins/org.drools.eclipse">
 				<fileset dir="${builder}/drools-eclipse-plugin"/>
 		</copy>
+		
+		<copy todir="${buildDirectory}/features/org.drools.eclipse.test-feature">
+			<fileset dir="${builder}/drools-eclipse-test-feature"/>
+		</copy>
+
+		<copy todir="${buildDirectory}/plugins/org.drools.eclipse.test">
+				<fileset dir="${builder}/drools-eclipse-test"/>
+		</copy>		
 		<!--
 		<copy todir="${buildDirectory}/features/com.ibm.eclipse.shootout.tests">
 				<fileset dir="${builder}/../com.ibm.eclipse.shootout.tests-feature"/>

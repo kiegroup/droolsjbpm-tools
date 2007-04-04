@@ -13,6 +13,11 @@
 	 		<property name="type" value="feature" />
 	 		<property name="id" value="org.drools.eclipse.feature" />
  		</ant>
+ 		
+ 		<ant antfile="${genericTargets}" target="${target}">
+	 		<property name="type" value="feature" />
+	 		<property name="id" value="org.drools.eclipse.test-feature" />
+ 		</ant> 		
  	</target>
 
  	<!-- ===================================================================== -->
@@ -26,4 +31,9 @@
  		<property name="archiveName" value="${zipFile}"/>
  		<ant antfile="${assembleScriptName}" dir="${buildDirectory}"/>
  	</target>
+ 	
+ 	<target name="assemble.org.drools.eclipse.test-feature">
+ 		<property name="archiveName" value="${zipFile}"/>
+ 		<ant antfile="${assembleScriptName}" dir="${buildDirectory}"/>
+ 	</target> 	
 </project>
