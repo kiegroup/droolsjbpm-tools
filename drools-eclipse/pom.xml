@@ -9,7 +9,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>drools-eclipse</artifactId>
-   <packaging>jar</packaging>
+   <packaging>pom</packaging>
 
   <name>Drools :: Eclipse-Plugin</name>਍
   <build>
@@ -33,6 +33,35 @@
           </execution>
         </executions>
       </plugin>
+     <plugin>
+       <artifactId>maven-antrun-plugin</artifactId>
+       <inherited>false</inherited>
+       <executions>
+         <execution>
+           <id>build-plugin</id>
+           <phase>package</phase>
+           <configuration>
+             <tasks>
+                 <fail message="To build the plugin you are required to set the 'eclipse.home' property."
+                       if="${eclipse.home}" />
+                 <dirname property="eclipse.home.parent" file="${eclipse.home}"/>
+                 <echo message="eclipse.home        = ${eclipse.home}"/>
+                 <echo message="eclipse.home.parent = ${eclipse.home.parent}"/>
+                 <java jar="${eclipse.home}/startup.jar"
+                       fork="true"
+                       failonerror="true"
+                       maxmemory="128m"
+                 >
+                     <arg line="-application org.eclipse.ant.core.antRunner -Dbase=${eclipse.home.parent}"/>
+                 </java>                 
+             </tasks>
+           </configuration>
+           <goals>
+             <goal>run</goal>
+           </goals>
+         </execution>
+       </executions>
+     </plugin>
     </plugins>
   </build>
 
