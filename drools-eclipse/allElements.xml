@@ -33,7 +33,7 @@
  	</target>
  	
  	<target name="assemble.org.drools.eclipse.test-feature">
- 		<property name="archiveName" value="${zipFile}"/>
+ 		<property name="archiveName" value="${testZipFile}"/>
  		<ant antfile="${assembleScriptName}" dir="${buildDirectory}"/>
  	</target> 	
 </project>
