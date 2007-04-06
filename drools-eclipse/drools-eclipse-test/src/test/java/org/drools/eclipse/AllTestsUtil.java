@@ -104,8 +104,13 @@ public class AllTestsUtil {
 	 * to the name of the package that the AllTests class is in for ease of
 	 * management but may be trivially changed if required.
 	 */
-	public static final String PLUGIN_NAME = AllTests.class.getPackage()
-			.getName();
+	
+	//PO: this is wrong. we need to use the PLUGIN_ID of the host, not that of the 
+	// fragment
+//	public static final String PLUGIN_NAME = AllTests.class.getPackage()
+//	.getName();
+	public static final String PLUGIN_NAME = "org.drools.eclipse";
+	
 	/**
 	 * Add the tests reported by collector to the list of tests to run
 	 * @param collector the test collector to run
