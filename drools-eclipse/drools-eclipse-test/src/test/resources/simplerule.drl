@@ -2,7 +2,7 @@ package org.drools.examples
 
 // Rules for ReteooLayoutFactoryTest
 
-import org.drools.ide.editors.rete.ReteooLayoutFactoryTest.Message;
+import org.drools.eclipse.editors.rete.ReteooLayoutFactoryTest.Message;
 
 rule "Hello World"
         when
