@@ -174,16 +174,17 @@
 	<!-- ===================================================================== -->
 	<target name="postBuild">
 		<antcall target="gatherLogs" />
+		<antcall target="test" />
 	</target>
 
 	<!-- ===================================================================== -->
 	<!-- Steps to do to test the build results -->
 	<!-- ===================================================================== -->
   <target name="test" if="runTests">
-    <unzip src="${buildDirectory}/${buildLabel}/com.ibm.eclipse.shootout-${buildId}.zip"
+    <unzip src="${buildDirectory}/${buildLabel}/jbossrules-eclipse-${jbossRulesVersion}.zip"
            dest="${base}"/>
-    <unzip src="${buildDirectory}/${buildLabel}/com.ibm.eclipse.shootout.tests-${buildId}.zip" dest="${base}"/>
-    <ant antfile="${base}/eclipse/plugins/org.drools.eclipse.tests_1.0.0/test.xml">
+    <unzip src="${buildDirectory}/${buildLabel}/jbossrules-eclipse-test-${jbossRulesVersion}.zip" dest="${base}"/>
+    <ant antfile="${base}/eclipse/plugins/org.drools.eclipse.test_${jbossRulesVersion}/test.xml">
       <property name="os" value="${baseos}" />
       <property name="ws" value="${basews}" />
       <property name="arch" value="${basearch}" />
