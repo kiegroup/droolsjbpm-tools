@@ -181,10 +181,21 @@
 	<!-- Steps to do to test the build results -->
 	<!-- ===================================================================== -->
   <target name="test" if="runTests">
+  
+    <delete dir="${base}/eclipse/plugins/org.drools.eclipse.test_${jbossRulesVersion}"/>
+    <delete file="${base}/eclipse/plugins/org.drools.eclipse_${jbossRulesVersion}.jar" />
+  
     <unzip src="${buildDirectory}/${buildLabel}/jbossrules-eclipse-${jbossRulesVersion}.zip"
-           dest="${base}"/>
-    <unzip src="${buildDirectory}/${buildLabel}/jbossrules-eclipse-test-${jbossRulesVersion}.zip" dest="${base}"/>
-    <ant antfile="${base}/eclipse/plugins/org.drools.eclipse.test_${jbossRulesVersion}/test.xml">
+           dest="${base}/eclipse"/>
+    <unzip src="${buildDirectory}/${buildLabel}/jbossrules-eclipse-test-${jbossRulesVersion}.zip" 
+           dest="${base}/eclipse"/>    
+           
+    <mkdir  dir="${base}/eclipse/plugins/org.drools.eclipse.test_${jbossRulesVersion}" />
+    <unzip src="${base}/eclipse/plugins/org.drools.eclipse.test_${jbossRulesVersion}.jar"
+           dest="${base}/eclipse/plugins/org.drools.eclipse.test_${jbossRulesVersion}" />           
+    <delete file="${base}/eclipse/plugins/org.drools.eclipse.test_${jbossRulesVersion}.jar" />
+    
+    <ant antfile="${base}/eclipse/plugins/org.drools.eclipse.test_${jbossRulesVersion}/test.xml">        
       <property name="os" value="${baseos}" />
       <property name="ws" value="${basews}" />
       <property name="arch" value="${basearch}" />
