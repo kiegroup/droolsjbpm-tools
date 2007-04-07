@@ -6,7 +6,7 @@
   <property name="eclipse-home" location="${baseLocation}"/>
   
   <!-- sets the properties eclipse-home, and library-file -->
-  <property name="plugin-name" value="org.drools.eclipse.test"/>
+  <property name="plugin-name" value="org.drools.eclipse"/>
   <property name="library-file" location="${eclipse-home}/plugins/org.eclipse.test_3.1.0/library.xml"/>
   
   <!-- This target holds all initialization code that needs to be done for
