@@ -14,9 +14,8 @@ public class RuleContentOutlineTest extends TestCase {
 	public void testNodeBuild() {		
         RuleContentOutlinePage page = new RuleContentOutlinePage( null );
         String source = "package test;\nexpander foobar.dsl\nimport foo\nfunction void smeg(s) {\n \n}\n";
-        //page.populatePackageTreeNode( source );
-        //RuleSet ruleSet = page.getRuleSet();
-        RuleSet ruleSet = null;
+        page.populatePackageTreeNode( source );
+        RuleSet ruleSet = page.getRuleSet();
         Package p = ruleSet.getPackage("test");
         assertNotNull(p);
         DroolsElement[] nodes = p.getChildren();
@@ -31,7 +30,7 @@ public class RuleContentOutlineTest extends TestCase {
         }
 
         source = "package test;\n function String foo(String bar) {";
-        //page.populatePackageTreeNode( source );
+        page.populatePackageTreeNode( source );
         p = ruleSet.getPackage("test");
         assertNotNull(p);
         Function func = (Function) p.getChildren()[0];
