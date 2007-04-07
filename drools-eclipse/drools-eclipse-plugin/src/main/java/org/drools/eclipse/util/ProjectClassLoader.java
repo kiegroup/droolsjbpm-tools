@@ -41,7 +41,7 @@ public class ProjectClassLoader {
     private static URL getRawLocationURL(IPath simplePath)
             throws MalformedURLException {
         File file = getRawLocationFile(simplePath);
-        return file.toURL();
+        return file.toURI().toURL();
     }
 
     private static File getRawLocationFile(IPath simplePath) {
@@ -73,7 +73,7 @@ public class ProjectClassLoader {
             IPath location = getProjectLocation(project.getProject());
             IPath outputPath = location.append(project.getOutputLocation()
                     .removeFirstSegments(1));
-            pathElements.add(outputPath.toFile().toURL());
+            pathElements.add(outputPath.toFile().toURI().toURL());
             
             // also add classpath of required projects
             String[] names = project.getRequiredProjectNames();

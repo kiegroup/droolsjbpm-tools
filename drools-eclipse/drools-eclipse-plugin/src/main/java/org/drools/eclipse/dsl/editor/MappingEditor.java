@@ -1,7 +1,6 @@
 package org.drools.eclipse.dsl.editor;
 
 import org.drools.lang.dsl.DSLMappingEntry;
-import org.drools.lang.dsl.DefaultDSLMappingEntry;
 import org.drools.lang.dsl.DSLMappingEntry.Section;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
@@ -31,8 +30,8 @@ public class MappingEditor extends TitleAreaDialog {
     private static final int       SCOPE_ALL     = 3;
     
     private static final String    SCOPE_STR_KEYWORD = "keyword"; 
-    private static final String    SCOPE_STR_WHEN = "when"; 
-    private static final String    SCOPE_STR_THEN = "then"; 
+    private static final String    SCOPE_STR_WHEN = "condition"; 
+    private static final String    SCOPE_STR_THEN = "consequence"; 
     private static final String    SCOPE_STR_ALL  = "*"; 
 
     private Text                   exprText;
@@ -54,9 +53,9 @@ public class MappingEditor extends TitleAreaDialog {
     public void setNLMappingItem(DSLMappingEntry item) {
         model = item;
         setSection( model.getSection() );
-        exprText.setText( model.getMappingKey() );
-        mappingText.setText( model.getMappingValue() );
-        objText.setText( model.getMetaData().getMetaData() );
+        exprText.setText( model.getMappingKey() == null ? "" : model.getMappingKey() );
+        mappingText.setText( model.getMappingValue() == null ? "" : model.getMappingValue() );
+        objText.setText( model.getMetaData().getMetaData() == null ? "" : model.getMetaData().getMetaData() );
     }
 
     private void setSection(Section section) {

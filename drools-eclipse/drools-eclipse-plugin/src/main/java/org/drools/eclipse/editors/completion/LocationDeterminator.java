@@ -101,6 +101,10 @@ public class LocationDeterminator {
     	public Object getProperty(String name) {
     		return properties.get(name);
     	}
+    	
+    	void setType(int type) {
+    		this.type = type;
+    	}
     }
     
 	public static Location getLocationInCondition(String backText) {
@@ -235,7 +239,11 @@ public class LocationDeterminator {
 				if (subDescr == null) {
 					return new Location(LOCATION_BEGIN_OF_CONDITION_EXISTS);
 				}
-				return determineLocationForDescr(subDescr, backText);
+				Location result = determineLocationForDescr(subDescr, backText);
+				if (result.getType() == LOCATION_BEGIN_OF_CONDITION) {
+					result.setType(LOCATION_BEGIN_OF_CONDITION_EXISTS);
+				}
+				return result;
 			}
 			return determineLocationForDescr(descr, backText);
 		} else if (descr instanceof NotDescr) {

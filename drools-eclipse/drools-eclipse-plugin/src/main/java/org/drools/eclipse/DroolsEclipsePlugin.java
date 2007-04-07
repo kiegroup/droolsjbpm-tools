@@ -31,7 +31,6 @@ import org.drools.eclipse.DRLInfo.RuleInfo;
 import org.drools.eclipse.builder.DroolsBuilder;
 import org.drools.eclipse.builder.Util;
 import org.drools.eclipse.editors.AbstractRuleEditor;
-import org.drools.eclipse.editors.DRLRuleEditor;
 import org.drools.eclipse.editors.DSLAdapter;
 import org.drools.eclipse.preferences.IDroolsConstants;
 import org.drools.eclipse.util.ProjectClassLoader;

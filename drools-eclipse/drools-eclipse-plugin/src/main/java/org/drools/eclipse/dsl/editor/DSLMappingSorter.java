@@ -60,7 +60,7 @@ public class DSLMappingSorter extends ViewerSorter {
 
     private int compareMappings(DSLMappingEntry item1,
                                 DSLMappingEntry item2) {
-        return item1.getSection().compareTo( item2.getSection() );
+        return item1.getMappingValue().compareTo( item2.getMappingValue() );
     }
 
     private int compareExpressions(DSLMappingEntry item1,

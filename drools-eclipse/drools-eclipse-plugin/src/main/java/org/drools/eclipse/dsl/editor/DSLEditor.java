@@ -279,7 +279,7 @@ public class DSLEditor extends EditorPart {
                 DSLMappingEntry selected = getCurrentSelected();
                 exprText.setText( selected.getMappingKey() );
                 mappingText.setText( selected.getMappingValue() );
-                objText.setText( selected.getMetaData().getMetaData() );
+                objText.setText( selected.getMetaData().getMetaData() == null ? "" : selected.getMetaData().getMetaData() );
             }
 
         } );
@@ -312,7 +312,7 @@ public class DSLEditor extends EditorPart {
         descriptionText = new Text( parent,
                                     SWT.BORDER );
         descriptionText.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
-        descriptionText.setText( "" + model.getDescription() ); //no nulls !
+        descriptionText.setText( model.getDescription() == null ? "" : model.getDescription() );
         descriptionText.addModifyListener( new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
@@ -391,7 +391,7 @@ public class DSLEditor extends EditorPart {
                        DSLMappingSorter.OBJECT );
         sortCombo.add( "Language Expression",
                        DSLMappingSorter.EXPRESSION );
-        sortCombo.add( "Rule Language Meaning",
+        sortCombo.add( "Rule Language Mapping",
                        DSLMappingSorter.MAPPING );
         sortCombo.add( "Scope",
                        DSLMappingSorter.SCOPE );
@@ -426,19 +426,22 @@ public class DSLEditor extends EditorPart {
     }
 
     private void showEditPopup() {
-        MappingEditor editor = new MappingEditor( getSite().getShell() );
-        editor.create();
-        editor.getShell().setText( "Edit language mapping" );
-        editor.setTitle( "Edit an existing language mapping item." );
-        editor.setTitleImage( getTitleImage() );
-
-        editor.setNLMappingItem( getCurrentSelected() );
-
-        editor.open();
-        if ( !editor.isCancelled() ) {
-            refreshModel();
-            makeDirty();
-        }
+    	DSLMappingEntry selected = getCurrentSelected();
+    	if (selected != null) {
+	        MappingEditor editor = new MappingEditor( getSite().getShell() );
+	        editor.create();
+	        editor.getShell().setText( "Edit language mapping" );
+	        editor.setTitle( "Edit an existing language mapping item." );
+	        editor.setTitleImage( getTitleImage() );
+	
+	        editor.setNLMappingItem( selected );
+	
+	        editor.open();
+	        if ( !editor.isCancelled() ) {
+	            refreshModel();
+	            makeDirty();
+	        }
+    	}
     }
 
     private void createDeleteButton(Composite parent) {
@@ -456,8 +459,10 @@ public class DSLEditor extends EditorPart {
                 model.removeEntry( getCurrentSelected() );
                 refreshModel();
                 makeDirty();
+                exprText.setText( "" );
+                mappingText.setText( "" );
+                objText.setText( "" );
             }
-
         } );
     }
 
@@ -540,26 +545,27 @@ public class DSLEditor extends EditorPart {
             public void widgetSelected(SelectionEvent e) {
 
                 DSLMappingEntry curr = getCurrentSelected();
-                DSLMappingEntry newItem = new DefaultDSLMappingEntry( curr.getSection(),
-                                                                      curr.getMetaData(),
-                                                                      curr.getMappingKey(),
-                                                                      curr.getMappingValue() );
-
-                MappingEditor editor = new MappingEditor( getSite().getShell() );//shell);
-                editor.create();
-                editor.getShell().setText( "New language mapping" );
-                editor.setTitle( "Create a new language element mapping from a copy." );
-                editor.setTitleImage( getTitleImage() );
-
-                editor.setNLMappingItem( newItem );
-
-                editor.open();
-                if ( !editor.isCancelled() ) {
-                    model.addEntry( newItem );
-                    refreshModel();
-                    makeDirty();
+                if (curr != null) {
+	                DSLMappingEntry newItem = new DefaultDSLMappingEntry( curr.getSection(),
+	                                                                      curr.getMetaData(),
+	                                                                      curr.getMappingKey(),
+	                                                                      curr.getMappingValue() );
+	
+	                MappingEditor editor = new MappingEditor( getSite().getShell() );//shell);
+	                editor.create();
+	                editor.getShell().setText( "New language mapping" );
+	                editor.setTitle( "Create a new language element mapping from a copy." );
+	                editor.setTitleImage( getTitleImage() );
+	
+	                editor.setNLMappingItem( newItem );
+	
+	                editor.open();
+	                if ( !editor.isCancelled() ) {
+	                    model.addEntry( newItem );
+	                    refreshModel();
+	                    makeDirty();
+	                }
                 }
-
             }
         } );
     }
@@ -610,7 +616,7 @@ public class DSLEditor extends EditorPart {
         column = new TableColumn( table,
                                   SWT.LEFT,
                                   1 );
-        column.setText( "Rule language mapping" );
+        column.setText( "Rule Language Mapping" );
         column.setWidth( 200 );
         // Add listener to column so sorted when clicked
         column.addSelectionListener( new SelectionAdapter() {

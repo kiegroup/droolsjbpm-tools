@@ -64,7 +64,7 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
     /**
      *  Filter out the proposals whose content does not start with the given prefix.
      */
-    protected void filterProposalsOnPrefix(String prefix, List props) {
+    protected static void filterProposalsOnPrefix(String prefix, List props) {
     	if (prefix != null) {
     		Iterator iterator = props.iterator();
     		while ( iterator.hasNext() ) {

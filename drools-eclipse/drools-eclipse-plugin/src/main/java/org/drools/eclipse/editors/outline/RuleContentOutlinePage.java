@@ -18,7 +18,6 @@ import org.drools.eclipse.core.ui.DroolsLabelProvider;
 import org.drools.eclipse.core.ui.DroolsTreeSorter;
 import org.drools.eclipse.core.ui.FilterActionGroup;
 import org.drools.eclipse.editors.AbstractRuleEditor;
-import org.drools.eclipse.editors.DRLRuleEditor;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
@@ -133,8 +132,12 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
      * @param packageTreeNode the node to populate
      */
     public void populatePackageTreeNode() {
-    	DroolsModelBuilder.clearRuleSet(ruleSet);
     	String ruleFileContents = editor.getContent();
+    	populatePackageTreeNode(ruleFileContents);
+    }
+    
+    void populatePackageTreeNode(String ruleFileContents) {
+    	DroolsModelBuilder.clearRuleSet(ruleSet);
     	Matcher matcher = PACKAGE_PATTERN.matcher(ruleFileContents);
     	String packageName = null;
     	int startChar = 0;
@@ -207,13 +210,17 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
 		}
     }
     
+    RuleSet getRuleSet() {
+    	return ruleSet;
+    }
+    
     private Map extractAttributes(RuleDescr ruleDescr) {
         Map attributes = null;
         if (ruleDescr != null) {
         	attributes = new HashMap();
         	for (Iterator iterator = ruleDescr.getAttributes().iterator(); iterator.hasNext();) {
         		AttributeDescr attribute = (AttributeDescr) iterator.next();
-        		if (attribute.getName() != null) {
+        		if (attribute != null && attribute.getName() != null) {
         			attributes.put(attribute.getName(), attribute.getValue());
         		}
         	}

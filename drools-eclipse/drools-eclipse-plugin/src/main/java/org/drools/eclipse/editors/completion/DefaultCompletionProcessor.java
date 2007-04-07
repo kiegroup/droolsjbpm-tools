@@ -11,7 +11,6 @@ import java.util.regex.Pattern;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
 import org.drools.eclipse.editors.AbstractRuleEditor;
-import org.drools.eclipse.editors.DRLRuleEditor;
 import org.drools.util.StringUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.CompletionProposal;
@@ -116,7 +115,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
 						prop.setImage(DroolsPluginImages.getImage(DroolsPluginImages.PACKAGE));
 						list.add(prop);
 					} else if (proposal.getKind() == org.eclipse.jdt.core.CompletionProposal.TYPE_REF) {
-						RuleCompletionProposal prop = new RuleCompletionProposal(classNameStart.length(), className, className + ";"); 
+						RuleCompletionProposal prop = new RuleCompletionProposal(classNameStart.length() - proposal.getReplaceStart(), className, className + ";"); 
 						prop.setImage(DroolsPluginImages.getImage(DroolsPluginImages.CLASS));
 						list.add(prop);
 					}

@@ -2,7 +2,6 @@ package org.drools.eclipse.editors;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,11 +13,8 @@ import org.drools.eclipse.debug.core.IDroolsDebugConstants;
 import org.drools.eclipse.editors.outline.RuleContentOutlinePage;
 import org.drools.eclipse.editors.scanners.RuleEditorMessages;
 import org.drools.eclipse.preferences.IDroolsConstants;
+import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FactTemplateDescr;
-import org.drools.lang.descr.FunctionDescr;
-import org.drools.lang.descr.FunctionImportDescr;
-import org.drools.lang.descr.ImportDescr;
-import org.drools.lang.descr.PackageDescr;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -30,7 +26,6 @@ import org.eclipse.jdt.core.CompletionRequestor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.Annotation;
@@ -40,7 +35,6 @@ import org.eclipse.jface.text.source.projection.ProjectionAnnotation;
 import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
 import org.eclipse.jface.text.source.projection.ProjectionSupport;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
@@ -319,6 +313,15 @@ public abstract class AbstractRuleEditor extends TextEditor {
 		if (bracketMatcher != null) {
 			bracketMatcher.dispose();
 			bracketMatcher = null;
+		}
+	}
+	
+	public BaseDescr getDescr(int offset) {
+		try {
+			DRLInfo info = DroolsEclipsePlugin.getDefault().parseResource(this, true, false);
+			return DescrUtil.getDescr(info.getPackageDescr(), offset);
+		} catch (DroolsParserException exc) {
+			return null;
 		}
 	}
 }
