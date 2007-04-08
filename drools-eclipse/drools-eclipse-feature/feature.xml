@@ -21,6 +21,7 @@
          id="org.drools.eclipse"
          download-size="0"
          install-size="0"
-         version="3.1.0.M1"/>
+         version="3.1.0.M1"
+         unpack="false"/>
 
 </feature>
