@@ -27,6 +27,7 @@ Require-Bundle: org.eclipse.core.runtime,
  com.ibm.icu
 Eclipse-LazyStart: true
 Bundle-ClassPath: 
+ .,
  lib/antlr-2.7.7.jar,
  lib/antlr-3.0b5.jar,
  lib/drools-decisiontables-3.1.0-M1.jar,
