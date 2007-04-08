@@ -13,13 +13,13 @@
 	<!-- ===================================================================== -->
 	<!-- ===================================================================== -->
 	<target name="getBaseComponents" depends="checkLocalBase" unless="skipBase">
-		<get src="${eclipseURL}/eclipse-SDK-${eclipseBuildId}-win32.zip" dest="${buildDirectory}/../eclipse-SDK-${eclipseBuildId}-win32.zip" />
+		<get usetimestamp="true" src="${eclipseURL}/eclipse-SDK-${eclipseBuildId}-win32.zip" dest="${buildDirectory}/../eclipse-SDK-${eclipseBuildId}-win32.zip" />
 		<unzip dest="${base}" overwrite="true" src="${buildDirectory}/../eclipse-SDK-${eclipseBuildId}-win32.zip" />
 		
-		<get src="${eclipseGefURL}/GEF-runtime-${eclipseBuildId}.zip" dest="${buildDirectory}/../GEF-runtime-${eclipseBuildId}.zip" />
+		<get usetimestamp="true" src="${eclipseGefURL}/GEF-runtime-${eclipseBuildId}.zip" dest="${buildDirectory}/../GEF-runtime-${eclipseBuildId}.zip" />
 		<unzip dest="${base}" overwrite="true" src="${buildDirectory}/../GEF-runtime-${eclipseBuildId}.zip" />		
 		
-    <get src="${eclipseURL}/eclipse-test-framework-${eclipseBuildId}.zip"
+    <get usetimestamp="true" src="${eclipseURL}/eclipse-test-framework-${eclipseBuildId}.zip"
          dest="${buildDirectory}/../eclipse-test-framework-${eclipseBuildId}.zip"/>
          
     <unzip dest="${base}" overwrite="true"
