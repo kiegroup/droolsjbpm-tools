@@ -180,8 +180,11 @@
 	<!-- ===================================================================== -->
 	<!-- Steps to do to test the build results -->
 	<!-- ===================================================================== -->
-  <target name="test" if="runTests">
-  
+  <target name="test" >
+    <!--cleanup -->
+    <delete file="${base}/eclipse/org.drools.eclipse*.xml" />
+    <delete dir="${base}/eclipse/test-workspace"/>
+
     <delete dir="${base}/eclipse/plugins/org.drools.eclipse.test_${jbossRulesVersion}"/>
     <delete file="${base}/eclipse/plugins/org.drools.eclipse_${jbossRulesVersion}.jar" />
   
@@ -189,12 +192,13 @@
            dest="${base}/eclipse"/>
     <unzip src="${buildDirectory}/${buildLabel}/jbossrules-eclipse-test-${jbossRulesVersion}.zip" 
            dest="${base}/eclipse"/>    
-           
+<!-- pom: no need to do that now that the drools eclipse is properly configured 
+          to be jarred in its manifest and build.properties
     <mkdir  dir="${base}/eclipse/plugins/org.drools.eclipse.test_${jbossRulesVersion}" />
     <unzip src="${base}/eclipse/plugins/org.drools.eclipse.test_${jbossRulesVersion}.jar"
            dest="${base}/eclipse/plugins/org.drools.eclipse.test_${jbossRulesVersion}" />           
     <delete file="${base}/eclipse/plugins/org.drools.eclipse.test_${jbossRulesVersion}.jar" />
-    
+-->    
     <ant antfile="${base}/eclipse/plugins/org.drools.eclipse.test_${jbossRulesVersion}/test.xml">        
       <property name="os" value="${baseos}" />
       <property name="ws" value="${basews}" />
