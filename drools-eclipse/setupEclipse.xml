@@ -16,7 +16,7 @@
 		</and>
 	</condition>
 	
-	<condition property="download.type" value="linux-gtk.tar.gz">
+	<condition property="download.type" value="linux-gtk">
 		<and>
 			<not>
 				<os family="mac" />

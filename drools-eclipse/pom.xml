@@ -33,6 +33,20 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>    
+	      <artifactId>maven-clean-plugin</artifactId>
+	      <configuration>
+	        <filesets>
+	          <fileset>
+	            <directory>./drools-eclipse-plugin/lib</directory>
+	            <includes>
+	              <include>*.jar</include>		
+	            </includes>
+	            <followSymlinks>false</followSymlinks>
+	          </fileset>
+	        </filesets>
+	      </configuration>
+	    </plugin>      
      <plugin>
        <artifactId>maven-antrun-plugin</artifactId>
        <inherited>false</inherited>
