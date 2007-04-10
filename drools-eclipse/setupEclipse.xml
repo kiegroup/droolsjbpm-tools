@@ -5,25 +5,44 @@
   <property name="localEclipseDrop" value="${basedir}/local-eclipse-drop-mirror" />  
  
   <!-- set the OS name, make sure each condition is mutally exclusive -->
-	<condition property="download.extension" value="win32.zip">
+	<condition property="download.type" value="win32">
 		<os family="windows" />
-	</condition>
+	</condition>	
 			
-	<condition property="download.extension" value="macosx-carbon.tar.gz">
+	<condition property="download.type" value="macosx-carbon">
 		<and>
 			<os family="mac" />
 			<os family="unix" />
 		</and>
 	</condition>
 	
-	<condition property="download.extension" value="linux-gtk.tar.gz">
+	<condition property="download.type" value="linux-gtk.tar.gz">
 		<and>
 			<not>
 				<os family="mac" />
 			</not>
 			<os family="unix" />
 		</and>
-	</condition>		  		  
+	</condition>		
+	
+	<condition property="download.extension" value="zip">
+		<os family="windows" />
+	</condition>		
+	
+	<condition property="download.extension" value="tar.gz">
+		<and>
+			<os family="mac" />
+			<os family="unix" />
+		</and>
+	</condition>	
+		  		        
+   <condition property="expandTypeZip" value="true">
+       <equals arg1="${download.extension}" arg2="zip" />
+   </condition>   
+
+   <condition property="expandTypeTarGz" value="true">
+       <equals arg1="${download.extension}" arg2="tar.gz" />
+   </condition>   
    
   <!-- make sure the directory exists -->   
   <target name="makeLocalEclipseDropDir">
@@ -33,8 +52,8 @@
   <target name="getEclipseJar" depends="checkEclipseJar" unless="skipGetEclipseJar">
     <mkdir dir="${localEclipseDrop}/eclipse/${eclipseBuildRevision}" />    
     
-    <get usetimestamp="true" src="${eclipseURL}/${eclipseBuildRevision}/eclipse-SDK-${eclipseBuildId}-${download.extension}" 
-         dest="${localEclipseDrop}/eclipse/${eclipseBuildRevision}/eclipse-SDK-${eclipseBuildId}-${download.extension}" /> 
+    <get usetimestamp="true" src="${eclipseURL}/${eclipseBuildRevision}/eclipse-SDK-${eclipseBuildId}-${download.type}.${download.extension}" 
+         dest="${localEclipseDrop}/eclipse/${eclipseBuildRevision}/eclipse-SDK-${eclipseBuildId}-${download.type}.${download.extension}" /> 
   </target>  
   
   <target name="getTestJar" depends="checkTestJar" unless="skipGetTestJar">
@@ -68,10 +87,10 @@
     <antcall target="getGefJar" />      
   </target>
   
-  <target name="unzipEclipseJars">    
-  	<unzip dest="${base}" overwrite="true" 
-  	       src="${localEclipseDrop}/eclipse/${eclipseBuildRevision}/eclipse-SDK-${eclipseBuildId}-${download.extension}" />
-				
+  <target name="expandEclipseJars">   
+    <antcall target="unzipEclipse" />	
+    <antcall target="untarEclipse" />
+    
     <unzip dest="${base}" overwrite="true"
            src="${localEclipseDrop}/eclipse/${eclipseBuildRevision}/eclipse-test-framework-${eclipseBuildId}.zip" />   				
 				
@@ -79,17 +98,30 @@
 		       src="${localEclipseDrop}/tools/gef/${eclipseGefBuildRevision}/GEF-runtime-${eclipseBuildId}.zip" />				         
   </target>    
   
+  <target name="unzipEclipse" if="expandTypeZip">
+  	<unzip dest="${base}" overwrite="true" 
+  	       src="${localEclipseDrop}/eclipse/${eclipseBuildRevision}/eclipse-SDK-${eclipseBuildId}-${download.type}.${download.extension}" />  
+  </target>
+
+  <target name="untarEclipse" if="expandTypeTarGz">
+  	<gunzip dest="${base}" overwrite="true" 
+  	        src="${localEclipseDrop}/eclipse/${eclipseBuildRevision}/eclipse-SDK-${eclipseBuildId}-${download.type}.${download.extension}" />  
+
+  	<untar dest="${base}" overwrite="true" 
+  	       src="${localEclipseDrop}/eclipse/${eclipseBuildRevision}/eclipse-SDK-${eclipseBuildId}-${download.type}.tar" />    	         
+  </target>
+  
   <target name="checkEclipseDir">
     <available file="${base}/eclipse" property="skipUnzipEclipseJars" />
   </target>
     
   <target name="setupLocalEclipse" depends="checkLocalEclipse" unless="skipSetupLocalEcipse">  
     <antcall target="setupLocalEclipseDrop" />
-    <antcall target="unzipEclipseJars" />
+    <antcall target="expandEclipseJars" />
   </target>	
   
   <target name="checkLocalEclipse">
-      <available type="dir" file="${localEclipseDrop}/eclipse" property="skipSetupLocalEcipse" />
+      <available type="dir" file="${base}/eclipse" property="skipSetupLocalEcipse" />
   </target>
   
 </project>

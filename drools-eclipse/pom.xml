@@ -43,12 +43,12 @@
            <configuration>
              <tasks>                              
                 <property name="eclipse.home" value="target/eclipse" />             
+                
                 <property name="localEclipseDrop" value="${basedir}/local-eclipse-drop-mirror" />      
               
                 <property name="eclipse.home" value="target/eclipse" />             
-                <property name="localEclipseDrop" value="${basedir}/local-eclipse-drop-mirror" />
                 
-                <echo>Dbaseos=${baseos} -Dbasews=${basews} -Dbasearch=${basearch}</echo>                
+                <property name="localEclipseDrop" value="${basedir}/local-eclipse-drop-mirror" />                
                 
                 <delete  dir="target/eclipse.build" />
                 
@@ -141,7 +141,9 @@
                </condition>        
               
                 <property name="eclipse.home" value="target/eclipse" />             
-                <property name="localEclipseDrop" value="${basedir}/local-eclipse-drop-mirror" />                
+                <property name="localEclipseDrop" value="${basedir}/local-eclipse-drop-mirror" />
+                
+                <echo>-application org.eclipse.ant.core.antRunner -Dbaseos=${baseos} -Dbasews=${basews} -Dbasearch=${basearch} -DlocalEclipseDrop=${localEclipseDrop} -DrunTests=true -DmavenTestPhase=true</echo>
                  
                 <java jar="${eclipse.home}/startup.jar"
                       fork="true"
