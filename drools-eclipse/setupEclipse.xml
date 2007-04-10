@@ -30,10 +30,10 @@
 	</condition>		
 	
 	<condition property="download.extension" value="tar.gz">
-		<and>
+		<or>
 			<os family="mac" />
 			<os family="unix" />
-		</and>
+		</or>
 	</condition>	
 		  		        
    <condition property="expandTypeZip" value="true">
