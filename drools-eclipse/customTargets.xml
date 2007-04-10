@@ -1,5 +1,4 @@
 <project name="Build specific targets and properties" default="noDefault">
-
 	<!-- ===================================================================== -->
 	<!-- Run a given ${target} on all elements being built -->
 	<!-- Add on <ant> task for each top level element being built. -->
@@ -11,26 +10,6 @@
 	</target>
 
 	<!-- ===================================================================== -->
-	<!-- ===================================================================== -->
-	<target name="getBaseComponents" depends="checkLocalBase" unless="skipBase">
-		<get usetimestamp="true" src="${eclipseURL}/eclipse-SDK-${eclipseBuildId}-win32.zip" dest="${buildDirectory}/../eclipse-SDK-${eclipseBuildId}-win32.zip" />
-		<unzip dest="${base}" overwrite="true" src="${buildDirectory}/../eclipse-SDK-${eclipseBuildId}-win32.zip" />
-		
-		<get usetimestamp="true" src="${eclipseGefURL}/GEF-runtime-${eclipseBuildId}.zip" dest="${buildDirectory}/../GEF-runtime-${eclipseBuildId}.zip" />
-		<unzip dest="${base}" overwrite="true" src="${buildDirectory}/../GEF-runtime-${eclipseBuildId}.zip" />		
-		
-    <get usetimestamp="true" src="${eclipseURL}/eclipse-test-framework-${eclipseBuildId}.zip"
-         dest="${buildDirectory}/../eclipse-test-framework-${eclipseBuildId}.zip"/>
-         
-    <unzip dest="${base}" overwrite="true"
-           src="${buildDirectory}/../eclipse-test-framework-${eclipseBuildId}.zip" />
-           
-  </target>
-
-	<target name="checkLocalBase">
-		<available file="${baseLocation}" property="skipBase" />
-	</target>
-
 	<!-- ===================================================================== -->
 	<!-- Check out map files from correct repository -->
 	<!-- Replace values for mapsCheckoutTag as desired. -->
@@ -72,23 +51,40 @@
 	<!-- Steps to do before setup -->
 	<!-- ===================================================================== -->
 	<target name="preSetup">
+	  <echo>preSetup</echo>	  
+    <!--cleanup -->
+    <delete file="${base}/eclipse/org.drools.eclipse*.xml" />
+    <delete dir="${base}/eclipse/test-workspace"/>
+    
+    <delete dir="${base}/eclipse/features/org.drools.eclipse.feature_${jbossRulesVersion}"/>
+    <delete dir="${base}/eclipse/features/org.drools.eclipse.test-feature_${jbossRulesVersion}"/>
+    
+    <delete file="${base}/eclipse/plugins/org.drools.eclipse_${jbossRulesVersion}.jar"/>
+    <delete dir="${base}/eclipse/plugins/org.drools.eclipse.test_${jbossRulesVersion}"/>            
 	</target>
 
 	<!-- ===================================================================== -->
 	<!-- Steps to do after setup but before starting the build proper -->
 	<!-- ===================================================================== -->
-	<target name="postSetup">
-		<antcall target="getBaseComponents" />
+	<target name="postSetup">		
 		<mkdir dir="${buildDirectory}/features"/>
 		<mkdir dir="${buildDirectory}/plugins"/>
-
+		
+		<antcall target="compilePostSetup" />
+		<antcall target="testPostSetup" />
+	</target>
+	
+	<target name="compilePostSetup" if="mavenCompilePhase">
 		<copy todir="${buildDirectory}/features/org.drools.eclipse.feature">
 			<fileset dir="${builder}/drools-eclipse-feature"/>
 		</copy>
 
 		<copy todir="${buildDirectory}/plugins/org.drools.eclipse">
 				<fileset dir="${builder}/drools-eclipse-plugin"/>
-		</copy>
+		</copy>		
+	</target>
+
+	<target name="testPostSetup" if="mavenTestPhase">
 		
 		<copy todir="${buildDirectory}/features/org.drools.eclipse.test-feature">
 			<fileset dir="${builder}/drools-eclipse-test-feature"/>
@@ -97,15 +93,6 @@
 		<copy todir="${buildDirectory}/plugins/org.drools.eclipse.test">
 				<fileset dir="${builder}/drools-eclipse-test"/>
 		</copy>		
-		<!--
-		<copy todir="${buildDirectory}/features/com.ibm.eclipse.shootout.tests">
-				<fileset dir="${builder}/../com.ibm.eclipse.shootout.tests-feature"/>
-		</copy>
-
-		<copy todir="${buildDirectory}/plugins/com.ibm.eclipse.shootout.tests">
-			<fileset dir="${builder}/../com.ibm.eclipse.shootout.tests"/>
-		</copy>
-		-->
 	</target>
 
 	<!-- ===================================================================== -->
@@ -166,7 +153,8 @@
 	<!-- ===================================================================== -->
 	<!-- Steps to do after  running package. -->
 	<!-- ===================================================================== -->
-	<target name="postPackage">
+	<target name="postPackage" if="mavenCompilePhase">
+	    <copy file="${buildDirectory}/${buildLabel}/jbossrules-eclipse-${jbossRulesVersion}.zip" tofile="${base}/jbossrules-eclipse-${jbossRulesVersion}.zip" />
 	</target>
 
 	<!-- ===================================================================== -->
@@ -180,25 +168,13 @@
 	<!-- ===================================================================== -->
 	<!-- Steps to do to test the build results -->
 	<!-- ===================================================================== -->
-  <target name="test" >
-    <!--cleanup -->
-    <delete file="${base}/eclipse/org.drools.eclipse*.xml" />
-    <delete dir="${base}/eclipse/test-workspace"/>
-
-    <delete dir="${base}/eclipse/plugins/org.drools.eclipse.test_${jbossRulesVersion}"/>
-    <delete file="${base}/eclipse/plugins/org.drools.eclipse_${jbossRulesVersion}.jar" />
-  
+  <target name="test" if="runTests">  
     <unzip src="${buildDirectory}/${buildLabel}/jbossrules-eclipse-${jbossRulesVersion}.zip"
            dest="${base}/eclipse"/>
     <unzip src="${buildDirectory}/${buildLabel}/jbossrules-eclipse-test-${jbossRulesVersion}.zip" 
            dest="${base}/eclipse"/>    
-<!-- pom: no need to do that now that the drools eclipse is properly configured 
-          to be jarred in its manifest and build.properties
-    <mkdir  dir="${base}/eclipse/plugins/org.drools.eclipse.test_${jbossRulesVersion}" />
-    <unzip src="${base}/eclipse/plugins/org.drools.eclipse.test_${jbossRulesVersion}.jar"
-           dest="${base}/eclipse/plugins/org.drools.eclipse.test_${jbossRulesVersion}" />           
-    <delete file="${base}/eclipse/plugins/org.drools.eclipse.test_${jbossRulesVersion}.jar" />
--->    
+
+
     <ant antfile="${base}/eclipse/plugins/org.drools.eclipse.test_${jbossRulesVersion}/test.xml">        
       <property name="os" value="${baseos}" />
       <property name="ws" value="${basews}" />

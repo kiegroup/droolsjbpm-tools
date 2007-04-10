@@ -1,0 +1,95 @@
+<project name="Setup Local  Eclipse" default="setupLocalEclipse">   
+  
+  <property file="build.properties"/>
+
+  <property name="localEclipseDrop" value="${basedir}/local-eclipse-drop-mirror" />  
+ 
+  <!-- set the OS name, make sure each condition is mutally exclusive -->
+	<condition property="download.extension" value="win32.zip">
+		<os family="windows" />
+	</condition>
+			
+	<condition property="download.extension" value="macosx-carbon.tar.gz">
+		<and>
+			<os family="mac" />
+			<os family="unix" />
+		</and>
+	</condition>
+	
+	<condition property="download.extension" value="linux-gtk.tar.gz">
+		<and>
+			<not>
+				<os family="mac" />
+			</not>
+			<os family="unix" />
+		</and>
+	</condition>		  		  
+   
+  <!-- make sure the directory exists -->   
+  <target name="makeLocalEclipseDropDir">
+    <mkdir dir="${localEclipseDrop}" />    
+  </target>   
+   
+  <target name="getEclipseJar" depends="checkEclipseJar" unless="skipGetEclipseJar">
+    <mkdir dir="${localEclipseDrop}/eclipse/${eclipseBuildRevision}" />    
+    
+    <get usetimestamp="true" src="${eclipseURL}/${eclipseBuildRevision}/eclipse-SDK-${eclipseBuildId}-${download.extension}" 
+         dest="${localEclipseDrop}/eclipse/${eclipseBuildRevision}/eclipse-SDK-${eclipseBuildId}-${download.extension}" /> 
+  </target>  
+  
+  <target name="getTestJar" depends="checkTestJar" unless="skipGetTestJar">
+    <mkdir dir="${localEclipseDrop}/eclipse/${eclipseBuildRevision}" />    
+    <get usetimestamp="true" src="${eclipseURL}/${eclipseBuildRevision}/eclipse-test-framework-${eclipseBuildId}.zip"
+         dest="${localEclipseDrop}/eclipse/${eclipseBuildRevision}/eclipse-test-framework-${eclipseBuildId}.zip"/>    
+  </target>
+
+  <target name="getGefJar" depends="checkGefJar" unless="skipGetGefJar">
+    <mkdir dir="${localEclipseDrop}/tools/gef/${eclipseGefBuildRevision}" />    
+    <get usetimestamp="true" src="${eclipseGefURL}/${eclipseGefBuildRevision}/GEF-runtime-${eclipseBuildId}.zip" 
+         dest="${localEclipseDrop}/tools/gef/${eclipseGefBuildRevision}/GEF-runtime-${eclipseBuildId}.zip" />
+  </target>      
+
+	<target name="checkEclipseJar">	
+		<available file="${localEclipseDrop}/eclipse/${eclipseBuildRevision}/eclipse-SDK-${eclipseBuildId}-win32.zip" property="skipGetEclipseJar" />
+	</target>
+	
+	<target name="checkTestJar">	
+		<available file="${localEclipseDrop}/eclipse/${eclipseBuildRevision}/eclipse-test-framework-${eclipseBuildId}.zip" property="skipGetTestJar" />
+	</target>	
+		
+	<target name="checkGefJar">	
+		<available file="${localEclipseDrop}/tools/gef/${eclipseGefBuildRevision}/GEF-runtime-${eclipseBuildId}.zip" property="skipGetGefJar" />
+	</target>	  
+
+  <target name="setupLocalEclipseDrop"  depends="checkEclipseDir" unless="skipUnzipEclipseJars">
+    <antcall target="makeLocalEclipseDropDir" />
+    <antcall target="getEclipseJar" />
+    <antcall target="getTestJar" />    
+    <antcall target="getGefJar" />      
+  </target>
+  
+  <target name="unzipEclipseJars">    
+  	<unzip dest="${base}" overwrite="true" 
+  	       src="${localEclipseDrop}/eclipse/${eclipseBuildRevision}/eclipse-SDK-${eclipseBuildId}-${download.extension}" />
+				
+    <unzip dest="${base}" overwrite="true"
+           src="${localEclipseDrop}/eclipse/${eclipseBuildRevision}/eclipse-test-framework-${eclipseBuildId}.zip" />   				
+				
+		<unzip dest="${base}" overwrite="true" 
+		       src="${localEclipseDrop}/tools/gef/${eclipseGefBuildRevision}/GEF-runtime-${eclipseBuildId}.zip" />				         
+  </target>    
+  
+  <target name="checkEclipseDir">
+    <available file="${base}/eclipse" property="skipUnzipEclipseJars" />
+  </target>
+    
+  <target name="setupLocalEclipse" depends="checkLocalEclipse" unless="skipSetupLocalEcipse">  
+    <antcall target="setupLocalEclipseDrop" />
+    <antcall target="unzipEclipseJars" />
+  </target>	
+  
+  <target name="checkLocalEclipse">
+      <available type="dir" file="${localEclipseDrop}/eclipse" property="skipSetupLocalEcipse" />
+  </target>
+  
+</project>

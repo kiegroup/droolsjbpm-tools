@@ -1,11 +1,6 @@
 <?xml version="1.0"?>
-<project name="testsuite" default="run" basedir=".">
-  <!-- The property ${eclipse-home} should be passed into this script,
-       set a meaningful default value for when it is not. -->
-  <property name="baseLocation" location="${eclipse.home}"/>
-  <property name="eclipse-home" location="${baseLocation}"/>
-  
-  <!-- sets the properties eclipse-home, and library-file -->
+<project name="testsuite" default="run" basedir="."> 
+  <property name="eclipse-home" value="${baseLocation}"/>
   <property name="plugin-name" value="org.drools.eclipse"/>
   <property name="library-file" location="${eclipse-home}/plugins/org.eclipse.test_3.1.0/library.xml"/>
   
@@ -29,8 +24,7 @@
       <property name="data-dir" value="${test-workspace}"/>
       <property name="plugin-name" value="${plugin-name}"/>
       <property name="classname" value="org.drools.eclipse.AllTests"/>
-    </ant>       
-    
+    </ant>           
   </target>
   
   <!-- This target holds code to cleanup the testing environment after
@@ -43,9 +37,8 @@
   <!-- This target runs the test suite. Any actions that need to happen
        after all the tests have been run should go here. -->
   <target name="run" depends="init,suite,cleanup">
-    <ant target="collect" antfile="${library-file}" dir="${eclipse-home}">
-      <property name="includes" value="com*.xml"/>
-      <property name="output-file" value="${plugin-name}.xml"/>
-    </ant>
+    <copy todir="${base}/surefire-reports">
+      <fileset dir="${eclipse-home}" includes="org*.xml"/>
+    </copy>    
   </target>
 </project>

@@ -20,7 +20,7 @@
         <executions>
           <execution>
             <id>copy-dependencies</id>
-            <phase>package</phase>
+            <phase>process-resources</phase>
             <goals>
               <goal>copy-dependencies</goal>
             </goals>
@@ -38,28 +38,123 @@
        <inherited>false</inherited>
        <executions>
          <execution>
-           <id>build-plugin</id>
-           <phase>package</phase>
+           <id>compile-plugin</id>
+           <phase>compile</phase>
            <configuration>
-             <tasks>
-                 <fail message="To build the plugin you are required to set the 'eclipse.home' property."
-                       if="${eclipse.home}" />
-                 <dirname property="eclipse.home.parent" file="${eclipse.home}"/>
-                 <echo message="eclipse.home        = ${eclipse.home}"/>
-                 <echo message="eclipse.home.parent = ${eclipse.home.parent}"/>
-                 <java jar="${eclipse.home}/startup.jar"
-                       fork="true"
-                       failonerror="true"
-                       maxmemory="128m"
-                 >
-                     <arg line="-application org.eclipse.ant.core.antRunner -Dbase=${eclipse.home.parent}"/>
-                 </java>                 
+             <tasks>                              
+                <property name="eclipse.home" value="target/eclipse" />             
+                <property name="localEclipseDrop" value="${basedir}/local-eclipse-drop-mirror" />      
+              
+                <property name="eclipse.home" value="target/eclipse" />             
+                <property name="localEclipseDrop" value="${basedir}/local-eclipse-drop-mirror" />
+                
+                <echo>Dbaseos=${baseos} -Dbasews=${basews} -Dbasearch=${basearch}</echo>                
+                
+                <delete  dir="target/eclipse.build" />
+                
+                <ant target="setupLocalEclipse" antfile="setupEclipse.xml" />
+                 
+                <java jar="${eclipse.home}/startup.jar"
+                      fork="true"
+                      failonerror="true"
+                      maxmemory="128m">
+                     <arg line="-application org.eclipse.ant.core.antRunner -DlocalEclipseDrop=${localEclipseDrop} -DmavenCompilePhase=true"/>
+                </java>                 
              </tasks>
            </configuration>
            <goals>
              <goal>run</goal>
            </goals>
          </execution>
+         
+         <execution>
+           <id>test-plugin</id>
+           <phase>test</phase>
+           <configuration>
+             <tasks>            
+               <!-- Determine OS -->
+               <condition property="baseos" value="win32">
+                   <contains string="${os.name}" substring="Windows" />
+               </condition>
+             
+               <condition property="baseos" value="linux">
+                   <contains string="${os.name}" substring="Linux" />
+               </condition>
+               
+               <condition property="baseos" value="macosx">
+                   <contains string="${os.name}" substring="Mac OS X" />
+               </condition>
+               
+               <condition property="baseos" value="win32">
+                   <contains string="${os.name}" substring="Windows" />
+               </condition>        
+             
+               <condition property="baseos" value="aix">
+                   <contains string="${os.name}" substring="AIX" />
+               </condition>    
+               
+               <condition property="baseos" value="hpux">
+                   <contains string="${os.name}" substring="HP-UX" />
+               </condition> 
+               
+               <condition property="baseos" value="solaris">
+                   <contains string="${os.name}" substring="Solaris" />
+               </condition>  
+               
+               <condition property="baseos" value="qnx">
+                   <contains string="${os.name}" substring="QNX" />
+               </condition>                        
+               
+               <!-- Determine WS -->
+               <condition property="basews" value="win32">
+                   <contains string="${os.name}" substring="Windows" />
+               </condition>    
+               
+               <condition property="basews" value="gtk">
+                   <contains string="${os.name}" substring="Linux" />
+               </condition>    
+               
+               <condition property="basews" value="carbon">
+                   <contains string="${os.name}" substring="Mac OS X" />
+               </condition>        
+                   
+               <!-- Determine ARCH -->
+               <condition property="basearch" value="x86">
+                 <or>
+                   <contains string="${os.arch}" substring="i386" />
+                   <contains string="${os.arch}" substring="i686" />
+                   <contains string="${os.arch}" substring="x86" />
+                   <contains string="${os.arch}" substring="Pentium" />
+                 </or>
+               </condition>
+             
+               <condition property="basearch" value="linux">
+                   <contains string="${os.name}" substring="Linux" />
+               </condition>
+               
+               <condition property="basearch" value="ppc">
+                   <contains string="${os.name}" substring="ppc" />
+               </condition>
+               
+               <condition property="basearch" value="sparc">
+                   <contains string="${os.name}" substring="sparc" />
+               </condition>        
+              
+                <property name="eclipse.home" value="target/eclipse" />             
+                <property name="localEclipseDrop" value="${basedir}/local-eclipse-drop-mirror" />                
+                 
+                <java jar="${eclipse.home}/startup.jar"
+                      fork="true"
+                      failonerror="true"
+                      maxmemory="128m">
+                     <arg line="-application org.eclipse.ant.core.antRunner -Dbaseos=${baseos} -Dbasews=${basews} -Dbasearch=${basearch} -DlocalEclipseDrop=${localEclipseDrop} -DrunTests=true -DmavenTestPhase=true"/>
+                </java>                 
+             </tasks>
+           </configuration>
+           <goals>
+             <goal>run</goal>
+           </goals>
+         </execution>         
        </executions>
      </plugin>
     </plugins>
@@ -68,7 +163,7 @@
   <repositories>
     <repository>
       <id>basedir</id>
-      <url>file://${basedir}/../repository</url>
+      <url>file://${basedir}/../m2_repo</url>
     </repository>
   </repositories>
 

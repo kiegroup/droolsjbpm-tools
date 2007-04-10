@@ -1,5 +1,4 @@
 <project name="allElements Delegator">
-
  	<!-- ===================================================================== -->
  	<!-- Run a given ${target} on all elements being built                     -->
  	<!-- Replace element.id with the id of the top level element being built.    -->
@@ -9,15 +8,22 @@
  	<!-- Add on <ant> task for each top level element being built.             -->
  	<!-- ===================================================================== -->
  	<target name="allElementsDelegator">
+    <antcall target="org.drools.eclipse.feature"  />
+    <antcall target="org.drools.eclipse.test-feature"  />
+ 	</target>
+
+ 	<target name="org.drools.eclipse.feature" if="mavenCompilePhase">
  		<ant antfile="${genericTargets}" target="${target}">
 	 		<property name="type" value="feature" />
 	 		<property name="id" value="org.drools.eclipse.feature" />
  		</ant>
- 		
+ 	</target>
+
+ 	<target name="org.drools.eclipse.test-feature" if="mavenTestPhase">
  		<ant antfile="${genericTargets}" target="${target}">
 	 		<property name="type" value="feature" />
 	 		<property name="id" value="org.drools.eclipse.test-feature" />
- 		</ant> 		
+ 		</ant>
  	</target>
 
  	<!-- ===================================================================== -->
@@ -31,9 +37,9 @@
  		<property name="archiveName" value="${zipFile}"/>
  		<ant antfile="${assembleScriptName}" dir="${buildDirectory}"/>
  	</target>
- 	
+
  	<target name="assemble.org.drools.eclipse.test-feature">
  		<property name="archiveName" value="${testZipFile}"/>
  		<ant antfile="${assembleScriptName}" dir="${buildDirectory}"/>
- 	</target> 	
+ 	</target>
 </project>
