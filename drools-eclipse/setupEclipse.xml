@@ -104,11 +104,8 @@
   </target>
 
   <target name="untarEclipse" if="expandTypeTarGz">
-  	<gunzip dest="${base}" overwrite="true" 
-  	        src="${localEclipseDrop}/eclipse/${eclipseBuildRevision}/eclipse-SDK-${eclipseBuildId}-${download.type}.${download.extension}" />  
-
-  	<untar dest="${base}" overwrite="true" 
-  	       src="${localEclipseDrop}/eclipse/${eclipseBuildRevision}/eclipse-SDK-${eclipseBuildId}-${download.type}.tar" />    	         
+	<gunzip src="${localEclipseDrop}/eclipse/${eclipseBuildRevision}/eclipse-SDK-${eclipseBuildId}-${download.type}.tar.gz"/>
+	<untar dest="${base}" src="${localEclipseDrop}/eclipse/${eclipseBuildRevision}/eclipse-SDK-${eclipseBuildId}-${download.type}.tar" />
   </target>
   
   <target name="checkEclipseDir">
