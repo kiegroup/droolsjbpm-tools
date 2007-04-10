@@ -13,44 +13,26 @@
 
   <name>Drools :: Eclipse-Plugin</name>਍
   <build>
-    <plugins>
-     <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-dependencies</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>copy-dependencies</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>drools-eclipse-plugin/lib</outputDirectory>
-              <overWriteReleases>false</overWriteReleases>
-              <overWriteSnapshots>false</overWriteSnapshots>
-              <overWriteIfNewer>true</overWriteIfNewer>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>    
-	      <artifactId>maven-clean-plugin</artifactId>
-	      <configuration>
-	        <filesets>
-	          <fileset>
-	            <directory>./drools-eclipse-plugin/lib</directory>
-	            <includes>
-	              <include>*.jar</include>		
-	            </includes>
-	            <followSymlinks>false</followSymlinks>
-	          </fileset>
-	        </filesets>
-	      </configuration>
-	    </plugin>      
+    <plugins>    
      <plugin>
        <artifactId>maven-antrun-plugin</artifactId>
        <inherited>false</inherited>
        <executions>
+         <execution>
+           <id>clean lib</id>
+           <phase>process-resources</phase>
+           <configuration>
+             <tasks>                              
+                <delete>
+                  <fileset dir="drools-eclipse-plugin/lib" includes="**/*.jar" />
+                </delete>
+             </tasks>
+           </configuration>
+           <goals>
+             <goal>run</goal>
+           </goals>
+         </execution>       
+       
          <execution>
            <id>compile-plugin</id>
            <phase>compile</phase>
@@ -173,6 +155,26 @@
          </execution>         
        </executions>
      </plugin>
+     
+     <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>drools-eclipse-plugin/lib</outputDirectory>
+              <overWriteReleases>true</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+              <overWriteIfNewer>true</overWriteIfNewer>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>     
     </plugins>
   </build>
 
