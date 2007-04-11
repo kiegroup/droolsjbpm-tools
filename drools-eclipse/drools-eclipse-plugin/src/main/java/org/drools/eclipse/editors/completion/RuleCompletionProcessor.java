@@ -744,8 +744,8 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 				"enabled false", droolsIcon));
 		list.add(new RuleCompletionProposal(prefix.length(), "ruleflow-group",
 				"ruleflow-group \"\"", 16, droolsIcon));
-        list.add(new RuleCompletionProposal(prefix.length(), "lock-on-activate",
-                                            "lock-on-activate ", droolsIcon));        
+        list.add(new RuleCompletionProposal(prefix.length(), "lock-on-active",
+                                            "lock-on-active ", droolsIcon));        
 	}
 
 	private void addDSLProposals(final List list, final String prefix,
