@@ -14,6 +14,6 @@ public class AgendaView extends DroolsDebugEventHandlerView {
     }
     
     protected int getAutoExpandLevel() {
-    	return 2;
+    	return 1;
     }
 }

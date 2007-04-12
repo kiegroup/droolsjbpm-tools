@@ -44,6 +44,7 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
 
     private VariablesViewModelPresentation modelPresentation;
     private boolean showLogical = true;
+    private Object[] oldExpandedElements = new Object[0];
 
     public void dispose() {
 		DebugContextManager.getDefault().removeDebugContextListener(this, getSite().getWorkbenchWindow());
@@ -109,10 +110,13 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
 			return;
 		}
 
-		Object[] expandedElements = ((TreeViewer) getViewer()).getExpandedElements();
+		Object[] newExpandedElements = ((TreeViewer) getViewer()).getExpandedElements();
+		if (newExpandedElements.length != 0) {
+			oldExpandedElements = newExpandedElements;
+		}
 		getViewer().setInput(input);
 		if (input != null) {
-			((TreeViewer) getViewer()).setExpandedElements(expandedElements);
+			((TreeViewer) getViewer()).setExpandedElements(oldExpandedElements);
 			((TreeViewer) getViewer()).expandToLevel(getAutoExpandLevel());
 		}
     }

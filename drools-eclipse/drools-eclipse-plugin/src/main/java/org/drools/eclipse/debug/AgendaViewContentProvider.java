@@ -91,7 +91,7 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
             	// because the debug view does not handle spaces well, all spaces
             	// in the agenda group name are replaced with '_'s.
             	name = replaceSpaces(name);
-	            result.add(new VariableWrapper(name + "[" + (active ? "focus" : "nofocus") + "]", 
+	            result.add(new MyVariableWrapper(name + "[" + (active ? "focus" : "nofocus") + "]", 
 	            		new ObjectWrapper((IJavaObject) agendaGroup,
 	        				(IJavaVariable[]) activationsResult.toArray(new IJavaVariable[activationsResult.size()]))));
 	        }
@@ -101,5 +101,29 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
     
     private String replaceSpaces(String name) {
     	return name.replace(' ', '_');
+    }
+
+    /**
+     * Special VariableWrapper that considers variables with the same name
+     * as equal.
+     */
+    private class MyVariableWrapper extends VariableWrapper {
+    	
+    	public MyVariableWrapper(String name, IJavaValue value) {
+    		super(name, value);
+    	}
+    	
+    	public boolean equals(Object obj) {
+            if (obj instanceof VariableWrapper) {
+                VariableWrapper var = (VariableWrapper) obj;
+                return var.getName().equals(getName());
+            }
+            return false;
+        }
+
+        public int hashCode() {
+            return getName().hashCode();
+        }
+    	
     }
 }
