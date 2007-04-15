@@ -40,5 +40,7 @@
     <copy todir="${base}/surefire-reports">
       <fileset dir="${eclipse-home}" includes="org*.xml"/>
     </copy>    
+    
+    <rename src="${base}/surefire-reports/org.drools.eclipse.AllTests.xml" dest="${base}/surefire-reports/TEST-org.drools.eclipse.AllTests.xml"/>
   </target>
 </project>

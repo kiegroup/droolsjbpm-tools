@@ -9,6 +9,9 @@ import junit.framework.TestCase;
 public class DSLAdapterTest extends TestCase {
     
     public void testFindExpander() {
+        if ( true ) {
+            fail( "fail on purpose" );
+        }
         
         StringBuffer buf = largeString();
         

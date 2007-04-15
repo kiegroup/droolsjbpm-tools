@@ -24,7 +24,7 @@
            <configuration>
              <tasks>                              
                 <delete>
-                  <fileset dir="drools-eclipse-plugin/lib" includes="**/*.jar" />
+                  <fileset dir="drools-eclipse-plugin/lib" includes="**/*.jar" excludes="**/.svn" />
                 </delete>
              </tasks>
            </configuration>
