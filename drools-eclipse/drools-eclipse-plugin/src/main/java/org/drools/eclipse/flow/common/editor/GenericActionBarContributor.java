@@ -1,4 +1,5 @@
 package org.drools.eclipse.flow.common.editor;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -17,12 +18,14 @@ package org.drools.eclipse.flow.common.editor;
 
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.gef.ui.actions.ActionBarContributor;
+import org.eclipse.gef.ui.actions.AlignmentAction;
 import org.eclipse.gef.ui.actions.AlignmentRetargetAction;
 import org.eclipse.gef.ui.actions.DeleteRetargetAction;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
 import org.eclipse.gef.ui.actions.RedoRetargetAction;
 import org.eclipse.gef.ui.actions.UndoRetargetAction;
 import org.eclipse.gef.ui.actions.ZoomComboContributionItem;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.ui.actions.ActionFactory;
@@ -34,41 +37,39 @@ import org.eclipse.ui.actions.ActionFactory;
  */
 public class GenericActionBarContributor extends ActionBarContributor {
 
-	protected void buildActions() {
-		addRetargetAction(new UndoRetargetAction());
-		addRetargetAction(new RedoRetargetAction());
-		addRetargetAction(new DeleteRetargetAction());
+    protected void buildActions() {
+        addRetargetAction( new UndoRetargetAction() );
+        addRetargetAction( new RedoRetargetAction() );
+        addRetargetAction( new DeleteRetargetAction() );
 
-		addRetargetAction(new AlignmentRetargetAction(PositionConstants.LEFT));
-		addRetargetAction(new AlignmentRetargetAction(PositionConstants.CENTER));
-		addRetargetAction(new AlignmentRetargetAction(PositionConstants.RIGHT));
-		addRetargetAction(new AlignmentRetargetAction(PositionConstants.TOP));
-		addRetargetAction(new AlignmentRetargetAction(PositionConstants.MIDDLE));
-		addRetargetAction(new AlignmentRetargetAction(PositionConstants.BOTTOM));
-	}
+        addRetargetAction( new AlignmentRetargetAction( PositionConstants.LEFT ) );
+        addRetargetAction( new AlignmentRetargetAction( PositionConstants.CENTER ) );
+        addRetargetAction( new AlignmentRetargetAction( PositionConstants.RIGHT ) );
+        addRetargetAction( new AlignmentRetargetAction( PositionConstants.TOP ) );
+        addRetargetAction( new AlignmentRetargetAction( PositionConstants.MIDDLE ) );
+        addRetargetAction( new AlignmentRetargetAction( PositionConstants.BOTTOM ) );
+    }
 
-	public void contributeToToolBar(IToolBarManager toolBarManager) {
-		toolBarManager.add(getAction(ActionFactory.UNDO.getId()));
-		toolBarManager.add(getAction(ActionFactory.REDO.getId()));
-		toolBarManager.add(new Separator());
-		toolBarManager.add(new ZoomComboContributionItem(getPage()));
-		toolBarManager.add(new Separator());
-		toolBarManager.add(getActionRegistry().getAction(
-				GEFActionConstants.ALIGN_LEFT));
-		toolBarManager.add(getActionRegistry().getAction(
-				GEFActionConstants.ALIGN_CENTER));
-		toolBarManager.add(getActionRegistry().getAction(
-				GEFActionConstants.ALIGN_RIGHT));
-		toolBarManager.add(new Separator());
-		toolBarManager.add(getActionRegistry().getAction(
-				GEFActionConstants.ALIGN_TOP));
-		toolBarManager.add(getActionRegistry().getAction(
-				GEFActionConstants.ALIGN_MIDDLE));
-		toolBarManager.add(getActionRegistry().getAction(
-				GEFActionConstants.ALIGN_BOTTOM));
+    public void contributeToToolBar(IToolBarManager toolBarManager) {
+        toolBarManager.add( getAction( ActionFactory.UNDO.getId() ) );
+        toolBarManager.add( getAction( ActionFactory.REDO.getId() ) );
+        toolBarManager.add( new Separator() );
+        toolBarManager.add( new ZoomComboContributionItem( getPage() ) );
+        toolBarManager.add( new Separator() );                              
+        
+        DropDownMenuWithDefaultAction alignMenu = new DropDownMenuWithDefaultAction( getActionRegistry().getAction( GEFActionConstants.ALIGN_LEFT ) );
+        alignMenu.add( getActionRegistry().getAction( GEFActionConstants.ALIGN_LEFT ) );
+        alignMenu.add( getActionRegistry().getAction( GEFActionConstants.ALIGN_CENTER ) );
+        alignMenu.add( getActionRegistry().getAction( GEFActionConstants.ALIGN_RIGHT ) );
+        alignMenu.add( new Separator() );
+        alignMenu.add( getActionRegistry().getAction( GEFActionConstants.ALIGN_TOP ) );
+        alignMenu.add( getActionRegistry().getAction( GEFActionConstants.ALIGN_MIDDLE ) );
+        alignMenu.add( getActionRegistry().getAction( GEFActionConstants.ALIGN_BOTTOM ) );
+        toolBarManager.add( alignMenu );
 
-	}
+    }
 
-	protected void declareGlobalActionKeys() {
-	}
+    protected void declareGlobalActionKeys() {
+        
+    }
 }
