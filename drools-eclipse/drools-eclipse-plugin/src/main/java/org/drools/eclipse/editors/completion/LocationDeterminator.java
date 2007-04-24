@@ -12,7 +12,7 @@ import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.CollectDescr;
-import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
@@ -25,18 +25,18 @@ import org.drools.lang.descr.RuleDescr;
 
 public class LocationDeterminator {
 
-    static final Pattern COLUMN_PATTERN_START = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*[^\\s<>!=:]*", Pattern.DOTALL);
-    static final Pattern COLUMN_PATTERN_OPERATOR = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+", Pattern.DOTALL);
-    static final Pattern COLUMN_PATTERN_CONTAINS_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+contains\\s+[^\\s<>!=:]*", Pattern.DOTALL);
-    static final Pattern COLUMN_PATTERN_MATCHES_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+matches\\s+[^\\s<>!=:]*", Pattern.DOTALL);
-    static final Pattern COLUMN_PATTERN_EXCLUDES_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+excludes\\s+[^\\s<>!=:]*", Pattern.DOTALL);
-    static final Pattern COLUMN_PATTERN_COMPARATOR_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s*([<>=!]+)\\s*[^\\s<>!=:]*", Pattern.DOTALL);
-    static final Pattern COLUMN_PATTERN_CONTAINS_END = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+contains\\s+[^\\s<>!=:,]+\\s+", Pattern.DOTALL);
-    static final Pattern COLUMN_PATTERN_MATCHES_END = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+matches\\s+[^\\s<>!=:,]+\\s+", Pattern.DOTALL);
-    static final Pattern COLUMN_PATTERN_EXCLUDES_END = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+excludes\\s+[^\\s<>!=:,]+\\s+", Pattern.DOTALL);
-    static final Pattern COLUMN_PATTERN_COMPARATOR_END = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s*([<>=!]+)\\s*[^\\s<>!=:,]+\\s+", Pattern.DOTALL);
+    static final Pattern PATTERN_PATTERN_START = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*[^\\s<>!=:]*", Pattern.DOTALL);
+    static final Pattern PATTERN_PATTERN_OPERATOR = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+", Pattern.DOTALL);
+    static final Pattern PATTERN_PATTERN_CONTAINS_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+contains\\s+[^\\s<>!=:]*", Pattern.DOTALL);
+    static final Pattern PATTERN_PATTERN_MATCHES_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+matches\\s+[^\\s<>!=:]*", Pattern.DOTALL);
+    static final Pattern PATTERN_PATTERN_EXCLUDES_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+excludes\\s+[^\\s<>!=:]*", Pattern.DOTALL);
+    static final Pattern PATTERN_PATTERN_COMPARATOR_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s*([<>=!]+)\\s*[^\\s<>!=:]*", Pattern.DOTALL);
+    static final Pattern PATTERN_PATTERN_CONTAINS_END = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+contains\\s+[^\\s<>!=:,]+\\s+", Pattern.DOTALL);
+    static final Pattern PATTERN_PATTERN_MATCHES_END = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+matches\\s+[^\\s<>!=:,]+\\s+", Pattern.DOTALL);
+    static final Pattern PATTERN_PATTERN_EXCLUDES_END = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+excludes\\s+[^\\s<>!=:,]+\\s+", Pattern.DOTALL);
+    static final Pattern PATTERN_PATTERN_COMPARATOR_END = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s*([<>=!]+)\\s*[^\\s<>!=:,]+\\s+", Pattern.DOTALL);
 
-    static final Pattern COLUMN_PATTERN = Pattern.compile("((\\S+)\\s*:\\s*)?(\\S+)\\s*(\\(.*)", Pattern.DOTALL);
+    static final Pattern PATTERN_PATTERN = Pattern.compile("((\\S+)\\s*:\\s*)?(\\S+)\\s*(\\(.*)", Pattern.DOTALL);
     static final Pattern EXISTS_PATTERN = Pattern.compile(".*\\s+exists\\s*\\(?\\s*((\\S*)\\s*:)?\\s*\\S*", Pattern.DOTALL);
     static final Pattern NOT_PATTERN = Pattern.compile(".*\\s+not\\s*\\(?\\s*((\\S*)\\s*:)?\\s*\\S*", Pattern.DOTALL);
     static final Pattern EVAL_PATTERN = Pattern.compile(".*\\s+eval\\s*\\(\\s*([(^\\))(\\([^\\)]*\\)?)]*)", Pattern.DOTALL);
@@ -150,8 +150,8 @@ public class LocationDeterminator {
 				return new Location(LOCATION_BEGIN_OF_CONDITION);
 			}
 			return determineLocationForDescr(subDescr, backText);
-		} else if (descr instanceof ColumnDescr) {
-			ColumnDescr columnDescr = (ColumnDescr) descr;
+		} else if (descr instanceof PatternDescr) {
+			PatternDescr patternDescr = (PatternDescr) descr;
 //			int locationType;
 //			String propertyName = null;
 //			String evaluator = null;
@@ -193,16 +193,16 @@ public class LocationDeterminator {
 //			location.setProperty(LOCATION_PROPERTY_OPERATOR, evaluator); 
 //			return location;
 			// TODO: this is not completely safe, there are rare occasions where this could fail
-			Pattern pattern = Pattern.compile(".*(" + columnDescr.getObjectType() + ")\\s*\\((.*)", Pattern.DOTALL);
+			Pattern pattern = Pattern.compile(".*(" + patternDescr.getObjectType() + ")\\s*\\((.*)", Pattern.DOTALL);
 			Matcher matcher = pattern.matcher(backText);
-			String columnContents = null;
+			String patternContents = null;
 			while (matcher.find()) {
-				columnContents = "(" + matcher.group(2);
+				patternContents = "(" + matcher.group(2);
 			}
-			if (columnContents == null) {
+			if (patternContents == null) {
 				return new Location(LOCATION_BEGIN_OF_CONDITION);
 			}
-			List subDescrs = columnDescr.getDescrs();
+			List subDescrs = patternDescr.getDescrs();
 			if (subDescrs.size() > 0) {
 				Object lastDescr = subDescrs.get(subDescrs.size() - 1);
 				if (lastDescr instanceof FieldConstraintDescr) {
@@ -218,17 +218,17 @@ public class LocationDeterminator {
 							if (lastRestr.getConnective() == RestrictionConnectiveDescr.OR) {
 								connective = '|';
 							}
-							int connectiveLocation = columnContents.lastIndexOf(connective);
-							columnContents = "( " + lastFieldDescr.getFieldName() + " " + columnContents.substring(connectiveLocation + 1);
+							int connectiveLocation = patternContents.lastIndexOf(connective);
+							patternContents = "( " + lastFieldDescr.getFieldName() + " " + patternContents.substring(connectiveLocation + 1);
 						} else {
 							Location location = new Location(LOCATION_INSIDE_CONDITION_END);
-							location.setProperty(LOCATION_PROPERTY_CLASS_NAME, columnDescr.getObjectType());
+							location.setProperty(LOCATION_PROPERTY_CLASS_NAME, patternDescr.getObjectType());
 							return location;
 						}
 					}
 				}
 			}
-			return getLocationForColumn(columnContents, columnDescr.getObjectType());
+			return getLocationForPatttern(patternContents, patternDescr.getObjectType());
 		} else if (descr instanceof ExistsDescr) {
 			List subDescrs = ((ExistsDescr) descr).getDescrs();
 			if (subDescrs.size() == 0) {
@@ -343,11 +343,11 @@ public class LocationDeterminator {
 				location.setProperty(LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT, matcher.group(1));
 				return location;
 			}
-			matcher = COLUMN_PATTERN.matcher(accumulateText);
+			matcher = PATTERN_PATTERN.matcher(accumulateText);
 			if (matcher.matches()) {
 				String className = matcher.group(3);
-				String columnContents = matcher.group(4);
-				return getLocationForColumn(columnContents, className);
+				String patternContents = matcher.group(4);
+				return getLocationForPatttern(patternContents, className);
 			}
 			return new Location(LOCATION_FROM_ACCUMULATE);
 		} else if (descr instanceof CollectDescr) {
@@ -357,11 +357,11 @@ public class LocationDeterminator {
 				end = matcher.end();
 			}
 			String collectText = backText.substring(end);
-			matcher = COLUMN_PATTERN.matcher(collectText);
+			matcher = PATTERN_PATTERN.matcher(collectText);
 			if (matcher.matches()) {
 				String className = matcher.group(3);
 				String columnContents = matcher.group(4);
-				return getLocationForColumn(columnContents, className);
+				return getLocationForPatttern(columnContents, className);
 			}
 			return new Location(LOCATION_FROM_COLLECT);
 		} else if (descr instanceof EvalDescr) {
@@ -381,7 +381,7 @@ public class LocationDeterminator {
 		if (descr == null) {
 			return false;
 		}
-		if (descr instanceof ColumnDescr) {
+		if (descr instanceof PatternDescr) {
 			return descr.getEndCharacter() != -1;
 		} else if (descr instanceof ExistsDescr) {
 			List descrs = ((ExistsDescr) descr).getDescrs();
@@ -427,15 +427,15 @@ public class LocationDeterminator {
 //		return false;
 	}
 	
-	private static Location getLocationForColumn(String columnContents, String className) {
-		Matcher matcher = COLUMN_PATTERN_OPERATOR.matcher(columnContents);
+	private static Location getLocationForPatttern(String patternContents, String className) {
+		Matcher matcher = PATTERN_PATTERN_OPERATOR.matcher(patternContents);
         if (matcher.matches()) {
 			Location location = new Location(LOCATION_INSIDE_CONDITION_OPERATOR);
 			location.setProperty(LOCATION_PROPERTY_CLASS_NAME, className);
 			location.setProperty(LOCATION_PROPERTY_PROPERTY_NAME, matcher.group(3));
 			return location;
         }
-        matcher = COLUMN_PATTERN_COMPARATOR_ARGUMENT.matcher(columnContents);
+        matcher = PATTERN_PATTERN_COMPARATOR_ARGUMENT.matcher(patternContents);
         if (matcher.matches()) {
 			Location location = new Location(LOCATION_INSIDE_CONDITION_ARGUMENT);
 			location.setProperty(LOCATION_PROPERTY_CLASS_NAME, className);
@@ -443,7 +443,7 @@ public class LocationDeterminator {
 			location.setProperty(LOCATION_PROPERTY_OPERATOR, matcher.group(4));
 			return location;
         }
-        matcher = COLUMN_PATTERN_CONTAINS_ARGUMENT.matcher(columnContents);
+        matcher = PATTERN_PATTERN_CONTAINS_ARGUMENT.matcher(patternContents);
         if (matcher.matches()) {
 			Location location = new Location(LOCATION_INSIDE_CONDITION_ARGUMENT);
 			location.setProperty(LOCATION_PROPERTY_CLASS_NAME, className);
@@ -451,7 +451,7 @@ public class LocationDeterminator {
 			location.setProperty(LOCATION_PROPERTY_OPERATOR, "contains");
 			return location;
         }
-        matcher = COLUMN_PATTERN_EXCLUDES_ARGUMENT.matcher(columnContents);
+        matcher = PATTERN_PATTERN_EXCLUDES_ARGUMENT.matcher(patternContents);
         if (matcher.matches()) {
 			Location location = new Location(LOCATION_INSIDE_CONDITION_ARGUMENT);
 			location.setProperty(LOCATION_PROPERTY_CLASS_NAME, className);
@@ -459,7 +459,7 @@ public class LocationDeterminator {
 			location.setProperty(LOCATION_PROPERTY_OPERATOR, "excludes");
 			return location;
         }
-        matcher = COLUMN_PATTERN_MATCHES_ARGUMENT.matcher(columnContents);
+        matcher = PATTERN_PATTERN_MATCHES_ARGUMENT.matcher(patternContents);
         if (matcher.matches()) {
 			Location location = new Location(LOCATION_INSIDE_CONDITION_ARGUMENT);
 			location.setProperty(LOCATION_PROPERTY_CLASS_NAME, className);
@@ -467,31 +467,31 @@ public class LocationDeterminator {
 			location.setProperty(LOCATION_PROPERTY_OPERATOR, "matches");
 			return location;
         }
-        matcher = COLUMN_PATTERN_CONTAINS_END.matcher(columnContents);
+        matcher = PATTERN_PATTERN_CONTAINS_END.matcher(patternContents);
         if (matcher.matches()) {
 			Location location = new Location(LOCATION_INSIDE_CONDITION_END);
 			location.setProperty(LOCATION_PROPERTY_CLASS_NAME, className);
 			return location;
         }
-        matcher = COLUMN_PATTERN_MATCHES_END.matcher(columnContents);
+        matcher = PATTERN_PATTERN_MATCHES_END.matcher(patternContents);
         if (matcher.matches()) {
 			Location location = new Location(LOCATION_INSIDE_CONDITION_END);
 			location.setProperty(LOCATION_PROPERTY_CLASS_NAME, className);
 			return location;
         }
-        matcher = COLUMN_PATTERN_EXCLUDES_END.matcher(columnContents);
+        matcher = PATTERN_PATTERN_EXCLUDES_END.matcher(patternContents);
         if (matcher.matches()) {
 			Location location = new Location(LOCATION_INSIDE_CONDITION_END);
 			location.setProperty(LOCATION_PROPERTY_CLASS_NAME, className);
 			return location;
         }
-        matcher = COLUMN_PATTERN_COMPARATOR_END.matcher(columnContents);
+        matcher = PATTERN_PATTERN_COMPARATOR_END.matcher(patternContents);
         if (matcher.matches()) {
 			Location location = new Location(LOCATION_INSIDE_CONDITION_END);
 			location.setProperty(LOCATION_PROPERTY_CLASS_NAME, className);
 			return location;
         }
-		matcher = COLUMN_PATTERN_START.matcher(columnContents);
+		matcher = PATTERN_PATTERN_START.matcher(patternContents);
         if (matcher.matches()) {
 			Location location = new Location(LOCATION_INSIDE_CONDITION_START);
 			location.setProperty(LOCATION_PROPERTY_CLASS_NAME, className);

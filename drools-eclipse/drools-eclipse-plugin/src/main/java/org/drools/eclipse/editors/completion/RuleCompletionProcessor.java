@@ -24,7 +24,7 @@ import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FieldBindingDescr;
@@ -675,13 +675,13 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		if (descr == null) {
 			return;
 		}
-		if (descr instanceof ColumnDescr) {
-			String name = ((ColumnDescr) descr).getIdentifier();
+		if (descr instanceof PatternDescr) {
+			String name = ((PatternDescr) descr).getIdentifier();
 			if (name != null) {
-				result.put(name, ((ColumnDescr) descr).getObjectType());
+				result.put(name, ((PatternDescr) descr).getObjectType());
 			}
-			getRuleSubParameters(result, ((ColumnDescr) descr).getDescrs(),
-					((ColumnDescr) descr).getObjectType());
+			getRuleSubParameters(result, ((PatternDescr) descr).getDescrs(),
+					((PatternDescr) descr).getObjectType());
 		} else if (descr instanceof AndDescr) {
 			getRuleParameters(result, ((AndDescr) descr).getDescrs());
 		} else if (descr instanceof OrDescr) {
@@ -691,12 +691,12 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		} else if (descr instanceof NotDescr) {
 			getRuleParameters(result, ((NotDescr) descr).getDescrs());
 		} else if (descr instanceof FromDescr) {
-			getRuleParameters(result, ((FromDescr) descr).getReturnedColumn());
+			getRuleParameters(result, ((FromDescr) descr).getReturnedPattern());
 		} else if (descr instanceof AccumulateDescr) {
 			AccumulateDescr accumulateDescr = (AccumulateDescr) descr;
-			getRuleParameters(result, accumulateDescr.getResultColumn());
-			if (accumulateDescr.getSourceColumn() != null) {
-				getRuleParameters(result, accumulateDescr.getSourceColumn());
+			getRuleParameters(result, accumulateDescr.getResultPattern());
+			if (accumulateDescr.getSourcePattern() != null) {
+				getRuleParameters(result, accumulateDescr.getSourcePattern());
 			}
 		}
 
