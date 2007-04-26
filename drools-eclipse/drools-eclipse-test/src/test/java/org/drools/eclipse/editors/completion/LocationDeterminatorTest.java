@@ -12,47 +12,47 @@ import junit.framework.TestCase;
 public class LocationDeterminatorTest extends TestCase {
 
     public void testColumnOperatorPattern() {
-    	assertTrue(LocationDeterminator.COLUMN_PATTERN_OPERATOR.matcher("( property ").matches());
-    	assertTrue(LocationDeterminator.COLUMN_PATTERN_OPERATOR.matcher("(    property ").matches());
-    	assertTrue(LocationDeterminator.COLUMN_PATTERN_OPERATOR.matcher("( property   ").matches());
-    	assertTrue(LocationDeterminator.COLUMN_PATTERN_OPERATOR.matcher("( name : property ").matches());
-    	assertTrue(LocationDeterminator.COLUMN_PATTERN_OPERATOR.matcher("(name:property ").matches());
-    	assertTrue(LocationDeterminator.COLUMN_PATTERN_OPERATOR.matcher("(    name:property ").matches());
-    	assertTrue(LocationDeterminator.COLUMN_PATTERN_OPERATOR.matcher("( name:property   ").matches());
-    	assertTrue(LocationDeterminator.COLUMN_PATTERN_OPERATOR.matcher("(   name  :  property  ").matches());
-    	assertTrue(LocationDeterminator.COLUMN_PATTERN_OPERATOR.matcher("( property1 == \"value\", property2 ").matches());
-    	assertTrue(LocationDeterminator.COLUMN_PATTERN_OPERATOR.matcher("( property1 == \"value\", name : property2 ").matches());
-    	assertTrue(LocationDeterminator.COLUMN_PATTERN_OPERATOR.matcher("( property1 == \"value\", name:property2 ").matches());
-    	assertTrue(LocationDeterminator.COLUMN_PATTERN_OPERATOR.matcher("( property1 == \"value\",   name  :  property2  ").matches());
-    	assertFalse(LocationDeterminator.COLUMN_PATTERN_OPERATOR.matcher("( prop").matches());
-    	assertFalse(LocationDeterminator.COLUMN_PATTERN_OPERATOR.matcher("(prop").matches());
-    	assertFalse(LocationDeterminator.COLUMN_PATTERN_OPERATOR.matcher("(    prop").matches());
-    	assertFalse(LocationDeterminator.COLUMN_PATTERN_OPERATOR.matcher("( name:prop").matches());
-    	assertFalse(LocationDeterminator.COLUMN_PATTERN_OPERATOR.matcher("(name:prop").matches());
-    	assertFalse(LocationDeterminator.COLUMN_PATTERN_OPERATOR.matcher("( name : prop").matches());
-    	assertFalse(LocationDeterminator.COLUMN_PATTERN_OPERATOR.matcher("(   name  :  prop").matches());
-    	assertFalse(LocationDeterminator.COLUMN_PATTERN_OPERATOR.matcher("( property <= ").matches());
-    	assertFalse(LocationDeterminator.COLUMN_PATTERN_OPERATOR.matcher("( name : property == ").matches());
-    	assertFalse(LocationDeterminator.COLUMN_PATTERN_OPERATOR.matcher("(property==").matches());
-    	assertFalse(LocationDeterminator.COLUMN_PATTERN_OPERATOR.matcher("( property contains ").matches());
-    	assertFalse(LocationDeterminator.COLUMN_PATTERN_OPERATOR.matcher("( property1 == \"value\", property2 >= ").matches());
+    	assertTrue(LocationDeterminator.PATTERN_PATTERN_OPERATOR.matcher("( property ").matches());
+    	assertTrue(LocationDeterminator.PATTERN_PATTERN_OPERATOR.matcher("(    property ").matches());
+    	assertTrue(LocationDeterminator.PATTERN_PATTERN_OPERATOR.matcher("( property   ").matches());
+    	assertTrue(LocationDeterminator.PATTERN_PATTERN_OPERATOR.matcher("( name : property ").matches());
+    	assertTrue(LocationDeterminator.PATTERN_PATTERN_OPERATOR.matcher("(name:property ").matches());
+    	assertTrue(LocationDeterminator.PATTERN_PATTERN_OPERATOR.matcher("(    name:property ").matches());
+    	assertTrue(LocationDeterminator.PATTERN_PATTERN_OPERATOR.matcher("( name:property   ").matches());
+    	assertTrue(LocationDeterminator.PATTERN_PATTERN_OPERATOR.matcher("(   name  :  property  ").matches());
+    	assertTrue(LocationDeterminator.PATTERN_PATTERN_OPERATOR.matcher("( property1 == \"value\", property2 ").matches());
+    	assertTrue(LocationDeterminator.PATTERN_PATTERN_OPERATOR.matcher("( property1 == \"value\", name : property2 ").matches());
+    	assertTrue(LocationDeterminator.PATTERN_PATTERN_OPERATOR.matcher("( property1 == \"value\", name:property2 ").matches());
+    	assertTrue(LocationDeterminator.PATTERN_PATTERN_OPERATOR.matcher("( property1 == \"value\",   name  :  property2  ").matches());
+    	assertFalse(LocationDeterminator.PATTERN_PATTERN_OPERATOR.matcher("( prop").matches());
+    	assertFalse(LocationDeterminator.PATTERN_PATTERN_OPERATOR.matcher("(prop").matches());
+    	assertFalse(LocationDeterminator.PATTERN_PATTERN_OPERATOR.matcher("(    prop").matches());
+    	assertFalse(LocationDeterminator.PATTERN_PATTERN_OPERATOR.matcher("( name:prop").matches());
+    	assertFalse(LocationDeterminator.PATTERN_PATTERN_OPERATOR.matcher("(name:prop").matches());
+    	assertFalse(LocationDeterminator.PATTERN_PATTERN_OPERATOR.matcher("( name : prop").matches());
+    	assertFalse(LocationDeterminator.PATTERN_PATTERN_OPERATOR.matcher("(   name  :  prop").matches());
+    	assertFalse(LocationDeterminator.PATTERN_PATTERN_OPERATOR.matcher("( property <= ").matches());
+    	assertFalse(LocationDeterminator.PATTERN_PATTERN_OPERATOR.matcher("( name : property == ").matches());
+    	assertFalse(LocationDeterminator.PATTERN_PATTERN_OPERATOR.matcher("(property==").matches());
+    	assertFalse(LocationDeterminator.PATTERN_PATTERN_OPERATOR.matcher("( property contains ").matches());
+    	assertFalse(LocationDeterminator.PATTERN_PATTERN_OPERATOR.matcher("( property1 == \"value\", property2 >= ").matches());
     }
 
     public void testColumnArgumentPattern() {
-    	assertTrue(LocationDeterminator.COLUMN_PATTERN_COMPARATOR_ARGUMENT.matcher("( property == ").matches());
-    	assertTrue(LocationDeterminator.COLUMN_PATTERN_COMPARATOR_ARGUMENT.matcher("( property >= ").matches());
-    	assertTrue(LocationDeterminator.COLUMN_PATTERN_COMPARATOR_ARGUMENT.matcher("(property== ").matches());
-    	assertTrue(LocationDeterminator.COLUMN_PATTERN_COMPARATOR_ARGUMENT.matcher("(   property   ==   ").matches());
-    	assertTrue(LocationDeterminator.COLUMN_PATTERN_COMPARATOR_ARGUMENT.matcher("( name : property == ").matches());
-    	assertTrue(LocationDeterminator.COLUMN_PATTERN_COMPARATOR_ARGUMENT.matcher("(name:property== ").matches());
-    	assertTrue(LocationDeterminator.COLUMN_PATTERN_COMPARATOR_ARGUMENT.matcher("(  name  :  property  ==  ").matches());
-    	assertTrue(LocationDeterminator.COLUMN_PATTERN_COMPARATOR_ARGUMENT.matcher("( property1 == \"value\", property2 == ").matches());
-    	assertTrue(LocationDeterminator.COLUMN_PATTERN_COMPARATOR_ARGUMENT.matcher("( property1 == \"value\",property2== ").matches());
-    	assertTrue(LocationDeterminator.COLUMN_PATTERN_COMPARATOR_ARGUMENT.matcher("( property1 == \"value\",  property2  ==  ").matches());
-    	assertTrue(LocationDeterminator.COLUMN_PATTERN_COMPARATOR_ARGUMENT.matcher("( property == otherProp").matches());
-    	assertTrue(LocationDeterminator.COLUMN_PATTERN_COMPARATOR_ARGUMENT.matcher("(property==otherProp").matches());
-    	assertTrue(LocationDeterminator.COLUMN_PATTERN_CONTAINS_ARGUMENT.matcher("( property contains ").matches());
-    	assertTrue(LocationDeterminator.COLUMN_PATTERN_EXCLUDES_ARGUMENT.matcher("(   property   excludes   ").matches());
+    	assertTrue(LocationDeterminator.PATTERN_PATTERN_COMPARATOR_ARGUMENT.matcher("( property == ").matches());
+    	assertTrue(LocationDeterminator.PATTERN_PATTERN_COMPARATOR_ARGUMENT.matcher("( property >= ").matches());
+    	assertTrue(LocationDeterminator.PATTERN_PATTERN_COMPARATOR_ARGUMENT.matcher("(property== ").matches());
+    	assertTrue(LocationDeterminator.PATTERN_PATTERN_COMPARATOR_ARGUMENT.matcher("(   property   ==   ").matches());
+    	assertTrue(LocationDeterminator.PATTERN_PATTERN_COMPARATOR_ARGUMENT.matcher("( name : property == ").matches());
+    	assertTrue(LocationDeterminator.PATTERN_PATTERN_COMPARATOR_ARGUMENT.matcher("(name:property== ").matches());
+    	assertTrue(LocationDeterminator.PATTERN_PATTERN_COMPARATOR_ARGUMENT.matcher("(  name  :  property  ==  ").matches());
+    	assertTrue(LocationDeterminator.PATTERN_PATTERN_COMPARATOR_ARGUMENT.matcher("( property1 == \"value\", property2 == ").matches());
+    	assertTrue(LocationDeterminator.PATTERN_PATTERN_COMPARATOR_ARGUMENT.matcher("( property1 == \"value\",property2== ").matches());
+    	assertTrue(LocationDeterminator.PATTERN_PATTERN_COMPARATOR_ARGUMENT.matcher("( property1 == \"value\",  property2  ==  ").matches());
+    	assertTrue(LocationDeterminator.PATTERN_PATTERN_COMPARATOR_ARGUMENT.matcher("( property == otherProp").matches());
+    	assertTrue(LocationDeterminator.PATTERN_PATTERN_COMPARATOR_ARGUMENT.matcher("(property==otherProp").matches());
+    	assertTrue(LocationDeterminator.PATTERN_PATTERN_CONTAINS_ARGUMENT.matcher("( property contains ").matches());
+    	assertTrue(LocationDeterminator.PATTERN_PATTERN_EXCLUDES_ARGUMENT.matcher("(   property   excludes   ").matches());
     }
     
     public void testCheckLocationDetermination() {

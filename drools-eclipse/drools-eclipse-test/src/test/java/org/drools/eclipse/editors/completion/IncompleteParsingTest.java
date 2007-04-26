@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
-import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
@@ -59,7 +59,7 @@ public class IncompleteParsingTest extends TestCase {
          * This is how the parsed tree should look like:
          * 
          * RuleDescr
-         *   ColumnDescr [objectType = "Class"]
+         *   PatternDescr [objectType = "Class"]
          *     FieldConstraintDescr [fieldName = "condition"]
          *       LiteralRestrictionDescr [evaluator = "==", text = "true"]
          */
@@ -70,15 +70,15 @@ public class IncompleteParsingTest extends TestCase {
         	"    ";
         rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        ColumnDescr column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-        assertEquals("Class", column.getObjectType());
-        assertTrue(column.getEndLine() != -1 || column.getEndColumn() != -1);
-        assertEquals(1, column.getDescrs().size());
-        assertEquals(input.indexOf( "Class" ), column.getStartCharacter());
-        assertEquals(input.indexOf( "(" ), column.getLeftParentCharacter());
-        assertEquals(input.indexOf( ")" ), column.getRightParentCharacter());
-        assertEquals(input.indexOf( ")" ), column.getEndCharacter());
-        FieldConstraintDescr field = (FieldConstraintDescr) column.getDescrs().get(0);
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", pattern.getObjectType());
+        assertTrue(pattern.getEndLine() != -1 || pattern.getEndColumn() != -1);
+        assertEquals(1, pattern.getDescrs().size());
+        assertEquals(input.indexOf( "Class" ), pattern.getStartCharacter());
+        assertEquals(input.indexOf( "(" ), pattern.getLeftParentCharacter());
+        assertEquals(input.indexOf( ")" ), pattern.getRightParentCharacter());
+        assertEquals(input.indexOf( ")" ), pattern.getEndCharacter());
+        FieldConstraintDescr field = (FieldConstraintDescr) pattern.getDescrs().get(0);
         assertEquals("condition", field.getFieldName());
         assertEquals(1, field.getRestrictions().size());
         LiteralRestrictionDescr restriction = (LiteralRestrictionDescr) field.getRestrictions().get(0);
@@ -92,8 +92,8 @@ public class IncompleteParsingTest extends TestCase {
 	    	"    ";
         rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-        assertTrue(column.getEndCharacter() != -1);
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        assertTrue(pattern.getEndCharacter() != -1);
 
         input = 
 	    	"rule MyRule \n" +
@@ -109,8 +109,8 @@ public class IncompleteParsingTest extends TestCase {
 	    	"    Cl";
         rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-        assertTrue(column.getEndCharacter() != -1);
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        assertTrue(pattern.getEndCharacter() != -1);
 
         input = 
 			"rule MyRule \n" +
@@ -118,16 +118,16 @@ public class IncompleteParsingTest extends TestCase {
 			"    class:";
         rule = parseRuleString(input);
         // KRISV: at this point we don't know if the variable will be bound to a 
-        // simple column, or a FROM result column, or ACCUMULATE result column, etc.
-        // I tried to set a simple column as default, and changing in case it ends up
+        // simple pattern, or a FROM result pattern, or ACCUMULATE result pattern, etc.
+        // I tried to set a simple pattern as default, and changing in case it ends up
         // another thing, but the code is really a hack and made the parser a lot more
         // complex... can we leave as it is for now?
         // 
         // assertEquals(1, rule.getLhs().getDescrs().size());
-        // column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-        // assertEquals("class", column.getIdentifier());
-        // assertNull(column.getObjectType());
-        // assertEquals(-1, column.getEndCharacter());
+        // pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        // assertEquals("class", pattern.getIdentifier());
+        // assertNull(pattern.getObjectType());
+        // assertEquals(-1, pattern.getEndCharacter());
         assertEquals(0, rule.getLhs().getDescrs().size());
 
         input = 
@@ -136,12 +136,12 @@ public class IncompleteParsingTest extends TestCase {
 			"    class: Cl";
         rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-        assertEquals("class", column.getIdentifier());
-        assertEquals("Cl", column.getObjectType());
-        assertTrue(column.getEndLine() == -1 && column.getEndColumn() == -1);
-        assertEquals(0, column.getDescrs().size());
-        assertEquals(-1, column.getEndCharacter());
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("class", pattern.getIdentifier());
+        assertEquals("Cl", pattern.getObjectType());
+        assertTrue(pattern.getEndLine() == -1 && pattern.getEndColumn() == -1);
+        assertEquals(0, pattern.getDescrs().size());
+        assertEquals(-1, pattern.getEndCharacter());
 
         input = 
 			"rule MyRule \n" +
@@ -149,12 +149,12 @@ public class IncompleteParsingTest extends TestCase {
 			"    class:Cl";
         rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-        assertEquals("class", column.getIdentifier());
-        assertEquals("Cl", column.getObjectType());
-        assertTrue(column.getEndLine() == -1 && column.getEndColumn() == -1);
-        assertEquals(0, column.getDescrs().size());
-        assertEquals(-1, column.getEndCharacter());
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("class", pattern.getIdentifier());
+        assertEquals("Cl", pattern.getObjectType());
+        assertTrue(pattern.getEndLine() == -1 && pattern.getEndColumn() == -1);
+        assertEquals(0, pattern.getDescrs().size());
+        assertEquals(-1, pattern.getEndCharacter());
 
         /** Inside of condition: start */
         input = 
@@ -163,11 +163,11 @@ public class IncompleteParsingTest extends TestCase {
 			"    Class (";
         rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-        assertEquals("Class", column.getObjectType());
-        assertTrue(column.getEndLine() == -1 && column.getEndColumn() == -1);
-        assertEquals(0, column.getDescrs().size());
-        assertEquals(-1, column.getEndCharacter());
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", pattern.getObjectType());
+        assertTrue(pattern.getEndLine() == -1 && pattern.getEndColumn() == -1);
+        assertEquals(0, pattern.getDescrs().size());
+        assertEquals(-1, pattern.getEndCharacter());
 
         input = 
         	"rule MyRule \n" + 
@@ -175,11 +175,11 @@ public class IncompleteParsingTest extends TestCase {
         	"		Class ( na";
         rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-        assertEquals("Class", column.getObjectType());
-        assertEquals(-1, column.getEndCharacter());
-        assertEquals(1, column.getDescrs().size());
-        field = (FieldConstraintDescr) column.getDescrs().get(0); 
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", pattern.getObjectType());
+        assertEquals(-1, pattern.getEndCharacter());
+        assertEquals(1, pattern.getDescrs().size());
+        field = (FieldConstraintDescr) pattern.getDescrs().get(0); 
         assertEquals( "na", field.getFieldName() );
         assertEquals(-1, field.getEndCharacter());
 
@@ -189,11 +189,11 @@ public class IncompleteParsingTest extends TestCase {
         	"		Class ( condition == true, ";
         rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-        assertEquals("Class", column.getObjectType());
-        assertEquals(-1, column.getEndCharacter());
-        assertEquals(1, column.getDescrs().size());
-        field = (FieldConstraintDescr) column.getDescrs().get(0); 
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", pattern.getObjectType());
+        assertEquals(-1, pattern.getEndCharacter());
+        assertEquals(1, pattern.getDescrs().size());
+        field = (FieldConstraintDescr) pattern.getDescrs().get(0); 
         assertEquals(-1, field.getEndCharacter());
 
         input = 
@@ -202,14 +202,14 @@ public class IncompleteParsingTest extends TestCase {
         	"		Class ( condition == true, na";
         rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-        assertEquals("Class", column.getObjectType());
-        assertEquals(-1, column.getEndCharacter());
-        assertEquals(2, column.getDescrs().size());
-        field = (FieldConstraintDescr) column.getDescrs().get(0); 
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", pattern.getObjectType());
+        assertEquals(-1, pattern.getEndCharacter());
+        assertEquals(2, pattern.getDescrs().size());
+        field = (FieldConstraintDescr) pattern.getDescrs().get(0); 
         assertEquals(-1, field.getEndCharacter());
         assertEquals( "condition", field.getFieldName() );
-        field = (FieldConstraintDescr) column.getDescrs().get(1);
+        field = (FieldConstraintDescr) pattern.getDescrs().get(1);
         assertEquals( "na", field.getFieldName() );
         assertEquals(-1, field.getEndCharacter());
 
@@ -219,11 +219,11 @@ public class IncompleteParsingTest extends TestCase {
         	"		Class ( name:";
         rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-        assertEquals("Class", column.getObjectType());
-        assertEquals(-1, column.getEndCharacter());
-        assertEquals(1, column.getDescrs().size());
-        FieldBindingDescr binding1 = (FieldBindingDescr) column.getDescrs().get(0);
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", pattern.getObjectType());
+        assertEquals(-1, pattern.getEndCharacter());
+        assertEquals(1, pattern.getDescrs().size());
+        FieldBindingDescr binding1 = (FieldBindingDescr) pattern.getDescrs().get(0);
         assertEquals("name", binding1.getIdentifier());
         assertNull(binding1.getFieldName());
         
@@ -233,11 +233,11 @@ public class IncompleteParsingTest extends TestCase {
         	"		Class ( property ";
         rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-        assertEquals("Class", column.getObjectType());
-        assertEquals(-1, column.getEndCharacter());
-        assertEquals(1, column.getDescrs().size());
-        field = (FieldConstraintDescr) column.getDescrs().get(0);
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", pattern.getObjectType());
+        assertEquals(-1, pattern.getEndCharacter());
+        assertEquals(1, pattern.getDescrs().size());
+        field = (FieldConstraintDescr) pattern.getDescrs().get(0);
         assertEquals("property", field.getFieldName());
         assertEquals(0, field.getRestrictions().size());
         assertEquals(-1, field.getEndCharacter());
@@ -248,11 +248,11 @@ public class IncompleteParsingTest extends TestCase {
         	"		Class ( name: property ";
         rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-        assertEquals("Class", column.getObjectType());
-        assertEquals(-1, column.getEndCharacter());
-        assertEquals(1, column.getDescrs().size());
-        FieldBindingDescr binding = (FieldBindingDescr) column.getDescrs().get(0);
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", pattern.getObjectType());
+        assertEquals(-1, pattern.getEndCharacter());
+        assertEquals(1, pattern.getDescrs().size());
+        FieldBindingDescr binding = (FieldBindingDescr) pattern.getDescrs().get(0);
         assertEquals("name", binding.getIdentifier());
         assertEquals("property", binding.getFieldName());
         
@@ -262,20 +262,20 @@ public class IncompleteParsingTest extends TestCase {
         	"		Class ( name1: property1 == \"value1\", name2: property2 ";
         rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-        assertEquals("Class", column.getObjectType());
-        assertEquals(-1, column.getEndCharacter());
-        assertEquals(3, column.getDescrs().size());
-        binding = (FieldBindingDescr) column.getDescrs().get(0);
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", pattern.getObjectType());
+        assertEquals(-1, pattern.getEndCharacter());
+        assertEquals(3, pattern.getDescrs().size());
+        binding = (FieldBindingDescr) pattern.getDescrs().get(0);
         assertEquals("name1", binding.getIdentifier());
         assertEquals("property1", binding.getFieldName());
-        field = (FieldConstraintDescr) column.getDescrs().get(1);
+        field = (FieldConstraintDescr) pattern.getDescrs().get(1);
         assertEquals("property1", field.getFieldName());
         assertEquals(1, field.getRestrictions().size());
         LiteralRestrictionDescr literal = (LiteralRestrictionDescr) field.getRestrictions().get(0);
         assertEquals("==", literal.getEvaluator());
         assertEquals("value1", literal.getText());
-        binding = (FieldBindingDescr) column.getDescrs().get(2);
+        binding = (FieldBindingDescr) pattern.getDescrs().get(2);
         assertEquals("name2", binding.getIdentifier());
         assertEquals("property2", binding.getFieldName());
         
@@ -285,14 +285,14 @@ public class IncompleteParsingTest extends TestCase {
         	"		Class(name:property==";
         rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-        assertEquals("Class", column.getObjectType());
-        assertEquals(-1, column.getEndCharacter());
-        assertEquals(2, column.getDescrs().size());
-        binding = (FieldBindingDescr) column.getDescrs().get(0);
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", pattern.getObjectType());
+        assertEquals(-1, pattern.getEndCharacter());
+        assertEquals(2, pattern.getDescrs().size());
+        binding = (FieldBindingDescr) pattern.getDescrs().get(0);
         assertEquals("name", binding.getIdentifier());
         assertEquals("property", binding.getFieldName());
-        field = (FieldConstraintDescr) column.getDescrs().get(1);
+        field = (FieldConstraintDescr) pattern.getDescrs().get(1);
         assertEquals("property", field.getFieldName());
         assertEquals(1, field.getRestrictions().size());
         // KRISV: you are right
@@ -312,11 +312,11 @@ public class IncompleteParsingTest extends TestCase {
         	"		Class( property == otherPropertyN";
         rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-        assertEquals("Class", column.getObjectType());
-        assertEquals(-1, column.getEndCharacter());
-        assertEquals(1, column.getDescrs().size());
-        field = (FieldConstraintDescr) column.getDescrs().get(0);
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", pattern.getObjectType());
+        assertEquals(-1, pattern.getEndCharacter());
+        assertEquals(1, pattern.getDescrs().size());
+        field = (FieldConstraintDescr) pattern.getDescrs().get(0);
         assertEquals("property", field.getFieldName());
         assertEquals(1, field.getRestrictions().size());
         VariableRestrictionDescr variable = (VariableRestrictionDescr) field.getRestrictions().get(0);
@@ -330,11 +330,11 @@ public class IncompleteParsingTest extends TestCase {
         	"		Class( property == \"someth";
         rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-        assertEquals("Class", column.getObjectType());
-        assertEquals(-1, column.getEndCharacter());
-        assertEquals(1, column.getDescrs().size());
-        field = (FieldConstraintDescr) column.getDescrs().get(0);
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", pattern.getObjectType());
+        assertEquals(-1, pattern.getEndCharacter());
+        assertEquals(1, pattern.getDescrs().size());
+        field = (FieldConstraintDescr) pattern.getDescrs().get(0);
         assertEquals("property", field.getFieldName());
         assertEquals(1, field.getRestrictions().size());
         literal = (LiteralRestrictionDescr) field.getRestrictions().get(0);
@@ -354,11 +354,11 @@ public class IncompleteParsingTest extends TestCase {
         	"		Class( property contains ";
         rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-        assertEquals("Class", column.getObjectType());
-        assertEquals(-1, column.getEndCharacter());
-        assertEquals(1, column.getDescrs().size());
-        field = (FieldConstraintDescr) column.getDescrs().get(0);
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", pattern.getObjectType());
+        assertEquals(-1, pattern.getEndCharacter());
+        assertEquals(1, pattern.getDescrs().size());
+        field = (FieldConstraintDescr) pattern.getDescrs().get(0);
         assertEquals("property", field.getFieldName());
         assertEquals(1, field.getRestrictions().size());
         // KRISV: you are right
@@ -378,11 +378,11 @@ public class IncompleteParsingTest extends TestCase {
         	"		Class( property matches \"someth";
         rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-        assertEquals("Class", column.getObjectType());
-        assertEquals(-1, column.getEndCharacter());
-        assertEquals(1, column.getDescrs().size());
-        field = (FieldConstraintDescr) column.getDescrs().get(0);
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", pattern.getObjectType());
+        assertEquals(-1, pattern.getEndCharacter());
+        assertEquals(1, pattern.getDescrs().size());
+        field = (FieldConstraintDescr) pattern.getDescrs().get(0);
         assertEquals("property", field.getFieldName());
         assertEquals(1, field.getRestrictions().size());
         literal = (LiteralRestrictionDescr) field.getRestrictions().get(0);
@@ -410,11 +410,11 @@ public class IncompleteParsingTest extends TestCase {
             "       Class ( property > 0 & ";
         rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-        assertEquals("Class", column.getObjectType());
-        assertEquals(-1, column.getEndCharacter());
-        assertEquals(1, column.getDescrs().size());
-        field = (FieldConstraintDescr) column.getDescrs().get(0);
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", pattern.getObjectType());
+        assertEquals(-1, pattern.getEndCharacter());
+        assertEquals(1, pattern.getDescrs().size());
+        field = (FieldConstraintDescr) pattern.getDescrs().get(0);
         assertEquals("property", field.getFieldName());
         assertEquals(2, field.getRestrictions().size());
         literal = (LiteralRestrictionDescr) field.getRestrictions().get(0);
@@ -431,10 +431,10 @@ public class IncompleteParsingTest extends TestCase {
         assertEquals(1, rule.getLhs().getDescrs().size());
         FromDescr from = (FromDescr) rule.getLhs().getDescrs().get(0);
         assertEquals(-1, from.getEndCharacter());
-        assertNotNull( from.getReturnedColumn() );
-        column = (ColumnDescr) from.getReturnedColumn();
-        assertEquals("Class", column.getObjectType());
-        assertTrue(column.getEndCharacter() != -1);
+        assertNotNull( from.getReturnedPattern() );
+        pattern = (PatternDescr) from.getReturnedPattern();
+        assertEquals("Class", pattern.getObjectType());
+        assertTrue(pattern.getEndCharacter() != -1);
         
         input = 
         	"rule MyRule \n" +
@@ -471,11 +471,11 @@ public class IncompleteParsingTest extends TestCase {
         RuleDescr rule = parseRuleString(input);
         assertEquals(input.indexOf( "rule" ), rule.getStartCharacter());
         assertEquals(input.indexOf( "end" )+2, rule.getEndCharacter());
-        ColumnDescr column = (ColumnDescr) rule.getLhs().getDescrs().get(0);
-        assertEquals(input.indexOf( "Class" ), column.getStartCharacter());
-        assertEquals(input.indexOf( "(" ), column.getLeftParentCharacter());
-        assertEquals(input.indexOf( ")" ), column.getRightParentCharacter());
-        assertEquals(input.indexOf( ")" ), column.getEndCharacter());
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals(input.indexOf( "Class" ), pattern.getStartCharacter());
+        assertEquals(input.indexOf( "(" ), pattern.getLeftParentCharacter());
+        assertEquals(input.indexOf( ")" ), pattern.getRightParentCharacter());
+        assertEquals(input.indexOf( ")" ), pattern.getEndCharacter());
     }
     
 //    public void doTestRemainder() {

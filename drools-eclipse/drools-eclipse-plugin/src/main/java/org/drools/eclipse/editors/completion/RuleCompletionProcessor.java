@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
-import org.codehaus.jfdi.interpreter.ClassTypeResolver;
+import org.drools.base.ClassTypeResolver;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.eclipse.DroolsEclipsePlugin;
