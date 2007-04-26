@@ -40,21 +40,18 @@
              <tasks>                              
                 <property name="eclipse.home" value="target/eclipse" />             
                 
-                <property name="localEclipseDrop" value="${basedir}/local-eclipse-drop-mirror" />      
-              
-                <property name="eclipse.home" value="target/eclipse" />             
-                
                 <property name="localEclipseDrop" value="${basedir}/local-eclipse-drop-mirror" />                
-                
                 <delete  dir="target/eclipse.build" />
                 
-                <ant target="setupLocalEclipse" antfile="setupEclipse.xml" />
+                <ant target="setupLocalEclipse" antfile="setupEclipse.xml">
+                  <property name="localEclipseDrop" value="${localEclipseDrop}" />
+                </ant>
                  
                 <java jar="${eclipse.home}/startup.jar"
                       fork="true"
                       failonerror="true"
                       maxmemory="128m">
-                     <arg line="-application org.eclipse.ant.core.antRunner -DlocalEclipseDrop='${localEclipseDrop}' -DmavenCompilePhase=true"/>
+                     <arg line="-application org.eclipse.ant.core.antRunner -DmavenCompilePhase=true"/>
                 </java>                 
              </tasks>
            </configuration>
@@ -136,16 +133,15 @@
                    <contains string="${os.name}" substring="sparc" />
                </condition>        
               
-                <property name="eclipse.home" value="target/eclipse" />             
-                <property name="localEclipseDrop" value="${basedir}/local-eclipse-drop-mirror" />
+                <property name="eclipse.home" value="target/eclipse" />                             
                 
-                <echo>-application org.eclipse.ant.core.antRunner -Dbaseos=${baseos} -Dbasews=${basews} -Dbasearch=${basearch} -DlocalEclipseDrop='${localEclipseDrop}' -DrunTests=true -DmavenTestPhase=true</echo>
+                <echo>-application org.eclipse.ant.core.antRunner -Dbaseos=${baseos} -Dbasews=${basews} -Dbasearch=${basearch} -DrunTests=true -DmavenTestPhase=true</echo>
                  
                 <java jar="${eclipse.home}/startup.jar"
                       fork="true"
                       failonerror="true"
                       maxmemory="128m">
-                     <arg line="-application org.eclipse.ant.core.antRunner -Dbaseos=${baseos} -Dbasews=${basews} -Dbasearch=${basearch} -DlocalEclipseDrop='${localEclipseDrop}' -DrunTests=true -DmavenTestPhase=true"/>
+                     <arg line="-application org.eclipse.ant.core.antRunner -Dbaseos=${baseos} -Dbasews=${basews} -Dbasearch=${basearch} -DrunTests=true -DmavenTestPhase=true"/>
                 </java>                 
              </tasks>
            </configuration>

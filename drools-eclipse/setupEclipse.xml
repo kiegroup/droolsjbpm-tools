@@ -2,7 +2,7 @@
   
   <property file="build.properties"/>
 
-  <property name="localEclipseDrop" value="${basedir}/local-eclipse-drop-mirror" />  
+  <property name="localEclipseDrop" value="${basedir}/local-eclipse-drop-mirror" />   
  
   <!-- set the OS name, make sure each condition is mutally exclusive -->
 	<condition property="download.type" value="win32">
@@ -113,6 +113,7 @@
   </target>
     
   <target name="setupLocalEclipse" depends="checkLocalEclipse" unless="skipSetupLocalEcipse">  
+    <echo>local eclipse drop mirror - ${localEclipseDrop}</echo>
     <antcall target="setupLocalEclipseDrop" />
     <antcall target="expandEclipseJars" />
   </target>	
