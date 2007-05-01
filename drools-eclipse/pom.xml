@@ -232,6 +232,10 @@
       </exclusions>
     </dependency>
 
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-documentation</artifactId>
+   </dependency>      
 </dependencies>
 
 </project>
