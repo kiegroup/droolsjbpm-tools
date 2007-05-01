@@ -163,12 +163,12 @@
 	<target name="postBuild">
 		<antcall target="gatherLogs" />
 		<antcall target="test" />
-	</target>
+	</target>	
 
 	<!-- ===================================================================== -->
 	<!-- Steps to do to test the build results -->
 	<!-- ===================================================================== -->
-  <target name="test" if="runTests">  
+  <target name="test" if="mavenTestPhase">  
     <unzip src="${buildDirectory}/${buildLabel}/jbossrules-eclipse-${jbossRulesVersion}.zip"
            dest="${base}/eclipse"/>
     <unzip src="${buildDirectory}/${buildLabel}/jbossrules-eclipse-test-${jbossRulesVersion}.zip" 

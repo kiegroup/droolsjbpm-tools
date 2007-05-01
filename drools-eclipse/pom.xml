@@ -127,21 +127,25 @@
                
                <condition property="basearch" value="ppc">
                    <contains string="${os.name}" substring="ppc" />
-               </condition>
+               </condition>                     
                
                <condition property="basearch" value="sparc">
                    <contains string="${os.name}" substring="sparc" />
-               </condition>        
+               </condition>                   
+               
+               <condition property="mavenTestPhase" value="" else="-DmavenTestPhase=true">
+                   <isset property="maven.test.skip" />
+               </condition>                
               
                 <property name="eclipse.home" value="target/eclipse" />                             
                 
-                <echo>-application org.eclipse.ant.core.antRunner -Dbaseos=${baseos} -Dbasews=${basews} -Dbasearch=${basearch} -DrunTests=true -DmavenTestPhase=true</echo>
+                <echo>-application org.eclipse.ant.core.antRunner -Dbaseos=${baseos} -Dbasews=${basews} -Dbasearch=${basearch} ${mavenTestPhase}</echo>
                  
                 <java jar="${eclipse.home}/startup.jar"
                       fork="true"
                       failonerror="true"
                       maxmemory="128m">
-                     <arg line="-application org.eclipse.ant.core.antRunner -Dbaseos=${baseos} -Dbasews=${basews} -Dbasearch=${basearch} -DrunTests=true -DmavenTestPhase=true"/>
+                     <arg line="-application org.eclipse.ant.core.antRunner -Dbaseos=${baseos} -Dbasews=${basews} -Dbasearch=${basearch} ${mavenTestPhase}"/>
                 </java>                 
              </tasks>
            </configuration>
