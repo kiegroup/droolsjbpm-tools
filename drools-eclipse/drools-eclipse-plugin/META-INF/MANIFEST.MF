@@ -38,7 +38,6 @@ Bundle-ClassPath:
  lib/junit.jar,
  lib/jxl.jar,
  lib/mvel14.jar,
- lib/stringtemplate.jar,
  lib/xercesImpl.jar,
  lib/xml-apis.jar,
  lib/xpp3.jar,
