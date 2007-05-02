@@ -20,18 +20,40 @@
        <executions>
          <execution>
            <id>clean lib</id>
-           <phase>process-resources</phase>
+           <phase>clean</phase>
            <configuration>
              <tasks>                              
                 <delete>
-                  <fileset dir="drools-eclipse-plugin/lib" includes="**/*.jar" excludes="**/.svn" />
+                  <fileset dir="drools-eclipse-plugin/lib" includes="**/*.jar" excludes="**/.svn" />                 
                 </delete>
+                <delete dir="drools-eclipse-plugin/help/shared" />     
+                <delete dir="drools-eclipse-plugin/help/eclipse" />     
              </tasks>
            </configuration>
            <goals>
              <goal>run</goal>
            </goals>
-         </execution>       
+         </execution>    
+         
+         <execution>
+           <id>unzip manual</id>
+           <phase>process-resources</phase>
+           <configuration>
+             <tasks>     
+               <unzip src="drools-eclipse-plugin/lib/drools-documentation.jar" dest="drools-eclipse-plugin/help">
+                  <patternset>
+                      <include name="eclipse/**/**"/>
+                      <include name="shared/**/**"/>
+                  </patternset>               
+               </unzip>         
+               
+               <delete dir="drools-eclipse-plugin/lib/drools-documentation.jar" />     
+             </tasks>
+           </configuration>
+           <goals>
+             <goal>run</goal>
+           </goals>           
+         </execution>
        
          <execution>
            <id>compile-plugin</id>
@@ -162,7 +184,7 @@
         <executions>
           <execution>
             <id>copy-dependencies</id>
-            <phase>process-resources</phase>
+            <phase>generate-resources</phase>
             <goals>
               <goal>copy-dependencies</goal>
             </goals>
@@ -234,7 +256,7 @@
 
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-documentation</artifactId>
+      <artifactId>drools-documentation</artifactId>         
    </dependency>      
 </dependencies>
 
