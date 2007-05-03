@@ -11,7 +11,7 @@
   <artifactId>drools-eclipse</artifactId>
    <packaging>pom</packaging>
 
-  <name>Drools :: Eclipse-Plugin</name>เจ?
+  <name>Drools :: Eclipse-Plugin</name>เฆฟ
   <build>
     <plugins>    
      <plugin>
@@ -169,6 +169,19 @@
                       maxmemory="128m">
                      <arg line="-application org.eclipse.ant.core.antRunner -Dbaseos=${baseos} -Dbasews=${basews} -Dbasearch=${basearch} ${mavenTestPhase}"/>
                 </java>                 
+             </tasks>
+           </configuration>
+           <goals>
+             <goal>run</goal>
+           </goals>
+         </execution>         
+         
+         <execution>
+           <id>unzip</id>
+           <phase>package</phase>
+           <configuration>
+             <tasks>                
+                <unzip src="target/drools-eclipse-${project.version}.zip" dest="../target/eclipse"/>                         
              </tasks>
            </configuration>
            <goals>

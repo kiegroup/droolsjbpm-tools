@@ -56,11 +56,11 @@
     <delete file="${base}/eclipse/org.drools.eclipse*.xml" />
     <delete dir="${base}/eclipse/test-workspace"/>
     
-    <delete dir="${base}/eclipse/features/org.drools.eclipse.feature_${jbossRulesVersion}"/>
-    <delete dir="${base}/eclipse/features/org.drools.eclipse.test-feature_${jbossRulesVersion}"/>
+    <delete dir="${base}/eclipse/features/org.drools.eclipse.feature_${droolsVersion}"/>
+    <delete dir="${base}/eclipse/features/org.drools.eclipse.test-feature_${droolsVersion}"/>
     
-    <delete file="${base}/eclipse/plugins/org.drools.eclipse_${jbossRulesVersion}.jar"/>
-    <delete dir="${base}/eclipse/plugins/org.drools.eclipse.test_${jbossRulesVersion}"/>            
+    <delete file="${base}/eclipse/plugins/org.drools.eclipse_${droolsVersion}.jar"/>
+    <delete dir="${base}/eclipse/plugins/org.drools.eclipse.test_${droolsVersion}"/>            
 	</target>
 
 	<!-- ===================================================================== -->
@@ -154,7 +154,7 @@
 	<!-- Steps to do after  running package. -->
 	<!-- ===================================================================== -->
 	<target name="postPackage" if="mavenCompilePhase">
-	    <copy file="${buildDirectory}/${buildLabel}/jbossrules-eclipse-${jbossRulesVersion}.zip" tofile="${base}/jbossrules-eclipse-${jbossRulesVersion}.zip" />
+	    <copy file="${buildDirectory}/${buildLabel}/${zipFile}" tofile="${base}/${zipFile}" />
 	</target>
 
 	<!-- ===================================================================== -->
@@ -169,13 +169,13 @@
 	<!-- Steps to do to test the build results -->
 	<!-- ===================================================================== -->
   <target name="test" if="mavenTestPhase">  
-    <unzip src="${buildDirectory}/${buildLabel}/jbossrules-eclipse-${jbossRulesVersion}.zip"
+    <unzip src="${buildDirectory}/${buildLabel}/${zipFile}"
            dest="${base}/eclipse"/>
-    <unzip src="${buildDirectory}/${buildLabel}/jbossrules-eclipse-test-${jbossRulesVersion}.zip" 
+    <unzip src="${buildDirectory}/${buildLabel}/${testZipFile}" 
            dest="${base}/eclipse"/>    
 
 
-    <ant antfile="${base}/eclipse/plugins/org.drools.eclipse.test_${jbossRulesVersion}/test.xml">        
+    <ant antfile="${base}/eclipse/plugins/org.drools.eclipse.test_${droolsVersion}/test.xml">        
       <property name="os" value="${baseos}" />
       <property name="ws" value="${basews}" />
       <property name="arch" value="${basearch}" />
