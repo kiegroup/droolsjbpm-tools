@@ -26,6 +26,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.gef,
  com.ibm.icu
 Eclipse-LazyStart: true
+Eclipse-BuddyPolicy: registered
 Bundle-ClassPath: 
  .,
  drools-eclipse-plugin.jar,
