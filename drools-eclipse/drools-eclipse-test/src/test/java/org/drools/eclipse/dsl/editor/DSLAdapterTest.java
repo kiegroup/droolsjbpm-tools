@@ -41,7 +41,7 @@ public class DSLAdapterTest extends TestCase {
         StringBuffer buf = new StringBuffer();
         for (int i = 0; i < 1000; i++) {
             if (i == 42) {
-                buf.append( "\nuse expander abc.dsl  \n" );
+                buf.append( "\n   expander abc.dsl  \n" );
             }
             
             buf.append( "\n" );
