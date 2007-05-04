@@ -1,6 +1,8 @@
-package org.drools.eclipse.editors;
+package org.drools.eclipse.dsl.editor;
 
 import junit.framework.TestCase;
+
+import org.drools.eclipse.dsl.editor.DSLAdapter;
 
 /**
  * 
@@ -9,9 +11,10 @@ import junit.framework.TestCase;
 public class DSLAdapterTest extends TestCase {
     
     public void testFindExpander() {
+        
         StringBuffer buf = largeString();
         
-        String pat = "\nexpander  \t abc.dsl";
+        String pat = "\nexpander  \t abc.dsl ";
         
         DSLAdapter ad = new DSLAdapter();
         assertEquals("abc.dsl", DSLAdapter.findDSLConfigName( pat ));
