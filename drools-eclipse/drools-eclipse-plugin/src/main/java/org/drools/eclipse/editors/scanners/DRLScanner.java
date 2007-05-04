@@ -26,25 +26,25 @@ import org.eclipse.swt.graphics.Color;
  */
 public class DRLScanner extends RuleBasedScanner {
     
-	private static Color KEYWORD_COLOUR = ColorManager.getInstance().getColor(ColorManager.KEYWORD);
-	private static Color COMMENT_COLOR = ColorManager.getInstance().getColor(ColorManager.SINGLE_LINE_COMMENT);
-    private static Color STRING_COLOR = ColorManager.getInstance().getColor(ColorManager.STRING);
-    private static Color DEFAULT = ColorManager.getInstance().getColor(ColorManager.DEFAULT);
+	private static final Color KEYWORD_COLOR = ColorManager.getInstance().getColor(ColorManager.KEYWORD);
+	private static final Color COMMENT_COLOR = ColorManager.getInstance().getColor(ColorManager.SINGLE_LINE_COMMENT);
+    private static final Color STRING_COLOR = ColorManager.getInstance().getColor(ColorManager.STRING);
+    private static final Color DEFAULT_COLOR = ColorManager.getInstance().getColor(ColorManager.DEFAULT);
     
-    private static String[] fgDroolsKeywords= Keywords.getInstance().getAllDroolsKeywords();
-    private static String[] fgJavaKeywords= Keywords.getInstance().getAllJavaKeywords();
+    private static final String[] DROOLS_KEYWORDS = Keywords.getInstance().getAllDroolsKeywords();
+    private static final String[] JAVA_KEYWORDS = Keywords.getInstance().getAllJavaKeywords();
 
-    private static String[] fgTypes= { "void", "boolean", "char", "byte", "short", "strictfp", "int", "long", "float", "double" }; 
+    private static final String[] TYPES = { "void", "boolean", "char", "byte", "short", "strictfp", "int", "long", "float", "double" }; 
 
-    private static String[] fgConstants= { "false", "true", "null" }; 
+    private static final String[] CONSTANTS = { "false", "true", "null" }; 
     
 
 	public DRLScanner() {
         
-		IToken keyword = new Token(new TextAttribute(KEYWORD_COLOUR, null, SWT.BOLD));
+		IToken keyword = new Token(new TextAttribute(KEYWORD_COLOR, null, SWT.BOLD));
 		IToken comment= new Token(new TextAttribute(COMMENT_COLOR));
 		IToken string = new Token(new TextAttribute(STRING_COLOR));
-		IToken other = new Token(new TextAttribute(DEFAULT));
+		IToken other = new Token(new TextAttribute(DEFAULT_COLOR));
         
         List rules = new ArrayList();
 
@@ -63,14 +63,14 @@ public class DRLScanner extends RuleBasedScanner {
 
         // Add word rule for keywords, types, and constants.
         WordRule wordRule= new WordRule(new RuleWordDetector(), other);
-        for (int i= 0; i < fgDroolsKeywords.length; i++)
-            wordRule.addWord(fgDroolsKeywords[i], keyword);
-        for (int i= 0; i < fgJavaKeywords.length; i++)
-            wordRule.addWord(fgJavaKeywords[i], keyword);
-        for (int i= 0; i < fgTypes.length; i++)
-            wordRule.addWord(fgTypes[i], keyword);
-        for (int i= 0; i < fgConstants.length; i++)
-            wordRule.addWord(fgConstants[i], keyword);
+        for (int i= 0; i < DROOLS_KEYWORDS.length; i++)
+            wordRule.addWord(DROOLS_KEYWORDS[i], keyword);
+        for (int i= 0; i < JAVA_KEYWORDS.length; i++)
+            wordRule.addWord(JAVA_KEYWORDS[i], keyword);
+        for (int i= 0; i < TYPES.length; i++)
+            wordRule.addWord(TYPES[i], keyword);
+        for (int i= 0; i < CONSTANTS.length; i++)
+            wordRule.addWord(CONSTANTS[i], keyword);
         rules.add(wordRule);        
         
         IRule[] result= new IRule[rules.size()];

@@ -8,25 +8,29 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.StringTokenizer;
+
+import org.drools.lang.dsl.DSLMapping;
+import org.drools.lang.dsl.DSLMappingEntry;
+import org.drools.lang.dsl.DSLMappingEntry.Section;
 
 public class DSLTree {
 
-    public static final String when = "[when]";
-    public static final String then = "[then]";
-    public static final String wildcard = "[*]";
     public static final String separator = "=";
     public static final String tab = "  ";
     
     private Node current = null;
     private Node last = null;
-    private Node root = null;
+    private Node rootCond = null;
+    private Node rootConseq = null;
     private boolean empty = true;
     private ArrayList suggestions = new ArrayList();
     private HashMap objToNL = new HashMap();
     
     public DSLTree() {
-        this.root = new Node("root");
+        this.rootCond = new Node("root");
+        this.rootConseq = new Node("root");
     }
     
     /**
@@ -35,16 +39,7 @@ public class DSLTree {
      * @param dslFile
      */
     public void buildTree(String dslFile) {
-        // first we clear the children
-        this.root.clearChildren();
-        BufferedReader breader = openDSLFile(dslFile);
-        parseFile(breader);
-        try {
-            breader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        this.empty = false;
+        buildTree(openDSLFile(dslFile));
     }
 
     /**
@@ -53,8 +48,12 @@ public class DSLTree {
      * @param dslcontents
      */
     public void buildTree(Reader dslcontents) {
-        this.root.clearChildren();
-        BufferedReader breader = this.createBufferedReader(dslcontents);
+    	buildTree(createBufferedReader(dslcontents));
+    }
+    
+    private void buildTree(BufferedReader breader) {
+        this.rootCond.clearChildren();
+        this.rootConseq.clearChildren();
         parseFile(breader);
         try {
             breader.close();
@@ -108,21 +107,42 @@ public class DSLTree {
         String line = null;
         try {
             while ( (line = reader.readLine()) != null) {
+            	Section section = getSection(line);
                 String nl = stripHeadingAndCode(line);
                 String objname = this.getObjMetadata(nl);
                 nl = this.stripObjMetadata(nl);
-                if (!nl.startsWith("-")) {
-                    this.addObjToNLMap(objname, nl);
-                    StringTokenizer tokenz = new StringTokenizer(nl);
-                    addTokens(tokenz);
-                } else {
-                	String res = (String)this.objToNL.get(objname);
-                    StringTokenizer tokenz = new StringTokenizer(nl);
-                    addTokens(res,tokenz);
-                }
+                addEntry(section, nl, objname);
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+    
+    public void buildTree(DSLMapping mapping) {
+    	List entries = mapping.getEntries();
+    	for (Iterator iterator = entries.iterator(); iterator.hasNext(); ) {
+    		DSLMappingEntry entry = (DSLMappingEntry) iterator.next();
+        	Section section = entry.getSection();
+            String nl = entry.getMappingKey();
+            String objname = entry.getMetaData().getMetaData();
+            addEntry(section, nl, objname);
+    	}
+    }
+    
+    private void addEntry(Section section, String nl, String objname) {
+        if (!nl.startsWith("-")) {
+            this.addObjToNLMap(objname, nl);
+            String[] tokenz = nl.split("\\s");
+            if (section == DSLMappingEntry.CONDITION || section == DSLMappingEntry.ANY) {
+            	addTokens(tokenz, rootCond);
+            }
+            if (section == DSLMappingEntry.CONSEQUENCE || section == DSLMappingEntry.ANY) {
+            	addTokens(tokenz, rootConseq);
+            }
+        } else {
+        	String res = (String)this.objToNL.get(objname);
+            StringTokenizer tokenz = new StringTokenizer(nl);
+            addTokens(res,tokenz);
         }
     }
     
@@ -132,6 +152,19 @@ public class DSLTree {
     	}
     }
     
+    protected Section getSection(String text) {
+        if (text.startsWith(DSLMappingEntry.CONDITION.getSymbol())) {
+            return DSLMappingEntry.CONDITION;
+        } else if (text.startsWith(DSLMappingEntry.CONSEQUENCE.getSymbol())) {
+            return DSLMappingEntry.CONSEQUENCE;
+        } else if (text.startsWith(DSLMappingEntry.ANY.getSymbol())) {
+            return DSLMappingEntry.ANY;
+        } else if (text.startsWith(DSLMappingEntry.KEYWORD.getSymbol())) {
+        	return DSLMappingEntry.KEYWORD;
+        }
+        return null; 
+    }
+    
     /**
      * method will strip out the when, then, * at the beginning of each 
      * line and the mapped drl expression
@@ -139,12 +172,12 @@ public class DSLTree {
      * @return
      */
     protected String stripHeadingAndCode(String text) {
-        if (text.startsWith(when)) {
-            return text.substring(6,text.indexOf("="));
-        } else if (text.startsWith(then)) {
-            return text.substring(6,text.indexOf("="));
-        } else if (text.startsWith(wildcard)) {
-            return text.substring(3,text.indexOf("="));
+        if (text.startsWith(DSLMappingEntry.CONDITION.getSymbol())) {
+            return text.substring(DSLMappingEntry.CONDITION.getSymbol().length() + 2,text.indexOf("="));
+        } else if (text.startsWith(DSLMappingEntry.CONSEQUENCE.getSymbol())) {
+            return text.substring(DSLMappingEntry.CONSEQUENCE.getSymbol().length() + 2,text.indexOf("="));
+        } else if (text.startsWith(DSLMappingEntry.ANY.getSymbol())) {
+            return text.substring(DSLMappingEntry.ANY.getSymbol().length() + 2,text.indexOf("="));
         } else if (text.startsWith("#")) {
             return "";
         } else {
@@ -187,7 +220,7 @@ public class DSLTree {
      * @param tokens
      */
     public void addTokens(String metadata, StringTokenizer tokens) {
-    	Node mnode = this.root.addToken(metadata);
+    	Node mnode = this.rootCond.addToken(metadata);
     	Node thenode = mnode;
     	while (tokens.hasMoreTokens()) {
     		Node newnode = thenode.addToken(tokens.nextToken());
@@ -199,10 +232,10 @@ public class DSLTree {
      * method adds the token to root
      * @param tokens
      */
-    public void addTokens(StringTokenizer tokens) {
-        Node thenode = this.root;
-        while (tokens.hasMoreTokens()) {
-            Node newnode = thenode.addToken(tokens.nextToken());
+    public void addTokens(String[] tokens, Node rootNode) {
+        Node thenode = rootNode;
+        for (int i = 0; i < tokens.length; i++) {
+            Node newnode = thenode.addToken(tokens[i]);
             thenode = newnode;
         }
     }
@@ -215,8 +248,8 @@ public class DSLTree {
      * @param text
      * @return
      */
-    public Node[] getChildren(String text) {
-        Node thenode = this.root;
+    public Node[] getConditionChildren(String text) {
+        Node thenode = this.rootCond;
     	if (text.length() > 0) {
             StringTokenizer tokenz = new StringTokenizer(text);
             this.last = this.current;
@@ -230,7 +263,7 @@ public class DSLTree {
                     break;
                 }
             }
-            if (thenode != this.root) {
+            if (thenode != this.rootCond) {
                 this.current = thenode;
             }
     	}
@@ -240,13 +273,45 @@ public class DSLTree {
     }
 
     /**
+     * the method will tokenize the text and try to find
+     * the node that matches and return the children. the method
+     * will traverse down the network as far as it can and return
+     * the children at that level.
+     * @param text
+     * @return
+     */
+    public Node[] getConsequenceChildren(String text) {
+        Node thenode = this.rootConseq;
+    	if (text.length() >= 0) {
+            StringTokenizer tokenz = new StringTokenizer(text);
+            this.last = this.current;
+            while (tokenz.hasMoreTokens()) {
+                String strtk = tokenz.nextToken();
+                Node ch = thenode.getChild(strtk);
+                // if a child is found, we set thenode to the child Node
+                if (ch != null) {
+                    thenode = ch;
+                } else {
+                    break;
+                }
+            }
+            if (thenode != this.rootConseq) {
+                this.current = thenode;
+            }
+    	}
+        Collection children = thenode.getChildren();
+        Node[] nchild = new Node[children.size()];
+        return (Node[]) children.toArray(nchild);
+    }
+
+    /**
      * the method expects the caller to pass the object
      * @param obj
      * @param text
      * @return
      */
     public Node[] getChildren(String obj, String text) {
-        Node thenode = this.root.getChild(obj);
+        Node thenode = this.rootCond.getChild(obj);
     	if (thenode != null && text.length() > 0) {
             StringTokenizer tokenz = new StringTokenizer(text);
             this.last = this.current;
@@ -260,12 +325,12 @@ public class DSLTree {
                     break;
                 }
             }
-            if (thenode != this.root) {
+            if (thenode != this.rootCond) {
                 this.current = thenode;
             }
     	}
     	if (thenode == null) {
-    		thenode = this.root;
+    		thenode = this.rootCond;
     	}
         Collection children = thenode.getChildren();
         Node[] nchild = new Node[children.size()];
@@ -280,8 +345,28 @@ public class DSLTree {
      * @param text
      * @return
      */
-    public ArrayList getChildrenList(String text, boolean addChildren) {
-    	Node[] c = getChildren(text);
+    public ArrayList getConditionChildrenList(String text, boolean addChildren) {
+    	Node[] c = getConditionChildren(text);
+    	this.suggestions.clear();
+    	for (int idx=0; idx < c.length; idx++) {
+    		this.suggestions.add(c[idx].getToken());
+    		if (addChildren) {
+        		this.addChildToList(c[idx], c[idx].getToken(), this.suggestions);
+    		}
+    	}
+    	return this.suggestions;
+    }
+    
+    /**
+     * for convienance, the method will return a list of strings
+     * that are children of the last node found. If the editor
+     * wants to generate the children strings, call the method
+     * with true
+     * @param text
+     * @return
+     */
+    public ArrayList getConsequenceChildrenList(String text, boolean addChildren) {
+    	Node[] c = getConsequenceChildren(text);
     	this.suggestions.clear();
     	for (int idx=0; idx < c.length; idx++) {
     		this.suggestions.add(c[idx].getToken());
@@ -311,7 +396,7 @@ public class DSLTree {
     	// in the event the line is zero length after it is trimmed, we also add
     	// the top level nodes
     	if (text.trim().length() == 0) {
-    		Iterator top = this.root.getChildren().iterator();
+    		Iterator top = this.rootCond.getChildren().iterator();
         	while (top.hasNext()) {
         		Node t = (Node)top.next();
         		if (!this.suggestions.contains(t.getToken())) {
@@ -365,7 +450,7 @@ public class DSLTree {
      */
     public void printTree() {
         System.out.println("ROOT");
-        Iterator itr = this.root.getChildren().iterator();
+        Iterator itr = this.rootCond.getChildren().iterator();
         while (itr.hasNext()) {
             Node n = (Node)itr.next();
             printNode(n);

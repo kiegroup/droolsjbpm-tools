@@ -11,12 +11,12 @@ import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 
 /**
  * Simple document provider.
- * @author Michael Neale
+ * 
+ * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class DRLDocumentProvider
-    extends TextFileDocumentProvider {
-    
-    public IDocument getDocument(Object element) {
+public class DRLDocumentProvider extends TextFileDocumentProvider {
+	
+	public IDocument getDocument(Object element) {
         IDocument document = super.getDocument(element);
         if (document != null) {
             IDocumentPartitioner partitioner =

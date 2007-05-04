@@ -91,7 +91,7 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
 				if (ruleInfo != null) {
 					if (ruleInfo.getConsequenceDrlLineNumber() < lineNumber) {
 						return ruleInfo.getConsequenceJavaLineNumber()
-							+ (lineNumber - ruleInfo.getConsequenceDrlLineNumber());
+							+ (lineNumber - ruleInfo.getConsequenceDrlLineNumber() + 1);
 					}
 				}
 				FunctionInfo functionInfo = drlInfo.getFunctionInfo(lineNumber);

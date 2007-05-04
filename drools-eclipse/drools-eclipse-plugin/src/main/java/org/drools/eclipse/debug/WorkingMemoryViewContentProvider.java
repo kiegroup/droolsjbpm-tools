@@ -37,7 +37,7 @@ public class WorkingMemoryViewContentProvider extends DroolsDebugViewContentProv
         try {
             IVariable[] variables = null;
             if (obj != null && obj instanceof IJavaObject
-                    && "org.drools.reteoo.ReteooWorkingMemory".equals(
+                    && "org.drools.reteoo.ReteooStatefulSession".equals(
                         ((IJavaObject) obj).getReferenceTypeName())) {
                 variables = getWorkingMemoryElements((IJavaObject) obj);
             } else if (obj instanceof IVariable) {
@@ -62,7 +62,7 @@ public class WorkingMemoryViewContentProvider extends DroolsDebugViewContentProv
     }
     
     private IVariable[] getWorkingMemoryElements(IJavaObject stackObj) throws DebugException {
-        IValue objects = DebugUtil.getValueByExpression("return getObjects().toArray();", stackObj);
+        IValue objects = DebugUtil.getValueByExpression("return iterateObjectsToList().toArray();", stackObj);
         if (objects instanceof IJavaArray) {
             IJavaArray array = (IJavaArray) objects;
             List result = new ArrayList();

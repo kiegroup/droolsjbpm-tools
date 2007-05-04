@@ -12,6 +12,11 @@ import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 
+/**
+ * Util class for searching Descr tree.
+ * 
+ * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
+ */
 public final class DescrUtil {
 	
 	private DescrUtil() {

@@ -9,6 +9,11 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Position;
 import org.eclipse.ui.texteditor.ResourceMarkerAnnotationModel;
 
+/**
+ * Drools annotation model.
+ * 
+ * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
+ */
 public class DRLAnnotationModel extends ResourceMarkerAnnotationModel {
 
 	public DRLAnnotationModel(IResource resource) {

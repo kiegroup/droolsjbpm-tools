@@ -97,7 +97,7 @@ public class DroolsStackFrame extends JDIStackFrame {
 		synchronized (fThread) {
 			RuleInfo ruleInfo = getExecutingRuleInfo();
 			if (ruleInfo != null) {
-				return ruleInfo.getConsequenceDrlLineNumber() + (getInternalLineNumber() - ruleInfo.getConsequenceJavaLineNumber());
+				return ruleInfo.getConsequenceDrlLineNumber() + (getInternalLineNumber() - ruleInfo.getConsequenceJavaLineNumber() - 1);
 			}
 			FunctionInfo functionInfo = getExecutingFunctionInfo();
 			if (functionInfo != null) {

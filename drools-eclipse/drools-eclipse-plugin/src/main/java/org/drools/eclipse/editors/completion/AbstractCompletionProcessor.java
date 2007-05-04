@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -12,10 +14,9 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.ui.part.EditorPart;
 
-
 /**
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
+ * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public abstract class AbstractCompletionProcessor implements IContentAssistProcessor {
 
@@ -74,6 +75,18 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
     			}
     		}
     	}
+    }
+
+    /**
+     * Read some text from behind the cursor position.
+     * This provides context to both filter what is shown based
+     * on what the user has typed in, and also to provide more information for the 
+     * list of suggestions based on context.
+     */
+    protected String readBackwards(int documentOffset, IDocument doc) throws BadLocationException {
+        int startPart = doc.getPartition(documentOffset).getOffset();
+        String prefix = doc.get(startPart, documentOffset - startPart);
+        return prefix;
     }
 
 	/* 

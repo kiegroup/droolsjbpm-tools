@@ -27,7 +27,7 @@ import org.eclipse.swt.graphics.Color;
  * and content assistance.
  * 
  * @author Michael Neale
- *
+ * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class DRLSourceViewerConfig extends SourceViewerConfiguration {
 
@@ -40,6 +40,10 @@ public class DRLSourceViewerConfig extends SourceViewerConfiguration {
 
 	public DRLSourceViewerConfig(AbstractRuleEditor editor) {
 		this.editor = editor;
+	}
+	
+	protected AbstractRuleEditor getEditor() {
+		return editor;
 	}
 
 	protected DRLScanner getScanner() {

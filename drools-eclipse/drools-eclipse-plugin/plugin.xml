@@ -61,14 +61,13 @@
             icon="icons/drools.gif"
             id="org.drools.eclipse.editors.DRLRuleEditor"
             name="Rule Editor"/>
-      <!--
       <editor
-            class="org.drools.eclipse.editors.dsl.DSLRuleEditor2"
+            class="org.drools.eclipse.dsl.editor.DSLRuleEditor2"
             contributorClass="org.drools.eclipse.editors.DRLRuleEditorActionContributor"
             extensions="dslr,dslrule"
             icon="icons/drools.gif"
-            id="org.drools.eclipse.editors.dsl.DSLRuleEditor"
-            name="DSL Rule Editor"/> -->
+            id="org.drools.eclipse.editors.DSLRuleEditor"
+            name="DSL Rule Editor"/>
       <editor
             class="org.drools.eclipse.dsl.editor.DSLEditor"
             contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"

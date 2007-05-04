@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
 import org.drools.eclipse.editors.AbstractRuleEditor;
+import org.drools.eclipse.editors.DRLRuleEditor;
 import org.drools.util.StringUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.CompletionProposal;
@@ -18,7 +19,6 @@ import org.eclipse.jdt.core.CompletionRequestor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.eval.IEvaluationContext;
-import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.swt.graphics.Image;
@@ -46,15 +46,15 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
     // TODO: doesn't work for { inside functions
     private static final Pattern FUNCTION_PATTERN = Pattern.compile( ".*\n\\W*function\\s+(\\S+)\\s+(\\S+)\\s*\\(([^\\)]*)\\)\\s*\\{([^\\}]*)", Pattern.DOTALL);
     protected static final Image VARIABLE_ICON = DroolsPluginImages.getImage(DroolsPluginImages.VARIABLE);
-    protected static final Image methodIcon = DroolsPluginImages.getImage(DroolsPluginImages.METHOD);
-    protected static final Pattern START_OF_NEW_JAVA_STATEMENT = Pattern.compile(".*[;{}]\\s*", Pattern.DOTALL);
+    protected static final Image METHOD_ICON = DroolsPluginImages.getImage(DroolsPluginImages.METHOD);
+    private static final Pattern START_OF_NEW_JAVA_STATEMENT = Pattern.compile(".*[;{}]\\s*", Pattern.DOTALL);
 
     public DefaultCompletionProcessor(AbstractRuleEditor editor) {
     	super(editor);
     }
     
-    protected AbstractRuleEditor getDRLEditor() {
-    	return (AbstractRuleEditor) getEditor();
+    protected DRLRuleEditor getDRLEditor() {
+    	return (DRLRuleEditor) getEditor();
     }
     
 	protected List getCompletionProposals(ITextViewer viewer, int documentOffset) {
@@ -146,26 +146,6 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
         return list;
     }
 
-    /**
-     * Read some text from behind the cursor position.
-     * This provides context to both filter what is shown based
-     * on what the user has typed in, and also to provide more information for the 
-     * list of suggestions based on context.
-     */
-    protected String readBackwards(int documentOffset, IDocument doc) throws BadLocationException {
-        int startPart = doc.getPartition(documentOffset).getOffset();
-//        if (startPart == 0) {
-//            if (documentOffset < 32) {
-//                startPart = 0;
-//            } else {
-//                startPart = documentOffset - 32;
-//            }
-//        }
-        
-        String prefix = doc.get(startPart, documentOffset - startPart);
-        return prefix;
-    }
-
 	protected List getJavaCompletionProposals(final String javaText, final String prefix, Map params) {
 		final List list = new ArrayList();
 		IEditorInput input = getEditor().getEditorInput();
@@ -188,7 +168,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
 							if ("".equals(javaTextWithoutPrefix.trim()) || START_OF_NEW_JAVA_STATEMENT.matcher(javaTextWithoutPrefix).matches()) {
 								return;
 							}
-							prop.setImage(methodIcon);
+							prop.setImage(METHOD_ICON);
 							break;
 						default:
 					}
@@ -218,6 +198,10 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
 			}
 		}
 		return list;
+	}
+	
+	protected boolean isStartOfJavaExpression(String text) {
+		return "".equals(text.trim()) || START_OF_NEW_JAVA_STATEMENT.matcher(text).matches();
 	}
 
 }

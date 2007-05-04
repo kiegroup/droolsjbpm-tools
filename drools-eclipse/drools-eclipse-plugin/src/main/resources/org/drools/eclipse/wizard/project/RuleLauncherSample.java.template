@@ -19,7 +19,7 @@ public class DroolsTest {
         	
         	//load up the rulebase
             RuleBase ruleBase = readRule();
-            WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+            WorkingMemory workingMemory = ruleBase.newStatefulSession();
             
             //go !
             Message message = new Message();
