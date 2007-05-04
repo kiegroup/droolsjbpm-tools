@@ -40,7 +40,7 @@ public class DSLAdapter {
 	private DSLTree dslTree = new DSLTree();
     
     //to dig out the expander, without using the parser.
-    private static final Pattern expander = Pattern.compile( "\\n?\\s*expander\\s*(.*)\\.dsl\\s", 
+    private static final Pattern EXPANDER_PATTERN = Pattern.compile( "\\n\\s*expander\\s*(.*)\\.dsl\\s", 
                                                              Pattern.DOTALL | Pattern.MULTILINE );
     /**
      * This will sniff out the DSL config file name from the content.
@@ -138,7 +138,7 @@ public class DSLAdapter {
     /** Sniffs out the expander/DSL config name as best it can. */
     static String findDSLConfigName(String content) {
         String name = null;
-        Matcher matches = expander.matcher( content );
+        Matcher matches = EXPANDER_PATTERN.matcher( content );
         if (matches.find()) {
             name = matches.group(1) + ".dsl";
         }

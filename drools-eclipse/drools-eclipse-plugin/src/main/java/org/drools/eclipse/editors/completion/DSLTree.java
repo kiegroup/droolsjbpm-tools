@@ -131,7 +131,9 @@ public class DSLTree {
     
     private void addEntry(Section section, String nl, String objname) {
         if (!nl.startsWith("-")) {
-            this.addObjToNLMap(objname, nl);
+        	if (objname != null) {
+        		this.addObjToNLMap(objname, nl);
+        	}
             String[] tokenz = nl.split("\\s");
             if (section == DSLMappingEntry.CONDITION || section == DSLMappingEntry.ANY) {
             	addTokens(tokenz, rootCond);
