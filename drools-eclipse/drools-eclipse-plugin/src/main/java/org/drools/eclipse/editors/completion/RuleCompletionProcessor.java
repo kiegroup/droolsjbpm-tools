@@ -220,6 +220,14 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 					DROOLS_ICON));
 			list.add(new RuleCompletionProposal(prefix.length(), "->",
 					"-> (  )", 5, DROOLS_ICON));
+			list.add(new RuleCompletionProposal(prefix.length(), "memberOf",
+					"memberOf ", DROOLS_ICON));
+			list.add(new RuleCompletionProposal(prefix.length(), "not memberOf",
+					"not memberOf ", DROOLS_ICON));
+			list.add(new RuleCompletionProposal(prefix.length(), "in",
+					"in (  )", 5, DROOLS_ICON));
+			list.add(new RuleCompletionProposal(prefix.length(), "not in",
+					"not in (  )", 9, DROOLS_ICON));
 
 			if (isComparable(type)) {
 				list.add(new RuleCompletionProposal(prefix.length(), "<",
@@ -251,9 +259,19 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			String operator = (String) location
 					.getProperty(LocationDeterminator.LOCATION_PROPERTY_OPERATOR);
 			type = getPropertyClass(className, property);
+			
+			if ("in".equals(operator)) {
+				list.add(new RuleCompletionProposal(prefix.length(), "()",
+					"(  )", 2, DROOLS_ICON));
+				break;
+			}
 
 			if ("contains".equals(operator) || "excludes".equals(operator)) {
 				type = "java.lang.Object";
+			}
+
+			if ("memberOf".equals(operator)) {
+				type = "java.util.Collection";
 			}
 
 			boolean isObject = false;

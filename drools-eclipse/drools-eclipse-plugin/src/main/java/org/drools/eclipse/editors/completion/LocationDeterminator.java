@@ -26,15 +26,19 @@ import org.drools.lang.descr.RuleDescr;
 public class LocationDeterminator {
 
     static final Pattern PATTERN_PATTERN_START = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*[^\\s<>!=:]*", Pattern.DOTALL);
-    static final Pattern PATTERN_PATTERN_OPERATOR = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+", Pattern.DOTALL);
-    static final Pattern PATTERN_PATTERN_CONTAINS_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+contains\\s+[^\\s<>!=:]*", Pattern.DOTALL);
-    static final Pattern PATTERN_PATTERN_MATCHES_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+matches\\s+[^\\s<>!=:]*", Pattern.DOTALL);
-    static final Pattern PATTERN_PATTERN_EXCLUDES_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+excludes\\s+[^\\s<>!=:]*", Pattern.DOTALL);
-    static final Pattern PATTERN_PATTERN_COMPARATOR_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s*([<>=!]+)\\s*[^\\s<>!=:]*", Pattern.DOTALL);
-    static final Pattern PATTERN_PATTERN_CONTAINS_END = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+contains\\s+[^\\s<>!=:,]+\\s+", Pattern.DOTALL);
-    static final Pattern PATTERN_PATTERN_MATCHES_END = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+matches\\s+[^\\s<>!=:,]+\\s+", Pattern.DOTALL);
-    static final Pattern PATTERN_PATTERN_EXCLUDES_END = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s+excludes\\s+[^\\s<>!=:,]+\\s+", Pattern.DOTALL);
-    static final Pattern PATTERN_PATTERN_COMPARATOR_END = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:]+)\\s*([<>=!]+)\\s*[^\\s<>!=:,]+\\s+", Pattern.DOTALL);
+    static final Pattern PATTERN_PATTERN_OPERATOR = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:\\(\\)]+)\\s+", Pattern.DOTALL);
+    static final Pattern PATTERN_PATTERN_CONTAINS_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:\\(\\)]+)\\s+contains\\s+[^\\s<>!=:]*", Pattern.DOTALL);
+    static final Pattern PATTERN_PATTERN_MATCHES_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:\\(\\)]+)\\s+matches\\s+[^\\s<>!=:]*", Pattern.DOTALL);
+    static final Pattern PATTERN_PATTERN_EXCLUDES_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:\\(\\)]+)\\s+excludes\\s+[^\\s<>!=:]*", Pattern.DOTALL);
+    static final Pattern PATTERN_PATTERN_IN_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:\\(\\)]+)\\s+(not\\s+)?in\\s+[^\\s<>!=:]*", Pattern.DOTALL);
+    static final Pattern PATTERN_PATTERN_MEMBER_OF_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:\\(\\)]+)\\s+(not\\s+)?memberOf\\s+[^\\s<>!=:]*", Pattern.DOTALL);
+    static final Pattern PATTERN_PATTERN_COMPARATOR_ARGUMENT = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:\\(\\)]+)\\s*([<>=!]+)\\s*[^\\s<>!=:]*", Pattern.DOTALL);
+    static final Pattern PATTERN_PATTERN_CONTAINS_END = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:\\(\\)]+)\\s+contains\\s+[^\\s<>!=:,]+\\s+", Pattern.DOTALL);
+    static final Pattern PATTERN_PATTERN_MATCHES_END = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:\\(\\)]+)\\s+matches\\s+[^\\s<>!=:,]+\\s+", Pattern.DOTALL);
+    static final Pattern PATTERN_PATTERN_EXCLUDES_END = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:\\(\\)]+)\\s+excludes\\s+[^\\s<>!=:,]+\\s+", Pattern.DOTALL);
+    static final Pattern PATTERN_PATTERN_IN_END = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:\\(\\)]+)\\s+(not\\s+)?in\\s+\\([^\\)]+\\)\\s*", Pattern.DOTALL);
+    static final Pattern PATTERN_PATTERN_MEMBER_OF_END = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:\\(\\)]+)\\s+(not\\s+)?memberOf\\s+[^\\s<>!=:,]+\\s+", Pattern.DOTALL);
+    static final Pattern PATTERN_PATTERN_COMPARATOR_END = Pattern.compile(".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:\\(\\)]+)\\s*([<>=!]+)\\s*[^\\s<>!=:,]+\\s+", Pattern.DOTALL);
 
     static final Pattern PATTERN_PATTERN = Pattern.compile("((\\S+)\\s*:\\s*)?(\\S+)\\s*(\\(.*)", Pattern.DOTALL);
     static final Pattern EXISTS_PATTERN = Pattern.compile(".*\\s+exists\\s*\\(?\\s*((\\S*)\\s*:)?\\s*\\S*", Pattern.DOTALL);
@@ -243,11 +247,12 @@ public class LocationDeterminator {
 							}
 							int connectiveLocation = patternContents.lastIndexOf(connective);
 							patternContents = "( " + lastFieldDescr.getFieldName() + " " + patternContents.substring(connectiveLocation + 1);
-						} else {
-							Location location = new Location(LOCATION_LHS_INSIDE_CONDITION_END);
-							location.setProperty(LOCATION_PROPERTY_CLASS_NAME, patternDescr.getObjectType());
-							return location;
 						}
+//						else {
+//							Location location = new Location(LOCATION_LHS_INSIDE_CONDITION_END);
+//							location.setProperty(LOCATION_PROPERTY_CLASS_NAME, patternDescr.getObjectType());
+//							return location;
+//						}
 					}
 				}
 			}
@@ -482,6 +487,22 @@ public class LocationDeterminator {
 			location.setProperty(LOCATION_PROPERTY_OPERATOR, "excludes");
 			return location;
         }
+        matcher = PATTERN_PATTERN_IN_ARGUMENT.matcher(patternContents);
+        if (matcher.matches()) {
+			Location location = new Location(LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
+			location.setProperty(LOCATION_PROPERTY_CLASS_NAME, className);
+			location.setProperty(LOCATION_PROPERTY_PROPERTY_NAME, matcher.group(3));
+			location.setProperty(LOCATION_PROPERTY_OPERATOR, "in");
+			return location;
+        }
+        matcher = PATTERN_PATTERN_MEMBER_OF_ARGUMENT.matcher(patternContents);
+        if (matcher.matches()) {
+			Location location = new Location(LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
+			location.setProperty(LOCATION_PROPERTY_CLASS_NAME, className);
+			location.setProperty(LOCATION_PROPERTY_PROPERTY_NAME, matcher.group(3));
+			location.setProperty(LOCATION_PROPERTY_OPERATOR, "memberOf");
+			return location;
+        }
         matcher = PATTERN_PATTERN_MATCHES_ARGUMENT.matcher(patternContents);
         if (matcher.matches()) {
 			Location location = new Location(LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
@@ -508,6 +529,18 @@ public class LocationDeterminator {
 			location.setProperty(LOCATION_PROPERTY_CLASS_NAME, className);
 			return location;
         }
+        matcher = PATTERN_PATTERN_IN_END.matcher(patternContents);
+        if (matcher.matches()) {
+			Location location = new Location(LOCATION_LHS_INSIDE_CONDITION_END);
+			location.setProperty(LOCATION_PROPERTY_CLASS_NAME, className);
+			return location;
+        }
+        matcher = PATTERN_PATTERN_MEMBER_OF_END.matcher(patternContents);
+        if (matcher.matches()) {
+			Location location = new Location(LOCATION_LHS_INSIDE_CONDITION_END);
+			location.setProperty(LOCATION_PROPERTY_CLASS_NAME, className);
+			return location;
+        }
         matcher = PATTERN_PATTERN_COMPARATOR_END.matcher(patternContents);
         if (matcher.matches()) {
 			Location location = new Location(LOCATION_LHS_INSIDE_CONDITION_END);
@@ -520,7 +553,7 @@ public class LocationDeterminator {
 			location.setProperty(LOCATION_PROPERTY_CLASS_NAME, className);
 			return location;
         }
-		Location location = new Location(LOCATION_LHS_INSIDE_CONDITION_START);
+		Location location = new Location(LOCATION_LHS_INSIDE_CONDITION_END);
 		location.setProperty(LOCATION_PROPERTY_CLASS_NAME, className);
 		return location;
 	}
