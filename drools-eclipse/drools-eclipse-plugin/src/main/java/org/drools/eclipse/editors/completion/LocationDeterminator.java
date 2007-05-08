@@ -235,9 +235,21 @@ public class LocationDeterminator {
 				if (lastDescr instanceof FieldConstraintDescr) {
 					FieldConstraintDescr lastFieldDescr = (FieldConstraintDescr) lastDescr;
 					List restrictions = lastFieldDescr.getRestrictions();
+					// if there are multiple restrictions, filter out all the rest so that
+					// only the last one remains
+					if (restrictions.size() > 2) {
+						Object last = restrictions.get(restrictions.size() - 2);
+						if (last instanceof RestrictionConnectiveDescr) {
+							RestrictionConnectiveDescr lastRestr = (RestrictionConnectiveDescr) last;
+							char connective = '&';
+							if (lastRestr.getConnective() == RestrictionConnectiveDescr.OR) {
+								connective = '|';
+							}
+							int connectiveLocation = patternContents.lastIndexOf(connective);
+							patternContents = "( " + lastFieldDescr.getFieldName() + " " + patternContents.substring(connectiveLocation + 1);
+						}
+					}
 					if (restrictions.size() > 1) {
-						// if there are multiple restrictions, filter out all the rest so that
-						// only the last one remains
 						Object last = restrictions.get(restrictions.size() - 1);
 						if (last instanceof RestrictionConnectiveDescr) {
 							RestrictionConnectiveDescr lastRestr = (RestrictionConnectiveDescr) last;
@@ -248,11 +260,6 @@ public class LocationDeterminator {
 							int connectiveLocation = patternContents.lastIndexOf(connective);
 							patternContents = "( " + lastFieldDescr.getFieldName() + " " + patternContents.substring(connectiveLocation + 1);
 						}
-//						else {
-//							Location location = new Location(LOCATION_LHS_INSIDE_CONDITION_END);
-//							location.setProperty(LOCATION_PROPERTY_CLASS_NAME, patternDescr.getObjectType());
-//							return location;
-//						}
 					}
 				}
 			}
