@@ -33,7 +33,7 @@ public class DecisionTableTest {
         	
         	//load up the rulebase
             RuleBase ruleBase = readDecisionTable();
-            WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+            WorkingMemory workingMemory = ruleBase.newStatefulSession();
             
             //go !
             Message message = new Message();
