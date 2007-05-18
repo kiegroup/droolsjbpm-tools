@@ -55,7 +55,7 @@ public class SplitWrapper extends NodeWrapper {
         System.arraycopy(DefaultElementWrapper.descriptors, 0, descriptors, 0, DefaultElementWrapper.descriptors.length);
         descriptors[descriptors.length - 1] = 
             new ComboBoxPropertyDescriptor(TYPE, "Type", 
-                new String[] { "", "AND" }); //, "XOR", "OR" });
+                new String[] { "", "AND", "XOR", "OR" });
     }
     
     public ISplit getSplit() {

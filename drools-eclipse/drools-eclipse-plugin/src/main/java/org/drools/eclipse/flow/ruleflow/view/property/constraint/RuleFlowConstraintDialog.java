@@ -168,7 +168,7 @@ public class RuleFlowConstraintDialog extends Dialog {
 		if (!alwaysTrue.getSelection()) {
 			constraint.setConstraint(translation.getText());
 		} else {
-			constraint.setConstraint("true");
+			constraint.setConstraint("eval(true)");
 		}
 		constraint.setName(nameText.getText());
 		try {
