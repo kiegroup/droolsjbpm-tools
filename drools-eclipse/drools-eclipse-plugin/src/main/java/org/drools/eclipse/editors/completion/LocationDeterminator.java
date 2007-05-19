@@ -241,9 +241,9 @@ public class LocationDeterminator {
 						Object last = restrictions.get(restrictions.size() - 2);
 						if (last instanceof RestrictionConnectiveDescr) {
 							RestrictionConnectiveDescr lastRestr = (RestrictionConnectiveDescr) last;
-							char connective = '&';
+							String connective = "&&";
 							if (lastRestr.getConnective() == RestrictionConnectiveDescr.OR) {
-								connective = '|';
+								connective = "||";
 							}
 							int connectiveLocation = patternContents.lastIndexOf(connective);
 							patternContents = "( " + lastFieldDescr.getFieldName() + " " + patternContents.substring(connectiveLocation + 1);
@@ -253,9 +253,9 @@ public class LocationDeterminator {
 						Object last = restrictions.get(restrictions.size() - 1);
 						if (last instanceof RestrictionConnectiveDescr) {
 							RestrictionConnectiveDescr lastRestr = (RestrictionConnectiveDescr) last;
-							char connective = '&';
+							String connective = "&&";
 							if (lastRestr.getConnective() == RestrictionConnectiveDescr.OR) {
-								connective = '|';
+								connective = "||";
 							}
 							int connectiveLocation = patternContents.lastIndexOf(connective);
 							patternContents = "( " + lastFieldDescr.getFieldName() + " " + patternContents.substring(connectiveLocation + 1);
