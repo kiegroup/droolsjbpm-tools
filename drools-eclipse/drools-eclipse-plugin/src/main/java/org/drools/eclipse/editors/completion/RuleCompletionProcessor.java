@@ -14,8 +14,8 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
 import org.drools.eclipse.editors.AbstractRuleEditor;
-import org.drools.eclipse.editors.completion.LocationDeterminator.Location;
 import org.drools.eclipse.util.ProjectClassLoader;
+import org.drools.lang.Location;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
@@ -64,12 +64,12 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			}
 
 			Location location = LocationDeterminator.getLocation(backText);
-			if (location.getType() == LocationDeterminator.LOCATION_RULE_HEADER) {
+			if (location.getType() == Location.LOCATION_RULE_HEADER) {
 				addRuleHeaderProposals(list, prefix, backText);
-			} else if (location.getType() == LocationDeterminator.LOCATION_RHS) {
+			} else if (location.getType() == Location.LOCATION_RHS) {
 				addRHSCompletionProposals(list, prefix, backText,
-					(String) location.getProperty(LocationDeterminator.LOCATION_LHS_CONTENT),
-					(String) location.getProperty(LocationDeterminator.LOCATION_RHS_CONTENT));
+					(String) location.getProperty(Location.LOCATION_LHS_CONTENT),
+					(String) location.getProperty(Location.LOCATION_RHS_CONTENT));
 			} else {
 				addLHSCompletionProposals(list, location, prefix, backText);
 			}
@@ -98,7 +98,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 	protected void addLHSCompletionProposals(List list,
 			Location location, String prefix, String backText) {
 		switch (location.getType()) {
-		case LocationDeterminator.LOCATION_LHS_BEGIN_OF_CONDITION:
+		case Location.LOCATION_LHS_BEGIN_OF_CONDITION:
 			// if we are at the beginning of a new condition
 			// add drools keywords
 			list.add(new RuleCompletionProposal(prefix.length(), "and",
@@ -117,19 +117,19 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			list.add(prop);
 			// we do not break but also add all elements that are needed for
 			// and/or
-		case LocationDeterminator.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR:
+		case Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR:
 			list.add(new RuleCompletionProposal(prefix.length(), "not",
 					"not ", DROOLS_ICON));
 			// we do not break but also add all elements that are needed for
 			// not
-		case LocationDeterminator.LOCATION_LHS_BEGIN_OF_CONDITION_NOT:
+		case Location.LOCATION_LHS_BEGIN_OF_CONDITION_NOT:
 			list.add(new RuleCompletionProposal(prefix.length(), "exists",
 					"exists ", DROOLS_ICON));
 			// we do not break but also add all elements that are needed for
 			// exists
-		case LocationDeterminator.LOCATION_LHS_FROM_ACCUMULATE:
-		case LocationDeterminator.LOCATION_LHS_FROM_COLLECT:
-		case LocationDeterminator.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS:
+		case Location.LOCATION_LHS_FROM_ACCUMULATE:
+		case Location.LOCATION_LHS_FROM_COLLECT:
+		case Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS:
 			// and add imported classes
 			List imports = getDRLEditor().getImports();
 			Iterator iterator = imports.iterator();
@@ -173,9 +173,9 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 				list.add(p);
 			}
 			break;
-		case LocationDeterminator.LOCATION_LHS_INSIDE_CONDITION_START:
+		case Location.LOCATION_LHS_INSIDE_CONDITION_START:
 			String className = (String) location
-					.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME);
+					.getProperty(Location.LOCATION_PROPERTY_CLASS_NAME);
 			if (className != null) {
 				boolean isTemplate = addFactTemplatePropertyProposals(
 						prefix, className, list);
@@ -205,11 +205,11 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 				}
 			}
 			break;
-		case LocationDeterminator.LOCATION_LHS_INSIDE_CONDITION_OPERATOR:
+		case Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR:
 			className = (String) location
-					.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME);
+					.getProperty(Location.LOCATION_PROPERTY_CLASS_NAME);
 			String property = (String) location
-					.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME);
+					.getProperty(Location.LOCATION_PROPERTY_PROPERTY_NAME);
 			String type = getPropertyClass(className, property);
 
 			list.add(new RuleCompletionProposal(prefix.length(), "==",
@@ -250,14 +250,14 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 						"excludes", "excludes ", DROOLS_ICON));
 			}
 			break;
-		case LocationDeterminator.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT:
+		case Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT:
 			// determine type
 			className = (String) location
-					.getProperty(LocationDeterminator.LOCATION_PROPERTY_CLASS_NAME);
+					.getProperty(Location.LOCATION_PROPERTY_CLASS_NAME);
 			property = (String) location
-					.getProperty(LocationDeterminator.LOCATION_PROPERTY_PROPERTY_NAME);
+					.getProperty(Location.LOCATION_PROPERTY_PROPERTY_NAME);
 			String operator = (String) location
-					.getProperty(LocationDeterminator.LOCATION_PROPERTY_OPERATOR);
+					.getProperty(Location.LOCATION_PROPERTY_OPERATOR);
 			type = getPropertyClass(className, property);
 			
 			if ("in".equals(operator)) {
@@ -325,13 +325,13 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 				// do nothing
 			}
 			break;
-		case LocationDeterminator.LOCATION_LHS_INSIDE_EVAL:
+		case Location.LOCATION_LHS_INSIDE_EVAL:
 			String content = (String) location
-					.getProperty(LocationDeterminator.LOCATION_EVAL_CONTENT);
+					.getProperty(Location.LOCATION_EVAL_CONTENT);
 			list.addAll(getJavaCompletionProposals(content, prefix,
 					getRuleParameters(backText)));
 			break;
-		case LocationDeterminator.LOCATION_LHS_INSIDE_CONDITION_END:
+		case Location.LOCATION_LHS_INSIDE_CONDITION_END:
 			list.add(new RuleCompletionProposal(prefix.length(), "&", "& ",
 					DROOLS_ICON));
 			list.add(new RuleCompletionProposal(prefix.length(), "|", "| ",
@@ -339,9 +339,9 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			list.add(new RuleCompletionProposal(prefix.length(), ",", ", ",
 					DROOLS_ICON));
 			break;
-		case LocationDeterminator.LOCATION_LHS_FROM:
+		case Location.LOCATION_LHS_FROM:
 			String fromText = (String) location
-					.getProperty(LocationDeterminator.LOCATION_FROM_CONTENT);
+					.getProperty(Location.LOCATION_FROM_CONTENT);
 			int index = fromText.indexOf('.');
 			if (index == -1) {
 				// add accumulate and collect keyword
@@ -370,27 +370,27 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 						getRuleParameters(backText)));
 			}
 			break;
-		case LocationDeterminator.LOCATION_LHS_FROM_ACCUMULATE_INIT_INSIDE:
+		case Location.LOCATION_LHS_FROM_ACCUMULATE_INIT_INSIDE:
 			content = (String) location
-					.getProperty(LocationDeterminator.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT);
+					.getProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT);
 			list.addAll(getJavaCompletionProposals(content, prefix,
 					getRuleParameters(backText)));
 			break;
-		case LocationDeterminator.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE:
+		case Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE:
 			content = (String) location
-					.getProperty(LocationDeterminator.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT);
+					.getProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT);
 			content += (String) location
-					.getProperty(LocationDeterminator.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT);
+					.getProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT);
 			list.addAll(getJavaCompletionProposals(content, prefix,
 					getRuleParameters(backText)));
 			break;
-		case LocationDeterminator.LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE:
+		case Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE:
 			content = (String) location
-					.getProperty(LocationDeterminator.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT);
+					.getProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT);
 			content += (String) location
-					.getProperty(LocationDeterminator.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT);
+					.getProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT);
 			content += (String) location
-					.getProperty(LocationDeterminator.LOCATION_PROPERTY_FROM_ACCUMULATE_RESULT_CONTENT);
+					.getProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_RESULT_CONTENT);
 			list.addAll(getJavaCompletionProposals(content, prefix,
 					getRuleParameters(backText)));
 			break;

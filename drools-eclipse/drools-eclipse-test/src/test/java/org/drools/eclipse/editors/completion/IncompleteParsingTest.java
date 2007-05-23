@@ -416,11 +416,11 @@ public class IncompleteParsingTest extends TestCase {
         assertEquals(1, pattern.getDescrs().size());
         field = (FieldConstraintDescr) pattern.getDescrs().get(0);
         assertEquals("property", field.getFieldName());
-        assertEquals(2, field.getRestrictions().size());
+        assertEquals(1, field.getRestrictions().size());
         literal = (LiteralRestrictionDescr) field.getRestrictions().get(0);
         assertEquals(">", literal.getEvaluator());
         assertEquals("0", literal.getText());
-        RestrictionConnectiveDescr connective = (RestrictionConnectiveDescr) field.getRestrictions().get(1);
+        RestrictionConnectiveDescr connective = (RestrictionConnectiveDescr) field.getRestriction();
         assertEquals(RestrictionConnectiveDescr.AND, connective.getConnective());
 
         input = 
