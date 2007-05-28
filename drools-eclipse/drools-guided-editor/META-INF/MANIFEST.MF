@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: RuleBuilder Plug-in
+Bundle-SymbolicName: org.drools.eclipse.ide.rulebuilder;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.drools.eclipse.rulebuilder.RuleBuilderPlugin
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.forms,
+ org.eclipse.ui.editors,
+ org.eclipse.ui.ide,
+ org.eclipse.ui.workbench.texteditor,
+ org.eclipse.jface.text,
+ org.eclipse.core.resources,
+ org.drools.eclipse,
+ org.eclipse.jdt.core
+Eclipse-LazyStart: true
+Bundle-ClassPath: lib/drools-core-4.0.0.SNAPSHOT.jar,
+ lib/drools-compiler-4.0.0.SNAPSHOT.jar,
+ lib/antlr-3.0b7.jar,
+ lib/xstream-1.1.3.jar,
+ .
