@@ -17,9 +17,9 @@ package org.drools.eclipse.flow.ruleflow.core;
 
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
-import org.drools.ruleflow.core.IConnection;
-import org.drools.ruleflow.core.INode;
-import org.drools.ruleflow.core.impl.Connection;
+import org.drools.ruleflow.core.Connection;
+import org.drools.ruleflow.core.Node;
+import org.drools.ruleflow.core.impl.ConnectionImpl;
 
 /**
  * Wrapper for a connection.
@@ -30,7 +30,7 @@ public class ConnectionWrapper extends ElementConnection {
 		
 	private static final long serialVersionUID = 4049352037223445809L;
 
-	private IConnection connection;
+	private Connection connection;
 	
 	public ConnectionWrapper(int type) {
 		super(type);
@@ -48,9 +48,9 @@ public class ConnectionWrapper extends ElementConnection {
 	
 	public void connect(ElementWrapper source, ElementWrapper target) {
 		super.connect(source, target);
-		INode from = ((NodeWrapper) getSource()).getNode();
-		INode to = ((NodeWrapper) getTarget()).getNode();
+		Node from = ((NodeWrapper) getSource()).getNode();
+		Node to = ((NodeWrapper) getTarget()).getNode();
 		int type = getType();
-		connection = new Connection(from, to, type);		
+		connection = new ConnectionImpl(from, to, type);		
 	}
 }

@@ -16,7 +16,7 @@ package org.drools.eclipse.flow.ruleflow.core;
  */
 
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
-import org.drools.ruleflow.core.INode;
+import org.drools.ruleflow.core.Node;
 
 /**
  * Wrapper for a node.
@@ -25,12 +25,12 @@ import org.drools.ruleflow.core.INode;
  */
 public abstract class NodeWrapper extends DefaultElementWrapper {
 	
-    protected void setNode(INode node) {
+    protected void setNode(Node node) {
         setElement(node);
     }
     
-    public INode getNode() {
-        return (INode) getElement();
+    public Node getNode() {
+        return (Node) getElement();
     }
     
     public String getId() {

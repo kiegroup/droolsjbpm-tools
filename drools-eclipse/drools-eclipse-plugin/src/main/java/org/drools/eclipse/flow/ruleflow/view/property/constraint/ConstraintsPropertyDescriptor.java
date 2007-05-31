@@ -15,8 +15,8 @@ package org.drools.eclipse.flow.ruleflow.view.property.constraint;
  * limitations under the License.
  */
 
-import org.drools.ruleflow.core.ISplit;
-import org.drools.ruleflow.core.IRuleFlowProcess;
+import org.drools.ruleflow.core.Split;
+import org.drools.ruleflow.core.RuleFlowProcess;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
@@ -28,16 +28,16 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
  */
 public class ConstraintsPropertyDescriptor extends PropertyDescriptor {
     
-    private IRuleFlowProcess process;
-    private ISplit split;
+    private RuleFlowProcess process;
+    private Split split;
     
-    public ConstraintsPropertyDescriptor(Object id, String displayName, ISplit split, IRuleFlowProcess process) {
+    public ConstraintsPropertyDescriptor(Object id, String displayName, Split split, RuleFlowProcess process) {
         super(id, displayName);
         this.split = split;
         this.process = process;
     }
     
-    public IRuleFlowProcess getProcess() {
+    public RuleFlowProcess getProcess() {
         return process;
     }
     

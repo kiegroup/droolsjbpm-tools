@@ -15,9 +15,9 @@ package org.drools.eclipse.flow.common.view.datatype.editor.impl;
  * limitations under the License.
  */
 
-import java.io.Serializable;import org.drools.eclipse.flow.common.view.datatype.editor.IDataTypeEditor;
-import org.drools.eclipse.flow.common.view.datatype.editor.IEditor;
-import org.drools.ruleflow.common.datatype.IDataType;
+import java.io.Serializable;import org.drools.eclipse.flow.common.view.datatype.editor.DataTypeEditor;
+import org.drools.eclipse.flow.common.view.datatype.editor.Editor;
+import org.drools.ruleflow.common.datatype.DataType;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
@@ -29,9 +29,9 @@ import org.eclipse.swt.widgets.Label;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class EmptyEditor extends Composite implements IEditor, IDataTypeEditor {
+public class EmptyEditor extends Composite implements Editor, DataTypeEditor {
 
-    private IDataType dataType;
+    private DataType dataType;
     private Serializable value;
     private Label label;
     
@@ -42,11 +42,11 @@ public class EmptyEditor extends Composite implements IEditor, IDataTypeEditor {
         label = new Label(this, SWT.NONE);
     }
     
-    public IDataType getDataType() {
+    public DataType getDataType() {
         return dataType;
     }
     
-    public void setDataType(IDataType dataType) {
+    public void setDataType(DataType dataType) {
         this.dataType = dataType;
     }
 
@@ -62,11 +62,11 @@ public class EmptyEditor extends Composite implements IEditor, IDataTypeEditor {
         // do nothing
     }
 
-    public void addListener(IDataTypeEditor.DataTypeListener listener) {
+    public void addListener(DataTypeEditor.DataTypeListener listener) {
         // do nothing
     }
     
-    public void removeListener(IDataTypeEditor.DataTypeListener listener) {
+    public void removeListener(DataTypeEditor.DataTypeListener listener) {
         // do nothing
     }
     

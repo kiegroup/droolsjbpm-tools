@@ -21,10 +21,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.ruleflow.core.IConnection;
-import org.drools.ruleflow.core.IConstraint;
-import org.drools.ruleflow.core.ISplit;
-import org.drools.ruleflow.core.IRuleFlowProcess;
+import org.drools.ruleflow.core.Connection;
+import org.drools.ruleflow.core.Constraint;
+import org.drools.ruleflow.core.Split;
+import org.drools.ruleflow.core.RuleFlowProcess;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -44,13 +44,13 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class ConstraintListDialog extends EditBeanDialog {
 
-	private IRuleFlowProcess process;
-	private ISplit split;
+	private RuleFlowProcess process;
+	private Split split;
 	private Map newMap;
 	private Map labels = new HashMap();
 
-	protected ConstraintListDialog(Shell parentShell, IRuleFlowProcess process,
-			ISplit split) {
+	protected ConstraintListDialog(Shell parentShell, RuleFlowProcess process,
+			Split split) {
 		super(parentShell, "Edit Constraints");
 		this.process = process;
 		this.split = split;
@@ -65,7 +65,7 @@ public class ConstraintListDialog extends EditBeanDialog {
 		List outgoingConnections = split.getOutgoingConnections();
 		labels.clear();
 		for (Iterator it = outgoingConnections.iterator(); it.hasNext(); ) {
-			IConnection outgoingConnection = (IConnection) it.next();
+			Connection outgoingConnection = (Connection) it.next();
 			Label label1 = new Label(composite, SWT.NONE);
 			label1.setText("To node " + outgoingConnection.getTo().getName()
 					+ ": ");
@@ -76,7 +76,7 @@ public class ConstraintListDialog extends EditBeanDialog {
 			gridData.grabExcessHorizontalSpace = true;
 			gridData.horizontalAlignment = GridData.FILL;
 			label2.setLayoutData(gridData);
-			IConstraint constraint = (IConstraint) newMap.get(outgoingConnection);
+			Constraint constraint = (Constraint) newMap.get(outgoingConnection);
 			if (constraint != null) {
 				label2.setText(constraint.getName());
 			}
@@ -99,7 +99,7 @@ public class ConstraintListDialog extends EditBeanDialog {
 		return newMap;
 	}
 
-	private void editItem(final IConnection connection) {
+	private void editItem(final Connection connection) {
 
 		final Runnable r = new Runnable() {
 			public void run() {
@@ -108,7 +108,7 @@ public class ConstraintListDialog extends EditBeanDialog {
 				RuleFlowConstraintDialog dialog = new RuleFlowConstraintDialog(
 						getShell(), process);
 				dialog.create();
-				IConstraint constraint = (IConstraint) newMap.get(connection);
+				Constraint constraint = (Constraint) newMap.get(connection);
 				dialog.setConstraint(constraint);
 				int code = dialog.open();
 				if (code != CANCEL) {
@@ -133,9 +133,9 @@ public class ConstraintListDialog extends EditBeanDialog {
 	}
 
 	private class EditButtonListener extends SelectionAdapter {
-		private IConnection connection;
+		private Connection connection;
 
-		public EditButtonListener(IConnection connection) {
+		public EditButtonListener(Connection connection) {
 			this.connection = connection;
 		}
 

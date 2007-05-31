@@ -15,8 +15,8 @@ package org.drools.eclipse.flow.common.view.datatype.editor.impl;
  * limitations under the License.
  */
 
-import java.io.Serializable;import org.drools.eclipse.flow.common.view.datatype.editor.IEditor;
-import org.drools.ruleflow.common.datatype.IDataType;
+import java.io.Serializable;import org.drools.eclipse.flow.common.view.datatype.editor.Editor;
+import org.drools.ruleflow.common.datatype.DataType;
 import org.drools.ruleflow.common.datatype.impl.type.BooleanDataType;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Composite;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class BooleanEditor extends Composite implements IEditor {
+public class BooleanEditor extends Composite implements Editor {
 
     private static final String[] TF = { "true", "false" };
     
@@ -42,7 +42,7 @@ public class BooleanEditor extends Composite implements IEditor {
         combo.select(1);
     }
 
-    public void setDataType(IDataType dataType) {
+    public void setDataType(DataType dataType) {
         if (!(dataType instanceof BooleanDataType)) {
             throw new IllegalArgumentException("Illegal data type " + dataType);
         }

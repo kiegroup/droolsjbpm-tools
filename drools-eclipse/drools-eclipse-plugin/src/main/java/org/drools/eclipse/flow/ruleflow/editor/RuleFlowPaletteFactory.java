@@ -27,7 +27,7 @@ import org.drools.eclipse.flow.ruleflow.core.JoinWrapper;
 import org.drools.eclipse.flow.ruleflow.core.RuleSetNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.SplitWrapper;
 import org.drools.eclipse.flow.ruleflow.core.StartNodeWrapper;
-import org.drools.ruleflow.core.IConnection;
+import org.drools.ruleflow.core.Connection;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.ConnectionCreationToolEntry;
 import org.eclipse.gef.palette.MarqueeToolEntry;
@@ -133,7 +133,7 @@ public class RuleFlowPaletteFactory {
         tool = new MarqueeToolEntry();
         entries.add(tool);
         
-        final ElementConnectionFactory normalConnectionFactory = new ConnectionWrapperFactory(IConnection.TYPE_NORMAL);
+        final ElementConnectionFactory normalConnectionFactory = new ConnectionWrapperFactory(Connection.TYPE_NORMAL);
 
         tool = new ConnectionCreationToolEntry(
             "Connection Creation",

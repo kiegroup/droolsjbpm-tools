@@ -17,21 +17,21 @@ package org.drools.eclipse.flow.common.datatype;
 
 import java.util.Set;
 
-import org.drools.ruleflow.common.datatype.IDataTypeFactory;
+import org.drools.ruleflow.common.datatype.DataTypeFactory;
 
 /**
  * A registry of datatypes.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface IDataTypeRegistry {
+public interface DataTypeRegistry {
     
 	/**
 	 * Returns all registered data types.
 	 */
     Set getDataTypes();
     
-    void registerDataType(Class type, IDataTypeFactory dataTypeFactory, String name,
+    void registerDataType(Class type, DataTypeFactory dataTypeFactory, String name,
         Class valueEditorClass, Class dataTypeEditorClass);
     
     /**
@@ -44,7 +44,7 @@ public interface IDataTypeRegistry {
     
     interface IDataTypeInfo {
         Class getType();
-        IDataTypeFactory getDataTypeFactory();
+        DataTypeFactory getDataTypeFactory();
         String getName();
         Class getDataTypeEditorClass();
         Class getValueEditorClass();

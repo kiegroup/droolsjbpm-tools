@@ -17,9 +17,9 @@ package org.drools.eclipse.flow.ruleflow.core;
 
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ProcessWrapper;
-import org.drools.ruleflow.common.core.IProcess;
-import org.drools.ruleflow.core.IRuleFlowProcess;
-import org.drools.ruleflow.core.impl.RuleFlowProcess;
+import org.drools.ruleflow.common.core.Process;
+import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.ruleflow.core.impl.RuleFlowProcessImpl;
 
 /**
  * Wrapper for a RuleFlow process.
@@ -40,12 +40,12 @@ public class RuleFlowProcessWrapper extends ProcessWrapper {
 //            new ListPropertyDescriptor(VARIABLES, "Variables", VariableListCellEditor.class);
 //   }
     
-    public IRuleFlowProcess getRuleFlowProcess() {
-        return (IRuleFlowProcess) getProcess();
+    public RuleFlowProcess getRuleFlowProcess() {
+        return (RuleFlowProcess) getProcess();
     }
     
-    protected IProcess createProcess() {
-        return new RuleFlowProcess();
+    protected Process createProcess() {
+        return new RuleFlowProcessImpl();
     }
 
     protected void internalAddElement(ElementWrapper element) {

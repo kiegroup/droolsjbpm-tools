@@ -15,22 +15,26 @@ package org.drools.eclipse.flow.common.view.datatype.editor;
  * limitations under the License.
  */
 
-import java.io.Serializable;
-import org.drools.ruleflow.common.datatype.IDataType;
-
+import org.drools.ruleflow.common.datatype.DataType;
+
 /**
- * An editor for an object with a given datatype.
+ * An editor for a datatype.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface IEditor {
+public interface DataTypeEditor {
 
-    void setDataType(IDataType dataType);
+    void setDataType(DataType dataType);
     
-	Serializable getValue();
-    
-    void setValue(Serializable value);
+    DataType getDataType();
     
     void reset();
     
+    void addListener(DataTypeListener listener);
+    
+    void removeListener(DataTypeListener listener);
+
+    public interface DataTypeListener {
+        void dataTypeChanged(DataType dataType);
+    }
 }

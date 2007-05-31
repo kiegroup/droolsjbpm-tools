@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.ruleflow.common.core.IProcess;
+import org.drools.ruleflow.common.core.Process;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
@@ -52,7 +52,7 @@ public abstract class ProcessWrapper implements IPropertySource, Serializable {
         };
     }
     
-    private IProcess process;
+    private Process process;
     private Map elements = new HashMap();
     private transient List listeners = new ArrayList();
     
@@ -60,9 +60,9 @@ public abstract class ProcessWrapper implements IPropertySource, Serializable {
         process = createProcess();
     }
 
-    protected abstract IProcess createProcess();
+    protected abstract Process createProcess();
 
-    public IProcess getProcess() {
+    public Process getProcess() {
         return process;
     }
     

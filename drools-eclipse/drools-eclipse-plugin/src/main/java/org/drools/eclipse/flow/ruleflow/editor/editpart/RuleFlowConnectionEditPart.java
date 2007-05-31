@@ -19,7 +19,7 @@ import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementConnectionFactory;
 import org.drools.eclipse.flow.common.editor.editpart.ElementConnectionEditPart;
 import org.drools.eclipse.flow.ruleflow.core.ConnectionWrapperFactory;
-import org.drools.ruleflow.core.IConnection;
+import org.drools.ruleflow.core.Connection;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
@@ -33,12 +33,12 @@ import org.eclipse.draw2d.geometry.PointList;
 public class RuleFlowConnectionEditPart extends ElementConnectionEditPart {
     
 	protected ElementConnectionFactory getDefaultElementConnectionFactory() {
-		return new ConnectionWrapperFactory(IConnection.TYPE_NORMAL);
+		return new ConnectionWrapperFactory(Connection.TYPE_NORMAL);
 	}
 	
     protected IFigure createFigure() {
         PolylineConnection result = (PolylineConnection) super.createFigure();
-        if (((ElementConnection) getModel()).getType() == IConnection.TYPE_ABORT) {
+        if (((ElementConnection) getModel()).getType() == Connection.TYPE_ABORT) {
 	        PolygonDecoration decoration = new PolygonDecoration();
 	        PointList decorationPointList = new PointList();
 	        decorationPointList.addPoint(0,0);

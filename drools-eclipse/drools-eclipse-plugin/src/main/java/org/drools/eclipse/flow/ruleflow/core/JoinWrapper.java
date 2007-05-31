@@ -17,9 +17,9 @@ package org.drools.eclipse.flow.ruleflow.core;
 
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
-import org.drools.ruleflow.core.IConnection;
-import org.drools.ruleflow.core.IJoin;
-import org.drools.ruleflow.core.impl.Join;
+import org.drools.ruleflow.core.Connection;
+import org.drools.ruleflow.core.Join;
+import org.drools.ruleflow.core.impl.JoinImpl;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
@@ -42,12 +42,12 @@ public class JoinWrapper extends NodeWrapper {
     }
     
     public JoinWrapper() {
-        setNode(new Join());
+        setNode(new JoinImpl());
         getJoin().setName("Join");
     }
     
-    public IJoin getJoin() {
-        return (IJoin) getNode();
+    public Join getJoin() {
+        return (Join) getNode();
     }
     
     public boolean acceptsIncomingConnection(ElementConnection connection) {
@@ -55,7 +55,7 @@ public class JoinWrapper extends NodeWrapper {
     }
 
     public boolean acceptsOutgoingConnection(ElementConnection connection) {
-        return connection.getType() == IConnection.TYPE_NORMAL
+        return connection.getType() == Connection.TYPE_NORMAL
         	&& getOutgoingConnections().isEmpty();
     }
 
@@ -72,7 +72,7 @@ public class JoinWrapper extends NodeWrapper {
 
     public void resetPropertyValue(Object id) {
         if (TYPE.equals(id)) {
-            getJoin().setType(IJoin.TYPE_UNDEFINED);
+            getJoin().setType(Join.TYPE_UNDEFINED);
         } else {
             super.resetPropertyValue(id);
         }

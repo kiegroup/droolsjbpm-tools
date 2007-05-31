@@ -17,13 +17,13 @@ package org.drools.eclipse.flow.ruleflow.view.property.variable;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.datatype.DefaultDataTypeRegistry;
-import org.drools.eclipse.flow.common.view.datatype.editor.IDataTypeEditor;
+import org.drools.eclipse.flow.common.view.datatype.editor.DataTypeEditor;
 import org.drools.eclipse.flow.common.view.datatype.editor.impl.DataTypeCombo;
 import org.drools.eclipse.flow.common.view.datatype.editor.impl.DataTypeEditorComposite;
 import org.drools.eclipse.flow.common.view.datatype.editor.impl.EditorComposite;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.ruleflow.common.datatype.IDataType;
-import org.drools.ruleflow.core.IVariable;
+import org.drools.ruleflow.common.datatype.DataType;
+import org.drools.ruleflow.core.Variable;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -67,7 +67,7 @@ public class VariableDialog extends EditBeanDialog {
         gridData.grabExcessHorizontalSpace = true;
         gridData.horizontalAlignment = GridData.FILL;
         nameText.setLayoutData(gridData);
-        String name = ((IVariable) getValue()).getName();
+        String name = ((Variable) getValue()).getName();
         nameText.setText(name == null ? "" : name);
 
         Label typeLabel = new Label(composite, SWT.NONE);
@@ -75,11 +75,11 @@ public class VariableDialog extends EditBeanDialog {
         
         dataTypeCombo = new DataTypeCombo(composite,
     		SWT.NONE, DefaultDataTypeRegistry.getInstance());
-        IDataType dataType = ((IVariable) getValue()).getType();
+        DataType dataType = ((Variable) getValue()).getType();
         dataTypeCombo.setDataType(dataType);
         dataTypeCombo.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
-				IDataType dataType = dataTypeCombo.getDataType();
+				DataType dataType = dataTypeCombo.getDataType();
 				dataTypeEditorComposite.setDataType(dataType);
 				editorComposite.setDataType(dataType);
 				composite.layout();
@@ -95,8 +95,8 @@ public class VariableDialog extends EditBeanDialog {
         gridData.horizontalAlignment = GridData.FILL;
         dataTypeEditorComposite.setLayoutData(gridData);
         dataTypeEditorComposite.setDataType(dataType);
-        dataTypeEditorComposite.addListener(new IDataTypeEditor.DataTypeListener() {
-            public void dataTypeChanged(IDataType dataType) {
+        dataTypeEditorComposite.addListener(new DataTypeEditor.DataTypeListener() {
+            public void dataTypeChanged(DataType dataType) {
                 editorComposite.setDataType(dataType);
                 composite.layout();
             }
@@ -114,7 +114,7 @@ public class VariableDialog extends EditBeanDialog {
         gridData.grabExcessHorizontalSpace = true;
         editorComposite.setLayoutData(gridData);
         editorComposite.setDataType(dataType);
-        editorComposite.setValue(((IVariable) getValue()).getValue());
+        editorComposite.setValue(((Variable) getValue()).getValue());
         
         Composite bottom = new Composite(composite, SWT.NONE);
         gridData = new GridData();
@@ -126,7 +126,7 @@ public class VariableDialog extends EditBeanDialog {
     }
     
     protected Object updateValue(Object value) {
-        IVariable variable = (IVariable) getValue();
+        Variable variable = (Variable) getValue();
         variable.setName(nameText.getText());
         try {
             variable.setType(dataTypeEditorComposite.getDataType());

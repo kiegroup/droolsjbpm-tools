@@ -14,6 +14,8 @@ import java.util.Map;
 import org.drools.audit.event.ActivationLogEvent;
 import org.drools.audit.event.LogEvent;
 import org.drools.audit.event.ObjectLogEvent;
+import org.drools.audit.event.RuleFlowGroupLogEvent;
+import org.drools.audit.event.RuleFlowLogEvent;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
 import org.drools.eclipse.debug.actions.DeleteLogAction;
@@ -52,7 +54,7 @@ public class AuditView extends AbstractDebugView {
 	private IAction deleteAction;
 	private IAction refreshAction;
 	
-    public Viewer createViewer(Composite parent) {
+    protected Viewer createViewer(Composite parent) {
 		final TreeViewer variablesViewer = new TreeViewer(parent);
 		variablesViewer.setContentProvider(new AuditViewContentProvider());
         variablesViewer.setLabelProvider(new AuditLabelProvider());
@@ -79,87 +81,9 @@ public class AuditView extends AbstractDebugView {
     	}
 		try {
 			XStream xstream = new XStream();
-			// TODO
 			ObjectInputStream in = xstream.createObjectInputStream(
 				new FileReader(logFileName));
-			List logEvents = (List) in.readObject();
-			Iterator iterator = logEvents.iterator();
-			List events = new ArrayList();
-			Event currentBeforeActivationEvent = null;
-			List newActivations = new ArrayList();
-			Map activationMap = new HashMap();
-			Map objectMap = new HashMap();
-			while (iterator.hasNext()) {
-				LogEvent inEvent = (LogEvent) iterator.next();
-				Event event = new Event(inEvent.getType());
-				switch (inEvent.getType()) {
-					case LogEvent.OBJECT_ASSERTED:
-						ObjectLogEvent inObjectEvent = (ObjectLogEvent) inEvent;
-						event.setString("Object asserted (" + inObjectEvent.getFactId() + "): " + inObjectEvent.getObjectToString());
-						if (currentBeforeActivationEvent != null) {
-							currentBeforeActivationEvent.addSubEvent(event);
-						} else {
-							events.add(event);
-						}
-						event.addSubEvents(newActivations);
-						newActivations.clear();
-						objectMap.put(new Long(((ObjectLogEvent) inEvent).getFactId()), event);
-						break;
-					case LogEvent.OBJECT_MODIFIED:
-						inObjectEvent = (ObjectLogEvent) inEvent;
-						event.setString("Object modified (" + inObjectEvent.getFactId() + "): " + inObjectEvent.getObjectToString());
-						if (currentBeforeActivationEvent != null) {
-							currentBeforeActivationEvent.addSubEvent(event);
-						} else {
-							events.add(event);
-						}
-						event.addSubEvents(newActivations);
-						newActivations.clear();
-						Event assertEvent = (Event) objectMap.get(new Long(((ObjectLogEvent) inEvent).getFactId()));
-						if (assertEvent != null) {
-							event.setCauseEvent(assertEvent);
-						}
-						break;
-					case LogEvent.OBJECT_RETRACTED:
-						inObjectEvent = (ObjectLogEvent) inEvent;
-						event.setString("Object retracted (" + inObjectEvent.getFactId() + "): " + inObjectEvent.getObjectToString());
-						if (currentBeforeActivationEvent != null) {
-							currentBeforeActivationEvent.addSubEvent(event);
-						} else {
-							events.add(event);
-						}
-						event.addSubEvents(newActivations);
-						newActivations.clear();
-						assertEvent = (Event) objectMap.get(new Long(((ObjectLogEvent) inEvent).getFactId()));
-						if (assertEvent != null) {
-							event.setCauseEvent(assertEvent);
-						}
-						break;
-					case LogEvent.ACTIVATION_CREATED:
-						ActivationLogEvent inActivationEvent = (ActivationLogEvent) inEvent;
-						event.setString("Activation created: Rule " + inActivationEvent.getRule() + " " + inActivationEvent.getDeclarations());
-						newActivations.add(event);
-						activationMap.put(((ActivationLogEvent) inEvent).getActivationId(), event);
-						break;
-					case LogEvent.ACTIVATION_CANCELLED:
-						inActivationEvent = (ActivationLogEvent) inEvent;
-						event.setString("Activation cancelled: Rule " + inActivationEvent.getRule() + " " + inActivationEvent.getDeclarations());
-						newActivations.add(event);
-						event.setCauseEvent((Event) activationMap.get(((ActivationLogEvent) inEvent).getActivationId()));
-						break;
-					case LogEvent.BEFORE_ACTIVATION_FIRE:
-						inActivationEvent = (ActivationLogEvent) inEvent;
-						event.setString("Activation executed: Rule " + inActivationEvent.getRule() + " " + inActivationEvent.getDeclarations());
-						events.add(event);
-						currentBeforeActivationEvent = event;
-						event.setCauseEvent((Event) activationMap.get(((ActivationLogEvent) inEvent).getActivationId()));
-						break;
-					case LogEvent.AFTER_ACTIVATION_FIRE:
-						currentBeforeActivationEvent = null;
-						break;
-				}
-			}
-			getViewer().setInput(events);
+			getViewer().setInput(createEventList((List) in.readObject()));
 			// TODO: this is necessary because otherwise, the show cause action
 			// cannot find the cause event if it hasn't been shown yet
 			((TreeViewer) getViewer()).expandAll();
@@ -170,6 +94,126 @@ public class AuditView extends AbstractDebugView {
 			DroolsEclipsePlugin.log(t);
 			getViewer().setInput(null);
 		}
+    }
+    
+    protected List createEventList(List logEvents) {
+		Iterator iterator = logEvents.iterator();
+		List events = new ArrayList();
+		Event currentBeforeActivationEvent = null;
+		List newActivations = new ArrayList();
+		Map activationMap = new HashMap();
+		Map objectMap = new HashMap();
+		while (iterator.hasNext()) {
+			LogEvent inEvent = (LogEvent) iterator.next();
+			Event event = new Event(inEvent.getType());
+			switch (inEvent.getType()) {
+				case LogEvent.OBJECT_ASSERTED:
+					ObjectLogEvent inObjectEvent = (ObjectLogEvent) inEvent;
+					event.setString("Object asserted (" + inObjectEvent.getFactId() + "): " + inObjectEvent.getObjectToString());
+					if (currentBeforeActivationEvent != null) {
+						currentBeforeActivationEvent.addSubEvent(event);
+					} else {
+						events.add(event);
+					}
+					event.addSubEvents(newActivations);
+					newActivations.clear();
+					objectMap.put(new Long(((ObjectLogEvent) inEvent).getFactId()), event);
+					break;
+				case LogEvent.OBJECT_MODIFIED:
+					inObjectEvent = (ObjectLogEvent) inEvent;
+					event.setString("Object modified (" + inObjectEvent.getFactId() + "): " + inObjectEvent.getObjectToString());
+					if (currentBeforeActivationEvent != null) {
+						currentBeforeActivationEvent.addSubEvent(event);
+					} else {
+						events.add(event);
+					}
+					event.addSubEvents(newActivations);
+					newActivations.clear();
+					Event assertEvent = (Event) objectMap.get(new Long(((ObjectLogEvent) inEvent).getFactId()));
+					if (assertEvent != null) {
+						event.setCauseEvent(assertEvent);
+					}
+					break;
+				case LogEvent.OBJECT_RETRACTED:
+					inObjectEvent = (ObjectLogEvent) inEvent;
+					event.setString("Object retracted (" + inObjectEvent.getFactId() + "): " + inObjectEvent.getObjectToString());
+					if (currentBeforeActivationEvent != null) {
+						currentBeforeActivationEvent.addSubEvent(event);
+					} else {
+						events.add(event);
+					}
+					event.addSubEvents(newActivations);
+					newActivations.clear();
+					assertEvent = (Event) objectMap.get(new Long(((ObjectLogEvent) inEvent).getFactId()));
+					if (assertEvent != null) {
+						event.setCauseEvent(assertEvent);
+					}
+					break;
+				case LogEvent.ACTIVATION_CREATED:
+					ActivationLogEvent inActivationEvent = (ActivationLogEvent) inEvent;
+					event.setString("Activation created: Rule " + inActivationEvent.getRule() + " " + inActivationEvent.getDeclarations());
+					newActivations.add(event);
+					activationMap.put(((ActivationLogEvent) inEvent).getActivationId(), event);
+					break;
+				case LogEvent.ACTIVATION_CANCELLED:
+					inActivationEvent = (ActivationLogEvent) inEvent;
+					event.setString("Activation cancelled: Rule " + inActivationEvent.getRule() + " " + inActivationEvent.getDeclarations());
+					newActivations.add(event);
+					event.setCauseEvent((Event) activationMap.get(((ActivationLogEvent) inEvent).getActivationId()));
+					break;
+				case LogEvent.BEFORE_ACTIVATION_FIRE:
+					inActivationEvent = (ActivationLogEvent) inEvent;
+					event.setString("Activation executed: Rule " + inActivationEvent.getRule() + " " + inActivationEvent.getDeclarations());
+					events.add(event);
+					currentBeforeActivationEvent = event;
+					event.setCauseEvent((Event) activationMap.get(((ActivationLogEvent) inEvent).getActivationId()));
+					break;
+				case LogEvent.AFTER_ACTIVATION_FIRE:
+					currentBeforeActivationEvent = null;
+					break;
+				case LogEvent.RULEFLOW_CREATED:
+					RuleFlowLogEvent inRuleFlowEvent = (RuleFlowLogEvent) inEvent;
+					event.setString("RuleFlow started: " + inRuleFlowEvent.getProcessName() + "[" + inRuleFlowEvent.getProcessId() + "]");
+					if (currentBeforeActivationEvent != null) {
+						currentBeforeActivationEvent.addSubEvent(event);
+					} else {
+						events.add(event);
+					}
+					break;
+				case LogEvent.RULEFLOW_COMPLETED:
+					inRuleFlowEvent = (RuleFlowLogEvent) inEvent;
+					event.setString("RuleFlow completed: " + inRuleFlowEvent.getProcessName() + "[" + inRuleFlowEvent.getProcessId() + "]");
+					if (currentBeforeActivationEvent != null) {
+						currentBeforeActivationEvent.addSubEvent(event);
+					} else {
+						events.add(event);
+					}
+					break;
+				case LogEvent.RULEFLOW_GROUP_ACTIVATED:
+					RuleFlowGroupLogEvent inRuleFlowGroupEvent = (RuleFlowGroupLogEvent) inEvent;
+					event.setString("RuleFlowGroup activated: " + inRuleFlowGroupEvent.getGroupName() + "[size=" + inRuleFlowGroupEvent.getSize() + "]");
+					event.addSubEvents(newActivations);
+					newActivations.clear();
+					if (currentBeforeActivationEvent != null) {
+						currentBeforeActivationEvent.addSubEvent(event);
+					} else {
+						events.add(event);
+					}
+					break;
+				case LogEvent.RULEFLOW_GROUP_DEACTIVATED:
+					inRuleFlowGroupEvent = (RuleFlowGroupLogEvent) inEvent;
+					event.setString("RuleFlowGroup deactivated: " + inRuleFlowGroupEvent.getGroupName() + "[size=" + inRuleFlowGroupEvent.getSize() + "]");
+					event.addSubEvents(newActivations);
+					newActivations.clear();
+					if (currentBeforeActivationEvent != null) {
+						currentBeforeActivationEvent.addSubEvent(event);
+					} else {
+						events.add(event);
+					}
+					break;
+			}
+		}
+		return events;
     }
     
     public void deleteLog() {
@@ -330,6 +374,10 @@ public class AuditView extends AbstractDebugView {
 	    			case LogEvent.ACTIVATION_CREATED: return DroolsPluginImages.getImage(DroolsPluginImages.CREATE_ACTIVATION);
 	    			case LogEvent.ACTIVATION_CANCELLED: return DroolsPluginImages.getImage(DroolsPluginImages.CANCEL_ACTIVATION);
 	    			case LogEvent.BEFORE_ACTIVATION_FIRE: return DroolsPluginImages.getImage(DroolsPluginImages.EXECUTE_ACTIVATION);
+	    			case LogEvent.RULEFLOW_CREATED: return DroolsPluginImages.getImage(DroolsPluginImages.RULEFLOW);
+	    			case LogEvent.RULEFLOW_COMPLETED: return DroolsPluginImages.getImage(DroolsPluginImages.RULEFLOW);
+	    			case LogEvent.RULEFLOW_GROUP_ACTIVATED: return DroolsPluginImages.getImage(DroolsPluginImages.RULEFLOW);
+	    			case LogEvent.RULEFLOW_GROUP_DEACTIVATED: return DroolsPluginImages.getImage(DroolsPluginImages.RULEFLOW);
 	    		}
 	    		return null;
 	    	}

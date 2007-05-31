@@ -16,8 +16,8 @@ package org.drools.eclipse.flow.common.view.datatype.editor.impl;
  */
 
 import org.drools.eclipse.DroolsEclipsePlugin;
-import org.drools.eclipse.flow.common.datatype.IDataTypeRegistry;
-import org.drools.ruleflow.common.datatype.IDataType;
+import org.drools.eclipse.flow.common.datatype.DataTypeRegistry;
+import org.drools.ruleflow.common.datatype.DataType;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -34,33 +34,33 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class DataTypeCombo extends Composite {
     
-    private IDataTypeRegistry registry;
+    private DataTypeRegistry registry;
     private ComboViewer dataTypeCombo;
     
-    public DataTypeCombo(Composite parent, int style, IDataTypeRegistry registry) {
+    public DataTypeCombo(Composite parent, int style, DataTypeRegistry registry) {
         super(parent, style);
         this.registry = registry;
         setLayout(new FillLayout());
         dataTypeCombo = new ComboViewer(this, SWT.READ_ONLY);
         dataTypeCombo.setLabelProvider(new LabelProvider() {
             public String getText(Object element) {
-                return ((IDataTypeRegistry.IDataTypeInfo) element).getName();
+                return ((DataTypeRegistry.IDataTypeInfo) element).getName();
             }
         });
         dataTypeCombo.add(registry.getDataTypes().toArray(
-            new IDataTypeRegistry.IDataTypeInfo[0]));
+            new DataTypeRegistry.IDataTypeInfo[0]));
     }
     
-    private IDataTypeRegistry.IDataTypeInfo getSelectedTypeInfo() {
+    private DataTypeRegistry.IDataTypeInfo getSelectedTypeInfo() {
         ISelection selection = dataTypeCombo.getSelection();
         if (!selection.isEmpty()) {
-            return (IDataTypeRegistry.IDataTypeInfo)
+            return (DataTypeRegistry.IDataTypeInfo)
                 ((StructuredSelection) selection).getFirstElement();
         }
         return null;
     }
     
-    public void setDataType(IDataType dataType) {
+    public void setDataType(DataType dataType) {
         if (dataType == null) {
         	dataTypeCombo.setSelection(null);
         } else {
@@ -74,8 +74,8 @@ public class DataTypeCombo extends Composite {
         }
     }
     
-    public IDataType getDataType() {
-    	IDataTypeRegistry.IDataTypeInfo dataTypeInfo =
+    public DataType getDataType() {
+    	DataTypeRegistry.IDataTypeInfo dataTypeInfo =
     		getSelectedTypeInfo();
         return dataTypeInfo == null ? null : 
         	dataTypeInfo.getDataTypeFactory().createDataType();

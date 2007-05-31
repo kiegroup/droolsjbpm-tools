@@ -28,6 +28,13 @@
          id="org.drools.eclipse.debug.ApplicationDataView">
       </view>
       <view
+         name="Realtime Audit View"
+         icon="icons/drools.gif"
+         category="org.drools.eclipse.views"
+         class="org.drools.eclipse.debug.RealtimeAuditView"
+         id="org.drools.eclipse.debug.RealtimeAuditView">
+      </view>
+      <view
          name="Audit View"
          icon="icons/drools.gif"
          category="org.drools.eclipse.views"
@@ -57,7 +64,7 @@
       <editor
             class="org.drools.eclipse.editors.DRLRuleEditor2"
             contributorClass="org.drools.eclipse.editors.DRLRuleEditorActionContributor"
-            extensions="drl,jbrule,drools,rule"
+            extensions="drl,jbrule,drools,rule,package,pkg"
             icon="icons/drools.gif"
             id="org.drools.eclipse.editors.DRLRuleEditor"
             name="Rule Editor"/>

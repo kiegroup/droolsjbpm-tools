@@ -15,8 +15,8 @@ package org.drools.eclipse.flow.common.view.datatype.editor.impl;
  * limitations under the License.
  */
 
-import java.io.Serializable;import org.drools.eclipse.flow.common.view.datatype.editor.IEditor;
-import org.drools.ruleflow.common.datatype.IDataType;
+import java.io.Serializable;import org.drools.eclipse.flow.common.view.datatype.editor.Editor;
+import org.drools.ruleflow.common.datatype.DataType;
 import org.drools.ruleflow.common.datatype.impl.type.StringDataType;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Text;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class StringEditor extends Composite implements IEditor {
+public class StringEditor extends Composite implements Editor {
 
     private Text text;
     
@@ -38,7 +38,7 @@ public class StringEditor extends Composite implements IEditor {
         text = new Text(this, SWT.NONE);
     }
 
-    public void setDataType(IDataType dataType) {
+    public void setDataType(DataType dataType) {
         if (!(dataType instanceof StringDataType)) {
             throw new IllegalArgumentException("Illegal data type " + dataType);
         }

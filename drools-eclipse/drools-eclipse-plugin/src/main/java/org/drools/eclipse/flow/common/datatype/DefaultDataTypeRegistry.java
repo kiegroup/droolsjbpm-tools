@@ -15,11 +15,11 @@ package org.drools.eclipse.flow.common.datatype;
  * limitations under the License.
  */
 
-import org.drools.eclipse.flow.common.datatype.impl.DataTypeRegistry;
+import org.drools.eclipse.flow.common.datatype.impl.DataTypeRegistryImpl;
 import org.drools.eclipse.flow.common.view.datatype.editor.impl.BooleanEditor;
 import org.drools.eclipse.flow.common.view.datatype.editor.impl.EmptyEditor;
 import org.drools.eclipse.flow.common.view.datatype.editor.impl.IntegerEditor;
-import org.drools.ruleflow.common.datatype.IDataTypeFactory;
+import org.drools.ruleflow.common.datatype.DataTypeFactory;
 import org.drools.ruleflow.common.datatype.impl.InstanceDataTypeFactory;
 import org.drools.ruleflow.common.datatype.impl.type.BooleanDataType;
 import org.drools.ruleflow.common.datatype.impl.type.FloatDataType;
@@ -37,7 +37,7 @@ import sun.beans.editors.StringEditor;
  */
 public class DefaultDataTypeRegistry {
 
-	private static final IDataTypeRegistry variableDataTypeRegistry = new DataTypeRegistry();
+	private static final DataTypeRegistry variableDataTypeRegistry = new DataTypeRegistryImpl();
 
 	private DefaultDataTypeRegistry() {
 	}
@@ -61,13 +61,13 @@ public class DefaultDataTypeRegistry {
 	}
 
 	public static void registerVariableDataType(Class type,
-			IDataTypeFactory dataTypeFactory, String name,
+			DataTypeFactory dataTypeFactory, String name,
 			Class valueEditorClass, Class dataTypeEditorClass) {
 		variableDataTypeRegistry.registerDataType(type, dataTypeFactory, name,
 				valueEditorClass, dataTypeEditorClass);
 	}
 
-	public static IDataTypeRegistry getInstance() {
+	public static DataTypeRegistry getInstance() {
 		return variableDataTypeRegistry;
 	}
 

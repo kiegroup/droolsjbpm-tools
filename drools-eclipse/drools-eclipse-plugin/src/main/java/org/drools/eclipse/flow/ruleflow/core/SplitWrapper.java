@@ -24,10 +24,10 @@ import java.util.Map;
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.ruleflow.view.property.constraint.ConstraintsPropertyDescriptor;
-import org.drools.ruleflow.core.IConnection;
-import org.drools.ruleflow.core.IConstraint;
-import org.drools.ruleflow.core.ISplit;
-import org.drools.ruleflow.core.impl.Split;
+import org.drools.ruleflow.core.Connection;
+import org.drools.ruleflow.core.Constraint;
+import org.drools.ruleflow.core.Split;
+import org.drools.ruleflow.core.impl.SplitImpl;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
@@ -45,7 +45,7 @@ public class SplitWrapper extends NodeWrapper {
     private transient IPropertyDescriptor[] descriptors;
 
     public SplitWrapper() {
-        setNode(new Split());
+        setNode(new SplitImpl());
         getSplit().setName("Split");
         setDescriptors();
     }
@@ -58,8 +58,8 @@ public class SplitWrapper extends NodeWrapper {
                 new String[] { "", "AND", "XOR", "OR" });
     }
     
-    public ISplit getSplit() {
-        return (ISplit) getNode();
+    public Split getSplit() {
+        return (Split) getNode();
     }
     
     public boolean acceptsIncomingConnection(ElementConnection connection) {
@@ -67,12 +67,12 @@ public class SplitWrapper extends NodeWrapper {
     }
 
     public boolean acceptsOutgoingConnection(ElementConnection connection) {
-        return connection.getType() == IConnection.TYPE_NORMAL;
+        return connection.getType() == Connection.TYPE_NORMAL;
     }
 
     public IPropertyDescriptor[] getPropertyDescriptors() {
-        if (getParent() != null && (getSplit().getType() == Split.TYPE_XOR
-                || getSplit().getType() == Split.TYPE_OR)) {
+        if (getParent() != null && (getSplit().getType() == SplitImpl.TYPE_XOR
+                || getSplit().getType() == SplitImpl.TYPE_OR)) {
             IPropertyDescriptor[] result = new IPropertyDescriptor[descriptors.length + 1];
             System.arraycopy(descriptors, 0, result, 0, descriptors.length);
             result[descriptors.length] = 
@@ -87,8 +87,8 @@ public class SplitWrapper extends NodeWrapper {
             return new Integer(getSplit().getType());
         }
         if (CONSTRAINTS.equals(id)) {
-        	return getSplit().getType() == Split.TYPE_XOR
-        		|| getSplit().getType() == Split.TYPE_OR
+        	return getSplit().getType() == SplitImpl.TYPE_XOR
+        		|| getSplit().getType() == SplitImpl.TYPE_OR
         		? new MyHashMap(getSplit().getConstraints()) : new MyHashMap();
         }
         return super.getPropertyValue(id);
@@ -96,10 +96,10 @@ public class SplitWrapper extends NodeWrapper {
 
     public void resetPropertyValue(Object id) {
         if (TYPE.equals(id)) {
-            getSplit().setType(ISplit.TYPE_UNDEFINED);
+            getSplit().setType(Split.TYPE_UNDEFINED);
         } else if (CONSTRAINTS.equals(id)) {
         	for (Iterator it = getSplit().getOutgoingConnections().iterator(); it.hasNext(); ) {
-        		IConnection connection = (IConnection) it.next();
+        		Connection connection = (Connection) it.next();
         		getSplit().setConstraint(connection, null);
         	}
         } else {
@@ -114,7 +114,7 @@ public class SplitWrapper extends NodeWrapper {
         	Iterator iterator = ((Map) value).entrySet().iterator();
         	while (iterator.hasNext()) {
 				Map.Entry element = (Map.Entry) iterator.next();
-				getSplit().setConstraint((IConnection) element.getKey(), (IConstraint) element.getValue()); 
+				getSplit().setConstraint((Connection) element.getKey(), (Constraint) element.getValue()); 
 			}
         } else {
             super.setPropertyValue(id, value);

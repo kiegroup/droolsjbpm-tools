@@ -53,6 +53,7 @@ public class DroolsPluginImages {
     public static final String IMPORT = "Import";
     public static final String DSL = "DSL";
     public static final String GLOBAL = "Global";
+    public static final String RULEFLOW = "RuleFlow";
     
     private static ImageRegistry imageRegistry;
     private static final String PATH_SUFFIX = "/icons/";
@@ -84,6 +85,7 @@ public class DroolsPluginImages {
         declareRegistryImage(IMPORT, "import.gif");
         declareRegistryImage(DSL, "dsl.GIF");
         declareRegistryImage(GLOBAL, "field_public_obj.gif");
+        declareRegistryImage(RULEFLOW, "process.gif");
     }
 
     /**

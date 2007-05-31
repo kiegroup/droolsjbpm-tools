@@ -17,8 +17,8 @@ package org.drools.eclipse.flow.ruleflow.core;
 
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
-import org.drools.ruleflow.core.IRuleSetNode;
-import org.drools.ruleflow.core.impl.RuleSetNode;
+import org.drools.ruleflow.core.RuleSetNode;
+import org.drools.ruleflow.core.impl.RuleSetNodeImpl;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
@@ -41,13 +41,13 @@ public class RuleSetNodeWrapper extends NodeWrapper {
     }
 
     public RuleSetNodeWrapper() {
-        setNode(new RuleSetNode());
+        setNode(new RuleSetNodeImpl());
         getRuleSetNode().setName("RuleSet");
         getRuleSetNode().setRuleFlowGroup("");
     }
     
-    public IRuleSetNode getRuleSetNode() {
-        return (IRuleSetNode) getNode();
+    public RuleSetNode getRuleSetNode() {
+        return (RuleSetNode) getNode();
     }
     
     public IPropertyDescriptor[] getPropertyDescriptors() {

@@ -294,7 +294,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
             try {
             	builder_configuration.setClassLoader(newLoader);
                 Thread.currentThread().setContextClassLoader(newLoader);
-                
+
                 // first parse the source
                 PackageDescr packageDescr = null;
                 if (useCache) {
@@ -303,6 +303,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                 		packageDescr = cachedDrlInfo.getPackageDescr();
                 	}
                 }
+                
                 if (packageDescr == null) {
                 	if (dslReader != null) {
                 		packageDescr = parser.parse(content, dslReader);
@@ -315,6 +316,15 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
             	// compile parsed rules if necessary
             	if (compile && !parser.hasErrors()) {
                     builder = new PackageBuilder(builder_configuration);
+
+                    // check whether a .package file exists and add it
+                    if (resource.getParent() != null) {
+                    	IResource packageDef = resource.getParent().findMember(".package");
+                    	if (packageDef != null) {
+                    		builder.addPackage(parseResource(packageDef, false).getPackageDescr());
+                    	}
+                    }
+                    
                     builder.addPackage(packageDescr);
         			result = new DRLInfo(
 	    				resource.getProjectRelativePath().toString(),

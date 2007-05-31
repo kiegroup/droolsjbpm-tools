@@ -15,9 +15,9 @@ package org.drools.eclipse.flow.ruleflow.view.property.constraint;
  * limitations under the License.
  */
 
-import org.drools.ruleflow.core.IConstraint;
-import org.drools.ruleflow.core.IRuleFlowProcess;
-import org.drools.ruleflow.core.impl.Constraint;
+import org.drools.ruleflow.core.Constraint;
+import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.ruleflow.core.impl.ConstraintImpl;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -41,7 +41,7 @@ import org.eclipse.swt.widgets.Text;
  */
 public class RuleFlowConstraintDialog extends Dialog {
 
-	private IConstraint constraint;
+	private Constraint constraint;
 	private boolean success;
 	private Button alwaysTrue;
 	private Text nameText;
@@ -49,7 +49,7 @@ public class RuleFlowConstraintDialog extends Dialog {
 	private TabFolder tabFolder;
 	private Text translation;
 
-	public RuleFlowConstraintDialog(Shell parentShell, IRuleFlowProcess process) {
+	public RuleFlowConstraintDialog(Shell parentShell, RuleFlowProcess process) {
 		super(parentShell);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 	}
@@ -148,7 +148,7 @@ public class RuleFlowConstraintDialog extends Dialog {
 	private void updateTranslation() {
 		// TODO add custom token model checker
 		success = true;
-		constraint = new Constraint();
+		constraint = new ConstraintImpl();
 		constraint.setConstraint(null);
 		constraint.setConstraint(translation.getText());
 		constraint.setName(nameText.getText());
@@ -164,7 +164,7 @@ public class RuleFlowConstraintDialog extends Dialog {
 	}
 
 	public void updateConstraint() {
-		constraint = new Constraint();
+		constraint = new ConstraintImpl();
 		if (!alwaysTrue.getSelection()) {
 			constraint.setConstraint(translation.getText());
 		} else {
@@ -178,14 +178,14 @@ public class RuleFlowConstraintDialog extends Dialog {
 		}
 	}
 
-	public IConstraint getConstraint() {
+	public Constraint getConstraint() {
 		return constraint;
 	}
 
-	public void setConstraint(IConstraint constraint) {
+	public void setConstraint(Constraint constraint) {
 		this.constraint = constraint;
 		if (constraint != null) {
-			if ("true".equals(constraint.getConstraint())) {
+			if ("eval(true)".equals(constraint.getConstraint())) {
 				alwaysTrue.setSelection(true);
 			} else {
 				translation.setText(constraint.getConstraint().toString());

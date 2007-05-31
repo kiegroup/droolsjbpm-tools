@@ -119,7 +119,8 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
 
         if (res instanceof IFile
         		&& ("drl".equals(res.getFileExtension())
-    				|| "dslr".equals(res.getFileExtension()))) {
+    				|| "dslr".equals(res.getFileExtension())
+    				|| ".package".equals(res.getName()))) {
             removeProblemsFor(res);
             try {
             	DroolsBuildMarker[] markers = parseDRLFile((IFile) res, new String(Util.getResourceContentsAsCharArray((IFile) res)));

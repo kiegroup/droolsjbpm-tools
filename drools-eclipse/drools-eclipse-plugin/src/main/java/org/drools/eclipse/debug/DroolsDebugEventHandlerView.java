@@ -63,7 +63,7 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
     protected void setViewerInput(Object context) {
     	Object input = null;
     	
-    	// if a working memory has been expressively selected as variable, use this
+    	// if a working memory has been explicitly selected as variable, use this
     	if (context instanceof IVariable) {
         	IVariable variable = (IVariable) context;
             try {

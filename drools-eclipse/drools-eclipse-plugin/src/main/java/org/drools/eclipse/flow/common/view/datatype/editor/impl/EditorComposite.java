@@ -18,9 +18,9 @@ package org.drools.eclipse.flow.common.view.datatype.editor.impl;
 import java.io.Serializable;import java.lang.reflect.InvocationTargetException;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
-import org.drools.eclipse.flow.common.datatype.IDataTypeRegistry;
-import org.drools.eclipse.flow.common.view.datatype.editor.IEditor;
-import org.drools.ruleflow.common.datatype.IDataType;
+import org.drools.eclipse.flow.common.datatype.DataTypeRegistry;
+import org.drools.eclipse.flow.common.view.datatype.editor.Editor;
+import org.drools.ruleflow.common.datatype.DataType;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 
@@ -31,17 +31,17 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class EditorComposite extends Composite {
     
-    private IDataTypeRegistry registry;
-    private IEditor editor;
+    private DataTypeRegistry registry;
+    private Editor editor;
     
-    public EditorComposite(Composite parent, int style, IDataTypeRegistry registry) {
+    public EditorComposite(Composite parent, int style, DataTypeRegistry registry) {
         super(parent, style);
         this.registry = registry;
         setLayout(new FillLayout());
         editor = new EmptyEditor(this);
     }
     
-    public void setDataType(IDataType type) {
+    public void setDataType(DataType type) {
         ((Composite) editor).dispose();
         if (type == null) {
             editor = new EmptyEditor(this);
@@ -49,7 +49,7 @@ public class EditorComposite extends Composite {
         	Class editorClass = null;
             try {
                 editorClass = registry.getDataTypeInfo(type.getClass()).getValueEditorClass();
-                editor = (IEditor) editorClass.getConstructor(
+                editor = (Editor) editorClass.getConstructor(
                     new Class[] { Composite.class }).newInstance(new Object[] { this });
             } catch (IllegalArgumentException e) {
                 // "Could not find data type info for type " + type.getClass()

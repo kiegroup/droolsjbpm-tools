@@ -20,15 +20,15 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.eclipse.flow.common.datatype.IDataTypeRegistry;
-import org.drools.ruleflow.common.datatype.IDataTypeFactory;
+import org.drools.eclipse.flow.common.datatype.DataTypeRegistry;
+import org.drools.ruleflow.common.datatype.DataTypeFactory;
 
 /**
  * Default implementation of a datatype registry.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class DataTypeRegistry implements IDataTypeRegistry {
+public class DataTypeRegistryImpl implements DataTypeRegistry {
 
     private Map dataTypes = new HashMap();
     
@@ -36,7 +36,7 @@ public class DataTypeRegistry implements IDataTypeRegistry {
         return new HashSet(dataTypes.values());
     }
 
-    public void registerDataType(Class type, IDataTypeFactory dataTypeFactory, String name,
+    public void registerDataType(Class type, DataTypeFactory dataTypeFactory, String name,
             Class valueEditorClass, Class dataTypeEditorClass) {
         if (dataTypeFactory == null) {
             throw new NullPointerException("Data type factory may not be null");
@@ -64,11 +64,11 @@ public class DataTypeRegistry implements IDataTypeRegistry {
     
     public class DataTypeInfo implements IDataTypeInfo {
         private Class type;
-        private IDataTypeFactory dataTypeFactory;
+        private DataTypeFactory dataTypeFactory;
         private String name;
         private Class valueEditorClass;
         private Class dataTypeEditorClass;
-        private DataTypeInfo(Class type, IDataTypeFactory dataTypeFactory, String name,
+        private DataTypeInfo(Class type, DataTypeFactory dataTypeFactory, String name,
                 Class valueEditorClass, Class dataTypeEditorClass) {
             this.type = type;
             this.dataTypeFactory = dataTypeFactory;
@@ -79,7 +79,7 @@ public class DataTypeRegistry implements IDataTypeRegistry {
         public Class getType() {
             return type;
         }
-        public IDataTypeFactory getDataTypeFactory() {
+        public DataTypeFactory getDataTypeFactory() {
             return dataTypeFactory;
         }
         public String getName() {
