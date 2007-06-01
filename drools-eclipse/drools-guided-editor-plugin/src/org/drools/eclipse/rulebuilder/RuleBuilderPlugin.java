@@ -6,7 +6,8 @@ import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-/**
+/**    
+ * test
  * The activator class controls the plug-in life cycle
  */
 public class RuleBuilderPlugin extends AbstractUIPlugin {
