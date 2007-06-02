@@ -17,7 +17,7 @@ public abstract class Widget {
 
     final protected FormToolkit toolkit;
 
-    final private RuleModeller  modeller;
+    final protected RuleModeller  modeller;
 
     final protected int         index;
 

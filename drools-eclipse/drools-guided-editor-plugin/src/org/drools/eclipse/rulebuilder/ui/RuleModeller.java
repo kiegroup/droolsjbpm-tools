@@ -44,6 +44,8 @@ public class RuleModeller {
     private Composite          ifComposite;
 
     private Composite          thenComposite;
+    
+    private Composite          optionsComposite;
 
     private final ScrolledForm form;
 
@@ -92,6 +94,8 @@ public class RuleModeller {
                                                           toolkit,
                                                           this );
 
+        Window optionsPopup = new RuleAttributesDialog(shell, toolkit, this);
+        
         Section ifSection = createMainSection( form,
                                                toolkit,
                                                "IF",
@@ -100,7 +104,11 @@ public class RuleModeller {
                                                  toolkit,
                                                  "THEN",
                                                  actionPopup );
-
+        Section optionsSection = createMainSection( form,
+                                                    toolkit,
+                                                    "(options)",
+                                                    optionsPopup );
+        
         ColumnLayout layout = new ColumnLayout();
         layout.minNumColumns = 1;
         layout.maxNumColumns = 1;
@@ -108,11 +116,14 @@ public class RuleModeller {
 
         ((Composite) (ifSection.getClient())).setLayout( layout );
         ((Composite) (thenSection.getClient())).setLayout( layout );
+        ((Composite) (optionsSection.getClient())).setLayout( layout );
         ifSection.setLayout( layout );
         thenSection.setLayout( layout );
+        optionsSection.setLayout( layout );
 
         ifComposite = (Composite) ifSection.getClient();
         thenComposite = (Composite) thenSection.getClient();
+        optionsComposite = (Composite) optionsSection.getClient();
 
     }
 
@@ -129,7 +140,6 @@ public class RuleModeller {
     }
 
     private void clearComposite(Composite composite) {
-        System.out.println( "clear composite" );
         if ( composite != null ) {
             Control[] c = composite.getChildren();
             for ( int i = 0; i < c.length; i++ ) {
@@ -157,12 +167,24 @@ public class RuleModeller {
         redrawLhs();
         reloadCommon();
     }
+    
+    public void reloadOptions() {
+        clearComposite( optionsComposite );
+        redrawOptions();
+        reloadCommon();
+    }
 
     public void reloadWidgets() {
         reloadLhs();
         reloadRhs();
+        reloadOptions();
     }
 
+    private void redrawOptions(){
+    	//TODO
+    }
+    
+    
     private void redrawRhs() {
         for ( int i = 0; i < model.rhs.length; i++ ) {
             IAction action = model.rhs[i];
@@ -184,12 +206,8 @@ public class RuleModeller {
     }
 
     private void redrawLhs() {
-
-        System.out.println( "redrawing lhs part..." );
         for ( int i = 0; i < model.lhs.length; i++ ) {
             IPattern pattern = model.lhs[i];
-
-            System.out.println( "pattern = " + pattern );
 
             if ( pattern instanceof FactPattern ) {
                 addFactPatternWidget( i,
@@ -293,8 +311,7 @@ public class RuleModeller {
         l1Sect.setActiveToggleColor( toolkit.getHyperlinkGroup().getActiveForeground() );
         l1Sect.setToggleColor( toolkit.getColors().getColor( FormColors.SEPARATOR ) );
         l1Sect.setText( title );
-        createAddToolItem( l1Sect,
-                           popup );
+        createAddToolItem( l1Sect, popup );
         Composite comp = toolkit.createComposite( l1Sect );
         l1Sect.setClient( comp );
         return l1Sect;
@@ -322,8 +339,12 @@ public class RuleModeller {
     public void refresh() {
         ifComposite.layout();
         ifComposite.redraw();
+        
         thenComposite.layout();
         thenComposite.redraw();
+        
+        optionsComposite.layout();
+        optionsComposite.redraw();
     }
 
 }

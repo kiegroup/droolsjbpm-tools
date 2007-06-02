@@ -58,22 +58,10 @@ public class AddNewConditionDialog extends RuleDialog {
         }
         factsCombo.select( 0 );
 
-        dialog.addDisposeListener( new DisposeListener() {
-
-            public void widgetDisposed(DisposeEvent e) {
-                System.out.println( "DISPOSED " + e );
-                Thread.dumpStack();
-            }
-
-        } );
-
         factsCombo.addListener( SWT.Selection,
                                 new Listener() {
                                     public void handleEvent(Event event) {
-
-                                        System.out.println( "HERE6666! event " + event );
-
-                                        if ( factsCombo.getSelectionIndex() == 0 ) {
+                                    	if ( factsCombo.getSelectionIndex() == 0 ) {
                                             return;
                                         }
                                         modeller.getModel().addLhsItem( new FactPattern( factsCombo.getText() ) );
