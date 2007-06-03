@@ -181,7 +181,8 @@ public class RuleModeller {
     }
 
     private void redrawOptions(){
-    	//TODO
+    	Composite comp = toolkit.createComposite( optionsComposite );
+    	new RuleAttributeWidget(toolkit, comp, this);
     }
     
     
