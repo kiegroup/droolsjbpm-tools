@@ -5,14 +5,20 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.brms.client.modeldriven.brxml.DSLSentence;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.forms.events.HyperlinkEvent;
+import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
 
 /**
@@ -36,7 +42,7 @@ public class DSLSentenceWidget extends Widget {
         this.sentence = sentence;
         
         GridLayout l = new GridLayout();
-        l.numColumns = sentence.sentence.length();
+        l.numColumns = sentence.sentence.length() + 1;
         l.verticalSpacing = 0;
         l.marginTop = 0;
         l.marginHeight = 2;
@@ -44,7 +50,37 @@ public class DSLSentenceWidget extends Widget {
         parent.setLayout( l );
         
         makeWidget(sentence.sentence);
+        
+        //TODO: add
+        //addDeleteAction(parent);
     }
+
+	private void addDeleteAction(Composite parent) {
+		ImageHyperlink delLink = addImage( parent, "icons/delete_obj.gif" );
+        delLink.addHyperlinkListener( new IHyperlinkListener() {
+
+        	public void linkActivated(HyperlinkEvent e) {
+                MessageBox dialog = new MessageBox( Display.getCurrent().getActiveShell(),
+                                                    SWT.YES | SWT.NO | SWT.ICON_WARNING );
+                dialog.setMessage( "Remove this DSL sentense?" );
+                dialog.setText( "Remove this DSL sentense?" );
+                if ( dialog.open() == SWT.YES ) {
+                	//TODO: remove the current sentense from model
+                	getModeller().reloadLhs();
+                	getModeller().reloadRhs();
+                    getModeller().setDirty( true );
+                }
+            }
+
+
+			public void linkEntered(HyperlinkEvent e) {
+			}
+
+			public void linkExited(HyperlinkEvent e) {
+			}} 
+        );
+        delLink.setToolTipText( "Remove this condition." );
+	}
 
     private void makeWidget(String dslLine) {
     	char[] chars = dslLine.toCharArray();
