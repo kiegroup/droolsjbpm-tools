@@ -2,6 +2,7 @@ package org.drools.eclipse.rulebuilder.ui;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.CompositeFactPattern;
+import org.drools.brms.client.modeldriven.brxml.DSLSentence;
 import org.drools.brms.client.modeldriven.brxml.FactPattern;
 import org.drools.brms.client.modeldriven.brxml.IPattern;
 import org.eclipse.swt.SWT;
@@ -23,91 +24,129 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class AddNewConditionDialog extends RuleDialog {
 
-    private final FormToolkit toolkit;
+	private final FormToolkit toolkit;
 
-    private IPattern          pattern;
+	private IPattern pattern;
 
-    private RuleModeller      modeller;
+	private RuleModeller modeller;
 
-    public AddNewConditionDialog(Shell parent,
-                                 FormToolkit toolkit,
-                                 RuleModeller modeller) {
+	public AddNewConditionDialog(Shell parent, FormToolkit toolkit,
+			RuleModeller modeller) {
 
-        super( parent,
-               "Add new condition to the rule",
-               "Pick the values from combos and confirm the selection." );
+		super(parent, "Add new condition to the rule",
+				"Pick the values from combos and confirm the selection.");
 
-        this.toolkit = toolkit;
-        this.modeller = modeller;
-    }
+		this.toolkit = toolkit;
+		this.modeller = modeller;
+	}
 
-    protected Control createDialogArea(final Composite parent) {
-        Control dialog = super.createDialogArea( parent );
+	protected Control createDialogArea(final Composite parent) {
+		Control dialog = super.createDialogArea(parent);
 
-        Composite composite = (Composite) dialog;
+		Composite composite = (Composite) dialog;
 
-        toolkit.createLabel( composite,
-                             "Fact" );
+		addFacts(composite);
 
-        String[] factTypes = getCompletion().getFactTypes();
-        final Combo factsCombo = new Combo( composite,
-                                            SWT.READ_ONLY );
-        factsCombo.add( "Choose fact type..." );
-        for ( int i = 0; i < factTypes.length; i++ ) {
-            factsCombo.add( factTypes[i] );
-        }
-        factsCombo.select( 0 );
+		addConditionType(composite);
 
-        factsCombo.addListener( SWT.Selection,
-                                new Listener() {
-                                    public void handleEvent(Event event) {
-                                    	if ( factsCombo.getSelectionIndex() == 0 ) {
-                                            return;
-                                        }
-                                        modeller.getModel().addLhsItem( new FactPattern( factsCombo.getText() ) );
-                                        modeller.reloadLhs();
-                                        modeller.setDirty( true );
-                                        close();
-                                    }
-                                } );
+		addDSLSentences(composite);
 
-        toolkit.createLabel( composite,
-                             "Condition type" );
+		return composite;
+	}
 
-        final Combo conditionalsCombo = new Combo( composite,
-                                                   SWT.READ_ONLY );
-        String[] conditionalElements = getCompletion().getConditionalElements();
-        conditionalsCombo.add( "Choose condition type..." );
-        for ( int i = 0; i < conditionalElements.length; i++ ) {
-            conditionalsCombo.add( conditionalElements[i] );
-        }
-        conditionalsCombo.select( 0 );
+	private void addFacts(Composite composite) {
+		toolkit.createLabel(composite, "Fact");
 
-        conditionalsCombo.addListener( SWT.Selection,
-                                       new Listener() {
-                                           public void handleEvent(Event event) {
-                                               if ( conditionalsCombo.getSelectionIndex() == 0 ) {
-                                                   return;
-                                               }
+		String[] factTypes = getCompletion().getFactTypes();
+		final Combo factsCombo = new Combo(composite, SWT.READ_ONLY);
+		factsCombo.add("Choose fact type...");
+		for (int i = 0; i < factTypes.length; i++) {
+			factsCombo.add(factTypes[i]);
+		}
+		factsCombo.select(0);
 
-                                               modeller.getModel().addLhsItem( new CompositeFactPattern( conditionalsCombo.getText() ) );
-                                               modeller.reloadLhs();
-                                               modeller.setDirty( true );
-                                               close();
-                                           }
-                                       } );
+		factsCombo.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				if (factsCombo.getSelectionIndex() == 0) {
+					return;
+				}
+				modeller.getModel().addLhsItem(
+						new FactPattern(factsCombo.getText()));
+				modeller.reloadLhs();
+				modeller.setDirty(true);
+				close();
+			}
+		});
+	}
 
-        //setBlockOnOpen( true );
+	private void addConditionType(Composite composite) {
+		toolkit.createLabel(composite, "Condition type");
 
-        return composite;
-    }
+		final Combo conditionalsCombo = new Combo(composite, SWT.READ_ONLY);
+		String[] conditionalElements = getCompletion().getConditionalElements();
+		conditionalsCombo.add("Choose condition type...");
+		for (int i = 0; i < conditionalElements.length; i++) {
+			conditionalsCombo.add(conditionalElements[i]);
+		}
+		conditionalsCombo.select(0);
 
-    public IPattern getPattern() {
-        return pattern;
-    }
+		conditionalsCombo.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				if (conditionalsCombo.getSelectionIndex() == 0) {
+					return;
+				}
 
-    private SuggestionCompletionEngine getCompletion() {
-        return modeller.getSuggestionCompletionEngine();
-    }
+				modeller.getModel().addLhsItem(
+						new CompositeFactPattern(conditionalsCombo.getText()));
+				modeller.reloadLhs();
+				modeller.setDirty(true);
+				close();
+			}
+		});
+	}
+
+	
+	//
+	// The list of DSL sentences
+	//
+	private void addDSLSentences(Composite composite) {
+		if (getCompletion().getDSLConditions().length > 0) {
+			toolkit.createLabel(composite, "Condition sentences");
+			
+			final Combo dslCombo = new Combo(composite, SWT.READ_ONLY);
+			dslCombo.add("Choose...");
+
+			for (int i = 0; i < getCompletion().getDSLConditions().length; i++) {
+				DSLSentence sen = getCompletion().getDSLConditions()[i];
+				dslCombo.add(sen.toString());
+			}
+
+			dslCombo.addListener(SWT.Selection, new Listener() {
+				public void handleEvent(Event event) {
+					if (dslCombo.getSelectionIndex() == 0) {
+						return;
+					}
+
+					modeller.getModel()
+							.addLhsItem(
+									(DSLSentence) getCompletion()
+											.getDSLConditions()[dslCombo
+											.getSelectionIndex()]);
+					modeller.reloadLhs();
+					modeller.setDirty(true);
+					close();
+				}
+			});
+
+		}
+	}
+
+	public IPattern getPattern() {
+		return pattern;
+	}
+
+	private SuggestionCompletionEngine getCompletion() {
+		return modeller.getSuggestionCompletionEngine();
+	}
 
 }
