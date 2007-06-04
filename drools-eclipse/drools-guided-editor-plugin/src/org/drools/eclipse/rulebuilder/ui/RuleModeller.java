@@ -220,7 +220,7 @@ public class RuleModeller {
             } else if ( pattern instanceof DSLSentence ) {
                 // skip for now
             } else {
-                // TODO: handle unknown instances properly
+               // dont' care
             }
         }
 
@@ -235,6 +235,7 @@ public class RuleModeller {
     }
 
     private void addDSLSentenceWidget(IAction action) {
+    	//TODO: add DSLSenteseWidget to the RHS section
     }
 
     private void addActionRetractFactWidget(IAction action,
