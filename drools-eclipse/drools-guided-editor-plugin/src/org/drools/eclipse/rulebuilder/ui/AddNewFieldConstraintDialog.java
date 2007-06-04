@@ -93,7 +93,7 @@ public class AddNewFieldConstraintDialog extends RuleDialog {
                                new Listener() {
                                    public void handleEvent(Event event) {                                                                              
                                        pattern.boundName = variableText.getText();
-                                       modeller.reloadLhs(); // TODO: refresh problem
+                                       modeller.reloadLhs(); 
                                        modeller.setDirty( true );
                                        close();
                                    }
