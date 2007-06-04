@@ -200,7 +200,7 @@ public class RuleModeller {
                 addActionRetractFactWidget( action,
                                             i );
             } else if ( action instanceof DSLSentence ) {
-                addDSLSentenceWidget( action );
+                addDSLSentenceWidget( i, (DSLSentence) action, thenComposite );
             }
 
         }
@@ -227,15 +227,9 @@ public class RuleModeller {
         for ( int i = 0; i < model.lhs.length; i++ ) {
             IPattern pattern = model.lhs[i];
             if ( pattern instanceof DSLSentence ) {
-                //TODO  Is it OK to use index here? I added this to reflect general API (From: Ahti Kitsik)
-                addDSLSentenceWidget( i,
-                                      (DSLSentence) pattern );
+                addDSLSentenceWidget( i, (DSLSentence) pattern, ifComposite );
             }
         }
-    }
-
-    private void addDSLSentenceWidget(IAction action) {
-    	//TODO: add DSLSenteseWidget to the RHS section
     }
 
     private void addActionRetractFactWidget(IAction action,
@@ -271,8 +265,8 @@ public class RuleModeller {
     }
 
     private void addDSLSentenceWidget(int idx,
-                                      DSLSentence pattern) {
-        Composite comp = toolkit.createComposite( ifComposite );
+                                      DSLSentence pattern, Composite sectionComposite) {
+        Composite comp = toolkit.createComposite( sectionComposite );
         new DSLSentenceWidget( toolkit,
                                comp,
                                pattern,
