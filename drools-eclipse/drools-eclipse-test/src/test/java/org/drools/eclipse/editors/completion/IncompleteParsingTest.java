@@ -46,7 +46,7 @@ public class IncompleteParsingTest extends TestCase {
 	}
 	
 	
-    public void testParsingColumn() {
+    public void FIXME_testParsingColumn() {
         String input = 
         	"rule MyRule \n" +
         	"  when \n" +
@@ -117,18 +117,11 @@ public class IncompleteParsingTest extends TestCase {
 			"  when \n" +
 			"    class:";
         rule = parseRuleString(input);
-        // KRISV: at this point we don't know if the variable will be bound to a 
-        // simple pattern, or a FROM result pattern, or ACCUMULATE result pattern, etc.
-        // I tried to set a simple pattern as default, and changing in case it ends up
-        // another thing, but the code is really a hack and made the parser a lot more
-        // complex... can we leave as it is for now?
-        // 
-        // assertEquals(1, rule.getLhs().getDescrs().size());
-        // pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
-        // assertEquals("class", pattern.getIdentifier());
-        // assertNull(pattern.getObjectType());
-        // assertEquals(-1, pattern.getEndCharacter());
-        assertEquals(0, rule.getLhs().getDescrs().size());
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("class", pattern.getIdentifier());
+        assertNull(pattern.getObjectType());
+        assertEquals(-1, pattern.getEndCharacter());
 
         input = 
 			"rule MyRule \n" +
@@ -295,16 +288,6 @@ public class IncompleteParsingTest extends TestCase {
         field = (FieldConstraintDescr) pattern.getDescrs().get(1);
         assertEquals("property", field.getFieldName());
         assertEquals(1, field.getRestrictions().size());
-        // KRISV: you are right
-        //
-        // now I would like to access the evaluator '==', but this seems
-        // not possible because the parser cannot create this descr yet
-        // since it does not know what class to create (VariableRestrictionDescr
-        // or LiteralRestrictionDescr or ?)
-        // so maybe I should just extract this info myself, based on the
-        // starting character of this FieldConstraintDescr?
-        // TODO this method does not yet exist
-        // assertEquals(-1, field.getEndCharacter());
         
         input = 
         	"rule MyRule \n" +
