@@ -55,7 +55,7 @@ public class LocationDeterminatorTest extends TestCase {
     	assertTrue(LocationDeterminator.PATTERN_PATTERN_COMPARATOR_ARGUMENT.matcher("(property==otherProp").matches());
     }
     
-    public void FIXME_testCheckLHSLocationDetermination() {
+    public void testCheckLHSLocationDetermination() {
         String input = 
         	"rule MyRule \n" +
         	"	when \n" +

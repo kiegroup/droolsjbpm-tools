@@ -46,7 +46,7 @@ public class IncompleteParsingTest extends TestCase {
 	}
 	
 	
-    public void FIXME_testParsingColumn() {
+    public void testParsingColumn() {
         String input = 
         	"rule MyRule \n" +
         	"  when \n" +
