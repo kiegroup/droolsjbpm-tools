@@ -1356,10 +1356,15 @@ public class LocationDeterminatorTest extends TestCase {
         String input = 
         	"query MyQuery ";
         Location location = LocationDeterminator.getLocation(input);
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION, location.getType());
+        assertEquals(Location.LOCATION_RULE_HEADER, location.getType());
         
         input = 
         	"query \"MyQuery\" ";
+        location = LocationDeterminator.getLocation(input);
+        assertEquals(Location.LOCATION_RULE_HEADER, location.getType());
+        
+        input = 
+            "query MyQuery() ";
         location = LocationDeterminator.getLocation(input);
         assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION, location.getType());
         
