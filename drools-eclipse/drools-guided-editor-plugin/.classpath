@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="lib" path="lib/drools-core-4.0.0.SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/drools-compiler-4.0.0.SNAPSHOT.jar" sourcepath="/drools-compiler"/>
-	<classpathentry exported="true" kind="lib" path="lib/antlr-3.0b7.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/xstream-1.1.3.jar"/>
+	<classpathentry kind="lib" path="lib/antlr.jar"/>
+	<classpathentry kind="lib" path="lib/drools-compiler.jar"/>
+	<classpathentry kind="lib" path="lib/drools-core.jar"/>
+	<classpathentry kind="lib" path="lib/xstream.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="output" path="bin"/>

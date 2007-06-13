@@ -1,7 +1,7 @@
 package org.drools.eclipse.rulebuilder.ui;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brxml.ActionAssertFact;
+import org.drools.brms.client.modeldriven.brxml.ActionInsertFact;
 import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
 import org.drools.eclipse.rulebuilder.modeldriven.HumanReadable;
 import org.eclipse.swt.SWT;
@@ -26,14 +26,14 @@ import org.eclipse.ui.forms.widgets.ImageHyperlink;
  * @author Ahti Kitsik
  * 
  */
-public class ActionAssertFactWidget extends Widget {
+public class ActionInsertFactWidget extends Widget {
  
-    private final ActionAssertFact fact;
+    private final ActionInsertFact fact;
 
-    public ActionAssertFactWidget(FormToolkit toolkit,
+    public ActionInsertFactWidget(FormToolkit toolkit,
                                   Composite parent,
                                   RuleModeller mod,
-                                  ActionAssertFact fact,
+                                  ActionInsertFact fact,
                                   int index) {
         super(parent,toolkit,mod,index);
 
@@ -73,7 +73,7 @@ public class ActionAssertFactWidget extends Widget {
 
         link.addHyperlinkListener( new IHyperlinkListener() {
             public void linkActivated(HyperlinkEvent e) {
-                RuleDialog popup = new AddNewAssertFactFieldDialog( shell,
+                RuleDialog popup = new AddNewInsertedFactFieldDialog( shell,
                                                                      toolkit,
                                                                      getModeller(),
                                                                      fact );

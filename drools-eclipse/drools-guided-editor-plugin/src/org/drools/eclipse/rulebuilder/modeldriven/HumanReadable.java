@@ -74,16 +74,16 @@ public class HumanReadable {
         ceDisplayMap.put( "or",
                           "Any of" );
 
-        actionDisplayMap.put( "assert",
-                              "Assert" );
-        actionDisplayMap.put( "assertLogical",
-                              "Logically assert" );
+        actionDisplayMap.put( "insert",
+                              "Insert" );
+        actionDisplayMap.put( "insertLogical",
+                              "Logically insert" );
         actionDisplayMap.put( "retract",
                               "Retract" );
         actionDisplayMap.put( "set",
                               "Set" );
-        actionDisplayMap.put( "modify",
-                              "Modify" );
+        actionDisplayMap.put( "update",
+                              "Update" );
 
     }
 

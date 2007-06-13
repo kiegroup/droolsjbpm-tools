@@ -1,7 +1,7 @@
 package org.drools.eclipse.rulebuilder.ui;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brxml.ActionAssertFact;
+import org.drools.brms.client.modeldriven.brxml.ActionInsertFact;
 import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
@@ -18,18 +18,18 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Ahti Kitsik
  * 
  */
-public class AddNewAssertFactFieldDialog extends RuleDialog {
+public class AddNewInsertedFactFieldDialog extends RuleDialog {
 
     private final FormToolkit      toolkit;
 
     private RuleModeller           modeller;
 
-    private final ActionAssertFact fact;
+    private final ActionInsertFact fact;
 
-    public AddNewAssertFactFieldDialog(Shell parent,
+    public AddNewInsertedFactFieldDialog(Shell parent,
                                        FormToolkit toolkit,
                                        RuleModeller modeller,
-                                       ActionAssertFact fact) {
+                                       ActionInsertFact fact) {
         super( parent,
                "Add new condition to the rule",
                "Pick the values from combos and confirm the selection." );

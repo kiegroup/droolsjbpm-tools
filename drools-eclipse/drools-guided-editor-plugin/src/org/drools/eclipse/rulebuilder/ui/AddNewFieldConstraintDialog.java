@@ -40,7 +40,7 @@ public class AddNewFieldConstraintDialog extends RuleDialog {
                                        FactPattern pattern,
                                        boolean isNested) {
         super( parent,
-               "Modify constraints",
+               "Update constraints",
                "Pick the values from combos and confirm the selection." );
         this.toolkit = toolkit;
         this.modeller = modeller;

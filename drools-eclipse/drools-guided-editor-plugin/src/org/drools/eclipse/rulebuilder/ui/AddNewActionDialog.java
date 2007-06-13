@@ -1,8 +1,8 @@
 package org.drools.eclipse.rulebuilder.ui;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brxml.ActionAssertFact;
-import org.drools.brms.client.modeldriven.brxml.ActionAssertLogicalFact;
+import org.drools.brms.client.modeldriven.brxml.ActionInsertFact;
+import org.drools.brms.client.modeldriven.brxml.ActionInsertLogicalFact;
 import org.drools.brms.client.modeldriven.brxml.ActionSetField;
 import org.drools.brms.client.modeldriven.brxml.DSLSentence;
 import org.eclipse.swt.SWT;
@@ -93,7 +93,7 @@ public class AddNewActionDialog extends RuleDialog {
 				}
 
 				modeller.getModel().addRhsItem(
-						new ActionAssertLogicalFact(factsCombo.getText()));
+						new ActionInsertLogicalFact(factsCombo.getText()));
 				modeller.setDirty(true);
 				modeller.reloadRhs();
 				close();
@@ -112,7 +112,7 @@ public class AddNewActionDialog extends RuleDialog {
 				}
 
 				modeller.getModel().addRhsItem(
-						new ActionAssertFact(factsCombo.getText()));
+						new ActionInsertFact(factsCombo.getText()));
 				modeller.setDirty(true);
 				modeller.reloadRhs();
 				close();

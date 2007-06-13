@@ -1,7 +1,7 @@
 package org.drools.eclipse.rulebuilder.ui;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brxml.ActionAssertFact;
+import org.drools.brms.client.modeldriven.brxml.ActionInsertFact;
 import org.drools.brms.client.modeldriven.brxml.ActionRetractFact;
 import org.drools.brms.client.modeldriven.brxml.ActionSetField;
 import org.drools.brms.client.modeldriven.brxml.CompositeFactPattern;
@@ -179,15 +179,24 @@ public class RuleModeller {
 
 			if (action instanceof ActionSetField) {
 				addActionSetFieldWidget(action, i);
-			} else if (action instanceof ActionAssertFact) {
-				addActionAssertFactWidget(action, i);
+			} else if (action instanceof ActionInsertFact) {
+				addActionInsertFactWidget(action, i);
 			} else if (action instanceof ActionRetractFact) {
 				addActionRetractFactWidget(action, i);
 			} else if (action instanceof DSLSentence) {
 				addRHSDSLSentenceWidget(i, (DSLSentence) action);
 			}
 
-		}
+        }
+    }
+    private void addActionInsertFactWidget(IAction action,
+                                           int i) {
+        Composite comp = toolkit.createComposite( thenComposite );
+        new ActionInsertFactWidget( toolkit,
+                                    comp,
+                                    this,
+                                    (ActionInsertFact) action,
+                                    i );
 	}
 
 	private void redrawLhs() {
@@ -222,8 +231,8 @@ public class RuleModeller {
 
 	private void addActionAssertFactWidget(IAction action, int i) {
 		Composite comp = toolkit.createComposite(thenComposite);
-		new ActionAssertFactWidget(toolkit, comp, this,
-				(ActionAssertFact) action, i);
+		new ActionInsertFactWidget(toolkit, comp, this,
+				(ActionInsertFact) action, i);
 
 	}
 
