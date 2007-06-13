@@ -3,6 +3,7 @@ package org.drools.eclipse.rulebuilder.ui;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.ActionInsertFact;
 import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
+import org.drools.brms.client.modeldriven.brxml.ActionInsertLogicalFact;
 import org.drools.eclipse.rulebuilder.modeldriven.HumanReadable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -54,8 +55,14 @@ public class ActionInsertFactWidget extends Widget {
     }
 
     private void create() {
+    	
+    	 String assertType = "assert";
+         if (fact instanceof ActionInsertLogicalFact) {
+             assertType = "assertLogical";
+         }
+    	
         toolkit.createLabel( parent,
-                             HumanReadable.getActionDisplayName( this.fact.getType() ) + " " + this.fact.factType );
+                             HumanReadable.getActionDisplayName( assertType ) + " " + this.fact.factType );
         addDeleteRHSAction();
         addMoreOptionsAction();
         Composite constraintComposite = toolkit.createComposite( parent );

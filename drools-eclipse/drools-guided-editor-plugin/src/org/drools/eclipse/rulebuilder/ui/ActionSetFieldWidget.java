@@ -3,6 +3,7 @@ package org.drools.eclipse.rulebuilder.ui;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
 import org.drools.brms.client.modeldriven.brxml.ActionSetField;
+import org.drools.brms.client.modeldriven.brxml.ActionUpdateField;
 import org.drools.brms.client.modeldriven.brxml.FactPattern;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
 import org.drools.eclipse.rulebuilder.modeldriven.HumanReadable;
@@ -71,8 +72,13 @@ public class ActionSetFieldWidget extends Widget {
     }
 
     private void create() {
+    	String modifyType = "set";
+        if (this.set instanceof ActionUpdateField) {
+            modifyType = "modify";
+        }
+    	
         toolkit.createLabel( parent,
-                             HumanReadable.getActionDisplayName( this.set.getType() ) + " [" + this.set.variable + "]" );
+                             HumanReadable.getActionDisplayName( modifyType ) + " [" + this.set.variable + "]" );
         addDeleteRHSAction();
         addMoreOptionsAction();
         addRows();

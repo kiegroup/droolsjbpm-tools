@@ -1,9 +1,7 @@
 package org.drools.eclipse.rulebuilder.ui;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brxml.Constraint;
 import org.drools.brms.client.modeldriven.brxml.FactPattern;
-import org.drools.brms.client.modeldriven.brxml.IConstraint;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -108,7 +106,8 @@ public class AddNewFieldConstraintDialog extends RuleDialog {
                                                      "New formula",
                                                      SWT.PUSH );
 
-        formulaButton.addListener( SWT.Selection,
+        //TODO: adjust to new API
+       /* formulaButton.addListener( SWT.Selection,
                                    new Listener() {
                                        public void handleEvent(Event event) {
                                            Constraint con = new Constraint();
@@ -118,7 +117,7 @@ public class AddNewFieldConstraintDialog extends RuleDialog {
                                            modeller.reloadLhs();
                                            close();
                                        }
-                                   } );
+                                   } );*/
 
         formulaButton.setLayoutData( gd );
     }
@@ -137,7 +136,9 @@ public class AddNewFieldConstraintDialog extends RuleDialog {
         }
         fieldsCombo.select( 0 );
 
-        fieldsCombo.addListener( SWT.Selection,
+        
+        //TODO: adjust to new API
+       /* fieldsCombo.addListener( SWT.Selection,
                                  new Listener() {
                                      public void handleEvent(Event event) {
                                          if ( fieldsCombo.getSelectionIndex() == 0 ) {
@@ -151,7 +152,7 @@ public class AddNewFieldConstraintDialog extends RuleDialog {
                                          modeller.reloadLhs();
                                          close();
                                      }
-                                 } );
+                                 } );*/
     }
 
     private SuggestionCompletionEngine getCompletion() {
