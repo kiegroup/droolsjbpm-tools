@@ -239,7 +239,7 @@ abstract public class GraphicalVertex extends ModelElement {
 
     /**
      * Set the Size of this vertex.
-     * Will not modify the size if newSize is null.
+     * Will not update the size if newSize is null.
      * @param newSize a non-null Dimension instance or null
      */
     public void setSize(Dimension newSize) {

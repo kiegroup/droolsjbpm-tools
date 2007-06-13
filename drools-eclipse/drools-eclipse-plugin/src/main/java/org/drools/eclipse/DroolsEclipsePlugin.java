@@ -292,7 +292,8 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
             	builder_configuration.setJavaLanguageLevel(level);
             }
             try {
-            	builder_configuration.setClassLoader(newLoader);
+                // @todo I've deleted this method, is that ok?
+            	//builder_configuration.setClassLoader(newLoader);
                 Thread.currentThread().setContextClassLoader(newLoader);
 
                 // first parse the source

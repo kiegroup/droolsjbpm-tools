@@ -36,9 +36,9 @@ public class DroolsPluginImages {
     public static final String OPEN_LOG = "OpenLog";
     public static final String DELETE_LOG = "ClearLog";
     public static final String DELETE_LOG_DISABLED = "ClearLogDisabled";
-    public static final String ASSERT_OBJECT = "AssertObject";
-    public static final String MODIFY_OBJECT = "ModifyObject";
-    public static final String RETRACT_OBJECT = "RetractObject";
+    public static final String INSERT = "Insert";
+    public static final String UPDATE = "Update";
+    public static final String RETRACT = "RetractO";
     public static final String CREATE_ACTIVATION = "CreateActivation";
     public static final String CANCEL_ACTIVATION = "CancelActivation";
     public static final String EXECUTE_ACTIVATION = "ExecuteActivation";
@@ -68,9 +68,9 @@ public class DroolsPluginImages {
         declareRegistryImage(OPEN_LOG, "open.gif");
         declareRegistryImage(DELETE_LOG, "clear.gif");
         declareRegistryImage(DELETE_LOG_DISABLED, "clear_disabled.gif");
-        declareRegistryImage(ASSERT_OBJECT, "greensquare.GIF");
-        declareRegistryImage(MODIFY_OBJECT, "yellowsquare.GIF");
-        declareRegistryImage(RETRACT_OBJECT, "redsquare.GIF");
+        declareRegistryImage(INSERT, "greensquare.GIF");
+        declareRegistryImage(UPDATE, "yellowsquare.GIF");
+        declareRegistryImage(RETRACT, "redsquare.GIF");
         declareRegistryImage(CREATE_ACTIVATION, "arrowright.GIF");
         declareRegistryImage(CANCEL_ACTIVATION, "arrowleft.GIF");
         declareRegistryImage(EXECUTE_ACTIVATION, "bluediamond.GIF");

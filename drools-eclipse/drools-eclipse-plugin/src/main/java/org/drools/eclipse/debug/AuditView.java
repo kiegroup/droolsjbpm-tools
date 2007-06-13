@@ -107,7 +107,7 @@ public class AuditView extends AbstractDebugView {
 			LogEvent inEvent = (LogEvent) iterator.next();
 			Event event = new Event(inEvent.getType());
 			switch (inEvent.getType()) {
-				case LogEvent.OBJECT_ASSERTED:
+				case LogEvent.INSERTED:
 					ObjectLogEvent inObjectEvent = (ObjectLogEvent) inEvent;
 					event.setString("Object asserted (" + inObjectEvent.getFactId() + "): " + inObjectEvent.getObjectToString());
 					if (currentBeforeActivationEvent != null) {
@@ -119,7 +119,7 @@ public class AuditView extends AbstractDebugView {
 					newActivations.clear();
 					objectMap.put(new Long(((ObjectLogEvent) inEvent).getFactId()), event);
 					break;
-				case LogEvent.OBJECT_MODIFIED:
+				case LogEvent.UPDATED:
 					inObjectEvent = (ObjectLogEvent) inEvent;
 					event.setString("Object modified (" + inObjectEvent.getFactId() + "): " + inObjectEvent.getObjectToString());
 					if (currentBeforeActivationEvent != null) {
@@ -134,7 +134,7 @@ public class AuditView extends AbstractDebugView {
 						event.setCauseEvent(assertEvent);
 					}
 					break;
-				case LogEvent.OBJECT_RETRACTED:
+				case LogEvent.RETRACTED:
 					inObjectEvent = (ObjectLogEvent) inEvent;
 					event.setString("Object retracted (" + inObjectEvent.getFactId() + "): " + inObjectEvent.getObjectToString());
 					if (currentBeforeActivationEvent != null) {
@@ -368,9 +368,9 @@ public class AuditView extends AbstractDebugView {
 	    	if (element instanceof Event) {
 	    		int type = ((Event) element).getType();
 	    		switch (type) {
-	    			case LogEvent.OBJECT_ASSERTED: return DroolsPluginImages.getImage(DroolsPluginImages.ASSERT_OBJECT);
-	    			case LogEvent.OBJECT_MODIFIED: return DroolsPluginImages.getImage(DroolsPluginImages.MODIFY_OBJECT);
-	    			case LogEvent.OBJECT_RETRACTED: return DroolsPluginImages.getImage(DroolsPluginImages.RETRACT_OBJECT);
+	    			case LogEvent.INSERTED: return DroolsPluginImages.getImage(DroolsPluginImages.INSERT);
+	    			case LogEvent.UPDATED: return DroolsPluginImages.getImage(DroolsPluginImages.UPDATE);
+	    			case LogEvent.RETRACTED: return DroolsPluginImages.getImage(DroolsPluginImages.RETRACT);
 	    			case LogEvent.ACTIVATION_CREATED: return DroolsPluginImages.getImage(DroolsPluginImages.CREATE_ACTIVATION);
 	    			case LogEvent.ACTIVATION_CANCELLED: return DroolsPluginImages.getImage(DroolsPluginImages.CANCEL_ACTIVATION);
 	    			case LogEvent.BEFORE_ACTIVATION_FIRE: return DroolsPluginImages.getImage(DroolsPluginImages.EXECUTE_ACTIVATION);

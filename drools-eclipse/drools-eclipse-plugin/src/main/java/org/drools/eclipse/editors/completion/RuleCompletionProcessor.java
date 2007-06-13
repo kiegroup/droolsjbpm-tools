@@ -573,19 +573,19 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 	private void addRHSKeywordCompletionProposals(
 			List list, String prefix) {
 		RuleCompletionProposal prop = new RuleCompletionProposal(prefix
-				.length(), "modify", "modify();", 7);
+				.length(), "update", "update();", 7);
 		prop.setImage(DROOLS_ICON);
 		list.add(prop);
 		prop = new RuleCompletionProposal(prefix.length(), "retract",
 				"retract();", 8);
 		prop.setImage(DROOLS_ICON);
 		list.add(prop);
-		prop = new RuleCompletionProposal(prefix.length(), "assert",
-				"assert();", 7);
+		prop = new RuleCompletionProposal(prefix.length(), "insert",
+				"insert();", 7);
 		prop.setImage(DROOLS_ICON);
 		list.add(prop);
-		prop = new RuleCompletionProposal(prefix.length(), "assertLogical",
-				"assertLogical();", 14);
+		prop = new RuleCompletionProposal(prefix.length(), "insertLogical",
+				"insertLogical();", 14);
 		prop.setImage(DROOLS_ICON);
 		list.add(prop);
 	}
