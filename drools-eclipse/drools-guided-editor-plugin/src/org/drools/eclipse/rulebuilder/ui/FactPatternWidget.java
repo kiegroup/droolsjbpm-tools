@@ -342,9 +342,9 @@ public class FactPatternWidget extends Widget {
 			link.setToolTipText("Choose value editor type");
 			link.addHyperlinkListener(new IHyperlinkListener() {
 				public void linkActivated(HyperlinkEvent e) {
-					/*RuleDialog popup = new ValueEditorTypeSelectionDialog(
+					RuleDialog popup = new ValueEditorTypeSelectionDialog(
 							parent.getShell(), toolkit, getModeller(), c);
-					popup.open();*/
+					popup.open();
 				}
 
 				public void linkEntered(HyperlinkEvent e) {

@@ -1,5 +1,6 @@
 package org.drools.eclipse.rulebuilder.ui;
 
+import org.drools.brms.client.modeldriven.brxml.ISingleFieldConstraint;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -15,18 +16,17 @@ public class ValueEditorTypeSelectionDialog extends RuleDialog {
 
     private RuleModeller      modeller;
 
-   // private IConstraint       constraint;
+    private ISingleFieldConstraint   constraint;
 
     public ValueEditorTypeSelectionDialog(Shell parent,
                                           FormToolkit toolkit,
-                                          RuleModeller modeller
-                                          //,
-                                          //IConstraint constraint
+                                          RuleModeller modeller,
+                                          ISingleFieldConstraint constraint
                                           ) {
         super(parent,"Select value editor type","Select value editor type" );
         this.toolkit = toolkit;
         this.modeller = modeller;
-        //this.constraint = constraint;
+        this.constraint = constraint;
     }
 
     protected Control createDialogArea(final Composite parent) {
@@ -40,9 +40,7 @@ public class ValueEditorTypeSelectionDialog extends RuleDialog {
         valueTypeCombo.add( "A formula" ); // 1
 
         
-        //TODO: adjust to new API
-        
-       /* if ( modeller.getModel().getBoundVariablesInScope( constraint ).size() > 0 ) {
+        if ( modeller.getModel().getBoundVariablesInScope( constraint ).size() > 0 ) {
             valueTypeCombo.add( "Bound variable" ); // 2
         }
 
@@ -50,20 +48,20 @@ public class ValueEditorTypeSelectionDialog extends RuleDialog {
             public void modifyText(ModifyEvent e) {
                 switch ( valueTypeCombo.getSelectionIndex() ) {
                     case 0 :
-                        constraint.constraintValueType = IFieldConstraint.TYPE_LITERAL;
+                        constraint.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
                         break;
                     case 1 :
-                        constraint.constraintValueType = IConstraint.TYPE_RET_VALUE;
+                        constraint.constraintValueType = ISingleFieldConstraint.TYPE_RET_VALUE;
                         break;
                     case 2 :
-                        constraint.constraintValueType = IConstraint.TYPE_VARIABLE;
+                        constraint.constraintValueType = ISingleFieldConstraint.TYPE_VARIABLE;
                         break;
                 }
                 modeller.reloadLhs();
                 modeller.setDirty( true );
                 close();
             }
-        } );*/
+        } );
 
         toolkit.paintBordersFor( composite );
         return composite;

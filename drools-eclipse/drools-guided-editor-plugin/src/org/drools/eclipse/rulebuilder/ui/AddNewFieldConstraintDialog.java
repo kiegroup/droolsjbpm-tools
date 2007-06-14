@@ -2,6 +2,7 @@ package org.drools.eclipse.rulebuilder.ui;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.FactPattern;
+import org.drools.brms.client.modeldriven.brxml.SingleFieldConstraint;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -106,18 +107,17 @@ public class AddNewFieldConstraintDialog extends RuleDialog {
                                                      "New formula",
                                                      SWT.PUSH );
 
-        //TODO: adjust to new API
-       /* formulaButton.addListener( SWT.Selection,
+       formulaButton.addListener( SWT.Selection,
                                    new Listener() {
                                        public void handleEvent(Event event) {
-                                           Constraint con = new Constraint();
-                                           con.constraintValueType = IConstraint.TYPE_PREDICATE;
+                                    	   SingleFieldConstraint con = new SingleFieldConstraint();
+                                           con.constraintValueType = SingleFieldConstraint.TYPE_PREDICATE;
                                            pattern.addConstraint( con );
                                            modeller.setDirty( true );
                                            modeller.reloadLhs();
                                            close();
                                        }
-                                   } );*/
+                                   } );
 
         formulaButton.setLayoutData( gd );
     }
@@ -136,23 +136,21 @@ public class AddNewFieldConstraintDialog extends RuleDialog {
         }
         fieldsCombo.select( 0 );
 
-        
-        //TODO: adjust to new API
-       /* fieldsCombo.addListener( SWT.Selection,
+        fieldsCombo.addListener( SWT.Selection,
                                  new Listener() {
                                      public void handleEvent(Event event) {
                                          if ( fieldsCombo.getSelectionIndex() == 0 ) {
                                              return;
                                          }
 
-                                         Constraint constraint = new Constraint();
+                                         SingleFieldConstraint constraint = new SingleFieldConstraint();
                                          constraint.fieldName = fieldsCombo.getText();
                                          pattern.addConstraint( constraint );
                                          modeller.setDirty( true );
                                          modeller.reloadLhs();
                                          close();
                                      }
-                                 } );*/
+                                 } );
     }
 
     private SuggestionCompletionEngine getCompletion() {
