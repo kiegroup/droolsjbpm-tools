@@ -39,7 +39,7 @@ public class AddNewInsertedFactFieldDialog extends RuleDialog {
     }
 
     protected Control createDialogArea(final Composite parent) {
-        System.out.println("Creating new ASSERT fact constraint");
+        //System.out.println("Creating new ASSERT fact constraint");
 
         Composite composite = (Composite) super.createDialogArea( parent );
 

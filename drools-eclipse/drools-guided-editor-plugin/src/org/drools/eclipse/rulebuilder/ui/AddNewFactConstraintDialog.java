@@ -41,7 +41,7 @@ public class AddNewFactConstraintDialog extends RuleDialog {
     protected Control createDialogArea(final Composite parent) {
         Composite composite = (Composite) super.createDialogArea( parent );
 
-        System.out.println( "Creating new fact constraint" );
+        //System.out.println( "Creating new fact constraint" );
 
         toolkit.createLabel( composite,
                              "Choose fact type" );
@@ -59,7 +59,7 @@ public class AddNewFactConstraintDialog extends RuleDialog {
                                 new Listener() {
                                     public void handleEvent(Event event) {
 
-                                        System.out.println( "HERE! event " + event );
+                                        //System.out.println( "HERE! event " + event );
 
                                         if ( factsCombo.getSelectionIndex() == 0 ) {
                                             return;
