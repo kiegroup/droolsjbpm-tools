@@ -74,7 +74,12 @@ public class FactPatternWidget extends Widget {
 		GridLayout constraintLayout = new GridLayout();
 		constraintLayout.numColumns = 6;
 		constraintComposite.setLayout(constraintLayout);
-		renderFieldConstraints(constraintComposite, true);
+
+		for (int row = 0; row < pattern.getFieldConstraints().length; row++) {
+			renderFieldConstraints(constraintComposite, pattern
+					.getFieldConstraints()[row], row, true);
+		}
+
 		toolkit.paintBordersFor(constraintComposite);
 	}
 
@@ -95,7 +100,8 @@ public class FactPatternWidget extends Widget {
 			public void linkExited(HyperlinkEvent e) {
 			}
 		});
-		link.setToolTipText("Add a field to this condition, or bind a varible to this fact.");
+		link
+				.setToolTipText("Add a field to this condition, or bind a varible to this fact.");
 	}
 
 	private void addDeleteAction() {
@@ -130,15 +136,50 @@ public class FactPatternWidget extends Widget {
 		delWholeLink.setToolTipText("Remove this condition.");
 	}
 
-	private void renderFieldConstraints(Composite constraintComposite, boolean showBinding) {
-		for (int row = 0; row < pattern.getFieldConstraints().length; row++) {
-			FieldConstraint constraint = pattern.getFieldConstraints()[row];
+	private void renderFieldConstraints(Composite constraintComposite,
+			FieldConstraint constraint, int row, boolean showBinding) {
+		if (constraint instanceof SingleFieldConstraint) {
+			renderSingleFieldConstraint(constraintComposite, row, constraint,
+					showBinding);
+		} else if (constraint instanceof CompositeFieldConstraint) {
+			compositeFieldConstraintEditor(constraintComposite,
+					(CompositeFieldConstraint) constraint);
+		}
 
-			if (constraint instanceof SingleFieldConstraint) {
-				renderSingleFieldConstraint(constraintComposite, row, constraint, showBinding);
-			} else if (constraint instanceof CompositeFieldConstraint) {
-				//TODO:
-				// compositeFieldConstraintEditor
+	}
+
+	private void compositeFieldConstraintEditor(Composite constraintComposite,
+			CompositeFieldConstraint constraint) {
+		if (constraint.compositeJunctionType
+				.equals(CompositeFieldConstraint.COMPOSITE_TYPE_AND)) {
+			toolkit.createLabel(constraintComposite, "All of:");
+		} else {
+			toolkit.createLabel(constraintComposite, "Any of:");
+		}
+
+		ImageHyperlink link = addImage(constraintComposite,
+				"icons/new_item.gif");
+		link.addHyperlinkListener(new IHyperlinkListener() {
+			public void linkActivated(HyperlinkEvent e) {
+				// TODO Auto-generated method stub
+			}
+
+			public void linkEntered(HyperlinkEvent e) {
+				// TODO Auto-generated method stub
+			}
+
+			public void linkExited(HyperlinkEvent e) {
+				// TODO Auto-generated method stub
+			}
+
+		});
+
+		FieldConstraint[] nested = constraint.constraints;
+		if (nested != null) {
+			//TODO: implement as a pop-up
+			
+			for (int i = 0; i < nested.length; i++) {
+				//renderFieldConstraints(constraintComposite, nested[i], i, false);
 			}
 		}
 	}
@@ -147,14 +188,15 @@ public class FactPatternWidget extends Widget {
 			int row, FieldConstraint constraint, boolean showBinding) {
 		final SingleFieldConstraint c = (SingleFieldConstraint) constraint;
 		if (c.constraintValueType != SingleFieldConstraint.TYPE_PREDICATE) {
-			createConstraintRow(constraintComposite, row, c);
+			createConstraintRow(constraintComposite, row, c, showBinding);
 		} else {
 			createPredicateConstraintRow(constraintComposite, row, c);
 		}
 	}
 
 	private void createConstraintRow(Composite constraintComposite, int row,
-			final SingleFieldConstraint c) {
+			final SingleFieldConstraint c, boolean showBinding) { // TODO: use
+		// showBinding
 		toolkit.createLabel(constraintComposite, c.fieldName);
 		if (c.connectives == null || c.connectives.length == 0) {
 			addRemoveFieldAction(constraintComposite, row);
@@ -290,7 +332,8 @@ public class FactPatternWidget extends Widget {
 		return pattern.factType;
 	}
 
-	private void operatorDropDown(Composite parent, final SingleFieldConstraint c) {
+	private void operatorDropDown(Composite parent,
+			final SingleFieldConstraint c) {
 		String[] ops = getCompletions().getOperatorCompletions(
 				pattern.factType, c.fieldName);
 		final Combo box = new Combo(parent, SWT.SIMPLE | SWT.DROP_DOWN
@@ -334,7 +377,8 @@ public class FactPatternWidget extends Widget {
 	}
 
 	// from org.drools.brms.client.modeldriven.ui.ConstraintValueEditor
-	private void constraintValueEditor(final Composite parent, final ISingleFieldConstraint c) {
+	private void constraintValueEditor(final Composite parent,
+			final ISingleFieldConstraint c) {
 		if (c.constraintValueType == SingleFieldConstraint.TYPE_UNDEFINED) {
 			ImageHyperlink link = addImage(parent, "icons/edit.gif");
 			link.setToolTipText("Choose value editor type");
@@ -356,11 +400,13 @@ public class FactPatternWidget extends Widget {
 		} else {
 			switch (c.constraintValueType) {
 			case SingleFieldConstraint.TYPE_LITERAL:
-				literalValueEditor(parent, c, new GridData(GridData.FILL_HORIZONTAL));
+				literalValueEditor(parent, c, new GridData(
+						GridData.FILL_HORIZONTAL));
 				break;
 			case SingleFieldConstraint.TYPE_RET_VALUE:
 				addImage(parent, "icons/function_assets.gif");
-				formulaValueEditor(parent, c, new GridData(GridData.FILL_HORIZONTAL));
+				formulaValueEditor(parent, c, new GridData(
+						GridData.FILL_HORIZONTAL));
 				break;
 			case SingleFieldConstraint.TYPE_VARIABLE:
 				variableEditor(parent, c);
@@ -371,7 +417,8 @@ public class FactPatternWidget extends Widget {
 		}
 	}
 
-	private void variableEditor(Composite composite, final ISingleFieldConstraint c) {
+	private void variableEditor(Composite composite,
+			final ISingleFieldConstraint c) {
 		List vars = getModeller().getModel().getBoundVariablesInScope(c);
 
 		final Combo combo = new Combo(composite, SWT.READ_ONLY);
@@ -396,8 +443,8 @@ public class FactPatternWidget extends Widget {
 
 	}
 
-	private void literalValueEditor(Composite parent, final ISingleFieldConstraint c,
-			GridData gd) {
+	private void literalValueEditor(Composite parent,
+			final ISingleFieldConstraint c, GridData gd) {
 		final Text box = toolkit.createText(parent, "");
 
 		if (c.value != null) {
@@ -415,8 +462,8 @@ public class FactPatternWidget extends Widget {
 		});
 	}
 
-	private void formulaValueEditor(Composite parent, final ISingleFieldConstraint c,
-			GridData gd) {
+	private void formulaValueEditor(Composite parent,
+			final ISingleFieldConstraint c, GridData gd) {
 
 		final Text box = toolkit.createText(parent, "");
 
