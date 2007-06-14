@@ -242,7 +242,7 @@ public class FactPatternWidget extends Widget {
 	}
 
 	private void addRemoveConstraintAction(Composite composite,
-			final FieldConstraint constraint,
+			final SingleFieldConstraint constraint,
 			final ConnectiveConstraint connConstraint) {
 		ImageHyperlink delLink = addImage(composite,
 				"icons/delete_item_small.gif");
@@ -254,9 +254,7 @@ public class FactPatternWidget extends Widget {
 				dialog.setMessage("Remove this item?");
 				dialog.setText("Remove this item?");
 				if (dialog.open() == SWT.YES) {
-					//TODO: how to delete constraints
-					
-					/*ConnectiveConstraint[] connectives = constraint.connectives;
+					ConnectiveConstraint[] connectives = constraint.connectives;
 					List nConnectives = new ArrayList();
 					for (int i = 0; i < connectives.length; i++) {
 						if (connectives[i] != connConstraint) {
@@ -268,7 +266,7 @@ public class FactPatternWidget extends Widget {
 									.size()]);
 
 					getModeller().reloadLhs();
-					getModeller().setDirty(true);*/
+					getModeller().setDirty(true);
 				}
 			}
 
