@@ -24,159 +24,151 @@ import org.eclipse.ui.forms.widgets.ImageHyperlink;
 /**
  * @author Anton Arhipov
  * @author Ahti Kitsik
- *
+ * 
  */
 public class ActionSetFieldWidget extends Widget {
 
-    private ActionSetField set;
+	private ActionSetField set;
 
-    final private String[] fieldCompletions;
+	final private String[] fieldCompletions;
 
-    private boolean        isBoundFact = false;
+	private boolean isBoundFact = false;
 
-    public ActionSetFieldWidget(FormToolkit toolkit,
-                                Composite parent,
-                                RuleModeller mod,
-                                RuleModel rule,
-                                ActionSetField set,
-                                int index) {
+	private String variableClass;
 
-        super( parent,
-               toolkit,
-               mod,
-               index );
+	public ActionSetFieldWidget(FormToolkit toolkit, Composite parent,
+			RuleModeller mod, RuleModel rule, ActionSetField set, int index) {
 
-        this.set = set;
+		super(parent, toolkit, mod, index);
 
-        if ( getCompletion().isGlobalVariable( set.variable ) ) {
-            this.fieldCompletions = getCompletion().getFieldCompletionsForGlobalVariable( set.variable );
-        } else {
-            FactPattern pattern = rule.getBoundFact( set.variable );
-            this.fieldCompletions = getCompletion().getFieldCompletions( pattern.factType );
-            this.isBoundFact = true;
-        }
+		this.set = set;
 
-        GridLayout l = new GridLayout();
-        l.numColumns = 6;
-        l.marginBottom = 0;
-        l.marginHeight = 0;
-        l.marginLeft = 0;
-        l.marginRight = 0;
-        l.marginTop = 0;
-        l.marginWidth = 0;
-        l.verticalSpacing = 0;
-        parent.setLayout( l );
+		if (getCompletion().isGlobalVariable(set.variable)) {
+			this.fieldCompletions = getCompletion()
+					.getFieldCompletionsForGlobalVariable(set.variable);
+			this.variableClass = (String) getCompletion().globalTypes
+					.get(set.variable);
+		} else {
+			FactPattern pattern = rule.getBoundFact(set.variable);
+			this.fieldCompletions = getCompletion().getFieldCompletions(
+					pattern.factType);
+			this.isBoundFact = true;
+			this.variableClass = pattern.factType;
+		}
 
-        create();
+		GridLayout l = new GridLayout();
+		l.numColumns = 6;
+		l.marginBottom = 0;
+		l.marginHeight = 0;
+		l.marginLeft = 0;
+		l.marginRight = 0;
+		l.marginTop = 0;
+		l.marginWidth = 0;
+		l.verticalSpacing = 0;
+		parent.setLayout(l);
 
-    }
+		create();
 
-    private void create() {
-    	String modifyType = "set";
-        if (this.set instanceof ActionUpdateField) {
-            modifyType = "modify";
-        }
-    	
-        toolkit.createLabel( parent,
-                             HumanReadable.getActionDisplayName( modifyType ) + " [" + this.set.variable + "]" );
-        addDeleteRHSAction();
-        addMoreOptionsAction();
-        addRows();
-    }
+	}
 
-    private void addRows() {
-        Composite constraintComposite = toolkit.createComposite( parent );
-        GridLayout constraintLayout = new GridLayout();
-        constraintLayout.numColumns = 3;
-        constraintComposite.setLayout( constraintLayout );
+	private void create() {
+		String modifyType = "set";
+		if (this.set instanceof ActionUpdateField) {
+			modifyType = "modify";
+		}
 
-        for ( int i = 0; i < set.fieldValues.length; i++ ) {
-            ActionFieldValue val = set.fieldValues[i];
-            toolkit.createLabel( constraintComposite,
-                                 val.field );
-            valueEditor( constraintComposite,
-                         val );
-            addRemoveFieldAction( constraintComposite,
-                                  i );
-        }
+		toolkit.createLabel(parent, HumanReadable
+				.getActionDisplayName(modifyType)
+				+ " [" + this.set.variable + "]");
+		addDeleteRHSAction();
+		addMoreOptionsAction();
+		addRows();
+	}
 
-        toolkit.paintBordersFor( constraintComposite );
-    }
+	private void addRows() {
+		Composite constraintComposite = toolkit.createComposite(parent);
+		GridLayout constraintLayout = new GridLayout();
+		constraintLayout.numColumns = 3;
+		constraintComposite.setLayout(constraintLayout);
 
-    private void addMoreOptionsAction() {
-        // ImageHyperlink link = addImage(parent,
-        // "icons/add_field_to_fact.gif");
-        ImageHyperlink link = addImage( parent,
-                                        "icons/new_item.gif" );
+		for (int i = 0; i < set.fieldValues.length; i++) {
+			ActionFieldValue val = set.fieldValues[i];
+			toolkit.createLabel(constraintComposite, val.field);
+			valueEditor(constraintComposite, val);
+			addRemoveFieldAction(constraintComposite, i);
+		}
 
-        link.addHyperlinkListener( new IHyperlinkListener() {
-            public void linkActivated(HyperlinkEvent e) {
-                RuleDialog popup = new ActionSetFieldDialog( toolkit,
-                                                              parent.getShell(),
-                                                              getModeller(),
-                                                              set,
-                                                              fieldCompletions );
-                popup.open();
+		toolkit.paintBordersFor(constraintComposite);
+	}
 
-            }
+	private void addMoreOptionsAction() {
+		// ImageHyperlink link = addImage(parent,
+		// "icons/add_field_to_fact.gif");
+		ImageHyperlink link = addImage(parent, "icons/new_item.gif");
 
-            public void linkEntered(HyperlinkEvent e) {
-            }
+		link.addHyperlinkListener(new IHyperlinkListener() {
+			public void linkActivated(HyperlinkEvent e) {
+				RuleDialog popup = new ActionSetFieldDialog(toolkit, parent
+						.getShell(), getModeller(), set, fieldCompletions, variableClass);
+				popup.open();
 
-            public void linkExited(HyperlinkEvent e) {
-            }
-        } );
-        link.setToolTipText( "Add a field" );
-    }
+			}
 
-    private void addRemoveFieldAction(Composite constraintComposite,
-                                      final int currentRow) {
-        ImageHyperlink delLink = addImage( constraintComposite,
-                                           "icons/delete_item_small.gif" );
-        delLink.setToolTipText( "Remove this field action" );
-        delLink.addHyperlinkListener( new IHyperlinkListener() {
-            public void linkActivated(HyperlinkEvent e) {
-                MessageBox dialog = new MessageBox( Display.getCurrent().getActiveShell(),
-                                                    SWT.YES | SWT.NO | SWT.ICON_WARNING );
-                dialog.setMessage( "Remove this item?" );
-                dialog.setText( "Remove this item?" );
-                if ( dialog.open() == SWT.YES ) {
-                    set.removeField( currentRow );
-                    getModeller().setDirty( true );
-                    getModeller().reloadRhs();
-                }
-            }
+			public void linkEntered(HyperlinkEvent e) {
+			}
 
-            public void linkEntered(HyperlinkEvent e) {
-            }
+			public void linkExited(HyperlinkEvent e) {
+			}
+		});
+		link.setToolTipText("Add a field");
+	}
 
-            public void linkExited(HyperlinkEvent e) {
-            }
-        } );
-    }
+	private void addRemoveFieldAction(Composite constraintComposite,
+			final int currentRow) {
+		ImageHyperlink delLink = addImage(constraintComposite,
+				"icons/delete_item_small.gif");
+		delLink.setToolTipText("Remove this field action");
+		delLink.addHyperlinkListener(new IHyperlinkListener() {
+			public void linkActivated(HyperlinkEvent e) {
+				MessageBox dialog = new MessageBox(Display.getCurrent()
+						.getActiveShell(), SWT.YES | SWT.NO | SWT.ICON_WARNING);
+				dialog.setMessage("Remove this item?");
+				dialog.setText("Remove this item?");
+				if (dialog.open() == SWT.YES) {
+					set.removeField(currentRow);
+					getModeller().setDirty(true);
+					getModeller().reloadRhs();
+				}
+			}
 
-    private void valueEditor(Composite parent,
-                             final ActionFieldValue val) {
-        final Text box = toolkit.createText( parent,
-                                             "" );
+			public void linkEntered(HyperlinkEvent e) {
+			}
 
-        if ( val.value != null ) {
-            box.setText( val.value );
-        }
+			public void linkExited(HyperlinkEvent e) {
+			}
+		});
+	}
 
-        box.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
+	private void valueEditor(Composite parent, final ActionFieldValue val) {
+		final Text box = toolkit.createText(parent, "");
 
-        box.addModifyListener( new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                val.value = box.getText();
-                getModeller().setDirty( true );
-            }
-        } );
+		if (val.value != null) {
+			box.setText(val.value);
+		}
 
-    }
+		box.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-    private SuggestionCompletionEngine getCompletion() {
-        return getModeller().getSuggestionCompletionEngine();
-    }
+		box.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				val.value = box.getText();
+				getModeller().setDirty(true);
+			}
+		});
+
+	}
+
+	private SuggestionCompletionEngine getCompletion() {
+		return getModeller().getSuggestionCompletionEngine();
+	}
 
 }
