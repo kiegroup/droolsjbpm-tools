@@ -52,14 +52,16 @@ public abstract class ElementEditPart extends AbstractGraphicalEditPart implemen
         installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new ElementDirectEditPolicy());
     }
     
+    protected ElementWrapper getElementWrapper() {
+    	return (ElementWrapper) getModel();
+    }
+
     protected List getModelSourceConnections() {
-        ElementWrapper task = (ElementWrapper) getModel();
-        return task.getOutgoingConnections();
+        return getElementWrapper().getOutgoingConnections();
     }
     
     protected List getModelTargetConnections() {
-        ElementWrapper task = (ElementWrapper) getModel();
-        return task.getIncomingConnections();
+        return getElementWrapper().getIncomingConnections();
     }
     
     public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connection) {
@@ -79,7 +81,7 @@ public abstract class ElementEditPart extends AbstractGraphicalEditPart implemen
     }
 
     protected void refreshVisuals() {
-        ElementWrapper element = (ElementWrapper) getModel();
+        ElementWrapper element = getElementWrapper();
         ElementFigure figure = (ElementFigure) getFigure();
         figure.setText(element.getName());
         if (element.getConstraint().width == -1) {

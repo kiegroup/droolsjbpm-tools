@@ -44,6 +44,7 @@ import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.AlignmentAction;
 import org.eclipse.gef.ui.actions.DirectEditAction;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
+import org.eclipse.gef.ui.actions.ToggleGridAction;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithPalette;
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.jface.action.IAction;
@@ -150,13 +151,16 @@ public abstract class GenericModelEditor extends GraphicalEditorWithPalette {
 				new GraphicalViewerKeyHandler(getGraphicalViewer())
 						.setParent(getCommonKeyHandler()));
 
+		IAction showGrid = new ToggleGridAction(getGraphicalViewer());
+		getActionRegistry().registerAction(showGrid);
+
 		ContextMenuProvider provider = new GenericContextMenuProvider(
 				getGraphicalViewer(), getActionRegistry());
 		getGraphicalViewer().setContextMenu(provider);
 		getSite().registerContextMenu("org.drools.eclipse.flow.editor.contextmenu",
 				provider, getGraphicalViewer());
 	}
-
+	
 	protected abstract EditPartFactory createEditPartFactory();
 
 	protected void initializeGraphicalViewer() {

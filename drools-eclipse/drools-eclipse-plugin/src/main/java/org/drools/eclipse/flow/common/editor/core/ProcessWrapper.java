@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.ruleflow.common.core.Process;
+import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
@@ -38,22 +39,31 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 public abstract class ProcessWrapper implements IPropertySource, Serializable {
 
 	public static final int CHANGE_ELEMENTS = 1;
-	
+	public static final int CHANGE_ROUTER_LAYOUT = 2;
+
+    public static final Integer ROUTER_LAYOUT_MANUAL = new Integer(0);
+    public static final Integer ROUTER_LAYOUT_MANHATTAN = new Integer(1);
+    public static final Integer ROUTER_LAYOUT_SHORTEST_PATH = new Integer(2);
+
     protected static IPropertyDescriptor[] descriptors;
 
     public static final String NAME = "name";
     public static final String VERSION = "version";
     public static final String ID = "id";
+    public static final String ROUTER_LAYOUT = "routerLayout";
     static {
         descriptors = new IPropertyDescriptor[] {
             new TextPropertyDescriptor(NAME, "Name"),
             new TextPropertyDescriptor(VERSION, "Version"),
             new TextPropertyDescriptor(ID, "Id"),
+            new ComboBoxPropertyDescriptor(ROUTER_LAYOUT, "Router Layout", 
+                new String[] { "Manual", "Manhatten", "Shortest Path" }),
         };
     }
     
     private Process process;
     private Map elements = new HashMap();
+    private Integer routerLayout;
     private transient List listeners = new ArrayList();
     
     public ProcessWrapper() {
@@ -88,6 +98,18 @@ public abstract class ProcessWrapper implements IPropertySource, Serializable {
     
     public void setId(String id) {
     	process.setId(id);
+    }
+    
+    public Integer getRouterLayout() {
+    	if (routerLayout == null) {
+    		routerLayout = ROUTER_LAYOUT_SHORTEST_PATH;
+    	}
+    	return routerLayout;
+    }
+    
+    public void setRouterLayout(Integer routerLayout) {
+    	this.routerLayout = routerLayout;
+    	notifyListeners(CHANGE_ROUTER_LAYOUT);
     }
     
     public List getElements() {
@@ -154,6 +176,9 @@ public abstract class ProcessWrapper implements IPropertySource, Serializable {
         if (ID.equals(id)) {
             return getId() + "";
         }
+        if (ROUTER_LAYOUT.equals(id)) {
+            return routerLayout;
+        }
         return null;
     }
 
@@ -171,6 +196,9 @@ public abstract class ProcessWrapper implements IPropertySource, Serializable {
         if (ID.equals(id)) {
             setId("");
         }
+        if (ID.equals(id)) {
+            setRouterLayout(null);
+        }
     }
 
     public void setPropertyValue(Object id, Object value) {
@@ -180,6 +208,8 @@ public abstract class ProcessWrapper implements IPropertySource, Serializable {
             setVersion((String) value);
         } else if (ID.equals(id)) {
             setId((String) value);
+        } else if (ROUTER_LAYOUT.equals(id)) {
+            setRouterLayout((Integer) value);
         }
     }
 }
