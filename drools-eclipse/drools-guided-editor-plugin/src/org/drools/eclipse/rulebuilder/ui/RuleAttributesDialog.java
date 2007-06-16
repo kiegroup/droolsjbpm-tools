@@ -24,7 +24,7 @@ public class RuleAttributesDialog extends RuleDialog {
 	public RuleAttributesDialog(Shell parent, FormToolkit toolkit,
 			RuleModeller modeller) {
 		super(parent, "Add new option to the rule",
-				"Pick the value from combo and confirm the selection.");
+				"Pick the value from combo.");
 
 		this.toolkit = toolkit;
 		this.modeller = modeller;
