@@ -45,7 +45,7 @@ public class FactPatternWidget extends Widget {
 	private final FactPattern pattern;
 
 	private boolean bindable;
-	
+
 	public FactPatternWidget(FormToolkit toolkit, Composite parent,
 			RuleModeller mod, FactPattern factPattern,
 			CompositeFactPattern parentPattern, int idx, boolean canBind) {
@@ -55,7 +55,7 @@ public class FactPatternWidget extends Widget {
 		this.pattern = factPattern;
 		this.parentPattern = parentPattern;
 		this.bindable = canBind;
-		
+
 		GridLayout l = new GridLayout();
 		l.numColumns = 4;
 		l.marginBottom = 0;
@@ -167,7 +167,8 @@ public class FactPatternWidget extends Widget {
 			toolkit.createLabel(constraintComposite, "Any of:");
 		}
 
-		addRemoveButton(constraintComposite, parentConstraint, row, "icons/delete_obj.gif", nested);
+		addRemoveButton(constraintComposite, parentConstraint, row,
+				"icons/delete_obj.gif", nested);
 
 		// button "add"
 		ImageHyperlink link = addImage(constraintComposite,
@@ -226,23 +227,26 @@ public class FactPatternWidget extends Widget {
 	}
 
 	private void renderSingleFieldConstraint(Composite constraintComposite,
-			int row, FieldConstraint constraint,CompositeFieldConstraint parentConstraint, boolean showBinding, boolean nested) {
+			int row, FieldConstraint constraint,
+			CompositeFieldConstraint parentConstraint, boolean showBinding,
+			boolean nested) {
 		final SingleFieldConstraint c = (SingleFieldConstraint) constraint;
 		if (c.constraintValueType != SingleFieldConstraint.TYPE_PREDICATE) {
-			createConstraintRow(constraintComposite, parentConstraint, row, c, showBinding, nested);
+			createConstraintRow(constraintComposite, parentConstraint, row, c,
+					showBinding, nested);
 		} else {
 			createPredicateConstraintRow(constraintComposite, row, c);
 		}
 	}
 
-	private void createConstraintRow(Composite constraintComposite, CompositeFieldConstraint parentConstraint, 
-			int row, final SingleFieldConstraint c, boolean showBinding, boolean nested) {
+	private void createConstraintRow(Composite constraintComposite,
+			CompositeFieldConstraint parentConstraint, int row,
+			final SingleFieldConstraint c, boolean showBinding, boolean nested) {
+		addBindingField(constraintComposite, c, showBinding);
 		toolkit.createLabel(constraintComposite, c.fieldName);
-		
-		addBindingField( constraintComposite,  c,  showBinding) ;
-		
 		if (c.connectives == null || c.connectives.length == 0) {
-			addRemoveButton(constraintComposite, parentConstraint, row, "icons/delete_item_small.gif", nested);
+			addRemoveButton(constraintComposite, parentConstraint, row,
+					"icons/delete_item_small.gif", nested);
 		} else {
 			toolkit.createLabel(constraintComposite, "");
 		}
@@ -252,26 +256,45 @@ public class FactPatternWidget extends Widget {
 		addConnectiveAction(constraintComposite, c);
 	}
 
-	private void addBindingField(Composite constraintComposite, SingleFieldConstraint c, boolean showBinding) {
+	private void addBindingField(Composite constraintComposite,
+			final SingleFieldConstraint c, boolean showBinding) {
 		if (!c.isBound()) {
 			if (bindable && showBinding) {
-				addImage(constraintComposite, "icons/new_item.gif");
-			}else{
+				ImageHyperlink link = addImage(constraintComposite,
+						"icons/new_item.gif");
+				link.addHyperlinkListener(new IHyperlinkListener() {
+					public void linkActivated(HyperlinkEvent e) {
+						RuleDialog popup = new AssignFieldVariableDialog(
+								parent.getShell(), toolkit, getModeller(), c);
+						popup.open();
+					}
+
+					public void linkEntered(HyperlinkEvent e) {
+					}
+
+					public void linkExited(HyperlinkEvent e) {
+					}
+				});
+
+			} else {
 				toolkit.createLabel(constraintComposite, "");
 			}
-		}else{
-			toolkit.createLabel(constraintComposite, "[" + c.fieldBinding + "]");
+		} else {
+			toolkit
+					.createLabel(constraintComposite, "[" + c.fieldBinding
+							+ "]");
 		}
-		
+
 	}
-	
+
 	private void createPredicateConstraintRow(Composite constraintComposite,
 			int row, final SingleFieldConstraint c) {
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 6;
 		addImage(constraintComposite, "icons/function_assets.gif");
 		formulaValueEditor(constraintComposite, c, gd);
-		addRemoveButton(constraintComposite, null, row, "icons/delete_item_small.gif", false);
+		addRemoveButton(constraintComposite, null, row,
+				"icons/delete_item_small.gif", false);
 	}
 
 	private void createConnectives(Composite parent, SingleFieldConstraint c) {
@@ -314,18 +337,20 @@ public class FactPatternWidget extends Widget {
 	private void addRemoveButton(Composite constraintComposite,
 			final CompositeFieldConstraint parentConstraint, final int row,
 			String iconRef, boolean nested) {
-		if(nested){
-			addNestedConstraintDeleteAction(constraintComposite, parentConstraint, row, iconRef);
-		}else{
+		if (nested) {
+			addNestedConstraintDeleteAction(constraintComposite,
+					parentConstraint, row, iconRef);
+		} else {
 			addRemoveFieldAction(constraintComposite, row, iconRef);
 		}
 
 	}
 
 	private void addNestedConstraintDeleteAction(Composite constraintComposite,
-			final CompositeFieldConstraint parentConstraint, final int row, String iconRef) {
+			final CompositeFieldConstraint parentConstraint, final int row,
+			String iconRef) {
 		ImageHyperlink delLink = addImage(constraintComposite, iconRef);
-				//"icons/delete_obj.gif");
+		// "icons/delete_obj.gif");
 		delLink.addHyperlinkListener(new IHyperlinkListener() {
 			public void linkActivated(HyperlinkEvent e) {
 				MessageBox dialog = new MessageBox(Display.getCurrent()
