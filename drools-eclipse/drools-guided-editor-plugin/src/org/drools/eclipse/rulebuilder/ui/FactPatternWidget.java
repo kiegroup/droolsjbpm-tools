@@ -72,7 +72,7 @@ public class FactPatternWidget extends Widget {
 		addMoreOptionsAction();
 		Composite constraintComposite = toolkit.createComposite(parent);
 		GridLayout constraintLayout = new GridLayout();
-		constraintLayout.numColumns = 6;
+		constraintLayout.numColumns = 8;
 		constraintComposite.setLayout(constraintLayout);
 
 		for (int row = 0; row < pattern.getFieldConstraints().length; row++) {
@@ -158,58 +158,9 @@ public class FactPatternWidget extends Widget {
 			toolkit.createLabel(constraintComposite, "Any of:");
 		}
 
-		//button "add"
-		ImageHyperlink link = addImage(constraintComposite,
-				"icons/new_item.gif");
-		link.addHyperlinkListener(new IHyperlinkListener() {
-			public void linkActivated(HyperlinkEvent e) {
-				RuleDialog popup = new AddCompositeConstraintOptionDialog(
-						parent.getShell(), toolkit, getModeller(), constraint,
-						pattern);
-				popup.open();
-			}
-
-			public void linkEntered(HyperlinkEvent e) {
-			}
-
-			public void linkExited(HyperlinkEvent e) {
-			}
-		});
-		
-		// Nested elements
-		
-		
-		FieldConstraint[] nested = constraint.constraints;
-		if (nested != null) {
-			for (int i = 0; i < nested.length; i++) {
-				Composite nestedComposite = toolkit.createComposite(constraintComposite);
-				
-				GridLayout l = new GridLayout();
-				l.numColumns = 6;
-				l.marginBottom = 0;
-				l.marginHeight = 0;
-				l.marginLeft = 0;
-				l.marginRight = 0;
-				l.marginTop = 0;
-				l.marginWidth = 0;
-				l.verticalSpacing = 0;
-				nestedComposite.setLayout(l);
-				
-				GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-				gd.horizontalSpan = 3;
-				nestedComposite.setLayoutData(gd);
-				
-				renderFieldConstraints(nestedComposite, nested[i], i, false);
-			}
-		}else{
-			toolkit.createLabel(constraintComposite, ""); // dummy
-			toolkit.createLabel(constraintComposite, ""); // dummy
-			toolkit.createLabel(constraintComposite, ""); // dummy			
-		}
-		
-		//button "delete"
+//		button "delete"
 		ImageHyperlink delLink = addImage(constraintComposite,
-				"icons/delete_item_small.gif");
+				"icons/delete_obj.gif");
 		
 		final int currectRow = row;
 		
@@ -232,7 +183,55 @@ public class FactPatternWidget extends Widget {
 			public void linkExited(HyperlinkEvent e) {
 			}
 		});
-		toolkit.createLabel(constraintComposite, ""); // dummy
+		
+		//button "add"
+		ImageHyperlink link = addImage(constraintComposite,
+				"icons/new_item.gif");
+		link.addHyperlinkListener(new IHyperlinkListener() {
+			public void linkActivated(HyperlinkEvent e) {
+				RuleDialog popup = new AddCompositeConstraintOptionDialog(
+						parent.getShell(), toolkit, getModeller(), constraint,
+						pattern);
+				popup.open();
+			}
+
+			public void linkEntered(HyperlinkEvent e) {
+			}
+
+			public void linkExited(HyperlinkEvent e) {
+			}
+		});
+		
+		// Nested elementss
+		FieldConstraint[] nested = constraint.constraints;
+		if (nested != null) {
+			Composite nestedComposite = toolkit.createComposite(constraintComposite);
+			GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+			gd.horizontalSpan = 5;
+			nestedComposite.setLayoutData(gd);
+			
+			GridLayout l = new GridLayout();
+			l.numColumns = 8;
+			l.marginBottom = 0;
+			l.marginHeight = 0;
+			l.marginLeft = 0;
+			l.marginRight = 0;
+			l.marginTop = 0;
+			l.marginWidth = 0;
+			l.verticalSpacing = 0;
+			nestedComposite.setLayout(l);
+			
+			for (int i = 0; i < nested.length; i++) {
+				renderFieldConstraints(nestedComposite, nested[i], i, false);
+				toolkit.paintBordersFor(nestedComposite);
+			}
+		}else{
+			toolkit.createLabel(constraintComposite, "1"); // dummy
+			toolkit.createLabel(constraintComposite, "2"); // dummy	
+			toolkit.createLabel(constraintComposite, "3"); // dummy
+			toolkit.createLabel(constraintComposite, "4"); // dummy
+			toolkit.createLabel(constraintComposite, "5"); // dummy
+		}
 	}
 
 	private void renderSingleFieldConstraint(Composite constraintComposite,
@@ -274,7 +273,8 @@ public class FactPatternWidget extends Widget {
 
 				toolkit.createLabel(parent, ""); // dummy
 				toolkit.createLabel(parent, ""); // dummy
-				// toolkit.createLabel(parent, ""); // dummy
+
+				//toolkit.createLabel(parent, ""); // dummy
 
 				ConnectiveConstraint con = c.connectives[i];
 				addRemoveConstraintAction(parent, c, con);
@@ -395,7 +395,9 @@ public class FactPatternWidget extends Widget {
 				box.select(i);
 			}
 		}
-		box.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+		gridData.horizontalSpan = 3;
+		box.setLayoutData(gridData);
 		box.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event event) {
 				c.operator = HumanReadable.getOperatorName(box.getText());
@@ -417,7 +419,9 @@ public class FactPatternWidget extends Widget {
 				box.select(i);
 			}
 		}
-		box.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+		gridData.horizontalSpan = 3;
+		box.setLayoutData(gridData);
 		box.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				con.operator = HumanReadable.getOperatorName(box.getText());
@@ -459,7 +463,8 @@ public class FactPatternWidget extends Widget {
 						GridData.FILL_HORIZONTAL));
 				break;
 			case SingleFieldConstraint.TYPE_VARIABLE:
-				variableEditor(parent, c);
+				variableEditor(parent, c, new GridData(
+						GridData.FILL_HORIZONTAL));
 				break;
 			default:
 				break;
@@ -468,11 +473,13 @@ public class FactPatternWidget extends Widget {
 	}
 
 	private void variableEditor(Composite composite,
-			final ISingleFieldConstraint c) {
+			final ISingleFieldConstraint c, GridData gd) {
 		List vars = getModeller().getModel().getBoundVariablesInScope(c);
 
 		final Combo combo = new Combo(composite, SWT.READ_ONLY);
 
+		gd.horizontalSpan = 1;
+		combo.setLayoutData(gd);
 		if (c.value == null) {
 			combo.add("Choose ...");
 		}
@@ -521,6 +528,7 @@ public class FactPatternWidget extends Widget {
 			box.setText(c.value);
 		}
 
+		gd.horizontalSpan = 1;
 		box.setLayoutData(gd);
 
 		box.addModifyListener(new ModifyListener() {
