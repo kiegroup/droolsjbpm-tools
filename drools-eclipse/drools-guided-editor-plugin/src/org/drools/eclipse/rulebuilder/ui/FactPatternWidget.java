@@ -44,15 +44,18 @@ public class FactPatternWidget extends Widget {
 
 	private final FactPattern pattern;
 
+	private boolean bindable;
+	
 	public FactPatternWidget(FormToolkit toolkit, Composite parent,
 			RuleModeller mod, FactPattern factPattern,
-			CompositeFactPattern parentPattern, int idx) {
+			CompositeFactPattern parentPattern, int idx, boolean canBind) {
 
 		super(parent, toolkit, mod, idx);
 
 		this.pattern = factPattern;
 		this.parentPattern = parentPattern;
-
+		this.bindable = canBind;
+		
 		GridLayout l = new GridLayout();
 		l.numColumns = 4;
 		l.marginBottom = 0;
@@ -235,8 +238,10 @@ public class FactPatternWidget extends Widget {
 	private void createConstraintRow(Composite constraintComposite, CompositeFieldConstraint parentConstraint, 
 			int row, final SingleFieldConstraint c, boolean showBinding, boolean nested) {
 		toolkit.createLabel(constraintComposite, c.fieldName);
+		
+		addBindingField( constraintComposite,  c,  showBinding) ;
+		
 		if (c.connectives == null || c.connectives.length == 0) {
-			// TODO shold identify if this is a nested widget
 			addRemoveButton(constraintComposite, parentConstraint, row, "icons/delete_item_small.gif", nested);
 		} else {
 			toolkit.createLabel(constraintComposite, "");
@@ -247,6 +252,19 @@ public class FactPatternWidget extends Widget {
 		addConnectiveAction(constraintComposite, c);
 	}
 
+	private void addBindingField(Composite constraintComposite, SingleFieldConstraint c, boolean showBinding) {
+		if (!c.isBound()) {
+			if (bindable && showBinding) {
+				addImage(constraintComposite, "icons/new_item.gif");
+			}else{
+				toolkit.createLabel(constraintComposite, "");
+			}
+		}else{
+			toolkit.createLabel(constraintComposite, "[" + c.fieldBinding + "]");
+		}
+		
+	}
+	
 	private void createPredicateConstraintRow(Composite constraintComposite,
 			int row, final SingleFieldConstraint c) {
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -259,6 +277,7 @@ public class FactPatternWidget extends Widget {
 	private void createConnectives(Composite parent, SingleFieldConstraint c) {
 		if (c.connectives != null && c.connectives.length > 0) {
 			for (int i = 0; i < c.connectives.length; i++) {
+				toolkit.createLabel(parent, ""); // dummy
 				toolkit.createLabel(parent, ""); // dummy
 				toolkit.createLabel(parent, ""); // dummy
 				ConnectiveConstraint con = c.connectives[i];
@@ -418,7 +437,7 @@ public class FactPatternWidget extends Widget {
 			}
 		}
 		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
-		gridData.horizontalSpan = 3;
+		gridData.horizontalSpan = 2;
 		box.setLayoutData(gridData);
 		box.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event event) {
@@ -442,7 +461,7 @@ public class FactPatternWidget extends Widget {
 			}
 		}
 		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
-		gridData.horizontalSpan = 3;
+		gridData.horizontalSpan = 2;
 		box.setLayoutData(gridData);
 		box.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {

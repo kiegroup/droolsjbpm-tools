@@ -260,7 +260,7 @@ public class RuleModeller {
 
 	private void addFactPatternWidget(int idx, FactPattern pattern) {
 		Composite comp = toolkit.createComposite(ifComposite);
-		new FactPatternWidget(toolkit, comp, this, pattern, null, idx);
+		new FactPatternWidget(toolkit, comp, this, pattern, null, idx, true);
 	}
 
 	private Section createMainSection(final ScrolledForm form,

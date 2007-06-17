@@ -122,7 +122,8 @@ public class CompositeFactPatternWidget extends Widget {
                                        getModeller(),
                                        facts[i],
                                        pattern,
-                                       i );
+                                       i,
+                                       false );
             }
         }
     }
