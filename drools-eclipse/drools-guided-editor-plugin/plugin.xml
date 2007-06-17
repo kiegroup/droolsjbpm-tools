@@ -15,7 +15,8 @@
          point="org.eclipse.ui.newWizards">
       <category
             id="org.drools.eclipse.rulebuilder"
-            name="Rule Builder"/>
+            name="JBoss Rules"
+            />
       <wizard
             category="org.drools.eclipse.rulebuilder"
             class="org.drools.eclipse.rulebuilder.wizards.NewBrxmlFileWizard"
