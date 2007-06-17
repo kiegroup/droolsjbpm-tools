@@ -104,8 +104,8 @@ public class AddCompositeConstraintOptionDialog extends RuleDialog {
                 comp.compositeJunctionType = combo.getText();
                 constraint.addConstraint( comp );
                 
-				modeller.setDirty(true);
 				modeller.reloadLhs();
+				modeller.setDirty(true);
 				close();
 			}
 		});
