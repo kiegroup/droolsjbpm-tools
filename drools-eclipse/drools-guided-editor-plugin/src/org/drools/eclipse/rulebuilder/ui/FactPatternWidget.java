@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
@@ -77,7 +78,7 @@ public class FactPatternWidget extends Widget {
 
 		for (int row = 0; row < pattern.getFieldConstraints().length; row++) {
 			renderFieldConstraints(constraintComposite, pattern
-					.getFieldConstraints()[row], row, true);
+					.getFieldConstraints()[row], row, true, false);
 		}
 
 		toolkit.paintBordersFor(constraintComposite);
@@ -100,8 +101,7 @@ public class FactPatternWidget extends Widget {
 			public void linkExited(HyperlinkEvent e) {
 			}
 		});
-		link
-				.setToolTipText("Add a field to this condition, or bind a varible to this fact.");
+		link.setToolTipText("Add a field to this condition, or bind a varible to this fact.");
 	}
 
 	private void addDeleteAction() {
@@ -137,18 +137,18 @@ public class FactPatternWidget extends Widget {
 	}
 
 	private void renderFieldConstraints(Composite constraintComposite,
-			FieldConstraint constraint, int row, boolean showBinding) {
+			FieldConstraint constraint, int row, boolean showBinding, boolean nested) {
 		if (constraint instanceof SingleFieldConstraint) {
 			renderSingleFieldConstraint(constraintComposite, row, constraint,
 					showBinding);
 		} else if (constraint instanceof CompositeFieldConstraint) {
 			compositeFieldConstraintEditor(constraintComposite,
-					(CompositeFieldConstraint) constraint, row);
+					(CompositeFieldConstraint) constraint, row, nested);
 		}
 	}
 
 	private void compositeFieldConstraintEditor(Composite constraintComposite,
-			final CompositeFieldConstraint constraint, int row) {
+			final CompositeFieldConstraint constraint, int row, boolean nested) {
 		
 		//Label
 		if (constraint.compositeJunctionType
@@ -159,10 +159,8 @@ public class FactPatternWidget extends Widget {
 		}
 
 //		button "delete"
-		ImageHyperlink delLink = addImage(constraintComposite,
-				"icons/delete_obj.gif");
 		
-		final int currectRow = row;
+		/*final int currectRow = row;
 		
 		delLink.addHyperlinkListener(new IHyperlinkListener() {
 			public void linkActivated(HyperlinkEvent e) {
@@ -171,7 +169,7 @@ public class FactPatternWidget extends Widget {
 				dialog.setMessage("Remove this (nested) restriction.");
 				dialog.setText("Remove this item from nested constraint?");
 				if (dialog.open() == SWT.YES) {
-					pattern.removeConstraint(currectRow);
+					constraint.removeConstraint(currectRow);
 					getModeller().reloadLhs();
 					getModeller().setDirty(true);
 				}
@@ -182,7 +180,14 @@ public class FactPatternWidget extends Widget {
 
 			public void linkExited(HyperlinkEvent e) {
 			}
-		});
+		});*/
+		
+		if(nested){
+			ImageHyperlink delLink = addImage(constraintComposite, "icons/delete_obj.gif");
+		}else{
+			addRemoveFieldAction(constraintComposite, row, "icons/delete_obj.gif");
+		}
+		
 		
 		//button "add"
 		ImageHyperlink link = addImage(constraintComposite,
@@ -203,8 +208,8 @@ public class FactPatternWidget extends Widget {
 		});
 		
 		// Nested elementss
-		FieldConstraint[] nested = constraint.constraints;
-		if (nested != null) {
+		FieldConstraint[] nestedConstraints = constraint.constraints;
+		if (nestedConstraints != null) {
 			Composite nestedComposite = toolkit.createComposite(constraintComposite);
 			GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 			gd.horizontalSpan = 5;
@@ -221,16 +226,16 @@ public class FactPatternWidget extends Widget {
 			l.verticalSpacing = 0;
 			nestedComposite.setLayout(l);
 			
-			for (int i = 0; i < nested.length; i++) {
-				renderFieldConstraints(nestedComposite, nested[i], i, false);
+			for (int i = 0; i < nestedConstraints.length; i++) {
+				renderFieldConstraints(nestedComposite, nestedConstraints[i], i, false, true);
 				toolkit.paintBordersFor(nestedComposite);
 			}
 		}else{
-			toolkit.createLabel(constraintComposite, "1"); // dummy
-			toolkit.createLabel(constraintComposite, "2"); // dummy	
-			toolkit.createLabel(constraintComposite, "3"); // dummy
-			toolkit.createLabel(constraintComposite, "4"); // dummy
-			toolkit.createLabel(constraintComposite, "5"); // dummy
+			GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+			gd.horizontalSpan = 5;
+			
+			Label dummyLabel = toolkit.createLabel(constraintComposite, ""); // dummy
+			dummyLabel.setLayoutData(gd);
 		}
 	}
 
@@ -248,7 +253,7 @@ public class FactPatternWidget extends Widget {
 			final SingleFieldConstraint c, boolean showBinding) { // <-- TODO:
 		toolkit.createLabel(constraintComposite, c.fieldName);
 		if (c.connectives == null || c.connectives.length == 0) {
-			addRemoveFieldAction(constraintComposite, row);
+			addRemoveFieldAction(constraintComposite, row, "icons/delete_item_small.gif"); //TODO shold identify if this is a nested widget
 		} else {
 			toolkit.createLabel(constraintComposite, "");
 		}
@@ -261,10 +266,10 @@ public class FactPatternWidget extends Widget {
 	private void createPredicateConstraintRow(Composite constraintComposite,
 			int row, final SingleFieldConstraint c) {
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.horizontalSpan = 4;
+		gd.horizontalSpan = 6;
 		addImage(constraintComposite, "icons/function_assets.gif");
 		formulaValueEditor(constraintComposite, c, gd);
-		addRemoveFieldAction(constraintComposite, row);
+		addRemoveFieldAction(constraintComposite, row, "icons/delete_item_small.gif");
 	}
 
 	private void createConnectives(Composite parent, SingleFieldConstraint c) {
@@ -273,8 +278,6 @@ public class FactPatternWidget extends Widget {
 
 				toolkit.createLabel(parent, ""); // dummy
 				toolkit.createLabel(parent, ""); // dummy
-
-				//toolkit.createLabel(parent, ""); // dummy
 
 				ConnectiveConstraint con = c.connectives[i];
 				addRemoveConstraintAction(parent, c, con);
@@ -303,12 +306,15 @@ public class FactPatternWidget extends Widget {
 			public void linkExited(HyperlinkEvent e) {
 			}
 		});
+		
+		link.setLayoutData(new GridData(GridData.FILL_HORIZONTAL
+				| GridData.HORIZONTAL_ALIGN_BEGINNING));
 	}
 
 	private void addRemoveFieldAction(Composite constraintComposite,
-			final int currentRow) {
-		ImageHyperlink delLink = addImage(constraintComposite,
-				"icons/delete_item_small.gif");
+			final int currentRow, String iconRef) {
+		ImageHyperlink delLink = addImage(constraintComposite, iconRef);
+				//"icons/delete_item_small.gif");
 		delLink.setToolTipText("Remove this fieldconstraint");
 		delLink.addHyperlinkListener(new IHyperlinkListener() {
 			public void linkActivated(HyperlinkEvent e) {
@@ -330,7 +336,7 @@ public class FactPatternWidget extends Widget {
 			}
 		});
 		delLink.setLayoutData(new GridData(GridData.FILL_HORIZONTAL
-				| GridData.HORIZONTAL_ALIGN_END));
+				| GridData.HORIZONTAL_ALIGN_BEGINNING));
 	}
 
 	private void addRemoveConstraintAction(Composite composite,
@@ -528,7 +534,6 @@ public class FactPatternWidget extends Widget {
 			box.setText(c.value);
 		}
 
-		gd.horizontalSpan = 1;
 		box.setLayoutData(gd);
 
 		box.addModifyListener(new ModifyListener() {
