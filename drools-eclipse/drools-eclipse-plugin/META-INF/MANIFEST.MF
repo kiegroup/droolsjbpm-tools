@@ -30,7 +30,6 @@ Eclipse-BuddyPolicy: registered
 Bundle-ClassPath: 
  .,
  drools-eclipse-plugin.jar,
- lib/antlr.jar,
  lib/drools-compiler.jar,
  lib/drools-core.jar,
  lib/drools-decisiontables.jar,
@@ -42,6 +41,7 @@ Bundle-ClassPath:
  lib/xercesImpl.jar,
  lib/xml-apis.jar,
  lib/xpp3.jar,
- lib/xstream.jar
+ lib/xstream.jar,
+ lib/antlr-runtime.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
 Export-Package: org.drools.eclipse.util
