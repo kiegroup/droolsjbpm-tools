@@ -25,7 +25,7 @@ public class DroolsTest {
             Message message = new Message();
             message.setMessage(  "Hello World" );
             message.setStatus( Message.HELLO );
-            workingMemory.assertObject( message );
+            workingMemory.insert( message );
             workingMemory.fireAllRules();   
             
             

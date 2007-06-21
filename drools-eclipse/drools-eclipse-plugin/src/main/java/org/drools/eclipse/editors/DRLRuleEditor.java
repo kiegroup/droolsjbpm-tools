@@ -15,6 +15,7 @@ import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.FunctionImportDescr;
+import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.eclipse.core.resources.IMarker;
@@ -39,6 +40,7 @@ public class DRLRuleEditor extends AbstractRuleEditor {
     protected List imports;
     protected List functions;
     protected Map templates;
+    protected List globals;
     protected String packageName;
     protected List classesInPackage;
 
@@ -73,6 +75,13 @@ public class DRLRuleEditor extends AbstractRuleEditor {
 		return (FactTemplateDescr) templates.get(name);
 	}
 	
+	public List getGlobals() {
+		if (globals == null) {
+			loadImportsAndFunctions();
+		}
+		return globals;
+	}
+	
 	public String getPackage() {
 		if (packageName == null) {
 			loadImportsAndFunctions();
@@ -88,29 +97,34 @@ public class DRLRuleEditor extends AbstractRuleEditor {
 	}
 	
 	protected List getAllClassesInPackage(String packageName) {
-		final List list = new ArrayList();
+		List list = new ArrayList();
 		if (packageName != null) {
 			IEditorInput input = getEditorInput();
 			if (input instanceof IFileEditorInput) {
 				IProject project = ((IFileEditorInput) input).getFile().getProject();
 				IJavaProject javaProject = JavaCore.create(project);
-				
-				CompletionRequestor requestor = new CompletionRequestor() {
-					public void accept(org.eclipse.jdt.core.CompletionProposal proposal) {
-						String className = new String(proposal.getCompletion());
-						if (proposal.getKind() == org.eclipse.jdt.core.CompletionProposal.TYPE_REF) {
-							list.add(className);
-						}
-						// ignore all other proposals
-					}
-				};
-	
-				try {
-					javaProject.newEvaluationContext().codeComplete(packageName + ".", packageName.length() + 1, requestor);
-				} catch (Throwable t) {
-					DroolsEclipsePlugin.log(t);
-				}
+				list = getAllClassesInPackage(packageName, javaProject);
 			}
+		}
+		return list;
+	}
+	
+	public static List getAllClassesInPackage(String packageName, IJavaProject javaProject) {
+		final List list = new ArrayList();
+		CompletionRequestor requestor = new CompletionRequestor() {
+			public void accept(org.eclipse.jdt.core.CompletionProposal proposal) {
+				String className = new String(proposal.getCompletion());
+				if (proposal.getKind() == org.eclipse.jdt.core.CompletionProposal.TYPE_REF) {
+					list.add(className);
+				}
+				// ignore all other proposals
+			}
+		};
+
+		try {
+			javaProject.newEvaluationContext().codeComplete(packageName + ".", packageName.length() + 1, requestor);
+		} catch (Throwable t) {
+			DroolsEclipsePlugin.log(t);
 		}
 		return list;
 	}
@@ -191,6 +205,14 @@ public class DRLRuleEditor extends AbstractRuleEditor {
                 FactTemplateDescr template = (FactTemplateDescr) iterator.next();
                 templates.put(template.getName(), template);
             }
+            // globals
+            List globalDescrs = descr.getGlobals();
+            globals = new ArrayList();
+            iterator = globalDescrs.iterator();
+            while (iterator.hasNext()) {
+                GlobalDescr global = (GlobalDescr) iterator.next();
+                globals.add(global);
+            }
         } catch (DroolsParserException e) {
             DroolsEclipsePlugin.log(e);
         }
@@ -213,6 +235,7 @@ public class DRLRuleEditor extends AbstractRuleEditor {
 		imports = null;
 		functions = null;
 		templates = null;
+		globals = null;
 		packageName = null;
 		classesInPackage = null;
 	}

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -25,11 +26,15 @@ public class ProjectClassLoader {
 	public static URLClassLoader getProjectClassLoader(IEditorPart editor) {
 		IEditorInput input = editor.getEditorInput();
 		if (input instanceof IFileEditorInput) {
-			IProject project = ((IFileEditorInput) input).getFile().getProject();
-			IJavaProject javaProject = JavaCore.create(project);
-			return getProjectClassLoader(javaProject);
+			return getProjectClassLoader(((IFileEditorInput) input).getFile());
 		}
 		return null;
+	}
+
+	public static URLClassLoader getProjectClassLoader(IFile file) {
+		IProject project = file.getProject();
+		IJavaProject javaProject = JavaCore.create(project);
+		return getProjectClassLoader(javaProject);
 	}
 
     public static URLClassLoader getProjectClassLoader(IJavaProject project) {

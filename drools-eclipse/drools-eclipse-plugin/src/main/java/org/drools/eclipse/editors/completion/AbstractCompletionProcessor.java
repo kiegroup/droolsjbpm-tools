@@ -12,7 +12,7 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
-import org.eclipse.ui.part.EditorPart;
+import org.eclipse.ui.IEditorPart;
 
 /**
  * 
@@ -20,13 +20,13 @@ import org.eclipse.ui.part.EditorPart;
  */
 public abstract class AbstractCompletionProcessor implements IContentAssistProcessor {
 
-    private EditorPart editor;
+    private IEditorPart editor;
    
-    public AbstractCompletionProcessor(EditorPart editor) {
+    public AbstractCompletionProcessor(IEditorPart editor) {
     	this.editor = editor;
     }
     
-    protected EditorPart getEditor() {
+    protected IEditorPart getEditor() {
     	return editor;
     }
     

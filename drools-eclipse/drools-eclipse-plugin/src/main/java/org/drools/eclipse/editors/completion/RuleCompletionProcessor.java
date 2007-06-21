@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.drools.base.ClassTypeResolver;
 import org.drools.compiler.DrlParser;
@@ -24,6 +23,7 @@ import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldTemplateDescr;
 import org.drools.lang.descr.FromDescr;
+import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -131,8 +131,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		case Location.LOCATION_LHS_FROM_COLLECT:
 		case Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS:
 			// and add imported classes
-			List imports = getDRLEditor().getImports();
-			Iterator iterator = imports.iterator();
+			Iterator iterator = getImports().iterator();
 			while (iterator.hasNext()) {
 				String name = (String) iterator.next();
 				int index = name.lastIndexOf(".");
@@ -146,8 +145,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 					list.add(p);
 				}
 			}
-			List classesInPackage = getDRLEditor().getClassesInPackage();
-			iterator = classesInPackage.iterator();
+			iterator = getClassesInPackage().iterator();
 			while (iterator.hasNext()) {
 				String name = (String) iterator.next();
 				int index = name.lastIndexOf(".");
@@ -161,8 +159,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 					list.add(p);
 				}
 			}
-			Set templates = getDRLEditor().getTemplates();
-			iterator = templates.iterator();
+			iterator = getTemplates().iterator();
 			while (iterator.hasNext()) {
 				String name = (String) iterator.next();
 				RuleCompletionProposal p = new RuleCompletionProposal(
@@ -181,7 +178,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 						prefix, className, list);
 				if (!isTemplate) {
 					ClassTypeResolver resolver = new ClassTypeResolver(
-							getDRLEditor().getImports(), ProjectClassLoader
+							getImports(), ProjectClassLoader
 									.getProjectClassLoader(getEditor()));
 					try {
 						Class clazz = resolver.resolveType(className);
@@ -299,6 +296,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			}
 			list.add(new RuleCompletionProposal(prefix.length(), "()",
 					"(  )", 2, DROOLS_ICON));
+			// add parameters with possibly matching type
 			DrlParser parser = new DrlParser();
 			try {
 				PackageDescr descr = parser.parse(backText);
@@ -316,13 +314,27 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 							RuleCompletionProposal proposal = new RuleCompletionProposal(
 									prefix.length(), paramName);
 							proposal.setPriority(-1);
-							proposal.setImage(METHOD_ICON);
+							proposal.setImage(VARIABLE_ICON);
 							list.add(proposal);
 						}
 					}
 				}
 			} catch (DroolsParserException exc) {
 				// do nothing
+			}
+			// add globals with possibly matching type
+			List globals = getGlobals();
+			if (globals != null) {
+				for (iterator = globals.iterator(); iterator.hasNext(); ) {
+					GlobalDescr global = (GlobalDescr) iterator.next();
+					if (isSubtypeOf(global.getType(), type)) {
+						RuleCompletionProposal proposal = new RuleCompletionProposal(
+							prefix.length(), global.getIdentifier());
+						proposal.setPriority(-1);
+						proposal.setImage(VARIABLE_ICON);
+						list.add(proposal);
+					}
+				}
 			}
 			break;
 		case Location.LOCATION_LHS_INSIDE_EVAL:
@@ -355,7 +367,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 						"collect", "collect (  )", 10, DROOLS_ICON));
 				// add all functions
 				if ("".equals(fromText)) {
-					List functions = getDRLEditor().getFunctions();
+					List functions = getFunctions();
 					iterator = functions.iterator();
 					while (iterator.hasNext()) {
 						String name = (String) iterator.next() + "()";
@@ -399,7 +411,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
 	private String getPropertyClass(String className, String propertyName) {
 		if (className != null && propertyName != null) {
-			FactTemplateDescr template = getDRLEditor().getTemplate(className);
+			FactTemplateDescr template = getTemplate(className);
 			if (template != null) {
 				Iterator iterator = template.getFields().iterator();
 				while (iterator.hasNext()) {
@@ -411,7 +423,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 							return type;
 						}
 						ClassTypeResolver resolver = new ClassTypeResolver(
-								getDRLEditor().getImports(), ProjectClassLoader
+								getImports(), ProjectClassLoader
 										.getProjectClassLoader(getEditor()));
 						try {
 							Class clazz = resolver.resolveType(type);
@@ -427,7 +439,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 				// if not found, return null
 			} else {
 				ClassTypeResolver resolver = new ClassTypeResolver(
-						getDRLEditor().getImports(), ProjectClassLoader
+						getImports(), ProjectClassLoader
 								.getProjectClassLoader(getEditor()));
 				try {
 					Class clazz = resolver.resolveType(className);
@@ -450,6 +462,15 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
 	private Map getRuleParameters(String backText) {
 		Map result = new HashMap();
+		// add globals
+		List globals = getGlobals();
+		if (globals != null) {
+			for (Iterator iterator = globals.iterator(); iterator.hasNext(); ) {
+				GlobalDescr global = (GlobalDescr) iterator.next();
+				result.put(global.getIdentifier(), global.getType());
+			}
+		}
+		// add parameters defined in conditions
 		try {
 			DrlParser parser = new DrlParser();
 			PackageDescr descr = parser.parse(backText);
@@ -515,8 +536,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		class1 = convertToNonPrimitiveClass(class1);
 		class2 = convertToNonPrimitiveClass(class2);
 		// TODO add code to take primitive types into account
-		ClassTypeResolver resolver = new ClassTypeResolver(getDRLEditor()
-				.getImports(), ProjectClassLoader
+		ClassTypeResolver resolver = new ClassTypeResolver(getImports(), ProjectClassLoader
 				.getProjectClassLoader(getEditor()));
 		try {
 			Class clazz1 = resolver.resolveType(class1);
@@ -558,7 +578,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 	private void addRHSFunctionCompletionProposals(List list, String prefix) {
 		Iterator iterator;
 		RuleCompletionProposal prop;
-		List functions = getDRLEditor().getFunctions();
+		List functions = getFunctions();
 		iterator = functions.iterator();
 		while (iterator.hasNext()) {
 			String name = (String) iterator.next() + "()";
@@ -686,7 +706,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
 	private boolean addFactTemplatePropertyProposals(String prefix,
 			String templateName, List list) {
-		FactTemplateDescr descr = getDRLEditor().getTemplate(templateName);
+		FactTemplateDescr descr = getTemplate(templateName);
 		if (descr == null) {
 			return false;
 		}

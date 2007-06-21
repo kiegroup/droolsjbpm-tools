@@ -1,10 +1,12 @@
 package org.drools.eclipse.editors.completion;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,6 +14,8 @@ import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
 import org.drools.eclipse.editors.AbstractRuleEditor;
 import org.drools.eclipse.editors.DRLRuleEditor;
+import org.drools.lang.descr.FactTemplateDescr;
+import org.drools.lang.descr.GlobalDescr;
 import org.drools.util.StringUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.CompletionProposal;
@@ -34,7 +38,7 @@ import org.eclipse.ui.IFileEditorInput;
  * This processor will also read behind the current editing position, to provide some context to 
  * help provide the pop up list.
  * 
- * @author Michael Neale
+ * @author Michael Neale, Kris Verlaenen
  */
 public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
 
@@ -53,17 +57,12 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
     	super(editor);
     }
     
-    protected DRLRuleEditor getDRLEditor() {
-    	return (DRLRuleEditor) getEditor();
-    }
-    
 	protected List getCompletionProposals(ITextViewer viewer, int documentOffset) {
         try {
 	        IDocument doc = viewer.getDocument();
 	        String backText = readBackwards( documentOffset, doc );            
 	
-	        String prefix = "";
-	        prefix = CompletionUtil.stripLastWord(backText);
+	        String prefix = CompletionUtil.stripLastWord(backText);
 	        
 	        List props = null;
 	        Matcher matcher = IMPORT_PATTERN.matcher(backText); 
@@ -73,7 +72,16 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
 	        } else {
 	        	matcher = FUNCTION_PATTERN.matcher(backText);
 	        	if (matcher.matches()) {
+	        		// extract function parameters
 		        	Map params = extractParams(matcher.group(3));
+		        	// add global parameters
+		        	List globals = getGlobals();
+		    		if (globals != null) {
+		    			for (Iterator iterator = globals.iterator(); iterator.hasNext(); ) {
+		    				GlobalDescr global = (GlobalDescr) iterator.next();
+		    				params.put(global.getIdentifier(), global.getType());
+		    			}
+		    		}
 		        	String functionText = matcher.group(4);
 	        		props = getJavaCompletionProposals(functionText, prefix, params);
 	        		filterProposalsOnPrefix(prefix, props);
@@ -178,7 +186,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
 
 			try {
 				IEvaluationContext evalContext = javaProject.newEvaluationContext();
-				List imports = getDRLEditor().getImports();
+				List imports = getImports();
 				if (imports != null && imports.size() > 0) {
 					evalContext.setImports((String[]) imports.toArray(new String[imports.size()]));
 				}
@@ -198,6 +206,48 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
 			}
 		}
 		return list;
+	}
+	
+	protected List getImports() {
+		if (getEditor() instanceof DRLRuleEditor) {
+			return ((DRLRuleEditor) getEditor()).getImports();
+		}
+		return Collections.EMPTY_LIST;
+	}
+	
+	protected List getFunctions() {
+		if (getEditor() instanceof DRLRuleEditor) {
+			return ((DRLRuleEditor) getEditor()).getFunctions();
+		}
+		return Collections.EMPTY_LIST;
+	}
+	
+	protected Set getTemplates() {
+		if (getEditor() instanceof DRLRuleEditor) {
+			return ((DRLRuleEditor) getEditor()).getTemplates();
+		}
+		return Collections.emptySet();
+	}
+	
+	protected FactTemplateDescr getTemplate(String name) {
+		if (getEditor() instanceof DRLRuleEditor) {
+			return ((DRLRuleEditor) getEditor()).getTemplate(name);
+		}
+		return null;
+	}
+	
+	protected List getGlobals() {
+		if (getEditor() instanceof DRLRuleEditor) {
+			return ((DRLRuleEditor) getEditor()).getGlobals();
+		}
+		return Collections.EMPTY_LIST;
+	}
+	
+	protected List getClassesInPackage() {
+		if (getEditor() instanceof DRLRuleEditor) {
+			return ((DRLRuleEditor) getEditor()).getClassesInPackage();
+		}
+		return Collections.EMPTY_LIST;
 	}
 	
 	protected boolean isStartOfJavaExpression(String text) {

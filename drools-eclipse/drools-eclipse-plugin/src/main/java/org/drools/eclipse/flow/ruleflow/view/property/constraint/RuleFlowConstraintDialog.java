@@ -15,11 +15,28 @@ package org.drools.eclipse.flow.ruleflow.view.property.constraint;
  * limitations under the License.
  */
 
+import java.util.List;
+
+import org.drools.eclipse.editors.DRLSourceViewerConfig;
+import org.drools.eclipse.editors.scanners.DRLPartionScanner;
 import org.drools.ruleflow.core.Constraint;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.ruleflow.core.impl.ConstraintImpl;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentPartitioner;
+import org.eclipse.jface.text.contentassist.ContentAssistant;
+import org.eclipse.jface.text.contentassist.IContentAssistant;
+import org.eclipse.jface.text.reconciler.IReconciler;
+import org.eclipse.jface.text.rules.FastPartitioner;
+import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
@@ -42,15 +59,18 @@ import org.eclipse.swt.widgets.Text;
 public class RuleFlowConstraintDialog extends Dialog {
 
 	private Constraint constraint;
+	private RuleFlowProcess process;
 	private boolean success;
 	private Button alwaysTrue;
 	private Text nameText;
 	private Text priorityText;
 	private TabFolder tabFolder;
-	private Text translation;
+	private SourceViewer constraintViewer;
+	private ConstraintCompletionProcessor completionProcessor;
 
 	public RuleFlowConstraintDialog(Shell parentShell, RuleFlowProcess process) {
 		super(parentShell);
+		this.process = process;
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 	}
 
@@ -64,8 +84,46 @@ public class RuleFlowConstraintDialog extends Dialog {
 	}
 
 	private Control createTextualEditor(Composite parent) {
-		translation = new Text(parent, SWT.BORDER);
-		return translation;
+		constraintViewer = new SourceViewer(parent, null, SWT.BORDER);
+		constraintViewer.configure(new DRLSourceViewerConfig(null) {
+			public IReconciler getReconciler(ISourceViewer sourceViewer) {
+				return null;
+			}
+			public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
+				ContentAssistant assistant = new ContentAssistant();
+				completionProcessor = new ConstraintCompletionProcessor(process);
+				assistant.setContentAssistProcessor(
+					completionProcessor, IDocument.DEFAULT_CONTENT_TYPE);
+				assistant.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
+				return assistant;
+			}
+		});
+		IDocument document = new Document();
+		constraintViewer.setDocument(document);
+		IDocumentPartitioner partitioner =
+            new FastPartitioner(
+                new DRLPartionScanner(),
+                DRLPartionScanner.LEGAL_CONTENT_TYPES);
+        partitioner.connect(document);
+        document.setDocumentPartitioner(partitioner);
+        constraintViewer.getControl().addKeyListener(new KeyListener() {
+			public void keyPressed(KeyEvent e) {
+				if (e.character == ' ' && e.stateMask == SWT.CTRL) {
+					constraintViewer.doOperation(ISourceViewer.CONTENTASSIST_PROPOSALS);
+				}
+			}
+			public void keyReleased(KeyEvent e) {
+			}
+        });
+		return constraintViewer.getControl();
+	}
+	
+	private String getConstraintText() {
+		return constraintViewer.getDocument().get();
+	}
+	
+	private void setConstraintText(String text) {
+		constraintViewer.getDocument().set(text);
 	}
 
 	public Control createDialogArea(Composite parent) {
@@ -81,7 +139,7 @@ public class RuleFlowConstraintDialog extends Dialog {
 		top.setLayoutData(gd);
 
 		layout = new GridLayout();
-		layout.numColumns = 2;
+		layout.numColumns = 3;
 		top.setLayout(layout);
 
 		Label l1 = new Label(top, SWT.None);
@@ -92,6 +150,7 @@ public class RuleFlowConstraintDialog extends Dialog {
 		gd = new GridData();
 		gd.horizontalAlignment = GridData.FILL;
 		gd.widthHint = 200;
+		gd.horizontalSpan = 2;
 		nameText.setLayoutData(gd);
 
 		Label l2 = new Label(top, SWT.NONE);
@@ -101,6 +160,7 @@ public class RuleFlowConstraintDialog extends Dialog {
 		priorityText = new Text(top, SWT.BORDER);
 		gd = new GridData();
 		gd.widthHint = 200;
+		gd.horizontalSpan = 2;
 		priorityText.setLayoutData(gd);
 
 		alwaysTrue = new Button(top, SWT.CHECK);
@@ -108,10 +168,22 @@ public class RuleFlowConstraintDialog extends Dialog {
 		gd = new GridData();
 		gd.horizontalSpan = 2;
 		alwaysTrue.setLayoutData(gd);
+		
+		Button importButton = new Button(top, SWT.PUSH);
+		importButton.setText("Imports ...");
+		importButton.setFont(JFaceResources.getDialogFont());
+		importButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				importButtonPressed();
+			}
+		});
+		gd = new GridData();
+		gd.horizontalAlignment = GridData.END;
+		importButton.setLayoutData(gd);
 
 		tabFolder = new TabFolder(parent, SWT.NONE);
 		gd = new GridData();
-		gd.horizontalSpan = 2;
+		gd.horizontalSpan = 3;
 		gd.grabExcessHorizontalSpace = true;
 		gd.grabExcessVerticalSpace = true;
 		gd.verticalAlignment = GridData.FILL;
@@ -134,6 +206,23 @@ public class RuleFlowConstraintDialog extends Dialog {
 
 		return tabFolder;
 	}
+	
+	private void importButtonPressed() {
+		final Runnable r = new Runnable() {
+			public void run() {
+				RuleFlowImportsDialog dialog =
+					new RuleFlowImportsDialog(getShell(), process);
+				dialog.create();
+				int code = dialog.open();
+				if (code != CANCEL) {
+					List imports = dialog.getImports();
+					process.setImports(imports);
+					completionProcessor.reset();
+				}
+			}
+		};
+		r.run();
+	}
 
 	protected void okPressed() {
 		int selectionIndex = tabFolder.getSelectionIndex();
@@ -150,7 +239,7 @@ public class RuleFlowConstraintDialog extends Dialog {
 		success = true;
 		constraint = new ConstraintImpl();
 		constraint.setConstraint(null);
-		constraint.setConstraint(translation.getText());
+		constraint.setConstraint(getConstraintText());
 		constraint.setName(nameText.getText());
 		try {
 			constraint.setPriority(Integer.parseInt(priorityText.getText()));
@@ -166,7 +255,7 @@ public class RuleFlowConstraintDialog extends Dialog {
 	public void updateConstraint() {
 		constraint = new ConstraintImpl();
 		if (!alwaysTrue.getSelection()) {
-			constraint.setConstraint(translation.getText());
+			constraint.setConstraint(getConstraintText());
 		} else {
 			constraint.setConstraint("eval(true)");
 		}
@@ -188,13 +277,13 @@ public class RuleFlowConstraintDialog extends Dialog {
 			if ("eval(true)".equals(constraint.getConstraint())) {
 				alwaysTrue.setSelection(true);
 			} else {
-				translation.setText(constraint.getConstraint().toString());
+				setConstraintText(constraint.getConstraint().toString());
 			}
 			tabFolder.setVisible(!alwaysTrue.getSelection());
 			nameText.setText(constraint.getName() == null ? "" : constraint
 					.getName());
 			priorityText.setText(constraint.getPriority() + "");
-			translation.setText(constraint.getConstraint());
+			setConstraintText(constraint.getConstraint());
 		} else {
 			priorityText.setText("1");
 			nameText.setText("constraint");

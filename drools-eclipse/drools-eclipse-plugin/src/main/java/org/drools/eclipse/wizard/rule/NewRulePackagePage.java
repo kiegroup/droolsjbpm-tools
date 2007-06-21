@@ -131,8 +131,9 @@ public class NewRulePackagePage extends WizardNewFileCreationPage {
             return false;
         }
         String fileName = getFileName();
-        if (!fileName.endsWith(".drl")) {
-            setFileName(fileName + ".drl");
+        String extension = expander.getSelection() ? ".dslr" : ".drl";
+        if (!fileName.endsWith(extension)) {
+            setFileName(fileName + extension);
         }
         org.eclipse.core.resources.IFile newFile = createNewFile();
         if (newFile == null)

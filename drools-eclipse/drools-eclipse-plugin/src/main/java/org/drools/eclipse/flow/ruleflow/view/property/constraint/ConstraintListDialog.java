@@ -103,8 +103,6 @@ public class ConstraintListDialog extends EditBeanDialog {
 
 		final Runnable r = new Runnable() {
 			public void run() {
-
-				// swt version
 				RuleFlowConstraintDialog dialog = new RuleFlowConstraintDialog(
 						getShell(), process);
 				dialog.create();
@@ -120,7 +118,6 @@ public class ConstraintListDialog extends EditBeanDialog {
 			}
 
 		};
-
 		r.run();
 	}
 
