@@ -375,5 +375,27 @@
 	  </wizard>
    </extension>
    
+   <!-- RuleBuilder Extensions -->
+      <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.drools.eclipse.rulebuilder.editors.RuleEditor"
+            extensions="brxml"
+            icon="icons/drools.gif"
+            id="org.drools.eclipse.ide.rulebuilder.brxml.editors.RuleEditor"
+            name="RuleBuilder Editor"/>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.newWizards">
+
+      <wizard
+            category="org.drools.eclipse.new"
+            class="org.drools.eclipse.rulebuilder.wizards.NewBrxmlFileWizard"
+            icon="icons/drools.gif"
+            id="org.drools.eclipse.rulebuilder.wizards.NewBrxmlFileWizard"
+            name="Guided DRL Editor"/>
+   </extension>
+   
    
 </plugin>

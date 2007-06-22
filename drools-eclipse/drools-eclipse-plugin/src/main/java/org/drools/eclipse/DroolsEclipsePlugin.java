@@ -49,6 +49,8 @@ import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -74,7 +76,9 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 	private Map ruleInfoByClassNameMap = new HashMap();
 	private Map functionInfoByClassNameMap = new HashMap();
 	private boolean useCachePreference;
-	
+
+    private FormColors               ruleBuilderFormColors;
+
 	/**
 	 * The constructor.
 	 */
@@ -371,5 +375,19 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 	public FunctionInfo getFunctionInfoByClass(String functionClassName) {
 		return (FunctionInfo) functionInfoByClassNameMap.get(functionClassName);
 	}
+
+    /**
+     * Form Colors, default colors for now.
+     * 
+     * @param display
+     * @return
+     */
+    public FormColors getRuleBuilderFormColors(Display display) {
+        if ( ruleBuilderFormColors == null ) {
+            ruleBuilderFormColors = new FormColors( display );
+            ruleBuilderFormColors.markShared();
+        }
+        return ruleBuilderFormColors;
+    }
 
 }
