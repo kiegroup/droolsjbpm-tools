@@ -226,7 +226,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
 		if (getEditor() instanceof DRLRuleEditor) {
 			return ((DRLRuleEditor) getEditor()).getTemplates();
 		}
-		return Collections.emptySet();
+		return Collections.EMPTY_SET;
 	}
 	
 	protected FactTemplateDescr getTemplate(String name) {
