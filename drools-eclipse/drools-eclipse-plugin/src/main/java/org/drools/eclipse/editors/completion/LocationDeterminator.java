@@ -58,7 +58,9 @@ public class LocationDeterminator {
                                                                                 Pattern.DOTALL );
     static final Pattern ACCUMULATE_PATTERN_ACTION           = Pattern.compile( ".*,?\\s*init\\s*\\(\\s*(.*)\\)\\s*,?\\s*action\\s*\\(\\s*(.*)",
                                                                                 Pattern.DOTALL );
-    static final Pattern ACCUMULATE_PATTERN_RESULT           = Pattern.compile( ".*,?\\s*init\\s*\\(\\s*(.*)\\)\\s*,?\\s*action\\s*\\(\\s*(.*)\\)\\s*,?\\s*result\\s*\\(\\s*(.*)",
+    static final Pattern ACCUMULATE_PATTERN_REVERSE          = Pattern.compile( ".*,?\\s*init\\s*\\(\\s*(.*)\\)\\s*,?\\s*action\\s*\\(\\s*(.*)\\)\\s*,?\\s*reverse\\s*\\(\\s*(.*)",
+                                                                                Pattern.DOTALL );
+    static final Pattern ACCUMULATE_PATTERN_RESULT           = Pattern.compile( ".*,?\\s*init\\s*\\(\\s*(.*)\\)\\s*,?\\s*action\\s*\\(\\s*(.*)\\)\\s*,?(\\s*reverse\\s*\\(\\s*(.*)\\)\\s*,?)?\\s*result\\s*\\(\\s*(.*)",
                                                                                 Pattern.DOTALL );
 //    private static final Pattern COLLECT_PATTERN                     = Pattern.compile( ".*\\)\\s+from\\s+collect\\s*\\(\\s*",
 //                                                                                Pattern.DOTALL );
@@ -141,12 +143,25 @@ public class LocationDeterminator {
                 location.setProperty( Location.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT,
                                       matcher.group( 2 ) );
             }
+        } else if ( location.getType() == Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE) {
+            Matcher matcher = ACCUMULATE_PATTERN_REVERSE.matcher( backText );
+            if ( matcher.matches() ) {
+                location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE_INSIDE );
+                location.setProperty( Location.LOCATION_PROPERTY_FROM_ACCUMULATE_REVERSE_CONTENT,
+                                      matcher.group( 3 ) );
+            }
+            matcher = ACCUMULATE_PATTERN_RESULT.matcher( backText );
+            if ( matcher.matches() ) {
+                location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE );
+                location.setProperty( Location.LOCATION_PROPERTY_FROM_ACCUMULATE_RESULT_CONTENT,
+                                      matcher.group( 5 ) );
+            }
         } else if ( location.getType() == Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT ) {
             Matcher matcher = ACCUMULATE_PATTERN_RESULT.matcher( backText );
             if ( matcher.matches() ) {
                 location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE );
                 location.setProperty( Location.LOCATION_PROPERTY_FROM_ACCUMULATE_RESULT_CONTENT,
-                                      matcher.group( 3 ) );
+                                      matcher.group( 5 ) );
             }
         } else if ( location.getType() == Location.LOCATION_RHS ) {
             Matcher matcher = THEN_PATTERN.matcher( backText );
