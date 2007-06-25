@@ -15,10 +15,14 @@ public class NewDroolsProjectWizardPage extends WizardPage {
 	private Button addSampleRuleButton;
 	private Button addSampleJavaDecisionTableCodeButton;
 	private Button addSampleDecisionTableCodeButton;
+	private Button addSampleRuleFlowButton;
+	private Button addSampleJavaRuleFlowCodeButton;
 	private boolean addSampleJavaRuleCode = true;
 	private boolean addSampleRule = true;
 	private boolean addSampleJavaDecisionTableCode = false;
 	private boolean addSampleDecisionTableCode = false;
+	private boolean addSampleJavaRuleFlowCode = false;
+	private boolean addSampleRuleFlow = false;
 	
 	public NewDroolsProjectWizardPage() {
 		super("extendedNewProjectPage");
@@ -75,7 +79,7 @@ public class NewDroolsProjectWizardPage extends WizardPage {
 		});
 		addSampleJavaDecisionTableCodeButton = createCheckBox(parent,
 			"Add a sample Java class for loading and executing the HelloWorld decision table.");
-		addSampleDecisionTableCodeButton.setSelection(addSampleDecisionTableCode);
+		addSampleJavaDecisionTableCodeButton.setSelection(addSampleDecisionTableCode);
 		addSampleJavaDecisionTableCodeButton.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) {
 				// do nothing
@@ -84,6 +88,29 @@ public class NewDroolsProjectWizardPage extends WizardPage {
 				addSampleJavaDecisionTableCode = ((Button) e.widget).getSelection();
 			}
 		});
+		addSampleRuleFlowButton = createCheckBox(parent,
+			"Add a sample RuleFlow file to this project.");
+		addSampleRuleFlowButton.setSelection(addSampleRuleFlow);
+		addSampleRuleFlowButton.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// do nothing
+			}
+			public void widgetSelected(SelectionEvent e) {
+				addSampleRuleFlow = ((Button) e.widget).getSelection();
+			}
+		});
+		addSampleJavaRuleFlowCodeButton = createCheckBox(parent,
+			"Add a sample Java class for loading and executing the RuleFlow.");
+		addSampleJavaRuleFlowCodeButton.setSelection(addSampleJavaRuleFlowCode);
+		addSampleJavaRuleFlowCodeButton.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// do nothing
+			}
+			public void widgetSelected(SelectionEvent e) {
+				addSampleJavaRuleFlowCode = ((Button) e.widget).getSelection();
+			}
+		});
+
 	}
 
 	private Button createCheckBox(Composite group, String label) {
@@ -108,5 +135,13 @@ public class NewDroolsProjectWizardPage extends WizardPage {
 	
 	public boolean createJavaDecisionTableFile() {
 		return addSampleJavaDecisionTableCode;
+	}
+	
+	public boolean createRuleFlowFile() {
+		return addSampleRuleFlow;
+	}
+	
+	public boolean createJavaRuleFlowFile() {
+		return addSampleJavaRuleFlowCode;
 	}
 }

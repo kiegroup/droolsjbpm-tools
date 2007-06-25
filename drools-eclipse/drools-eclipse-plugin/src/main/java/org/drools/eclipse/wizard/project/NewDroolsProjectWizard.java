@@ -267,6 +267,12 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
 	    	if (extraPage.createJavaDecisionTableFile()) {
 	    		createDecisionTableSampleLauncher(project);
 	    	}
+	    	if (extraPage.createRuleFlowFile()) {
+	    		createRuleFlow(project, monitor);
+	    	}
+	    	if (extraPage.createJavaRuleFlowFile()) {
+	    		createRuleFlowSampleLauncher(project);
+	    	}
     	} catch (Throwable t) {
     		t.printStackTrace();
     	}
@@ -338,6 +344,58 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
         } else {
         	file.setContents(inputstream, true, false, monitor);
         }
+    }
+
+    /**
+     * Create the sample RuleFlow file.
+     */
+    private void createRuleFlow(IJavaProject project, IProgressMonitor monitor)
+            throws CoreException {
+        String fileName = "org/drools/eclipse/wizard/project/ruleflow.rf.template";
+        IFolder folder = project.getProject().getFolder("src/rules");
+        IFile file = folder.getFile("ruleflow.rf");
+        InputStream inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
+        if (!file.exists()) {
+        	file.create(inputstream, true, monitor);
+        } else {
+        	file.setContents(inputstream, true, false, monitor);
+        }
+        fileName = "org/drools/eclipse/wizard/project/ruleflow.rfm.template";
+        folder = project.getProject().getFolder("src/rules");
+        file = folder.getFile("ruleflow.rfm");
+        inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
+        if (!file.exists()) {
+        	file.create(inputstream, true, monitor);
+        } else {
+        	file.setContents(inputstream, true, false, monitor);
+        }
+        fileName = "org/drools/eclipse/wizard/project/ruleflow.drl.template";
+        folder = project.getProject().getFolder("src/rules");
+        file = folder.getFile("ruleflow.drl");
+        inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
+        if (!file.exists()) {
+        	file.create(inputstream, true, monitor);
+        } else {
+        	file.setContents(inputstream, true, false, monitor);
+        }
+    }
+
+    /**
+     * Create the sample RuleFlow launcher file.
+     */
+    private void createRuleFlowSampleLauncher(IJavaProject project)
+            throws JavaModelException, IOException {
+        
+        String s = "org/drools/eclipse/wizard/project/RuleFlowLauncherSample.java.template";
+        IFolder folder = project.getProject().getFolder("src/java");
+        IPackageFragmentRoot packageFragmentRoot = project
+                .getPackageFragmentRoot(folder);
+        IPackageFragment packageFragment = packageFragmentRoot
+                .createPackageFragment("com.sample", true, null);
+        InputStream inputstream = getClass().getClassLoader()
+                .getResourceAsStream(s);
+        packageFragment.createCompilationUnit("RuleFlowTest.java", new String(
+                readStream(inputstream)), true, null);
     }
 
     protected void initializeDefaultPageImageDescriptor() {
