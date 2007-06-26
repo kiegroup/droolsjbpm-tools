@@ -1,9 +1,12 @@
 package org.drools.eclipse.rulebuilder.ui;
 
+import java.util.List;
+
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.ActionInsertFact;
 import org.drools.brms.client.modeldriven.brxml.ActionInsertLogicalFact;
 import org.drools.brms.client.modeldriven.brxml.ActionSetField;
+import org.drools.brms.client.modeldriven.brxml.ActionUpdateField;
 import org.drools.brms.client.modeldriven.brxml.DSLSentence;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
@@ -40,8 +43,11 @@ public class AddNewActionDialog extends RuleDialog {
         Composite composite = (Composite) super.createDialogArea( parent );
         String heading = "Choose...";
 
-        createGlobalVariablesPart( composite,
+        createValuesOfFieldPart( composite,
                                    heading );
+
+        createModifyFieldPart( composite,
+                                 heading );
 
         String[] facts = getCompletion().getFactTypes();
 
@@ -57,6 +63,38 @@ public class AddNewActionDialog extends RuleDialog {
                             heading );
 
         return composite;
+    }
+
+    private void createModifyFieldPart(Composite composite,
+                                       String heading) {
+        createLabel( composite,
+                     "Modify a field on a fact" );
+        final Combo factsCombo = new Combo( composite,
+                                                 SWT.READ_ONLY );
+        factsCombo.add( heading );
+
+        List boundFacts = modeller.getModel().getBoundFacts();
+
+        for ( int i = 0; i < boundFacts.size(); i++ ) {
+            factsCombo.add( (String) boundFacts.get( i ) );
+        }
+        factsCombo.select( 0 );
+
+        factsCombo.addListener( SWT.Selection,
+                                     new Listener() {
+                                         public void handleEvent(Event event) {
+                                             if ( factsCombo.getSelectionIndex() == 0 ) {
+                                                 return;
+                                             }
+
+                                             modeller.getModel().addRhsItem(new ActionUpdateField(factsCombo.getText()));
+                                             
+                                             modeller.setDirty( true );
+                                             modeller.reloadRhs();
+                                             close();
+                                         }
+                                     } );
+        
     }
 
     private void createDslSentences(Composite composite,
@@ -152,16 +190,18 @@ public class AddNewActionDialog extends RuleDialog {
         return factsCombo;
     }
 
-    private void createGlobalVariablesPart(Composite composite,
+    private void createValuesOfFieldPart(Composite composite,
                                            String heading) {
         createLabel( composite,
                      "Set the values of a field on" );
         final Combo globalVarsCombo = new Combo( composite,
                                                  SWT.READ_ONLY );
         globalVarsCombo.add( heading );
-        String[] globalVars = getCompletion().getGlobalVariables();
-        for ( int i = 0; i < globalVars.length; i++ ) {
-            globalVarsCombo.add( globalVars[i] );
+        
+        List boundFacts = modeller.getModel().getBoundFacts();
+        
+        for ( int i = 0; i < boundFacts.size(); i++ ) {
+            globalVarsCombo.add( (String) boundFacts.get( i ) );
         }
         globalVarsCombo.select( 0 );
 

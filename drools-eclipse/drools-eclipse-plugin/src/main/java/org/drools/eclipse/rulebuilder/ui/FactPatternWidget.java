@@ -574,6 +574,8 @@ public class FactPatternWidget extends Widget {
             public void modifyText(ModifyEvent e) {
                 con.operator = HumanReadable.getOperatorName( box.getText() );
                 getModeller().setDirty( true );
+                
+                
             }
         } );
     }

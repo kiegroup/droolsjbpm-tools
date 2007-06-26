@@ -70,9 +70,16 @@ public class ActionSetFieldDialog extends RuleDialog {
                                                            "",
                                                            fieldType ) );
 
-                modeller.reloadRhs();
-                modeller.setDirty( true );
-                close();
+                
+                getShell().getDisplay().asyncExec( new Runnable() {
+
+                    public void run() {
+                        modeller.reloadRhs();
+                        modeller.setDirty( true );
+                        close();
+                    }
+
+                } );
             }
         } );
 

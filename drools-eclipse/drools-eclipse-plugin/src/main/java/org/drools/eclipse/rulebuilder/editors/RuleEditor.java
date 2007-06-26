@@ -129,11 +129,25 @@ public class RuleEditor extends FormEditor
             setPageText( 2,
                          "Generated DRL (read-only)" );
 
-            setPartName( xmlEditor.getTitle() );
+            updateName(false);
             
         } catch ( PartInitException e ) {
             e.printStackTrace();
         }
+    }
+
+    private void updateName(boolean forced) {
+        String name = xmlEditor.getTitle();
+        setPartName( name );
+        
+        //TODO Add support for other than .brxml extensions
+        if (guidedEditor.getModeller()!=null && guidedEditor.getModeller().getModel()!=null && (guidedEditor.getModeller().getModel().name==null || forced)) {
+            String shortName = name.substring( 0, name.length()-".brxml".length() );
+            guidedEditor.getModeller().getModel().name=shortName;            
+        }
+        
+        updateDRLPage();
+        
     }
 
     private IPath getCurrentDirectoryPath(IEditorInput editorInput) {
@@ -231,6 +245,7 @@ public class RuleEditor extends FormEditor
                 if ( newModel ) {
                     guidedEditor.getModeller().setDirty( false );
                 }
+                updateName(false);
             }
 
             guidedEditor.refresh();
@@ -249,19 +264,26 @@ public class RuleEditor extends FormEditor
                 guidedEditor.setModelXML( document.get() );
             }
 
-            String drl;
-            try {
-                drl = BRDRLPersistence.getInstance().marshal( guidedEditor.getRuleModel() );
-            } catch ( Throwable t ) {
+            updateDRLPage();
 
-                StringWriter strwriter = new StringWriter();
-                t.printStackTrace( new PrintWriter( strwriter ) );
-                drl = strwriter.toString();
-            }
-            drlPreviewText.setText( drl );
+            updateName(false);
 
         }
 
+    }
+
+    private void updateDRLPage() {
+
+        String drl;
+        try {
+            drl = BRDRLPersistence.getInstance().marshal( guidedEditor.getRuleModel() );
+        } catch ( Throwable t ) {
+
+            StringWriter strwriter = new StringWriter();
+            t.printStackTrace( new PrintWriter( strwriter ) );
+            drl = strwriter.toString();
+        }
+        drlPreviewText.setText( drl );
     }
 
     public void doSave(IProgressMonitor monitor) {
@@ -291,7 +313,7 @@ public class RuleEditor extends FormEditor
     public void doSaveAs() {
         xmlEditor.doSaveAs();
         guidedEditor.getModeller().setDirty( false );
-        setPartName( xmlEditor.getTitle() );
+        updateName(true);
         setInput( xmlEditor.getEditorInput() );
         
         guidedEditor.refresh();
