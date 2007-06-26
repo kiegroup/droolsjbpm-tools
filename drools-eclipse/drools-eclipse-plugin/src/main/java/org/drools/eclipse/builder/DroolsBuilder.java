@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.antlr.runtime.RecognitionException;
-import org.apache.commons.jci.problems.CompilationProblem;
+import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.FactTemplateError;
