@@ -108,7 +108,9 @@ public class RuleEditor extends FormEditor
             loader = new SuggestionCompletionLoader( classLoader );
 
             if ( !file.exists() ) {
-                InputStream is = new ByteArrayInputStream( "// Header file".getBytes() );
+                String defaultHeader = "//This is a package configuration file";
+                defaultHeader += "\n//Add imports, globals etc here which will be used by all the rule assets in thise folder.";
+                InputStream is = new ByteArrayInputStream( defaultHeader.getBytes() );
                 try {
                     file.create( is,
                                  true,
