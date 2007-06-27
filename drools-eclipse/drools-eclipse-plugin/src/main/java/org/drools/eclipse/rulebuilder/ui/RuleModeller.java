@@ -100,7 +100,7 @@ public class RuleModeller {
 
         Section ifSection = createMainSection( form,
                                                toolkit,
-                                               "IF",
+                                               "WHEN",
                                                conditionPopup );
         Section thenSection = createMainSection( form,
                                                  toolkit,
