@@ -647,12 +647,12 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		} else if (descr instanceof NotDescr) {
 			getRuleParameters(result, ((NotDescr) descr).getDescrs());
 		} else if (descr instanceof FromDescr) {
-			getRuleParameters(result, ((FromDescr) descr).getReturnedPattern());
+			getRuleParameters(result, ((FromDescr) descr).getDescrs());
 		} else if (descr instanceof AccumulateDescr) {
 			AccumulateDescr accumulateDescr = (AccumulateDescr) descr;
-			getRuleParameters(result, accumulateDescr.getResultPattern());
-			if (accumulateDescr.getSourcePattern() != null) {
-				getRuleParameters(result, accumulateDescr.getSourcePattern());
+			getRuleParameters(result, accumulateDescr.getInputPattern());
+			if (accumulateDescr.getInputPattern() != null) {
+				getRuleParameters(result, accumulateDescr.getInputPattern());
 			}
 		}
 
