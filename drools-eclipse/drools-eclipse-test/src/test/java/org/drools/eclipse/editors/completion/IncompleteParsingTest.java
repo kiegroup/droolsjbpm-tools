@@ -412,11 +412,10 @@ public class IncompleteParsingTest extends TestCase {
             "       Class ( ) from a";
         rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        FromDescr from = (FromDescr) rule.getLhs().getDescrs().get(0);
-        assertEquals(-1, from.getEndCharacter());
-        assertNotNull( from.getReturnedPattern() );
-        pattern = (PatternDescr) from.getReturnedPattern();
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", pattern.getObjectType());
+        FromDescr from = (FromDescr) pattern.getSource(); 
+        assertEquals(-1, from.getEndCharacter());
         assertTrue(pattern.getEndCharacter() != -1);
         
         input = 
@@ -427,7 +426,8 @@ public class IncompleteParsingTest extends TestCase {
         rule = parseRuleString(input);
         rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        from = (FromDescr) rule.getLhs().getDescrs().get(0);
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        from = (FromDescr) pattern.getSource();
         assertTrue(from.getEndCharacter() != -1);
 
         input = 
@@ -438,7 +438,8 @@ public class IncompleteParsingTest extends TestCase {
         rule = parseRuleString(input);
         rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        from = (FromDescr) rule.getLhs().getDescrs().get(0);
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        from = (FromDescr) pattern.getSource();
         assertTrue(from.getEndCharacter() != -1);
     }
     
