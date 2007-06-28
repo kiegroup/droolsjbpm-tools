@@ -1,6 +1,6 @@
 package org.drools.eclipse.rulebuilder.editors;
 
-import org.drools.brms.client.modeldriven.brxml.RuleModel;
+import org.drools.brms.client.modeldriven.brl.RuleModel;
 import org.drools.brms.server.util.BRXMLPersistence;
 import org.drools.eclipse.rulebuilder.ui.RuleModeller;
 import org.eclipse.ui.forms.IManagedForm;
@@ -14,16 +14,16 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
  * @author Ahti Kitsik
  *
  */
-public class BrxmlPage extends FormPage {
+public class BrlPage extends FormPage {
 
     private static final String PAGE_NAME = "Rule Builder";
-    private static final String PAGE_ID   = BrxmlPage.class.getName();
+    private static final String PAGE_ID   = BrlPage.class.getName();
 
     private RuleModeller        modeller;
     private RuleModel           model;
     private RuleEditor          editor;
 
-    public BrxmlPage(RuleEditor editor) {
+    public BrlPage(RuleEditor editor) {
         super( editor,
                PAGE_ID,
                PAGE_NAME );

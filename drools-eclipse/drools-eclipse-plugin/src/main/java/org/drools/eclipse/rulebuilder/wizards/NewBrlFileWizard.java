@@ -21,21 +21,21 @@ import org.eclipse.ui.ide.IDE;
  * (a folder or a project) is selected in the workspace 
  * when the wizard is opened, it will accept it as the target
  * container. The wizard creates one file with the extension
- * "brxml". If a sample multi-page editor (also available
+ * "brl". If a sample multi-page editor (also available
  * as a template) is registered for the same extension, it will
  * be able to open it.
  */
 
-public class NewBrxmlFileWizard extends Wizard
+public class NewBrlFileWizard extends Wizard
     implements
     INewWizard {
-    private NewBrxmlFileWizardPage page;
+    private NewBrlFileWizardPage page;
     private ISelection             selection;
 
     /**
-     * Constructor for NewBrxmlFileWizard.
+     * Constructor for NewBrlFileWizard.
      */
-    public NewBrxmlFileWizard() {
+    public NewBrlFileWizard() {
         super();
         setNeedsProgressMonitor( true );
     }
@@ -45,7 +45,7 @@ public class NewBrxmlFileWizard extends Wizard
      */
 
     public void addPages() {
-        page = new NewBrxmlFileWizardPage( selection );
+        page = new NewBrlFileWizardPage( selection );
         addPage( page );
     }
 
@@ -142,7 +142,7 @@ public class NewBrxmlFileWizard extends Wizard
 
     private InputStream openContentStream() {
         //String contents =
-        //	"This is the initial file contents for *.brxml file that should be word-sorted in the Preview page of the multi-page editor";
+        //	"This is the initial file contents for *.brl file that should be word-sorted in the Preview page of the multi-page editor";
         String contents = "";
         return new ByteArrayInputStream( contents.getBytes() );
     }

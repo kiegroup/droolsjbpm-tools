@@ -1,11 +1,11 @@
 package org.drools.eclipse.rulebuilder.ui;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
-import org.drools.brms.client.modeldriven.brxml.ActionSetField;
-import org.drools.brms.client.modeldriven.brxml.ActionUpdateField;
-import org.drools.brms.client.modeldriven.brxml.FactPattern;
-import org.drools.brms.client.modeldriven.brxml.RuleModel;
+import org.drools.brms.client.modeldriven.brl.ActionFieldValue;
+import org.drools.brms.client.modeldriven.brl.ActionSetField;
+import org.drools.brms.client.modeldriven.brl.ActionUpdateField;
+import org.drools.brms.client.modeldriven.brl.FactPattern;
+import org.drools.brms.client.modeldriven.brl.RuleModel;
 import org.drools.eclipse.rulebuilder.modeldriven.HumanReadable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;

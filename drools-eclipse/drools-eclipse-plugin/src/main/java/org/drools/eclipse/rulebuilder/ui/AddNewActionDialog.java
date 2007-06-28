@@ -3,11 +3,11 @@ package org.drools.eclipse.rulebuilder.ui;
 import java.util.List;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brxml.ActionInsertFact;
-import org.drools.brms.client.modeldriven.brxml.ActionInsertLogicalFact;
-import org.drools.brms.client.modeldriven.brxml.ActionSetField;
-import org.drools.brms.client.modeldriven.brxml.ActionUpdateField;
-import org.drools.brms.client.modeldriven.brxml.DSLSentence;
+import org.drools.brms.client.modeldriven.brl.ActionInsertFact;
+import org.drools.brms.client.modeldriven.brl.ActionInsertLogicalFact;
+import org.drools.brms.client.modeldriven.brl.ActionSetField;
+import org.drools.brms.client.modeldriven.brl.ActionUpdateField;
+import org.drools.brms.client.modeldriven.brl.DSLSentence;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;

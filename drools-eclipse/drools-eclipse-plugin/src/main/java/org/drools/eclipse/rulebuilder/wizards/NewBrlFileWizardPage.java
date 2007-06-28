@@ -24,10 +24,10 @@ import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 /**
  * The "New" wizard page allows setting the container for the new file as well
  * as the file name. The page will only accept file name without the extension
- * OR with the extension that matches the expected one (brxml).
+ * OR with the extension that matches the expected one (brl).
  */
 
-public class NewBrxmlFileWizardPage extends WizardPage {
+public class NewBrlFileWizardPage extends WizardPage {
     private Text       containerText;
 
     private Text       fileText;
@@ -39,10 +39,10 @@ public class NewBrxmlFileWizardPage extends WizardPage {
      * 
      * @param pageName
      */
-    public NewBrxmlFileWizardPage(ISelection selection) {
+    public NewBrlFileWizardPage(ISelection selection) {
         super( "wizardPage" );
         setTitle( "RuleBuilder Editor File" );
-        setDescription( "This wizard creates a new file with *.brxml extension that can be opened by a multi-page editor." );
+        setDescription( "This wizard creates a new file with *.brl extension that can be opened by a multi-page editor." );
         this.selection = selection;
     }
 
@@ -112,7 +112,7 @@ public class NewBrxmlFileWizardPage extends WizardPage {
                 containerText.setText( container.getFullPath().toString() );
             }
         }
-        fileText.setText( "rules.brxml" );
+        fileText.setText( "rules.brl" );
     }
 
     /**
@@ -166,8 +166,8 @@ public class NewBrxmlFileWizardPage extends WizardPage {
         int dotLoc = fileName.lastIndexOf( '.' );
         if ( dotLoc != -1 ) {
             String ext = fileName.substring( dotLoc + 1 );
-            if ( ext.equalsIgnoreCase( "brxml" ) == false ) {
-                updateStatus( "File extension must be \"brxml\"" );
+            if ( ext.equalsIgnoreCase( "brl" ) == false ) {
+                updateStatus( "File extension must be \"brl\"" );
                 return;
             }
         }

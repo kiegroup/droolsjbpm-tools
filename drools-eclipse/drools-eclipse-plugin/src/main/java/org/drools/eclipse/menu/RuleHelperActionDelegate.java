@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.eclipse.rulebuilder.wizards.NewBrxmlFileWizard;
+import org.drools.eclipse.rulebuilder.wizards.NewBrlFileWizard;
 import org.drools.eclipse.wizard.decisiontable.NewDTFileWizard;
 import org.drools.eclipse.wizard.dsl.NewDSLFileWizard;
 import org.drools.eclipse.wizard.project.NewDroolsProjectWizard;
@@ -140,7 +140,7 @@ public class RuleHelperActionDelegate
         dsl.addSelectionListener( new SelectionListener() {
 
             public void widgetSelected(SelectionEvent e) {
-                NewBrxmlFileWizard wizard = new NewBrxmlFileWizard();
+                NewBrlFileWizard wizard = new NewBrlFileWizard();
                 launchWizard( shell,
                               wizard );
             }

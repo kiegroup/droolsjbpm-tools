@@ -48,7 +48,7 @@ public class RuleEditor extends FormEditor
     implements
     IResourceChangeListener {
 
-    private BrxmlPage                  guidedEditor;
+    private BrlPage                  guidedEditor;
 
     private TextEditor                 xmlEditor          = new TextEditor();
 
@@ -89,7 +89,7 @@ public class RuleEditor extends FormEditor
     }
 
     protected void addPages() {
-        guidedEditor = new BrxmlPage( this );
+        guidedEditor = new BrlPage( this );
         try {
             addPage( guidedEditor );
             addPage( xmlEditor,
@@ -126,7 +126,7 @@ public class RuleEditor extends FormEditor
             reloadCompletionEngine();
 
             setPageText( 1,
-                         "BRXML Source" );
+                         "BRL Source" );
 
             setPageText( 2,
                          "Generated DRL (read-only)" );
@@ -142,9 +142,9 @@ public class RuleEditor extends FormEditor
         String name = xmlEditor.getTitle();
         setPartName( name );
         
-        //TODO Add support for other than .brxml extensions
+        //TODO Add support for other than .brl extensions
         if (guidedEditor.getModeller()!=null && guidedEditor.getModeller().getModel()!=null && (guidedEditor.getModeller().getModel().name==null || forced)) {
-            String shortName = name.substring( 0, name.length()-".brxml".length() );
+            String shortName = name.substring( 0, name.length()-".brl".length() );
             guidedEditor.getModeller().getModel().name=shortName;            
         }
         

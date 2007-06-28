@@ -1,10 +1,10 @@
 package org.drools.eclipse.rulebuilder.ui;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brxml.CompositeFactPattern;
-import org.drools.brms.client.modeldriven.brxml.DSLSentence;
-import org.drools.brms.client.modeldriven.brxml.FactPattern;
-import org.drools.brms.client.modeldriven.brxml.IPattern;
+import org.drools.brms.client.modeldriven.brl.CompositeFactPattern;
+import org.drools.brms.client.modeldriven.brl.DSLSentence;
+import org.drools.brms.client.modeldriven.brl.FactPattern;
+import org.drools.brms.client.modeldriven.brl.IPattern;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
