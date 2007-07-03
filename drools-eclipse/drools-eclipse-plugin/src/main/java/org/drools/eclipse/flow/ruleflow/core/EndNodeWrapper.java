@@ -26,7 +26,7 @@ import org.drools.ruleflow.core.impl.EndNodeImpl;
  */
 public class EndNodeWrapper extends NodeWrapper {
 
-    private static final long serialVersionUID = 3617855270152385336L;
+    private static final long serialVersionUID = 400L;
 
     public EndNodeWrapper() {
         setNode(new EndNodeImpl());

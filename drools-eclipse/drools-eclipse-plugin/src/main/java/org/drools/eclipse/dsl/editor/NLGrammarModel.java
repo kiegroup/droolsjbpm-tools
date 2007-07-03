@@ -14,7 +14,7 @@ import org.drools.lang.dsl.DefaultDSLMapping;
  */
 public class NLGrammarModel extends DefaultDSLMapping {
     
-    private static final long serialVersionUID = 5449029738300794120L;
+    private static final long serialVersionUID = 400L;
     
     private Set changeListeners = new HashSet();
 

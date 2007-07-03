@@ -28,7 +28,7 @@ import org.drools.ruleflow.core.impl.RuleFlowProcessImpl;
  */
 public class RuleFlowProcessWrapper extends ProcessWrapper {
 
-	private static final long serialVersionUID = 3258415040708293944L;
+	private static final long serialVersionUID = 400L;
 
 //	private static IPropertyDescriptor[] descriptors;
 //

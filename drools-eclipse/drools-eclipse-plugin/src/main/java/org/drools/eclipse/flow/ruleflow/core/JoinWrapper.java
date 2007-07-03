@@ -30,7 +30,7 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
  */
 public class JoinWrapper extends NodeWrapper {
 
-    private static final long serialVersionUID = 3258415019233588272L;
+    private static final long serialVersionUID = 400L;
     private static IPropertyDescriptor[] descriptors;
 
     public static final String TYPE = "type";

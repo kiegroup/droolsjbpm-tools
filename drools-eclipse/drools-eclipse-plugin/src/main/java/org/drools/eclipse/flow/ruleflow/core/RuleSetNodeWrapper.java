@@ -29,7 +29,7 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  */
 public class RuleSetNodeWrapper extends NodeWrapper {
 
-    private static final long serialVersionUID = 3257007648627765553L;
+    private static final long serialVersionUID = 400L;
     private static IPropertyDescriptor[] descriptors;
 
     public static final String RULE_FLOW_GROUP = "RuleFlowGroup";

@@ -31,7 +31,7 @@ import org.eclipse.draw2d.geometry.Point;
  */
 public class ElementConnection implements Serializable {
     
-	private static final long serialVersionUID = 3690752912666015536L;
+	private static final long serialVersionUID = 400L;
 	
 	public static final int CHANGE_BENDPOINTS = 1;
 	

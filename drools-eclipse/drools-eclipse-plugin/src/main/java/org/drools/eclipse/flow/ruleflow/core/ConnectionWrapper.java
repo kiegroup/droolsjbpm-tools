@@ -28,7 +28,7 @@ import org.drools.ruleflow.core.impl.ConnectionImpl;
  */
 public class ConnectionWrapper extends ElementConnection {
 		
-	private static final long serialVersionUID = 4049352037223445809L;
+	private static final long serialVersionUID = 400L;
 
 	private Connection connection;
 	

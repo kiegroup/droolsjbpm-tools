@@ -41,7 +41,7 @@ public class SplitWrapper extends NodeWrapper {
     public static final String TYPE = "type";
     public static final String CONSTRAINTS = "constraints";
     
-    private static final long serialVersionUID = 3256728394048944185L;
+    private static final long serialVersionUID = 400L;
     private transient IPropertyDescriptor[] descriptors;
 
     public SplitWrapper() {

@@ -27,7 +27,7 @@ import org.drools.ruleflow.core.impl.StartNodeImpl;
  */
 public class StartNodeWrapper extends NodeWrapper {
 
-    private static final long serialVersionUID = 3978428031117375030L;
+    private static final long serialVersionUID = 400L;
 
     public StartNodeWrapper() {
         setNode(new StartNodeImpl());
