@@ -6,13 +6,13 @@ import junit.framework.TestCase;
 
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
-import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
@@ -177,6 +177,20 @@ public class IncompleteParsingTest extends TestCase {
         assertEquals(-1, field.getEndCharacter());
 
         input = 
+        	"rule MyRule \n" + 
+        	"	when \n" + 
+        	"		Class ( name['xyz'].subname.subsubn";
+        rule = parseRuleString(input);
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", pattern.getObjectType());
+        assertEquals(-1, pattern.getEndCharacter());
+        assertEquals(1, pattern.getDescrs().size());
+        field = (FieldConstraintDescr) pattern.getDescrs().get(0); 
+        assertEquals( "na", field.getFieldName() );
+        assertEquals(-1, field.getEndCharacter());
+
+        input = 
         	"rule MyRule \n" +
         	"	when \n" +
         	"		Class ( condition == true, ";
@@ -188,6 +202,19 @@ public class IncompleteParsingTest extends TestCase {
         assertEquals(1, pattern.getDescrs().size());
         field = (FieldConstraintDescr) pattern.getDescrs().get(0); 
         assertEquals(-1, field.getEndCharacter());
+
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( c : condition, ";
+        rule = parseRuleString(input);
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Class", pattern.getObjectType());
+        assertEquals(-1, pattern.getEndCharacter());
+        assertEquals(1, pattern.getDescrs().size());
+        FieldBindingDescr fieldBinding = (FieldBindingDescr) pattern.getDescrs().get(0); 
+        assertEquals(-1, fieldBinding.getEndCharacter());
 
         input = 
         	"rule MyRule \n" +

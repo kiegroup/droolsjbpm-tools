@@ -124,6 +124,16 @@ public class LocationDeterminatorTest extends TestCase {
         location = LocationDeterminator.getLocation(input);
         assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START, location.getType());
         assertEquals("Class", location.getProperty(Location.LOCATION_PROPERTY_CLASS_NAME));
+        assertEquals("na", location.getProperty(Location.LOCATION_PROPERTY_PROPERTY_NAME));
+    
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( name.subProperty['test'].subsu";
+        location = LocationDeterminator.getLocation(input);
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START, location.getType());
+        assertEquals("Class", location.getProperty(Location.LOCATION_PROPERTY_CLASS_NAME));
+        assertEquals("name.subProperty['test'].subsu", location.getProperty(Location.LOCATION_PROPERTY_PROPERTY_NAME));
     
         input = 
         	"rule MyRule \n" +
@@ -154,6 +164,15 @@ public class LocationDeterminatorTest extends TestCase {
         	"rule MyRule \n" +
         	"	when \n" +
         	"		Class ( condition == true, \n" +
+        	"			";
+        location = LocationDeterminator.getLocation(input);
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START, location.getType());
+        assertEquals("Class", location.getProperty(Location.LOCATION_PROPERTY_CLASS_NAME));
+    
+        input = 
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		Class ( c: condition, \n" +
         	"			";
         location = LocationDeterminator.getLocation(input);
         assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START, location.getType());
@@ -1348,6 +1367,11 @@ public class LocationDeterminatorTest extends TestCase {
         input = 
         	"rule MyRule \n" +
         	"	salience 12 activation-group \"my";
+        location = LocationDeterminator.getLocation(input);
+        assertEquals(Location.LOCATION_RULE_HEADER, location.getType());
+
+        input = 
+        	"rule \"Hello World\" ruleflow-group \"hello\" s";
         location = LocationDeterminator.getLocation(input);
         assertEquals(Location.LOCATION_RULE_HEADER, location.getType());
     }
