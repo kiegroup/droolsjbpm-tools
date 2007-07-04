@@ -10,19 +10,18 @@ import java.util.Map;
 import org.drools.base.ClassTypeResolver;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
 import org.drools.eclipse.editors.AbstractRuleEditor;
 import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.lang.Location;
-import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldTemplateDescr;
-import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
@@ -173,6 +172,8 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		case Location.LOCATION_LHS_INSIDE_CONDITION_START:
 			String className = (String) location
 					.getProperty(Location.LOCATION_PROPERTY_CLASS_NAME);
+			String propertyName = (String) location
+					.getProperty(Location.LOCATION_PROPERTY_PROPERTY_NAME);
 			if (className != null) {
 				boolean isTemplate = addFactTemplatePropertyProposals(
 						prefix, className, list);
@@ -181,17 +182,47 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 							getImports(), ProjectClassLoader
 									.getProjectClassLoader(getEditor()));
 					try {
-						Class clazz = resolver.resolveType(className);
+						String currentClass = className;
+						if (propertyName != null) {
+							String[] nestedProperties = propertyName.split("\\.");
+							int nbSuperProperties = nestedProperties.length - 1;
+							if (propertyName.endsWith(".")) {
+								nbSuperProperties++;
+							}
+							for (int i = 0; i < nbSuperProperties; i++) {
+								String simplePropertyName = nestedProperties[i];
+								currentClass = getSimplePropertyClass(currentClass, simplePropertyName);
+								currentClass = convertToNonPrimitiveClass(currentClass);
+							}
+						}
+						RuleCompletionProposal p = new RuleCompletionProposal(prefix.length(), "this");
+							p.setImage(METHOD_ICON);
+							list.add(p);
+						Class clazz = resolver.resolveType(currentClass);
 						if (clazz != null) {
-							Iterator iterator2 = new ClassFieldInspector(
-									clazz).getFieldNames().keySet()
-									.iterator();
+							if (Map.class.isAssignableFrom(clazz)) {
+								p = new RuleCompletionProposal(
+									prefix.length(), "this['']", "this['']", 6);
+								p.setImage(METHOD_ICON);
+								list.add(p);
+							}
+							ClassFieldInspector inspector = new ClassFieldInspector(clazz);
+							Map types = inspector.getFieldTypes();
+							Iterator iterator2 = inspector.getFieldNames().keySet().iterator();
 							while (iterator2.hasNext()) {
 								String name = (String) iterator2.next();
-								RuleCompletionProposal p = new RuleCompletionProposal(
+								p = new RuleCompletionProposal(
 										prefix.length(), name, name + " ");
 								p.setImage(METHOD_ICON);
 								list.add(p);
+								Class type = (Class) types.get(name);
+								if (type != null && Map.class.isAssignableFrom(type)) {
+									name += "['']";
+									p = new RuleCompletionProposal(
+										prefix.length(), name, name, name.length() - 2);
+									p.setImage(METHOD_ICON);
+									list.add(p);
+								}
 							}
 						}
 					} catch (IOException exc) {
@@ -363,6 +394,17 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 								"accumulate",
 								"accumulate (  , init (  ), action (  ), result (  ) )",
 								13, DROOLS_ICON));
+				PackageBuilderConfiguration config = new PackageBuilderConfiguration(
+					ProjectClassLoader.getProjectClassLoader(getEditor()), null);
+				Map accumulateFunctions = config.getAccumulateFunctionsMap();
+				for (Iterator iterator2 = accumulateFunctions.keySet().iterator(); iterator2.hasNext(); ) {
+					String accumulateFunction = (String) iterator2.next();
+					list.add(new RuleCompletionProposal(
+							prefix.length(),
+							"accumulate " + accumulateFunction,
+							"accumulate (  , " + accumulateFunction + "(  ) )",
+							13, DROOLS_ICON));
+				}
 				list.add(new RuleCompletionProposal(prefix.length(),
 						"collect", "collect (  )", 10, DROOLS_ICON));
 				// add all functions
@@ -438,26 +480,44 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 				}
 				// if not found, return null
 			} else {
-				ClassTypeResolver resolver = new ClassTypeResolver(
-						getImports(), ProjectClassLoader
-								.getProjectClassLoader(getEditor()));
-				try {
-					Class clazz = resolver.resolveType(className);
-					if (clazz != null) {
-						Class clazzz = (Class) new ClassFieldInspector(clazz)
-								.getFieldTypes().get(propertyName);
-						if (clazzz != null) {
-							return clazzz.getName();
-						}
-					}
-				} catch (IOException exc) {
-					// Do nothing
-				} catch (ClassNotFoundException exc) {
-					// Do nothing
+				String[] nestedProperties = propertyName.split("\\.");
+				String currentClass = className;
+				for (int i = 0; i < nestedProperties.length; i++) {
+					String simplePropertyName = nestedProperties[i];
+					currentClass = getSimplePropertyClass(currentClass, simplePropertyName);
 				}
+				return currentClass; 
 			}
 		}
 		return null;
+	}
+	
+	private String getSimplePropertyClass(String className, String propertyName) {
+		if ("this".equals(propertyName)) {
+			return className;
+		}
+		if (propertyName.endsWith("]")) {
+			// TODO can we take advantage of generics here?
+			return "java.lang.Object";
+		}
+		ClassTypeResolver resolver = new ClassTypeResolver(
+			getImports(), ProjectClassLoader
+				.getProjectClassLoader(getEditor()));
+		try {
+			Class clazz = resolver.resolveType(className);
+			if (clazz != null) {
+				Class clazzz = (Class) new ClassFieldInspector(clazz)
+						.getFieldTypes().get(propertyName);
+				if (clazzz != null) {
+					return clazzz.getName();
+				}
+			}
+		} catch (IOException exc) {
+			// Do nothing
+		} catch (ClassNotFoundException exc) {
+			// Do nothing
+		}
+		return "java.lang.Object";
 	}
 
 	private Map getRuleParameters(String backText) {
@@ -646,16 +706,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			getRuleParameters(result, ((ExistsDescr) descr).getDescrs());
 		} else if (descr instanceof NotDescr) {
 			getRuleParameters(result, ((NotDescr) descr).getDescrs());
-		} else if (descr instanceof FromDescr) {
-			getRuleParameters(result, ((FromDescr) descr).getDescrs());
-		} else if (descr instanceof AccumulateDescr) {
-			AccumulateDescr accumulateDescr = (AccumulateDescr) descr;
-			getRuleParameters(result, accumulateDescr.getInputPattern());
-			if (accumulateDescr.getInputPattern() != null) {
-				getRuleParameters(result, accumulateDescr.getInputPattern());
-			}
 		}
-
 	}
 
 	private void getRuleSubParameters(Map result, List descrs, String clazz) {

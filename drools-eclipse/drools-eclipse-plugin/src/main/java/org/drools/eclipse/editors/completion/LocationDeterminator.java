@@ -15,7 +15,7 @@ public class LocationDeterminator {
 
 //    private static final Pattern PATTERN_PATTERN_START               = Pattern.compile( ".*[(,](\\s*(\\S*)\\s*:)?\\s*[^\\s<>!=:]*",
 //                                                                                Pattern.DOTALL );
-    static final Pattern PATTERN_PATTERN_OPERATOR            = Pattern.compile( ".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:\\(\\)]+)(\\s*([<>=!]+)\\s*[^\\s<>!=:]*\\s*(&&|\\|\\|))*\\s+",
+    static final Pattern PATTERN_PATTERN_OPERATOR            = Pattern.compile( ".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:\\(\\),]+)(\\s*([<>=!]+)\\s*[^\\s<>!=:]*\\s*(&&|\\|\\|))*\\s+",
                                                                                 Pattern.DOTALL );
 //    private static final Pattern PATTERN_PATTERN_CONTAINS_ARGUMENT   = Pattern.compile( ".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:\\(\\)]+)\\s+contains\\s+[^\\s<>!=:]*",
 //                                                                                Pattern.DOTALL );

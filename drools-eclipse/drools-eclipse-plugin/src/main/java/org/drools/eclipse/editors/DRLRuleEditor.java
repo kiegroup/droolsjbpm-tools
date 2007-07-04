@@ -166,6 +166,9 @@ public class DRLRuleEditor extends AbstractRuleEditor {
             // imports
             List allImports = descr.getImports();
             this.imports = new ArrayList();
+            if (packageName != null) {
+                imports.addAll(getAllClassesInPackage(packageName));
+            }
             Iterator iterator = allImports.iterator();
             while (iterator.hasNext()) {
                 String importName = ((ImportDescr) iterator.next()).getTarget();
