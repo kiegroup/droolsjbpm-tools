@@ -18,6 +18,7 @@ package org.drools.eclipse;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -301,10 +302,12 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 
                 // first parse the source
                 PackageDescr packageDescr = null;
+                List parserErrors = null;
                 if (useCache) {
                 	DRLInfo cachedDrlInfo = (DRLInfo) parsedRules.get(resource);
                 	if (cachedDrlInfo != null) {
                 		packageDescr = cachedDrlInfo.getPackageDescr();
+                		parserErrors = cachedDrlInfo.getParserErrors();
                 	}
                 }
                 
@@ -314,6 +317,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                 	} else {
                 		packageDescr = parser.parse(content);
                 	}
+                	parserErrors = parser.getErrors();
                 }
                 PackageBuilder builder = null;
         		DRLInfo result = null;
@@ -332,12 +336,12 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                     builder.addPackage(packageDescr);
         			result = new DRLInfo(
 	    				resource.getProjectRelativePath().toString(),
-	    				packageDescr, parser.getErrors(),
+	    				packageDescr, parserErrors,
 	    				builder.getPackage(), builder.getErrors().getErrors());
         		} else {
         			result = new DRLInfo(
 	    				resource.getProjectRelativePath().toString(),
-	    				packageDescr, parser.getErrors());
+	    				packageDescr, parserErrors);
         		}
         		            		
             	// cache result
