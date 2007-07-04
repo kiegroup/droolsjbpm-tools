@@ -106,6 +106,8 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 					"or ", DROOLS_ICON));
 			list.add(new RuleCompletionProposal(prefix.length(), "from",
 					"from ", DROOLS_ICON));
+			list.add(new RuleCompletionProposal(prefix.length(), "forall",
+					"forall(  )", 8, DROOLS_ICON));
 			RuleCompletionProposal prop = new RuleCompletionProposal(prefix
 					.length(), "eval", "eval(  )", 6);
 			prop.setImage(DROOLS_ICON);
@@ -375,9 +377,9 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 					getRuleParameters(backText)));
 			break;
 		case Location.LOCATION_LHS_INSIDE_CONDITION_END:
-			list.add(new RuleCompletionProposal(prefix.length(), "&", "& ",
+			list.add(new RuleCompletionProposal(prefix.length(), "&&", "&& ",
 					DROOLS_ICON));
-			list.add(new RuleCompletionProposal(prefix.length(), "|", "| ",
+			list.add(new RuleCompletionProposal(prefix.length(), "||", "|| ",
 					DROOLS_ICON));
 			list.add(new RuleCompletionProposal(prefix.length(), ",", ", ",
 					DROOLS_ICON));
