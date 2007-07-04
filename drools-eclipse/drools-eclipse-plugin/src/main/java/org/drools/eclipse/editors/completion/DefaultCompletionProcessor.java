@@ -198,6 +198,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
 					// evalContext.newVariable((String) entry.getValue(), (String) entry.getKey(), null);
 					javaTextWithParams.append(entry.getValue() + " " + entry.getKey() + ";\n");
 				}
+				javaTextWithParams.append("org.drools.spi.KnowledgeHelper drools;");
 				javaTextWithParams.append(javaText);
 				String text = javaTextWithParams.toString();
 				evalContext.codeComplete(text, text.length(), requestor);
