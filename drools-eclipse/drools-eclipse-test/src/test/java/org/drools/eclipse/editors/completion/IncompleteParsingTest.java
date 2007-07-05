@@ -187,7 +187,7 @@ public class IncompleteParsingTest extends TestCase {
         assertEquals(-1, pattern.getEndCharacter());
         assertEquals(1, pattern.getDescrs().size());
         field = (FieldConstraintDescr) pattern.getDescrs().get(0); 
-        assertEquals( "na", field.getFieldName() );
+        assertEquals( "name['xyz'].subname.subsubn", field.getFieldName() );
         assertEquals(-1, field.getEndCharacter());
 
         input = 
