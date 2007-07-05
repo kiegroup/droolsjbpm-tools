@@ -76,10 +76,6 @@ public class AddNewActionDialog extends RuleDialog {
 
         List boundFacts = modeller.getModel().getBoundFacts();
         
-//      adding globals
-        String[] globals = modeller.getSuggestionCompletionEngine().getGlobalVariables();
-        boundFacts.addAll(Arrays.asList(globals));
-
         for ( int i = 0; i < boundFacts.size(); i++ ) {
             factsCombo.add( (String) boundFacts.get( i ) );
         }
