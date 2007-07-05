@@ -1,5 +1,6 @@
 package org.drools.eclipse.rulebuilder.ui;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
@@ -74,6 +75,10 @@ public class AddNewActionDialog extends RuleDialog {
         factsCombo.add( heading );
 
         List boundFacts = modeller.getModel().getBoundFacts();
+        
+//      adding globals
+        String[] globals = modeller.getSuggestionCompletionEngine().getGlobalVariables();
+        boundFacts.addAll(Arrays.asList(globals));
 
         for ( int i = 0; i < boundFacts.size(); i++ ) {
             factsCombo.add( (String) boundFacts.get( i ) );
@@ -199,6 +204,10 @@ public class AddNewActionDialog extends RuleDialog {
         globalVarsCombo.add( heading );
         
         List boundFacts = modeller.getModel().getBoundFacts();
+        
+        //adding globals
+        String[] globals = modeller.getSuggestionCompletionEngine().getGlobalVariables();
+        boundFacts.addAll(Arrays.asList(globals));
         
         for ( int i = 0; i < boundFacts.size(); i++ ) {
             globalVarsCombo.add( (String) boundFacts.get( i ) );
