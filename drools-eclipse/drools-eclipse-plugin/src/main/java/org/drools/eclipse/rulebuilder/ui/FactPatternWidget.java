@@ -638,7 +638,7 @@ public class FactPatternWidget extends Widget {
         final Combo combo = new Combo( composite,
                                        SWT.READ_ONLY );
 
-        gd.horizontalSpan = 1;
+        gd.horizontalSpan = 2;
         combo.setLayoutData( gd );
         if ( c.value == null ) {
             combo.add( "Choose ..." );
