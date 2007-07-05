@@ -15,6 +15,7 @@ import org.drools.eclipse.rulebuilder.modeldriven.HumanReadable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -78,10 +79,19 @@ public class FactPatternWidget extends Widget {
     }
 
     private void create() {
-        toolkit.createLabel( parent,
+        Label l = toolkit.createLabel( parent,
                              getPatternLabel() );
+        
+        GridData labelGD = new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL);
+        labelGD.horizontalSpan = 2;
+        //labelGD.verticalAlignment = SWT.CENTER;
+        //labelGD.horizontalAlignment = SWT.CENTER;
+        l.setLayoutData(labelGD);
+        l.setBackground(new Color(parent.getShell().getDisplay(),240,240,240));
+        
         addDeleteAction();
         addMoreOptionsAction();
+        
         Composite constraintComposite = toolkit.createComposite( parent );
         GridLayout constraintLayout = new GridLayout();
         constraintLayout.numColumns = 8;

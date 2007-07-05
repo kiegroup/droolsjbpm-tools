@@ -4,9 +4,12 @@ import org.drools.brms.client.modeldriven.brl.CompositeFactPattern;
 import org.drools.brms.client.modeldriven.brl.FactPattern;
 import org.drools.eclipse.rulebuilder.modeldriven.HumanReadable;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
@@ -44,18 +47,33 @@ public class CompositeFactPatternWidget extends Widget {
         layout.marginRight = 0;
         layout.marginTop = 0;
         layout.marginWidth = 0;
-        layout.verticalSpacing = 0;
+        layout.verticalSpacing = 2;
         parent.setLayout( layout );
 
         create();
     }
 
     private void create() {
-        toolkit.createLabel( parent,
+        Label l = toolkit.createLabel( parent,
                              HumanReadable.getCEDisplayName( pattern.type ) );
+        
+        GridData labelGD = new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL);
+        labelGD.horizontalSpan = 2;
+        //labelGD.verticalAlignment = SWT.CENTER;
+        //labelGD.horizontalAlignment = SWT.CENTER;
+        l.setLayoutData(labelGD);
+        l.setBackground(new Color(parent.getShell().getDisplay(),240,240,240));
+        
+        l.setLayoutData(labelGD);
         addDeleteAction();
         addMoreOptionsAction();
         Composite composite = toolkit.createComposite( parent );
+        
+
+    	GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+        gd.horizontalAlignment = SWT.CENTER;
+    	composite.setLayoutData(gd);
+    	
         createFactRows( toolkit,
                         composite );
     }
@@ -114,9 +132,12 @@ public class CompositeFactPatternWidget extends Widget {
 
     private void createFactRows(FormToolkit toolkit,
                                 Composite constraintComposite) {
+    	
+    	
         if ( pattern.patterns != null ) {
             FactPattern[] facts = pattern.patterns;
             for ( int i = 0; i < facts.length; i++ ) {
+            	
                 new FactPatternWidget( toolkit,
                                        constraintComposite,
                                        getModeller(),
@@ -124,6 +145,9 @@ public class CompositeFactPatternWidget extends Widget {
                                        pattern,
                                        i,
                                        false );
+                
+                toolkit.createLabel(constraintComposite, "");
+                toolkit.createLabel(constraintComposite, "");
             }
         }
     }
