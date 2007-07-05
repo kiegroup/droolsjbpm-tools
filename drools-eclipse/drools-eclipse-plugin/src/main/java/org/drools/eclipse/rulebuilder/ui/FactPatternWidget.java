@@ -15,8 +15,6 @@ import org.drools.eclipse.rulebuilder.modeldriven.HumanReadable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.graphics.FontMetrics;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -219,6 +217,8 @@ public class FactPatternWidget extends Widget {
             }
         } );
 
+        link.setToolTipText("Add fields to this constriant.");
+        
         addNestedElements( constraintComposite,
                            constraint );
     }
@@ -337,6 +337,7 @@ public class FactPatternWidget extends Widget {
                     }
                 } );
 
+                link.setToolTipText("Bind the field called [" + c.fieldName + "] to a variable.");
             } else {
                 toolkit.createLabel( constraintComposite,
                                      "" );
