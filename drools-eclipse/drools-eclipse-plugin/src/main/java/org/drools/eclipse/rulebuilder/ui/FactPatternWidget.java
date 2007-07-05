@@ -15,6 +15,8 @@ import org.drools.eclipse.rulebuilder.modeldriven.HumanReadable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.graphics.FontMetrics;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -603,8 +605,12 @@ public class FactPatternWidget extends Widget {
                 }
             } );
 
-            toolkit.createLabel( parent,
-                                 "" );// dummy
+            GridData gd = new GridData( GridData.FILL_HORIZONTAL | 
+            		GridData.GRAB_HORIZONTAL | 
+            		GridData.HORIZONTAL_ALIGN_BEGINNING);
+            gd.horizontalSpan = 2;
+            
+            link.setLayoutData(gd);
         } else {
             switch ( c.constraintValueType ) {
                 case ISingleFieldConstraint.TYPE_LITERAL :
@@ -617,7 +623,7 @@ public class FactPatternWidget extends Widget {
                               "icons/function_assets.gif" );
                     formulaValueEditor( parent,
                                         c,
-                                        new GridData( GridData.FILL_HORIZONTAL ) );
+                                        new GridData( GridData.FILL_HORIZONTAL  ) );
                     break;
                 case ISingleFieldConstraint.TYPE_VARIABLE :
                     variableEditor( parent,
@@ -674,10 +680,12 @@ public class FactPatternWidget extends Widget {
         if ( c.value != null ) {
             box.setText( c.value );
         }
-
+        
         gd.horizontalSpan = 2;
+        gd.grabExcessHorizontalSpace = true;
+        gd.minimumWidth = 100;
         box.setLayoutData( gd );
-
+        
         box.addModifyListener( new ModifyListener() {
             public void modifyText(ModifyEvent e) {
                 c.value = box.getText();
@@ -696,7 +704,9 @@ public class FactPatternWidget extends Widget {
         if ( c.value != null ) {
             box.setText( c.value );
         }
-
+        
+        gd.grabExcessHorizontalSpace = true;
+        gd.minimumWidth = 100;
         box.setLayoutData( gd );
 
         box.addModifyListener( new ModifyListener() {
@@ -706,6 +716,13 @@ public class FactPatternWidget extends Widget {
             }
         } );
     }
+
+	/*private int getPreferredWidth(final Text box) {
+		GC gc = new GC(box);
+        FontMetrics fm = gc.getFontMetrics();
+        int width = 7 * fm.getAverageCharWidth();
+		return width;
+	}*/
 
     private void deleteBindedFact() {
         List newPatterns = new ArrayList();
