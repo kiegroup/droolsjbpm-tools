@@ -6,6 +6,7 @@ import java.util.List;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brl.ActionInsertFact;
 import org.drools.brms.client.modeldriven.brl.ActionInsertLogicalFact;
+import org.drools.brms.client.modeldriven.brl.ActionRetractFact;
 import org.drools.brms.client.modeldriven.brl.ActionSetField;
 import org.drools.brms.client.modeldriven.brl.ActionUpdateField;
 import org.drools.brms.client.modeldriven.brl.DSLSentence;
@@ -50,6 +51,9 @@ public class AddNewActionDialog extends RuleDialog {
         createModifyFieldPart( composite,
                                  heading );
 
+        createRetractFieldPart(composite, heading);
+        
+        
         String[] facts = getCompletion().getFactTypes();
 
         createFactAssertionPart( composite,
@@ -66,7 +70,38 @@ public class AddNewActionDialog extends RuleDialog {
         return composite;
     }
 
-    private void createModifyFieldPart(Composite composite,
+    private void createRetractFieldPart(Composite composite, String heading) {
+    	createLabel( composite, "Retract the fact" );
+    	
+    	final Combo factsCombo = new Combo( composite, SWT.READ_ONLY );
+    	
+    	factsCombo.add( heading );
+		
+    	List boundFacts = modeller.getModel().getBoundFacts();
+        
+        for ( int i = 0; i < boundFacts.size(); i++ ) {
+            factsCombo.add( (String) boundFacts.get( i ) );
+        }
+        factsCombo.select( 0 );
+    	
+        factsCombo.addListener( SWT.Selection,
+                new Listener() {
+                    public void handleEvent(Event event) {
+                        if ( factsCombo.getSelectionIndex() == 0 ) {
+                            return;
+                        }
+
+                        modeller.getModel().addRhsItem( new ActionRetractFact(factsCombo.getText()) );
+                        
+                        modeller.setDirty( true );
+                        modeller.reloadRhs();
+                        close();
+                    }
+                } );
+        
+	}
+
+	private void createModifyFieldPart(Composite composite,
                                        String heading) {
         createLabel( composite,
                      "Modify a field on a fact" );
