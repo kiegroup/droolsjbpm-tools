@@ -24,6 +24,7 @@ import org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper;
 import org.drools.eclipse.flow.ruleflow.core.ConnectionWrapperFactory;
 import org.drools.eclipse.flow.ruleflow.core.EndNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.JoinWrapper;
+import org.drools.eclipse.flow.ruleflow.core.MilestoneWrapper;
 import org.drools.eclipse.flow.ruleflow.core.RuleSetNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.SplitWrapper;
 import org.drools.eclipse.flow.ruleflow.core.StartNodeWrapper;
@@ -117,6 +118,16 @@ public class RuleFlowPaletteFactory {
         );
         entries.add(combined);
                         
+//        combined = new CombinedTemplateCreationEntry(
+//            "Milestone",
+//            "Create a new Milestone",
+//            MilestoneWrapper.class,
+//            new SimpleFactory(MilestoneWrapper.class),
+//            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/activity.gif")), 
+//            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/activity.gif"))
+//        );
+//        entries.add(combined);
+                            
         drawer.addAll(entries);
         return drawer;
     }

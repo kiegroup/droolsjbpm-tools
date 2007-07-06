@@ -19,6 +19,7 @@ import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.editpart.ProcessEditPart;
 import org.drools.eclipse.flow.ruleflow.core.EndNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.JoinWrapper;
+import org.drools.eclipse.flow.ruleflow.core.MilestoneWrapper;
 import org.drools.eclipse.flow.ruleflow.core.RuleFlowProcessWrapper;
 import org.drools.eclipse.flow.ruleflow.core.RuleSetNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.SplitWrapper;
@@ -49,6 +50,8 @@ public class RuleFlowEditPartFactory implements EditPartFactory {
             result = new SplitEditPart();
         } else if (model instanceof JoinWrapper) {
             result = new JoinEditPart();
+        } else if (model instanceof MilestoneWrapper) {
+            result = new MilestoneEditPart();
         } else {
             throw new IllegalArgumentException(
                 "Unknown model object " + model);
