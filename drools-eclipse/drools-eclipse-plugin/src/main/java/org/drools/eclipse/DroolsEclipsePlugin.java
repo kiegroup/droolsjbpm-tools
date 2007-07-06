@@ -38,6 +38,7 @@ import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.lang.descr.PackageDescr;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -254,7 +255,15 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 		return generateParsedResource(content, resource, false, true);
 	}
 	
-	public void invalidateResource(IResource resource) {
+	public DRLInfo parseBRLResource(String content, IResource resource) throws DroolsParserException {
+		DRLInfo result = (DRLInfo) compiledRules.get(resource);
+		if (result != null) {
+			return result;
+		}
+		return generateParsedResource(content, resource, false, true);
+	}
+	
+public void invalidateResource(IResource resource) {
 		DRLInfo cached = (DRLInfo) compiledRules.remove(resource);
 		if (cached != null) {
 			RuleInfo[] ruleInfos = cached.getRuleInfos();
@@ -327,7 +336,9 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 
                     // check whether a .package file exists and add it
                     if (resource.getParent() != null) {
-                    	IResource packageDef = resource.getParent().findMember(".package");
+                    	MyResourceVisitor visitor = new MyResourceVisitor();
+                		resource.getParent().accept(visitor, IResource.DEPTH_ONE, IResource.NONE);
+                    	IResource packageDef = visitor.getPackageDef();
                     	if (packageDef != null) {
                     		builder.addPackage(parseResource(packageDef, false).getPackageDescr());
                     	}
@@ -393,4 +404,16 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
         return ruleBuilderFormColors;
     }
 
+    private class MyResourceVisitor implements IResourceVisitor {
+    	private IResource packageDef;
+		public boolean visit(IResource resource) throws CoreException {
+			if ("package".equals(resource.getFileExtension())) {
+				packageDef = resource;
+			}
+			return true;
+		}
+		public IResource getPackageDef() {
+			return packageDef;
+		}
+	}
 }

@@ -1,11 +1,18 @@
 package org.drools.eclipse.builder;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.antlr.runtime.RecognitionException;
+import org.drools.brms.client.modeldriven.brl.RuleModel;
+import org.drools.brms.server.util.BRDRLPersistence;
+import org.drools.brms.server.util.BRXMLPersistence;
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
@@ -142,6 +149,17 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             	createMarker(res, t.getMessage(), -1);
             }
             return false;
+        } else if (res instanceof IFile && "brl".equals(res.getFileExtension())) {
+            removeProblemsFor(res);
+            try {
+            	DroolsBuildMarker[] markers = parseBRLFile((IFile) res);
+		        for (int i = 0; i < markers.length; i++) {
+		        	createMarker(res, markers[i].getText(), markers[i].getLine());
+		        }
+            } catch (Throwable t) {
+            	createMarker(res, t.getMessage(), -1);
+            }
+            return false;
         }
 
         return true;
@@ -197,6 +215,49 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             markers.add(new DroolsBuildMarker(message));
         }
         return (DroolsBuildMarker[]) markers.toArray(new DroolsBuildMarker[markers.size()]);
+    }
+
+    private DroolsBuildMarker[] parseBRLFile(IFile file) {
+    	List markers = new ArrayList();
+		try {
+			String brl = convertToString(file.getContents());
+			RuleModel model = BRXMLPersistence.getInstance().unmarshal(brl);
+			String drl = BRDRLPersistence.getInstance().marshal(model);
+			
+			// TODO pass this through DSL converter in case brl is based on dsl
+			
+	        DRLInfo drlInfo =
+            	DroolsEclipsePlugin.getDefault().parseBRLResource(drl, file);
+            // parser errors
+            markParseErrors(markers, drlInfo.getParserErrors());  
+            markOtherErrors(markers, drlInfo.getBuilderErrors());
+        } catch (DroolsParserException e) {
+            // we have an error thrown from DrlParser
+            Throwable cause = e.getCause();
+            if (cause instanceof RecognitionException ) {
+                RecognitionException recogErr = (RecognitionException) cause;
+                markers.add(new DroolsBuildMarker(recogErr.getMessage(), recogErr.line)); //flick back the line number
+            }
+        } catch (Exception t) {
+        	String message = t.getMessage();
+            if (message == null || message.trim().equals( "" )) {
+                message = "Error: " + t.getClass().getName();
+            }
+            markers.add(new DroolsBuildMarker(message));
+        }
+        return (DroolsBuildMarker[]) markers.toArray(new DroolsBuildMarker[markers.size()]);
+    }
+    
+    private static String convertToString(final InputStream inputStream) throws IOException {
+    	Reader reader = new InputStreamReader(inputStream);
+    	final StringBuffer text = new StringBuffer();
+        final char[] buf = new char[1024];
+        int len = 0;
+        while ((len = reader.read(buf)) >= 0) {
+            text.append(buf, 0, len);
+        }
+        System.out.println(text.toString());
+        return text.toString();
     }
 
     /**
