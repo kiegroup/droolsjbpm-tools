@@ -34,16 +34,16 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.swt.graphics.Image;
 
 /**
- * For handling within rules. 
- * 
+ * For handling within rules.
+ *
  * @author Michael Neale, Kris Verlanen
  */
 public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
-	private static final Image DROOLS_ICON = 
+	private static final Image DROOLS_ICON =
 		DroolsPluginImages.getImage(DroolsPluginImages.DROOLS);
 
-	private static final Image CLASS_ICON = 
+	private static final Image CLASS_ICON =
 		DroolsPluginImages.getImage(DroolsPluginImages.CLASS);
 
 	public RuleCompletionProcessor(AbstractRuleEditor editor) {
@@ -80,7 +80,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		}
 		return null;
 	}
-	
+
 	protected void addRHSCompletionProposals(List list, String prefix, String backText,
 			String conditions, String consequence) {
 		// only add functions and keywords if at the beginning of a
@@ -289,7 +289,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			String operator = (String) location
 					.getProperty(Location.LOCATION_PROPERTY_OPERATOR);
 			type = getPropertyClass(className, property);
-			
+
 			if ("in".equals(operator)) {
 				list.add(new RuleCompletionProposal(prefix.length(), "()",
 					"(  )", 2, DROOLS_ICON));
@@ -488,12 +488,12 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 					String simplePropertyName = nestedProperties[i];
 					currentClass = getSimplePropertyClass(currentClass, simplePropertyName);
 				}
-				return currentClass; 
+				return currentClass;
 			}
 		}
 		return null;
 	}
-	
+
 	private String getSimplePropertyClass(String className, String propertyName) {
 		if ("this".equals(propertyName)) {
 			return className;
@@ -546,7 +546,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		}
 		return result;
 	}
-	
+
 	private boolean isComparable(String type) {
 		if (type == null) {
 			return false;
@@ -586,7 +586,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 	/**
 	 * Returns true if the first class is the same or a subtype of the second
 	 * class.
-	 * 
+	 *
 	 * @param class1
 	 * @param class2
 	 * @return
@@ -672,7 +672,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		list.add(prop);
 	}
 
-	private void addRHSJavaCompletionProposals(List list, String prefix, String backText, 
+	private void addRHSJavaCompletionProposals(List list, String prefix, String backText,
 			String conditions, String consequence) {
 		list.addAll(getJavaCompletionProposals(consequence, prefix,
 				getRuleParameters(backText)));
@@ -754,7 +754,11 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		list.add(new RuleCompletionProposal(prefix.length(), "ruleflow-group",
 				"ruleflow-group \"\"", 16, DROOLS_ICON));
         list.add(new RuleCompletionProposal(prefix.length(), "lock-on-active",
-                "lock-on-active ", DROOLS_ICON));        
+                "lock-on-active ", DROOLS_ICON));
+        list.add(new RuleCompletionProposal(prefix.length(), "dialect \"java\"",
+        		"dialect \"java\"", DROOLS_ICON));
+        list.add(new RuleCompletionProposal(prefix.length(), "dialect \"mvel\"",
+        		"dialect \"mvel\"", DROOLS_ICON));
 	}
 
 	private boolean addFactTemplatePropertyProposals(String prefix,
