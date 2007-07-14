@@ -1363,7 +1363,7 @@ public class LocationDeterminatorTest extends TestCase {
         input = 
         	"rule MyRule \n" +
         	"	when \n" +
-        	"		ArrayList(size > 50) from accumulate( Person( disabled == \"yes\", income > 100000 ) from town.getPersons() )";
+        	"		ArrayList(size > 50) from accumulate( Person( disabled == \"yes\", $i : income > 100000 ) from town.getPersons(), max( $i ) )";
         location = LocationDeterminator.getLocation(input);
         assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION, location.getType());
 
