@@ -36,6 +36,7 @@ import org.drools.eclipse.editors.AbstractRuleEditor;
 import org.drools.eclipse.preferences.IDroolsConstants;
 import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
@@ -303,7 +304,8 @@ public void invalidateResource(IResource resource) {
                 IJavaProject project = JavaCore.create(resource.getProject());
                 newLoader = ProjectClassLoader.getProjectClassLoader(project);
                 String level = project.getOption(JavaCore.COMPILER_COMPLIANCE, true);
-            	builder_configuration.setJavaLanguageLevel(level);
+                JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) builder_configuration.getDialectConfiguration( "java" );
+                javaConf.setJavaLanguageLevel(level);
             }
             try {
             	builder_configuration.setClassLoader(newLoader);
