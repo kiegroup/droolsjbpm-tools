@@ -41,8 +41,8 @@ public class NewBrlFileWizardPage extends WizardPage {
      */
     public NewBrlFileWizardPage(ISelection selection) {
         super( "wizardPage" );
-        setTitle( "RuleBuilder Editor File" );
-        setDescription( "This wizard creates a new file with *.brl extension that can be opened by a multi-page editor." );
+        setTitle( "Create new BRL rule" );
+        setDescription( "This wizard creates a new file with *.brl extension that will be opened by the guided editor." );
         this.selection = selection;
     }
 
@@ -124,7 +124,7 @@ public class NewBrlFileWizardPage extends WizardPage {
         ContainerSelectionDialog dialog = new ContainerSelectionDialog( getShell(),
                                                                         ResourcesPlugin.getWorkspace().getRoot(),
                                                                         false,
-                                                                        "Select new file container" );
+                                                                        "Select folder (package) for rule" );
         if ( dialog.open() == Window.OK ) {
             Object[] result = dialog.getResult();
             if ( result.length == 1 ) {
@@ -142,11 +142,11 @@ public class NewBrlFileWizardPage extends WizardPage {
         String fileName = getFileName();
 
         if ( getContainerName().length() == 0 ) {
-            updateStatus( "File container must be specified" );
+            updateStatus( "Folder must be specified" );
             return;
         }
         if ( container == null || (container.getType() & (IResource.PROJECT | IResource.FOLDER)) == 0 ) {
-            updateStatus( "File container must exist" );
+            updateStatus( "Folder must exist" );
             return;
         }
         if ( !container.isAccessible() ) {
