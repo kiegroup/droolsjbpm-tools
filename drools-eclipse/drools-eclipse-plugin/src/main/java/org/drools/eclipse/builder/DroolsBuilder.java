@@ -85,6 +85,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
     
     protected void fullBuild(IProgressMonitor monitor)
             throws CoreException {
+    	DroolsEclipsePlugin.getDefault().clearCache();
         getProject().accept(new DroolsBuildVisitor());
     }
     

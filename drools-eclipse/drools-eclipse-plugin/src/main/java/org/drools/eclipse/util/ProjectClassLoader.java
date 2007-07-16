@@ -5,7 +5,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.core.resources.IFile;
@@ -65,6 +68,7 @@ public class ProjectClassLoader {
         List pathElements = new ArrayList();
         try {
             IClasspathEntry[] paths = project.getResolvedClasspath(true);
+            Set outputPaths = new HashSet();
             if (paths != null) {
                 
                 for ( int i = 0; i < paths.length; i++ ) {
@@ -72,6 +76,11 @@ public class ProjectClassLoader {
                     if (path.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
                         URL url = getRawLocationURL(path.getPath());
                         pathElements.add(url);
+                    } else if (path.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+                    	IPath output = path.getOutputLocation();
+                    	if (path.getOutputLocation() != null) {
+                    		outputPaths.add(output);
+                    	}
                     }
                 }
             }
@@ -79,6 +88,11 @@ public class ProjectClassLoader {
             IPath outputPath = location.append(project.getOutputLocation()
                     .removeFirstSegments(1));
             pathElements.add(outputPath.toFile().toURI().toURL());
+            for (Iterator iterator = outputPaths.iterator(); iterator.hasNext(); ) {
+            	IPath path = (IPath) iterator.next();
+            	outputPath = location.append(path.removeFirstSegments(1));
+                pathElements.add(outputPath.toFile().toURI().toURL());
+            }
             
             // also add classpath of required projects
             String[] names = project.getRequiredProjectNames();

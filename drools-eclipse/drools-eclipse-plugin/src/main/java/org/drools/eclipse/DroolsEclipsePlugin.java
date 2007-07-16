@@ -102,16 +102,20 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 				if (IDroolsConstants.CACHE_PARSED_RULES.equals(event.getProperty())) {
 					useCachePreference = ((Boolean) event.getNewValue()).booleanValue();
 					if (!useCachePreference) {
-						parsedRules.clear();
-						compiledRules.clear();
-						ruleInfoByClassNameMap.clear();
-						functionInfoByClassNameMap.clear();
+						clearCache();
 					}
 				}
 			}
     	});
 
     }
+	
+	public void clearCache() {
+		parsedRules.clear();
+		compiledRules.clear();
+		ruleInfoByClassNameMap.clear();
+		functionInfoByClassNameMap.clear();
+	}
 
 	/**
 	 * This method is called when the plug-in is stopped
