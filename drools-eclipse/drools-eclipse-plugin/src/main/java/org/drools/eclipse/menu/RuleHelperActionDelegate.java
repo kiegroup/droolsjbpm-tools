@@ -136,7 +136,7 @@ public class RuleHelperActionDelegate
                                        final Shell shell) {
         MenuItem dsl = new MenuItem( menu,
                                      SWT.NONE );
-        dsl.setText( "New Guided DRL Editor" );
+        dsl.setText( "New Business rule (guided editor)" );
         dsl.addSelectionListener( new SelectionListener() {
 
             public void widgetSelected(SelectionEvent e) {
