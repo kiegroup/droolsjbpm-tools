@@ -1,0 +1,196 @@
+package org.drools.eclipse.editors.completion;
+
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.drools.compiler.DrlParser;
+import org.drools.compiler.DroolsParserException;
+import org.drools.lang.Location;
+import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.RuleDescr;
+
+/**
+ * A utility class that invokes the DRLParser on some partial drl text, and provides
+ * information back about the context of that parserd drl,
+ * such as a location type, a dialect, and so on.
+ *
+ */
+public class CompletionContext {
+
+    static final Pattern PATTERN_PATTERN_OPERATOR            = Pattern.compile( ".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:\\(\\),]+)(\\s*([<>=!]+)\\s*[^\\s<>!=:]*\\s*(&&|\\|\\|))*\\s+",
+                                                                                Pattern.DOTALL );
+
+    static final Pattern PATTERN_PATTERN_COMPARATOR_ARGUMENT = Pattern.compile( ".*[(,](\\s*(\\S*)\\s*:)?\\s*([^\\s<>!=:\\(\\)]+)\\s*(([<>=!]+)\\s*[^\\s<>!=:]+\\s*(&&|\\|\\|)\\s*)*([<>=!]+)\\s*[^\\s<>!=:]*",
+                                                                                Pattern.DOTALL );
+
+    static final Pattern EVAL_PATTERN                        = Pattern.compile( ".*\\s+eval\\s*\\(\\s*([(^\\))(\\([^\\)]*\\)?)]*)",
+                                                                                Pattern.DOTALL );
+
+    static final Pattern ACCUMULATE_PATTERN_INIT             = Pattern.compile( ".*,?\\s*init\\s*\\(\\s*(.*)",
+                                                                                Pattern.DOTALL );
+
+    static final Pattern ACCUMULATE_PATTERN_ACTION           = Pattern.compile( ".*,?\\s*init\\s*\\(\\s*(.*)\\)\\s*,?\\s*action\\s*\\(\\s*(.*)",
+                                                                                Pattern.DOTALL );
+
+    static final Pattern ACCUMULATE_PATTERN_REVERSE          = Pattern.compile( ".*,?\\s*init\\s*\\(\\s*(.*)\\)\\s*,?\\s*action\\s*\\(\\s*(.*)\\)\\s*,?\\s*reverse\\s*\\(\\s*(.*)",
+                                                                                Pattern.DOTALL );
+
+    static final Pattern ACCUMULATE_PATTERN_RESULT           = Pattern.compile( ".*,?\\s*init\\s*\\(\\s*(.*)\\)\\s*,?\\s*action\\s*\\(\\s*(.*)\\)\\s*,?(\\s*reverse\\s*\\(\\s*(.*)\\)\\s*,?)?\\s*result\\s*\\(\\s*(.*)",
+                                                                                Pattern.DOTALL );
+
+    static final Pattern THEN_PATTERN                        = Pattern.compile( ".*\n\\s*when\\s*(.*)\n\\s*then\\s*(.*)",
+                                                                                Pattern.DOTALL );
+
+    static final Pattern ENDS_WITH_SPACES                    = Pattern.compile( ".*\\s+",
+                                                                                Pattern.DOTALL );
+
+    static final Pattern MVEL_DIALECT                        = Pattern.compile( ".*dialect\\s+\"mvel\".*",
+                                                                                Pattern.DOTALL );
+
+    private String       backText;
+    private DrlParser    parser;
+    private RuleDescr    rule;
+    private PackageDescr packageDescr;
+    private boolean      javaDialect                         = true;
+
+    public CompletionContext(String ruleText) {
+        this.backText = ruleText;
+        this.parser = new DrlParser();
+
+        try {
+            packageDescr = parser.parse( ruleText );
+            List rules = packageDescr.getRules();
+            if ( rules != null && rules.size() == 1 ) {
+                this.rule = (RuleDescr) rules.get( 0 );
+            }
+
+        } catch ( DroolsParserException exc ) {
+            // do nothing
+        }
+
+        determineDialect( ruleText );
+    }
+
+    public boolean isJavaDialect() {
+        return javaDialect;
+    }
+
+    public PackageDescr getPackageDescr() {
+        return packageDescr;
+    }
+
+    //note: this is a crude but reasonably fast way to determine the dialect,
+    //especially when parsing imcomplete rules
+    private void determineDialect(String backText) {
+        //which dialect are we using for this rule?
+        //we test only for mvel for now: java is the default dialect
+        if ( MVEL_DIALECT.matcher( backText ).matches() ) {
+            javaDialect = false;
+        } else {
+            javaDialect = true;
+        }
+    }
+
+    public Location getLocation() {
+        if ( backText == null || rule == null ) {
+            return new Location( Location.LOCATION_UNKNOWN );
+        }
+        return determineLocationForDescr( rule,
+                                          parser.getLocation(),
+                                          backText );
+    }
+
+    public RuleDescr getRule() {
+        return rule;
+    }
+
+    private static Location determineLocationForDescr(BaseDescr descr,
+                                                      Location location,
+                                                      String backText) {
+        if ( location.getType() == Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ) {
+            if ( !ENDS_WITH_SPACES.matcher( backText ).matches() ) {
+                location.setType( Location.LOCATION_LHS_INSIDE_CONDITION_START );
+            }
+        } else if ( location.getType() == Location.LOCATION_LHS_INSIDE_CONDITION_END ) {
+            if ( !backText.endsWith( " " ) ) {
+                location.setType( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT );
+            }
+        } else if ( location.getType() == Location.LOCATION_LHS_INSIDE_EVAL ) {
+            Matcher matcher = EVAL_PATTERN.matcher( backText );
+            if ( matcher.matches() ) {
+                String content = matcher.group( 1 );
+                location.setProperty( Location.LOCATION_EVAL_CONTENT,
+                                      content );
+            }
+        } else if ( location.getType() == Location.LOCATION_LHS_INSIDE_CONDITION_START ) {
+            Matcher matcher = PATTERN_PATTERN_COMPARATOR_ARGUMENT.matcher( backText );
+            if ( matcher.matches() ) {
+                location.setType( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT );
+                location.setProperty( Location.LOCATION_PROPERTY_OPERATOR,
+                                      matcher.group( 7 ) );
+                return location;
+            }
+
+            matcher = PATTERN_PATTERN_OPERATOR.matcher( backText );
+            if ( matcher.matches() ) {
+                location.setType( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR );
+                return location;
+            }
+        } else if ( location.getType() == Location.LOCATION_LHS_FROM ) {
+            if ( location.getProperty( Location.LOCATION_FROM_CONTENT ) == null ) {
+                location.setProperty( Location.LOCATION_FROM_CONTENT,
+                                      "" );
+            } else if ( ((String) location.getProperty( Location.LOCATION_FROM_CONTENT )).length() > 0 && ENDS_WITH_SPACES.matcher( backText ).matches() ) {
+                location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
+            }
+        } else if ( location.getType() == Location.LOCATION_LHS_FROM_ACCUMULATE_INIT ) {
+            Matcher matcher = ACCUMULATE_PATTERN_INIT.matcher( backText );
+            if ( matcher.matches() ) {
+                location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_INIT_INSIDE );
+                location.setProperty( Location.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT,
+                                      matcher.group( 1 ) );
+            }
+        } else if ( location.getType() == Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION ) {
+            Matcher matcher = ACCUMULATE_PATTERN_ACTION.matcher( backText );
+            if ( matcher.matches() ) {
+                location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE );
+                location.setProperty( Location.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT,
+                                      matcher.group( 2 ) );
+            }
+        } else if ( location.getType() == Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE ) {
+            Matcher matcher = ACCUMULATE_PATTERN_REVERSE.matcher( backText );
+            if ( matcher.matches() ) {
+                location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE_INSIDE );
+                location.setProperty( Location.LOCATION_PROPERTY_FROM_ACCUMULATE_REVERSE_CONTENT,
+                                      matcher.group( 3 ) );
+            }
+            matcher = ACCUMULATE_PATTERN_RESULT.matcher( backText );
+            if ( matcher.matches() ) {
+                location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE );
+                location.setProperty( Location.LOCATION_PROPERTY_FROM_ACCUMULATE_RESULT_CONTENT,
+                                      matcher.group( 5 ) );
+            }
+        } else if ( location.getType() == Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT ) {
+            Matcher matcher = ACCUMULATE_PATTERN_RESULT.matcher( backText );
+            if ( matcher.matches() ) {
+                location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE );
+                location.setProperty( Location.LOCATION_PROPERTY_FROM_ACCUMULATE_RESULT_CONTENT,
+                                      matcher.group( 5 ) );
+            }
+        } else if ( location.getType() == Location.LOCATION_RHS ) {
+            Matcher matcher = THEN_PATTERN.matcher( backText );
+            if ( matcher.matches() ) {
+                location.setProperty( Location.LOCATION_LHS_CONTENT,
+                                      matcher.group( 1 ) );
+                location.setProperty( Location.LOCATION_RHS_CONTENT,
+                                      matcher.group( 2 ) );
+                return location;
+            }
+        }
+
+        return location;
+    }
+
+}

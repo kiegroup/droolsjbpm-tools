@@ -19,7 +19,9 @@ public class VariableWrapper extends PlatformObject implements IJavaVariable  {
 
     private String name;
     private IJavaValue value;
-
+    private boolean isLocal = false;
+    private boolean isPublic = false;
+    
     public VariableWrapper(String name, IJavaValue value) {
         this.name = name;
         this.value = value;
@@ -38,7 +40,7 @@ public class VariableWrapper extends PlatformObject implements IJavaVariable  {
     }
 
     public boolean isLocal() {
-        return false;
+        return isLocal;
     }
 
     public IValue getValue() {
@@ -58,7 +60,7 @@ public class VariableWrapper extends PlatformObject implements IJavaVariable  {
     }
 
     public boolean isPublic() {
-        return false;
+        return isPublic;
     }
 
     public boolean isPrivate() {
@@ -135,4 +137,11 @@ public class VariableWrapper extends PlatformObject implements IJavaVariable  {
         return name.hashCode() + value.hashCode();
     }
 
+    public void setLocal(boolean val) {
+        isLocal=val;
+    }
+    
+    public void setPublic(boolean val) {
+        isPublic = val;
+    }
 }

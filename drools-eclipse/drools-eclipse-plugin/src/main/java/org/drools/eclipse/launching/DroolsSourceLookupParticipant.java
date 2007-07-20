@@ -12,7 +12,8 @@ public class DroolsSourceLookupParticipant extends JavaSourceLookupParticipant {
 		if (object instanceof DroolsStackFrame) {
 			RuleInfo ruleInfo = ((DroolsStackFrame) object).getExecutingRuleInfo();
 			if (ruleInfo != null) {
-				return ruleInfo.getSourcePathName();
+                String p = ruleInfo.getSourcePathName();
+				return p;
 			}
 			FunctionInfo functionInfo = ((DroolsStackFrame) object).getExecutingFunctionInfo();
 			if (functionInfo != null) {

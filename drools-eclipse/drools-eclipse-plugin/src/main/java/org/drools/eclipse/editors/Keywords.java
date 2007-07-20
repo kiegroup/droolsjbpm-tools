@@ -16,42 +16,48 @@ public class Keywords {
 
     private String[] allDrools;
     private String[] allJava;
+    private String[] allMvel;
     private static Keywords instance;
-    
+
     public static Keywords getInstance() {
         if (instance == null) {
             instance = new Keywords();
         }
         return instance;
     }
-    
-    
+
+
     public String[] getAllDroolsKeywords() {
         return allDrools;
     }
-    
+
     public String[] getAllJavaKeywords() {
         return allJava;
     }
-    
-    
+
+    public String[] getAllMvelKeywords() {
+        return allMvel;
+    }
+
+
     private Keywords() {
     	allDrools = readKeywords("keywords.properties");
-    	allJava = readKeywords("java_keywords.properties");
+        allJava = readKeywords("java_keywords.properties");
+        allMvel = readKeywords("mvel_keywords.properties");
     }
-    
+
     private String[] readKeywords(String fileName) {
         InputStream stream = this.getClass().getResourceAsStream(fileName);
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-            
+
             List list = new ArrayList();
-            
+
             String line = null;
             while ((line = reader.readLine()) != null) {
-               if (!line.startsWith( "#" ))  list.add( line ); 
+               if (!line.startsWith( "#" ))  list.add( line );
             }
-            
+
             return (String[]) list.toArray( new String[list.size()] );
         }
         catch ( IOException e ) {
@@ -66,6 +72,6 @@ public class Keywords {
             }
         }
     }
-    
-    
+
+
 }

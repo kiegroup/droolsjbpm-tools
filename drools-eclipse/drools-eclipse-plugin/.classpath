@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry exported="true" kind="lib" path="lib/drools-compiler.jar" sourcepath="/drools-compiler"/>
-	<classpathentry exported="true" kind="lib" path="lib/drools-core.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/drools-core.jar" sourcepath="/drools-core"/>
 	<classpathentry exported="true" kind="lib" path="lib/drools-decisiontables.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/drools-jsr94.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jsr94.jar"/>
@@ -14,9 +14,8 @@
 	<classpathentry exported="true" kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xpp3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xstream.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/antlr-runtime.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.4"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/antlr-runtime.jar"/>
-	<classpathentry kind="src" path="/drools-compiler"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

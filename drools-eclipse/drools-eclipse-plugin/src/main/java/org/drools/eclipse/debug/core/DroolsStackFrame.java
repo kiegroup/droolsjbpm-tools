@@ -74,10 +74,11 @@ public class DroolsStackFrame extends JDIStackFrame {
 			String methodName = getMethodName();
 			String signature = getSignature();
 			String type = getDeclaringTypeName();
-			if ("consequence".equals(methodName) && signature.startsWith(CONSEQUENCE_SIGNATURE)) {
+            if ("consequence".equals(methodName) && signature.startsWith(CONSEQUENCE_SIGNATURE)) {
 				return DroolsEclipsePlugin.getDefault().getRuleInfoByClass(type);
 			}
-		} catch (DebugException exc) {
+            
+            } catch (DebugException exc) {
 			DroolsEclipsePlugin.log(exc);
 		}
 		return null;
@@ -97,13 +98,14 @@ public class DroolsStackFrame extends JDIStackFrame {
 		synchronized (fThread) {
 			RuleInfo ruleInfo = getExecutingRuleInfo();
 			if (ruleInfo != null) {
-				return ruleInfo.getConsequenceDrlLineNumber() + (getInternalLineNumber() - ruleInfo.getConsequenceJavaLineNumber() - 1);
+                return ruleInfo.getConsequenceDrlLineNumber() + (getInternalLineNumber() - ruleInfo.getConsequenceJavaLineNumber() - 1);
 			}
 			FunctionInfo functionInfo = getExecutingFunctionInfo();
 			if (functionInfo != null) {
 				return functionInfo.getDrlLineNumber() + (getInternalLineNumber() - functionInfo.getJavaLineNumber());
 			}
 		}
+        
 		return getInternalLineNumber();
 	}
 	
@@ -197,46 +199,50 @@ public class DroolsStackFrame extends JDIStackFrame {
 		}
 	}
 	
-	protected JDIStackFrame bind(StackFrame frame, int depth) {
-		if (initialized) {
-			synchronized (fThread) {
-				if (fDepth == -2) {
-					// first initialization
-					fStackFrame = frame;
-					fDepth = depth;
-					fLocation = frame.location();
-					return this;
-				} else if (depth == -1) {
-					// mark as invalid
-					fDepth = -1;
-					fStackFrame = null;
-					return null;
-				} else if (fDepth == depth) {
-					Location location = frame.location();
-					Method method = location.method();
-					if (method.equals(fLocation.method())) {
-						try {
-							if (method.declaringType().defaultStratum().equals("Java") || //$NON-NLS-1$
-							    equals(getSourceName(location), getSourceName(fLocation))) {
-								// TODO: what about receiving type being the same?
-								fStackFrame = frame;
-								fLocation = location;
-								clearCachedData();
-								return this;
-							}
-						} catch (DebugException e) {
-						}
-					}
-				}
+    protected JDIStackFrame bind(StackFrame frame, int depth) {
+        if (initialized) {
+            synchronized (fThread) {
+                if (fDepth == -2) {
+                    // first initialization
+                    fStackFrame = frame;
+                    fDepth = depth;
+                    fLocation = frame.location();
+                    return this;
+                } else if (depth == -1) {
+                    // mark as invalid
+                    fDepth = -1;
+                    fStackFrame = null;
+                    return null;
+                } else if (fDepth == depth) {
+                    Location location = frame.location();
+                    Method method = location.method();
+                    if (method.equals(fLocation.method())) {
+                        try {
+                            if (method.declaringType().defaultStratum().equals("Java") || //$NON-NLS-1$
+                                equals(getSourceName(location), getSourceName(fLocation))) {
+                                // TODO: what about receiving type being the same?
+                                fStackFrame = frame;
+                                fLocation = location;
+                                clearCachedData();
+                                return this;
+                            }
+                        } catch (DebugException e) {
+                        }
+                    }
+                }
 				// invalidate this franme
-				bind(null, -1);
-				// return a new frame
-				return new DroolsStackFrame(fThread, frame, depth);
-			}
-		} else {
-			return null;
-		}
-	}
+                bind(null, -1);
+                // return a new frame
+                return createNewDroolsFrame(frame, depth);
+            }
+        } else {
+            return null;
+        }
+    }
+
+    protected DroolsStackFrame createNewDroolsFrame(StackFrame frame, int depth) {
+        return DroolsThread.createCustomFrame( fThread, depth, frame );
+    }
 	
 	public IThread getThread() {
 		return fThread;
@@ -569,4 +575,5 @@ public class DroolsStackFrame extends JDIStackFrame {
 		return locals;
 	}
 	
+
 }

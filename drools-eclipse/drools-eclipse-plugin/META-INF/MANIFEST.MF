@@ -27,9 +27,7 @@ Require-Bundle: org.eclipse.core.runtime,
  com.ibm.icu
 Eclipse-LazyStart: true
 Eclipse-BuddyPolicy: registered
-Bundle-ClassPath: 
- .,
- drools-eclipse-plugin.jar,
+Bundle-ClassPath: .,
  lib/drools-compiler.jar,
  lib/drools-core.jar,
  lib/drools-decisiontables.jar,

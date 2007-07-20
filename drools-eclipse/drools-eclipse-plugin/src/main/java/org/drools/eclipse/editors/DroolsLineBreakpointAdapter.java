@@ -79,7 +79,7 @@ public class DroolsLineBreakpointAdapter implements IToggleBreakpointsTarget {
 		}
 	}
 
-	public void toggleMethodBreakpoints(IWorkbenchPart part, ISelection selection) throws CoreException {
+    public void toggleMethodBreakpoints(IWorkbenchPart part, ISelection selection) throws CoreException {
 		// do nothing
 	}
 

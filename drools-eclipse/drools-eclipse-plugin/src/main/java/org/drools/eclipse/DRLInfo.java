@@ -5,17 +5,20 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.compiler.Dialect;
 import org.drools.compiler.DroolsError;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
+import org.drools.rule.PackageCompilationData;
 
 public class DRLInfo {
 
 	private static final DroolsError[] EMPTY_DROOLS_ERROR_ARRAY = new DroolsError[0];
 	private static final List EMPTY_LIST = Collections.unmodifiableList(Collections.EMPTY_LIST);
-	
+
 	private String sourcePathName;
 	private PackageDescr packageDescr;
 	private List parserErrors;
@@ -45,14 +48,14 @@ public class DRLInfo {
 			throw new IllegalArgumentException("Null package");
 		}
 		this.compiledPackage = compiledPackage;
-		this.builderErrors = 
+		this.builderErrors =
 			builderErrors == null ? EMPTY_DROOLS_ERROR_ARRAY : builderErrors;
 	}
 
 	public String getSourcePathName() {
 		return sourcePathName;
 	}
-	
+
 	public PackageDescr getPackageDescr() {
 		return packageDescr;
 	}
@@ -60,11 +63,11 @@ public class DRLInfo {
 	public List getParserErrors() {
 		return parserErrors;
 	}
-	
+
 	public Package getPackage() {
 		return compiledPackage;
 	}
-	
+
 	public DroolsError[] getBuilderErrors() {
 		return builderErrors;
 	}
@@ -72,11 +75,11 @@ public class DRLInfo {
 	public String getPackageName() {
 		return packageDescr.getName();
 	}
-	
+
 	public boolean isCompiled() {
 		return compiledPackage != null;
 	}
-	
+
 	public RuleInfo[] getRuleInfos() {
 		if (ruleInfos == null) {
 			List ruleInfosList = new ArrayList();
@@ -89,9 +92,10 @@ public class DRLInfo {
 		}
 		return ruleInfos;
 	}
-	
+
 	public RuleInfo getRuleInfo(int drlLineNumber) {
 		RuleInfo[] ruleInfos = getRuleInfos();
+
 		int ruleLine = -1;
 		RuleInfo result = null;
 		for (int i = 0; i < ruleInfos.length; i++) {
@@ -104,20 +108,24 @@ public class DRLInfo {
 		}
 		return result;
 	}
-	
+
 	public class RuleInfo {
-		
-		private RuleDescr ruleDescr;
+
+		private final RuleDescr ruleDescr;
 		// cached entries
 		private transient String className;
 		private transient int consequenceJavaLineNumber = -1;
-		
+
 		public RuleInfo(RuleDescr ruleDescr) {
 			if (ruleDescr == null) {
 				throw new IllegalArgumentException("Null ruleDescr");
 			}
 			this.ruleDescr = ruleDescr;
 		}
+
+        public Dialect getDialect() {
+            return ruleDescr.getDialect();
+        }
 
 		public String getSourcePathName() {
 			return DRLInfo.this.getSourcePathName();
@@ -147,8 +155,12 @@ public class DRLInfo {
 				if (!isCompiled()) {
 					throw new IllegalArgumentException("Package has not been compiled");
 				}
-				consequenceJavaLineNumber = compiledPackage
-					.getPackageCompilationData().getLineMappings(className).getOffset();
+				PackageCompilationData data = compiledPackage
+                					.getPackageCompilationData();
+
+                LineMappings mappings = data.getLineMappings(className);
+                consequenceJavaLineNumber = mappings.getOffset();
+
 			}
 			return consequenceJavaLineNumber;
 		}
@@ -174,7 +186,7 @@ public class DRLInfo {
 		}
 		return functionInfos;
 	}
-	
+
 	public FunctionInfo getFunctionInfo(int drlLineNumber) {
 		FunctionInfo[] functionInfos = getFunctionInfos();
 		int functionLine = -1;
@@ -189,14 +201,14 @@ public class DRLInfo {
 		}
 		return result;
 	}
-	
+
 	public class FunctionInfo {
-		
+
 		private FunctionDescr functionDescr;
 		// cached entries
 		private transient String className;
 		private transient int javaLineNumber = -1;
-		
+
 		public FunctionInfo(FunctionDescr functionDescr) {
 			if (functionDescr == null) {
 				throw new IllegalArgumentException("Null functionDescr");
