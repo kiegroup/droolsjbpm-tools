@@ -115,7 +115,6 @@ public class CompositeFactPatternWidget extends Widget {
         link.addHyperlinkListener( new IHyperlinkListener() {
             public void linkActivated(HyperlinkEvent e) {
                 RuleDialog popup = new AddNewFactConstraintDialog( parent.getShell(),
-                                                                   toolkit,
                                                                    getModeller(),
                                                                    pattern );
                 popup.open();

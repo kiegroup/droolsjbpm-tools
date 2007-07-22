@@ -115,8 +115,7 @@ public class ActionSetFieldWidget extends Widget {
 
         link.addHyperlinkListener( new IHyperlinkListener() {
             public void linkActivated(HyperlinkEvent e) {
-                RuleDialog popup = new ActionSetFieldDialog( toolkit,
-                                                             parent.getShell(),
+                RuleDialog popup = new ActionSetFieldDialog( parent.getShell(),
                                                              getModeller(),
                                                              set,
                                                              fieldCompletions,

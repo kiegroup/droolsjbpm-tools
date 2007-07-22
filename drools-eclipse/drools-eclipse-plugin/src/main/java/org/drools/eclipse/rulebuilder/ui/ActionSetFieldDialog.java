@@ -9,7 +9,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * @author Anton Arhipov
@@ -20,16 +19,13 @@ public class ActionSetFieldDialog extends RuleDialog {
 
     private String[]       fieldCompletions;
 
-    private FormToolkit    toolkit;
-
     private RuleModeller   modeller;
 
     private ActionSetField field;
 
     private String         variableClass;
 
-    public ActionSetFieldDialog(FormToolkit toolkit,
-                                Shell parent,
+    public ActionSetFieldDialog(Shell parent,
                                 RuleModeller modeller,
                                 ActionSetField field,
                                 String[] fieldCompletions,
@@ -39,7 +35,6 @@ public class ActionSetFieldDialog extends RuleDialog {
                "Add a field" );
 
         this.fieldCompletions = fieldCompletions;
-        this.toolkit = toolkit;
         this.modeller = modeller;
         this.field = field;
         this.variableClass = variableClass;

@@ -88,14 +88,11 @@ public class RuleModeller {
 
         Shell shell = new Shell( Display.getCurrent() );
         Window conditionPopup = new AddNewConditionDialog( shell,
-                                                           toolkit,
                                                            this );
         Window actionPopup = new AddNewActionDialog( shell,
-                                                     toolkit,
                                                      this );
 
         Window optionsPopup = new RuleAttributesDialog( shell,
-                                                        toolkit,
                                                         this );
 
         Section ifSection = createMainSection( form,

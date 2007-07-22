@@ -12,7 +12,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * This provides a popup for new LHS condition selection. (add new if-condition)
@@ -22,21 +21,17 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class AddNewConditionDialog extends RuleDialog {
 
-    private final FormToolkit toolkit;
-
     private IPattern          pattern;
 
     private RuleModeller      modeller;
 
     public AddNewConditionDialog(Shell parent,
-                                 FormToolkit toolkit,
                                  RuleModeller modeller) {
 
         super( parent,
                "Add new condition to the rule",
                "Pick the values from combos and confirm the selection." );
 
-        this.toolkit = toolkit;
         this.modeller = modeller;
     }
 

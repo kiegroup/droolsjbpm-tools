@@ -10,7 +10,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * Adds new fact pattern to a composite fact
@@ -20,20 +19,16 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class AddNewFactConstraintDialog extends RuleDialog {
 
-    private final FormToolkit    toolkit;
-
     private RuleModeller         modeller;
 
     private CompositeFactPattern pattern;
 
     public AddNewFactConstraintDialog(Shell parent,
-                                      FormToolkit toolkit,
                                       RuleModeller modeller,
                                       CompositeFactPattern pattern) {
         super( parent,
                "New fact pattern",
                "Pick the value from combobox." );
-        this.toolkit = toolkit;
         this.modeller = modeller;
         this.pattern = pattern;
     }

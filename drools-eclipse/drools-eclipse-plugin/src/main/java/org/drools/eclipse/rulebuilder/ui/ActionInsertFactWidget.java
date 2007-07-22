@@ -84,7 +84,6 @@ public class ActionInsertFactWidget extends Widget {
         link.addHyperlinkListener( new IHyperlinkListener() {
             public void linkActivated(HyperlinkEvent e) {
                 RuleDialog popup = new AddNewInsertedFactFieldDialog( shell,
-                                                                      toolkit,
                                                                       getModeller(),
                                                                       fact );
                 popup.open();

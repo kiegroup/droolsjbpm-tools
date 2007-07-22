@@ -17,7 +17,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * This provides a popup for new RHS action selection.
@@ -27,17 +26,13 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class AddNewActionDialog extends RuleDialog {
 
-    private final FormToolkit toolkit;
-
     private RuleModeller      modeller;
 
     public AddNewActionDialog(Shell parent,
-                              FormToolkit toolkit,
                               RuleModeller modeller) {
         super( parent,
                "Add a new action",
                "Pick the values from combos and confirm the selection." );
-        this.toolkit = toolkit;
         this.modeller = modeller;
     }
 

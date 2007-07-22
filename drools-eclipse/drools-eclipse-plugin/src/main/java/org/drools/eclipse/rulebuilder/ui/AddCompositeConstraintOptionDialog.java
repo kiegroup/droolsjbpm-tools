@@ -12,11 +12,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 
 public class AddCompositeConstraintOptionDialog extends RuleDialog {
-
-    private final FormToolkit              toolkit;
 
     private RuleModeller                   modeller;
 
@@ -25,7 +22,6 @@ public class AddCompositeConstraintOptionDialog extends RuleDialog {
     private final CompositeFieldConstraint constraint;
 
     public AddCompositeConstraintOptionDialog(Shell parent,
-                                              FormToolkit toolkit,
                                               RuleModeller modeller,
                                               CompositeFieldConstraint constraint,
                                               FactPattern pattern) {
@@ -33,7 +29,6 @@ public class AddCompositeConstraintOptionDialog extends RuleDialog {
                "Add fields to this constriant",
                "Pick the value from combo." );
 
-        this.toolkit = toolkit;
         this.modeller = modeller;
         this.constraint = constraint;
         this.pattern = pattern;

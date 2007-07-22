@@ -10,7 +10,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * 
@@ -20,20 +19,16 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class AddNewInsertedFactFieldDialog extends RuleDialog {
 
-    private final FormToolkit      toolkit;
-
     private RuleModeller           modeller;
 
     private final ActionInsertFact fact;
 
     public AddNewInsertedFactFieldDialog(Shell parent,
-                                         FormToolkit toolkit,
                                          RuleModeller modeller,
                                          ActionInsertFact fact) {
         super( parent,
                "Add new condition to the rule",
                "Pick the values from combos and confirm the selection." );
-        this.toolkit = toolkit;
         this.modeller = modeller;
         this.fact = fact;
     }

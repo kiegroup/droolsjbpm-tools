@@ -213,7 +213,6 @@ public class FactPatternWidget extends Widget {
         link.addHyperlinkListener( new IHyperlinkListener() {
             public void linkActivated(HyperlinkEvent e) {
                 RuleDialog popup = new AddCompositeConstraintOptionDialog( parent.getShell(),
-                                                                           toolkit,
                                                                            getModeller(),
                                                                            constraint,
                                                                            pattern );
