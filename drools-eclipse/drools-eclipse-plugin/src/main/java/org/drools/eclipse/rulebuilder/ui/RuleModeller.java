@@ -271,7 +271,7 @@ public class RuleModeller {
                                      i );
     }
 
-    private void addActionAssertFactWidget(IAction action,
+    /*private void addActionAssertFactWidget(IAction action,
                                            int i) {
         Composite comp = toolkit.createComposite( thenComposite );
         new ActionInsertFactWidget( toolkit,
@@ -280,7 +280,7 @@ public class RuleModeller {
                                     (ActionInsertFact) action,
                                     i );
 
-    }
+    }*/
 
     private void addActionSetFieldWidget(IAction action,
                                          int i) {
