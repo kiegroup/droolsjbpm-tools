@@ -13,6 +13,8 @@ import org.drools.brms.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.brms.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.eclipse.rulebuilder.modeldriven.HumanReadable;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Color;
@@ -593,6 +595,7 @@ public class FactPatternWidget extends Widget {
     }
 
     // from org.drools.brms.client.modeldriven.ui.ConstraintValueEditor
+    //TODO: private boolean numericValue;
     private void constraintValueEditor(final Composite parent,
                                        final ISingleFieldConstraint c) {
         if ( c.constraintValueType == ISingleFieldConstraint.TYPE_UNDEFINED ) {
@@ -749,4 +752,7 @@ public class FactPatternWidget extends Widget {
         return getModeller().getSuggestionCompletionEngine();
     }
 
+    
+    
+    
 }

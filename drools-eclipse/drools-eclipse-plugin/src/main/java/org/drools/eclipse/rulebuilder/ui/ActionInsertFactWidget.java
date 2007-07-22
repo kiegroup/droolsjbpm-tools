@@ -6,6 +6,8 @@ import org.drools.brms.client.modeldriven.brl.ActionFieldValue;
 import org.drools.brms.client.modeldriven.brl.ActionInsertLogicalFact;
 import org.drools.eclipse.rulebuilder.modeldriven.HumanReadable;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
@@ -155,6 +157,11 @@ public class ActionInsertFactWidget extends Widget {
             }
         } );
 
+        if (val.type.equals( SuggestionCompletionEngine.TYPE_NUMERIC )) {
+        	new NumericKeyFilter(box);
+        } 
+        
+        
     }
 
     public SuggestionCompletionEngine getCompletion() {
