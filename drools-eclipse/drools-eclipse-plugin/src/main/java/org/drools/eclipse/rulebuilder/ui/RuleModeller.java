@@ -14,6 +14,8 @@ import org.drools.eclipse.rulebuilder.editors.RuleEditor;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -76,7 +78,7 @@ public class RuleModeller {
         this.model = model;
         this.editor = editor;
 
-        form.setText( "Rule Builder" );
+        setTitleAndFont(form);
 
         ColumnLayout colLayout = new ColumnLayout();
         colLayout.minNumColumns = 1;
@@ -125,6 +127,21 @@ public class RuleModeller {
         optionsComposite = (Composite) optionsSection.getClient();
 
     }
+
+	private void setTitleAndFont(ScrolledForm form) {
+		form.setText( "Guided rule editor" );
+        
+		Font systemFont = form.getDisplay().getSystemFont();
+		FontData[] exfds = systemFont.getFontData();
+        if ( exfds.length > 0 ) {
+            FontData fd = exfds[0];
+            fd.setHeight( fd.getHeight() + 2 );
+            fd.setStyle(SWT.BOLD);
+            Font f = new Font( systemFont.getDevice(),
+                               fd );
+            form.setFont(f);
+        }
+	}
 
     public SuggestionCompletionEngine getSuggestionCompletionEngine() {
         return editor.getCompletionEngine();
