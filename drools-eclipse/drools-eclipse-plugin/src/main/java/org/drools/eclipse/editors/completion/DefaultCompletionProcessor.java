@@ -225,26 +225,26 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
      * the overrriden equals in {@link RuleCompletionProposal} to avoid the situation when several
      * accessors can exist for one property. for that case we want to keep only one proposal.
      */
-    protected List getJavaMvelCompletionProposals(final String javaText,
+    protected Collection getJavaMvelCompletionProposals(final String javaText,
                                                   final String prefix,
                                                   Map params) {
         final Collection set = new HashSet();
         CompletionRequestor requestor = new MvelCompletionRequestor( prefix,
                                                                      javaText,
                                                                      set );
+        System.out.println("MVEL: java text sent to JDT is:"+javaText);
         requestJavaCompletionProposals( javaText,
                                         prefix,
                                         params,
                                         requestor );
-        List list = new ArrayList();
-        list.addAll( set );
-        return list;
+        return set;
     }
 
     protected void requestJavaCompletionProposals(final String javaText,
                                                   final String prefix,
                                                   Map params,
                                                   CompletionRequestor requestor) {
+    	System.out.println("MVEL: java text sent to JDT is:"+javaText);
 
         IEditorInput input = getEditor().getEditorInput();
         if ( !(input instanceof IFileEditorInput) ) {
@@ -270,8 +270,8 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
             javaTextWithParams.append( "org.drools.spi.KnowledgeHelper drools;" );
             javaTextWithParams.append( javaText );
             String text = javaTextWithParams.toString();
-            System.out.println( "" );
-            System.out.println( "MVEL: synthetic Java text:" + text );
+//            System.out.println( "" );
+//            System.out.println( "MVEL: synthetic Java text:" + text );
             evalContext.codeComplete( text,
                                       text.length(),
                                       requestor );
