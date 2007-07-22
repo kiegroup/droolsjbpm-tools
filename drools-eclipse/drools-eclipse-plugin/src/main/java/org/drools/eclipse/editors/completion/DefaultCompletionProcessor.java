@@ -232,7 +232,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
         CompletionRequestor requestor = new MvelCompletionRequestor( prefix,
                                                                      javaText,
                                                                      set );
-        System.out.println("MVEL: java text sent to JDT is:"+javaText);
+//        System.out.println("MVEL: java text sent to JDT is:"+javaText);
         requestJavaCompletionProposals( javaText,
                                         prefix,
                                         params,
@@ -244,7 +244,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
                                                   final String prefix,
                                                   Map params,
                                                   CompletionRequestor requestor) {
-    	System.out.println("MVEL: java text sent to JDT is:"+javaText);
+//    	System.out.println("MVEL: java text sent to JDT is:"+javaText);
 
         IEditorInput input = getEditor().getEditorInput();
         if ( !(input instanceof IFileEditorInput) ) {
