@@ -10,12 +10,15 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.drools.eclipse.DroolsEclipsePlugin;
+import org.drools.eclipse.builder.Util;
 import org.drools.eclipse.editors.completion.DSLTree;
 import org.drools.lang.dsl.DSLMapping;
 import org.drools.lang.dsl.DSLMappingEntry;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 
 /**
@@ -58,7 +61,28 @@ public class DSLAdapter {
     /** Get a reader to the DSL contents */
     public static Reader getDSLContent(String ruleSource, IResource input) throws CoreException {
         String dslFileName = findDSLConfigName( ruleSource );
-        if (dslFileName == null) return null;
+        if (dslFileName == null) {
+        	// try searching the .package file
+        	if (input != null && input.getParent() != null) {
+            	MyResourceVisitor visitor = new MyResourceVisitor();
+            	input.getParent().accept(visitor, IResource.DEPTH_ONE, IResource.NONE);
+            	IResource packageDef = visitor.getPackageDef();
+            	if (packageDef != null) {
+            		if (packageDef instanceof IFile) {
+            			IFile file = (IFile) packageDef;
+            	        try {
+            	        	String content = new String(Util.getResourceContentsAsCharArray(file));
+            	        	dslFileName = findDSLConfigName( content );
+            	        } catch (CoreException e) {
+            	        	DroolsEclipsePlugin.log(e);
+            	        }
+            		}
+            	}
+            }
+        }
+        if (dslFileName == null) {
+        	return null;
+        }
         IResource res = findDSLResource( input, dslFileName );
         if (res instanceof IFile) {
             IFile dslConf = (IFile) res;
@@ -176,4 +200,16 @@ public class DSLAdapter {
     	return dslTree;
     }
     
+    private static class MyResourceVisitor implements IResourceVisitor {
+    	private IResource packageDef;
+		public boolean visit(IResource resource) throws CoreException {
+			if ("package".equals(resource.getFileExtension())) {
+				packageDef = resource;
+			}
+			return true;
+		}
+		public IResource getPackageDef() {
+			return packageDef;
+		}
+	}
 }
