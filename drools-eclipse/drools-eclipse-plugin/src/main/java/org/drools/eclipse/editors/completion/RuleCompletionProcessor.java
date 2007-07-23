@@ -312,12 +312,14 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			if (type.equals("java.lang.String")) {
 				list.add(new RuleCompletionProposal(prefix.length(), "matches",
 						"matches \"\"", 9, DROOLS_ICON));
+				list.add(new RuleCompletionProposal(prefix.length(), "not matches",
+						"not matches \"\"", 13, DROOLS_ICON));
 			}
 			if (isSubtypeOf(type, "java.util.Collection")) {
 				list.add(new RuleCompletionProposal(prefix.length(),
 						"contains", "contains ", DROOLS_ICON));
 				list.add(new RuleCompletionProposal(prefix.length(),
-						"excludes", "excludes ", DROOLS_ICON));
+						"not contains", "not contains ", DROOLS_ICON));
 			}
 			break;
 		case Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT:
