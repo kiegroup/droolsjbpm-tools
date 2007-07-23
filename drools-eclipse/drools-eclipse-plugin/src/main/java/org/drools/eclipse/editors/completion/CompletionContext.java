@@ -54,6 +54,7 @@ public class CompletionContext {
     private RuleDescr    rule;
     private PackageDescr packageDescr;
     private boolean      javaDialect                         = true;
+    private Class        getMvelReturnedType;
 
     public CompletionContext(String ruleText) {
         this.backText = ruleText;
@@ -193,4 +194,11 @@ public class CompletionContext {
         return location;
     }
 
+	public Class getGetMvelReturnedType() {
+		return getMvelReturnedType;
+	}
+
+	public void setGetMvelReturnedType(Class getMvelReturnedType) {
+		this.getMvelReturnedType = getMvelReturnedType;
+	}
 }

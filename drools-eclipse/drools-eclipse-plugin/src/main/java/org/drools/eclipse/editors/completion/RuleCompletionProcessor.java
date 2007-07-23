@@ -30,11 +30,13 @@ import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PatternDescr;
+import org.drools.rule.builder.dialect.mvel.MVELConsequenceBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.util.asm.ClassFieldInspector;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.swt.graphics.Image;
+import org.mvel.CompiledExpression;
 import org.mvel.ExpressionCompiler;
 import org.mvel.ParserContext;
 import org.mvel.PropertyVerifier;
@@ -312,8 +314,8 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			if (type.equals("java.lang.String")) {
 				list.add(new RuleCompletionProposal(prefix.length(), "matches",
 						"matches \"\"", 9, DROOLS_ICON));
-				list.add(new RuleCompletionProposal(prefix.length(), "not matches",
-						"not matches \"\"", 13, DROOLS_ICON));
+				list.add(new RuleCompletionProposal(prefix.length(),
+						"not matches", "not matches \"\"", 13, DROOLS_ICON));
 			}
 			if (isSubtypeOf(type, "java.util.Collection")) {
 				list.add(new RuleCompletionProposal(prefix.length(),
@@ -731,8 +733,11 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			return proposals;
 		}
 
+		// TODO: add logic from MVELConsequenceBuilder
 		String compilableConsequence = CompletionUtil
 				.getCompilableText(consequence);
+		compilableConsequence = MVELConsequenceBuilder
+				.delimitExpressions(compilableConsequence);
 
 		// attempt to compile and analyze
 		try {
@@ -755,28 +760,26 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 				// variable
 				// find the last type in the expression to complete against
 
-				String analyzableExpression = compilableConsequence;
-				if (compilableConsequence.contains(";")) {
-					String[] lines = compilableConsequence.split(";");
-					analyzableExpression = lines[lines.length - 1];
-				}
-				if (!"".equals(analyzableExpression.trim())) {
+				if (!"".equals(compilableConsequence.trim())) {
 
-					Class lastType = new PropertyVerifier(analyzableExpression,
-							compilationContext).analyze();
+					// Class lastType = new
+					// PropertyVerifier(analyzableExpression,
+					// compilationContext).analyze();
+					Class lastType = context.getGetMvelReturnedType();
+					if (lastType == null) {
+						lastType = Object.class;
+					}
 
-					String javaText = "\n" +  lastType.getName() + " o = new " +  lastType.getName()
-							+ "();\no.";
+					String javaText = "\n" + lastType.getName() + " o = new "
+							+ lastType.getName() + "();\no.";
 					Collection jdtProps = getJavaMvelCompletionProposals(
 							javaText, prefix, params);
 					proposals.addAll(jdtProps);
-
 				}
 			}
 
 		} catch (Throwable e) {
 			// do nothing
-			//e.printStackTrace();
 		}
 
 		return proposals;
@@ -794,6 +797,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 				break;
 			}
 		}
+		// MVEL: test for null
 		MVELDialect dialect = (MVELDialect) currentRule.getDialect();
 
 		ExpressionCompiler compiler = new ExpressionCompiler(
@@ -808,9 +812,11 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		initialContext.setImports(imports);
 		initialContext.setInterceptors(dialect.getInterceptors());
 		initialContext.setInputs(params);
+		initialContext.setCompiled(true);
 
 		try {
-			compiler.compile(initialContext);
+			CompiledExpression expression = compiler.compile(initialContext);
+			context.setGetMvelReturnedType(expression.getKnownEgressType());
 			ParserContext compilationContext = compiler.getParserContextState();
 			return compilationContext;
 		} catch (Exception e) {
@@ -828,9 +834,6 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 					.length(), prop);
 			rcp.setImage(DefaultCompletionProcessor.VARIABLE_ICON);
 			proposals.add(rcp);
-
-			// System.out.println( " MVEL: added inputs from mvel eval: name:" +
-			// prop + " type:" + inputs.get( prop ).getClass() );
 		}
 	}
 
@@ -843,10 +846,6 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 					.length(), prop);
 			rcp.setImage(DefaultCompletionProcessor.VARIABLE_ICON);
 			proposals.add(rcp);
-
-			// System.out.println( " MVEL: added completion: got variable from
-			// mvel eval: name:" + prop + " type:" + variables.get( prop
-			// ).getClass() );
 		}
 	}
 
