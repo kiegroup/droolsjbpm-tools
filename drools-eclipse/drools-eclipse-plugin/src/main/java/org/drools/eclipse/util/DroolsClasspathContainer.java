@@ -35,7 +35,7 @@ public class DroolsClasspathContainer implements IClasspathContainer {
     }
 
     public String getDescription() {
-        return "JBoss Rules Library";
+        return "Drools Library";
     }
 
     public int getKind() {

@@ -3,7 +3,7 @@
 <plugin>
    <extension point="org.eclipse.ui.views">
       <category
-         name="JBoss Rules"
+         name="Drools"
          id="org.drools.eclipse.views">
       </category>
       <view
@@ -111,7 +111,7 @@
       </wizard>
       <category
             id="org.drools.eclipse.new"
-            name="JBoss Rules"/>
+            name="Drools"/>
       <wizard
             category="org.drools.eclipse.new"
             class="org.drools.eclipse.wizard.decisiontable.NewDTFileWizard"
@@ -122,25 +122,25 @@
    </extension>
    <extension
          id="org.drools.eclipse.actionSet"
-         name="JBoss Rules"
+         name="Drools"
          point="org.eclipse.ui.actionSets">
       <actionSet
             id="org.drools.eclipse.workbenchMenu"
-            label="JBoss Rules"
+            label="Drools"
             visible="true">
          <action
                class="org.drools.eclipse.menu.RuleHelperActionDelegate"
                icon="icons/drools.gif"
                id="org.drools.eclipse.openRulesWorkbench"
-               label="JBoss Rules wizards"
+               label="Drools wizards"
                style="pulldown"
                toolbarPath="Normal/additions"
-               tooltip="JBoss Rules workbench"/>
+               tooltip="Drools workbench"/>
       </actionSet>
    </extension>
    
    <extension
-      id="droolsbuilder" name="JBoss Rules Builder" point="org.eclipse.core.resources.builders">
+      id="droolsbuilder" name="Drools Builder" point="org.eclipse.core.resources.builders">
       <builder>
          <run class="org.drools.eclipse.builder.DroolsBuilder"/>
       </builder>
@@ -149,7 +149,7 @@
    <extension
          id="problem"
          point="org.eclipse.core.resources.markers"
-         name="JBoss Rules Error">
+         name="Drools Error">
       <super type="org.eclipse.core.resources.problemmarker"/>
       <super type="org.eclipse.core.resources.textmarker"/>
       <persistent value="true" />
@@ -158,7 +158,7 @@
    <extension
          id="droolsBreakpointMarker"
          point="org.eclipse.core.resources.markers"
-         name="JBoss Rules Breakpoint Marker">
+         name="Drools Breakpoint Marker">
 	  <super type="org.eclipse.debug.core.breakpointMarker"/>
       <persistent value="true"/>
 	</extension>
@@ -186,14 +186,14 @@
    <extension point = "org.eclipse.ui.preferencePages">
       <page id="org.drools.eclipse.preferences.DroolsPreferencePage"
          class="org.drools.eclipse.preferences.DroolsPreferencePage"
-         name="JBoss Rules Preferences">
+         name="Drools Preferences">
       </page>
    </extension>
    
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-         name="JBoss Rules"
+         name="Drools"
          icon="icons/drools.gif"
          class="org.drools.eclipse.DroolsPerspective"
          id="org.drools.eclipse.DroolsPerspective">
@@ -205,7 +205,7 @@
    <extension point = "org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
    	     id="org.drools.eclipse.launching.DroolsLaunchConfigurationDelegate"
-         name="JBoss Rules Application"
+         name="Drools Application"
          delegate="org.drools.eclipse.launching.DroolsLaunchConfigurationDelegate"
          sourceLocatorId="org.drools.eclipse.launching.DroolsSourceLookupDirector"
          sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer"
@@ -229,11 +229,11 @@
             <launchMode 
                   mode="debug"
                   perspective="org.eclipse.debug.ui.DebugPerspective"
-                  description="Debug a JBoss Rules application">
+                  description="Debug a Drools application">
             </launchMode>
             <launchMode
                   mode="run"
-                  description="Run a JBoss Rules application">
+                  description="Run a Drools application">
             </launchMode>
       </launchConfigurationTabGroup>
    </extension>
@@ -241,7 +241,7 @@
    <extension
          point="org.eclipse.debug.core.sourceLocators">
       <sourceLocator
-         name="JBoss Rules Source Lookup Director"
+         name="Drools Source Lookup Director"
          class="org.drools.eclipse.launching.DroolsSourceLookupDirector"
          id="org.drools.eclipse.launching.DroolsSourceLookupDirector">
       </sourceLocator>
@@ -274,7 +274,7 @@
    <!-- not working
    <extension point="org.eclipse.debug.ui.launchShortcuts">
       <shortcut 
-            label="JBoss Rules Application" 
+            label="Drools Application" 
             icon="icons/drools.gif" 
             class="org.drools.eclipse.launching.DroolsApplicationLaunchShortcut" 
             modes="debug" 
@@ -320,7 +320,7 @@
         	objectClass="org.eclipse.core.resources.IFile"
         	nameFilter=".project">
 	    <action id="org.drools.eclipse.action.ConvertToDroolsProjectAction"
-	       label="Convert to JBoss Rules Project"
+	       label="Convert to Drools Project"
 	       icon="icons/drools.gif"
 	       menubarPath="additions"
 	       class="org.drools.eclipse.action.ConvertToDroolsProjectAction"	
@@ -350,7 +350,7 @@
 	     <action
 	        id="org.drools.eclipse.flow.ruleflow.editor.action.CheckRuleFlowAction" 
             label="Check RuleFlow" 
-	        toolbarPath="JBoss Rules" 
+	        toolbarPath="Drools" 
             icon="icons/check.gif" 
             tooltip="Check the ruleflow model" 
             class="org.drools.eclipse.flow.ruleflow.editor.action.CheckRuleFlowAction"

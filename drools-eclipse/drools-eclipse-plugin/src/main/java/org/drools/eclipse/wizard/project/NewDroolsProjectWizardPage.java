@@ -26,8 +26,8 @@ public class NewDroolsProjectWizardPage extends WizardPage {
 	
 	public NewDroolsProjectWizardPage() {
 		super("extendedNewProjectPage");
-		setTitle("New JBoss Rules Project");
-        setDescription("Create a new JBoss Rules Project");
+		setTitle("New Drools Project");
+        setDescription("Create a new Drools Project");
 	}
 	
 	public void createControl(Composite parent) {

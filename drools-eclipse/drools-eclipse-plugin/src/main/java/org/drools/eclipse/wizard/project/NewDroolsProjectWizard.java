@@ -49,7 +49,7 @@ import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
  */
 public class NewDroolsProjectWizard extends BasicNewResourceWizard {
 
-    private static final String JBOSS_RULES_NAME = "JBoss Rules";
+    private static final String JBOSS_RULES_NAME = "Drools";
     private IProject newProject;
     private WizardNewProjectCreationPage mainPage;
     private NewDroolsProjectWizardPage extraPage;
@@ -57,8 +57,8 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
     public void addPages() {
         super.addPages();
         mainPage = new WizardNewProjectCreationPage("basicNewProjectPage");
-        mainPage.setTitle("New JBoss Rules Project");
-        mainPage.setDescription("Create a new JBoss Rules Project");
+        mainPage.setTitle("New Drools Project");
+        mainPage.setDescription("Create a new Drools Project");
         this.addPage(mainPage);
         extraPage = new NewDroolsProjectWizardPage();
         addPage(extraPage);

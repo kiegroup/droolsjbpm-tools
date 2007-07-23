@@ -11,7 +11,7 @@ public class DroolsApplicationLaunchShortcut extends JavaApplicationLaunchShortc
 	}
 
 	protected String getTypeSelectionTitle() {
-		return "Select JBoss Rules Application";
+		return "Select Drools Application";
 	}
 
 }

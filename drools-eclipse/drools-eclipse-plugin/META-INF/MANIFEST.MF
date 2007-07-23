@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: JBoss Rules Eclipse Plug-in
+Bundle-Name: Drools Eclipse Plug-in
 Bundle-SymbolicName: org.drools.eclipse;singleton:=true
 Bundle-Version: 4.0.0.SNAPSHOT
 Bundle-Activator: org.drools.eclipse.DroolsEclipsePlugin
