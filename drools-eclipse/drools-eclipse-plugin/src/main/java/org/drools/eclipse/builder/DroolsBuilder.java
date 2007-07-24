@@ -27,6 +27,7 @@ import org.drools.decisiontable.SpreadsheetCompiler;
 import org.drools.eclipse.DRLInfo;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.preferences.IDroolsConstants;
+import org.drools.lang.ExpanderException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -267,8 +268,17 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
      */
     private void markParseErrors(List markers, List parserErrors) {
         for ( Iterator iter = parserErrors.iterator(); iter.hasNext(); ) {
-            ParserError err = (ParserError) iter.next();
-            markers.add(new DroolsBuildMarker(err.getMessage(), err.getRow()));
+        	Object error = iter.next();
+        	if (error instanceof ParserError) {
+        		ParserError err = (ParserError) error;
+        		markers.add(new DroolsBuildMarker(err.getMessage(), err.getRow()));
+        	} else if (error instanceof ExpanderException) {
+        		ExpanderException exc = (ExpanderException) error;
+        		// TODO line mapping is incorrect
+        		markers.add(new DroolsBuildMarker(exc.getMessage(), -1));
+        	} else {
+        		markers.add(new DroolsBuildMarker(error.toString()));
+        	}
         }
     }
 
