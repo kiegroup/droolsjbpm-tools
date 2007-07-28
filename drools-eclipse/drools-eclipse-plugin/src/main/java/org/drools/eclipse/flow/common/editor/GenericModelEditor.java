@@ -275,6 +275,9 @@ public abstract class GenericModelEditor extends GraphicalEditorWithPalette {
 			DroolsEclipsePlugin.log(e);
 			model = createModel();
 		}
+		if (getGraphicalViewer() != null) {
+			initializeGraphicalViewer();
+		}
 	}
 
 	protected void createInputStream(InputStream is) throws Exception {
