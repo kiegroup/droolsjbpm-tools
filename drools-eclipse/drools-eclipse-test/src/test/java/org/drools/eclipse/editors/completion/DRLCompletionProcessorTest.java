@@ -17,10 +17,10 @@ public class DRLCompletionProcessorTest extends TestCase {
     
     public void testPrefixFiltering() {
         List list = new ArrayList();
-        list.add(new RuleCompletionProposal(0, "aardvark", "something"));
-        list.add(new RuleCompletionProposal(0, "smeg"));
-        list.add(new RuleCompletionProposal(0, "apple"));
-        list.add(new RuleCompletionProposal(0, "ape", "ape"));
+        list.add(new RuleCompletionProposal(0, 0, "aardvark", "something"));
+        list.add(new RuleCompletionProposal(0, 0, "smeg"));
+        list.add(new RuleCompletionProposal(0, 0, "apple"));
+        list.add(new RuleCompletionProposal(0, 0, "ape", "ape"));
         
         DefaultCompletionProcessor.filterProposalsOnPrefix("a", list);
         assertEquals(2, list.size());
@@ -29,10 +29,10 @@ public class DRLCompletionProcessorTest extends TestCase {
 
         
         list = new ArrayList();
-        list.add(new RuleCompletionProposal(0, "aardvark", "something"));
-        list.add(new RuleCompletionProposal(0, "smeg"));
-        list.add(new RuleCompletionProposal(0, "apple"));
-        list.add(new RuleCompletionProposal(0, "ape", "zzzzz"));
+        list.add(new RuleCompletionProposal(0, 0, "aardvark", "something"));
+        list.add(new RuleCompletionProposal(0, 0, "smeg"));
+        list.add(new RuleCompletionProposal(0, 0, "apple"));
+        list.add(new RuleCompletionProposal(0, 0, "ape", "zzzzz"));
         DefaultCompletionProcessor.filterProposalsOnPrefix("xzyz", list);
         assertEquals(0, list.size());
     }
