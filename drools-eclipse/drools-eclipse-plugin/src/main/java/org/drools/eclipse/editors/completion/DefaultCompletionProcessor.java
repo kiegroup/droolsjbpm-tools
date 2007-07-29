@@ -188,24 +188,54 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
      * accessors can exist for one property. for that case we want to keep only one proposal.
      */
     protected Collection getJavaMvelCompletionProposals(final String javaText,
-                                                  final String prefix, int documentOffset,
-                                                  Map params) {
-        final Collection javaCompletionProposals = new HashSet();
-        requestJavaCompletionProposals( javaText,
-                                        prefix,
-                                        documentOffset,
-                                        params,
-                                        javaCompletionProposals );
-        final Collection result  = new HashSet();
-        CompletionRequestor requestor = new MvelCompletionRequestor( prefix,
-        															 documentOffset,
-        															 javaText,
-        															 result );
-        for (Iterator iterator = javaCompletionProposals.iterator(); iterator.hasNext(); ) {
-        	requestor.accept((CompletionProposal) iterator.next());
-        }
-        return result;
-    }
+			final String prefix, final int documentOffset, Map params) {
+		final Collection set = new HashSet();
+		CompletionRequestor requestor = new MvelCompletionRequestor(prefix,
+				documentOffset, javaText, set);
+		requestJavaMVELCompletionProposals(javaText, prefix, params, requestor);
+		return set;
+	}
+
+	protected void requestJavaMVELCompletionProposals(final String javaText,
+			final String prefix, Map params, CompletionRequestor requestor) {
+
+    	// TODO different methods for MVEL and Java code completion
+    	// now reusing Java completion proposals
+    	// can this be used by MVEL as well?
+		IEditorInput input = getEditor().getEditorInput();
+		if (!(input instanceof IFileEditorInput)) {
+			return;
+		}
+		IProject project = ((IFileEditorInput) input).getFile().getProject();
+		IJavaProject javaProject = JavaCore.create(project);
+
+		try {
+			IEvaluationContext evalContext = javaProject.newEvaluationContext();
+			List imports = getImports();
+			if (imports != null && imports.size() > 0) {
+				evalContext.setImports((String[]) imports
+						.toArray(new String[imports.size()]));
+			}
+			StringBuffer javaTextWithParams = new StringBuffer();
+			Iterator iterator = params.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Map.Entry entry = (Map.Entry) iterator.next();
+				// this does not seem to work, so adding variables manually
+				// evalContext.newVariable((String) entry.getValue(), (String)
+				// entry.getKey(), null);
+				javaTextWithParams.append(entry.getValue() + " "
+						+ entry.getKey() + ";\n");
+			}
+			javaTextWithParams.append("org.drools.spi.KnowledgeHelper drools;");
+			javaTextWithParams.append(javaText);
+			String text = javaTextWithParams.toString();
+			// System.out.println( "" );
+			// System.out.println( "MVEL: synthetic Java text:" + text );
+			evalContext.codeComplete(text, text.length(), requestor);
+		} catch (Throwable t) {
+			DroolsEclipsePlugin.log(t);
+		}
+	}
 
     protected void requestJavaCompletionProposals(final String javaText,
                                                   final String prefix,

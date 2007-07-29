@@ -778,7 +778,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			}
 
 		} catch (Throwable e) {
-			// do nothing
+			DroolsEclipsePlugin.log(e);
 		}
 
 		return proposals;
