@@ -7,7 +7,6 @@ import java.util.List;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
@@ -36,8 +35,7 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
     		return new ICompletionProposal[0];
     	}
         Collections.sort(proposals, new RuleCompletionProposal.RuleCompletionProposalComparator());
-        ICompletionProposal[] result = makeProposals(proposals, documentOffset);
-        return result;
+        return (ICompletionProposal[]) proposals.toArray(new ICompletionProposal[proposals.size()]);
 	}
 	
 	/**
@@ -49,19 +47,6 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
 	 */
 	protected abstract List getCompletionProposals(ITextViewer viewer, int documentOffset);
 
-    protected ICompletionProposal[] makeProposals(List props, int documentOffset) {
-        ICompletionProposal[] result = new ICompletionProposal[props.size()];
-        Iterator iterator = props.iterator();
-        int i = 0;
-        while (iterator.hasNext()) {
-            RuleCompletionProposal proposal = (RuleCompletionProposal) iterator.next();
-            result[i++] = new CompletionProposal(proposal.getContent(), 
-        		documentOffset - proposal.getReplacementLength(), proposal.getReplacementLength(), 
-                proposal.getCursorPosition(), proposal.getImage(), proposal.getDisplay(), null, null);
-        }        
-        return result;
-    }
-
     /**
      *  Filter out the proposals whose content does not start with the given prefix.
      */
@@ -69,9 +54,11 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
     	if (prefix != null) {
     		Iterator iterator = props.iterator();
     		while ( iterator.hasNext() ) {
-    			RuleCompletionProposal item = (RuleCompletionProposal) iterator.next();
-    			if (!item.getContent().startsWith(prefix)) {
-    				iterator.remove();
+    			ICompletionProposal item = (ICompletionProposal) iterator.next();
+    			if (item instanceof RuleCompletionProposal) {
+	    			if (!((RuleCompletionProposal) item).getContent().startsWith(prefix)) {
+	    				iterator.remove();
+	    			}
     			}
     		}
     	}

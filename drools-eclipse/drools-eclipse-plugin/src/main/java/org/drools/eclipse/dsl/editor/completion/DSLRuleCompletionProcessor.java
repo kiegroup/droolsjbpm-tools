@@ -33,19 +33,19 @@ public class DSLRuleCompletionProcessor extends RuleCompletionProcessor {
     	return (DSLRuleEditor) getEditor();
     }
     
-	protected void addRHSCompletionProposals(List list, String prefix, String backText,
+	protected void addRHSCompletionProposals(List list, int documentOffset, String prefix, String backText,
 			String conditions, String consequence) {
-		super.addRHSCompletionProposals(list, prefix, backText, conditions, consequence);
+		super.addRHSCompletionProposals(list, documentOffset, prefix, backText, conditions, consequence);
 		DSLAdapter adapter = getDSLRuleEditor().getDSLAdapter();
 		if (adapter != null) {
 			List dslConsequences = adapter.getDSLTree().getConsequenceChildrenList(prefix, true);
-			addDSLProposals(list, prefix, dslConsequences);
+			addDSLProposals(list, documentOffset, prefix, dslConsequences);
 		}
 	}
 	
-	protected void addLHSCompletionProposals(List list,
+	protected void addLHSCompletionProposals(List list, int documentOffset,
 			Location location, String prefix, String backText) {
-		super.addLHSCompletionProposals(list, location, prefix, backText);
+		super.addLHSCompletionProposals(list, documentOffset, location, prefix, backText);
 		DSLAdapter adapter = getDSLRuleEditor().getDSLAdapter();
 		if (adapter != null) {
 			String lastobj = this.getLastNonDashLine(backText);
@@ -63,16 +63,16 @@ public class DSLRuleCompletionProcessor extends RuleCompletionProcessor {
 			if (dslConditions.size() == 0) {
 				dslConditions.addAll(adapter.listConditionItems());
 			}
-			addDSLProposals(list, prefix, dslConditions);
+			addDSLProposals(list, documentOffset, prefix, dslConditions);
 		}
 	}
 	
-	private void addDSLProposals(final List list, final String prefix, List dslItems) {
+	private void addDSLProposals(final List list, int documentOffset, final String prefix, List dslItems) {
 		Iterator iterator = dslItems.iterator();
 		while (iterator.hasNext()) {
 			String consequence = (String) iterator.next();
 			RuleCompletionProposal p = new RuleCompletionProposal(
-				prefix.length(), consequence);
+				documentOffset - prefix.length(), prefix.length(), consequence);
 			p.setImage(DSL_ICON);
 			list.add(p);
 		}

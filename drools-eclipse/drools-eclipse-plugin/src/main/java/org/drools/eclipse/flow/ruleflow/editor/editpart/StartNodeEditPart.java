@@ -36,7 +36,7 @@ public class StartNodeEditPart extends ElementEditPart {
 
     public static class StartNodeFigure extends ElementFigure {
         
-        private static Image icon = ImageDescriptor.createFromURL(
+        private static final Image icon = ImageDescriptor.createFromURL(
     		DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/process_start.gif")).createImage();
         
         protected void customizeFigure() {

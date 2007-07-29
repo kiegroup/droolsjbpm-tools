@@ -19,34 +19,52 @@ import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.editor.editpart.ElementEditPart;
 import org.drools.eclipse.flow.common.editor.editpart.figure.ElementFigure;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.LineBorder;
+import org.eclipse.draw2d.RoundedRectangle;
+import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 
 /**
- * EditPart for an end node.
+ * EditPart for a SubFlow node.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class EndNodeEditPart extends ElementEditPart {
+public class SubFlowEditPart extends ElementEditPart {
 
+    private static final Color color = new Color(Display.getCurrent(), 255, 250, 205);
+    
     protected IFigure createFigure() {
-        return new EndNodeFigure();
+        return new SubFlowNodeFigure();
     }
-
-    public static class EndNodeFigure extends ElementFigure {
+    
+    public static class SubFlowNodeFigure extends ElementFigure {
         
-        private static final Image icon = ImageDescriptor.createFromURL(
-        	DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/process_stop.gif")).createImage();
-            
+        private static final Image ICON = ImageDescriptor.createFromURL(
+        		DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/process.gif")).createImage();
+                
+        private RoundedRectangle rectangle;
+        
         protected void customizeFigure() {
-            setIcon(icon);
-            setBorder(new LineBorder(1));
+            rectangle = new RoundedRectangle();
+            rectangle.setCornerDimensions(new Dimension(25, 25));
+            add(rectangle, 0);
+            rectangle.setBackgroundColor(color);
+            rectangle.setBounds(getBounds());
+            setSelected(false);
+            setIcon(ICON);
+        }
+        
+        public void setBounds(Rectangle rectangle) {
+            super.setBounds(rectangle);
+            this.rectangle.setBounds(rectangle);
         }
         
         public void setSelected(boolean b) {
             super.setSelected(b);
-            ((LineBorder) getBorder()).setWidth(b ? 3 : 1);
+            rectangle.setLineWidth(b ? 3 : 1);
             repaint();
         }
     }

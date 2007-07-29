@@ -39,7 +39,6 @@ import org.eclipse.swt.graphics.Image;
 import org.mvel.CompiledExpression;
 import org.mvel.ExpressionCompiler;
 import org.mvel.ParserContext;
-import org.mvel.PropertyVerifier;
 
 /**
  * For handling within rules.
@@ -67,13 +66,12 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 	protected List getCompletionProposals(ITextViewer viewer, int documentOffset) {
 		try {
 			final List list = new ArrayList();
-
 			IDocument doc = viewer.getDocument();
-
+			
 			String backText = readBackwards(documentOffset, doc);
 			final String prefix = CompletionUtil.stripLastWord(backText);
 
-			// FIXME:where does the magic number 5 come from? "rule "?
+			// if inside the keyword "rule ", no code completion
 			if (backText.length() < 5) {
 				return list;
 			}
@@ -82,85 +80,90 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			Location location = context.getLocation();
 
 			if (location.getType() == Location.LOCATION_RULE_HEADER) {
-				addRuleHeaderProposals(list, prefix, backText);
+				addRuleHeaderProposals(list, documentOffset, prefix, backText);
 			} else if (location.getType() == Location.LOCATION_RHS) {
-				addRHSCompletionProposals(list, prefix, backText,
-						(String) location
-								.getProperty(Location.LOCATION_LHS_CONTENT),
-						(String) location
-								.getProperty(Location.LOCATION_RHS_CONTENT));
+				addRHSCompletionProposals(list, documentOffset, prefix, backText,
+					(String) location.getProperty(Location.LOCATION_LHS_CONTENT),
+					(String) location.getProperty(Location.LOCATION_RHS_CONTENT));
 			} else {
-				addLHSCompletionProposals(list, location, prefix, backText);
+				addLHSCompletionProposals(list, documentOffset, location, prefix, backText);
 			}
 
 			filterProposalsOnPrefix(prefix, list);
 			return list;
 		} catch (Throwable t) {
-			t.printStackTrace();
 			DroolsEclipsePlugin.log(t);
 		}
 		return null;
 	}
 
-	protected void addRHSCompletionProposals(List list, String prefix,
-			String backText, String conditions, String consequence) {
+	protected void addRHSCompletionProposals(List list, int documentOffset, String prefix, String backText,
+			String conditions, String consequence) {
 		// only add functions and keywords if at the beginning of a
 		// new statement
-		String consequenceWithoutPrefix = consequence.substring(0, consequence
-				.length()
-				- prefix.length());
-		if (context == null) {
-			context = new CompletionContext(backText);
+		if (consequence == null || consequence.length() < prefix.length()) {
+			// possible if doing code completion directly after "then"
+			return;
 		}
+		String consequenceWithoutPrefix = 
+			consequence.substring(0,consequence.length() - prefix.length());
 
-		boolean startOfDialectExpression = isStartOfDialectExpression(consequenceWithoutPrefix);
+        if ( context == null ) {
+            context = new CompletionContext( backText );
+        }
+
+        boolean startOfDialectExpression = isStartOfDialectExpression( consequenceWithoutPrefix );
 		if (startOfDialectExpression) {
-			addRHSKeywordCompletionProposals(list, prefix);
-			addRHSFunctionCompletionProposals(list, prefix);
+			addRHSKeywordCompletionProposals(list, documentOffset, prefix);
+			addRHSFunctionCompletionProposals(list, documentOffset, prefix);
 		}
-
-		if (context.isJavaDialect()) {
-			// System.out.println( "MVEL: Adding Java Dialect completions" );
-			addRHSJavaCompletionProposals(list, prefix, backText, consequence);
-		} else {
-			// System.out.println( "MVEL: Adding MVEL Dialect completions" );
-			addRHSMvelCompletionProposals(list, prefix, backText, consequence,
-					startOfDialectExpression);
-		}
+		if ( context.isJavaDialect() ) {
+            addRHSJavaCompletionProposals( list,
+            							   documentOffset,
+            							   prefix,
+                                           backText,
+                                           consequence );
+        } else {
+            addRHSMvelCompletionProposals( list,
+            							   documentOffset,
+                                           prefix,
+                                           backText,
+                                           consequence,
+                                           startOfDialectExpression );
+        }
 	}
 
-	protected void addLHSCompletionProposals(List list, Location location,
-			String prefix, String backText) {
+	protected void addLHSCompletionProposals(List list, int documentOffset, 
+			Location location, String prefix, String backText) {
 		switch (location.getType()) {
 		case Location.LOCATION_LHS_BEGIN_OF_CONDITION:
 			// if we are at the beginning of a new condition
 			// add drools keywords
-			list.add(new RuleCompletionProposal(prefix.length(), "and", "and ",
-					DROOLS_ICON));
-			list.add(new RuleCompletionProposal(prefix.length(), "or", "or ",
-					DROOLS_ICON));
-			list.add(new RuleCompletionProposal(prefix.length(), "from",
+			list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "and",
+					"and ", DROOLS_ICON));
+			list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "or",
+					"or ", DROOLS_ICON));
+			list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "from",
 					"from ", DROOLS_ICON));
-			list.add(new RuleCompletionProposal(prefix.length(), "forall",
+			list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "forall",
 					"forall(  )", 8, DROOLS_ICON));
-
-			RuleCompletionProposal prop = new RuleCompletionProposal(prefix
+			RuleCompletionProposal prop = new RuleCompletionProposal(documentOffset - prefix.length(), prefix
 					.length(), "eval", "eval(  )", 6);
 			prop.setImage(DROOLS_ICON);
 			list.add(prop);
-			prop = new RuleCompletionProposal(prefix.length(), "then", "then"
-					+ System.getProperty("line.separator") + "\t");
+			prop = new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "then",
+					"then" + System.getProperty("line.separator") + "\t");
 			prop.setImage(DROOLS_ICON);
 			list.add(prop);
 			// we do not break but also add all elements that are needed for
 			// and/or
 		case Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR:
-			list.add(new RuleCompletionProposal(prefix.length(), "not", "not ",
-					DROOLS_ICON));
+			list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "not",
+					"not ", DROOLS_ICON));
 			// we do not break but also add all elements that are needed for
 			// not
 		case Location.LOCATION_LHS_BEGIN_OF_CONDITION_NOT:
-			list.add(new RuleCompletionProposal(prefix.length(), "exists",
+			list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "exists",
 					"exists ", DROOLS_ICON));
 			// we do not break but also add all elements that are needed for
 			// exists
@@ -175,7 +178,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 				if (index != -1) {
 					String className = name.substring(index + 1);
 					RuleCompletionProposal p = new RuleCompletionProposal(
-							prefix.length(), className, className + "(  )",
+							documentOffset - prefix.length(), prefix.length(), className, className + "(  )",
 							className.length() + 2);
 					p.setPriority(-1);
 					p.setImage(CLASS_ICON);
@@ -189,7 +192,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 				if (index != -1) {
 					String className = name.substring(index + 1);
 					RuleCompletionProposal p = new RuleCompletionProposal(
-							prefix.length(), className, className + "(  )",
+							documentOffset - prefix.length(), prefix.length(), className, className + "(  )",
 							className.length() + 2);
 					p.setPriority(-1);
 					p.setImage(CLASS_ICON);
@@ -199,8 +202,9 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			iterator = getTemplates().iterator();
 			while (iterator.hasNext()) {
 				String name = (String) iterator.next();
-				RuleCompletionProposal p = new RuleCompletionProposal(prefix
-						.length(), name, name + "(  )", name.length() + 2);
+				RuleCompletionProposal p = new RuleCompletionProposal(
+						documentOffset - prefix.length(), prefix.length(), name, name + "(  )",
+						name.length() + 2);
 				p.setPriority(-1);
 				p.setImage(CLASS_ICON);
 				list.add(p);
@@ -212,8 +216,8 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			String propertyName = (String) location
 					.getProperty(Location.LOCATION_PROPERTY_PROPERTY_NAME);
 			if (className != null) {
-				boolean isTemplate = addFactTemplatePropertyProposals(prefix,
-						className, list);
+				boolean isTemplate = addFactTemplatePropertyProposals(
+						documentOffset, prefix, className, list);
 				if (!isTemplate) {
 					ClassTypeResolver resolver = new ClassTypeResolver(
 							getImports(), ProjectClassLoader
@@ -221,49 +225,42 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 					try {
 						String currentClass = className;
 						if (propertyName != null) {
-							String[] nestedProperties = propertyName
-									.split("\\.");
+							String[] nestedProperties = propertyName.split("\\.");
 							int nbSuperProperties = nestedProperties.length - 1;
 							if (propertyName.endsWith(".")) {
 								nbSuperProperties++;
 							}
 							for (int i = 0; i < nbSuperProperties; i++) {
 								String simplePropertyName = nestedProperties[i];
-								currentClass = getSimplePropertyClass(
-										currentClass, simplePropertyName);
+								currentClass = getSimplePropertyClass(currentClass, simplePropertyName);
 								currentClass = convertToNonPrimitiveClass(currentClass);
 							}
 						}
-						RuleCompletionProposal p = new RuleCompletionProposal(
-								prefix.length(), "this");
-						p.setImage(METHOD_ICON);
-						list.add(p);
+						RuleCompletionProposal p = new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "this");
+							p.setImage(METHOD_ICON);
+							list.add(p);
 						Class clazz = resolver.resolveType(currentClass);
 						if (clazz != null) {
 							if (Map.class.isAssignableFrom(clazz)) {
-								p = new RuleCompletionProposal(prefix.length(),
-										"this['']", "this['']", 6);
+								p = new RuleCompletionProposal(documentOffset - prefix.length(), 
+									prefix.length(), "this['']", "this['']", 6);
 								p.setImage(METHOD_ICON);
 								list.add(p);
 							}
-							ClassFieldInspector inspector = new ClassFieldInspector(
-									clazz);
+							ClassFieldInspector inspector = new ClassFieldInspector(clazz);
 							Map types = inspector.getFieldTypes();
-							Iterator iterator2 = inspector.getFieldNames()
-									.keySet().iterator();
+							Iterator iterator2 = inspector.getFieldNames().keySet().iterator();
 							while (iterator2.hasNext()) {
 								String name = (String) iterator2.next();
-								p = new RuleCompletionProposal(prefix.length(),
-										name, name + " ");
+								p = new RuleCompletionProposal(documentOffset - prefix.length(), 
+										prefix.length(), name, name + " ");
 								p.setImage(METHOD_ICON);
 								list.add(p);
 								Class type = (Class) types.get(name);
-								if (type != null
-										&& Map.class.isAssignableFrom(type)) {
+								if (type != null && Map.class.isAssignableFrom(type)) {
 									name += "['']";
-									p = new RuleCompletionProposal(prefix
-											.length(), name, name, name
-											.length() - 2);
+									p = new RuleCompletionProposal(documentOffset - prefix.length(), 
+										prefix.length(), name, name, name.length() - 2);
 									p.setImage(METHOD_ICON);
 									list.add(p);
 								}
@@ -284,43 +281,43 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 					.getProperty(Location.LOCATION_PROPERTY_PROPERTY_NAME);
 			String type = getPropertyClass(className, property);
 
-			list.add(new RuleCompletionProposal(prefix.length(), "==", "== ",
+			list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "==",
+					"== ", DROOLS_ICON));
+			list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "!=",
+					"!= ", DROOLS_ICON));
+			list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), ":", ": ",
 					DROOLS_ICON));
-			list.add(new RuleCompletionProposal(prefix.length(), "!=", "!= ",
-					DROOLS_ICON));
-			list.add(new RuleCompletionProposal(prefix.length(), ":", ": ",
-					DROOLS_ICON));
-			list.add(new RuleCompletionProposal(prefix.length(), "->",
+			list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "->",
 					"-> (  )", 5, DROOLS_ICON));
-			list.add(new RuleCompletionProposal(prefix.length(), "memberOf",
+			list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "memberOf",
 					"memberOf ", DROOLS_ICON));
-			list.add(new RuleCompletionProposal(prefix.length(),
-					"not memberOf", "not memberOf ", DROOLS_ICON));
-			list.add(new RuleCompletionProposal(prefix.length(), "in",
+			list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "not memberOf",
+					"not memberOf ", DROOLS_ICON));
+			list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "in",
 					"in (  )", 5, DROOLS_ICON));
-			list.add(new RuleCompletionProposal(prefix.length(), "not in",
+			list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "not in",
 					"not in (  )", 9, DROOLS_ICON));
 
 			if (isComparable(type)) {
-				list.add(new RuleCompletionProposal(prefix.length(), "<", "< ",
-						DROOLS_ICON));
-				list.add(new RuleCompletionProposal(prefix.length(), "<=",
+				list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "<",
+						"< ", DROOLS_ICON));
+				list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "<=",
 						"<= ", DROOLS_ICON));
-				list.add(new RuleCompletionProposal(prefix.length(), ">", "> ",
-						DROOLS_ICON));
-				list.add(new RuleCompletionProposal(prefix.length(), ">=",
+				list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), ">",
+						"> ", DROOLS_ICON));
+				list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), ">=",
 						">= ", DROOLS_ICON));
 			}
 			if (type.equals("java.lang.String")) {
-				list.add(new RuleCompletionProposal(prefix.length(), "matches",
+				list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "matches",
 						"matches \"\"", 9, DROOLS_ICON));
-				list.add(new RuleCompletionProposal(prefix.length(),
+				list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(),
 						"not matches", "not matches \"\"", 13, DROOLS_ICON));
 			}
 			if (isSubtypeOf(type, "java.util.Collection")) {
-				list.add(new RuleCompletionProposal(prefix.length(),
+				list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(),
 						"contains", "contains ", DROOLS_ICON));
-				list.add(new RuleCompletionProposal(prefix.length(),
+				list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(),
 						"not contains", "not contains ", DROOLS_ICON));
 			}
 			break;
@@ -335,8 +332,8 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			type = getPropertyClass(className, property);
 
 			if ("in".equals(operator)) {
-				list.add(new RuleCompletionProposal(prefix.length(), "()",
-						"(  )", 2, DROOLS_ICON));
+				list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "()",
+					"(  )", 2, DROOLS_ICON));
 				break;
 			}
 
@@ -353,24 +350,26 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 				isObject = true;
 			}
 
-			list.add(new RuleCompletionProposal(prefix.length(), "null",
+			list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "null",
 					"null ", DROOLS_ICON));
 			if ("boolean".equals(type)) {
-				list.add(new RuleCompletionProposal(prefix.length(), "true",
-						"true ", DROOLS_ICON));
-				list.add(new RuleCompletionProposal(prefix.length(), "false",
-						"false ", DROOLS_ICON));
+				list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(),
+						"true", "true ", DROOLS_ICON));
+				list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(),
+						"false", "false ", DROOLS_ICON));
 			}
 			if (isObject || "java.lang.String".equals(type)) {
-				list.add(new RuleCompletionProposal(prefix.length(), "\"\"",
-						"\"\"", 1, DROOLS_ICON));
+				list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(),
+						"\"\"", "\"\"", 1, DROOLS_ICON));
 			}
 			if (isObject || "java.util.Date".equals(type)) {
-				list.add(new RuleCompletionProposal(prefix.length(),
-						"\"dd-mmm-yyyy\"", "\"dd-mmm-yyyy\"", 1, DROOLS_ICON));
+				list
+						.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(),
+								"\"dd-mmm-yyyy\"", "\"dd-mmm-yyyy\"", 1,
+								DROOLS_ICON));
 			}
-			list.add(new RuleCompletionProposal(prefix.length(), "()", "(  )",
-					2, DROOLS_ICON));
+			list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "()",
+					"(  )", 2, DROOLS_ICON));
 			// add parameters with possibly matching type
 			if (context == null) {
 				context = new CompletionContext(backText);
@@ -387,20 +386,21 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 					String paramType = (String) entry.getValue();
 					if (isSubtypeOf(paramType, type)) {
 						RuleCompletionProposal proposal = new RuleCompletionProposal(
-								prefix.length(), paramName);
+								documentOffset - prefix.length(), prefix.length(), paramName);
 						proposal.setPriority(-1);
 						proposal.setImage(VARIABLE_ICON);
 						list.add(proposal);
 					}
 				}
-			} // add globals with possibly matching type
+			}
+			// add globals with possibly matching type
 			List globals = getGlobals();
 			if (globals != null) {
-				for (iterator = globals.iterator(); iterator.hasNext();) {
+				for (iterator = globals.iterator(); iterator.hasNext(); ) {
 					GlobalDescr global = (GlobalDescr) iterator.next();
 					if (isSubtypeOf(global.getType(), type)) {
 						RuleCompletionProposal proposal = new RuleCompletionProposal(
-								prefix.length(), global.getIdentifier());
+								documentOffset - prefix.length(), prefix.length(), global.getIdentifier());
 						proposal.setPriority(-1);
 						proposal.setImage(VARIABLE_ICON);
 						list.add(proposal);
@@ -411,15 +411,15 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		case Location.LOCATION_LHS_INSIDE_EVAL:
 			String content = (String) location
 					.getProperty(Location.LOCATION_EVAL_CONTENT);
-			list.addAll(getJavaCompletionProposals(content, prefix,
+			list.addAll(getJavaCompletionProposals(documentOffset, content, prefix,
 					getRuleParameters(backText)));
 			break;
 		case Location.LOCATION_LHS_INSIDE_CONDITION_END:
-			list.add(new RuleCompletionProposal(prefix.length(), "&&", "&& ",
+			list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "&&", "&& ",
 					DROOLS_ICON));
-			list.add(new RuleCompletionProposal(prefix.length(), "||", "|| ",
+			list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "||", "|| ",
 					DROOLS_ICON));
-			list.add(new RuleCompletionProposal(prefix.length(), ",", ", ",
+			list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), ",", ", ",
 					DROOLS_ICON));
 			break;
 		case Location.LOCATION_LHS_FROM:
@@ -430,45 +430,44 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 				// add accumulate and collect keyword
 				list
 						.add(new RuleCompletionProposal(
-								prefix.length(),
+								documentOffset - prefix.length(), prefix.length(),
 								"accumulate",
 								"accumulate (  , init (  ), action (  ), result (  ) )",
 								13, DROOLS_ICON));
 				PackageBuilderConfiguration config = new PackageBuilderConfiguration(
-						ProjectClassLoader.getProjectClassLoader(getEditor()),
-						null);
+					ProjectClassLoader.getProjectClassLoader(getEditor()), null);
 				Map accumulateFunctions = config.getAccumulateFunctionsMap();
-				for (Iterator iterator2 = accumulateFunctions.keySet()
-						.iterator(); iterator2.hasNext();) {
+				for (Iterator iterator2 = accumulateFunctions.keySet().iterator(); iterator2.hasNext(); ) {
 					String accumulateFunction = (String) iterator2.next();
-					list.add(new RuleCompletionProposal(prefix.length(),
+					list.add(new RuleCompletionProposal(
+							documentOffset - prefix.length(), prefix.length(),
 							"accumulate " + accumulateFunction,
 							"accumulate (  , " + accumulateFunction + "(  ) )",
 							13, DROOLS_ICON));
 				}
-				list.add(new RuleCompletionProposal(prefix.length(), "collect",
-						"collect (  )", 10, DROOLS_ICON));
+				list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(),
+						"collect", "collect (  )", 10, DROOLS_ICON));
 				// add all functions
 				if ("".equals(fromText)) {
 					List functions = getFunctions();
 					iterator = functions.iterator();
 					while (iterator.hasNext()) {
 						String name = (String) iterator.next() + "()";
-						prop = new RuleCompletionProposal(prefix.length(),
+						prop = new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(),
 								name, name, name.length() - 1);
 						prop.setPriority(-1);
 						prop.setImage(METHOD_ICON);
 						list.add(prop);
 					}
 				}
-				list.addAll(getJavaCompletionProposals(fromText, prefix,
+				list.addAll(getJavaCompletionProposals(documentOffset, fromText, prefix,
 						getRuleParameters(backText)));
 			}
 			break;
 		case Location.LOCATION_LHS_FROM_ACCUMULATE_INIT_INSIDE:
 			content = (String) location
 					.getProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT);
-			list.addAll(getJavaCompletionProposals(content, prefix,
+			list.addAll(getJavaCompletionProposals(documentOffset, content, prefix,
 					getRuleParameters(backText)));
 			break;
 		case Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE:
@@ -476,7 +475,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 					.getProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT);
 			content += (String) location
 					.getProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT);
-			list.addAll(getJavaCompletionProposals(content, prefix,
+			list.addAll(getJavaCompletionProposals(documentOffset, content, prefix,
 					getRuleParameters(backText)));
 			break;
 		case Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE:
@@ -486,7 +485,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 					.getProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT);
 			content += (String) location
 					.getProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_RESULT_CONTENT);
-			list.addAll(getJavaCompletionProposals(content, prefix,
+			list.addAll(getJavaCompletionProposals(documentOffset, content, prefix,
 					getRuleParameters(backText)));
 			break;
 		}
@@ -525,8 +524,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 				String currentClass = className;
 				for (int i = 0; i < nestedProperties.length; i++) {
 					String simplePropertyName = nestedProperties[i];
-					currentClass = getSimplePropertyClass(currentClass,
-							simplePropertyName);
+					currentClass = getSimplePropertyClass(currentClass, simplePropertyName);
 				}
 				return currentClass;
 			}
@@ -542,8 +540,9 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			// TODO can we take advantage of generics here?
 			return "java.lang.Object";
 		}
-		ClassTypeResolver resolver = new ClassTypeResolver(getImports(),
-				ProjectClassLoader.getProjectClassLoader(getEditor()));
+		ClassTypeResolver resolver = new ClassTypeResolver(
+			getImports(), ProjectClassLoader
+				.getProjectClassLoader(getEditor()));
 		try {
 			Class clazz = resolver.resolveType(className);
 			if (clazz != null) {
@@ -566,7 +565,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		// add globals
 		List globals = getGlobals();
 		if (globals != null) {
-			for (Iterator iterator = globals.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = globals.iterator(); iterator.hasNext(); ) {
 				GlobalDescr global = (GlobalDescr) iterator.next();
 				result.put(global.getIdentifier(), global.getType());
 			}
@@ -578,7 +577,6 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		if (context.getRule() == null) {
 			return result;
 		}
-
 		// add parameters defined in conditions
 		addRuleParameters(result, context.getRule().getLhs().getDescrs());
 		return result;
@@ -635,8 +633,8 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		class1 = convertToNonPrimitiveClass(class1);
 		class2 = convertToNonPrimitiveClass(class2);
 		// TODO add code to take primitive types into account
-		ClassTypeResolver resolver = new ClassTypeResolver(getImports(),
-				ProjectClassLoader.getProjectClassLoader(getEditor()));
+		ClassTypeResolver resolver = new ClassTypeResolver(getImports(), ProjectClassLoader
+				.getProjectClassLoader(getEditor()));
 		try {
 			Class clazz1 = resolver.resolveType(class1);
 			Class clazz2 = resolver.resolveType(class2);
@@ -674,14 +672,14 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		return null;
 	}
 
-	private void addRHSFunctionCompletionProposals(List list, String prefix) {
+	private void addRHSFunctionCompletionProposals(List list, int documentOffset, String prefix) {
 		Iterator iterator;
 		RuleCompletionProposal prop;
 		List functions = getFunctions();
 		iterator = functions.iterator();
 		while (iterator.hasNext()) {
 			String name = (String) iterator.next() + "()";
-			prop = new RuleCompletionProposal(prefix.length(), name,
+			prop = new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), name,
 					name + ";", name.length() - 1);
 			prop.setPriority(-1);
 			prop.setImage(METHOD_ICON);
@@ -689,42 +687,43 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		}
 	}
 
-	private void addRHSKeywordCompletionProposals(List list, String prefix) {
-		RuleCompletionProposal prop = new RuleCompletionProposal(prefix
+	private void addRHSKeywordCompletionProposals(
+			List list, int documentOffset, String prefix) {
+		RuleCompletionProposal prop = new RuleCompletionProposal(documentOffset - prefix.length(), prefix
 				.length(), "update", "update();", 7);
 		prop.setImage(DROOLS_ICON);
 		list.add(prop);
-		prop = new RuleCompletionProposal(prefix.length(), "retract",
+		prop = new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "retract",
 				"retract();", 8);
 		prop.setImage(DROOLS_ICON);
 		list.add(prop);
-		prop = new RuleCompletionProposal(prefix.length(), "insert",
+		prop = new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "insert",
 				"insert();", 7);
 		prop.setImage(DROOLS_ICON);
 		list.add(prop);
-		prop = new RuleCompletionProposal(prefix.length(), "insertLogical",
+		prop = new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "insertLogical",
 				"insertLogical();", 14);
 		prop.setImage(DROOLS_ICON);
 		list.add(prop);
 	}
 
-	private void addRHSJavaCompletionProposals(List list, String prefix,
-			String backText, String consequence) {
-		list.addAll(getJavaCompletionProposals(consequence, prefix,
+	private void addRHSJavaCompletionProposals(List list, int documentOffset, String prefix, String backText, 
+			String consequence) {
+		list.addAll(getJavaCompletionProposals(documentOffset, consequence, prefix,
 				getRuleParameters(backText)));
 	}
 
-	private void addRHSMvelCompletionProposals(List list, String prefix,
+	private void addRHSMvelCompletionProposals(List list, final int documentOffset, String prefix,
 			String backText, String consequence, boolean expressionStart) {
 
 		Collection mvelCompletionProposals = getMvelCompletionProposals(
-				consequence, prefix, getRuleParameters(backText), backText,
+				consequence, documentOffset, prefix, getRuleParameters(backText), backText,
 				expressionStart);
 		list.addAll(mvelCompletionProposals);
 	}
 
 	private Collection getMvelCompletionProposals(final String consequence,
-			final String prefix, Map params, String backText,
+			final int documentOffset, final String prefix, Map params, String backText,
 			boolean startOfExpression) {
 
 		final Set proposals = new HashSet();
@@ -749,11 +748,11 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
 			if (startOfExpression) {
 				Collection jdtProps = getJavaMvelCompletionProposals("",
-						prefix, params);
+						prefix, documentOffset, params);
 				proposals.addAll(jdtProps);
-				addMvelVariables(proposals, compilationContext);
+				addMvelVariables(proposals, compilationContext, documentOffset, prefix);
 
-				addMvelInputs(proposals, compilationContext);
+				addMvelInputs(proposals, compilationContext, documentOffset, prefix);
 
 			} else {
 				// we are completing the methods for an existing type or
@@ -773,7 +772,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 					String javaText = "\n" + lastType.getName() + " o = new "
 							+ lastType.getName() + "();\no.";
 					Collection jdtProps = getJavaMvelCompletionProposals(
-							javaText, prefix, params);
+							javaText, prefix, documentOffset, params);
 					proposals.addAll(jdtProps);
 				}
 			}
@@ -822,28 +821,27 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		} catch (Exception e) {
 			return initialContext;
 		}
-
 	}
 
 	private void addMvelInputs(final Collection proposals,
-			ParserContext compilationContext) {
+			ParserContext compilationContext, int documentOffset, String prefix) {
 		Map inputs = compilationContext.getInputs();
 		for (Iterator iter = inputs.keySet().iterator(); iter.hasNext();) {
 			String prop = (String) iter.next();
-			RuleCompletionProposal rcp = new RuleCompletionProposal(prop
-					.length(), prop);
+			RuleCompletionProposal rcp = new RuleCompletionProposal(
+				documentOffset - prefix.length(), prefix.length(), prop);
 			rcp.setImage(DefaultCompletionProcessor.VARIABLE_ICON);
 			proposals.add(rcp);
 		}
 	}
 
 	private void addMvelVariables(final Collection proposals,
-			ParserContext compilationContext) {
+			ParserContext compilationContext, int documentOffset, String prefix) {
 		Map variables = compilationContext.getVariables();
 		for (Iterator iter = variables.keySet().iterator(); iter.hasNext();) {
 			String prop = (String) iter.next();
-			RuleCompletionProposal rcp = new RuleCompletionProposal(prop
-					.length(), prop);
+			RuleCompletionProposal rcp = new RuleCompletionProposal(
+				documentOffset - prefix.length(), prefix.length(), prop);
 			rcp.setImage(DefaultCompletionProcessor.VARIABLE_ICON);
 			proposals.add(rcp);
 		}
@@ -901,39 +899,38 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		}
 	}
 
-	private void addRuleHeaderProposals(List list, String prefix,
-			String backText) {
-		list.add(new RuleCompletionProposal(prefix.length(), "salience",
+	private void addRuleHeaderProposals(List list, int documentOffset, String prefix, String backText) {
+		list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "salience",
 				"salience ", DROOLS_ICON));
-		list.add(new RuleCompletionProposal(prefix.length(), "no-loop",
+		list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "no-loop",
 				"no-loop ", DROOLS_ICON));
-		list.add(new RuleCompletionProposal(prefix.length(), "agenda-group",
+		list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "agenda-group",
 				"agenda-group ", DROOLS_ICON));
-		list.add(new RuleCompletionProposal(prefix.length(), "duration",
+		list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "duration",
 				"duration ", DROOLS_ICON));
-		list.add(new RuleCompletionProposal(prefix.length(), "auto-focus",
+		list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "auto-focus",
 				"auto-focus ", DROOLS_ICON));
-		list.add(new RuleCompletionProposal(prefix.length(), "when", "when"
+		list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "when", "when"
 				+ System.getProperty("line.separator") + "\t ", DROOLS_ICON));
-		list.add(new RuleCompletionProposal(prefix.length(),
+		list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(),
 				"activation-group", "activation-group ", DROOLS_ICON));
-		list.add(new RuleCompletionProposal(prefix.length(), "date-effective",
+		list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "date-effective",
 				"date-effective \"dd-MMM-yyyy\"", 16, DROOLS_ICON));
-		list.add(new RuleCompletionProposal(prefix.length(), "date-expires",
+		list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "date-expires",
 				"date-expires \"dd-MMM-yyyy\"", 14, DROOLS_ICON));
-		list.add(new RuleCompletionProposal(prefix.length(), "enabled",
+		list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "enabled",
 				"enabled false", DROOLS_ICON));
-		list.add(new RuleCompletionProposal(prefix.length(), "ruleflow-group",
+		list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "ruleflow-group",
 				"ruleflow-group \"\"", 16, DROOLS_ICON));
-		list.add(new RuleCompletionProposal(prefix.length(), "lock-on-active",
-				"lock-on-active ", DROOLS_ICON));
-		list.add(new RuleCompletionProposal(prefix.length(),
-				"dialect \"java\"", "dialect \"java\"", DROOLS_ICON));
-		list.add(new RuleCompletionProposal(prefix.length(),
-				"dialect \"mvel\"", "dialect \"mvel\"", DROOLS_ICON));
+        list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "lock-on-active",
+                "lock-on-active ", DROOLS_ICON));
+        list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "dialect \"java\"",
+        		"dialect \"java\" ", DROOLS_ICON));
+        list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "dialect \"mvel\"",
+        		"dialect \"mvel\" ", DROOLS_ICON));
 	}
 
-	private boolean addFactTemplatePropertyProposals(String prefix,
+	private boolean addFactTemplatePropertyProposals(int documentOffset, String prefix,
 			String templateName, List list) {
 		FactTemplateDescr descr = getTemplate(templateName);
 		if (descr == null) {
@@ -943,7 +940,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		while (iterator.hasNext()) {
 			FieldTemplateDescr field = (FieldTemplateDescr) iterator.next();
 			String fieldName = field.getName();
-			RuleCompletionProposal p = new RuleCompletionProposal(prefix
+			RuleCompletionProposal p = new RuleCompletionProposal(documentOffset - prefix.length(), prefix
 					.length(), fieldName, fieldName + " ");
 			p.setImage(METHOD_ICON);
 			list.add(p);

@@ -24,6 +24,7 @@ import org.drools.eclipse.flow.ruleflow.core.RuleFlowProcessWrapper;
 import org.drools.eclipse.flow.ruleflow.core.RuleSetNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.SplitWrapper;
 import org.drools.eclipse.flow.ruleflow.core.StartNodeWrapper;
+import org.drools.eclipse.flow.ruleflow.core.SubFlowWrapper;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
 
@@ -52,6 +53,8 @@ public class RuleFlowEditPartFactory implements EditPartFactory {
             result = new JoinEditPart();
         } else if (model instanceof MilestoneWrapper) {
             result = new MilestoneEditPart();
+        } else if (model instanceof SubFlowWrapper) {
+            result = new SubFlowEditPart();
         } else {
             throw new IllegalArgumentException(
                 "Unknown model object " + model);

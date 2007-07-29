@@ -28,6 +28,7 @@ import org.drools.eclipse.flow.ruleflow.core.MilestoneWrapper;
 import org.drools.eclipse.flow.ruleflow.core.RuleSetNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.SplitWrapper;
 import org.drools.eclipse.flow.ruleflow.core.StartNodeWrapper;
+import org.drools.eclipse.flow.ruleflow.core.SubFlowWrapper;
 import org.drools.ruleflow.core.Connection;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.ConnectionCreationToolEntry;
@@ -118,16 +119,26 @@ public class RuleFlowPaletteFactory {
         );
         entries.add(combined);
                         
-//        combined = new CombinedTemplateCreationEntry(
-//            "Milestone",
-//            "Create a new Milestone",
-//            MilestoneWrapper.class,
-//            new SimpleFactory(MilestoneWrapper.class),
-//            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/activity.gif")), 
-//            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/activity.gif"))
-//        );
-//        entries.add(combined);
+        combined = new CombinedTemplateCreationEntry(
+            "Milestone",
+            "Create a new Milestone",
+            MilestoneWrapper.class,
+            new SimpleFactory(MilestoneWrapper.class),
+            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/question.gif")), 
+            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/question.gif"))
+        );
+        entries.add(combined);
                             
+        combined = new CombinedTemplateCreationEntry(
+            "SubFlow",
+            "Create a new SubFlow",
+            SubFlowWrapper.class,
+            new SimpleFactory(SubFlowWrapper.class),
+            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/process.gif")), 
+            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/process.gif"))
+        );
+        entries.add(combined);
+                                
         drawer.addAll(entries);
         return drawer;
     }

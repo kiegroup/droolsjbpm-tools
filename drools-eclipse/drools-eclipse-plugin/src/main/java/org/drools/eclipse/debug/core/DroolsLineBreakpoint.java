@@ -13,7 +13,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.internal.debug.core.breakpoints.JavaLineBreakpoint;
 
 public class DroolsLineBreakpoint extends JavaLineBreakpoint {

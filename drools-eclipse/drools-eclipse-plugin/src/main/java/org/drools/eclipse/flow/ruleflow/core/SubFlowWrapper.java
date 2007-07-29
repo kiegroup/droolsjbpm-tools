@@ -17,43 +17,40 @@ package org.drools.eclipse.flow.ruleflow.core;
 
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
-import org.drools.eclipse.flow.ruleflow.view.property.constraint.MilestoneConstraintPropertyDescriptor;
-import org.drools.ruleflow.core.MilestoneNode;
-import org.drools.ruleflow.core.impl.MilestoneNodeImpl;
+import org.drools.ruleflow.core.SubFlowNode;
+import org.drools.ruleflow.core.impl.SubFlowNodeImpl;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
+import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 /**
- * Wrapper for a milestone node.
+ * Wrapper for a SubFlow node.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class MilestoneWrapper extends NodeWrapper {
+public class SubFlowWrapper extends NodeWrapper {
 
-	private static final long serialVersionUID = -5976489437109982927L;
-	private IPropertyDescriptor[] descriptors;
-
-    public static final String CONSTRAINT = "Constraint";
-
-    public MilestoneWrapper() {
-        setNode(new MilestoneNodeImpl());
-        getMilestoneNode().setName("Milestone");
-    }
+	private static final long serialVersionUID = 3668348577732020324L;
+    private static IPropertyDescriptor[] descriptors;
     
-    private void setDescriptors() {
+    public static final String PROCESS_ID = "ProcessId";
+
+    static {
         descriptors = new IPropertyDescriptor[DefaultElementWrapper.descriptors.length + 1];
         System.arraycopy(DefaultElementWrapper.descriptors, 0, descriptors, 0, DefaultElementWrapper.descriptors.length);
         descriptors[descriptors.length - 1] = 
-            new MilestoneConstraintPropertyDescriptor(CONSTRAINT, "Constraint", getMilestoneNode(), ((RuleFlowProcessWrapper) getParent()).getRuleFlowProcess());
+        	new TextPropertyDescriptor(PROCESS_ID, "ProcessId");
     }
     
-    public MilestoneNode getMilestoneNode() {
-        return (MilestoneNode) getNode();
+    public SubFlowWrapper() {
+        setNode(new SubFlowNodeImpl());
+        getSubFlowNode().setName("SubFlow");
+    }
+    
+    public SubFlowNode getSubFlowNode() {
+        return (SubFlowNode) getNode();
     }
     
     public IPropertyDescriptor[] getPropertyDescriptors() {
-    	if (descriptors == null) {
-    		setDescriptors();
-    	}
         return descriptors;
     }
 
@@ -66,24 +63,24 @@ public class MilestoneWrapper extends NodeWrapper {
     }
     
     public Object getPropertyValue(Object id) {
-        if (CONSTRAINT.equals(id)) {
-        	String constraint = getMilestoneNode().getConstraint();
-            return constraint == null ? "" : constraint;
+        if (PROCESS_ID.equals(id)) {
+        	String processId = getSubFlowNode().getProcessId();
+            return processId == null ? "" : processId;
         }
         return super.getPropertyValue(id);
     }
 
     public void resetPropertyValue(Object id) {
-        if (CONSTRAINT.equals(id)) {
-        	getMilestoneNode().setConstraint("");
+        if (PROCESS_ID.equals(id)) {
+        	getSubFlowNode().setProcessId("");
         } else {
             super.resetPropertyValue(id);
         }
     }
 
     public void setPropertyValue(Object id, Object value) {
-        if (CONSTRAINT.equals(id)) {
-        	getMilestoneNode().setConstraint((String) value);
+        if (PROCESS_ID.equals(id)) {
+        	getSubFlowNode().setProcessId((String) value);
         } else {
             super.setPropertyValue(id, value);
         }

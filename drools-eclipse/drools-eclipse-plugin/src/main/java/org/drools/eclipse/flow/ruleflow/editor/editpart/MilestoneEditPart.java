@@ -15,13 +15,16 @@ package org.drools.eclipse.flow.ruleflow.editor.editpart;
  * limitations under the License.
  */
 
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.editor.editpart.ElementEditPart;
 import org.drools.eclipse.flow.common.editor.editpart.figure.ElementFigure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.RoundedRectangle;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -37,8 +40,11 @@ public class MilestoneEditPart extends ElementEditPart {
         return new RuleSetNodeFigure();
     }
     
-    public class RuleSetNodeFigure extends ElementFigure {
+    public static class RuleSetNodeFigure extends ElementFigure {
         
+        private static final Image ICON = ImageDescriptor.createFromURL(
+    		DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/question.gif")).createImage();
+            
         private RoundedRectangle rectangle;
         
         protected void customizeFigure() {
@@ -48,6 +54,7 @@ public class MilestoneEditPart extends ElementEditPart {
             rectangle.setBackgroundColor(color);
             rectangle.setBounds(getBounds());
             setSelected(false);
+            setIcon(ICON);
         }
         
         public void setBounds(Rectangle rectangle) {

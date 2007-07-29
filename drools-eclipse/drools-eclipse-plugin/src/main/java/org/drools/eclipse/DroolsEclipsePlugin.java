@@ -268,7 +268,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 		return generateParsedResource(content, resource, false, true);
 	}
 	
-public void invalidateResource(IResource resource) {
+	public void invalidateResource(IResource resource) {
 		DRLInfo cached = (DRLInfo) compiledRules.remove(resource);
 		if (cached != null) {
 			RuleInfo[] ruleInfos = cached.getRuleInfos();

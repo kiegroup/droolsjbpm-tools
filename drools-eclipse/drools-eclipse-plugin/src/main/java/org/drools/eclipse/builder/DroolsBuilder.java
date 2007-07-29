@@ -20,12 +20,15 @@ import org.drools.compiler.FactTemplateError;
 import org.drools.compiler.FieldTemplateError;
 import org.drools.compiler.FunctionError;
 import org.drools.compiler.GlobalError;
+import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.ParserError;
+import org.drools.compiler.ProcessBuilder;
 import org.drools.compiler.RuleError;
 import org.drools.decisiontable.InputType;
 import org.drools.decisiontable.SpreadsheetCompiler;
 import org.drools.eclipse.DRLInfo;
 import org.drools.eclipse.DroolsEclipsePlugin;
+import org.drools.eclipse.flow.ruleflow.core.RuleFlowProcessWrapper;
 import org.drools.eclipse.preferences.IDroolsConstants;
 import org.drools.lang.ExpanderException;
 import org.eclipse.core.resources.IFile;
@@ -45,6 +48,8 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+
+import com.thoughtworks.xstream.XStream;
 
 /**
  * Automatically syntax checks .drl files and adds possible
@@ -86,7 +91,6 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
     
     protected void fullBuild(IProgressMonitor monitor)
             throws CoreException {
-    	DroolsEclipsePlugin.getDefault().clearCache();
         getProject().accept(new DroolsBuildVisitor());
     }
     
@@ -103,17 +107,17 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
 
     private class DroolsBuildVisitor implements IResourceVisitor {
         public boolean visit(IResource res) {
-            return parseResource(res);
+            return parseResource(res, true);
         }
     }
 
     private class DroolsBuildDeltaVisitor implements IResourceDeltaVisitor {
         public boolean visit(IResourceDelta delta) throws CoreException {
-            return parseResource(delta.getResource());
+            return parseResource(delta.getResource(), false);
         }
     }
     
-    private boolean parseResource(IResource res) {
+    private boolean parseResource(IResource res, boolean clean) {
         try {
             IJavaProject project = JavaCore.create(res.getProject());
             // exclude files that are located in the output directory,
@@ -132,6 +136,9 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
     				|| ".package".equals(res.getName()))) {
             removeProblemsFor(res);
             try {
+            	if (clean) {
+            		DroolsEclipsePlugin.getDefault().invalidateResource(res);
+            	}
             	DroolsBuildMarker[] markers = parseDRLFile((IFile) res, new String(Util.getResourceContentsAsCharArray((IFile) res)));
 		        for (int i = 0; i < markers.length; i++) {
 		        	createMarker(res, markers[i].getText(), markers[i].getLine());
@@ -143,6 +150,9 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         } else if (res instanceof IFile && "xls".equals(res.getFileExtension())) {
             removeProblemsFor(res);
             try {
+            	if (clean) {
+            		DroolsEclipsePlugin.getDefault().invalidateResource(res);
+            	}
             	DroolsBuildMarker[] markers = parseXLSFile((IFile) res);
 		        for (int i = 0; i < markers.length; i++) {
 		        	createMarker(res, markers[i].getText(), markers[i].getLine());
@@ -154,7 +164,24 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         } else if (res instanceof IFile && "brl".equals(res.getFileExtension())) {
             removeProblemsFor(res);
             try {
+            	if (clean) {
+            		DroolsEclipsePlugin.getDefault().invalidateResource(res);
+            	}
             	DroolsBuildMarker[] markers = parseBRLFile((IFile) res);
+		        for (int i = 0; i < markers.length; i++) {
+		        	createMarker(res, markers[i].getText(), markers[i].getLine());
+		        }
+            } catch (Throwable t) {
+            	createMarker(res, t.getMessage(), -1);
+            }
+            return false;
+        } else if (res instanceof IFile && "rf".equals(res.getFileExtension())) {
+            removeProblemsFor(res);
+            try {
+            	if (clean) {
+            		DroolsEclipsePlugin.getDefault().invalidateResource(res);
+            	}
+            	DroolsBuildMarker[] markers = parseRuleFlowFile((IFile) res);
 		        for (int i = 0; i < markers.length; i++) {
 		        	createMarker(res, markers[i].getText(), markers[i].getLine());
 		        }
@@ -240,6 +267,36 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                 RecognitionException recogErr = (RecognitionException) cause;
                 markers.add(new DroolsBuildMarker(recogErr.getMessage(), recogErr.line)); //flick back the line number
             }
+        } catch (Exception t) {
+        	String message = t.getMessage();
+            if (message == null || message.trim().equals( "" )) {
+                message = "Error: " + t.getClass().getName();
+            }
+            markers.add(new DroolsBuildMarker(message));
+        }
+        return (DroolsBuildMarker[]) markers.toArray(new DroolsBuildMarker[markers.size()]);
+    }
+    
+    private DroolsBuildMarker[] parseRuleFlowFile(IFile file) {
+    	List markers = new ArrayList();
+		try {
+			String ruleflow = convertToString(file.getContents());
+			XStream stream = new XStream();
+	        stream.setMode(XStream.ID_REFERENCES);
+	        
+	        ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+	        ClassLoader newLoader = this.getClass().getClassLoader();
+	        try {
+	            Thread.currentThread().setContextClassLoader(newLoader);
+	            Object o = stream.fromXML(ruleflow);
+	            if (o instanceof RuleFlowProcessWrapper) {
+	            	ProcessBuilder processBuilder = new ProcessBuilder(new PackageBuilder());
+	            	processBuilder.addProcess(((RuleFlowProcessWrapper) o).getRuleFlowProcess());
+	            	markParseErrors(markers, processBuilder.getErrors());
+	            }
+	        } finally {
+	            Thread.currentThread().setContextClassLoader(oldLoader);
+	        }			
         } catch (Exception t) {
         	String message = t.getMessage();
             if (message == null || message.trim().equals( "" )) {
