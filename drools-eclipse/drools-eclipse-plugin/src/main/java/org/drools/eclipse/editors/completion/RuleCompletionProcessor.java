@@ -67,7 +67,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		try {
 			final List list = new ArrayList();
 			IDocument doc = viewer.getDocument();
-			
+
 			String backText = readBackwards(documentOffset, doc);
 			final String prefix = CompletionUtil.stripLastWord(backText);
 
@@ -105,7 +105,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			// possible if doing code completion directly after "then"
 			return;
 		}
-		String consequenceWithoutPrefix = 
+		String consequenceWithoutPrefix =
 			consequence.substring(0,consequence.length() - prefix.length());
 
         if ( context == null ) {
@@ -133,7 +133,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         }
 	}
 
-	protected void addLHSCompletionProposals(List list, int documentOffset, 
+	protected void addLHSCompletionProposals(List list, int documentOffset,
 			Location location, String prefix, String backText) {
 		switch (location.getType()) {
 		case Location.LOCATION_LHS_BEGIN_OF_CONDITION:
@@ -220,7 +220,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 						documentOffset, prefix, className, list);
 				if (!isTemplate) {
 					ClassTypeResolver resolver = new ClassTypeResolver(
-							getImports(), ProjectClassLoader
+							getUniqueImports(), ProjectClassLoader
 									.getProjectClassLoader(getEditor()));
 					try {
 						String currentClass = className;
@@ -242,7 +242,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 						Class clazz = resolver.resolveType(currentClass);
 						if (clazz != null) {
 							if (Map.class.isAssignableFrom(clazz)) {
-								p = new RuleCompletionProposal(documentOffset - prefix.length(), 
+								p = new RuleCompletionProposal(documentOffset - prefix.length(),
 									prefix.length(), "this['']", "this['']", 6);
 								p.setImage(METHOD_ICON);
 								list.add(p);
@@ -252,14 +252,14 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 							Iterator iterator2 = inspector.getFieldNames().keySet().iterator();
 							while (iterator2.hasNext()) {
 								String name = (String) iterator2.next();
-								p = new RuleCompletionProposal(documentOffset - prefix.length(), 
+								p = new RuleCompletionProposal(documentOffset - prefix.length(),
 										prefix.length(), name, name + " ");
 								p.setImage(METHOD_ICON);
 								list.add(p);
 								Class type = (Class) types.get(name);
 								if (type != null && Map.class.isAssignableFrom(type)) {
 									name += "['']";
-									p = new RuleCompletionProposal(documentOffset - prefix.length(), 
+									p = new RuleCompletionProposal(documentOffset - prefix.length(),
 										prefix.length(), name, name, name.length() - 2);
 									p.setImage(METHOD_ICON);
 									list.add(p);
@@ -505,7 +505,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 							return type;
 						}
 						ClassTypeResolver resolver = new ClassTypeResolver(
-								getImports(), ProjectClassLoader
+								getUniqueImports(), ProjectClassLoader
 										.getProjectClassLoader(getEditor()));
 						try {
 							Class clazz = resolver.resolveType(type);
@@ -541,7 +541,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			return "java.lang.Object";
 		}
 		ClassTypeResolver resolver = new ClassTypeResolver(
-			getImports(), ProjectClassLoader
+				getUniqueImports(), ProjectClassLoader
 				.getProjectClassLoader(getEditor()));
 		try {
 			Class clazz = resolver.resolveType(className);
@@ -633,7 +633,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		class1 = convertToNonPrimitiveClass(class1);
 		class2 = convertToNonPrimitiveClass(class2);
 		// TODO add code to take primitive types into account
-		ClassTypeResolver resolver = new ClassTypeResolver(getImports(), ProjectClassLoader
+		ClassTypeResolver resolver = new ClassTypeResolver(getUniqueImports(), ProjectClassLoader
 				.getProjectClassLoader(getEditor()));
 		try {
 			Class clazz1 = resolver.resolveType(class1);
@@ -707,7 +707,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 		list.add(prop);
 	}
 
-	private void addRHSJavaCompletionProposals(List list, int documentOffset, String prefix, String backText, 
+	private void addRHSJavaCompletionProposals(List list, int documentOffset, String prefix, String backText,
 			String consequence) {
 		list.addAll(getJavaCompletionProposals(documentOffset, consequence, prefix,
 				getRuleParameters(backText)));

@@ -21,7 +21,6 @@ import org.drools.lang.descr.GlobalDescr;
 import org.drools.util.StringUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.CompletionContext;
-import org.eclipse.jdt.core.CompletionProposal;
 import org.eclipse.jdt.core.CompletionRequestor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
@@ -73,12 +72,12 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
                                           int documentOffset) {
         try {
 	        IDocument doc = viewer.getDocument();
-	        String backText = readBackwards( documentOffset, doc );            
-	
+	        String backText = readBackwards( documentOffset, doc );
+
 	        String prefix = CompletionUtil.stripLastWord(backText);
-	        
+
 	        List props = null;
-	        Matcher matcher = IMPORT_PATTERN.matcher(backText); 
+	        Matcher matcher = IMPORT_PATTERN.matcher(backText);
 	        if (matcher.matches()) {
 	        	String classNameStart = backText.substring(backText.lastIndexOf("import") + 7);
 	        	props = getAllClassProposals(classNameStart, documentOffset, prefix);
@@ -122,14 +121,14 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
         }
         return result;
     }
-    
+
 	private List getAllClassProposals(final String classNameStart, final int documentOffset, final String prefix) {
 		final List list = new ArrayList();
 		IEditorInput input = getEditor().getEditorInput();
 		if (input instanceof IFileEditorInput) {
 			IProject project = ((IFileEditorInput) input).getFile().getProject();
 			IJavaProject javaProject = JavaCore.create(project);
-			
+
 			CompletionRequestor requestor = new CompletionRequestor() {
 				public void accept(org.eclipse.jdt.core.CompletionProposal proposal) {
 					String className = new String(proposal.getCompletion());
@@ -138,7 +137,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
 						prop.setImage(DroolsPluginImages.getImage(DroolsPluginImages.PACKAGE));
 						list.add(prop);
 					} else if (proposal.getKind() == org.eclipse.jdt.core.CompletionProposal.TYPE_REF) {
-						RuleCompletionProposal prop = new RuleCompletionProposal(documentOffset - prefix.length(), classNameStart.length() - proposal.getReplaceStart(), className, className + ";"); 
+						RuleCompletionProposal prop = new RuleCompletionProposal(documentOffset - prefix.length(), classNameStart.length() - proposal.getReplaceStart(), className, className + ";");
 						prop.setImage(DroolsPluginImages.getImage(DroolsPluginImages.CLASS));
 						list.add(prop);
 					}
@@ -258,7 +257,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
 
 		CompletionProposalCollector collector = new CompletionProposalCollector(javaProject);
 		collector.acceptContext(new CompletionContext());
-		
+
         try {
             IEvaluationContext evalContext = javaProject.newEvaluationContext();
             List imports = getImports();
@@ -306,6 +305,12 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
             return ((DRLRuleEditor) getEditor()).getImports();
         }
         return Collections.EMPTY_LIST;
+    }
+
+    protected Set getUniqueImports() {
+            HashSet set = new HashSet();
+			set.addAll(getImports());
+			return set;
     }
 
     protected List getFunctions() {
