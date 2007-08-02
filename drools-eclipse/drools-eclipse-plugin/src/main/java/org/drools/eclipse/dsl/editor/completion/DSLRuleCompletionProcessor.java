@@ -35,7 +35,7 @@ public class DSLRuleCompletionProcessor extends RuleCompletionProcessor {
     
 	protected void addRHSCompletionProposals(List list, int documentOffset, String prefix, String backText,
 			String conditions, String consequence) {
-		super.addRHSCompletionProposals(list, documentOffset, prefix, backText, conditions, consequence);
+		// super.addRHSCompletionProposals(list, documentOffset, prefix, backText, conditions, consequence);
 		DSLAdapter adapter = getDSLRuleEditor().getDSLAdapter();
 		if (adapter != null) {
 			List dslConsequences = adapter.getDSLTree().getConsequenceChildrenList(prefix, true);
@@ -45,7 +45,7 @@ public class DSLRuleCompletionProcessor extends RuleCompletionProcessor {
 	
 	protected void addLHSCompletionProposals(List list, int documentOffset,
 			Location location, String prefix, String backText) {
-		super.addLHSCompletionProposals(list, documentOffset, location, prefix, backText);
+		// super.addLHSCompletionProposals(list, documentOffset, location, prefix, backText);
 		DSLAdapter adapter = getDSLRuleEditor().getDSLAdapter();
 		if (adapter != null) {
 			String lastobj = this.getLastNonDashLine(backText);

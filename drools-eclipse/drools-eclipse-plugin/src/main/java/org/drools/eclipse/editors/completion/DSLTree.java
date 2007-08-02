@@ -332,7 +332,8 @@ public class DSLTree {
             }
     	}
     	if (thenode == null) {
-    		thenode = this.rootCond;
+    		return null;
+    		// thenode = this.rootCond;
     	}
         Collection children = thenode.getChildren();
         Node[] nchild = new Node[children.size()];
@@ -371,9 +372,10 @@ public class DSLTree {
     	Node[] c = getConsequenceChildren(text);
     	this.suggestions.clear();
     	for (int idx=0; idx < c.length; idx++) {
-    		this.suggestions.add(c[idx].getToken());
     		if (addChildren) {
         		this.addChildToList(c[idx], c[idx].getToken(), this.suggestions);
+    		} else {
+    			this.suggestions.add(c[idx].getToken());
     		}
     	}
     	return this.suggestions;
@@ -389,22 +391,26 @@ public class DSLTree {
     public ArrayList getChildrenList(String obj, String text, boolean addChildren) {
     	Node[] c = getChildren(obj,text);
     	this.suggestions.clear();
-    	for (int idx=0; idx < c.length; idx++) {
-    		this.suggestions.add(c[idx].getToken());
-    		if (addChildren) {
-        		this.addChildToList(c[idx], c[idx].getToken(), this.suggestions);
-    		}
+    	if (c != null) {
+	    	for (int idx=0; idx < c.length; idx++) {
+	    		if (addChildren) {
+	        		this.addChildToList(c[idx], c[idx].getToken(), this.suggestions);
+	    		} else {
+	    			this.suggestions.add(c[idx].getToken());
+	    		}
+	    	}
     	}
-    	// in the event the line is zero length after it is trimmed, we also add
-    	// the top level nodes
-    	if (text.trim().length() == 0) {
+    	if (c == null || text.trim().length() == 0) {
+	    	// in the event the line is zero length after it is trimmed, we also add
+	    	// the top level nodes
     		Iterator top = this.rootCond.getChildren().iterator();
         	while (top.hasNext()) {
         		Node t = (Node)top.next();
         		if (!this.suggestions.contains(t.getToken())) {
-            		this.suggestions.add(t.getToken());
             		if (addChildren) {
                 		this.addChildToList(t, t.getToken(), this.suggestions);
+            		} else {
+                		this.suggestions.add(t.getToken());
             		}
         		}
         	}
@@ -425,9 +431,11 @@ public class DSLTree {
     		while (itr.hasNext()) {
     			Node child = (Node)itr.next();
     			String text = prefix + " " + child.getToken();
-    			list.add(text);
+    			// list.add(text);
     			addChildToList(child,text,list);
     		}
+    	} else {
+    		list.add(prefix);
     	}
     }
     
