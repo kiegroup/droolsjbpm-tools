@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -13,7 +14,9 @@ import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.server.rules.SuggestionCompletionLoader;
 import org.drools.brms.server.util.BRDRLPersistence;
 import org.drools.brms.server.util.BRXMLPersistence;
+import org.drools.compiler.DrlParser;
 import org.drools.eclipse.DroolsEclipsePlugin;
+import org.drools.eclipse.dsl.editor.DSLAdapter;
 import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.eclipse.core.internal.resources.Container;
@@ -40,6 +43,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.DocumentProviderRegistry;
 import org.eclipse.ui.texteditor.IDocumentProvider;
@@ -275,15 +279,25 @@ public class RuleEditor extends FormEditor
     }
 
     private void updateDRLPage() {
-
-        String drl;
+        
+        String drl="";
         try {
             drl = BRDRLPersistence.getInstance().marshal( guidedEditor.getRuleModel() );
+            
+            IResource resource = ResourceUtil.getResource( xmlEditor.getEditorInput() );
+            
+            Reader reader = DSLAdapter.getDSLContent( drl, resource );
+            DrlParser parser = new DrlParser();
+
+            if (reader!=null) {
+                drl = parser.getExpandedDRL( drl, reader );
+            }
+
         } catch ( Throwable t ) {
 
             StringWriter strwriter = new StringWriter();
             t.printStackTrace( new PrintWriter( strwriter ) );
-            drl = strwriter.toString();
+            drl = "\nPROBLEM WITH THE DRL CONVERSION!\n\n\nDRL:\n"+drl+"\n\nSTACKTRACE:\n"+strwriter.toString();
         }
         drlPreviewText.setText( drl );
     }

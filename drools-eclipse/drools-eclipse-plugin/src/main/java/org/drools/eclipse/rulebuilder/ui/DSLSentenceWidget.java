@@ -93,26 +93,6 @@ public abstract class DSLSentenceWidget extends Widget {
                 //final Text thisBox = currentBox;
                 elems++;
 
-                currentBox.addModifyListener( new ModifyListener() {
-                    public void modifyText(ModifyEvent e) {
-                        updateSentence();
-                        /*                        Point p = thisBox.getSize();
-                         
-                         GC gc = new GC(thisBox);
-                         gc.setFont(thisBox.getFont());
-                         FontMetrics fontMetrics = gc.getFontMetrics();
-                         int w = fontMetrics.getAverageCharWidth()*thisBox.getText().length();
-                         gc.dispose();
-                         
-                         
-                         thisBox.setSize( w, p.y );
-                         thisBox.redraw();
-                         parent.redraw();
-                         */
-                        getModeller().setDirty( true );
-                    }
-                } );
-
                 widgets.add( currentBox );
 
             } else if ( c == '}' ) {
@@ -142,6 +122,33 @@ public abstract class DSLSentenceWidget extends Widget {
         l.marginBottom = 0;
         parent.setLayout( l );
 
+        // Attach listeners
+        Iterator widgetiter = widgets.iterator();
+        while ( widgetiter.hasNext() ) {
+            Object o = (Object) widgetiter.next();
+            if (o instanceof Text) {
+                ((Text)o).addModifyListener( new ModifyListener() {
+                    public void modifyText(ModifyEvent e) {
+                        updateSentence();
+                        /*                        Point p = thisBox.getSize();
+                         
+                         GC gc = new GC(thisBox);
+                         gc.setFont(thisBox.getFont());
+                         FontMetrics fontMetrics = gc.getFontMetrics();
+                         int w = fontMetrics.getAverageCharWidth()*thisBox.getText().length();
+                         gc.dispose();
+                         
+                         
+                         thisBox.setSize( w, p.y );
+                         thisBox.redraw();
+                         parent.redraw();
+                         */
+                        getModeller().setDirty( true );
+                    }
+                } );
+                
+            }
+        }
         toolkit.paintBordersFor( parent );
     }
 
@@ -155,7 +162,7 @@ public abstract class DSLSentenceWidget extends Widget {
                 newSentence = newSentence + "{" + ((Text) wid).getText() + "}";
             }
         }
-        this.sentence.sentence = newSentence.trim();
+        this.sentence.sentence = newSentence;
     }
 
 }
