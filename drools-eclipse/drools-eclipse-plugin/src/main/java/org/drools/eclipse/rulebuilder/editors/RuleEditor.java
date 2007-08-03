@@ -17,6 +17,8 @@ import org.drools.brms.server.util.BRXMLPersistence;
 import org.drools.compiler.DrlParser;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.dsl.editor.DSLAdapter;
+import org.drools.eclipse.editors.DRLDocumentProvider;
+import org.drools.eclipse.editors.DRLRuleEditor;
 import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.eclipse.core.internal.resources.Container;
@@ -31,10 +33,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -52,17 +52,17 @@ public class RuleEditor extends FormEditor
     implements
     IResourceChangeListener {
 
-    private BrlPage                  guidedEditor;
+    private BrlPage                    guidedEditor;
 
     private TextEditor                 xmlEditor          = new TextEditor();
-
-    private StyledText                 drlPreviewText;
 
     private SuggestionCompletionEngine completion;
 
     private SuggestionCompletionLoader loader;
 
     private FileEditorInput            packageEditorInput;
+
+    private final Document             drlDocument;
 
     private IResourceChangeListener    packageFileTracker = new IResourceChangeListener() {
 
@@ -84,6 +84,7 @@ public class RuleEditor extends FormEditor
         ResourcesPlugin.getWorkspace().addResourceChangeListener( this );
         ResourcesPlugin.getWorkspace().addResourceChangeListener( packageFileTracker,
                                                                   IResourceChangeEvent.POST_CHANGE );
+        drlDocument = new Document();
 
     }
 
@@ -99,7 +100,27 @@ public class RuleEditor extends FormEditor
             addPage( xmlEditor,
                      getEditorInput() );
 
-            addPage( initializePreviewDRLText() );
+            DRLRuleEditor drlEditor = new DRLRuleEditor() {
+                protected IDocumentProvider createDocumentProvider() {
+                    return new DRLDocumentProvider() {
+                        public boolean isReadOnly(Object element) {
+                            return true;
+                        }
+
+                        public boolean isModifiable(Object element) {
+                            return false;
+                        }
+
+                        protected IDocument getParentDocument(Object element) {
+                            return drlDocument;
+                        }
+                    };
+                }
+
+            };
+
+            addPage( drlEditor,
+                     xmlEditor.getEditorInput() );
 
             IPath packagePath = getCurrentDirectoryPath( getEditorInput() ).append( "rule.package" );
 
@@ -135,8 +156,8 @@ public class RuleEditor extends FormEditor
             setPageText( 2,
                          "Generated DRL (read-only)" );
 
-            updateName(false);
-            
+            updateName( false );
+
         } catch ( PartInitException e ) {
             e.printStackTrace();
         }
@@ -145,29 +166,20 @@ public class RuleEditor extends FormEditor
     private void updateName(boolean forced) {
         String name = xmlEditor.getTitle();
         setPartName( name );
-        
+
         //TODO Add support for other than .brl extensions
-        if (guidedEditor.getModeller()!=null && guidedEditor.getModeller().getModel()!=null && (guidedEditor.getModeller().getModel().name==null || forced)) {
-            String shortName = name.substring( 0, name.length()-".brl".length() );
-            guidedEditor.getModeller().getModel().name=shortName;            
+        if ( guidedEditor.getModeller() != null && guidedEditor.getModeller().getModel() != null && (guidedEditor.getModeller().getModel().name == null || forced) ) {
+            String shortName = name.substring( 0,
+                                               name.length() - ".brl".length() );
+            guidedEditor.getModeller().getModel().name = shortName;
         }
-        
+
         updateDRLPage();
-        
+
     }
 
     private IPath getCurrentDirectoryPath(IEditorInput editorInput) {
         return ((FileEditorInput) editorInput).getFile().getFullPath().removeLastSegments( 1 ).addTrailingSeparator();
-    }
-
-    private Composite initializePreviewDRLText() {
-
-        drlPreviewText = new StyledText( getContainer(),
-                                         SWT.V_SCROLL | SWT.H_SCROLL );
-        drlPreviewText.setEditable( false );
-        drlPreviewText.setCaret( null );
-
-        return drlPreviewText;
     }
 
     private void reloadCompletionEngine() {
@@ -251,7 +263,7 @@ public class RuleEditor extends FormEditor
                 if ( newModel ) {
                     guidedEditor.getModeller().setDirty( false );
                 }
-                updateName(false);
+                updateName( false );
             }
 
             guidedEditor.refresh();
@@ -272,40 +284,42 @@ public class RuleEditor extends FormEditor
 
             updateDRLPage();
 
-            updateName(false);
+            updateName( false );
 
         }
 
     }
 
     private void updateDRLPage() {
-        
-        String drl="";
+
+        String drl = "";
         try {
             drl = BRDRLPersistence.getInstance().marshal( guidedEditor.getRuleModel() );
-            
+
             IResource resource = ResourceUtil.getResource( xmlEditor.getEditorInput() );
-            
-            Reader reader = DSLAdapter.getDSLContent( drl, resource );
+
+            Reader reader = DSLAdapter.getDSLContent( drl,
+                                                      resource );
             DrlParser parser = new DrlParser();
 
-            if (reader!=null) {
-                drl = parser.getExpandedDRL( drl, reader );
+            if ( reader != null ) {
+                drl = parser.getExpandedDRL( drl,
+                                             reader );
             }
 
         } catch ( Throwable t ) {
 
             StringWriter strwriter = new StringWriter();
             t.printStackTrace( new PrintWriter( strwriter ) );
-            drl = "\nPROBLEM WITH THE DRL CONVERSION!\n\n\nDRL:\n"+drl+"\n\nSTACKTRACE:\n"+strwriter.toString();
+            drl = "\nPROBLEM WITH THE DRL CONVERSION!\n\n\nDRL:\n" + drl + "\n\nSTACKTRACE:\n" + strwriter.toString();
         }
-        drlPreviewText.setText( drl );
+        drlDocument.set( drl );
     }
 
     public void doSave(IProgressMonitor monitor) {
         IDocument document = getInputDocument();
 
-        if (xmlEditor.isDirty()) {
+        if ( xmlEditor.isDirty() ) {
             guidedEditor.setModelXML( document.get() );
         } else if ( guidedEditor.isDirty() ) {
             document.set( BRXMLPersistence.getInstance().marshal( guidedEditor.getRuleModel() ) );
@@ -316,7 +330,7 @@ public class RuleEditor extends FormEditor
         guidedEditor.getModeller().setDirty( false );
 
         guidedEditor.refresh();
-        
+
     }
 
     private IDocument getInputDocument() {
@@ -329,11 +343,11 @@ public class RuleEditor extends FormEditor
     public void doSaveAs() {
         xmlEditor.doSaveAs();
         guidedEditor.getModeller().setDirty( false );
-        updateName(true);
+        updateName( true );
         setInput( xmlEditor.getEditorInput() );
-        
+
         guidedEditor.refresh();
-        
+
     }
 
     public boolean isSaveAsAllowed() {

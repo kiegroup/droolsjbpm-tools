@@ -17,7 +17,7 @@ import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 public class DRLDocumentProvider extends TextFileDocumentProvider {
 	
 	public IDocument getDocument(Object element) {
-        IDocument document = super.getDocument(element);
+        IDocument document = getParentDocument(element); 
         if (document != null) {
             IDocumentPartitioner partitioner =
                 new FastPartitioner(
@@ -32,4 +32,9 @@ public class DRLDocumentProvider extends TextFileDocumentProvider {
     protected IAnnotationModel createAnnotationModel(IFile file) {
         return new DRLAnnotationModel(file);
 	}
+    
+    protected IDocument getParentDocument(Object element) {
+        return super.getDocument(element);
+    }
+    
 }
