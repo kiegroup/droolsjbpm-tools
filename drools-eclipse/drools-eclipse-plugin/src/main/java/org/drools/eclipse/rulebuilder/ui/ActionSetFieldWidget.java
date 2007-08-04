@@ -158,8 +158,11 @@ public class ActionSetFieldWidget extends Widget {
 			box.setText(val.value);
 		}
 
-		box.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
+		GridData gd = new GridData( GridData.FILL_HORIZONTAL );
+        gd.grabExcessHorizontalSpace = true;
+        gd.minimumWidth = 100;
+        box.setLayoutData( gd );
+		
 		box.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				val.value = box.getText();

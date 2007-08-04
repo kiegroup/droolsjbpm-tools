@@ -9,6 +9,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -75,6 +76,11 @@ public class RuleAttributeWidget extends Widget {
         final Text box = toolkit.createText( parent,
                                              "" );
 
+        GridData gd = new GridData( GridData.FILL_HORIZONTAL );
+        gd.grabExcessHorizontalSpace = true;
+        gd.minimumWidth = 100;
+        box.setLayoutData( gd );
+        
         box.setText( at.value );
 
         box.addModifyListener( new ModifyListener() {

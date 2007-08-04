@@ -6,8 +6,6 @@ import org.drools.brms.client.modeldriven.brl.ActionFieldValue;
 import org.drools.brms.client.modeldriven.brl.ActionInsertLogicalFact;
 import org.drools.eclipse.rulebuilder.modeldriven.HumanReadable;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
@@ -148,7 +146,10 @@ public class ActionInsertFactWidget extends Widget {
             box.setText( val.value );
         }
 
-        box.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
+        GridData gd = new GridData( GridData.FILL_HORIZONTAL );
+        gd.grabExcessHorizontalSpace = true;
+        gd.minimumWidth = 100;
+        box.setLayoutData( gd );
 
         box.addModifyListener( new ModifyListener() {
             public void modifyText(ModifyEvent e) {
