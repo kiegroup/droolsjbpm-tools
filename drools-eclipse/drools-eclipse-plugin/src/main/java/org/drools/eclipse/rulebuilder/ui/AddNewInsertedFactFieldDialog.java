@@ -19,61 +19,56 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class AddNewInsertedFactFieldDialog extends RuleDialog {
 
-    private RuleModeller           modeller;
+	private RuleModeller modeller;
 
-    private final ActionInsertFact fact;
+	private final ActionInsertFact fact;
 
-    public AddNewInsertedFactFieldDialog(Shell parent,
-                                         RuleModeller modeller,
-                                         ActionInsertFact fact) {
-        super( parent,
-               "Add new condition to the rule",
-               "Pick the values from combos and confirm the selection." );
-        this.modeller = modeller;
-        this.fact = fact;
-    }
+	public AddNewInsertedFactFieldDialog(Shell parent, RuleModeller modeller,
+			ActionInsertFact fact) {
+		super(parent, "Add new condition to the rule",
+				"Pick the values from combos and confirm the selection.");
+		this.modeller = modeller;
+		this.fact = fact;
+	}
 
-    protected Control createDialogArea(final Composite parent) {
+	protected Control createDialogArea(final Composite parent) {
 
-        Composite composite = (Composite) super.createDialogArea( parent );
+		Composite composite = (Composite) super.createDialogArea(parent);
 
-        createLabel( composite,
-                     "Field:" );
+		createLabel(composite, "Field:");
 
-        final Combo factsCombo = new Combo( composite,
-                                            SWT.READ_ONLY );
+		final Combo factsCombo = new Combo(composite, SWT.READ_ONLY);
 
-        String[] fields = getCompletion().getFieldCompletions( fact.factType );
-        factsCombo.add( "..." );
-        for ( int i = 0; i < fields.length; i++ ) {
-            factsCombo.add( fields[i] );
-        }
-        factsCombo.select( 0 );
+		String[] fields = getCompletion().getFieldCompletions(fact.factType);
+		factsCombo.add("...");
+		for (int i = 0; i < fields.length; i++) {
+			factsCombo.add(fields[i]);
+		}
+		factsCombo.select(0);
 
-        factsCombo.addListener( SWT.Selection,
-                                new Listener() {
-                                    public void handleEvent(Event event) {
+		factsCombo.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
 
-                                        if ( factsCombo.getSelectionIndex() == 0 ) {
-                                            return;
-                                        }
+				if (factsCombo.getSelectionIndex() == 0) {
+					return;
+				}
 
-                                        // TODO Is NUMBERIC ok?
-                                        fact.addFieldValue( new ActionFieldValue( factsCombo.getText(),
-                                                                                  "",
-                                                                                  SuggestionCompletionEngine.TYPE_NUMERIC ) );
+				String fieldType = modeller.getSuggestionCompletionEngine()
+						.getFieldType(fact.factType, factsCombo.getText());
+				fact.addFieldValue(new ActionFieldValue(factsCombo.getText(),
+						"", fieldType));
 
-                                        modeller.setDirty( true );
-                                        modeller.reloadRhs();
-                                        close();
-                                    }
-                                } );
+				modeller.setDirty(true);
+				modeller.reloadRhs();
+				close();
+			}
+		});
 
-        return composite;
-    }
+		return composite;
+	}
 
-    public SuggestionCompletionEngine getCompletion() {
-        return modeller.getSuggestionCompletionEngine();
-    }
+	public SuggestionCompletionEngine getCompletion() {
+		return modeller.getSuggestionCompletionEngine();
+	}
 
 }
