@@ -11,6 +11,7 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.eclipse.DRLInfo;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.debug.core.IDroolsDebugConstants;
+import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FunctionDescr;
@@ -43,59 +44,68 @@ public class DRLRuleEditor extends AbstractRuleEditor {
     protected List globals;
     protected String packageName;
     protected List classesInPackage;
+	protected Map attributes;
 
     public DRLRuleEditor() {
 	}
-    
+
 	public List getImports() {
-		if (imports == null) {
+		if (imports == null || isDirty()) {
 			loadImportsAndFunctions();
 		}
 		return imports;
 	}
-	
+
 	public List getFunctions() {
 		if (functions == null) {
 			loadImportsAndFunctions();
 		}
 		return functions;
 	}
-	
+
 	public Set getTemplates() {
 		if (templates == null) {
 			loadImportsAndFunctions();
 		}
 		return templates.keySet();
 	}
-	
+
+	public Map getAttributes() {
+		if ( attributes == null ) {
+			loadImportsAndFunctions();
+		}
+		return attributes;
+	}
+
+
 	public FactTemplateDescr getTemplate(String name) {
 		if (templates == null) {
 			loadImportsAndFunctions();
 		}
 		return (FactTemplateDescr) templates.get(name);
 	}
-	
+
 	public List getGlobals() {
-		if (globals == null) {
+		if (globals == null ) {
 			loadImportsAndFunctions();
 		}
 		return globals;
 	}
-	
+
 	public String getPackage() {
 		if (packageName == null) {
 			loadImportsAndFunctions();
 		}
 		return packageName;
 	}
-	
+
 	public List getClassesInPackage() {
 		if (classesInPackage == null) {
 			classesInPackage = getAllClassesInPackage(getPackage());
 		}
 		return classesInPackage;
 	}
-	
+
 	protected List getAllClassesInPackage(String packageName) {
 		List list = new ArrayList();
 		if (packageName != null) {
@@ -108,7 +118,7 @@ public class DRLRuleEditor extends AbstractRuleEditor {
 		}
 		return list;
 	}
-	
+
 	public static List getAllClassesInPackage(String packageName, IJavaProject javaProject) {
 		final List list = new ArrayList();
 		CompletionRequestor requestor = new CompletionRequestor() {
@@ -136,7 +146,7 @@ public class DRLRuleEditor extends AbstractRuleEditor {
 			if (input instanceof IFileEditorInput) {
 				IProject project = ((IFileEditorInput) input).getFile().getProject();
 				IJavaProject javaProject = JavaCore.create(project);
-				
+
 				CompletionRequestor requestor = new CompletionRequestor() {
 					public void accept(org.eclipse.jdt.core.CompletionProposal proposal) {
 						String functionName = new String(proposal.getCompletion());
@@ -146,7 +156,7 @@ public class DRLRuleEditor extends AbstractRuleEditor {
 						// ignore all other proposals
 					}
 				};
-	
+
 				try {
 					javaProject.newEvaluationContext().codeComplete(className + ".", className.length() + 1, requestor);
 				} catch (Throwable t) {
@@ -156,7 +166,7 @@ public class DRLRuleEditor extends AbstractRuleEditor {
 		}
 		return list;
 	}
-	
+
     protected void loadImportsAndFunctions() {
         try {
             DRLInfo drlInfo = DroolsEclipsePlugin.getDefault().parseResource(this, true, false);
@@ -216,6 +226,16 @@ public class DRLRuleEditor extends AbstractRuleEditor {
                 GlobalDescr global = (GlobalDescr) iterator.next();
                 globals.add(global);
             }
+
+            //attributes
+            this.attributes = new HashMap();
+        	for (Iterator attrIter = descr.getAttributes().iterator(); attrIter.hasNext();) {
+        		AttributeDescr attribute = (AttributeDescr) attrIter.next();
+        		if (attribute != null && attribute.getName() != null) {
+        			attributes.put(attribute.getName(), attribute.getValue());
+        		}
+        	}
+
         } catch (DroolsParserException e) {
             DroolsEclipsePlugin.log(e);
         }
@@ -262,8 +282,8 @@ public class DRLRuleEditor extends AbstractRuleEditor {
 			DroolsEclipsePlugin.log(exc);
 		}
 	}
-	
-	
+
+
 	public BaseDescr getDescr(int offset) {
 		try {
 			DRLInfo info = DroolsEclipsePlugin.getDefault().parseResource(this, true, false);
