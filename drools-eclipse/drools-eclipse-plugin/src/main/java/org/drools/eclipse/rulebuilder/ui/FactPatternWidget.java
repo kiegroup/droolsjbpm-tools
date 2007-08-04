@@ -13,8 +13,6 @@ import org.drools.brms.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.brms.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.eclipse.rulebuilder.modeldriven.HumanReadable;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Color;
@@ -317,8 +315,9 @@ public class FactPatternWidget extends Widget {
         }
         operatorDropDown( constraintComposite,
                           c );
-        constraintValueEditor( constraintComposite,
-                               c );
+        
+        constraintValueEditor(constraintComposite, c, c.fieldName);
+        
         createConnectives( constraintComposite,
                            c );
         addConnectiveAction( constraintComposite,
@@ -394,12 +393,19 @@ public class FactPatternWidget extends Widget {
                 connectiveOperatorDropDown( parent,
                                             con,
                                             c.fieldName );
-                constraintValueEditor( parent,
-                                       con );
+               constraintValueEditor( parent,
+                                       con, c.fieldName );
+                
             }
         }
     }
 
+    private void constraintValueEditor(Composite parent, ISingleFieldConstraint c, String name ){
+    	String type = this.modeller.getSuggestionCompletionEngine().getFieldType( pattern.factType, name );
+        new ConstraintValueEditor (parent, c, toolkit, modeller, type);
+    }
+    
+    
     private void addConnectiveAction(Composite constraintComposite,
                                      final SingleFieldConstraint c) {
         ImageHyperlink link = addImage( constraintComposite,
@@ -594,119 +600,6 @@ public class FactPatternWidget extends Widget {
         } );
     }
 
-    // from org.drools.brms.client.modeldriven.ui.ConstraintValueEditor
-    //TODO: private boolean numericValue;
-    private void constraintValueEditor(final Composite parent,
-                                       final ISingleFieldConstraint c) {
-        if ( c.constraintValueType == ISingleFieldConstraint.TYPE_UNDEFINED ) {
-            ImageHyperlink link = addImage( parent,
-                                            "icons/edit.gif" );
-            link.setToolTipText( "Choose value editor type" );
-            link.addHyperlinkListener( new IHyperlinkListener() {
-                public void linkActivated(HyperlinkEvent e) {
-                    RuleDialog popup = new ValueEditorTypeSelectionDialog( parent.getShell(),
-                                                                           toolkit,
-                                                                           getModeller(),
-                                                                           c );
-                    popup.open();
-                }
-
-                public void linkEntered(HyperlinkEvent e) {
-                }
-
-                public void linkExited(HyperlinkEvent e) {
-                }
-            } );
-
-            GridData gd = new GridData( GridData.FILL_HORIZONTAL | 
-            		GridData.GRAB_HORIZONTAL | 
-            		GridData.HORIZONTAL_ALIGN_BEGINNING);
-            gd.horizontalSpan = 2;
-            
-            link.setLayoutData(gd);
-        } else {
-            switch ( c.constraintValueType ) {
-                case ISingleFieldConstraint.TYPE_LITERAL :
-                    literalValueEditor( parent,
-                                        c,
-                                        new GridData( GridData.FILL_HORIZONTAL ) );
-                    break;
-                case ISingleFieldConstraint.TYPE_RET_VALUE :
-                    addImage( parent,
-                              "icons/function_assets.gif" );
-                    formulaValueEditor( parent,
-                                        c,
-                                        new GridData( GridData.FILL_HORIZONTAL  ) );
-                    break;
-                case ISingleFieldConstraint.TYPE_VARIABLE :
-                    variableEditor( parent,
-                                    c,
-                                    new GridData( GridData.FILL_HORIZONTAL ) );
-                    break;
-                default :
-                    break;
-            }
-        }
-    }
-
-    private void variableEditor(Composite composite,
-                                final ISingleFieldConstraint c,
-                                GridData gd) {
-        List vars = getModeller().getModel().getBoundVariablesInScope( c );
-
-        final Combo combo = new Combo( composite,
-                                       SWT.READ_ONLY );
-
-        gd.horizontalSpan = 2;
-        combo.setLayoutData( gd );
-        if ( c.value == null ) {
-            combo.add( "Choose ..." );
-        }
-
-        int idx = 0;
-
-        for ( int i = 0; i < vars.size(); i++ ) {
-            String var = (String) vars.get( i );
-
-            if ( c.value != null && c.value.equals( var ) ) {
-                idx = i;
-            }
-            combo.add( var );
-        }
-
-        combo.select( idx );
-
-        combo.addModifyListener( new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                c.value = combo.getText();
-            }
-        } );
-
-    }
-
-    private void literalValueEditor(Composite parent,
-                                    final ISingleFieldConstraint c,
-                                    GridData gd) {
-        final Text box = toolkit.createText( parent,
-                                             "" );
-
-        if ( c.value != null ) {
-            box.setText( c.value );
-        }
-        
-        gd.horizontalSpan = 2;
-        gd.grabExcessHorizontalSpace = true;
-        gd.minimumWidth = 100;
-        box.setLayoutData( gd );
-        
-        box.addModifyListener( new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                c.value = box.getText();
-                getModeller().setDirty( true );
-            }
-        } );
-    }
-
     private void formulaValueEditor(Composite parent,
                                     final ISingleFieldConstraint c,
                                     GridData gd) {
@@ -729,13 +622,6 @@ public class FactPatternWidget extends Widget {
             }
         } );
     }
-
-	/*private int getPreferredWidth(final Text box) {
-		GC gc = new GC(box);
-        FontMetrics fm = gc.getFontMetrics();
-        int width = 7 * fm.getAverageCharWidth();
-		return width;
-	}*/
 
     private void deleteBindedFact() {
         List newPatterns = new ArrayList();
