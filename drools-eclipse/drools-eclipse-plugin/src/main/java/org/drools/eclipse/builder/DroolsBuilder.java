@@ -20,6 +20,7 @@ import org.drools.compiler.FactTemplateError;
 import org.drools.compiler.FieldTemplateError;
 import org.drools.compiler.FunctionError;
 import org.drools.compiler.GlobalError;
+import org.drools.compiler.ImportError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.ParserError;
 import org.drools.compiler.ProcessBuilder;
@@ -383,6 +384,8 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         		markers.add(new DroolsBuildMarker(error.getMessage(), ((FieldTemplateError) error).getLine()));
         	} else if (error instanceof FactTemplateError) {
         		markers.add(new DroolsBuildMarker(error.getMessage(), ((FactTemplateError) error).getLine()));
+        	} else if (error instanceof ImportError) {
+        		markers.add(new DroolsBuildMarker("ImportError: " + error.getMessage()));
         	} else {
         		markers.add(new DroolsBuildMarker("Unknown DroolsError " + error.getClass() + ": " + error));
         	}

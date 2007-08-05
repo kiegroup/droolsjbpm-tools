@@ -52,34 +52,17 @@ public class DSLAdapter {
      * @param content Rule source
      * @param input File from the FileEditorInput
      */
-    public DSLAdapter(String content, IFile input) {
-        dslConfigName = findDSLConfigName( content );
-        if (dslConfigName == null) return;
+    public DSLAdapter(String content, IFile input) throws CoreException {
+        dslConfigName = findDSLConfigName( content, input );
+        if (dslConfigName == null) {
+        	return;
+        }
         loadConfig( input );
     }
     
     /** Get a reader to the DSL contents */
     public static Reader getDSLContent(String ruleSource, IResource input) throws CoreException {
-        String dslFileName = findDSLConfigName( ruleSource );
-        if (dslFileName == null) {
-        	// try searching the .package file
-        	if (input != null && input.getParent() != null) {
-            	MyResourceVisitor visitor = new MyResourceVisitor();
-            	input.getParent().accept(visitor, IResource.DEPTH_ONE, IResource.NONE);
-            	IResource packageDef = visitor.getPackageDef();
-            	if (packageDef != null) {
-            		if (packageDef instanceof IFile) {
-            			IFile file = (IFile) packageDef;
-            	        try {
-            	        	String content = new String(Util.getResourceContentsAsCharArray(file));
-            	        	dslFileName = findDSLConfigName( content );
-            	        } catch (CoreException e) {
-            	        	DroolsEclipsePlugin.log(e);
-            	        }
-            		}
-            	}
-            }
-        }
+        String dslFileName = findDSLConfigName( ruleSource, input );
         if (dslFileName == null) {
         	return null;
         }
@@ -157,6 +140,30 @@ public class DSLAdapter {
 
     DSLAdapter() {
         
+    }
+    
+    private static String findDSLConfigName(String content, IResource input) throws CoreException {
+        String dslConfigName = findDSLConfigName( content );
+        if (dslConfigName == null)  {
+	    	// try searching the .package file
+	    	if (input != null && input.getParent() != null) {
+	        	MyResourceVisitor visitor = new MyResourceVisitor();
+	        	input.getParent().accept(visitor, IResource.DEPTH_ONE, IResource.NONE);
+	        	IResource packageDef = visitor.getPackageDef();
+	        	if (packageDef != null) {
+	        		if (packageDef instanceof IFile) {
+	        			IFile file = (IFile) packageDef;
+	        	        try {
+	        	        	String pContent = new String(Util.getResourceContentsAsCharArray(file));
+	        	        	dslConfigName = findDSLConfigName( pContent );
+	        	        } catch (CoreException e) {
+	        	        	DroolsEclipsePlugin.log(e);
+	        	        }
+	        		}
+	        	}
+	        }
+        }
+        return dslConfigName;
     }
 
     /** Sniffs out the expander/DSL config name as best it can. */

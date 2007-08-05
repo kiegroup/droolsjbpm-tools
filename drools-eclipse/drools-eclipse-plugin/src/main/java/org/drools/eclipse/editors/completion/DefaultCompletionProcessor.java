@@ -307,10 +307,10 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
         return Collections.EMPTY_LIST;
     }
 
-    protected Set getUniqueImports() {
-            HashSet set = new HashSet();
-			set.addAll(getImports());
-			return set;
+    protected List getUniqueImports() {
+        List list = new ArrayList();
+		list.addAll(getImports());
+		return list;
     }
 
     protected List getFunctions() {
