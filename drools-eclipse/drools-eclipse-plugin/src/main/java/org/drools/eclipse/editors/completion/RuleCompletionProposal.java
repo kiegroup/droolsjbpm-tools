@@ -24,7 +24,7 @@ public class RuleCompletionProposal implements ICompletionProposal {
     private int cursorPosition;
     private Image image;
     private int priority;
-    
+
     /** This is used when the stuff that is displayed, is the stuff that is used. */
     public RuleCompletionProposal(int replacementOffset, int replacementLength, String content) {
         this(replacementOffset, replacementLength, content, content);
@@ -73,7 +73,7 @@ public class RuleCompletionProposal implements ICompletionProposal {
 	public String getContent() {
 		return content;
 	}
-    
+
     public void setImage(Image image) {
         this.image = image;
     }
@@ -89,7 +89,8 @@ public class RuleCompletionProposal implements ICompletionProposal {
     public String toString() {
         return content;
     }
-    
+
+    //TODO:fixme now that we mix,JDT  and own propsals, comparison is all wrong, resulting in wrong ordering of mixed proposals (such as with mvel
     public static class RuleCompletionProposalComparator implements Comparator {
 		public int compare(Object arg0, Object arg1) {
 			if (arg0 instanceof RuleCompletionProposal) {

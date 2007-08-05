@@ -46,22 +46,28 @@ public class CompletionContext {
     static final Pattern ENDS_WITH_SPACES                    = Pattern.compile( ".*\\s+",
                                                                                 Pattern.DOTALL );
 
-    static final Pattern MVEL_DIALECT                        = Pattern.compile( ".*dialect\\s+\"mvel\".*",
+    static final Pattern MVEL_DIALECT_PATTERN                        = Pattern.compile( ".*dialect\\s+\"mvel\".*",
                                                                                 Pattern.DOTALL );
+
+    static final Pattern JAVA_DIALECT_PATTERN                        = Pattern.compile( ".*dialect\\s+\"java\".*",
+            																	Pattern.DOTALL );
+
+	static final String MVEL_DIALECT 								 = "mvel";
+	static final String JAVA_DIALECT 								 = "java";
 
     private String       backText;
     private DrlParser    parser;
     private RuleDescr    rule;
     private PackageDescr packageDescr;
-    private boolean      javaDialect                         = true;
-    private Class        getMvelReturnedType;
+    private String       dialect;
+    private Class        mvelReturnedType;
 
-    public CompletionContext(String ruleText) {
-        this.backText = ruleText;
+    public CompletionContext(String backText) {
+        this.backText = backText;
         this.parser = new DrlParser();
 
         try {
-            packageDescr = parser.parse( ruleText );
+            packageDescr = parser.parse( backText );
             List rules = packageDescr.getRules();
             if ( rules != null && rules.size() == 1 ) {
                 this.rule = (RuleDescr) rules.get( 0 );
@@ -71,12 +77,23 @@ public class CompletionContext {
             // do nothing
         }
 
-        determineDialect( ruleText );
+        //FIXME: the whole story of dialect determination for completion needs beefing up
+        determineDialect( backText );
     }
 
+
     public boolean isJavaDialect() {
-        return javaDialect;
+        return JAVA_DIALECT.equalsIgnoreCase(dialect);
     }
+
+    public boolean isMvelDialect() {
+        return MVEL_DIALECT.equalsIgnoreCase(dialect);
+    }
+
+    public boolean isDefaultDialect() {
+        return !isJavaDialect() && !isMvelDialect();
+    }
+
 
     public PackageDescr getPackageDescr() {
         return packageDescr;
@@ -85,13 +102,16 @@ public class CompletionContext {
     //note: this is a crude but reasonably fast way to determine the dialect,
     //especially when parsing imcomplete rules
     private void determineDialect(String backText) {
-        //which dialect are we using for this rule?
-        //we test only for mvel for now: java is the default dialect
-        if ( MVEL_DIALECT.matcher( backText ).matches() ) {
-            javaDialect = false;
-        } else {
-            javaDialect = true;
+    	dialect = null;
+        boolean mvel = MVEL_DIALECT_PATTERN.matcher( backText ).matches();
+        boolean java = JAVA_DIALECT_PATTERN.matcher( backText ).matches();
+		//which dialect may be defined for this rule?
+        if ( mvel ) {
+            dialect = MVEL_DIALECT;
         }
+		if (java) {
+			dialect = JAVA_DIALECT;
+		}
     }
 
     public Location getLocation() {
@@ -194,11 +214,11 @@ public class CompletionContext {
         return location;
     }
 
-	public Class getGetMvelReturnedType() {
-		return getMvelReturnedType;
+	public Class getMvelReturnedType() {
+		return mvelReturnedType;
 	}
 
-	public void setGetMvelReturnedType(Class getMvelReturnedType) {
-		this.getMvelReturnedType = getMvelReturnedType;
+	public void setMvelReturnedType(Class getMvelReturnedType) {
+		this.mvelReturnedType = getMvelReturnedType;
 	}
 }

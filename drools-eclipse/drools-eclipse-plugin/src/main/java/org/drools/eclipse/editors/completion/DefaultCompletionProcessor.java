@@ -21,12 +21,17 @@ import org.drools.lang.descr.GlobalDescr;
 import org.drools.util.StringUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.CompletionContext;
+import org.eclipse.jdt.core.CompletionProposal;
 import org.eclipse.jdt.core.CompletionRequestor;
+import org.eclipse.jdt.core.IField;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.ILocalVariable;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.eval.IEvaluationContext;
 import org.eclipse.jdt.internal.ui.text.java.AbstractJavaCompletionProposal;
 import org.eclipse.jdt.internal.ui.text.java.JavaMethodCompletionProposal;
+import org.eclipse.jdt.internal.ui.text.java.LazyJavaCompletionProposal;
 import org.eclipse.jdt.ui.text.java.CompletionProposalCollector;
 import org.eclipse.jdt.ui.text.java.IJavaCompletionProposal;
 import org.eclipse.jface.text.IDocument;
@@ -122,37 +127,50 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
         return result;
     }
 
+    /*
+     * create and returns a java project based on the current editor input or returns null
+     */
+    private IJavaProject getCurrentJavaProject() {
+		IEditorInput input = getEditor().getEditorInput();
+		if (!(input instanceof IFileEditorInput)) {
+			return null;
+		}
+		IProject project = ((IFileEditorInput) input).getFile().getProject();
+		IJavaProject javaProject = JavaCore.create(project);
+    	return javaProject;
+    }
+
 	private List getAllClassProposals(final String classNameStart, final int documentOffset, final String prefix) {
 		final List list = new ArrayList();
-		IEditorInput input = getEditor().getEditorInput();
-		if (input instanceof IFileEditorInput) {
-			IProject project = ((IFileEditorInput) input).getFile().getProject();
-			IJavaProject javaProject = JavaCore.create(project);
+		IJavaProject javaProject = getCurrentJavaProject();
+		if (javaProject ==null) {
+			return list;
+		}
 
-			CompletionRequestor requestor = new CompletionRequestor() {
-				public void accept(org.eclipse.jdt.core.CompletionProposal proposal) {
-					String className = new String(proposal.getCompletion());
-					if (proposal.getKind() == org.eclipse.jdt.core.CompletionProposal.PACKAGE_REF) {
-						RuleCompletionProposal prop = new RuleCompletionProposal(documentOffset - prefix.length(), classNameStart.length(), className, className + ".");
-						prop.setImage(DroolsPluginImages.getImage(DroolsPluginImages.PACKAGE));
-						list.add(prop);
-					} else if (proposal.getKind() == org.eclipse.jdt.core.CompletionProposal.TYPE_REF) {
-						RuleCompletionProposal prop = new RuleCompletionProposal(documentOffset - prefix.length(), classNameStart.length() - proposal.getReplaceStart(), className, className + ";");
-						prop.setImage(DroolsPluginImages.getImage(DroolsPluginImages.CLASS));
-						list.add(prop);
-					}
-					// ignore all other proposals
+		CompletionRequestor requestor = new CompletionRequestor() {
+			public void accept(org.eclipse.jdt.core.CompletionProposal proposal) {
+				String className = new String(proposal.getCompletion());
+				if (proposal.getKind() == org.eclipse.jdt.core.CompletionProposal.PACKAGE_REF) {
+					RuleCompletionProposal prop = new RuleCompletionProposal(documentOffset - prefix.length(), classNameStart.length(), className, className + ".");
+					prop.setImage(DroolsPluginImages.getImage(DroolsPluginImages.PACKAGE));
+					list.add(prop);
+				} else if (proposal.getKind() == org.eclipse.jdt.core.CompletionProposal.TYPE_REF) {
+					RuleCompletionProposal prop = new RuleCompletionProposal(documentOffset - prefix.length(), classNameStart.length() - proposal.getReplaceStart(), className, className + ";");
+					prop.setImage(DroolsPluginImages.getImage(DroolsPluginImages.CLASS));
+					list.add(prop);
 				}
-			};
+				// ignore all other proposals
+			}
+		};
 
-            try {
-                javaProject.newEvaluationContext().codeComplete( classNameStart,
-                                                                 classNameStart.length(),
-                                                                 requestor );
-            } catch ( Throwable t ) {
-                DroolsEclipsePlugin.log( t );
-            }
+        try {
+            javaProject.newEvaluationContext().codeComplete( classNameStart,
+                                                             classNameStart.length(),
+                                                             requestor );
+        } catch ( Throwable t ) {
+            DroolsEclipsePlugin.log( t );
         }
+
         return list;
     }
 
@@ -182,58 +200,90 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
 	}
 
     /**
-     * @return a list of "MVELified" RuleCompletionProposal. Thta list contains only unqiue proposal based on
+     * @return a list of "MVELified" RuleCompletionProposal. That list contains only unique proposal based on
      * the overrriden equals in {@link RuleCompletionProposal} to avoid the situation when several
      * accessors can exist for one property. for that case we want to keep only one proposal.
      */
-    protected Collection getJavaMvelCompletionProposals(final String javaText,
-			final String prefix, final int documentOffset, Map params) {
+    protected Collection getJavaMvelCompletionProposals(final int documentOffset, final String javaText, final String prefix, Map params) {
+    	final List list = new ArrayList();
+		requestJavaCompletionProposals(javaText, prefix, documentOffset, params, list);
+
+		Collection mvelList = mvelifyProposals(list);
+		return mvelList;
+	}
+
+
+    /*
+     * Filters accessor method proposals to replace them with their mvel expression equivalent
+     * For instance a completion for getStatus() would be replaced by a completion for status
+     */
+	private static Collection mvelifyProposals(List list) {
 		final Collection set = new HashSet();
-		CompletionRequestor requestor = new MvelCompletionRequestor(prefix,
-				documentOffset, javaText, set);
-		requestJavaMVELCompletionProposals(javaText, prefix, params, requestor);
+
+		for (Iterator iter = list.iterator(); iter.hasNext();) {
+			Object o = iter.next();
+			if (o instanceof JavaMethodCompletionProposal) {
+				LazyJavaCompletionProposal javaProposal = (LazyJavaCompletionProposal) o;
+				//TODO: FIXME: this is very fragile ass it uses reflection to access the private completion field.
+				//Yet this is needed to do mvel filtering based on the method signtures, IF we use the richer JDT completion
+				Object field = ReflectionUtils.getField(o, "fProposal");
+				if (field != null && field instanceof CompletionProposal) {
+					CompletionProposal proposal = (CompletionProposal) field;
+
+					String completion = new String(proposal.getCompletion());
+
+					// get the eventual property name for that method name and signature
+					String propertyOrMethodName = CompletionUtil.getPropertyName(
+							completion, proposal.getSignature());
+                    //if we got a proeprty name that differs from the orginal method name
+                    //, this is a a bean accessor
+					boolean isAccessor = !completion.equals(propertyOrMethodName);
+
+					// is the completion for a bean accessor? and do we have already some relevant completion?
+					if (isAccessor && doesNotContainFieldCompletion(propertyOrMethodName, list)) {
+                        //TODO: craft a better JDTish display name
+						RuleCompletionProposal prop = new RuleCompletionProposal(
+								javaProposal.getReplacementOffset(),
+								javaProposal.getReplacementLength(),
+								propertyOrMethodName);
+						prop.setImage(DefaultCompletionProcessor.VARIABLE_ICON);
+						set.add(prop);
+
+					} else {
+						set.add(o);
+					}
+				}
+
+			} else {
+				//add other proposals as is
+				set.add(o);
+			}
+		}
 		return set;
 	}
 
-	protected void requestJavaMVELCompletionProposals(final String javaText,
-			final String prefix, Map params, CompletionRequestor requestor) {
-
-    	// TODO different methods for MVEL and Java code completion
-    	// now reusing Java completion proposals
-    	// can this be used by MVEL as well?
-		IEditorInput input = getEditor().getEditorInput();
-		if (!(input instanceof IFileEditorInput)) {
-			return;
+	/*
+	 * do we already have a completion for that string that would be either a local variable or a field?
+	 */
+	private static boolean doesNotContainFieldCompletion(String completion, List completions) {
+		if (completion == null || completion.length() == 0 || completions == null ){
+			return false;
 		}
-		IProject project = ((IFileEditorInput) input).getFile().getProject();
-		IJavaProject javaProject = JavaCore.create(project);
-
-		try {
-			IEvaluationContext evalContext = javaProject.newEvaluationContext();
-			List imports = getImports();
-			if (imports != null && imports.size() > 0) {
-				evalContext.setImports((String[]) imports
-						.toArray(new String[imports.size()]));
+		for (Iterator iter = completions.iterator(); iter.hasNext();) {
+			Object o = iter.next();
+			if (o instanceof AbstractJavaCompletionProposal) {
+				AbstractJavaCompletionProposal prop = (AbstractJavaCompletionProposal) o;
+				String content = prop.getReplacementString();
+				if (completion.equals(content)) {
+					IJavaElement javaElement = prop.getJavaElement();
+					if (javaElement instanceof ILocalVariable
+							|| javaElement instanceof IField) {
+						return false;
+					}
+				}
 			}
-			StringBuffer javaTextWithParams = new StringBuffer();
-			Iterator iterator = params.entrySet().iterator();
-			while (iterator.hasNext()) {
-				Map.Entry entry = (Map.Entry) iterator.next();
-				// this does not seem to work, so adding variables manually
-				// evalContext.newVariable((String) entry.getValue(), (String)
-				// entry.getKey(), null);
-				javaTextWithParams.append(entry.getValue() + " "
-						+ entry.getKey() + ";\n");
-			}
-			javaTextWithParams.append("org.drools.spi.KnowledgeHelper drools;");
-			javaTextWithParams.append(javaText);
-			String text = javaTextWithParams.toString();
-			// System.out.println( "" );
-			// System.out.println( "MVEL: synthetic Java text:" + text );
-			evalContext.codeComplete(text, text.length(), requestor);
-		} catch (Throwable t) {
-			DroolsEclipsePlugin.log(t);
 		}
+		return true;
 	}
 
     protected void requestJavaCompletionProposals(final String javaText,
@@ -248,14 +298,12 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
 		if ("".equals(javaTextWithoutPrefix.trim()) || START_OF_NEW_JAVA_STATEMENT.matcher(javaTextWithoutPrefix).matches()) {
 			filterObjectMethods = true;
 		}
-        IEditorInput input = getEditor().getEditorInput();
-        if ( !(input instanceof IFileEditorInput) ) {
-            return;
-        }
-        IProject project = ((IFileEditorInput) input).getFile().getProject();
-        IJavaProject javaProject = JavaCore.create( project );
+		IJavaProject javaProject = getCurrentJavaProject();
+		if (javaProject ==null) {
+			return ;
+		}
 
-		CompletionProposalCollector collector = new CompletionProposalCollector(javaProject);
+		CompletionProposalCollector	collector = new CompletionProposalCollector(javaProject);
 		collector.acceptContext(new CompletionContext());
 
         try {
@@ -307,10 +355,10 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
         return Collections.EMPTY_LIST;
     }
 
-    protected List getUniqueImports() {
-        List list = new ArrayList();
-		list.addAll(getImports());
-		return list;
+    protected Set getUniqueImports() {
+            HashSet set = new HashSet();
+			set.addAll(getImports());
+			return set;
     }
 
     protected List getFunctions() {
@@ -318,6 +366,13 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
             return ((DRLRuleEditor) getEditor()).getFunctions();
         }
         return Collections.EMPTY_LIST;
+    }
+
+    protected Map getAttributes() {
+        if ( getEditor() instanceof DRLRuleEditor ) {
+            return ((DRLRuleEditor) getEditor()).getAttributes();
+        }
+        return Collections.EMPTY_MAP;
     }
 
     protected Set getTemplates() {
