@@ -63,12 +63,16 @@ public class IncompleteParsingTest extends TestCase {
          *     FieldConstraintDescr [fieldName = "condition"]
          *       LiteralRestrictionDescr [evaluator = "==", text = "true"]
          */
-        input =
+    }
+
+
+    public void testParsingColumn1() {
+        String input =
         	"rule MyRule \n" +
         	"  when \n" +
         	"    Class( condition == true ) \n" +
         	"    ";
-        rule = parseRuleString(input);
+        RuleDescr rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
         PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", pattern.getObjectType());
@@ -84,162 +88,213 @@ public class IncompleteParsingTest extends TestCase {
         LiteralRestrictionDescr restriction = (LiteralRestrictionDescr) field.getRestrictions().get(0);
         assertEquals("==", restriction.getEvaluator());
         assertEquals("true", restriction.getText());
+    }
 
-        input =
+
+    public void testParsingColumn2() {
+        String input =
+
         	"rule MyRule \n" +
 	    	"  when \n" +
 	    	"    class: Class( condition == true, condition2 == null ) \n" +
 	    	"    ";
-        rule = parseRuleString(input);
+        RuleDescr rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertTrue(pattern.getEndCharacter() != -1);
+    }
 
-        input =
+
+    public void testParsingColumn3() {
+        String input =
 	    	"rule MyRule \n" +
 	    	"  when \n" +
 	    	"    Cl";
-        rule = parseRuleString(input);
+        RuleDescr rule = parseRuleString(input);
         assertEquals(0, rule.getLhs().getDescrs().size());
 
-        input =
+    }
+
+
+    public void testParsingColumn4() {
+        String input =
 	    	"rule MyRule \n" +
 	    	"  when \n" +
 	    	"    Class( condition == true ) \n" +
 	    	"    Cl";
-        rule = parseRuleString(input);
+        RuleDescr rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertTrue(pattern.getEndCharacter() != -1);
 
-        input =
+    }
+
+
+    public void testParsingColumn5() {
+        String input =
 			"rule MyRule \n" +
 			"  when \n" +
 			"    class:";
-        rule = parseRuleString(input);
+        RuleDescr rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("class", pattern.getIdentifier());
         assertNull(pattern.getObjectType());
         assertEquals(-1, pattern.getEndCharacter());
 
-        input =
+    }
+
+
+    public void testParsingColumn6() {
+        String input =
 			"rule MyRule \n" +
 			"  when \n" +
 			"    class: Cl";
-        rule = parseRuleString(input);
+        RuleDescr rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("class", pattern.getIdentifier());
         assertEquals("Cl", pattern.getObjectType());
         assertTrue(pattern.getEndLine() == -1 && pattern.getEndColumn() == -1);
         assertEquals(0, pattern.getDescrs().size());
         assertEquals(-1, pattern.getEndCharacter());
 
-        input =
+    }
+
+
+    public void testParsingColumn7() {
+        String input =
 			"rule MyRule \n" +
 			"  when \n" +
 			"    class:Cl";
-        rule = parseRuleString(input);
+        RuleDescr rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("class", pattern.getIdentifier());
         assertEquals("Cl", pattern.getObjectType());
         assertTrue(pattern.getEndLine() == -1 && pattern.getEndColumn() == -1);
         assertEquals(0, pattern.getDescrs().size());
         assertEquals(-1, pattern.getEndCharacter());
 
+    }
+
+
+    public void testParsingColumn8() {
         /** Inside of condition: start */
-        input =
+        String input =
 			"rule MyRule \n" +
 			"  when \n" +
 			"    Class (";
-        rule = parseRuleString(input);
+        RuleDescr rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", pattern.getObjectType());
         assertTrue(pattern.getEndLine() == -1 && pattern.getEndColumn() == -1);
         assertEquals(0, pattern.getDescrs().size());
         assertEquals(-1, pattern.getEndCharacter());
 
-        input =
+    }
+
+
+    public void testParsingColumn9() {
+        String input =
         	"rule MyRule \n" +
         	"	when \n" +
         	"		Class ( na";
-        rule = parseRuleString(input);
+        RuleDescr rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", pattern.getObjectType());
         assertEquals(-1, pattern.getEndCharacter());
         assertEquals(1, pattern.getDescrs().size());
-        field = (FieldConstraintDescr) pattern.getDescrs().get(0);
+        FieldConstraintDescr field = (FieldConstraintDescr) pattern.getDescrs().get(0);
         assertEquals( "na", field.getFieldName() );
         assertEquals(-1, field.getEndCharacter());
 
-        input =
+    }
+
+
+    public void testParsingColumn10() {
+        String input =
         	"rule MyRule \n" +
         	"	when \n" +
         	"		Class ( name['xyz'].subname.subsubn";
-        rule = parseRuleString(input);
+        RuleDescr rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", pattern.getObjectType());
         assertEquals(-1, pattern.getEndCharacter());
         assertEquals(1, pattern.getDescrs().size());
-        field = (FieldConstraintDescr) pattern.getDescrs().get(0);
+        FieldConstraintDescr field = (FieldConstraintDescr) pattern.getDescrs().get(0);
         assertEquals( "name['xyz'].subname.subsubn", field.getFieldName() );
         assertEquals(-1, field.getEndCharacter());
 
-        input =
+    }
+
+
+    public void testParsingColumn11() {
+        String input =
         	"rule MyRule \n" +
         	"	when \n" +
         	"		Class ( condition == true, ";
-        rule = parseRuleString(input);
+        RuleDescr rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", pattern.getObjectType());
         assertEquals(-1, pattern.getEndCharacter());
         assertEquals(1, pattern.getDescrs().size());
-        field = (FieldConstraintDescr) pattern.getDescrs().get(0);
+        FieldConstraintDescr field = (FieldConstraintDescr) pattern.getDescrs().get(0);
         assertEquals(-1, field.getEndCharacter());
 
-        input =
+    }
+
+
+    public void testParsingColumn12() {
+        String input =
         	"rule MyRule \n" +
         	"	when \n" +
         	"		Class ( c : condition, ";
-        rule = parseRuleString(input);
+        RuleDescr rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", pattern.getObjectType());
         assertEquals(-1, pattern.getEndCharacter());
         assertEquals(1, pattern.getDescrs().size());
         FieldBindingDescr fieldBinding = (FieldBindingDescr) pattern.getDescrs().get(0);
         assertEquals(-1, fieldBinding.getEndCharacter());
 
-        input =
+    }
+
+
+    public void testParsingColumn13() {
+        String input =
         	"rule MyRule \n" +
         	"	when \n" +
         	"		Class ( condition == true, na";
-        rule = parseRuleString(input);
+        RuleDescr rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", pattern.getObjectType());
         assertEquals(-1, pattern.getEndCharacter());
         assertEquals(2, pattern.getDescrs().size());
-        field = (FieldConstraintDescr) pattern.getDescrs().get(0);
+        FieldConstraintDescr field = (FieldConstraintDescr) pattern.getDescrs().get(0);
         assertEquals(-1, field.getEndCharacter());
         assertEquals( "condition", field.getFieldName() );
-        field = (FieldConstraintDescr) pattern.getDescrs().get(1);
+         field = (FieldConstraintDescr) pattern.getDescrs().get(1);
         assertEquals( "na", field.getFieldName() );
         assertEquals(-1, field.getEndCharacter());
 
-        input =
+    }
+
+
+    public void FAILINGtestParsingColumn14() {
+        String input =
         	"rule MyRule \n" +
         	"	when \n" +
         	"		Class ( name:";
-        rule = parseRuleString(input);
+        RuleDescr rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", pattern.getObjectType());
         assertEquals(-1, pattern.getEndCharacter());
         assertEquals(1, pattern.getDescrs().size());
@@ -247,28 +302,36 @@ public class IncompleteParsingTest extends TestCase {
         assertEquals("name", binding1.getIdentifier());
         assertNull(binding1.getFieldName());
 
-        input =
+    }
+
+
+    public void testParsingColumn15() {
+        String input =
         	"rule MyRule \n" +
         	"	when \n" +
         	"		Class ( property ";
-        rule = parseRuleString(input);
+        RuleDescr rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", pattern.getObjectType());
         assertEquals(-1, pattern.getEndCharacter());
         assertEquals(1, pattern.getDescrs().size());
-        field = (FieldConstraintDescr) pattern.getDescrs().get(0);
+        FieldConstraintDescr field = (FieldConstraintDescr) pattern.getDescrs().get(0);
         assertEquals("property", field.getFieldName());
         assertEquals(0, field.getRestrictions().size());
         assertEquals(-1, field.getEndCharacter());
 
-        input =
+    }
+
+
+    public void testParsingColumn16() {
+        String input =
         	"rule MyRule \n" +
         	"	when \n" +
         	"		Class ( name: property ";
-        rule = parseRuleString(input);
+        RuleDescr rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", pattern.getObjectType());
         assertEquals(-1, pattern.getEndCharacter());
         assertEquals(1, pattern.getDescrs().size());
@@ -276,20 +339,24 @@ public class IncompleteParsingTest extends TestCase {
         assertEquals("name", binding.getIdentifier());
         assertEquals("property", binding.getFieldName());
 
-        input =
+    }
+
+
+    public void testParsingColumn17() {
+        String input =
         	"rule MyRule \n" +
         	"	when \n" +
         	"		Class ( name1: property1 == \"value1\", name2: property2 ";
-        rule = parseRuleString(input);
+        RuleDescr rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", pattern.getObjectType());
         assertEquals(-1, pattern.getEndCharacter());
         assertEquals(3, pattern.getDescrs().size());
-        binding = (FieldBindingDescr) pattern.getDescrs().get(0);
+        FieldBindingDescr binding = (FieldBindingDescr) pattern.getDescrs().get(0);
         assertEquals("name1", binding.getIdentifier());
         assertEquals("property1", binding.getFieldName());
-        field = (FieldConstraintDescr) pattern.getDescrs().get(1);
+        FieldConstraintDescr field = (FieldConstraintDescr) pattern.getDescrs().get(1);
         assertEquals("property1", field.getFieldName());
         assertEquals(1, field.getRestrictions().size());
         LiteralRestrictionDescr literal = (LiteralRestrictionDescr) field.getRestrictions().get(0);
@@ -299,55 +366,66 @@ public class IncompleteParsingTest extends TestCase {
         assertEquals("name2", binding.getIdentifier());
         assertEquals("property2", binding.getFieldName());
 
-        input =
+    }
+
+
+    public void testParsingColumn18() {
+        String input =
         	"rule MyRule \n" +
         	"	when \n" +
         	"		Class(name:property==";
-        rule = parseRuleString(input);
+        RuleDescr rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", pattern.getObjectType());
         assertEquals(-1, pattern.getEndCharacter());
         assertEquals(2, pattern.getDescrs().size());
-        binding = (FieldBindingDescr) pattern.getDescrs().get(0);
+        FieldBindingDescr binding = (FieldBindingDescr) pattern.getDescrs().get(0);
         assertEquals("name", binding.getIdentifier());
         assertEquals("property", binding.getFieldName());
-        field = (FieldConstraintDescr) pattern.getDescrs().get(1);
+        FieldConstraintDescr field = (FieldConstraintDescr) pattern.getDescrs().get(1);
         assertEquals("property", field.getFieldName());
         assertEquals(1, field.getRestrictions().size());
 
-        input =
+    }
+
+
+    public void testParsingColumn19() {
+        String input =
         	"rule MyRule \n" +
         	"	when \n" +
         	"		Class( property == otherPropertyN";
-        rule = parseRuleString(input);
+        RuleDescr rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", pattern.getObjectType());
         assertEquals(-1, pattern.getEndCharacter());
         assertEquals(1, pattern.getDescrs().size());
-        field = (FieldConstraintDescr) pattern.getDescrs().get(0);
+        FieldConstraintDescr field = (FieldConstraintDescr) pattern.getDescrs().get(0);
         assertEquals("property", field.getFieldName());
         assertEquals(1, field.getRestrictions().size());
         VariableRestrictionDescr variable = (VariableRestrictionDescr) field.getRestrictions().get(0);
         assertEquals("==", variable.getEvaluator());
         assertEquals("otherPropertyN", variable.getIdentifier());
         assertEquals(-1, field.getEndCharacter());
+    }
 
-        input =
+
+    public void testParsingColumn20() {
+        String input =
         	"rule MyRule \n" +
         	"	when \n" +
         	"		Class( property == \"someth";
-        rule = parseRuleString(input);
+        RuleDescr rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", pattern.getObjectType());
         assertEquals(-1, pattern.getEndCharacter());
         assertEquals(1, pattern.getDescrs().size());
-        field = (FieldConstraintDescr) pattern.getDescrs().get(0);
+        FieldConstraintDescr field = (FieldConstraintDescr) pattern.getDescrs().get(0);
         assertEquals("property", field.getFieldName());
         assertEquals(1, field.getRestrictions().size());
-        literal = (LiteralRestrictionDescr) field.getRestrictions().get(0);
+        LiteralRestrictionDescr literal = (LiteralRestrictionDescr) field.getRestrictions().get(0);
         // KRISV: for now, it would be really messy to make this work. String is a
         // lexer rule (not parser), and changing that or controling the behavior of it
         // is not simple. Can we leave the way it is for now?
@@ -358,17 +436,21 @@ public class IncompleteParsingTest extends TestCase {
         // TODO this method does not yet exist
         // assertEquals(-1, field.getEndCharacter());
 
-        input =
+    }
+
+
+    public void testParsingColumn21() {
+        String input =
         	"rule MyRule \n" +
         	"	when \n" +
         	"		Class( property contains ";
-        rule = parseRuleString(input);
+        RuleDescr rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", pattern.getObjectType());
         assertEquals(-1, pattern.getEndCharacter());
         assertEquals(1, pattern.getDescrs().size());
-        field = (FieldConstraintDescr) pattern.getDescrs().get(0);
+        FieldConstraintDescr field = (FieldConstraintDescr) pattern.getDescrs().get(0);
         assertEquals("property", field.getFieldName());
         assertEquals(1, field.getRestrictions().size());
         // KRISV: you are right
@@ -381,21 +463,24 @@ public class IncompleteParsingTest extends TestCase {
         // starting character of this FieldConstraintDescr?
         // TODO this method does not yet exist
         assertEquals(-1, field.getEndCharacter());
+    }
 
-        input =
+
+    public void testParsingColumn22() {
+        String input =
         	"rule MyRule \n" +
         	"	when \n" +
         	"		Class( property matches \"someth";
-        rule = parseRuleString(input);
+        RuleDescr rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", pattern.getObjectType());
         assertEquals(-1, pattern.getEndCharacter());
         assertEquals(1, pattern.getDescrs().size());
-        field = (FieldConstraintDescr) pattern.getDescrs().get(0);
+        FieldConstraintDescr field = (FieldConstraintDescr) pattern.getDescrs().get(0);
         assertEquals("property", field.getFieldName());
         assertEquals(1, field.getRestrictions().size());
-        literal = (LiteralRestrictionDescr) field.getRestrictions().get(0);
+        LiteralRestrictionDescr literal = (LiteralRestrictionDescr) field.getRestrictions().get(0);
         // KRISV: see comments above
         //
         // TODO literal should be a LiteralRestrictionDescr with filled in evaluator and text, not null
@@ -403,70 +488,83 @@ public class IncompleteParsingTest extends TestCase {
         // assertEquals("someth", literal.getText());
         // TODO this method does not yet exist
         // assertEquals(-1, field.getEndCharacter());
+    }
 
-        input =
+
+    public void testParsingColumn23() {
+        String input =
             "rule MyRule \n" +
             "   when \n" +
             "       eval ( ";
-        rule = parseRuleString(input);
+        RuleDescr rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
         EvalDescr eval = (EvalDescr) rule.getLhs().getDescrs().get(0);
         assertEquals(input.indexOf( "eval" ), eval.getStartCharacter());
         assertEquals(-1, eval.getEndCharacter());
+    }
 
-        input =
+
+    public void testParsingColumn24() {
+        String input =
             "rule MyRule \n" +
             "   when \n" +
             "       Class ( property > 0 & ";
-        rule = parseRuleString(input);
+        RuleDescr rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", pattern.getObjectType());
         assertEquals(-1, pattern.getEndCharacter());
         assertEquals(1, pattern.getDescrs().size());
-        field = (FieldConstraintDescr) pattern.getDescrs().get(0);
+        FieldConstraintDescr field = (FieldConstraintDescr) pattern.getDescrs().get(0);
         assertEquals("property", field.getFieldName());
         assertEquals(1, field.getRestrictions().size());
-        literal = (LiteralRestrictionDescr) field.getRestrictions().get(0);
+        LiteralRestrictionDescr literal = (LiteralRestrictionDescr) field.getRestrictions().get(0);
         assertEquals(">", literal.getEvaluator());
         assertEquals("0", literal.getText());
         RestrictionConnectiveDescr connective = (RestrictionConnectiveDescr) field.getRestriction();
         assertEquals(RestrictionConnectiveDescr.AND, connective.getConnective());
+    }
 
-        input =
+
+    public void testParsingColumn25() {
+        String input =
             "rule MyRule \n" +
             "   when \n" +
             "       Class ( ) from a";
-        rule = parseRuleString(input);
+        RuleDescr rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Class", pattern.getObjectType());
         FromDescr from = (FromDescr) pattern.getSource();
         assertEquals(-1, from.getEndCharacter());
         assertTrue(pattern.getEndCharacter() != -1);
+    }
 
-        input =
+
+    public void testParsingColumn26() {
+        String input =
         	"rule MyRule \n" +
         	"	when \n" +
         	"		Class ( property > 0 ) from myGlobal.getList() \n" +
         	"       ";
-        rule = parseRuleString(input);
-        rule = parseRuleString(input);
+        RuleDescr rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
-        from = (FromDescr) pattern.getSource();
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        FromDescr from = (FromDescr) pattern.getSource();
         assertTrue(from.getEndCharacter() != -1);
+    }
 
-        input =
+
+    public void testParsingColumn27() {
+        String input =
         	"rule MyRule \n" +
         	"	when \n" +
         	"		Class ( property > 0 ) from getDroolsFunction() \n" +
         	"       ";
-        rule = parseRuleString(input);
-        rule = parseRuleString(input);
+        RuleDescr rule = parseRuleString(input);
         assertEquals(1, rule.getLhs().getDescrs().size());
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
-        from = (FromDescr) pattern.getSource();
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        FromDescr from = (FromDescr) pattern.getSource();
         assertTrue(from.getEndCharacter() != -1);
     }
 
