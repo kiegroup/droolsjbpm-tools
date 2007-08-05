@@ -16,7 +16,6 @@ public class DSLAdapterTest extends TestCase {
         
         String pat = "\nexpander  \t abc.dsl ";
         
-        DSLAdapter ad = new DSLAdapter();
         assertEquals("abc.dsl", DSLAdapter.findDSLConfigName( pat ));
         
         
@@ -24,8 +23,7 @@ public class DSLAdapterTest extends TestCase {
         
         assertEquals(null, DSLAdapter.findDSLConfigName( "abc /n/n" ));
         
-        ad = new DSLAdapter("fdfds", null);
-        assertEquals(null, ad.getDSLConfigName());
+        assertEquals(null, DSLAdapter.findDSLConfigName( "fdfds" ));
         
     }
     
