@@ -1,7 +1,3 @@
-/*
- * Created on 11-jan-2005
- *
- */
 package org.drools.eclipse.wizard.decisiontable;
 
 import java.io.IOException;
@@ -19,7 +15,7 @@ import org.eclipse.ui.ide.IDE;
 
 /**
  * A page to create a new Decision table scaffolding based on a template.
- * 
+ *
  * @author Michael Neale
  */
 public class NewDTFilePage extends WizardNewFileCreationPage {
@@ -58,7 +54,7 @@ public class NewDTFilePage extends WizardNewFileCreationPage {
         }
         return true;
     }
-    
+
     protected InputStream getInitialContents() {
         try {
             return DroolsEclipsePlugin.getDefault().getBundle().getResource(
