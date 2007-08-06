@@ -208,6 +208,20 @@ public class CompletionContextTest extends TestCase {
         assertEquals("Class", location.getProperty(Location.LOCATION_PROPERTY_CLASS_NAME));
     }
 
+
+    //pombredanne: this variation without ending space does not fail as below
+    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START9() {
+        String input =
+            "rule MyRule \n" +
+            "   when \n" +
+            "       Class ( name:";
+        Location location = new CompletionContext(input).getLocation();
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START, location.getType());
+        assertEquals("Class", location.getProperty(Location.LOCATION_PROPERTY_CLASS_NAME));
+    }
+
+
+    //TODO: fix me
     public void FAILINGtestCheckLHSLocationDetermination_INSIDE_CONDITION_START9() {
         String input =
             "rule MyRule \n" +
@@ -1719,14 +1733,35 @@ public class CompletionContextTest extends TestCase {
         assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION, location.getType());
     }
 
-    //TODO: fix me
-    public void FAILINGtestCheckLHSLocationDetermination_BEGIN_OF_CONDITION77() {
+//  pombredanne: this variation without ending space does not fail as below
+    public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION77() {
         String input =
         	"rule MyRule \n" +
         	"	when \n" +
-        	"		ArrayList(size > 50) from accumulate( Person( disabled == \"yes\", income > 100000 ) from town.getPersons() )";
+        	"		ArrayList(size > 50) from accumulate( Person( disabled == \"yes\", income > 100000 ) from town.getPersons() ) ";
         Location location = new CompletionContext(input).getLocation();
         assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION, location.getType());
+    }
+
+    //TODO: fix me
+    public void FAILINGtestCheckLHSLocationDetermination_BEGIN_OF_CONDITION77() {
+        String input =
+            "rule MyRule \n" +
+            "   when \n" +
+            "       ArrayList(size > 50) from accumulate( Person( disabled == \"yes\", income > 100000 ) from town.getPersons() )";
+        Location location = new CompletionContext(input).getLocation();
+        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION, location.getType());
+    }
+
+    //  pombredanne: this variation without ending space does not fail as below
+    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START45() {
+        String input =
+            "rule MyRule \n" +
+            "   when \n" +
+            "       Class ( name :";
+        Location location = new CompletionContext(input).getLocation();
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START, location.getType());
+        assertEquals("Class", location.getProperty(Location.LOCATION_PROPERTY_CLASS_NAME));
     }
 
     //TODO: fix me
