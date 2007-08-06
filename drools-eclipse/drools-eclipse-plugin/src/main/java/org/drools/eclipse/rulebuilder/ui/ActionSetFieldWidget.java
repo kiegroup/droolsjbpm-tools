@@ -8,8 +8,6 @@ import org.drools.brms.client.modeldriven.brl.FactPattern;
 import org.drools.brms.client.modeldriven.brl.RuleModel;
 import org.drools.eclipse.rulebuilder.modeldriven.HumanReadable;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
@@ -26,7 +24,7 @@ import org.eclipse.ui.forms.widgets.ImageHyperlink;
 /**
  * @author Anton Arhipov
  * @author Ahti Kitsik
- * 
+ *
  */
 public class ActionSetFieldWidget extends Widget {
 
@@ -162,7 +160,7 @@ public class ActionSetFieldWidget extends Widget {
         gd.grabExcessHorizontalSpace = true;
         gd.minimumWidth = 100;
         box.setLayoutData( gd );
-		
+
 		box.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				val.value = box.getText();
