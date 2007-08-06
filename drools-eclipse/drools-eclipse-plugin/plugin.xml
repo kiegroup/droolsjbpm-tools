@@ -49,7 +49,7 @@
          id="org.drools.eclipse.view.rules.RulesView">
       </view>
    </extension>
-   
+
    <extension
          point="org.eclipse.debug.core.logicalStructureTypes">
       <logicalStructureType
@@ -92,17 +92,17 @@
             descriptionImage="icons/drools-large.PNG"
             icon="icons/drools.gif"
             id="org.drools.eclipse.new.file"
-            name="New Rule Resource"/>
+            name="Rule Resource"/>
       <wizard
             category="org.drools.eclipse.new"
             class="org.drools.eclipse.wizard.dsl.NewDSLFileWizard"
             descriptionImage="icons/dsl-large.png"
             icon="icons/dsl.GIF"
             id="org.drools.eclipse.new.dsl"
-            name="New Domain Specific Language"/>
+            name="Domain Specific Language"/>
       <wizard
             id = "org.drools.eclipse.wizards.new.project"
-            name = "New Rule Project"
+            name = "Rule Project"
             class= "org.drools.eclipse.wizard.project.NewDroolsProjectWizard"
             category= "org.drools.eclipse.new"
             project= "true"
@@ -118,7 +118,7 @@
             descriptionImage="icons/dt_large.gif"
             icon="icons/dt_small.gif"
             id="org.drools.eclipse.new.decisiontable"
-            name="New Decision Table"/>
+            name="Decision Table"/>
    </extension>
    <extension
          id="org.drools.eclipse.actionSet"
@@ -138,7 +138,7 @@
                tooltip="Drools workbench"/>
       </actionSet>
    </extension>
-   
+
    <extension
       id="droolsbuilder" name="Drools Builder" point="org.eclipse.core.resources.builders">
       <builder>
@@ -172,24 +172,24 @@
    </extension>
 
    <extension point="org.eclipse.jdt.core.classpathContainerInitializer">
-       <classpathContainerInitializer class="org.drools.eclipse.util.DroolsClasspathContainerInitializer" id="DROOLS" /> 
+       <classpathContainerInitializer class="org.drools.eclipse.util.DroolsClasspathContainerInitializer" id="DROOLS" />
    </extension>
-   
+
    <extension point="org.eclipse.ui.editors.annotationTypes">
       <type super="org.eclipse.ui.workbench.texteditor.error" markerSeverity="2" markerType="org.eclipse.core.resources.problemmarker" name="org.drools.eclipse.editors.error_annotation"/>
    </extension>
-   
+
    <extension point="org.eclipse.help.toc">
       <toc file="help/eclipse/toc.xml" primary="true" />
    </extension>
-   
+
    <extension point = "org.eclipse.ui.preferencePages">
       <page id="org.drools.eclipse.preferences.DroolsPreferencePage"
          class="org.drools.eclipse.preferences.DroolsPreferencePage"
          name="Drools Preferences">
       </page>
    </extension>
-   
+
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
@@ -199,9 +199,9 @@
          id="org.drools.eclipse.DroolsPerspective">
       </perspective>
    </extension>
-   
+
    <!-- Extensions for the interactive debugger -->
-   
+
    <extension point = "org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
    	     id="org.drools.eclipse.launching.DroolsLaunchConfigurationDelegate"
@@ -211,7 +211,7 @@
          sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer"
          modes= "debug" />
    </extension>
-   
+
    <extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
       <launchConfigurationTypeImage
          icon="icons/drools.gif"
@@ -219,14 +219,14 @@
          id="org.drools.eclipse.launching.DroolsLaunchConfigurationDelegate.Image">
       </launchConfigurationTypeImage>
    </extension>
-   
+
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
             type="org.drools.eclipse.launching.DroolsLaunchConfigurationDelegate"
             class="org.eclipse.jdt.internal.debug.ui.launcher.LocalJavaApplicationTabGroup"
             id="org.eclipse.jdt.debug.ui.launchConfigurationTabGroup.localJavaApplication">
-            <launchMode 
+            <launchMode
                   mode="debug"
                   perspective="org.eclipse.debug.ui.DebugPerspective"
                   description="Debug a Drools application">
@@ -237,7 +237,7 @@
             </launchMode>
       </launchConfigurationTabGroup>
    </extension>
-   
+
    <extension
          point="org.eclipse.debug.core.sourceLocators">
       <sourceLocator
@@ -246,14 +246,14 @@
          id="org.drools.eclipse.launching.DroolsSourceLookupDirector">
       </sourceLocator>
    </extension>
-   
+
    <extension point="org.eclipse.ui.editors.markerUpdaters">
-      <updater 
-         markerType="org.drools.eclipse.droolsBreakpointMarker" 
-         class="org.drools.eclipse.debug.core.DroolsLineBreakpointMarkerUpdater" 
-         id="org.drools.eclipse.debug.core.DroolsLineBreakpointMarkerUpdater" /> 
+      <updater
+         markerType="org.drools.eclipse.droolsBreakpointMarker"
+         class="org.drools.eclipse.debug.core.DroolsLineBreakpointMarkerUpdater"
+         id="org.drools.eclipse.debug.core.DroolsLineBreakpointMarkerUpdater" />
    </extension>
-   
+
    <!-- not used anymore
    <extension
          point="org.eclipse.debug.core.sourcePathComputers">
@@ -262,44 +262,44 @@
          id="org.drools.eclipse.launching.DroolsSourcePathComputerDelegate">
       </sourcePathComputer>
    </extension> -->
-   
+
    <extension
-         point="org.eclipse.debug.ui.debugModelPresentations"> 
-      <debugModelPresentation 
+         point="org.eclipse.debug.ui.debugModelPresentations">
+      <debugModelPresentation
          class="org.drools.eclipse.debug.core.DroolsDebugModelPresentation"
          id="org.drools.eclipse.debug">
-      </debugModelPresentation> 
+      </debugModelPresentation>
    </extension>
-   
+
    <!-- not working
    <extension point="org.eclipse.debug.ui.launchShortcuts">
-      <shortcut 
-            label="Drools Application" 
-            icon="icons/drools.gif" 
-            class="org.drools.eclipse.launching.DroolsApplicationLaunchShortcut" 
-            modes="debug" 
+      <shortcut
+            label="Drools Application"
+            icon="icons/drools.gif"
+            class="org.drools.eclipse.launching.DroolsApplicationLaunchShortcut"
+            modes="debug"
             id="org.drools.eclipse.launching.DroolsApplicationLaunchShortcut">
-         <perspective id="org.eclipse.jdt.ui.JavaPerspective" /> 
-         <perspective id="org.eclipse.jdt.ui.JavaHierarchyPerspective" /> 
-         <perspective id="org.eclipse.jdt.ui.JavaBrowsingPerspective" /> 
-         <perspective id="org.eclipse.debug.ui.DebugPerspective" /> 
+         <perspective id="org.eclipse.jdt.ui.JavaPerspective" />
+         <perspective id="org.eclipse.jdt.ui.JavaHierarchyPerspective" />
+         <perspective id="org.eclipse.jdt.ui.JavaBrowsingPerspective" />
+         <perspective id="org.eclipse.debug.ui.DebugPerspective" />
       </shortcut>
    </extension> -->
-   
+
    <!-- not working if using multipage editor -->
    <extension point="org.eclipse.ui.editorActions">
       <editorContribution
-            targetID="org.drools.eclipse.editors.DRLRuleEditor" 
+            targetID="org.drools.eclipse.editors.DRLRuleEditor"
             id="org.drools.eclipse.editors.DRLRuleEditor.RulerActions">
          <action
-            label="Not Used" 
-            class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate" 
+            label="Not Used"
+            class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
             style="push"
-            actionID="RulerDoubleClick" 
-            id="org.drools.eclipse.editors.DRLRuleEditor.ToggleBreakpointRulerAction" /> 
+            actionID="RulerDoubleClick"
+            id="org.drools.eclipse.editors.DRLRuleEditor.ToggleBreakpointRulerAction" />
       </editorContribution>
    </extension>
-   
+
    <!-- not working if using multipage editor -->
    <extension point="org.eclipse.ui.popupMenus">
       <viewerContribution
@@ -313,7 +313,7 @@
          </action>
       </viewerContribution>
    </extension>
-   
+
    <extension point = "org.eclipse.ui.popupMenus">
      <objectContribution
         	id="org.drools.eclipse.action.ConvertToDroolsProject"
@@ -323,13 +323,13 @@
 	       label="Convert to Drools Project"
 	       icon="icons/drools.gif"
 	       menubarPath="additions"
-	       class="org.drools.eclipse.action.ConvertToDroolsProjectAction"	
+	       class="org.drools.eclipse.action.ConvertToDroolsProjectAction"
            definitionId="org.drools.eclipse.action.ConvertToDroolsProjectAction"
 	       enablesFor="1">
 	    </action>
 	 </objectContribution>
    </extension>
-   
+
    <extension
          point="org.eclipse.ui.editors">
       <editor
@@ -344,20 +344,20 @@
 
    <extension
          point = "org.eclipse.ui.editorActions">
-      <editorContribution 
-            id="org.drools.eclipse.flow.ruleflow.editor.action.CheckRuleFlowAction" 
-            targetID="org.drools.eclipse.flow.ruleflow.editor.RuleFlowModelEditor">        
+      <editorContribution
+            id="org.drools.eclipse.flow.ruleflow.editor.action.CheckRuleFlowAction"
+            targetID="org.drools.eclipse.flow.ruleflow.editor.RuleFlowModelEditor">
 	     <action
-	        id="org.drools.eclipse.flow.ruleflow.editor.action.CheckRuleFlowAction" 
-            label="Check RuleFlow" 
-	        toolbarPath="Drools" 
-            icon="icons/check.gif" 
-            tooltip="Check the ruleflow model" 
+	        id="org.drools.eclipse.flow.ruleflow.editor.action.CheckRuleFlowAction"
+            label="Check RuleFlow"
+	        toolbarPath="Drools"
+            icon="icons/check.gif"
+            tooltip="Check the ruleflow model"
             class="org.drools.eclipse.flow.ruleflow.editor.action.CheckRuleFlowAction"
          />
       </editorContribution>
    </extension>
-   
+
    <extension
          point = "org.eclipse.ui.newWizards">
 	  <category
@@ -374,7 +374,7 @@
 	    <selection class="org.eclipse.core.resources.IResource"/>
 	  </wizard>
    </extension>
-   
+
    <!-- RuleBuilder Extensions -->
       <extension
          point="org.eclipse.ui.editors">
@@ -383,19 +383,18 @@
             extensions="brl"
             icon="icons/drools.gif"
             id="org.drools.eclipse.ide.rulebuilder.brl.editors.RuleEditor"
-            name="RuleBuilder Editor"/>
+            name="Guided Rule Editor"/>
    </extension>
+
 
    <extension
          point="org.eclipse.ui.newWizards">
-
       <wizard
             category="org.drools.eclipse.new"
             class="org.drools.eclipse.rulebuilder.wizards.NewBrlFileWizard"
+            descriptionImage="icons/drools-large.PNG"
             icon="icons/drools.gif"
-            id="org.drools.eclipse.rulebuilder.wizards.NewBrlFileWizard"
-            name="Guided DRL Editor"/>
+            id="org.drools.eclipse.rulebuilder.wizards.NewGuidedRuleFileWizard"
+            name="Guided Rule"/>
    </extension>
-   
-   
 </plugin>
