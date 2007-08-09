@@ -1,11 +1,10 @@
 <projectDescription>
   <name>drools-ant</name>
-  <comment/>
+  <comment>A rule production system</comment>
   <projects/>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>
-      <arguments/>
     </buildCommand>
   </buildSpec>
   <natures>
