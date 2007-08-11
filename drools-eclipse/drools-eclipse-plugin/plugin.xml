@@ -315,10 +315,10 @@
    </extension>
 
    <extension point = "org.eclipse.ui.popupMenus">
-     <objectContribution
-        	id="org.drools.eclipse.action.ConvertToDroolsProject"
-        	objectClass="org.eclipse.core.resources.IFile"
-        	nameFilter=".project">
+	 <objectContribution
+           objectClass="org.eclipse.core.resources.IProject"
+           id="org.drools.eclipse.action.ConvertToDroolsProject1">
+        <filter name="nature" value="org.eclipse.jdt.core.javanature"/>
 	    <action id="org.drools.eclipse.action.ConvertToDroolsProjectAction"
 	       label="Convert to Drools Project"
 	       icon="icons/drools.gif"
@@ -327,7 +327,19 @@
            definitionId="org.drools.eclipse.action.ConvertToDroolsProjectAction"
 	       enablesFor="1">
 	    </action>
-	 </objectContribution>
+      </objectContribution>
+      <objectContribution
+           objectClass="org.eclipse.jdt.core.IJavaProject"
+           id="org.drools.eclipse.action.ConvertToDroolsProject2">
+	    <action id="org.drools.eclipse.action.ConvertToDroolsProjectAction"
+	       label="Convert to Drools Project"
+	       icon="icons/drools.gif"
+	       menubarPath="additions"
+	       class="org.drools.eclipse.action.ConvertToDroolsProjectAction"
+           definitionId="org.drools.eclipse.action.ConvertToDroolsProjectAction"
+	       enablesFor="1">
+	    </action>
+      </objectContribution>
    </extension>
 
    <extension

@@ -49,7 +49,8 @@ import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
  */
 public class NewDroolsProjectWizard extends BasicNewResourceWizard {
 
-    private static final String JBOSS_RULES_NAME = "Drools";
+    public static final String DROOLS_CLASSPATH_CONTAINER_PATH = "DROOLS/Drools";
+    
     private IProject newProject;
     private WizardNewProjectCreationPage mainPage;
     private NewDroolsProjectWizardPage extraPage;
@@ -227,7 +228,7 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
     }
 
     private static IPath getClassPathContainerPath() {
-        return new Path("DROOLS/" + getDroolsNamePref());
+        return new Path(DROOLS_CLASSPATH_CONTAINER_PATH);
     }
 
     private static void createDroolsLibraryContainer(IJavaProject project, IProgressMonitor monitor)
@@ -236,10 +237,6 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
             new IJavaProject[] { project },
             new IClasspathContainer[] { new DroolsClasspathContainer(
                     project, getClassPathContainerPath()) }, monitor);
-    }
-
-    private static String getDroolsNamePref() {
-        return JBOSS_RULES_NAME;
     }
 
     public static void addDroolsLibraries(IJavaProject project, IProgressMonitor monitor)
