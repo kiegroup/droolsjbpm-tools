@@ -8,6 +8,7 @@ import org.drools.brms.client.modeldriven.brl.DSLSentence;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -93,6 +94,11 @@ public abstract class DSLSentenceWidget extends Widget {
                 //final Text thisBox = currentBox;
                 elems++;
 
+                GridData gd = new GridData( GridData.FILL_HORIZONTAL );
+                gd.grabExcessHorizontalSpace = true;
+                gd.minimumWidth = 100;
+                currentBox.setLayoutData( gd );
+                
                 widgets.add( currentBox );
 
             } else if ( c == '}' ) {
