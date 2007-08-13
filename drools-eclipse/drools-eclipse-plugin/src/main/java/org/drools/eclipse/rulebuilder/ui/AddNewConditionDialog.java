@@ -130,8 +130,9 @@ public class AddNewConditionDialog extends RuleDialog {
                                               return;
                                           }
 
-                                          //TODO Handle this kind of situations with care - add* can throw runtime exceptions
-                                          modeller.getModel().addLhsItem( getCompletion().getDSLConditions()[dslCombo.getSelectionIndex() - 1] );
+                                          DSLSentence sentence = getCompletion().getDSLConditions()[dslCombo.getSelectionIndex() - 1];
+										//TODO Handle this kind of situations with care - add* can throw runtime exceptions
+                                          modeller.getModel().addLhsItem( sentence.copy() );
 
                                           modeller.reloadLhs();
                                           modeller.setDirty( true );

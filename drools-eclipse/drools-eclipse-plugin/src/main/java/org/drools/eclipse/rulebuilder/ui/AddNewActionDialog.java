@@ -151,7 +151,8 @@ public class AddNewActionDialog extends RuleDialog {
                                               return;
                                           }
 
-                                          modeller.getModel().addRhsItem( getCompletion().getDSLActions()[dslCombo.getSelectionIndex() - 1] );
+                                          DSLSentence sentence = getCompletion().getDSLActions()[dslCombo.getSelectionIndex() - 1];
+										  modeller.getModel().addRhsItem( sentence.copy() );
                                           modeller.setDirty( true );
                                           modeller.reloadRhs();
                                           close();
