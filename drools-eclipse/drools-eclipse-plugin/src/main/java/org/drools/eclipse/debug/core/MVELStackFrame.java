@@ -82,7 +82,7 @@ public class MVELStackFrame extends DroolsStackFrame {
             LocalVariable v2 = (LocalVariable) var;
             DroolsLocalVariable frameLocal = new DroolsLocalVariable( this,
                                                                       v2 );
-            result.add( frameLocal );
+            // result.add( frameLocal );
 
             IValue knownVars = DebugUtil.getValueByExpression( "return getFactory().getKnownVariables().toArray(new String[0]);", frameLocal.getValue());
             
@@ -105,8 +105,8 @@ public class MVELStackFrame extends DroolsStackFrame {
                         VariableWrapper local = new VariableWrapper( varName,
                                                                      val );
 
-                        IValue isLocal = DebugUtil.getValueByExpression( "return getParserContext().getVariables();",
-                                                                         frameLocal.getValue() );
+                        //IValue isLocal = DebugUtil.getValueByExpression( "return getParserContext().getVariables();",
+                        //                                                 frameLocal.getValue() );
                         local.setPublic( true );
                         //local.setLocal( true );
                         result.add( local );
@@ -115,11 +115,11 @@ public class MVELStackFrame extends DroolsStackFrame {
                     }
                 }
             
-            IValue localVars = DebugUtil.getValueByExpression( "return getParserContext().getVariables();", frameLocal.getValue());
-            IValue globalVars = DebugUtil.getValueByExpression( "return getParserContext().getInputs();", frameLocal.getValue());
+            //IValue localVars = DebugUtil.getValueByExpression( "return getParserContext().getVariables();", frameLocal.getValue());
+            //IValue globalVars = DebugUtil.getValueByExpression( "return getParserContext().getInputs();", frameLocal.getValue());
             
-            result.add(new VariableWrapper("LocalVariables", (IJavaValue) localVars));
-            result.add(new VariableWrapper("GlobalVariables", (IJavaValue) globalVars));
+            //result.add(new VariableWrapper("LocalVariables", (IJavaValue) localVars));
+            //result.add(new VariableWrapper("GlobalVariables", (IJavaValue) globalVars));
             
             
             
@@ -329,5 +329,24 @@ public class MVELStackFrame extends DroolsStackFrame {
         return "";
     }
 
+    public boolean canStepInto() {
+    	return false;
+    }
+    
+    public boolean canStepOver() {
+    	return false;
+    }
+    
+    public boolean canDropToFrame() {
+    	return false;
+    }
+    
+    public boolean canStepReturn() {
+    	return false;
+    }
+    
+    public boolean canStepWithFilters() {
+    	return false;
+    }
     
 }

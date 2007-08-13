@@ -574,6 +574,5 @@ public class DroolsStackFrame extends JDIStackFrame {
 		}
 		return locals;
 	}
-	
 
 }
