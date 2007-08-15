@@ -943,14 +943,13 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
 		final Set proposals = new HashSet();
 
-		if (!(getEditor() instanceof DRLRuleEditor)) {
-			return proposals;
-		}
+		if ( !(getEditor() instanceof DRLRuleEditor) ) {
+            return proposals;
+        }
 
-		String compilableConsequence = CompletionUtil
-				.getCompilableText(consequence);
-		compilableConsequence = MVELConsequenceBuilder
-				.delimitExpressions(compilableConsequence);
+		String compilableConsequence = CompletionUtil.getCompilableText( consequence );
+        MVELConsequenceBuilder builder = new MVELConsequenceBuilder();
+        compilableConsequence = builder.processMacros( compilableConsequence );
 
 
 		// attempt to compile and analyze
@@ -958,11 +957,12 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 			DRLInfo drlInfo = DroolsEclipsePlugin.getDefault().parseResource(
 					(DRLRuleEditor) getEditor(), true, true);
 
-			ParserContext compilationContext = createMvelAnalysisContext(
-					params, drlInfo, compilableConsequence);
+			ParserContext compilationContext = createMvelAnalysisContext( params,
+                                                                          drlInfo,
+                                                                          compilableConsequence );
 
 			if (startOfExpression) {
-				Collection jdtProps = getJavaMvelCompletionProposals(documentOffset, "", prefix, params);
+				Collection jdtProps = getJavaCompletionProposals(documentOffset, prefix, prefix, params);
 				proposals.addAll(jdtProps);
 
                 addMvelCompletions( proposals,
@@ -988,11 +988,13 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                     //FIXME: there is a small chance of var name collision using this arbitrary mvdrlofc as a variable name.
                     //ideally the varibale name should be inferred from the last memeber of the expression
 					String syntheticVarName = "mvdrlofc";
-                    String javaText = "\n" + lastType.getName().replace( '$', '.' ) + " " + syntheticVarName +
-                            ";\n" + syntheticVarName + ".";
-					Collection jdtProps = getJavaMvelCompletionProposals(
-							documentOffset, javaText, prefix, params);
-					proposals.addAll(jdtProps);
+                    String javaText = "\n" + lastType.getName().replace( '$',
+                                                                         '.' ) + " " + syntheticVarName + ";\n" + syntheticVarName + ".";
+                    Collection jdtProps = getJavaMvelCompletionProposals( documentOffset,
+                                                                          javaText,
+                                                                          prefix,
+                                                                          params );
+                    proposals.addAll( jdtProps );
 				}
 			}
 
@@ -1056,6 +1058,9 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
             ParserContext compilationContext = compiler.getParserContextState();
 
             Class lastType = expression.getKnownEgressType();
+            if (lastType == null) {
+                lastType =Object.class;
+            }
             context.setMvelReturnedType( lastType );
 
 
