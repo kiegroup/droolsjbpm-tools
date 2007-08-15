@@ -292,7 +292,12 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
                                                   Map params,
                                                   Collection results) {
 
-		String javaTextWithoutPrefix = javaText.substring(0, javaText.length() - prefix.length());
+		int endIndex = javaText.length() - prefix.length();
+        String javaTextWithoutPrefix = javaText;
+        //javaText can be an empty string.
+        if ( endIndex > 0 ) {
+            javaTextWithoutPrefix = javaText.substring(0, endIndex);
+        }
 		// boolean to filter default Object methods produced by code completion when in the beginning of a statement
 		boolean filterObjectMethods = false;
 		if ("".equals(javaTextWithoutPrefix.trim()) || START_OF_NEW_JAVA_STATEMENT.matcher(javaTextWithoutPrefix).matches()) {
