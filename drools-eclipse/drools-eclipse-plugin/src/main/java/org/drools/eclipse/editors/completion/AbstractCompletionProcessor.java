@@ -53,13 +53,13 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
     protected static void filterProposalsOnPrefix(String prefix, List props) {
     	if ( prefix != null && prefix.trim().length() > 0 ) {
     		Iterator iterator = props.iterator();
+            String prefixLc = prefix.toLowerCase();
     		while ( iterator.hasNext() ) {
-    			ICompletionProposal item = (ICompletionProposal) iterator.next();
-    			if (item instanceof RuleCompletionProposal) {
-	    			if (!((RuleCompletionProposal) item).getContent().startsWith(prefix)) {
-	    				iterator.remove();
-	    			}
-    			}
+                ICompletionProposal item = (ICompletionProposal) iterator.next();
+                String content = item.getDisplayString().toLowerCase();
+                if ( !content.toLowerCase().startsWith( prefixLc ) ) {
+                    iterator.remove();
+                }
     		}
     	}
     }
