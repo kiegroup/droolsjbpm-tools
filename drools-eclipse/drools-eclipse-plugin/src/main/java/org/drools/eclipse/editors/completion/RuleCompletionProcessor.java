@@ -938,32 +938,38 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
     }
 
     private Collection getMvelCompletionProposals(final String consequence,
-			final int documentOffset, final String prefix, Map params, String backText,
-			boolean startOfExpression) {
+                                                  final int documentOffset,
+                                                  final String prefix,
+                                                  Map params,
+                                                  String backText,
+                                                  boolean startOfExpression) {
 
-		final Set proposals = new HashSet();
+        final Set proposals = new HashSet();
 
-		if ( !(getEditor() instanceof DRLRuleEditor) ) {
+        if ( !(getEditor() instanceof DRLRuleEditor) ) {
             return proposals;
         }
 
-		String compilableConsequence = CompletionUtil.getCompilableText( consequence );
+        String compilableConsequence = CompletionUtil.getCompilableText( consequence );
         MVELConsequenceBuilder builder = new MVELConsequenceBuilder();
         compilableConsequence = builder.processMacros( compilableConsequence );
 
+        // attempt to compile and analyze
+        try {
+            DRLInfo drlInfo = DroolsEclipsePlugin.getDefault().parseResource( (DRLRuleEditor) getEditor(),
+                                                                              true,
+                                                                              true );
 
-		// attempt to compile and analyze
-		try {
-			DRLInfo drlInfo = DroolsEclipsePlugin.getDefault().parseResource(
-					(DRLRuleEditor) getEditor(), true, true);
-
-			ParserContext compilationContext = createMvelAnalysisContext( params,
+            ParserContext compilationContext = createMvelAnalysisContext( params,
                                                                           drlInfo,
                                                                           compilableConsequence );
 
-			if (startOfExpression) {
-				Collection jdtProps = getJavaCompletionProposals(documentOffset, prefix, prefix, params);
-				proposals.addAll(jdtProps);
+            if ( startOfExpression ) {
+                Collection jdtProps = getJavaCompletionProposals( documentOffset,
+                                                                  prefix,
+                                                                  prefix,
+                                                                  params );
+                proposals.addAll( jdtProps );
 
                 addMvelCompletions( proposals,
                                     documentOffset,
@@ -975,19 +981,19 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                     prefix,
                                     compilationContext.getInputs() );
 
-			} else {
-				// we are completing the methods for an existing type or
-				// variable, we need find the last type in the expression to complete against
+            } else {
+                // we are completing the methods for an existing type or
+                // variable, we need find the last type in the expression to complete against
 
-				if (!"".equals(compilableConsequence.trim())) {
-					Class lastType = context.getMvelReturnedType();
-					if (lastType == null) {
-						lastType = Object.class;
-					}
+                if ( !"".equals( compilableConsequence.trim() ) ) {
+                    Class lastType = context.getMvelReturnedType();
+                    if ( lastType == null ) {
+                        lastType = Object.class;
+                    }
 
                     //FIXME: there is a small chance of var name collision using this arbitrary mvdrlofc as a variable name.
                     //ideally the varibale name should be inferred from the last memeber of the expression
-					String syntheticVarName = "mvdrlofc";
+                    String syntheticVarName = "mvdrlofc";
                     String javaText = "\n" + lastType.getName().replace( '$',
                                                                          '.' ) + " " + syntheticVarName + ";\n" + syntheticVarName + ".";
                     Collection jdtProps = getJavaMvelCompletionProposals( documentOffset,
@@ -995,15 +1001,15 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                                                           prefix,
                                                                           params );
                     proposals.addAll( jdtProps );
-				}
-			}
+                }
+            }
 
-		} catch (Throwable e) {
-			DroolsEclipsePlugin.log(e);
-		}
+        } catch ( Throwable e ) {
+            DroolsEclipsePlugin.log( e );
+        }
 
-		return proposals;
-	}
+        return proposals;
+    }
 
     private Map getResolvedMvelInputs(Map params) {
         ClassTypeResolver resolver = new ClassTypeResolver( getUniqueImports(),
@@ -1027,26 +1033,31 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
     private ParserContext createMvelAnalysisContext(Map params,
                                                     DRLInfo drlInfo,
                                                     String compilableConsequence) {
+        String currentRulename = context.getRule().getName();
+        RuleInfo[] ruleInfos = drlInfo.getRuleInfos();
+        RuleInfo currentRule = null;
+        for ( int i = 0; i < ruleInfos.length; i++ ) {
+            if ( currentRulename.equals( ruleInfos[i].getRuleName() ) ) {
+                currentRule = ruleInfos[i];
+                break;
+            }
+        }
+        MVELDialect dialect = (MVELDialect) currentRule.getDialect();
 
         final ParserContext initialContext = new ParserContext();
+        final ParserContext parserContext = new ParserContext( dialect.getImports(),
+                                                               null,                                                               
+                                                               drlInfo.getPackageName() + "." + currentRule.getRuleName());
+        
+        for ( Iterator it = dialect.getPackgeImports().values().iterator(); it.hasNext(); ) {
+            String packageImport = ( String ) it.next();
+            parserContext.addPackageImport( packageImport );
+        }
+        
 
         try {
-            String currentRulename = context.getRule().getName();
-            RuleInfo[] ruleInfos = drlInfo.getRuleInfos();
-            RuleInfo currentRule = null;
-            for ( int i = 0; i < ruleInfos.length; i++ ) {
-                if ( currentRulename.equals( ruleInfos[i].getRuleName() ) ) {
-                    currentRule = ruleInfos[i];
-                    break;
-                }
-            }
 
-            MVELDialect dialect = (MVELDialect) currentRule.getDialect();
             initialContext.setStrictTypeEnforcement( dialect.isStrictMode() );
-
-            Map imports = dialect.getClassImportResolverFactory().getImportedClasses();
-            imports.putAll( dialect.getStaticMethodImportResolverFactory().getImportedMethods() );
-            initialContext.setImports( imports );
 
             initialContext.setInterceptors( dialect.getInterceptors() );
             initialContext.setInputs( getResolvedMvelInputs( params ) );
@@ -1058,11 +1069,10 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
             ParserContext compilationContext = compiler.getParserContextState();
 
             Class lastType = expression.getKnownEgressType();
-            if (lastType == null) {
-                lastType =Object.class;
+            if ( lastType == null ) {
+                lastType = Object.class;
             }
             context.setMvelReturnedType( lastType );
-
 
             if ( "java.lang.Object".equals( lastType.getName() ) ) {
                 // attempt to use the property verifier to get
@@ -1087,7 +1097,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
             String prop = (String) entry.getKey();
             Class type = (Class) entry.getValue();
             String display = prop + " - " + type.getName().replace( '$',
-                                                                   '.' );
+                                                                    '.' );
 
             RuleCompletionProposal rcp = new RuleCompletionProposal( documentOffset - prefix.length(),
                                                                      prefix.length(),
