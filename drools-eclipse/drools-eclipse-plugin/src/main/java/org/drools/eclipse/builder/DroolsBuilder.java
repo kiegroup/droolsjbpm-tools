@@ -316,7 +316,6 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         while ((len = reader.read(buf)) >= 0) {
             text.append(buf, 0, len);
         }
-        System.out.println(text.toString());
         return text.toString();
     }
 

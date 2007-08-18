@@ -47,9 +47,6 @@ public class ValueEditorTypeSelectionDialog extends RuleDialog {
         valueTypeCombo.addModifyListener( new ModifyListener() {
             public void modifyText(ModifyEvent e) {
 
-                System.out.println( "Modify event " + valueTypeCombo.getSelectionIndex() );
-                System.out.println( "setting constraint for " + constraint );
-
                 switch ( valueTypeCombo.getSelectionIndex() ) {
                     case 0 :
                         constraint.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;

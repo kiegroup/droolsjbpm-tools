@@ -78,7 +78,6 @@ public class ConvertToDroolsProjectAction implements IObjectActionDelegate {
     public static void addDroolsLibraries(IJavaProject project, IProgressMonitor monitor) throws JavaModelException {
     	IClasspathEntry[] classpathEntries = project.getRawClasspath();
     	for (int i = 0; i < classpathEntries.length; i++) {
-    		System.out.println(classpathEntries[i].getPath().toString());
     		if (NewDroolsProjectWizard.DROOLS_CLASSPATH_CONTAINER_PATH.equals(classpathEntries[i].getPath().toString())) {
     			return;
     		}
