@@ -1,11 +1,11 @@
 <project default="rules">
 	
 	<path id="cheese.classpath">
-		<pathelement location="../../../lib/cheese.jar"/>
+		<pathelement location="lib/cheese.jar"/>
 	</path>	
 	
 	<path id="drools.classpath">
-		<fileset dir="../../../../repository">
+		<fileset dir="../m2_repo">
 			<include name="**/*.jar"/>
 		</fileset>		
 		<pathelement location="target"/>
@@ -18,8 +18,8 @@
  	
 	<target name="rules" >
 		<rulebase 
-			srcdir="../../../src/test/resources/rules" 		
-			tofile="../../../target/cheese.rules"
+			srcdir="src/test/resources/rules" 		
+			tofile="target/cheese.rules"
 			classpathref="cheese.classpath" > 
 			<include name="*.drl" />
 		</rulebase>
