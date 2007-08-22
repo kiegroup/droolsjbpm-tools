@@ -16,13 +16,16 @@
 
 package org.drools.contrib;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
+import java.io.Reader;
 
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
@@ -32,6 +35,9 @@ import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.brms.client.modeldriven.brl.RuleModel;
+import org.drools.brms.server.util.BRDRLPersistence;
+import org.drools.brms.server.util.BRXMLPersistence;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
@@ -74,24 +80,24 @@ public class DroolsAntTask extends MatchingTask {
     public void setClasspath(Path classpath) {
         createClasspath().append( classpath );
     }
-    
+
     /**
      * Classpath to use, by reference, when compiling the rulebase
      *
      * @param r a reference to an existing classpath
      */
     public void setClasspathref(Reference r) {
-        createClasspath().setRefid(r);
+        createClasspath().setRefid( r );
     }
-    
+
     /**
      * Adds a path to the classpath.
      *
      * @return created classpath
      */
     public Path createClasspath() {
-        if( this.classpath == null) {
-            this.classpath = new Path(getProject()); 
+        if ( this.classpath == null ) {
+            this.classpath = new Path( getProject() );
         }
         return this.classpath.createPath();
     }
@@ -108,8 +114,12 @@ public class DroolsAntTask extends MatchingTask {
         }
 
         // checking parameters are set
-        if ( srcdir == null || !srcdir.exists() ) {
-            throw new BuildException( "Source directory not specified or does not exists." );
+        if ( srcdir == null ) {
+            throw new BuildException( "Source directory not specified." );
+        }
+
+        if ( !srcdir.exists() ) {
+            throw new BuildException( "Source directory does not exists." + srcdir.getAbsolutePath() );
         }
 
         try {
@@ -179,17 +189,45 @@ public class DroolsAntTask extends MatchingTask {
                                                    DroolsParserException,
                                                    IOException {
         InputStreamReader instream = null;
+
         try {
-            File file = new File( this.srcdir,
-                                  fileName );
-            instream = new InputStreamReader( new FileInputStream( file ) );
+            if ( fileName.endsWith( BRXMLPersistence.FILEEXTENSION ) ) {
+                RuleModel model = BRXMLPersistence.getInstance().unmarshal( loadResource( fileName ) );
+                String packagefile = loadResource( "rule.package" );
+                model.name = fileName.replace( BRXMLPersistence.FILEEXTENSION, "" );
+                ByteArrayInputStream istream = new ByteArrayInputStream( (packagefile + BRDRLPersistence.getInstance().marshal( model )).getBytes() );
+                instream = new InputStreamReader( istream );
+            } else {
+
+                File file = new File( this.srcdir,
+                                      fileName );
+
+                instream = new InputStreamReader( new FileInputStream( file ) );
+            }
+
             builder.addPackageFromDrl( instream );
         } finally {
             if ( instream != null ) {
                 instream.close();
             }
         }
+    }
 
+    private String loadResource(final String name) throws IOException {
+
+        final InputStream in = new FileInputStream( this.srcdir + "/" + name );
+        final Reader reader = new InputStreamReader( in );
+        final StringBuffer text = new StringBuffer();
+        final char[] buf = new char[1024];
+        int len = 0;
+
+        while ( (len = reader.read( buf )) >= 0 ) {
+            text.append( buf,
+                         0,
+                         len );
+        }
+
+        return text.toString();
     }
 
     /**
@@ -237,4 +275,5 @@ public class DroolsAntTask extends MatchingTask {
         }
         return fileNames;
     }
+
 }

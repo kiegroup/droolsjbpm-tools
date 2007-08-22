@@ -1,27 +1,28 @@
 <project default="rules">
 	
+	<property name="eclipsepath"  value=""/>
+	<!-- enable for eclipse test runner <property name="eclipsepath"  value="../../../"/> -->
+	
 	<path id="cheese.classpath">
-		<pathelement location="lib/cheese.jar"/>
+		<pathelement location="${eclipsepath}lib/cheese.jar"/>
 	</path>	
 	
 	<path id="drools.classpath">
-		<fileset dir="../m2_repo">
+		<fileset dir="${eclipsepath}../m2_repo">
 			<include name="**/*.jar"/>
 		</fileset>		
 		<pathelement location="target"/>
 	</path>	
 	
-	<taskdef name="rulebase" 
-		classname="org.drools.contrib.DroolsAntTask"
-		classpathref="drools.classpath" />  
+	<taskdef name="rulebase" classname="org.drools.contrib.DroolsAntTask" classpathref="drools.classpath" />  
 
- 	
 	<target name="rules" >
 		<rulebase 
-			srcdir="src/test/resources/rules" 		
-			tofile="target/cheese.rules"
+			srcdir="${eclipsepath}src/test/resources/rules" 		
+			tofile="${eclipsepath}target/cheese.rules"
 			classpathref="cheese.classpath" > 
 			<include name="*.drl" />
+			<include name="*.brl" />			
 		</rulebase>
 	</target>
 
