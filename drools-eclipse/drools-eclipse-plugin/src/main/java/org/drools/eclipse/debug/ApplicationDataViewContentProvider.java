@@ -57,7 +57,7 @@ public class ApplicationDataViewContentProvider extends DroolsDebugViewContentPr
     }
     
     private IVariable[] getApplicationDataElements(IJavaObject stackObj) throws DebugException {
-        IValue objects = DebugUtil.getValueByExpression("return getGlobals().entrySet().toArray();", stackObj);
+        IValue objects = DebugUtil.getValueByExpression("return ((org.drools.base.MapGlobalResolver) getGlobalResolver()).getGlobals();", stackObj);
         if (objects instanceof IJavaArray) {
             IJavaArray array = (IJavaArray) objects;
             List result = new ArrayList();

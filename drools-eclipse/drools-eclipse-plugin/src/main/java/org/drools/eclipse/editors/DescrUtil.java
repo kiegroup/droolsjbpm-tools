@@ -25,7 +25,6 @@ public final class DescrUtil {
 	public static BaseDescr getDescr(BaseDescr descr, int offset) {
 		if (descr instanceof PackageDescr) {
 			PackageDescr packageDescr = (PackageDescr) descr;
-			System.out.println(packageDescr.getName());
 			// rules
 			for (Iterator iterator = packageDescr.getRules().iterator(); iterator.hasNext(); ) {
 				RuleDescr ruleDescr = (RuleDescr) iterator.next();
