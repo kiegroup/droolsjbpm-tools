@@ -81,7 +81,8 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
 	            for (int l = 0; l < activationArray.length; l++) {
 	            	IJavaValue activation = activationArray[l];
 	            	if (activation.getJavaType() != null) {
-	            		activationsResult.add(new VariableWrapper("[" + l + "]", activation));
+	            		activationsResult.add(new VariableWrapper("[" + l + "]", 
+	            			new LazyActivationWrapper(activations, activation, workingMemoryImpl)));
 	            	}
 	            }
 	        	boolean active = false;
@@ -92,8 +93,8 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
             	// in the agenda group name are replaced with '_'s.
             	name = replaceSpaces(name);
 	            result.add(new MyVariableWrapper(name + "[" + (active ? "focus" : "nofocus") + "]", 
-	            		new ObjectWrapper((IJavaObject) agendaGroup,
-	        				(IJavaVariable[]) activationsResult.toArray(new IJavaVariable[activationsResult.size()]))));
+            		new ObjectWrapper((IJavaObject) agendaGroup,
+        				(IJavaVariable[]) activationsResult.toArray(new IJavaVariable[activationsResult.size()]))));
 	        }
         }
         return result.toArray(new IVariable[0]);
@@ -103,6 +104,80 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
     	return name.replace(' ', '_');
     }
 
+    private class LazyActivationWrapper extends ObjectWrapper {
+    	
+    	private IJavaValue activation;
+    	private IJavaValue workingMemoryImpl;
+    	
+    	public LazyActivationWrapper(IJavaObject object, IJavaValue activation, IJavaObject workingMemoryImpl) {
+    		super(object, null);
+    		this.activation = activation;
+    		this.workingMemoryImpl = workingMemoryImpl;
+    	}
+    	
+    	public IVariable[] getVariables() {
+    		IVariable[] result = super.getVariables();
+    		if (result == null) {
+    			try {
+	                List variables = new ArrayList();
+	                variables.add(new VariableWrapper("ruleName", (IJavaValue) DebugUtil.getValueByExpression("return getRule().getName();", activation)));
+	        		String activationId = null;
+				    IVariable[] activationVarArray = activation.getVariables();
+		        	for (int j = 0; j < activationVarArray.length; j++) {
+		        		IVariable activationVar = activationVarArray[j];
+		        		if ("activationNumber".equals(activationVar.getName())) {
+		        			activationId = activationVar.getValue().getValueString();
+		        			break;
+		        		}
+		        	}
+		        	if (activationId != null) {
+			        	IValue objects = DebugUtil.getValueByExpression("return getActivationParameters(" + activationId + ");", workingMemoryImpl);
+			        	if (objects instanceof IJavaArray) {
+			                IJavaArray array = (IJavaArray) objects;
+			                IJavaValue[] javaVals = array.getValues();
+			                for ( int k = 0; k < javaVals.length; k++ ) {
+			                    IJavaValue mapEntry = javaVals[k];
+			                    String key = null;
+			                    IJavaValue value = null;
+			                    
+			                    IVariable[] vars = mapEntry.getVariables();
+			                    for ( int j = 0; j < vars.length; j++ ) {
+			                        IVariable var = vars[j];
+			                        if ("key".equals(var.getName())) {
+			                            key = var.getValue().getValueString();
+			                        } else if ("value".equals(var.getName())) {
+			                            value = (IJavaValue) var.getValue();
+			                        }
+			                    }
+			                    variables.add(new VariableWrapper(key, value));
+			                }
+			                result = (IJavaVariable[]) variables.toArray(new IJavaVariable[variables.size()]);
+			        	}
+		        	}
+    			} catch (Throwable t) {
+    				DroolsEclipsePlugin.log(t);
+    			}
+        		if (result == null) {
+        			result = new IJavaVariable[0];
+        		}
+                setVariables((IJavaVariable[]) result);
+    		}
+    		return result;
+    	}
+    	
+    	public boolean hasVariables() {
+    		return true;
+    	}
+    	
+    	public String getValueString() throws DebugException {
+    		return "Activation";
+    	}
+    	
+    	public String getReferenceTypeName() throws DebugException {
+    		return "";
+    	}
+    }
+    
     /**
      * Special VariableWrapper that considers variables with the same name
      * as equal.
@@ -126,4 +201,5 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
         }
     	
     }
+    
 }

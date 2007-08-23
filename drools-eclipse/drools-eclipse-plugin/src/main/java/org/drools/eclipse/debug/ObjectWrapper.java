@@ -73,6 +73,10 @@ public class ObjectWrapper implements IJavaObject {
     public boolean hasVariables() {
         return variables.length > 0;
     }
+    
+    protected void setVariables(IJavaVariable[] variables) {
+    	this.variables = variables;
+    }
 
     public String getModelIdentifier() {
         return object.getModelIdentifier();
