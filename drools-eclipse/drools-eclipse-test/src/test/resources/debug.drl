@@ -2,3 +2,10 @@ package com.sample
  
 global String s
 global java.util.List list
+
+rule "ActivationCreator"
+    when
+        o: String()
+    then
+        list.add(o);
+end

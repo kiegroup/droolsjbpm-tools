@@ -13,6 +13,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.base.MapGlobalResolver;
 import org.drools.compiler.PackageBuilder;
 import org.drools.reteoo.ReteooStatefulSession;
+import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 
 /**
@@ -57,14 +58,28 @@ public class DebugViewsTest extends TestCase {
 	 */
     
     public void testAgendaView() throws Exception {
+    	Reader source = new InputStreamReader(DebugViewsTest.class.getResourceAsStream("/debug.drl"));
+    	PackageBuilder builder = new PackageBuilder();
+    	builder.addPackageFromDrl(source);
     	RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+    	ruleBase.addPackage(builder.getPackage());
     	ReteooStatefulSession session = (ReteooStatefulSession) ruleBase.newStatefulSession();
+    	List list = new ArrayList();
+    	session.setGlobal("list", list);
+    	session.insert("String1");
+    	AgendaGroup focus = session.getAgenda().getFocus();
+    	assertEquals("MAIN", focus.getName());
     	AgendaGroup[] agendaGroups = session.getAgenda().getAgendaGroups();
     	assertEquals(1, agendaGroups.length);
     	assertEquals("MAIN", agendaGroups[0].getName());
-    	assertEquals(0, agendaGroups[0].getActivations().length);
-    	AgendaGroup focus = session.getAgenda().getFocus();
-    	assertEquals("MAIN", focus.getName());
+    	assertEquals(1, agendaGroups[0].getActivations().length);
+    	
+    	Activation activation = agendaGroups[0].getActivations()[0];
+    	assertEquals("ActivationCreator", activation.getRule().getName());
+    	Entry[] parameters = session.getActivationParameters(activation.getActivationNumber());
+    	assertEquals(1, parameters.length);
+    	assertEquals("o", parameters[0].getKey());
+    	assertEquals("String1", parameters[0].getValue());
     }
     
 	/*
@@ -80,8 +95,8 @@ public class DebugViewsTest extends TestCase {
     	session.insert("Test2");
     	Object[] objects = session.iterateObjectsToList().toArray();
     	assertEquals(2, objects.length);
-    	assertEquals("Test1", objects[0]);
-    	assertEquals("Test2", objects[1]);
+    	assertTrue(("Test1".equals(objects[0]) && "Test2".equals(objects[1])) ||
+    			   ("Test2".equals(objects[0]) && "Test1".equals(objects[1])));
     }
     
 }
