@@ -141,8 +141,7 @@ public class RuleEditor extends FormEditor
                                  true,
                                  null );
                 } catch ( CoreException e ) {
-                    // TODO Handle
-                    e.printStackTrace();
+                    DroolsEclipsePlugin.log( e );
                 }
             }
 
@@ -159,7 +158,7 @@ public class RuleEditor extends FormEditor
             updateName( false );
 
         } catch ( PartInitException e ) {
-            e.printStackTrace();
+            DroolsEclipsePlugin.log( e );
         }
     }
 
@@ -216,8 +215,7 @@ public class RuleEditor extends FormEditor
                                                      dslList );
 
         } catch ( Exception e ) {
-            // TODO Handle problem with the completion engine reloading
-            e.printStackTrace();
+            DroolsEclipsePlugin.log( e );
         }
     }
 

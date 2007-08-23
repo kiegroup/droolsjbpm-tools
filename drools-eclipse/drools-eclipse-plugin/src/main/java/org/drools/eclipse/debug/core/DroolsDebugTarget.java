@@ -746,8 +746,22 @@ public class DroolsDebugTarget extends JDIDebugTarget {
 
     }
 
-    public Object getDroolsBreakpoint(String source,
+    /**
+     * Tries to find a match for the provided breakpoint information from the list of registered breakpoints.
+     * For stepping and possibly other purposes it returns also a breakpoint for cases where exactly the same line was not found.
+     * 
+     * If breakpoint is not found for <code>line</code> at <code>source</code> then it takes the first line that is above the
+     * specified line at the same file.
+     * 
+     * @param source
+     * @param line
+     * @return
+     */
+    public DroolsLineBreakpoint getDroolsBreakpoint(String source,
                                       int line) {
+        
+        DroolsLineBreakpoint backupBreakpoint = null;
+        
         Iterator iterator = getBreakpoints().iterator();
         while ( iterator.hasNext() ) {
             IJavaBreakpoint element = (IJavaBreakpoint) iterator.next();
@@ -758,15 +772,30 @@ public class DroolsDebugTarget extends JDIDebugTarget {
                     if ( l == null || source == null ) {
                         return null;
                     }
-                    if ( l.getLineNumber() == line && source.equals( l.getRuleName() ) ) {
+                    
+                    int matchLine = l.getLineNumber();
+                    String matchSource = l.getRuleName();
+                    if ( matchLine == line && source.equals( matchSource ) ) {
                         return l;
                     }
+                    
+                    // Prepare for a backup breakpoint
+                    if (source.equals( matchSource )) {
+                        
+                        if (l.getLineNumber()<line &&
+                                ((backupBreakpoint==null) ||        
+                                (backupBreakpoint!=null && l.getLineNumber()<backupBreakpoint.getLineNumber()))) {
+                            backupBreakpoint = l;
+                        }
+                    }
+                    
                 } catch ( CoreException e ) {
                     logError( e );
                 }
             }
         }
-        return null;
+        
+        return backupBreakpoint;
     }
 
     private void addRemoteBreakpoint(DroolsLineBreakpoint d) {

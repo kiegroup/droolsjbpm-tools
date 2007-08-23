@@ -133,7 +133,7 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
                 try {
                     return (String) marker.getAttribute( TYPE_NAME);
                 } catch ( CoreException e ) {
-                    e.printStackTrace();
+                    DroolsEclipsePlugin.log( e );
                 }
         }
         return null;

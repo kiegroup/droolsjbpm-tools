@@ -20,5 +20,5 @@ public class DroolsDebugModelPresentation extends JDIModelPresentation {
 		}
 		return super.getBreakpointText(breakpoint);
 	}
-	
+	    
 }

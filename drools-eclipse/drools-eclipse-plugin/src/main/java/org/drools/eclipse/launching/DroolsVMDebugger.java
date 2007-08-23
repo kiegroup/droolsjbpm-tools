@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.base.mvel.MVELDebugHandler;
 import org.drools.eclipse.debug.core.DroolsDebugModel;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -106,6 +107,8 @@ public class DroolsVMDebugger extends StandardVMDebugger {
 		// options like '-client' & '-server' which are required to be the first options
 		String[] allVMArgs = combineVmArgs(config, fVMInstance);
 		addArguments(allVMArgs, arguments);
+        arguments.add("-D"+MVELDebugHandler.DEBUG_LAUNCH_KEY+"=true");
+        
 		addBootClassPathArguments(arguments, config);
 		
 		String[] cp= config.getClassPath();
@@ -131,6 +134,7 @@ public class DroolsVMDebugger extends StandardVMDebugger {
 
 		arguments.add(config.getClassToLaunch());
 		addArguments(config.getProgramArguments(), arguments);
+        
 		String[] cmdLine= new String[arguments.size()];
 		arguments.toArray(cmdLine);
 		

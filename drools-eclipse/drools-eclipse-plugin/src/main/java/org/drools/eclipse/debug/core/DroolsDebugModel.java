@@ -35,4 +35,5 @@ public class DroolsDebugModel {
 		}
 		return target[0];
 	}
+        
 }
