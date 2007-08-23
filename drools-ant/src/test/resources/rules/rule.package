@@ -3,6 +3,6 @@
 
 package org.drools.test;
 
-import org.drools.Person;
+import org.drools.contrib.Person;
 import org.drools.contrib.Cheese;
 

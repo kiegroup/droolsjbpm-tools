@@ -1,7 +1,6 @@
 <project default="rules">
 	
 	<property name="eclipsepath"  value=""/>
-	<!-- enable for eclipse test runner <property name="eclipsepath"  value="../../../"/> -->
 	
 	<path id="cheese.classpath">
 		<pathelement location="${eclipsepath}lib/cheese.jar"/>
