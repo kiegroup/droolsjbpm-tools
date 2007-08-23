@@ -21,7 +21,28 @@
 			tofile="${eclipsepath}target/cheese.rules"
 			classpathref="cheese.classpath" > 
 			<include name="*.drl" />
+			<include name="*.brl" />
+			<include name="*.xml" />			
+		</rulebase>
+	</target>
+	
+	<target name="rulesnopackagefile" >
+		<rulebase 
+			srcdir="${eclipsepath}src/test/resources/packagefiletest/emptydir" 		
+			tofile="${eclipsepath}target/cheese.rules"
+			classpathref="cheese.classpath" > 
+			<include name="*.drl" />
 			<include name="*.brl" />			
+		</rulebase>
+	</target>
+
+	<target name="rulesmanypackagefile" >
+		<rulebase 
+			srcdir="${eclipsepath}src/test/resources/packagefiletest" 		
+			tofile="${eclipsepath}target/cheese.rules"
+			classpathref="cheese.classpath" > 
+			<include name="*.drl" />
+			<include name="*.brl" />
 		</rulebase>
 	</target>
 

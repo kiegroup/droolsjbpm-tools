@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -49,7 +50,12 @@ import org.drools.compiler.PackageBuilderConfiguration;
  * @author etirelli
  */
 public class DroolsAntTask extends MatchingTask {
-
+    
+    
+    public static String BRLFILEEXTENSION = ".brl";
+    public static String XMLFILEEXTENSION = ".xml";
+    public static String RULEFLOWFILEEXTENSION = ".rf";
+    
     private File srcdir;
     private File toFile;
     private Path classpath;
@@ -191,26 +197,60 @@ public class DroolsAntTask extends MatchingTask {
         InputStreamReader instream = null;
 
         try {
-            if ( fileName.endsWith( BRXMLPersistence.FILEEXTENSION ) ) {
+
+            if ( fileName.endsWith( DroolsAntTask.BRLFILEEXTENSION ) ) {
                 RuleModel model = BRXMLPersistence.getInstance().unmarshal( loadResource( fileName ) );
-                String packagefile = loadResource( "rule.package" );
-                model.name = fileName.replace( BRXMLPersistence.FILEEXTENSION, "" );
+                String packagefile = loadResource( getPackageFile( this.srcdir.getAbsolutePath() ) );
+                
+                model.name = fileName.replace( DroolsAntTask.BRLFILEEXTENSION,
+                                               "" );
+                
                 ByteArrayInputStream istream = new ByteArrayInputStream( (packagefile + BRDRLPersistence.getInstance().marshal( model )).getBytes() );
                 instream = new InputStreamReader( istream );
             } else {
-
                 File file = new File( this.srcdir,
                                       fileName );
-
+                
                 instream = new InputStreamReader( new FileInputStream( file ) );
             }
 
-            builder.addPackageFromDrl( instream );
+            if ( fileName.endsWith( DroolsAntTask.RULEFLOWFILEEXTENSION ) ) {
+                builder.addRuleFlow( instream );
+            } else if ( fileName.endsWith( DroolsAntTask.XMLFILEEXTENSION ) ) {
+                builder.addPackageFromXml( instream );
+            } else {
+                builder.addPackageFromDrl( instream );
+            }
+
         } finally {
             if ( instream != null ) {
                 instream.close();
             }
         }
+    }
+
+    private String getPackageFile(String dirname) {
+
+        File dir = new File( dirname );
+
+        FilenameFilter filter = new FilenameFilter() {
+            public boolean accept(File dir,
+                                  String name) {
+                return name.endsWith( ".package" );
+            }
+        };
+
+        String[] children = dir.list( filter );
+
+        if ( children.length > 1 ) {
+            throw new BuildException( "There are more than one package configuration file for this directory :" + dirname );
+        }
+
+        if ( children.length == 0 ) {
+            throw new BuildException( "There is no package configuration file for this directory:" + dirname );
+        }
+
+        return children[0];
     }
 
     private String loadResource(final String name) throws IOException {

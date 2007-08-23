@@ -1,0 +1,8 @@
+//This is a package configuration file
+//Add imports, globals etc here which will be used by all the rule assets in thise folder.
+
+package org.drools.test;
+
+import org.drools.contrib.Person;
+import org.drools.contrib.Cheese;
+

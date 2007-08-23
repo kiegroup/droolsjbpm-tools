@@ -24,23 +24,41 @@ import junit.framework.Assert;
 public class DroolsAntTaskTest extends BuildFileTest {
 
     public DroolsAntTaskTest() {
-        super("DroolsAntTest");
+        super( "DroolsAntTest" );
     }
 
     public void setUp() {
-        configureProject("src/test/resources/DroolsAntTask.xml");
+        configureProject( "src/test/resources/DroolsAntTask.xml" );
     }
 
     public void testRules() {
         try {
-            executeTarget("rules");
-        } catch( Exception e ) {
+            executeTarget( "rules" );
+        } catch ( Exception e ) {
             e.printStackTrace();
-            Assert.fail("Should not throw any exception: " + e.getMessage() );
+            Assert.fail( "Should not throw any exception: " + e.getMessage() );
+        }
+    }
+
+    public void testNoPackageFile() {
+        try {
+            executeTarget( "rulesnopackagefile" );
+            Assert.fail( "Should throw an exception " );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void testManyPackageFiles() {
+        try {
+            executeTarget( "rulesmanypackagefile" );
+            Assert.fail( "Should throw an exception " );
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     public void tearDown() {
     }
-    
+
 }
