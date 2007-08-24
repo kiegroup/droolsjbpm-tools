@@ -46,6 +46,12 @@ public class CompletionContext {
     static final Pattern ENDS_WITH_SPACES                    = Pattern.compile( ".*\\s+",
                                                                                 Pattern.DOTALL );
 
+    static final Pattern ENDS_WITH_COLON                     = Pattern.compile( ".*:\\s*",
+            																	Pattern.DOTALL );
+
+    static final Pattern ENDS_WITH_BRACKET                   = Pattern.compile( ".*\\)\\s*",
+																				Pattern.DOTALL );
+
     static final Pattern MVEL_DIALECT_PATTERN                        = Pattern.compile( ".*dialect\\s+\"mvel\".*",
                                                                                 Pattern.DOTALL );
 
@@ -131,7 +137,8 @@ public class CompletionContext {
                                                       Location location,
                                                       String backText) {
         if ( location.getType() == Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ) {
-            if ( !ENDS_WITH_SPACES.matcher( backText ).matches() ) {
+            if ( !ENDS_WITH_SPACES.matcher( backText ).matches() 
+            	 || ENDS_WITH_COLON.matcher( backText ).matches()) {
                 location.setType( Location.LOCATION_LHS_INSIDE_CONDITION_START );
             }
         } else if ( location.getType() == Location.LOCATION_LHS_INSIDE_CONDITION_END ) {
@@ -163,7 +170,9 @@ public class CompletionContext {
             if ( location.getProperty( Location.LOCATION_FROM_CONTENT ) == null ) {
                 location.setProperty( Location.LOCATION_FROM_CONTENT,
                                       "" );
-            } else if ( ((String) location.getProperty( Location.LOCATION_FROM_CONTENT )).length() > 0 && ENDS_WITH_SPACES.matcher( backText ).matches() ) {
+            } else if ( ((String) location.getProperty( Location.LOCATION_FROM_CONTENT )).length() > 0
+            		    && (ENDS_WITH_SPACES.matcher( backText ).matches()
+            		    	|| ENDS_WITH_BRACKET.matcher( backText ).matches() )) {
                 location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
             }
         } else if ( location.getType() == Location.LOCATION_LHS_FROM_ACCUMULATE_INIT ) {
