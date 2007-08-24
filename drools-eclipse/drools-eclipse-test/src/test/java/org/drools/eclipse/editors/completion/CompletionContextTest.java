@@ -209,8 +209,7 @@ public class CompletionContextTest extends TestCase {
     }
 
 
-    //pombredanne: this variation without ending space does not fail as below
-    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START9() {
+    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START9a() {
         String input =
             "rule MyRule \n" +
             "   when \n" +
@@ -221,8 +220,7 @@ public class CompletionContextTest extends TestCase {
     }
 
 
-    //TODO: fix me
-    public void FAILINGtestCheckLHSLocationDetermination_INSIDE_CONDITION_START9() {
+    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START9b() {
         String input =
             "rule MyRule \n" +
         	"	when \n" +
@@ -1733,8 +1731,7 @@ public class CompletionContextTest extends TestCase {
         assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION, location.getType());
     }
 
-//  pombredanne: this variation without ending space does not fail as below
-    public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION77() {
+    public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION77a() {
         String input =
         	"rule MyRule \n" +
         	"	when \n" +
@@ -1743,8 +1740,7 @@ public class CompletionContextTest extends TestCase {
         assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION, location.getType());
     }
 
-    //TODO: fix me
-    public void FAILINGtestCheckLHSLocationDetermination_BEGIN_OF_CONDITION77() {
+    public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION77b() {
         String input =
             "rule MyRule \n" +
             "   when \n" +
@@ -1753,8 +1749,7 @@ public class CompletionContextTest extends TestCase {
         assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION, location.getType());
     }
 
-    //  pombredanne: this variation without ending space does not fail as below
-    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START45() {
+    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START45a() {
         String input =
             "rule MyRule \n" +
             "   when \n" +
@@ -1764,8 +1759,7 @@ public class CompletionContextTest extends TestCase {
         assertEquals("Class", location.getProperty(Location.LOCATION_PROPERTY_CLASS_NAME));
     }
 
-    //TODO: fix me
-    public void FAILINGtestCheckLHSLocationDetermination_INSIDE_CONDITION_START45() {
+    public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START45b() {
         String input =
             "rule MyRule \n" +
             "   when \n" +
