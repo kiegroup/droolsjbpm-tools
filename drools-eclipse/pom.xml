@@ -11,7 +11,7 @@
   <artifactId>drools-eclipse</artifactId>
    <packaging>pom</packaging>
 
-  <name>Drools :: Eclipse-Plugin</name>ি
+  <name>Drools :: Eclipse-Plugin</name>
   <build>
     <plugins>    
      <plugin>
@@ -265,6 +265,10 @@
           <artifactId>janino</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
     </dependency>
 
     <dependency>
