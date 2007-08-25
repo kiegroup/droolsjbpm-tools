@@ -246,9 +246,18 @@ public class DroolsThread extends JDIThread {
     }
 
     public synchronized void stepOver() throws DebugException {
+        
+        // Detection for active stackframe
+        if (!(getTopStackFrame() instanceof MVELStackFrame)) {
+            super.stepOver();
+            return;
+        }
+
+        //MVEL step over
         if ( !canStepOver() ) {
             return;
         }
+        
         if ( !setRemoteOnBreakReturn( Debugger.STEP ) ) {
             return;
         }
