@@ -22,7 +22,6 @@ import org.drools.util.StringUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.CompletionContext;
 import org.eclipse.jdt.core.CompletionProposal;
-import org.eclipse.jdt.core.CompletionRequestor;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
@@ -32,6 +31,7 @@ import org.eclipse.jdt.core.eval.IEvaluationContext;
 import org.eclipse.jdt.internal.ui.text.java.AbstractJavaCompletionProposal;
 import org.eclipse.jdt.internal.ui.text.java.JavaMethodCompletionProposal;
 import org.eclipse.jdt.internal.ui.text.java.LazyJavaCompletionProposal;
+import org.eclipse.jdt.internal.ui.text.java.LazyJavaTypeCompletionProposal;
 import org.eclipse.jdt.ui.text.java.CompletionProposalCollector;
 import org.eclipse.jdt.ui.text.java.IJavaCompletionProposal;
 import org.eclipse.jface.text.IDocument;
@@ -141,37 +141,46 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
     }
 
 	private List getAllClassProposals(final String classNameStart, final int documentOffset, final String prefix) {
-		final List list = new ArrayList();
+        List result = new ArrayList();
 		IJavaProject javaProject = getCurrentJavaProject();
-		if (javaProject ==null) {
-			return list;
+		if (javaProject == null) {
+			return result;
 		}
-
-		CompletionRequestor requestor = new CompletionRequestor() {
-			public void accept(org.eclipse.jdt.core.CompletionProposal proposal) {
-				String className = new String(proposal.getCompletion());
-				if (proposal.getKind() == org.eclipse.jdt.core.CompletionProposal.PACKAGE_REF) {
-					RuleCompletionProposal prop = new RuleCompletionProposal(documentOffset - prefix.length(), classNameStart.length(), className, className + ".");
-					prop.setImage(DroolsPluginImages.getImage(DroolsPluginImages.PACKAGE));
-					list.add(prop);
-				} else if (proposal.getKind() == org.eclipse.jdt.core.CompletionProposal.TYPE_REF) {
-					RuleCompletionProposal prop = new RuleCompletionProposal(documentOffset - prefix.length(), classNameStart.length() - proposal.getReplaceStart(), className, className + ";");
-					prop.setImage(DroolsPluginImages.getImage(DroolsPluginImages.CLASS));
-					list.add(prop);
+		CompletionProposalCollector	collector = new CompletionProposalCollector(javaProject) {
+			public void accept(CompletionProposal proposal) {
+				if (proposal.getKind() == org.eclipse.jdt.core.CompletionProposal.PACKAGE_REF ||
+					proposal.getKind() == org.eclipse.jdt.core.CompletionProposal.TYPE_REF) {
+						super.accept(proposal);
 				}
-				// ignore all other proposals
 			}
 		};
-
+		collector.acceptContext(new CompletionContext());
         try {
-            javaProject.newEvaluationContext().codeComplete( classNameStart,
-                                                             classNameStart.length(),
-                                                             requestor );
+            IEvaluationContext evalContext = javaProject.newEvaluationContext();
+            evalContext.codeComplete( classNameStart,
+            						  classNameStart.length(),
+                                      collector );
+			IJavaCompletionProposal[] proposals = collector.getJavaCompletionProposals();
+			for (int i = 0; i < proposals.length; i++) {
+				if (proposals[i] instanceof AbstractJavaCompletionProposal) {
+					AbstractJavaCompletionProposal javaProposal = (AbstractJavaCompletionProposal) proposals[i];
+					int replacementOffset = documentOffset - (classNameStart.length() - javaProposal.getReplacementOffset());
+					javaProposal.setReplacementOffset(replacementOffset);
+					if (javaProposal instanceof LazyJavaTypeCompletionProposal) {
+						String completionPrefix = classNameStart.substring(classNameStart.length() - javaProposal.getReplacementLength());
+						int dotIndex = completionPrefix.lastIndexOf('.');
+						// match up to the last dot in order to make higher level matching still work (camel case...)
+						if (dotIndex != -1) {
+							javaProposal.setReplacementString(((LazyJavaTypeCompletionProposal) javaProposal).getQualifiedTypeName());
+						}
+					}
+					result.add(proposals[i]);
+				}
+			}
         } catch ( Throwable t ) {
             DroolsEclipsePlugin.log( t );
         }
-
-        return list;
+		return result;
     }
 
     protected List getPossibleProposals(ITextViewer viewer,
@@ -332,10 +341,19 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
                                       text.length(),
                                       collector );
 			IJavaCompletionProposal[] proposals = collector.getJavaCompletionProposals();
-			int replacementOffset = documentOffset - prefix.length();
 			for (int i = 0; i < proposals.length; i++) {
 				if (proposals[i] instanceof AbstractJavaCompletionProposal) {
-					((AbstractJavaCompletionProposal) proposals[i]).setReplacementOffset(replacementOffset);
+					AbstractJavaCompletionProposal javaProposal = (AbstractJavaCompletionProposal) proposals[i];
+					int replacementOffset = documentOffset - (text.length() - javaProposal.getReplacementOffset());
+					javaProposal.setReplacementOffset(replacementOffset);
+					if (javaProposal instanceof LazyJavaTypeCompletionProposal) {
+						String completionPrefix = javaText.substring(javaText.length() - javaProposal.getReplacementLength());
+						int dotIndex = completionPrefix.lastIndexOf('.');
+						// match up to the last dot in order to make higher level matching still work (camel case...)
+						if (dotIndex != -1) {
+							javaProposal.setReplacementString(((LazyJavaTypeCompletionProposal) javaProposal).getQualifiedTypeName());
+						}
+					}
 					if (!filterObjectMethods || !(proposals[i] instanceof JavaMethodCompletionProposal)) {
 						results.add(proposals[i]);
 					}
