@@ -406,4 +406,8 @@ public class MVELStackFrame extends DroolsStackFrame {
         return REF_TYPE;
     }
 
+    public String getSourceName() throws DebugException {
+        return getMVELName();
+    }
+    
 }
