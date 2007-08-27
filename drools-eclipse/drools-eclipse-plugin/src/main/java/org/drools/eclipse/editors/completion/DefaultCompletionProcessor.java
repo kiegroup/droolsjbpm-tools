@@ -301,12 +301,8 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
                                                   Map params,
                                                   Collection results) {
 
-		int endIndex = javaText.length() - prefix.length();
-        String javaTextWithoutPrefix = javaText;
-        //javaText can be an empty string.
-        if ( endIndex > 0 ) {
-            javaTextWithoutPrefix = javaText.substring(0, endIndex);
-        }
+		String javaTextWithoutPrefix = getTextWithoutPrefix( javaText,
+                                                             prefix );
 		// boolean to filter default Object methods produced by code completion when in the beginning of a statement
 		boolean filterObjectMethods = false;
 		if ("".equals(javaTextWithoutPrefix.trim()) || START_OF_NEW_JAVA_STATEMENT.matcher(javaTextWithoutPrefix).matches()) {
@@ -362,6 +358,18 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
         } catch ( Throwable t ) {
             DroolsEclipsePlugin.log( t );
         }
+    }
+
+    public static String getTextWithoutPrefix(final String javaText,
+                                              final String prefix) {
+        int endIndex = javaText.length() - prefix.length();
+        String javaTextWithoutPrefix = javaText;
+        //javaText can be an empty string.
+        if ( endIndex > 0 ) {
+            javaTextWithoutPrefix = javaText.substring( 0,
+                                                        endIndex );
+        }
+        return javaTextWithoutPrefix;
     }
 
     protected String getPackage() {
