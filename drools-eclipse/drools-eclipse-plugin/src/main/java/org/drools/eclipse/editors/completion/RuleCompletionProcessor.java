@@ -950,7 +950,10 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
             return proposals;
         }
 
-        String compilableConsequence = CompletionUtil.getCompilableText( consequence );
+        String mvelTextWithoutPrefix = getTextWithoutPrefix( consequence,
+                                                             prefix );
+
+        String compilableConsequence = CompletionUtil.getCompilableText( mvelTextWithoutPrefix );
         MVELConsequenceBuilder builder = new MVELConsequenceBuilder();
         compilableConsequence = builder.processMacros( compilableConsequence );
 
@@ -1046,14 +1049,14 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
         final ParserContext initialContext = new ParserContext();
         final ParserContext parserContext = new ParserContext( dialect.getImports(),
-                                                               null,                                                               
+                                                               null,
                                                                drlInfo.getPackageName() + "." + currentRule.getRuleName());
-        
+
         for ( Iterator it = dialect.getPackgeImports().values().iterator(); it.hasNext(); ) {
             String packageImport = ( String ) it.next();
             parserContext.addPackageImport( packageImport );
         }
-        
+
 
         try {
 
