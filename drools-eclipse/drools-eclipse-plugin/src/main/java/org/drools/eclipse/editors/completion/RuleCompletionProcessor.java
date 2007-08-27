@@ -35,6 +35,7 @@ import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.util.asm.ClassFieldInspector;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.swt.graphics.Image;
 import org.mvel.CompiledExpression;
 import org.mvel.ExpressionCompiler;
@@ -1050,13 +1051,12 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         final ParserContext initialContext = new ParserContext();
         final ParserContext parserContext = new ParserContext( dialect.getImports(),
                                                                null,
-                                                               drlInfo.getPackageName() + "." + currentRule.getRuleName());
+                                                               drlInfo.getPackageName() + "." + currentRule.getRuleName() );
 
         for ( Iterator it = dialect.getPackgeImports().values().iterator(); it.hasNext(); ) {
-            String packageImport = ( String ) it.next();
+            String packageImport = (String) it.next();
             parserContext.addPackageImport( packageImport );
         }
-
 
         try {
 
@@ -1098,6 +1098,12 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         for ( Iterator iter = inputs.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry entry = (Map.Entry) iter.next();
             String prop = (String) entry.getKey();
+
+            //JBRULES-1134 do not add completions if they already exist
+            if (containsProposal( proposals, prop )) {
+                continue ;
+            }
+
             Class type = (Class) entry.getValue();
             String display = prop + " - " + type.getName().replace( '$',
                                                                     '.' );
@@ -1109,6 +1115,34 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
             rcp.setImage( DefaultCompletionProcessor.VARIABLE_ICON );
             proposals.add( rcp );
         }
+    }
+
+    /**
+     * Attempt to compare proposals of different types based on the tokenized display string
+     * @param proposals
+     * @param newProposal
+     * @return true if the collection contains a prposal which matches the new Proposal.
+     * The match is based on the first token based on a space split
+     */
+    boolean containsProposal(final Collection proposals, String newProposal) {
+        for ( Iterator iter = proposals.iterator(); iter.hasNext(); ) {
+            ICompletionProposal prop = (ICompletionProposal) iter.next();
+            String displayString = prop.getDisplayString();
+            String[] existings = displayString.split( " " );
+            if (existings.length == 0) {
+                continue;
+            }
+
+            String[] newProposals = newProposal.split( " " );
+            if (newProposals.length == 0) {
+                continue;
+            }
+
+            if (existings[0].equals( newProposals[0] )) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void addRuleParameters(Map result,
