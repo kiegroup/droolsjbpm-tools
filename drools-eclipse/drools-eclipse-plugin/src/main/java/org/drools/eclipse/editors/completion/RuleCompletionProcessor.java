@@ -32,6 +32,7 @@ import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.rule.builder.dialect.mvel.MVELConsequenceBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
+import org.drools.spi.KnowledgeHelper;
 import org.drools.util.asm.ClassFieldInspector;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
@@ -1048,14 +1049,13 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         }
         MVELDialect dialect = (MVELDialect) currentRule.getDialect();
 
-        final ParserContext initialContext = new ParserContext();
-        final ParserContext parserContext = new ParserContext( dialect.getImports(),
+        final ParserContext initialContext = new ParserContext( dialect.getImports(),
                                                                null,
                                                                drlInfo.getPackageName() + "." + currentRule.getRuleName() );
 
         for ( Iterator it = dialect.getPackgeImports().values().iterator(); it.hasNext(); ) {
             String packageImport = (String) it.next();
-            parserContext.addPackageImport( packageImport );
+            initialContext.addPackageImport( packageImport );
         }
 
         try {
@@ -1064,6 +1064,8 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
             initialContext.setInterceptors( dialect.getInterceptors() );
             initialContext.setInputs( getResolvedMvelInputs( params ) );
+            initialContext.addInput( "drools",
+                                    KnowledgeHelper.class );
             initialContext.setCompiled( true );
 
             //compile the expression
