@@ -62,6 +62,11 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
         return getMarker().getAttribute( DIALECT, "Unknown");
     }
     
+    public Map getFileRuleMappings() {
+        String packedInfo = getMarker().getAttribute( IDroolsDebugConstants.DRL_RULES, "");
+        return unpackRuleMapping( packedInfo );
+    }
+
     public void setJavaBreakpointProperties() throws CoreException {
         IMarker marker = getMarker();
         int drlLineNumber = getDRLLineNumber();
@@ -69,6 +74,20 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
             try {
                 DRLInfo drlInfo = DroolsEclipsePlugin.getDefault().parseResource( marker.getResource(), true );
 
+                RuleInfo[] ruleInfos = drlInfo.getRuleInfos();
+                
+                StringBuilder rb = new StringBuilder();
+                for (int i=0;i<ruleInfos.length; i++) {
+                    int line = ruleInfos[i].getConsequenceDrlLineNumber();
+                    String ruleid = ruleInfos[i].getClassName()+":"+line;
+                    rb.append(ruleid);
+                    if (i<ruleInfos.length-1) {
+                        rb.append(";");
+                    }
+                }
+                
+                marker.setAttribute( IDroolsDebugConstants.DRL_RULES, rb.toString());
+                
                 marker.setAttribute( TYPE_NAME, getRuleClassName( drlInfo, marker.getResource().toString(), drlLineNumber ) );
                 int ruleLineNumber = getRuleLineNumber( drlInfo, marker.getResource().toString(), drlLineNumber );
                 marker.setAttribute( IMarker.LINE_NUMBER, ruleLineNumber );
@@ -138,5 +157,18 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
         }
         return null;
     }
+
+    private final static Map unpackRuleMapping(String input) {
+        Map map = new HashMap();
+        String[] rules = input.split( "\\;");
+        for (int i=0; i<rules.length; i++) {
+            if (rules[i].length()>0) {
+                String[] inf = rules[i].split( "\\:" );
+                map.put( inf[0], Integer.valueOf( inf[1] ) );
+            }
+        }
+        return map;
+    }
+
 
 }

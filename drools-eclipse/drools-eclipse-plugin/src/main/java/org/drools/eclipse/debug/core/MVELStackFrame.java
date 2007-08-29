@@ -291,17 +291,25 @@ public class MVELStackFrame extends DroolsStackFrame {
         }
 
         int line;
-        line = bpoint.getDRLLineNumber();
+        
+        try {
+            line = Integer.parseInt(bpoint.getFileRuleMappings().get( sourceName ).toString());
+        } catch (Throwable t2) {
+            DroolsEclipsePlugin.log( t2 );
+            return -1;
+        }
 
         int fragmentLine = getBreakpointLineNumber(); // 4->5 for step over
 
-        int delta = 0;
+        
+/*        int delta = 0;
         try {
             delta = fragmentLine - bpoint.getLineNumber();
         } catch ( CoreException e ) {
             DroolsEclipsePlugin.log( e );
         }
-        return line + delta;
+*/        int res = line + fragmentLine;
+        return res;
     }
 
     public RuleInfo getExecutingRuleInfo() {

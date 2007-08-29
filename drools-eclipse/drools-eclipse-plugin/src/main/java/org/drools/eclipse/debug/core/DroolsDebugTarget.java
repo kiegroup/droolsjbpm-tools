@@ -760,19 +760,20 @@ public class DroolsDebugTarget extends JDIDebugTarget {
     public DroolsLineBreakpoint getDroolsBreakpoint(String source,
                                       int line) {
         
+        
         DroolsLineBreakpoint backupBreakpoint = null;
         
         Iterator iterator = getBreakpoints().iterator();
         while ( iterator.hasNext() ) {
             IJavaBreakpoint element = (IJavaBreakpoint) iterator.next();
-            if ( element instanceof DroolsLineBreakpoint ) {
+            if ( element instanceof DroolsLineBreakpoint  && ((DroolsLineBreakpoint)element).getDialectName().equals( MVELDialect.ID )) {
                 DroolsLineBreakpoint l = (DroolsLineBreakpoint) element;
                 try {
 
                     if ( l == null || source == null ) {
                         return null;
                     }
-                    
+
                     int matchLine = l.getLineNumber();
                     String matchSource = l.getRuleName();
                     if ( matchLine == line && source.equals( matchSource ) ) {
@@ -780,13 +781,8 @@ public class DroolsDebugTarget extends JDIDebugTarget {
                     }
                     
                     // Prepare for a backup breakpoint
-                    if (source.equals( matchSource )) {
-                        
-                        if (l.getLineNumber()<line &&
-                                ((backupBreakpoint==null) ||        
-                                (backupBreakpoint!=null && l.getLineNumber()<backupBreakpoint.getLineNumber()))) {
-                            backupBreakpoint = l;
-                        }
+                    if (source.equals( matchSource ) || l.getFileRuleMappings().containsKey( source )) {
+                        backupBreakpoint = l;
                     }
                     
                 } catch ( CoreException e ) {
@@ -794,7 +790,7 @@ public class DroolsDebugTarget extends JDIDebugTarget {
                 }
             }
         }
-        
+
         return backupBreakpoint;
     }
 
