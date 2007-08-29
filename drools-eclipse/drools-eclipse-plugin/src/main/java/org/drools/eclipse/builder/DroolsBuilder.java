@@ -374,7 +374,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         		if (functionError.getObject() instanceof CompilationProblem[]) {
         			CompilationProblem[] problems = (CompilationProblem[]) functionError.getObject();
         			for (int j = 0; j < problems.length; j++) {
-        				markers.add(new DroolsBuildMarker(problems[j].getMessage(), -1));
+        				markers.add(new DroolsBuildMarker(problems[j].getMessage(), functionError.getErrorLines()[j]));
         			}
         		} else {
         			markers.add(new DroolsBuildMarker(functionError.getFunctionDescr().getName() + ":" + functionError.getMessage(), -1));
