@@ -32,7 +32,7 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
     /**
      * Constructs a line breakpoint on the given resource at the given
      * line number.
-     * 
+     *
      * @param resource file on which to set the breakpoint
      * @param lineNumber line number of the breakpoint
      * @throws CoreException if unable to create the breakpoint
@@ -53,7 +53,7 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
     public int getDRLLineNumber() {
         return getMarker().getAttribute( IDroolsDebugConstants.DRL_LINE_NUMBER, -1 );
     }
-  
+
     public String getModelIdentifier() {
         return IDroolsDebugConstants.ID_DROOLS_DEBUG_MODEL;
     }
@@ -61,7 +61,7 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
     public String getDialectName() {
         return getMarker().getAttribute( DIALECT, "Unknown");
     }
-    
+
     public Map getFileRuleMappings() {
         String packedInfo = getMarker().getAttribute( IDroolsDebugConstants.DRL_RULES, "");
         return unpackRuleMapping( packedInfo );
@@ -75,8 +75,8 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
                 DRLInfo drlInfo = DroolsEclipsePlugin.getDefault().parseResource( marker.getResource(), true );
 
                 RuleInfo[] ruleInfos = drlInfo.getRuleInfos();
-                
-                StringBuilder rb = new StringBuilder();
+
+                StringBuffer rb = new StringBuffer();
                 for (int i=0;i<ruleInfos.length; i++) {
                     int line = ruleInfos[i].getConsequenceDrlLineNumber();
                     String ruleid = ruleInfos[i].getClassName()+":"+line;
@@ -85,9 +85,9 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
                         rb.append(";");
                     }
                 }
-                
+
                 marker.setAttribute( IDroolsDebugConstants.DRL_RULES, rb.toString());
-                
+
                 marker.setAttribute( TYPE_NAME, getRuleClassName( drlInfo, marker.getResource().toString(), drlLineNumber ) );
                 int ruleLineNumber = getRuleLineNumber( drlInfo, marker.getResource().toString(), drlLineNumber );
                 marker.setAttribute( IMarker.LINE_NUMBER, ruleLineNumber );
@@ -127,8 +127,8 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
             RuleInfo ruleInfo = drlInfo.getRuleInfo( lineNumber );
             if ( ruleInfo != null ) {
                 if ( ruleInfo.getConsequenceDrlLineNumber() < lineNumber ) {
-                    
-                    int line = ruleInfo.getConsequenceJavaLineNumber() 
+
+                    int line = ruleInfo.getConsequenceJavaLineNumber()
                                         	+ (lineNumber - ruleInfo.getConsequenceDrlLineNumber());
                     if (ruleInfo.getDialect().getId().equals( MVELDialect.ID )) {
                         return line;
@@ -138,14 +138,14 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
             }
             FunctionInfo functionInfo = drlInfo.getFunctionInfo( lineNumber );
             if ( functionInfo != null ) {
-                return functionInfo.getJavaLineNumber() 
+                return functionInfo.getJavaLineNumber()
                 	+ (lineNumber - functionInfo.getDrlLineNumber());
             }
         }
         throw new CoreException( new Status( IStatus.ERROR, DroolsEclipsePlugin.getUniqueIdentifier(), 0,
                                              "Cannot determine ruleLineNumber for " + resource + " " + lineNumber, null ) );
     }
-    
+
     public String getRuleName() {
         IMarker marker = getMarker();
         if ( marker.exists() ) {
