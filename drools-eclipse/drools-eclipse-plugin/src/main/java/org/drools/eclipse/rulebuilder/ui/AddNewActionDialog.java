@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * This provides a popup for new RHS action selection.
- * 
+ *
  * @author Anton Arhipov
  * @author Ahti Kitsik
  */
@@ -47,8 +47,8 @@ public class AddNewActionDialog extends RuleDialog {
                                  heading );
 
         createRetractFieldPart(composite, heading);
-        
-        
+
+
         String[] facts = getCompletion().getFactTypes();
 
         createFactAssertionPart( composite,
@@ -67,18 +67,18 @@ public class AddNewActionDialog extends RuleDialog {
 
     private void createRetractFieldPart(Composite composite, String heading) {
     	createLabel( composite, "Retract the fact" );
-    	
+
     	final Combo factsCombo = new Combo( composite, SWT.READ_ONLY );
-    	
+
     	factsCombo.add( heading );
-		
+
     	List boundFacts = modeller.getModel().getBoundFacts();
-        
+
         for ( int i = 0; i < boundFacts.size(); i++ ) {
             factsCombo.add( (String) boundFacts.get( i ) );
         }
         factsCombo.select( 0 );
-    	
+
         factsCombo.addListener( SWT.Selection,
                 new Listener() {
                     public void handleEvent(Event event) {
@@ -87,13 +87,13 @@ public class AddNewActionDialog extends RuleDialog {
                         }
 
                         modeller.getModel().addRhsItem( new ActionRetractFact(factsCombo.getText()) );
-                        
+
                         modeller.setDirty( true );
                         modeller.reloadRhs();
                         close();
                     }
                 } );
-        
+
 	}
 
 	private void createModifyFieldPart(Composite composite,
@@ -105,7 +105,7 @@ public class AddNewActionDialog extends RuleDialog {
         factsCombo.add( heading );
 
         List boundFacts = modeller.getModel().getBoundFacts();
-        
+
         for ( int i = 0; i < boundFacts.size(); i++ ) {
             factsCombo.add( (String) boundFacts.get( i ) );
         }
@@ -119,13 +119,13 @@ public class AddNewActionDialog extends RuleDialog {
                                              }
 
                                              modeller.getModel().addRhsItem(new ActionUpdateField(factsCombo.getText()));
-                                             
+
                                              modeller.setDirty( true );
                                              modeller.reloadRhs();
                                              close();
                                          }
                                      } );
-        
+
     }
 
     private void createDslSentences(Composite composite,
@@ -166,7 +166,7 @@ public class AddNewActionDialog extends RuleDialog {
                                                 String heading,
                                                 String[] facts) {
         createLabel( composite,
-                     "Logically assert a new fact" );
+                     "Logically insert a new fact" );
         final Combo factsCombo = createFactsCombo( composite,
                                                    heading,
                                                    facts );
@@ -229,13 +229,13 @@ public class AddNewActionDialog extends RuleDialog {
         final Combo globalVarsCombo = new Combo( composite,
                                                  SWT.READ_ONLY );
         globalVarsCombo.add( heading );
-        
+
         List boundFacts = modeller.getModel().getBoundFacts();
-        
+
         //adding globals
         String[] globals = modeller.getSuggestionCompletionEngine().getGlobalVariables();
         boundFacts.addAll(Arrays.asList(globals));
-        
+
         for ( int i = 0; i < boundFacts.size(); i++ ) {
             globalVarsCombo.add( (String) boundFacts.get( i ) );
         }

@@ -8,10 +8,10 @@ import java.util.Set;
 /**
  * This contains some simple mappings between operators, conditional elements
  * and the human readable equivalent.
- * 
+ *
  * Yes, I am making the presumption that programmers are not human, but I think
  * they (we) are cool with that.
- * 
+ *
  * @author Michael Neale
  */
 public class HumanReadable {
@@ -82,9 +82,9 @@ public class HumanReadable {
                           "Any of" );
 
         actionDisplayMap.put( "assert",
-                              "Assert" );
+                              "Insert" );
         actionDisplayMap.put( "assertLogical",
-                              "Logically assert" );
+                              "Logically insert" );
         actionDisplayMap.put( "retract",
                               "Retract" );
         actionDisplayMap.put( "set",
@@ -120,7 +120,7 @@ public class HumanReadable {
 
     /**
      * get operator by its display name
-     * 
+     *
      * @param op
      *            operator display name
      * @return operator
