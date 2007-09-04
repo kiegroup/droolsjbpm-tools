@@ -54,7 +54,7 @@ public class DroolsAntTask extends MatchingTask {
     
     public static String BRLFILEEXTENSION = ".brl";
     public static String XMLFILEEXTENSION = ".xml";
-    public static String RULEFLOWFILEEXTENSION = ".rf";
+    public static String RULEFLOWFILEEXTENSION = ".rfm";
     
     private File srcdir;
     private File toFile;
