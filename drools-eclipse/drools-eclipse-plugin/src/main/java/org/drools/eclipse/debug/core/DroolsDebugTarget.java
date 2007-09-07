@@ -703,7 +703,6 @@ public class DroolsDebugTarget extends JDIDebugTarget {
                                                  DroolsThread th2 = (DroolsThread) tharr[i];
                                                  ThreadReference th2real = ((DroolsThread) tharr[i]).getUnderlyingThread();
 
-                                                 //MVEL It doesn't have to be always main. find a better way for detection
                                                  if ( th2real.suspendCount() == 1 && th2.getName().equals( "main" ) ) {
                                                      t = th2real;
                                                      t2 = (DroolsThread) th2;
@@ -724,7 +723,6 @@ public class DroolsDebugTarget extends JDIDebugTarget {
 
                                      public void wonSuspendVote(Event event,
                                                                 JDIDebugTarget target) {
-                                         // TODO Auto-generated method stub
 
                                      }
 
@@ -757,58 +755,49 @@ public class DroolsDebugTarget extends JDIDebugTarget {
      * @param line
      * @return
      */
-    public DroolsLineBreakpoint getDroolsBreakpoint(String source,
-                                      int line) {
-        
-        
-        DroolsLineBreakpoint backupBreakpoint = null;
-        
+    public DroolsLineBreakpoint getDroolsBreakpoint(String source) {
+
+        if ( source == null ) {
+            return null;
+        }
+
         Iterator iterator = getBreakpoints().iterator();
         while ( iterator.hasNext() ) {
             IJavaBreakpoint element = (IJavaBreakpoint) iterator.next();
-            if ( element instanceof DroolsLineBreakpoint  && ((DroolsLineBreakpoint)element).getDialectName().equals( MVELDialect.ID )) {
+            if ( element instanceof DroolsLineBreakpoint && ((DroolsLineBreakpoint) element).getDialectName().equals( MVELDialect.ID ) ) {
                 DroolsLineBreakpoint l = (DroolsLineBreakpoint) element;
                 try {
 
-                    if ( l == null || source == null ) {
-                        return null;
-                    }
-
                     int matchLine = l.getLineNumber();
                     String matchSource = l.getRuleName();
-                    if ( matchLine == line && source.equals( matchSource ) ) {
+
+                    if ( source.equals( matchSource ) || l.getFileRuleMappings().containsKey( source ) ) {
                         return l;
                     }
-                    
-                    // Prepare for a backup breakpoint
-                    if (source.equals( matchSource ) || l.getFileRuleMappings().containsKey( source )) {
-                        backupBreakpoint = l;
-                    }
-                    
+
                 } catch ( CoreException e ) {
                     logError( e );
                 }
             }
         }
 
-        return backupBreakpoint;
+        return null;
     }
 
     private void addRemoteBreakpoint(DroolsLineBreakpoint d) {
-        
+
         try {
-            if (!d.isEnabled()) {
+            if ( !d.isEnabled() ) {
                 return; // No need to install disabled breakpoints
             }
         } catch ( CoreException e2 ) {
             logError( e2 );
             return; // No need to install breakpoints that are this much broken
         }
-        
+
         Iterator handleriter = getVM().classesByName( "org.drools.base.mvel.MVELDebugHandler" ).iterator();
         Object debugHandlerClass = handleriter.next();
 
-        
         int line;
         String sourceName;
 
@@ -839,7 +828,7 @@ public class DroolsDebugTarget extends JDIDebugTarget {
             for ( int i = 0; i < tharr.length; i++ ) {
                 IThread th2 = tharr[i];
                 ThreadReference th2real = ((DroolsThread) tharr[i]).getUnderlyingThread();
-                //MVEL It doesn't have to be always main. find a better way for detection. suspend count is most likely only at one thread so a bit more error-safe
+
                 if ( th2real.suspendCount() == 1 && th2.getName().equals( "main" ) ) {
                     t = th2real;
                     t2 = (DroolsThread) th2;
@@ -895,7 +884,7 @@ public class DroolsDebugTarget extends JDIDebugTarget {
             for ( int i = 0; i < tharr.length; i++ ) {
                 IThread th2 = tharr[i];
                 ThreadReference th2real = ((DroolsThread) tharr[i]).getUnderlyingThread();
-                //MVEL It doesn't have to be always main. find a better way for detection. suspend count is most likely only at one thread so a bit more error-safe
+
                 if ( th2real.suspendCount() == 1 && th2.getName().equals( "main" ) ) {
                     t = th2real;
                     t2 = (DroolsThread) th2;

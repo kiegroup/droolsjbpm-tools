@@ -246,24 +246,27 @@ public class DroolsThread extends JDIThread {
     }
 
     public synchronized void stepOver() throws DebugException {
-        
+
         // Detection for active stackframe
-        if (!(getTopStackFrame() instanceof MVELStackFrame)) {
+        if ( !(getTopStackFrame() instanceof MVELStackFrame) ) {
             super.stepOver();
             return;
         }
 
         //MVEL step over
-        if ( !canStepOver() ) {
+        MVELStackFrame mvelStack = (MVELStackFrame) getTopStackFrame();
+
+        if ( !canStepOver() || !mvelStack.canStepOver() ) {
             return;
         }
-        
+
         if ( !setRemoteOnBreakReturn( Debugger.STEP ) ) {
             return;
         }
 
-        setRunning( true );
         preserveStackFrames();
+
+        setRunning( true );
 
         try {
             getUnderlyingThread().resume();
@@ -314,4 +317,9 @@ public class DroolsThread extends JDIThread {
         setRemoteOnBreakReturn( Debugger.CONTINUE );
         super.resume();
     }
+
+    public void setInvokingMethod(boolean invoking) {
+        super.setInvokingMethod( invoking );
+    }
+
 }
