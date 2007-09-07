@@ -37,6 +37,7 @@ public class HumanReadable {
                                 "greater than" );
         operatorDisplayMap.put( ">=",
                                 "greater than or equal to" );
+        operatorDisplayMap.put( "soundslike", "sounds like" );
 
         operatorDisplayMap.put( "|| ==",
                                 "or equal to" );
