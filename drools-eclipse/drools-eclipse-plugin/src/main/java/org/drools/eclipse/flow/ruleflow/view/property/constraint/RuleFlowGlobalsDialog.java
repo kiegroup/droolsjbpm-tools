@@ -15,9 +15,9 @@ package org.drools.eclipse.flow.ruleflow.view.property.constraint;
  * limitations under the License.
  */
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,18 +45,18 @@ import org.eclipse.swt.widgets.TabItem;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class RuleFlowImportsDialog extends Dialog {
+public class RuleFlowGlobalsDialog extends Dialog {
 
-	private static final Pattern IMPORT_PATTERN = Pattern.compile(
-		"\\n\\s*import\\s+([^\\s;#]+);?", Pattern.DOTALL);
+	private static final Pattern GLOBAL_PATTERN = Pattern.compile(
+		"\\n\\s*global\\s+([^\\s;#]+)\\s+([^\\s;#]+);?", Pattern.DOTALL);
 	
 	private RuleFlowProcess process;
 	private boolean success;
 	private TabFolder tabFolder;
-	private SourceViewer importsViewer;
-	private List imports;
+	private SourceViewer globalsViewer;
+	private Map globals;
 
-	public RuleFlowImportsDialog(Shell parentShell, RuleFlowProcess process) {
+	public RuleFlowGlobalsDialog(Shell parentShell, RuleFlowProcess process) {
 		super(parentShell);
 		this.process = process;
 		setShellStyle(getShellStyle() | SWT.RESIZE);
@@ -64,7 +64,7 @@ public class RuleFlowImportsDialog extends Dialog {
 
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setText("Imports editor");
+		newShell.setText("Globals editor");
 	}
 
 	protected Point getInitialSize() {
@@ -72,8 +72,8 @@ public class RuleFlowImportsDialog extends Dialog {
 	}
 
 	private Control createTextualEditor(Composite parent) {
-		importsViewer = new SourceViewer(parent, null, SWT.BORDER);
-		importsViewer.configure(new DRLSourceViewerConfig(null) {
+		globalsViewer = new SourceViewer(parent, null, SWT.BORDER);
+		globalsViewer.configure(new DRLSourceViewerConfig(null) {
 			public IReconciler getReconciler(ISourceViewer sourceViewer) {
 				return null;
 			}
@@ -82,16 +82,17 @@ public class RuleFlowImportsDialog extends Dialog {
 			}
 		});
 		IDocument document = new Document(getProcessImports());
-		importsViewer.setDocument(document);
-		return importsViewer.getControl();
+		globalsViewer.setDocument(document);
+		return globalsViewer.getControl();
 	}
 	
 	private String getProcessImports() {
-		String result = "# define your imports here: e.g. import com.sample.MyClass\n";
-		List imports = process.getImports();
-		if (imports != null) {
-			for (Iterator iterator = imports.iterator(); iterator.hasNext(); ) {
-				result += "import " + (String) iterator.next() + "\n";
+		String result = "# define your globals here: e.g. global java.util.List myList\n";
+		Map globals = process.getGlobals();
+		if (globals != null) {
+			for (Iterator iterator = globals.entrySet().iterator(); iterator.hasNext(); ) {
+				Map.Entry entry = (Map.Entry) iterator.next();
+				result += "global " + entry.getValue() + " " + entry.getKey() + "\n";
 			}
 		}
 		return result;
@@ -109,14 +110,14 @@ public class RuleFlowImportsDialog extends Dialog {
 		gd.horizontalAlignment = GridData.FILL;
 		tabFolder.setLayoutData(gd);
 		TabItem textEditorTab = new TabItem(tabFolder, SWT.NONE);
-		textEditorTab.setText("Imports");
+		textEditorTab.setText("Globals");
 		textEditorTab.setControl(createTextualEditor(tabFolder));
 		return tabFolder;
 	}
 	
 	protected void okPressed() {
 		success = true;
-		updateImports();
+		updateGlobals();
 		super.okPressed();
 	}
 
@@ -124,15 +125,15 @@ public class RuleFlowImportsDialog extends Dialog {
 		return success;
 	}
 
-	public List getImports() {
-		return imports;
+	public Map getGlobals() {
+		return globals;
 	}
 	
-	private void updateImports() {
-		this.imports = new ArrayList();
-		Matcher matcher = IMPORT_PATTERN.matcher(importsViewer.getDocument().get());
+	private void updateGlobals() {
+		this.globals = new HashMap();
+		Matcher matcher = GLOBAL_PATTERN.matcher(globalsViewer.getDocument().get());
 		while (matcher.find()) {
-			this.imports.add(matcher.group(1));
+			this.globals.put(matcher.group(2), matcher.group(1));
 		}
 	}
 }

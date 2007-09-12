@@ -17,6 +17,7 @@ package org.drools.eclipse.flow.ruleflow.view.property.constraint;
  */
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -45,6 +46,7 @@ public class ConstraintCompletionProcessor extends RuleCompletionProcessor {
 
 	private RuleFlowProcess process;
 	private List imports;
+	private List globals;
 	
 	public ConstraintCompletionProcessor(RuleFlowProcess process) {
 		super(null);
@@ -98,6 +100,17 @@ public class ConstraintCompletionProcessor extends RuleCompletionProcessor {
     	}
     }
     
+    public List getGlobals() {
+    	if (globals == null) {
+    		loadGlobals();
+    	}
+    	return globals;
+    }
+    
+    private void loadGlobals() {
+    	this.globals = Arrays.asList(process.getGlobalNames());
+    }
+    
     private IJavaProject getJavaProject() {
     	IEditorPart editor = getEditor();
     	if (editor != null && editor.getEditorInput() instanceof IFileEditorInput) {
@@ -115,5 +128,6 @@ public class ConstraintCompletionProcessor extends RuleCompletionProcessor {
     
     public void reset() {
     	this.imports = null;
+    	this.globals = null;
     }
 }

@@ -16,6 +16,7 @@ package org.drools.eclipse.flow.ruleflow.view.property.constraint;
  */
 
 import java.util.List;
+import java.util.Map;
 
 import org.drools.eclipse.editors.DRLSourceViewerConfig;
 import org.drools.eclipse.editors.scanners.DRLPartionScanner;
@@ -139,7 +140,7 @@ public class RuleFlowConstraintDialog extends Dialog {
 		top.setLayoutData(gd);
 
 		layout = new GridLayout();
-		layout.numColumns = 3;
+		layout.numColumns = 4;
 		top.setLayout(layout);
 
 		Label l1 = new Label(top, SWT.None);
@@ -150,7 +151,7 @@ public class RuleFlowConstraintDialog extends Dialog {
 		gd = new GridData();
 		gd.horizontalAlignment = GridData.FILL;
 		gd.widthHint = 200;
-		gd.horizontalSpan = 2;
+		gd.horizontalSpan = 3;
 		nameText.setLayoutData(gd);
 
 		Label l2 = new Label(top, SWT.NONE);
@@ -160,7 +161,7 @@ public class RuleFlowConstraintDialog extends Dialog {
 		priorityText = new Text(top, SWT.BORDER);
 		gd = new GridData();
 		gd.widthHint = 200;
-		gd.horizontalSpan = 2;
+		gd.horizontalSpan = 3;
 		priorityText.setLayoutData(gd);
 
 		alwaysTrue = new Button(top, SWT.CHECK);
@@ -178,12 +179,25 @@ public class RuleFlowConstraintDialog extends Dialog {
 			}
 		});
 		gd = new GridData();
+		gd.grabExcessHorizontalSpace = true;
 		gd.horizontalAlignment = GridData.END;
 		importButton.setLayoutData(gd);
 
+		Button globalButton = new Button(top, SWT.PUSH);
+		globalButton.setText("Globals ...");
+		globalButton.setFont(JFaceResources.getDialogFont());
+		globalButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				globalButtonPressed();
+			}
+		});
+		gd = new GridData();
+		gd.horizontalAlignment = GridData.END;
+		globalButton.setLayoutData(gd);
+
 		tabFolder = new TabFolder(parent, SWT.NONE);
 		gd = new GridData();
-		gd.horizontalSpan = 3;
+		gd.horizontalSpan = 4;
 		gd.grabExcessHorizontalSpace = true;
 		gd.grabExcessVerticalSpace = true;
 		gd.verticalAlignment = GridData.FILL;
@@ -217,6 +231,23 @@ public class RuleFlowConstraintDialog extends Dialog {
 				if (code != CANCEL) {
 					List imports = dialog.getImports();
 					process.setImports(imports);
+					completionProcessor.reset();
+				}
+			}
+		};
+		r.run();
+	}
+
+	private void globalButtonPressed() {
+		final Runnable r = new Runnable() {
+			public void run() {
+				RuleFlowGlobalsDialog dialog =
+					new RuleFlowGlobalsDialog(getShell(), process);
+				dialog.create();
+				int code = dialog.open();
+				if (code != CANCEL) {
+					Map globals = dialog.getGlobals();
+					process.setGlobals(globals);
 					completionProcessor.reset();
 				}
 			}

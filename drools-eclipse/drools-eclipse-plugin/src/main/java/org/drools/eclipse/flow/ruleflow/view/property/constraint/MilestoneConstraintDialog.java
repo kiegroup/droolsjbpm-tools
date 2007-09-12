@@ -16,6 +16,7 @@ package org.drools.eclipse.flow.ruleflow.view.property.constraint;
  */
 
 import java.util.List;
+import java.util.Map;
 
 import org.drools.eclipse.editors.DRLSourceViewerConfig;
 import org.drools.eclipse.editors.scanners.DRLPartionScanner;
@@ -143,8 +144,18 @@ public class MilestoneConstraintDialog extends EditBeanDialog {
 			}
 		});
 		gd = new GridData();
-		gd.horizontalAlignment = GridData.END;
 		importButton.setLayoutData(gd);
+
+		Button globalButton = new Button(top, SWT.PUSH);
+		globalButton.setText("Globals ...");
+		globalButton.setFont(JFaceResources.getDialogFont());
+		globalButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				globalButtonPressed();
+			}
+		});
+		gd = new GridData();
+		globalButton.setLayoutData(gd);
 
 		tabFolder = new TabFolder(parent, SWT.NONE);
 		gd = new GridData();
@@ -177,4 +188,22 @@ public class MilestoneConstraintDialog extends EditBeanDialog {
 		};
 		r.run();
 	}
+	
+	private void globalButtonPressed() {
+		final Runnable r = new Runnable() {
+			public void run() {
+				RuleFlowGlobalsDialog dialog =
+					new RuleFlowGlobalsDialog(getShell(), process);
+				dialog.create();
+				int code = dialog.open();
+				if (code != CANCEL) {
+					Map globals = dialog.getGlobals();
+					process.setGlobals(globals);
+					completionProcessor.reset();
+				}
+			}
+		};
+		r.run();
+	}
+
 }
