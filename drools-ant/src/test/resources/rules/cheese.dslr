@@ -1,0 +1,13 @@
+package org.drools.test;
+
+import org.drools.contrib.Cheese;
+
+expander chesse.dsl
+
+rule "Your DSL cheese rule"
+	
+	when
+		There is a stilton cheese
+	then 
+		Print the cheese type		
+end

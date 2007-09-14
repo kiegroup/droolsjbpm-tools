@@ -31,6 +31,17 @@ public class DroolsAntTaskTest extends BuildFileTest {
         configureProject( "src/test/resources/DroolsAntTask.xml" );
     }
 
+    
+    public void testDslRules() {
+        try {
+            executeTarget( "dslRules" );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            Assert.fail( "Should not throw any exception: " + e.getMessage() );
+        }
+    }
+    
+    
     public void testRules() {
         try {
             executeTarget( "rules" );

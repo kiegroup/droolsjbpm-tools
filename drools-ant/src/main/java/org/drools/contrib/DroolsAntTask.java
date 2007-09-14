@@ -55,12 +55,22 @@ public class DroolsAntTask extends MatchingTask {
     public static String BRLFILEEXTENSION = ".brl";
     public static String XMLFILEEXTENSION = ".xml";
     public static String RULEFLOWFILEEXTENSION = ".rfm";
+    public static String DSLFILEEXTENSION = ".dslr";
     
     private File srcdir;
     private File toFile;
     private Path classpath;
+    private String dslfile;
+    
+    public String getDslfile() {
+		return dslfile;
+	}
 
-    /**
+	public void setDslfile(String dslfile) {
+		this.dslfile = dslfile;
+	}
+
+	/**
      * Source directory to read DRL files from
      * 
      * @param directory
@@ -179,7 +189,6 @@ public class DroolsAntTask extends MatchingTask {
                 outstream.close();
             }
         }
-
     }
 
     /**
@@ -199,18 +208,15 @@ public class DroolsAntTask extends MatchingTask {
         try {
 
             if ( fileName.endsWith( DroolsAntTask.BRLFILEEXTENSION ) ) {
+            	
                 RuleModel model = BRXMLPersistence.getInstance().unmarshal( loadResource( fileName ) );
-                String packagefile = loadResource( getPackageFile( this.srcdir.getAbsolutePath() ) );
-                
-                model.name = fileName.replace( DroolsAntTask.BRLFILEEXTENSION,
-                                               "" );
-                
+                String packagefile = loadResource( resolvePackageFile( this.srcdir.getAbsolutePath() ) );
+                model.name = fileName.replace( DroolsAntTask.BRLFILEEXTENSION, "" );
                 ByteArrayInputStream istream = new ByteArrayInputStream( (packagefile + BRDRLPersistence.getInstance().marshal( model )).getBytes() );
                 instream = new InputStreamReader( istream );
-            } else {
-                File file = new File( this.srcdir,
-                                      fileName );
                 
+            } else {
+                File file = new File( this.srcdir, fileName );
                 instream = new InputStreamReader( new FileInputStream( file ) );
             }
 
@@ -218,18 +224,21 @@ public class DroolsAntTask extends MatchingTask {
                 builder.addRuleFlow( instream );
             } else if ( fileName.endsWith( DroolsAntTask.XMLFILEEXTENSION ) ) {
                 builder.addPackageFromXml( instream );
+            } else if (fileName.endsWith(DroolsAntTask.DSLFILEEXTENSION)) {
+                File dslFile = new File( this.srcdir, dslfile );
+                InputStreamReader instreamDsl = new InputStreamReader( new FileInputStream( dslFile ) );
+            	builder.addPackageFromDrl(instream, instreamDsl);
             } else {
                 builder.addPackageFromDrl( instream );
             }
-
         } finally {
             if ( instream != null ) {
                 instream.close();
             }
         }
     }
-
-    private String getPackageFile(String dirname) {
+    
+    private String resolvePackageFile(String dirname) {
 
         File dir = new File( dirname );
 
@@ -241,7 +250,6 @@ public class DroolsAntTask extends MatchingTask {
         };
 
         String[] children = dir.list( filter );
-
         if ( children.length > 1 ) {
             throw new BuildException( "There are more than one package configuration file for this directory :" + dirname );
         }

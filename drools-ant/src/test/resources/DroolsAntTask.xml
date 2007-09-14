@@ -1,6 +1,9 @@
 <project default="rules">
 	
-	<property name="eclipsepath"  value=""/>
+	<!-- <property name="eclipsepath"  value=""/> Uncomment this for Maven Runner --> 
+	<!-- <property name="eclipsepath"  value="../../../"/> Uncomment this for Eclipse Runner  -->
+	
+	<property name="eclipsepath"  value="../../../"/>
 	
 	<path id="cheese.classpath">
 		<pathelement location="${eclipsepath}lib/cheese.jar"/>
@@ -13,7 +16,19 @@
 		<pathelement location="target"/>
 	</path>	
 	
-	<taskdef name="rulebase" classname="org.drools.contrib.DroolsAntTask" classpathref="drools.classpath" />  
+	<taskdef name="rulebase" 
+		classname="org.drools.contrib.DroolsAntTask" 
+		classpathref="drools.classpath" />
+	
+	<target name="dslRules" >
+		<rulebase 
+			srcdir="${eclipsepath}src/test/resources/rules" 		
+			tofile="${eclipsepath}target/cheese.rules"
+			classpathref="cheese.classpath"
+			dslfile="cheese.dsl"> 
+			<include name="*.dslr" />
+		</rulebase>
+	</target>
 
 	<target name="rules" >
 		<rulebase 
@@ -22,7 +37,7 @@
 			classpathref="cheese.classpath" > 
 			<include name="*.drl" />
 			<include name="*.brl" />
-			<include name="*.xml" />			
+			<include name="*.xml" />
 		</rulebase>
 	</target>
 	
@@ -45,5 +60,4 @@
 			<include name="*.brl" />
 		</rulebase>
 	</target>
-
 </project>
