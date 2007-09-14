@@ -14,16 +14,14 @@
 		<pathelement location="target"/>
 	</path>	
 	
-	<taskdef name="rulebase" 
-		classname="org.drools.contrib.DroolsAntTask" 
-		classpathref="drools.classpath" />
+	<taskdef name="rulebase" classname="org.drools.contrib.DroolsAntTask" classpathref="drools.classpath" />
 	
 	<target name="dslRules" >
 		<rulebase 
 			srcdir="${eclipsepath}src/test/resources/rules" 		
 			tofile="${eclipsepath}target/cheese.rules"
-			classpathref="cheese.classpath"
-			dslfile="cheese.dsl"> 
+			classpathref="cheese.classpath" > 
+			
 			<include name="*.dslr" />
 		</rulebase>
 	</target>
@@ -36,6 +34,7 @@
 			<include name="*.drl" />
 			<include name="*.brl" />
 			<include name="*.xml" />
+			<include name="*.dslr" />			
 		</rulebase>
 	</target>
 	
@@ -58,4 +57,5 @@
 			<include name="*.brl" />
 		</rulebase>
 	</target>
+
 </project>
