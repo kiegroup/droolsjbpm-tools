@@ -237,6 +237,37 @@
             </launchMode>
       </launchConfigurationTabGroup>
    </extension>
+   
+   <extension
+         point="org.eclipse.debug.ui.launchShortcuts">
+      <shortcut
+            label="Drools Application"
+            icon="icons/drools.gif"
+            modes="debug"
+            class="org.drools.eclipse.launching.DroolsApplicationLaunchShortcut"
+            id="org.drools.eclipse.launching.DroolsApplicationLaunchShortcut">
+         <contextualLaunch>
+           <enablement>
+             <with variable="selection">
+               <count value="1"/>
+               <iterate>
+                <or>
+               	  <test property="org.eclipse.jdt.launching.hasMain"/>
+               	  <and>
+               	     <test property="org.eclipse.jdt.launching.isContainer"/>
+               	     <test property="org.eclipse.jdt.launching.hasProjectNature" args="org.eclipse.jdt.core.javanature"/>
+               	  </and>
+               	</or>
+               </iterate>
+             </with>
+           </enablement>
+  		 </contextualLaunch>
+         <perspective id="org.eclipse.jdt.ui.JavaPerspective"/>
+         <perspective id="org.drools.eclipse.DroolsPerspective"/>
+         <perspective id="org.eclipse.jdt.ui.JavaBrowsingPerspective"/>
+         <perspective id="org.eclipse.debug.ui.DebugPerspective"/>
+      </shortcut>
+   </extension>
 
    <extension
          point="org.eclipse.debug.core.sourceLocators">
@@ -270,21 +301,6 @@
          id="org.drools.eclipse.debug">
       </debugModelPresentation>
    </extension>
-
-   <!-- not working
-   <extension point="org.eclipse.debug.ui.launchShortcuts">
-      <shortcut
-            label="Drools Application"
-            icon="icons/drools.gif"
-            class="org.drools.eclipse.launching.DroolsApplicationLaunchShortcut"
-            modes="debug"
-            id="org.drools.eclipse.launching.DroolsApplicationLaunchShortcut">
-         <perspective id="org.eclipse.jdt.ui.JavaPerspective" />
-         <perspective id="org.eclipse.jdt.ui.JavaHierarchyPerspective" />
-         <perspective id="org.eclipse.jdt.ui.JavaBrowsingPerspective" />
-         <perspective id="org.eclipse.debug.ui.DebugPerspective" />
-      </shortcut>
-   </extension> -->
 
    <!-- not working if using multipage editor -->
    <extension point="org.eclipse.ui.editorActions">
