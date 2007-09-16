@@ -14,6 +14,7 @@ import java.util.Map;
 import org.drools.audit.event.ActivationLogEvent;
 import org.drools.audit.event.LogEvent;
 import org.drools.audit.event.ObjectLogEvent;
+import org.drools.audit.event.RuleBaseLogEvent;
 import org.drools.audit.event.RuleFlowGroupLogEvent;
 import org.drools.audit.event.RuleFlowLogEvent;
 import org.drools.eclipse.DroolsEclipsePlugin;
@@ -100,6 +101,7 @@ public class AuditView extends AbstractDebugView {
 		Iterator iterator = logEvents.iterator();
 		List events = new ArrayList();
 		Event currentBeforeActivationEvent = null;
+		Event currentBeforePackageEvent = null;
 		List newActivations = new ArrayList();
 		Map activationMap = new HashMap();
 		Map objectMap = new HashMap();
@@ -109,7 +111,7 @@ public class AuditView extends AbstractDebugView {
 			switch (inEvent.getType()) {
 				case LogEvent.INSERTED:
 					ObjectLogEvent inObjectEvent = (ObjectLogEvent) inEvent;
-					event.setString("Object asserted (" + inObjectEvent.getFactId() + "): " + inObjectEvent.getObjectToString());
+					event.setString("Object inserted (" + inObjectEvent.getFactId() + "): " + inObjectEvent.getObjectToString());
 					if (currentBeforeActivationEvent != null) {
 						currentBeforeActivationEvent.addSubEvent(event);
 					} else {
@@ -121,7 +123,7 @@ public class AuditView extends AbstractDebugView {
 					break;
 				case LogEvent.UPDATED:
 					inObjectEvent = (ObjectLogEvent) inEvent;
-					event.setString("Object modified (" + inObjectEvent.getFactId() + "): " + inObjectEvent.getObjectToString());
+					event.setString("Object updated (" + inObjectEvent.getFactId() + "): " + inObjectEvent.getObjectToString());
 					if (currentBeforeActivationEvent != null) {
 						currentBeforeActivationEvent.addSubEvent(event);
 					} else {
@@ -136,7 +138,7 @@ public class AuditView extends AbstractDebugView {
 					break;
 				case LogEvent.RETRACTED:
 					inObjectEvent = (ObjectLogEvent) inEvent;
-					event.setString("Object retracted (" + inObjectEvent.getFactId() + "): " + inObjectEvent.getObjectToString());
+					event.setString("Object removed (" + inObjectEvent.getFactId() + "): " + inObjectEvent.getObjectToString());
 					if (currentBeforeActivationEvent != null) {
 						currentBeforeActivationEvent.addSubEvent(event);
 					} else {
@@ -210,6 +212,58 @@ public class AuditView extends AbstractDebugView {
 					} else {
 						events.add(event);
 					}
+					break;
+				case LogEvent.BEFORE_PACKAGE_ADDED:
+					RuleBaseLogEvent ruleBaseEvent = (RuleBaseLogEvent) inEvent;
+					event.setString("Package added: " + ruleBaseEvent.getPackageName());
+					if (currentBeforeActivationEvent != null) {
+						currentBeforeActivationEvent.addSubEvent(event);
+					} else {
+						events.add(event);
+					}
+					currentBeforePackageEvent = event;
+					break;
+				case LogEvent.AFTER_PACKAGE_ADDED:
+					currentBeforePackageEvent = null;
+					break;
+				case LogEvent.BEFORE_PACKAGE_REMOVED:
+					ruleBaseEvent = (RuleBaseLogEvent) inEvent;
+					event.setString("Package removed: " + ruleBaseEvent.getPackageName());
+					if (currentBeforeActivationEvent != null) {
+						currentBeforeActivationEvent.addSubEvent(event);
+					} else {
+						events.add(event);
+					}
+					currentBeforePackageEvent = event;
+					break;
+				case LogEvent.AFTER_PACKAGE_REMOVED:
+					currentBeforePackageEvent = null;
+					break;
+				case LogEvent.AFTER_RULE_ADDED:
+					ruleBaseEvent = (RuleBaseLogEvent) inEvent;
+					event.setString("Rule added: " + ruleBaseEvent.getRuleName());
+					if (currentBeforePackageEvent != null) {
+						currentBeforePackageEvent.addSubEvent(event);
+					} else if (currentBeforeActivationEvent != null) {
+						currentBeforeActivationEvent.addSubEvent(event);
+					} else {
+						events.add(event);
+					}
+					event.addSubEvents(newActivations);
+					newActivations.clear();
+					break;
+				case LogEvent.AFTER_RULE_REMOVED:
+					ruleBaseEvent = (RuleBaseLogEvent) inEvent;
+					event.setString("Rule removed: " + ruleBaseEvent.getRuleName());
+					if (currentBeforePackageEvent != null) {
+						currentBeforePackageEvent.addSubEvent(event);
+					} else if (currentBeforeActivationEvent != null) {
+						currentBeforeActivationEvent.addSubEvent(event);
+					} else {
+						events.add(event);
+					}
+					event.addSubEvents(newActivations);
+					newActivations.clear();
 					break;
 			}
 		}
@@ -378,6 +432,10 @@ public class AuditView extends AbstractDebugView {
 	    			case LogEvent.RULEFLOW_COMPLETED: return DroolsPluginImages.getImage(DroolsPluginImages.RULEFLOW);
 	    			case LogEvent.RULEFLOW_GROUP_ACTIVATED: return DroolsPluginImages.getImage(DroolsPluginImages.RULEFLOW);
 	    			case LogEvent.RULEFLOW_GROUP_DEACTIVATED: return DroolsPluginImages.getImage(DroolsPluginImages.RULEFLOW);
+	    			case LogEvent.BEFORE_PACKAGE_ADDED: return DroolsPluginImages.getImage(DroolsPluginImages.DROOLS);
+	    			case LogEvent.BEFORE_PACKAGE_REMOVED: return DroolsPluginImages.getImage(DroolsPluginImages.DROOLS);
+	    			case LogEvent.AFTER_RULE_ADDED: return DroolsPluginImages.getImage(DroolsPluginImages.DROOLS);
+	    			case LogEvent.AFTER_RULE_REMOVED: return DroolsPluginImages.getImage(DroolsPluginImages.DROOLS);
 	    		}
 	    		return null;
 	    	}
