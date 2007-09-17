@@ -194,8 +194,6 @@ public class AuditView extends AbstractDebugView {
 				case LogEvent.RULEFLOW_GROUP_ACTIVATED:
 					RuleFlowGroupLogEvent inRuleFlowGroupEvent = (RuleFlowGroupLogEvent) inEvent;
 					event.setString("RuleFlowGroup activated: " + inRuleFlowGroupEvent.getGroupName() + "[size=" + inRuleFlowGroupEvent.getSize() + "]");
-					event.addSubEvents(newActivations);
-					newActivations.clear();
 					if (currentBeforeActivationEvent != null) {
 						currentBeforeActivationEvent.addSubEvent(event);
 					} else {
@@ -205,8 +203,6 @@ public class AuditView extends AbstractDebugView {
 				case LogEvent.RULEFLOW_GROUP_DEACTIVATED:
 					inRuleFlowGroupEvent = (RuleFlowGroupLogEvent) inEvent;
 					event.setString("RuleFlowGroup deactivated: " + inRuleFlowGroupEvent.getGroupName() + "[size=" + inRuleFlowGroupEvent.getSize() + "]");
-					event.addSubEvents(newActivations);
-					newActivations.clear();
 					if (currentBeforeActivationEvent != null) {
 						currentBeforeActivationEvent.addSubEvent(event);
 					} else {
