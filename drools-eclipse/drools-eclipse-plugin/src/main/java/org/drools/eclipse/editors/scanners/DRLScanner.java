@@ -29,7 +29,6 @@ public class DRLScanner extends RuleBasedScanner {
 	private static final Color KEYWORD_COLOR = ColorManager.getInstance().getColor(ColorManager.KEYWORD);
 	private static final Color COMMENT_COLOR = ColorManager.getInstance().getColor(ColorManager.SINGLE_LINE_COMMENT);
     private static final Color STRING_COLOR = ColorManager.getInstance().getColor(ColorManager.STRING);
-    private static final Color DEFAULT_COLOR = ColorManager.getInstance().getColor(ColorManager.DEFAULT);
 
     private static final String[] DROOLS_KEYWORDS = Keywords.getInstance().getAllDroolsKeywords();
     private static final String[] JAVA_KEYWORDS = Keywords.getInstance().getAllJavaKeywords();
@@ -46,7 +45,6 @@ public class DRLScanner extends RuleBasedScanner {
 		IToken keyword = new Token(new TextAttribute(KEYWORD_COLOR, null, SWT.BOLD));
 		IToken comment= new Token(new TextAttribute(COMMENT_COLOR));
 		IToken string = new Token(new TextAttribute(STRING_COLOR));
-		IToken other = new Token(new TextAttribute(DEFAULT_COLOR));
 
         List rules = new ArrayList();
 
@@ -64,7 +62,7 @@ public class DRLScanner extends RuleBasedScanner {
         rules.add(new WhitespaceRule(new WhitespaceDetector()));
 
         // Add word rule for keywords, types, and constants.
-        WordRule wordRule= new WordRule(new RuleWordDetector(), other);
+        WordRule wordRule= new WordRule(new RuleWordDetector());
         for (int i= 0; i < DROOLS_KEYWORDS.length; i++)
             wordRule.addWord(DROOLS_KEYWORDS[i], keyword);
 

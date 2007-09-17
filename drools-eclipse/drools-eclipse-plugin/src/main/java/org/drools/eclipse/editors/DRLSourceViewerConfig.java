@@ -20,7 +20,6 @@ import org.eclipse.jface.text.source.DefaultAnnotationHover;
 import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
-import org.eclipse.swt.graphics.Color;
 
 /**
  * Source viewer config wires up the syntax highlighting, partitioning
@@ -32,9 +31,6 @@ import org.eclipse.swt.graphics.Color;
 public class DRLSourceViewerConfig extends SourceViewerConfiguration {
 
 	private DRLScanner scanner;
-
-	private static Color DEFAULT_COLOR =
-		ColorManager.getInstance().getColor(ColorManager.DEFAULT);
 
 	private AbstractRuleEditor editor;
 
@@ -49,7 +45,6 @@ public class DRLSourceViewerConfig extends SourceViewerConfiguration {
 	protected DRLScanner getScanner() {
 		if (scanner == null) {
 			scanner = new DRLScanner();
-			scanner.setDefaultReturnToken(new Token(new TextAttribute(DEFAULT_COLOR)));
 		}
 		return scanner;
 	}
