@@ -56,7 +56,7 @@ public abstract class ProcessWrapper implements IPropertySource, Serializable {
             new TextPropertyDescriptor(NAME, "Name"),
             new TextPropertyDescriptor(VERSION, "Version"),
             new TextPropertyDescriptor(ID, "Id"),
-            new ComboBoxPropertyDescriptor(ROUTER_LAYOUT, "Router Layout", 
+            new ComboBoxPropertyDescriptor(ROUTER_LAYOUT, "Connection Layout", 
                 new String[] { "Manual", "Manhatten", "Shortest Path" }),
         };
     }
