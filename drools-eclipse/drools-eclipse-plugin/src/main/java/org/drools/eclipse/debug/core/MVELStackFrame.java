@@ -489,6 +489,7 @@ public class MVELStackFrame extends DroolsStackFrame {
 
     protected JDIStackFrame bind(StackFrame frame,
                                  int depth) {
+        clearCachedData();
         return super.bind( frame,
                            depth );
     }
