@@ -1,7 +1,6 @@
 package org.drools.contrib;
 
 import java.io.File;
-import java.io.InputStreamReader;
 
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
@@ -9,11 +8,7 @@ import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.taskdefs.MatchingTask;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
-import org.drools.analytics.Analyzer;
-import org.drools.compiler.DrlParser;
-import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
-import org.drools.lang.descr.PackageDescr;
 
 public class DroolsAnalyticsAntTask extends MatchingTask {
 
@@ -98,6 +93,8 @@ public class DroolsAnalyticsAntTask extends MatchingTask {
 		}
 
 		try {
+/* *** Uncomment for analytics support			
+			
 			// create a specialized classloader
 			AntClassLoader loader = getClassLoader();
 
@@ -115,12 +112,14 @@ public class DroolsAnalyticsAntTask extends MatchingTask {
 			
 			System.out.println("Writing analytics report to " + toFile.getAbsolutePath() + "/report");
 			
+*/ 			
+			
 		} catch (Exception e) {
 			throw new BuildException("RuleBaseTask failed: " + e.getMessage(),
 					e);
 		}
 	}
-
+	/* *** Uncomment for analytics support
 	private void compileAndAnalyzeFile(Analyzer droolsanalyzer, String filename) throws DroolsParserException {
 		PackageDescr descr = new DrlParser()
 				.parse(new InputStreamReader(Analyzer.class
@@ -128,6 +127,7 @@ public class DroolsAnalyticsAntTask extends MatchingTask {
 		
 		droolsanalyzer.addPackageDescr(descr);
 	}
+	*/
 
 
 	/**
