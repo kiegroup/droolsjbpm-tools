@@ -1,7 +1,9 @@
 <project default="rules">
 	
-	<property name="eclipsepath"  value=""/> <!-- Uncomment this for Maven Runner --> 
-	<!-- <property name="eclipsepath"  value="../../../"/> Uncomment this for Eclipse Runner  -->
+	<!-- Uncomment this for Maven Runner -->
+	<property name="eclipsepath"  value=""/>   
+	<!-- Uncomment this for Eclipse Runner  -->
+	<!-- <property name="eclipsepath"  value="../../../"/> -->  
 	
 	<path id="cheese.classpath">
 		<pathelement location="${eclipsepath}lib/cheese.jar"/>
@@ -14,7 +16,19 @@
 		<pathelement location="target"/>
 	</path>	
 	
-	<taskdef name="rulebase" classname="org.drools.contrib.DroolsAntTask" classpathref="drools.classpath" />
+	<taskdef name="rulebase" classname="org.drools.contrib.DroolsCompilerAntTask" classpathref="drools.classpath" />
+	<taskdef name="analytics" classname="org.drools.contrib.DroolsAnalyticsAntTask" classpathref="drools.classpath" />
+	
+	
+	<target name="analyticsreport">
+		<analytics
+			srcdir="${eclipsepath}src/test/resources/org/drools/analytics" 		
+			tofile="${eclipsepath}target/"
+			classpathref="cheese.classpath" >
+			<include name="*.drl" />
+		</analytics>
+	</target>
+	
 	
 	<target name="dslRules" >
 		<rulebase 

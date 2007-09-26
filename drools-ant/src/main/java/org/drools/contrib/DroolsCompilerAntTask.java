@@ -55,7 +55,7 @@ import org.drools.lang.dsl.DefaultExpanderResolver;
  * 
  * @author etirelli
  */
-public class DroolsAntTask extends MatchingTask {
+public class DroolsCompilerAntTask extends MatchingTask {
 
 	public static String BRLFILEEXTENSION = ".brl";
 	public static String XMLFILEEXTENSION = ".xml";
@@ -204,13 +204,13 @@ public class DroolsAntTask extends MatchingTask {
 
 		try {
 
-			if (fileName.endsWith(DroolsAntTask.BRLFILEEXTENSION)) {
+			if (fileName.endsWith(DroolsCompilerAntTask.BRLFILEEXTENSION)) {
 
 				RuleModel model = BRXMLPersistence.getInstance().unmarshal(
 						loadResource(fileName));
 				String packagefile = loadResource(resolvePackageFile(this.srcdir
 						.getAbsolutePath()));
-				model.name = fileName.replace(DroolsAntTask.BRLFILEEXTENSION,
+				model.name = fileName.replace(DroolsCompilerAntTask.BRLFILEEXTENSION,
 						"");
 				ByteArrayInputStream istream = new ByteArrayInputStream(
 						(packagefile + BRDRLPersistence.getInstance().marshal(
@@ -222,11 +222,11 @@ public class DroolsAntTask extends MatchingTask {
 				instream = new InputStreamReader(new FileInputStream(file));
 			}
 
-			if (fileName.endsWith(DroolsAntTask.RULEFLOWFILEEXTENSION)) {
+			if (fileName.endsWith(DroolsCompilerAntTask.RULEFLOWFILEEXTENSION)) {
 				builder.addRuleFlow(instream);
-			} else if (fileName.endsWith(DroolsAntTask.XMLFILEEXTENSION)) {
+			} else if (fileName.endsWith(DroolsCompilerAntTask.XMLFILEEXTENSION)) {
 				builder.addPackageFromXml(instream);
-			} else if (fileName.endsWith(DroolsAntTask.DSLFILEEXTENSION)) {
+			} else if (fileName.endsWith(DroolsCompilerAntTask.DSLFILEEXTENSION)) {
 				DrlParser parser = new DrlParser();
 				String expandedDRL = parser.getExpandedDRL(
 						loadResource(fileName), resolveDSLFiles());

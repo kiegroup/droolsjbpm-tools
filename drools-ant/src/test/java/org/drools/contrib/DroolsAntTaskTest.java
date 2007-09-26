@@ -30,8 +30,16 @@ public class DroolsAntTaskTest extends BuildFileTest {
     public void setUp() {
         configureProject( "src/test/resources/DroolsAntTask.xml" );
     }
-
     
+    // After analytics left experimental we need to uncomment this unit test
+    public void FIXMEtestAnalyticsReport() {
+        try {
+            executeTarget( "analyticsreport" );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+        
     public void testDslRules() {
         try {
             executeTarget( "dslRules" );
@@ -67,9 +75,6 @@ public class DroolsAntTaskTest extends BuildFileTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void tearDown() {
-    }
+    }    
 
 }
