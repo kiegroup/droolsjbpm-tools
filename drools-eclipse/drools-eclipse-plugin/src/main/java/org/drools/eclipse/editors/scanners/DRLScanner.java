@@ -45,6 +45,7 @@ public class DRLScanner extends RuleBasedScanner {
 		IToken keyword = new Token(new TextAttribute(KEYWORD_COLOR, null, SWT.BOLD));
 		IToken comment= new Token(new TextAttribute(COMMENT_COLOR));
 		IToken string = new Token(new TextAttribute(STRING_COLOR));
+		IToken other = new Token(null);
 
         List rules = new ArrayList();
 
@@ -62,7 +63,7 @@ public class DRLScanner extends RuleBasedScanner {
         rules.add(new WhitespaceRule(new WhitespaceDetector()));
 
         // Add word rule for keywords, types, and constants.
-        WordRule wordRule= new WordRule(new RuleWordDetector());
+        WordRule wordRule= new WordRule(new RuleWordDetector(), other);
         for (int i= 0; i < DROOLS_KEYWORDS.length; i++)
             wordRule.addWord(DROOLS_KEYWORDS[i], keyword);
 
