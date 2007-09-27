@@ -1,21 +1,25 @@
 package org.drools.contrib;
 
 import java.io.File;
+import java.io.InputStreamReader;
 
-import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.taskdefs.MatchingTask;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
-import org.drools.compiler.PackageBuilder;
+import org.drools.analytics.Analyzer;
+import org.drools.compiler.DrlParser;
+import org.drools.compiler.DroolsParserException;
+import org.drools.lang.descr.PackageDescr;
 
 public class DroolsAnalyticsAntTask extends MatchingTask {
 
-	public static String BRLFILEEXTENSION = ".brl";
-	public static String XMLFILEEXTENSION = ".xml";
-	public static String RULEFLOWFILEEXTENSION = ".rfm";
-	public static String DSLFILEEXTENSION = ".dslr";
+	public static final String DRLFILEEXTENSION = ".drl";
+	public static final String BRLFILEEXTENSION = ".brl";
+	public static final String XMLFILEEXTENSION = ".xml";
+	public static final String RULEFLOWFILEEXTENSION = ".rfm";
+	public static final String DSLFILEEXTENSION = ".dslr";
 
 	private File srcdir;
 	private File toFile;
@@ -93,10 +97,8 @@ public class DroolsAnalyticsAntTask extends MatchingTask {
 		}
 
 		try {
-/* *** Uncomment for analytics support			
 			
 			// create a specialized classloader
-			AntClassLoader loader = getClassLoader();
 
 			Analyzer droolsanalyzer = new Analyzer();
 
@@ -112,42 +114,24 @@ public class DroolsAnalyticsAntTask extends MatchingTask {
 			
 			System.out.println("Writing analytics report to " + toFile.getAbsolutePath() + "/report");
 			
-*/ 			
-			
 		} catch (Exception e) {
 			throw new BuildException("RuleBaseTask failed: " + e.getMessage(),
 					e);
 		}
 	}
-	/* *** Uncomment for analytics support
 	private void compileAndAnalyzeFile(Analyzer droolsanalyzer, String filename) throws DroolsParserException {
+		
+		// Analytics just works with drl files 
+		if ( !filename.endsWith(DroolsAnalyticsAntTask.DRLFILEEXTENSION) ) {
+			throw new UnsupportedOperationException();
+		}
+		
 		PackageDescr descr = new DrlParser()
 				.parse(new InputStreamReader(Analyzer.class
 						.getResourceAsStream(filename)));
 		
 		droolsanalyzer.addPackageDescr(descr);
 	}
-	*/
-
-
-	/**
-	 * @return
-	 */
-	private AntClassLoader getClassLoader() {
-		// defining a new specialized classloader and setting it as the thread
-		// context classloader
-		AntClassLoader loader = null;
-		if (classpath != null) {
-			loader = new AntClassLoader(PackageBuilder.class.getClassLoader(),
-					getProject(), classpath, false);
-		} else {
-			loader = new AntClassLoader(PackageBuilder.class.getClassLoader(),
-					false);
-		}
-		loader.setThreadContextLoader();
-		return loader;
-	}
-
 
 	/**
 	 * Returns the list of files to be added into the rulebase
