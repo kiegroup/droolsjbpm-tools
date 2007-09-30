@@ -57,7 +57,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
     private static final String    NEW_QUERY_TEMPLATE          = "query \"query name\"" + System.getProperty( "line.separator" ) + "\t#conditions" + System.getProperty( "line.separator" ) + "end";
     private static final String    NEW_FUNCTION_TEMPLATE       = "function void yourFunction(Type arg) {" + System.getProperty( "line.separator" ) + "\t/* code goes here*/" + System.getProperty( "line.separator" ) + "}";
     private static final String    NEW_TEMPLATE_TEMPLATE       = "template Name" + System.getProperty( "line.separator" ) + "\t" + System.getProperty( "line.separator" ) + "end";
-    private static final Pattern   IMPORT_PATTERN              = Pattern.compile( ".*\n\\W*import\\W[^;\\s]*",
+    protected static final Pattern   IMPORT_PATTERN              = Pattern.compile( ".*\n\\W*import\\W[^;\\s]*",
                                                                                   Pattern.DOTALL );
     // TODO: doesn't work for { inside functions
     private static final Pattern   FUNCTION_PATTERN            = Pattern.compile( ".*\n\\W*function\\s+(\\S+)\\s+(\\S+)\\s*\\(([^\\)]*)\\)\\s*\\{([^\\}]*)",
@@ -140,7 +140,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
     	return javaProject;
     }
 
-	private List getAllClassProposals(final String classNameStart, final int documentOffset, final String prefix) {
+	protected List getAllClassProposals(final String classNameStart, final int documentOffset, final String prefix) {
         List result = new ArrayList();
 		IJavaProject javaProject = getCurrentJavaProject();
 		if (javaProject == null) {
