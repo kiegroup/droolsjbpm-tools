@@ -3,6 +3,7 @@ package org.drools.eclipse.editors.completion;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
 import org.eclipse.jdt.core.Signature;
@@ -13,6 +14,9 @@ public class CompletionUtil {
                                                                                   Pattern.DOTALL );
 
     protected static final Pattern COMPLETED_MVEL_EXPRESSION   = Pattern.compile( "]\\)\\}\\]\\Z",
+                                                                                  Pattern.DOTALL );
+
+    protected static final Pattern MODIFY_PATTERN              = Pattern.compile( ".*modify\\s*\\(\\s*(.*)\\s*\\)(\\s*\\{(.*)\\s*\\}?)?",
                                                                                   Pattern.DOTALL );
 
     private CompletionUtil() {
@@ -43,6 +47,81 @@ public class CompletionUtil {
         }
     }
 
+    public static String getPreviousExpression(String backText) {
+        int separator = backText.lastIndexOf( ';' );
+        if ( separator < 0 ) {
+            return backText;
+        }
+        return backText.substring( 0,
+                                   separator + 1 );
+    }
+
+    public static String getLastExpression(String backText) {
+        StringTokenizer st = new StringTokenizer( backText,
+                                                  ";" );
+        String last = "";
+        while ( st.hasMoreTokens() ) {
+            last = st.nextToken();
+        }
+        if ( last.trim().length() == 0 ) {
+            return backText;
+        }
+        return last;
+    }
+
+    public static String getInnerExpression(String backText) {
+        String last = getLastExpression( backText ).trim();
+
+        char[] c = last.toCharArray();
+        int start = 0;
+        for ( int i = c.length - 1; i >= 0; i-- ) {
+            if ( Character.isWhitespace( c[i] ) || c[i] == '(' || c[i] == '+' || c[i] == ')' || c[i] == '[' || c[i] == ']' || c[i] == ':' || c[i] == '=' || c[i] == '<' || c[i] == '>' || c[i] == ',' || c[i] == '{' || c[i] == '}' ) {
+                start = i + 1;
+                break;
+            }
+        }
+        last = last.substring( start );
+        return last;
+    }
+
+    public static int nestedExpressionIndex(char[] chars,
+                                            int start,
+                                            char type) {
+        int depth = 1;
+        char term = type;
+        switch ( type ) {
+            case '[' :
+                term = ']';
+                break;
+            case '{' :
+                term = '}';
+                break;
+            case '(' :
+                term = ')';
+                break;
+        }
+
+        if ( type == term ) {
+            for ( start++; start < chars.length; start++ ) {
+                if ( chars[start] == type ) {
+                    return start;
+                }
+            }
+        } else {
+            for ( start++; start < chars.length; start++ ) {
+                if ( chars[start] == '\'' || chars[start] == '"' ) {
+                    //start = captureStringLiteral(chars[start], chars, start, chars.length);
+                } else if ( chars[start] == type ) {
+                    depth++;
+                } else if ( chars[start] == term && --depth == 0 ) {
+                    return start;
+                }
+            }
+        }
+
+        return -1;
+    }
+
     public static String stripWhiteSpace(String prefix) {
         if ( "".equals( prefix ) ) {
             return prefix;
@@ -68,27 +147,34 @@ public class CompletionUtil {
      * Attempt to enhance a consequence backtext such that it should compile in MVEL
      * @param backText
      * @return a substring of the back text, that should be compilable without
-     *         syntax errors by the mvel compiler TODO: add tests and more use
+     *         syntax errors by the mvel compiler
+     *
+     *         TODO: add tests and more use
      *         cases
      */
     public static String getCompilableText(String backText) {
-        if ( backText.trim().endsWith( ";" ) ) {
-            // RHS expression should compile if it ends with ;. but to hget the last object, we do no want it
+        String trimed = backText.trim();
+        if ( trimed.endsWith( ";" ) ) {
+            // RHS expression should compile if it ends with ; but to get the last object,
+            // we do no want it, to simulate a return statement
             return backText.substring( 0,
                                        backText.length() - 1 );
-        } else if ( backText.endsWith( "." ) ) {
-            // RHS expression should compile if it ends with ;
+        } else if ( trimed.endsWith( "." ) || trimed.endsWith( "," ) ) {
+            // RHS expression should compile if it ends with no dot or comma
             return backText.substring( 0,
                                        backText.length() - 1 );
         } else if ( CompletionUtil.COMPLETED_MVEL_EXPRESSION.matcher( backText ).matches() ) {
             // RHS expression should compile if closed. just need to close the
             // statement
             return backText + ";";
-        } else if ( INCOMPLETED_MVEL_EXPRESSION.matcher( backText ).matches() ) {
-            // remove the last char and close the statement
-            return backText.substring( 0,
-                                       backText.length() - 1 );
+            //        } else if ( INCOMPLETED_MVEL_EXPRESSION.matcher( backText ).matches() ) {
+            //            // remove the last char and close the statement
+            //            return backText.substring( 0,
+            //                                       backText.length() - 1 );
         } else {
+            //TODO: support completion within with {} blocks
+            //TODO: support completion within nested expression.
+
             return backText;
         }
     }
@@ -197,7 +283,8 @@ public class CompletionUtil {
      * @param requiredReturnType
      * @param includeType
      * @return true if the method is a bean accessor, false otherwise
-     */private static boolean isAccessor(String methodName,
+     */
+    private static boolean isAccessor(String methodName,
                                       int actualParameterCount,
                                       int requiredParameterCount,
                                       String prefix,
@@ -234,7 +321,8 @@ public class CompletionUtil {
 
     public static boolean isStartOfNewStatement(String text,
                                                 String prefix) {
-        String javaTextWithoutPrefix = text.substring( 0, text.length() - prefix.length() );
+        String javaTextWithoutPrefix = text.substring( 0,
+                                                       text.length() - prefix.length() );
 
         if ( "".equals( javaTextWithoutPrefix.trim() ) || DefaultCompletionProcessor.START_OF_NEW_JAVA_STATEMENT.matcher( javaTextWithoutPrefix ).matches() ) {
             return true;
@@ -242,20 +330,49 @@ public class CompletionUtil {
         return false;
     }
 
-
     public static String getLastLine(String text) {
         final BufferedReader reader = new BufferedReader( new StringReader( text ) );
         String line = null;
         String lastLine = null;
         try {
             while ( (line = reader.readLine()) != null ) {
-                if ( line.trim().length()>0 ) {
+                if ( line.trim().length() > 0 ) {
                     lastLine = line;
                 }
             }
         } catch ( final IOException e ) {
             // should never happen, it's just reading over a string.
         }
-     return lastLine;
+        return lastLine;
+    }
+
+    /**
+     * COMPENSATES FOR LACK OF getSimpleName IN java.lang.Class
+     * Borrowed and adpated from MVEL's org.mvel.util.ParseTools.getSimpleClassName(Class)
+     * @param cls -- class reference
+     * @return Simple name of class
+     */
+    public static String getSimpleClassName(Class cls) {
+        int lastIndex = cls.getName().lastIndexOf( '$' );
+        if ( lastIndex < 0 ) {
+            lastIndex = cls.getName().lastIndexOf( '.' );
+        }
+        if ( cls.isArray() ) {
+            return cls.getName().substring( lastIndex + 1 ) + "[]";
+        } else {
+            return cls.getName().substring( lastIndex + 1 );
+        }
+    }
+
+    public static String getTextWithoutPrefix(final String javaText,
+                                              final String prefix) {
+        int endIndex = javaText.length() - prefix.length();
+        String javaTextWithoutPrefix = javaText;
+        //javaText can be an empty string.
+        if ( endIndex >= 0 ) {
+            javaTextWithoutPrefix = javaText.substring( 0,
+                                                        endIndex );
+        }
+        return javaTextWithoutPrefix;
     }
 }

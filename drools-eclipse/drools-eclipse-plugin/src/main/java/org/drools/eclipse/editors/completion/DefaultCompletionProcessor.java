@@ -57,7 +57,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
     private static final String    NEW_QUERY_TEMPLATE          = "query \"query name\"" + System.getProperty( "line.separator" ) + "\t#conditions" + System.getProperty( "line.separator" ) + "end";
     private static final String    NEW_FUNCTION_TEMPLATE       = "function void yourFunction(Type arg) {" + System.getProperty( "line.separator" ) + "\t/* code goes here*/" + System.getProperty( "line.separator" ) + "}";
     private static final String    NEW_TEMPLATE_TEMPLATE       = "template Name" + System.getProperty( "line.separator" ) + "\t" + System.getProperty( "line.separator" ) + "end";
-    protected static final Pattern   IMPORT_PATTERN              = Pattern.compile( ".*\n\\W*import\\W[^;\\s]*",
+    protected static final Pattern IMPORT_PATTERN              = Pattern.compile( ".*\n\\W*import\\W[^;\\s]*",
                                                                                   Pattern.DOTALL );
     // TODO: doesn't work for { inside functions
     private static final Pattern   FUNCTION_PATTERN            = Pattern.compile( ".*\n\\W*function\\s+(\\S+)\\s+(\\S+)\\s*\\(([^\\)]*)\\)\\s*\\{([^\\}]*)",
@@ -76,39 +76,50 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
     protected List getCompletionProposals(ITextViewer viewer,
                                           int documentOffset) {
         try {
-	        IDocument doc = viewer.getDocument();
-	        String backText = readBackwards( documentOffset, doc );
+            IDocument doc = viewer.getDocument();
+            String backText = readBackwards( documentOffset,
+                                             doc );
 
-	        String prefix = CompletionUtil.stripLastWord(backText);
+            String prefix = CompletionUtil.stripLastWord( backText );
 
-	        List props = null;
-	        Matcher matcher = IMPORT_PATTERN.matcher(backText);
-	        if (matcher.matches()) {
-	        	String classNameStart = backText.substring(backText.lastIndexOf("import") + 7);
-	        	props = getAllClassProposals(classNameStart, documentOffset, prefix);
-	        } else {
-	        	matcher = FUNCTION_PATTERN.matcher(backText);
-	        	if (matcher.matches()) {
-	        		// extract function parameters
-		        	Map params = extractParams(matcher.group(3));
-		        	// add global parameters
-		        	List globals = getGlobals();
-		    		if (globals != null) {
-		    			for (Iterator iterator = globals.iterator(); iterator.hasNext(); ) {
-		    				GlobalDescr global = (GlobalDescr) iterator.next();
-		    				params.put(global.getIdentifier(), global.getType());
-		    			}
-		    		}
-		        	String functionText = matcher.group(4);
-	        		props = getJavaCompletionProposals(documentOffset, functionText, prefix, params);
-	        		filterProposalsOnPrefix(prefix, props);
-	        	} else {
-	        		props = getPossibleProposals(viewer, documentOffset, backText, prefix);
-	        	}
-	        }
-	        return props;
-        } catch (Throwable t) {
-        	DroolsEclipsePlugin.log(t);
+            List props = null;
+            Matcher matcher = IMPORT_PATTERN.matcher( backText );
+            if ( matcher.matches() ) {
+                String classNameStart = backText.substring( backText.lastIndexOf( "import" ) + 7 );
+                props = getAllClassProposals( classNameStart,
+                                              documentOffset,
+                                              prefix );
+            } else {
+                matcher = FUNCTION_PATTERN.matcher( backText );
+                if ( matcher.matches() ) {
+                    // extract function parameters
+                    Map params = extractParams( matcher.group( 3 ) );
+                    // add global parameters
+                    List globals = getGlobals();
+                    if ( globals != null ) {
+                        for ( Iterator iterator = globals.iterator(); iterator.hasNext(); ) {
+                            GlobalDescr global = (GlobalDescr) iterator.next();
+                            params.put( global.getIdentifier(),
+                                        global.getType() );
+                        }
+                    }
+                    String functionText = matcher.group( 4 );
+                    props = getJavaCompletionProposals( documentOffset,
+                                                        functionText,
+                                                        prefix,
+                                                        params );
+                    filterProposalsOnPrefix( prefix,
+                                             props );
+                } else {
+                    props = getPossibleProposals( viewer,
+                                                  documentOffset,
+                                                  backText,
+                                                  prefix );
+                }
+            }
+            return props;
+        } catch ( Throwable t ) {
+            DroolsEclipsePlugin.log( t );
         }
         return null;
     }
@@ -131,56 +142,57 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
      * create and returns a java project based on the current editor input or returns null
      */
     private IJavaProject getCurrentJavaProject() {
-		IEditorInput input = getEditor().getEditorInput();
-		if (!(input instanceof IFileEditorInput)) {
-			return null;
-		}
-		IProject project = ((IFileEditorInput) input).getFile().getProject();
-		IJavaProject javaProject = JavaCore.create(project);
-    	return javaProject;
+        IEditorInput input = getEditor().getEditorInput();
+        if ( !(input instanceof IFileEditorInput) ) {
+            return null;
+        }
+        IProject project = ((IFileEditorInput) input).getFile().getProject();
+        IJavaProject javaProject = JavaCore.create( project );
+        return javaProject;
     }
 
-	protected List getAllClassProposals(final String classNameStart, final int documentOffset, final String prefix) {
+    protected List getAllClassProposals(final String classNameStart,
+                                        final int documentOffset,
+                                        final String prefix) {
         List result = new ArrayList();
-		IJavaProject javaProject = getCurrentJavaProject();
-		if (javaProject == null) {
-			return result;
-		}
-		CompletionProposalCollector	collector = new CompletionProposalCollector(javaProject) {
-			public void accept(CompletionProposal proposal) {
-				if (proposal.getKind() == org.eclipse.jdt.core.CompletionProposal.PACKAGE_REF ||
-					proposal.getKind() == org.eclipse.jdt.core.CompletionProposal.TYPE_REF) {
-						super.accept(proposal);
-				}
-			}
-		};
-		collector.acceptContext(new CompletionContext());
+        IJavaProject javaProject = getCurrentJavaProject();
+        if ( javaProject == null ) {
+            return result;
+        }
+        CompletionProposalCollector collector = new CompletionProposalCollector( javaProject ) {
+            public void accept(CompletionProposal proposal) {
+                if ( proposal.getKind() == org.eclipse.jdt.core.CompletionProposal.PACKAGE_REF || proposal.getKind() == org.eclipse.jdt.core.CompletionProposal.TYPE_REF ) {
+                    super.accept( proposal );
+                }
+            }
+        };
+        collector.acceptContext( new CompletionContext() );
         try {
             IEvaluationContext evalContext = javaProject.newEvaluationContext();
             evalContext.codeComplete( classNameStart,
-            						  classNameStart.length(),
+                                      classNameStart.length(),
                                       collector );
-			IJavaCompletionProposal[] proposals = collector.getJavaCompletionProposals();
-			for (int i = 0; i < proposals.length; i++) {
-				if (proposals[i] instanceof AbstractJavaCompletionProposal) {
-					AbstractJavaCompletionProposal javaProposal = (AbstractJavaCompletionProposal) proposals[i];
-					int replacementOffset = documentOffset - (classNameStart.length() - javaProposal.getReplacementOffset());
-					javaProposal.setReplacementOffset(replacementOffset);
-					if (javaProposal instanceof LazyJavaTypeCompletionProposal) {
-						String completionPrefix = classNameStart.substring(classNameStart.length() - javaProposal.getReplacementLength());
-						int dotIndex = completionPrefix.lastIndexOf('.');
-						// match up to the last dot in order to make higher level matching still work (camel case...)
-						if (dotIndex != -1) {
-							javaProposal.setReplacementString(((LazyJavaTypeCompletionProposal) javaProposal).getQualifiedTypeName());
-						}
-					}
-					result.add(proposals[i]);
-				}
-			}
+            IJavaCompletionProposal[] proposals = collector.getJavaCompletionProposals();
+            for ( int i = 0; i < proposals.length; i++ ) {
+                if ( proposals[i] instanceof AbstractJavaCompletionProposal ) {
+                    AbstractJavaCompletionProposal javaProposal = (AbstractJavaCompletionProposal) proposals[i];
+                    int replacementOffset = documentOffset - (classNameStart.length() - javaProposal.getReplacementOffset());
+                    javaProposal.setReplacementOffset( replacementOffset );
+                    if ( javaProposal instanceof LazyJavaTypeCompletionProposal ) {
+                        String completionPrefix = classNameStart.substring( classNameStart.length() - javaProposal.getReplacementLength() );
+                        int dotIndex = completionPrefix.lastIndexOf( '.' );
+                        // match up to the last dot in order to make higher level matching still work (camel case...)
+                        if ( dotIndex != -1 ) {
+                            javaProposal.setReplacementString( ((LazyJavaTypeCompletionProposal) javaProposal).getQualifiedTypeName() );
+                        }
+                    }
+                    result.add( proposals[i] );
+                }
+            }
         } catch ( Throwable t ) {
             DroolsEclipsePlugin.log( t );
         }
-		return result;
+        return result;
     }
 
     protected List getPossibleProposals(ITextViewer viewer,
@@ -188,112 +200,161 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
                                         String backText,
                                         final String prefix) {
         List list = new ArrayList();
-        list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "rule", NEW_RULE_TEMPLATE, 6));
-        list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "import", "import "));
-        list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "expander", "expander "));
-        list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "global", "global "));
-        list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "package", "package "));
-        list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "query", NEW_QUERY_TEMPLATE));
-        list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "function", NEW_FUNCTION_TEMPLATE, 14));
-        list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "template", NEW_TEMPLATE_TEMPLATE, 9));
-        list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "dialect \"java\"", "dialect \"java\" "));
-        list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "dialect \"mvel\"", "dialect \"mvel\" "));
-        filterProposalsOnPrefix(prefix, list);
+        list.add( new RuleCompletionProposal( documentOffset - prefix.length(),
+                                              prefix.length(),
+                                              "rule",
+                                              NEW_RULE_TEMPLATE,
+                                              6 ) );
+        list.add( new RuleCompletionProposal( documentOffset - prefix.length(),
+                                              prefix.length(),
+                                              "import",
+                                              "import " ) );
+        list.add( new RuleCompletionProposal( documentOffset - prefix.length(),
+                                              prefix.length(),
+                                              "expander",
+                                              "expander " ) );
+        list.add( new RuleCompletionProposal( documentOffset - prefix.length(),
+                                              prefix.length(),
+                                              "global",
+                                              "global " ) );
+        list.add( new RuleCompletionProposal( documentOffset - prefix.length(),
+                                              prefix.length(),
+                                              "package",
+                                              "package " ) );
+        list.add( new RuleCompletionProposal( documentOffset - prefix.length(),
+                                              prefix.length(),
+                                              "query",
+                                              NEW_QUERY_TEMPLATE ) );
+        list.add( new RuleCompletionProposal( documentOffset - prefix.length(),
+                                              prefix.length(),
+                                              "function",
+                                              NEW_FUNCTION_TEMPLATE,
+                                              14 ) );
+        list.add( new RuleCompletionProposal( documentOffset - prefix.length(),
+                                              prefix.length(),
+                                              "template",
+                                              NEW_TEMPLATE_TEMPLATE,
+                                              9 ) );
+        list.add( new RuleCompletionProposal( documentOffset - prefix.length(),
+                                              prefix.length(),
+                                              "dialect \"java\"",
+                                              "dialect \"java\" " ) );
+        list.add( new RuleCompletionProposal( documentOffset - prefix.length(),
+                                              prefix.length(),
+                                              "dialect \"mvel\"",
+                                              "dialect \"mvel\" " ) );
+        filterProposalsOnPrefix( prefix,
+                                 list );
         return list;
     }
 
-	protected List getJavaCompletionProposals(final int documentOffset, final String javaText, final String prefix, Map params) {
-		final List list = new ArrayList();
-		requestJavaCompletionProposals(javaText, prefix, documentOffset, params, list);
-		return list;
-	}
+    protected List getJavaCompletionProposals(final int documentOffset,
+                                              final String javaText,
+                                              final String prefix,
+                                              Map params) {
+        final List list = new ArrayList();
+        requestJavaCompletionProposals( javaText,
+                                        prefix,
+                                        documentOffset,
+                                        params,
+                                        list );
+        return list;
+    }
 
     /**
      * @return a list of "MVELified" RuleCompletionProposal. That list contains only unique proposal based on
      * the overrriden equals in {@link RuleCompletionProposal} to avoid the situation when several
      * accessors can exist for one property. for that case we want to keep only one proposal.
      */
-    protected Collection getJavaMvelCompletionProposals(final int documentOffset, final String javaText, final String prefix, Map params) {
-    	final List list = new ArrayList();
-		requestJavaCompletionProposals(javaText, prefix, documentOffset, params, list);
+    protected Collection getJavaMvelCompletionProposals(final int documentOffset,
+                                                        final String javaText,
+                                                        final String prefix,
+                                                        Map params) {
+        final List list = new ArrayList();
+        requestJavaCompletionProposals( javaText,
+                                        prefix,
+                                        documentOffset,
+                                        params,
+                                        list );
 
-		Collection mvelList = mvelifyProposals(list);
-		return mvelList;
-	}
-
+        Collection mvelList = mvelifyProposals( list );
+        return mvelList;
+    }
 
     /*
      * Filters accessor method proposals to replace them with their mvel expression equivalent
      * For instance a completion for getStatus() would be replaced by a completion for status
      */
-	private static Collection mvelifyProposals(List list) {
-		final Collection set = new HashSet();
+    private static Collection mvelifyProposals(List list) {
+        final Collection set = new HashSet();
 
-		for (Iterator iter = list.iterator(); iter.hasNext();) {
-			Object o = iter.next();
-			if (o instanceof JavaMethodCompletionProposal) {
-				LazyJavaCompletionProposal javaProposal = (LazyJavaCompletionProposal) o;
-				//TODO: FIXME: this is very fragile ass it uses reflection to access the private completion field.
-				//Yet this is needed to do mvel filtering based on the method signtures, IF we use the richer JDT completion
-				Object field = ReflectionUtils.getField(o, "fProposal");
-				if (field != null && field instanceof CompletionProposal) {
-					CompletionProposal proposal = (CompletionProposal) field;
+        for ( Iterator iter = list.iterator(); iter.hasNext(); ) {
+            Object o = iter.next();
+            if ( o instanceof JavaMethodCompletionProposal ) {
+                LazyJavaCompletionProposal javaProposal = (LazyJavaCompletionProposal) o;
+                //TODO: FIXME: this is very fragile ass it uses reflection to access the private completion field.
+                //Yet this is needed to do mvel filtering based on the method signtures, IF we use the richer JDT completion
+                Object field = ReflectionUtils.getField( o,
+                                                         "fProposal" );
+                if ( field != null && field instanceof CompletionProposal ) {
+                    CompletionProposal proposal = (CompletionProposal) field;
 
-					String completion = new String(proposal.getCompletion());
+                    String completion = new String( proposal.getCompletion() );
 
-					// get the eventual property name for that method name and signature
-					String propertyOrMethodName = CompletionUtil.getPropertyName(
-							completion, proposal.getSignature());
+                    // get the eventual property name for that method name and signature
+                    String propertyOrMethodName = CompletionUtil.getPropertyName( completion,
+                                                                                  proposal.getSignature() );
                     //if we got a proeprty name that differs from the orginal method name
                     //, this is a a bean accessor
-					boolean isAccessor = !completion.equals(propertyOrMethodName);
+                    boolean isAccessor = !completion.equals( propertyOrMethodName );
 
-					// is the completion for a bean accessor? and do we have already some relevant completion?
-					if (isAccessor && doesNotContainFieldCompletion(propertyOrMethodName, list)) {
+                    // is the completion for a bean accessor? and do we have already some relevant completion?
+                    if ( isAccessor && doesNotContainFieldCompletion( propertyOrMethodName,
+                                                                      list ) ) {
                         //TODO: craft a better JDTish display name
-						RuleCompletionProposal prop = new RuleCompletionProposal(
-								javaProposal.getReplacementOffset(),
-								javaProposal.getReplacementLength(),
-								propertyOrMethodName);
-						prop.setImage(DefaultCompletionProcessor.VARIABLE_ICON);
-						set.add(prop);
+                        RuleCompletionProposal prop = new RuleCompletionProposal( javaProposal.getReplacementOffset(),
+                                                                                  javaProposal.getReplacementLength(),
+                                                                                  propertyOrMethodName );
+                        prop.setImage( DefaultCompletionProcessor.VARIABLE_ICON );
+                        prop.setPriority( 1000 );
+                        set.add( prop );
 
-					} else {
-						set.add(o);
-					}
-				}
+                    } else {
+                        set.add( o );
+                    }
+                }
 
-			} else {
-				//add other proposals as is
-				set.add(o);
-			}
-		}
-		return set;
-	}
+            } else {
+                //add other proposals as is
+                set.add( o );
+            }
+        }
+        return set;
+    }
 
-	/*
-	 * do we already have a completion for that string that would be either a local variable or a field?
-	 */
-	private static boolean doesNotContainFieldCompletion(String completion, List completions) {
-		if (completion == null || completion.length() == 0 || completions == null ){
-			return false;
-		}
-		for (Iterator iter = completions.iterator(); iter.hasNext();) {
-			Object o = iter.next();
-			if (o instanceof AbstractJavaCompletionProposal) {
-				AbstractJavaCompletionProposal prop = (AbstractJavaCompletionProposal) o;
-				String content = prop.getReplacementString();
-				if (completion.equals(content)) {
-					IJavaElement javaElement = prop.getJavaElement();
-					if (javaElement instanceof ILocalVariable
-							|| javaElement instanceof IField) {
-						return false;
-					}
-				}
-			}
-		}
-		return true;
-	}
+    /*
+     * do we already have a completion for that string that would be either a local variable or a field?
+     */
+    private static boolean doesNotContainFieldCompletion(String completion,
+                                                         List completions) {
+        if ( completion == null || completion.length() == 0 || completions == null ) {
+            return false;
+        }
+        for ( Iterator iter = completions.iterator(); iter.hasNext(); ) {
+            Object o = iter.next();
+            if ( o instanceof AbstractJavaCompletionProposal ) {
+                AbstractJavaCompletionProposal prop = (AbstractJavaCompletionProposal) o;
+                String content = prop.getReplacementString();
+                if ( completion.equals( content ) ) {
+                    IJavaElement javaElement = prop.getJavaElement();
+                    if ( javaElement instanceof ILocalVariable || javaElement instanceof IField ) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
 
     protected void requestJavaCompletionProposals(final String javaText,
                                                   final String prefix,
@@ -301,20 +362,20 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
                                                   Map params,
                                                   Collection results) {
 
-		String javaTextWithoutPrefix = getTextWithoutPrefix( javaText,
-                                                             prefix );
-		// boolean to filter default Object methods produced by code completion when in the beginning of a statement
-		boolean filterObjectMethods = false;
-		if ("".equals(javaTextWithoutPrefix.trim()) || START_OF_NEW_JAVA_STATEMENT.matcher(javaTextWithoutPrefix).matches()) {
-			filterObjectMethods = true;
-		}
-		IJavaProject javaProject = getCurrentJavaProject();
-		if (javaProject ==null) {
-			return ;
-		}
+        String javaTextWithoutPrefix = CompletionUtil.getTextWithoutPrefix( javaText,
+                                                                            prefix );
+        // boolean to filter default Object methods produced by code completion when in the beginning of a statement
+        boolean filterObjectMethods = false;
+        if ( "".equals( javaTextWithoutPrefix.trim() ) || START_OF_NEW_JAVA_STATEMENT.matcher( javaTextWithoutPrefix ).matches() ) {
+            filterObjectMethods = true;
+        }
+        IJavaProject javaProject = getCurrentJavaProject();
+        if ( javaProject == null ) {
+            return;
+        }
 
-		CompletionProposalCollector	collector = new CompletionProposalCollector(javaProject);
-		collector.acceptContext(new CompletionContext());
+        CompletionProposalCollector collector = new CompletionProposalCollector( javaProject );
+        collector.acceptContext( new CompletionContext() );
 
         try {
             IEvaluationContext evalContext = javaProject.newEvaluationContext();
@@ -336,40 +397,28 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
             evalContext.codeComplete( text,
                                       text.length(),
                                       collector );
-			IJavaCompletionProposal[] proposals = collector.getJavaCompletionProposals();
-			for (int i = 0; i < proposals.length; i++) {
-				if (proposals[i] instanceof AbstractJavaCompletionProposal) {
-					AbstractJavaCompletionProposal javaProposal = (AbstractJavaCompletionProposal) proposals[i];
-					int replacementOffset = documentOffset - (text.length() - javaProposal.getReplacementOffset());
-					javaProposal.setReplacementOffset(replacementOffset);
-					if (javaProposal instanceof LazyJavaTypeCompletionProposal) {
-						String completionPrefix = javaText.substring(javaText.length() - javaProposal.getReplacementLength());
-						int dotIndex = completionPrefix.lastIndexOf('.');
-						// match up to the last dot in order to make higher level matching still work (camel case...)
-						if (dotIndex != -1) {
-							javaProposal.setReplacementString(((LazyJavaTypeCompletionProposal) javaProposal).getQualifiedTypeName());
-						}
-					}
-					if (!filterObjectMethods || !(proposals[i] instanceof JavaMethodCompletionProposal)) {
-						results.add(proposals[i]);
-					}
-				}
-			}
+            IJavaCompletionProposal[] proposals = collector.getJavaCompletionProposals();
+            for ( int i = 0; i < proposals.length; i++ ) {
+                if ( proposals[i] instanceof AbstractJavaCompletionProposal ) {
+                    AbstractJavaCompletionProposal javaProposal = (AbstractJavaCompletionProposal) proposals[i];
+                    int replacementOffset = documentOffset - (text.length() - javaProposal.getReplacementOffset());
+                    javaProposal.setReplacementOffset( replacementOffset );
+                    if ( javaProposal instanceof LazyJavaTypeCompletionProposal ) {
+                        String completionPrefix = javaText.substring( javaText.length() - javaProposal.getReplacementLength() );
+                        int dotIndex = completionPrefix.lastIndexOf( '.' );
+                        // match up to the last dot in order to make higher level matching still work (camel case...)
+                        if ( dotIndex != -1 ) {
+                            javaProposal.setReplacementString( ((LazyJavaTypeCompletionProposal) javaProposal).getQualifiedTypeName() );
+                        }
+                    }
+                    if ( !filterObjectMethods || !(proposals[i] instanceof JavaMethodCompletionProposal) ) {
+                        results.add( proposals[i] );
+                    }
+                }
+            }
         } catch ( Throwable t ) {
             DroolsEclipsePlugin.log( t );
         }
-    }
-
-    public static String getTextWithoutPrefix(final String javaText,
-                                              final String prefix) {
-        int endIndex = javaText.length() - prefix.length();
-        String javaTextWithoutPrefix = javaText;
-        //javaText can be an empty string.
-        if ( endIndex > 0 ) {
-            javaTextWithoutPrefix = javaText.substring( 0,
-                                                        endIndex );
-        }
-        return javaTextWithoutPrefix;
     }
 
     protected String getPackage() {
@@ -387,9 +436,9 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
     }
 
     protected Set getUniqueImports() {
-            HashSet set = new HashSet();
-			set.addAll(getImports());
-			return set;
+        HashSet set = new HashSet();
+        set.addAll( getImports() );
+        return set;
     }
 
     protected List getFunctions() {

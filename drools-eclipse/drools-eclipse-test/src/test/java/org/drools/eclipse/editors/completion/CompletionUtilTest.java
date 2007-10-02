@@ -154,4 +154,269 @@ public class CompletionUtilTest extends TestCase {
     	String lastword = "last";
     	assertEquals(lastword, CompletionUtil.stripLastWord(backtext));
     }
+
+    public void testGetPreviousExpression1() {
+        String backText =
+            "  \r\n" +
+            "   System.out.println( message );\r\n" +
+            "   m.message = \"Goodbyte cruel world\";\r\n" +
+            "   m.status = 1;\r\n" +
+            "   adasd ='d';";
+        String previous =
+            "  \r\n" +
+            "   System.out.println( message );\r\n" +
+            "   m.message = \"Goodbyte cruel world\";\r\n" +
+            "   m.status = 1;\r\n" +
+            "   adasd ='d';";
+        assertEquals(previous, CompletionUtil.getPreviousExpression( backText ));
+    }
+
+    public void testGetPreviousExpression2() {
+        String backText =
+            "  \r\n" +
+            "   System.out.println( message );\r\n" +
+            "   m.message = \"Goodbyte cruel world\";\r\n" +
+            "   m.status = 1;\r\n" +
+            "   message== ";
+        String previous =
+            "  \r\n" +
+            "   System.out.println( message );\r\n" +
+            "   m.message = \"Goodbyte cruel world\";\r\n" +
+            "   m.status = 1;";
+        assertEquals(previous, CompletionUtil.getPreviousExpression( backText ));
+    }
+
+    public void testGetPreviousExpression3() {
+        String backText =
+            "  \r\n" +
+            "   System.out.println( message );\r\n" +
+            "   m.message = \"Goodbyte cruel world\";\r\n" +
+            "   m.status = 1;\r\n" +
+            "   message(sdasdasd, ";
+        String previous =
+            "  \r\n" +
+            "   System.out.println( message );\r\n" +
+            "   m.message = \"Goodbyte cruel world\";\r\n" +
+            "   m.status = 1;";
+        assertEquals(previous, CompletionUtil.getPreviousExpression( backText ));
+    }
+
+    public void testGetPreviousExpression4() {
+        String backText =
+            "  \r\n" +
+            "   System.out.println( message );\r\n" +
+            "   m.message = \"Goodbyte cruel world\";\r\n" +
+            "   m.status = 1;\r\n" +
+            "   message( ";
+        String previous =
+            "  \r\n" +
+            "   System.out.println( message );\r\n" +
+            "   m.message = \"Goodbyte cruel world\";\r\n" +
+            "   m.status = 1;";
+        assertEquals(previous, CompletionUtil.getPreviousExpression( backText ));
+    }
+
+    public void testGetPreviousExpression5() {
+        String backText =
+            "  \r\n" +
+            "   System.out.println( message );\r\n" +
+            "   m.message = \"Goodbyte cruel world\";\r\n" +
+            "   m.status = 1;\r\n" +
+            "   this.asd ";
+        String previous =
+            "  \r\n" +
+            "   System.out.println( message );\r\n" +
+            "   m.message = \"Goodbyte cruel world\";\r\n" +
+            "   m.status = 1;";
+        assertEquals(previous, CompletionUtil.getPreviousExpression( backText ));
+    }
+
+    public void testGetPreviousExpression6() {
+        String backText =
+            "  \r\n" +
+            "   System.out.println( message );\r\n" +
+            "   m.message = \"Goodbyte cruel world\";\r\n" +
+            "   m.status = 1;\r\n" +
+            "   message(){ ";
+        String previous =
+            "  \r\n" +
+            "   System.out.println( message );\r\n" +
+            "   m.message = \"Goodbyte cruel world\";\r\n" +
+            "   m.status = 1;";
+        assertEquals(previous, CompletionUtil.getPreviousExpression( backText ));
+    }
+
+    public void testGetPreviousExpression7() {
+        String backText =
+            "  \r\n" +
+            "   System.out.println( message );\r\n" +
+            "   m.message = \"Goodbyte cruel world\";\r\n" +
+            "   m.status = 1;\r\n" +
+            "   adasd ='d';message== ";
+        String previous =
+            "  \r\n" +
+            "   System.out.println( message );\r\n" +
+            "   m.message = \"Goodbyte cruel world\";\r\n" +
+            "   m.status = 1;\r\n" +
+            "   adasd ='d';";
+        assertEquals(previous, CompletionUtil.getPreviousExpression( backText ));
+    }
+
+    public void testGetLastExpression11() {
+        String backText =
+            "  \r\n" +
+            "   System.out.println( message );\r\n" +
+            "   m.message = \"Goodbyte cruel world\";\r\n" +
+            "   m.status = 1;\r\n" +
+            "   adasd ='d'";
+        String previous = "\r\n" + "   adasd ='d'";
+        assertEquals(previous, CompletionUtil.getLastExpression( backText ));
+    }
+
+    public void testGetLastExpression1() {
+        String backText =
+            "  \r\n" +
+            "   System.out.println( message );\r\n" +
+            "   m.message = \"Goodbyte cruel world\";\r\n" +
+            "   m.status = 1;\r\n" +
+            "   adasd ='d';";
+        String previous = "\r\n   adasd ='d'";
+        assertEquals(previous, CompletionUtil.getLastExpression( backText ));
+    }
+
+    public void testGetLastExpression10() {
+        String backText =
+            "  \r\n" +
+            "   System.out.println( message );\r\n" +
+            "   m.message = \"Goodbyte cruel world\";\r\n" +
+            "   m.status = 1;\r\n" +
+            "   adasd ='d';\r\n";
+        assertEquals(backText, CompletionUtil.getLastExpression( backText ));
+    }
+
+    public void testGetLastExpression2() {
+        String backText =
+            "  \r\n" +
+            "   System.out.println( message );\r\n" +
+            "   m.message = \"Goodbyte cruel world\";\r\n" +
+            "   m.status = 1;\r\n" +
+            "   message== ";
+        String previous = "\r\n   message== ";
+        assertEquals(previous, CompletionUtil.getLastExpression( backText ));
+    }
+
+    public void testGetLastExpression3() {
+        String backText =
+            "  \r\n" +
+            "   System.out.println( message );\r\n" +
+            "   m.message = \"Goodbyte cruel world\";\r\n" +
+            "   m.status = 1;\r\n" +
+            "   message(sdasdasd, ";
+        String previous ="\r\n   message(sdasdasd, ";
+        assertEquals(previous, CompletionUtil.getLastExpression( backText ));
+    }
+
+    public void testGetLastExpression4() {
+        String backText =
+            "  \r\n" +
+            "   System.out.println( message );\r\n" +
+            "   m.message = \"Goodbyte cruel world\";\r\n" +
+            "   m.status = 1;\r\n" +
+            "   message( ";
+        String previous ="\r\n   message( ";
+        assertEquals(previous, CompletionUtil.getLastExpression( backText ));
+    }
+
+    public void testGetLastExpression5() {
+        String backText =
+            "  \r\n" +
+            "   System.out.println( message );\r\n" +
+            "   m.message = \"Goodbyte cruel world\";\r\n" +
+            "   m.status = 1;\r\n" +
+            "   this.asd ";
+        String previous =   "\r\n   this.asd ";
+        assertEquals(previous, CompletionUtil.getLastExpression( backText ));
+    }
+
+    public void testGetLastExpression6() {
+        String backText =
+            "  \r\n" +
+            "   System.out.println( message );\r\n" +
+            "   m.message = \"Goodbyte cruel world\";\r\n" +
+            "   m.status = 1;\r\n" +
+            "   message(){ ";
+        String previous =  "\r\n   message(){ ";
+        assertEquals(previous, CompletionUtil.getLastExpression( backText ));
+    }
+
+    public void testGetLastExpression7() {
+        String backText =
+            "  \r\n" +
+            "   System.out.println( message );\r\n" +
+            "   m.message = \"Goodbyte cruel world\";\r\n" +
+            "   m.status = 1;\r\n" +
+            "   adasd ='d';message== ";
+        String previous ="message== ";
+        assertEquals(previous, CompletionUtil.getLastExpression( backText ));
+    }
+
+    public void testGetInnerExpression() {
+        String backText =
+            "  \r\n" +
+            "   System.out.println( message );\r\n" +
+            "   m.message = \"Goodbyte cruel world\";\r\n" +
+            "   m.status = 1;\r\n" +
+            "   adasd ='d';message== ";
+        String previous ="";
+        assertEquals(previous, CompletionUtil.getInnerExpression( backText ));
+    }
+
+    public void testGetInnerExpression2() {
+        String backText =
+            "System.out.println(m ";
+        String previous ="m";
+        assertEquals(previous, CompletionUtil.getInnerExpression( backText ));
+    }
+
+    public void testGetInnerExpression3() {
+        String backText =
+            "update(m) {";
+        String previous ="";
+        assertEquals(previous, CompletionUtil.getInnerExpression( backText ));
+    }
+
+    public void testGetInnerExpression4() {
+        String backText =
+            "update(m) {some=";
+        String previous ="";
+        assertEquals(previous, CompletionUtil.getInnerExpression( backText ));
+    }
+    public void testGetInnerExpression5() {
+        String backText =
+            "update(m) {asdasdas==asdasd, asdasd";
+        String previous ="asdasd";
+        assertEquals(previous, CompletionUtil.getInnerExpression( backText ));
+    }
+    public void testGetInnerExpression6() {
+        String backText =
+            "update(m) {asdasdas==asdasd, asdasd}";
+        String previous ="";
+        assertEquals(previous, CompletionUtil.getInnerExpression( backText ));
+    }
+
+    public void testGetTextWithoutPrefix() {
+        String text =
+            "modify(m) {asdasdas==asdasd, asdasd.asa";
+        String expected ="modify(m) {asdasdas==asdasd, asdasd.";
+        assertEquals(expected, CompletionUtil.getTextWithoutPrefix( text,"asa"));
+    }
+
+    public void testGetTextWithoutPrefix2() {
+        String text =
+            "it";
+        String expected ="";
+        assertEquals(expected, CompletionUtil.getTextWithoutPrefix( text,text));
+    }
+
+
 }

@@ -47,26 +47,25 @@ public class CompletionContext {
                                                                                 Pattern.DOTALL );
 
     static final Pattern ENDS_WITH_COLON                     = Pattern.compile( ".*:\\s*",
-            																	Pattern.DOTALL );
-
-    static final Pattern ENDS_WITH_BRACKET                   = Pattern.compile( ".*\\)\\s*",
-																				Pattern.DOTALL );
-
-    static final Pattern MVEL_DIALECT_PATTERN                        = Pattern.compile( ".*dialect\\s+\"mvel\".*",
                                                                                 Pattern.DOTALL );
 
-    static final Pattern JAVA_DIALECT_PATTERN                        = Pattern.compile( ".*dialect\\s+\"java\".*",
-            																	Pattern.DOTALL );
+    static final Pattern ENDS_WITH_BRACKET                   = Pattern.compile( ".*\\)\\s*",
+                                                                                Pattern.DOTALL );
 
-	static final String MVEL_DIALECT 								 = "mvel";
-	static final String JAVA_DIALECT 								 = "java";
+    static final Pattern MVEL_DIALECT_PATTERN                = Pattern.compile( ".*dialect\\s+\"mvel\".*",
+                                                                                Pattern.DOTALL );
+
+    static final Pattern JAVA_DIALECT_PATTERN                = Pattern.compile( ".*dialect\\s+\"java\".*",
+                                                                                Pattern.DOTALL );
+
+    static final String  MVEL_DIALECT                        = "mvel";
+    static final String  JAVA_DIALECT                        = "java";
 
     private String       backText;
     private DrlParser    parser;
     private RuleDescr    rule;
     private PackageDescr packageDescr;
     private String       dialect;
-    private Class        mvelReturnedType;
 
     public CompletionContext(String backText) {
         this.backText = backText;
@@ -87,19 +86,17 @@ public class CompletionContext {
         determineDialect( backText );
     }
 
-
     public boolean isJavaDialect() {
-        return JAVA_DIALECT.equalsIgnoreCase(dialect);
+        return JAVA_DIALECT.equalsIgnoreCase( dialect );
     }
 
     public boolean isMvelDialect() {
-        return MVEL_DIALECT.equalsIgnoreCase(dialect);
+        return MVEL_DIALECT.equalsIgnoreCase( dialect );
     }
 
     public boolean isDefaultDialect() {
         return !isJavaDialect() && !isMvelDialect();
     }
-
 
     public PackageDescr getPackageDescr() {
         return packageDescr;
@@ -108,16 +105,16 @@ public class CompletionContext {
     //note: this is a crude but reasonably fast way to determine the dialect,
     //especially when parsing imcomplete rules
     private void determineDialect(String backText) {
-    	dialect = null;
+        dialect = null;
         boolean mvel = MVEL_DIALECT_PATTERN.matcher( backText ).matches();
         boolean java = JAVA_DIALECT_PATTERN.matcher( backText ).matches();
-		//which dialect may be defined for this rule?
+        //which dialect may be defined for this rule?
         if ( mvel ) {
             dialect = MVEL_DIALECT;
         }
-		if (java) {
-			dialect = JAVA_DIALECT;
-		}
+        if ( java ) {
+            dialect = JAVA_DIALECT;
+        }
     }
 
     public Location getLocation() {
@@ -137,8 +134,7 @@ public class CompletionContext {
                                                       Location location,
                                                       String backText) {
         if ( location.getType() == Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ) {
-            if ( !ENDS_WITH_SPACES.matcher( backText ).matches() 
-            	 || ENDS_WITH_COLON.matcher( backText ).matches()) {
+            if ( !ENDS_WITH_SPACES.matcher( backText ).matches() || ENDS_WITH_COLON.matcher( backText ).matches() ) {
                 location.setType( Location.LOCATION_LHS_INSIDE_CONDITION_START );
             }
         } else if ( location.getType() == Location.LOCATION_LHS_INSIDE_CONDITION_END ) {
@@ -170,9 +166,7 @@ public class CompletionContext {
             if ( location.getProperty( Location.LOCATION_FROM_CONTENT ) == null ) {
                 location.setProperty( Location.LOCATION_FROM_CONTENT,
                                       "" );
-            } else if ( ((String) location.getProperty( Location.LOCATION_FROM_CONTENT )).length() > 0
-            		    && (ENDS_WITH_SPACES.matcher( backText ).matches()
-            		    	|| ENDS_WITH_BRACKET.matcher( backText ).matches() )) {
+            } else if ( ((String) location.getProperty( Location.LOCATION_FROM_CONTENT )).length() > 0 && (ENDS_WITH_SPACES.matcher( backText ).matches() || ENDS_WITH_BRACKET.matcher( backText ).matches()) ) {
                 location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
             }
         } else if ( location.getType() == Location.LOCATION_LHS_FROM_ACCUMULATE_INIT ) {
@@ -222,12 +216,4 @@ public class CompletionContext {
 
         return location;
     }
-
-	public Class getMvelReturnedType() {
-		return mvelReturnedType;
-	}
-
-	public void setMvelReturnedType(Class getMvelReturnedType) {
-		this.mvelReturnedType = getMvelReturnedType;
-	}
 }

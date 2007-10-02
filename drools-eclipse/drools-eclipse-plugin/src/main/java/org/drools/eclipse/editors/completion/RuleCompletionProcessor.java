@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
 
 import org.drools.base.ClassTypeResolver;
 import org.drools.compiler.PackageBuilderConfiguration;
@@ -133,7 +134,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         }
 
         boolean startOfDialectExpression = isStartOfDialectExpression( consequenceWithoutPrefix );
-        if ( startOfDialectExpression ) {
+        if ( isJavaDialect() && startOfDialectExpression ) {
             addRHSKeywordCompletionProposals( list,
                                               documentOffset,
                                               prefix );
@@ -939,11 +940,11 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         list.addAll( mvelCompletionProposals );
     }
 
-    private Collection getMvelCompletionProposals(final String consequence,
+    private Collection getMvelCompletionProposals(final String consequenceBackText,
                                                   final int documentOffset,
                                                   final String prefix,
                                                   Map params,
-                                                  String backText,
+                                                  String ruleBackText,
                                                   boolean startOfExpression) {
 
         final Set proposals = new HashSet();
@@ -952,68 +953,132 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
             return proposals;
         }
 
-        String mvelTextWithoutPrefix = getTextWithoutPrefix( consequence,
-                                                             prefix );
-
-        String compilableConsequence = CompletionUtil.getCompilableText( mvelTextWithoutPrefix );
-        MVELConsequenceBuilder builder = new MVELConsequenceBuilder();
-        compilableConsequence = builder.processMacros( compilableConsequence );
-
-        // attempt to compile and analyze
         try {
             DRLInfo drlInfo = DroolsEclipsePlugin.getDefault().parseResource( (DRLRuleEditor) getEditor(),
                                                                               true,
                                                                               true );
 
-            ParserContext compilationContext = createMvelAnalysisContext( params,
-                                                                          drlInfo,
-                                                                          compilableConsequence );
+            String textWithoutPrefix = CompletionUtil.getTextWithoutPrefix( consequenceBackText,
+                                                                            prefix );
+            boolean expressionStart = isStartOfDialectExpression( textWithoutPrefix );
+            System.out.println("start of expre:"+expressionStart);
 
-            if ( startOfExpression ) {
+            boolean isConstrained = textWithoutPrefix.endsWith( "." );
+
+            // we split the expression in various regions:
+            // *the previous expression
+            // *the last expression
+            // *the last inner expression
+
+            // attempt to compile and analyze the previous expression to collect inputs and vars
+            String previousExpression = CompletionUtil.getPreviousExpression( consequenceBackText );
+            MvelContext previousExprContext = analyzeMvelExpression( getResolvedMvelInputs( params ),
+                                                                     drlInfo,
+                                                                     previousExpression );
+
+            // attempt to compile and analyze the last and last inner expression, using as inputs the previous expression inputs and vars
+            Map variables = previousExprContext.getContext().getVariables();
+            Map inputs = previousExprContext.getContext().getInputs();
+            inputs.putAll( variables );
+
+            //last inner expression
+            String lastInnerExpression = CompletionUtil.getTextWithoutPrefix( CompletionUtil.getInnerExpression( consequenceBackText ),
+                                                                              prefix );
+            System.out.println( "Lastinner:" + lastInnerExpression );
+            String compilableLastInnerExpression = CompletionUtil.getCompilableText( lastInnerExpression );
+
+            MvelContext lastInnerExprContext = analyzeMvelExpression( inputs,
+                                                                      drlInfo,
+                                                                      compilableLastInnerExpression );
+
+            //last expression
+            String lastExpression = CompletionUtil.getLastExpression( consequenceBackText ).trim();
+            System.out.println( "Last:" + lastExpression );
+            //is this a modify expression?
+            //group 1 is the body of modify
+            //group 2 if present is the whole with block including brackets
+            //group 3 if present is the inner content of the with block
+            Matcher modMatcher = CompletionUtil.MODIFY_PATTERN.matcher( lastExpression );
+
+            boolean isModifyBlock = modMatcher.matches() && modMatcher.groupCount() == 3;
+
+            //if constrained, get completion for egress of last inner, filtered on prefix
+            if ( isConstrained ) {
+                System.out.println( "constrained" );
+                return getMvelCompletionsFromJDT( documentOffset,
+                                                  "",
+                                                  params,
+                                                  lastInnerExprContext.getReturnedType() );
+            }
+            //if expression start inside with block, then get completion for prefix with egrss of modif var + prev expr var&inputs
+            else if ( expressionStart && isModifyBlock ) {
+                System.out.println( "modify block start" );
+                System.out.println( "match" );
+                String modifyVar = modMatcher.group( 1 );
+                //String modifyWith = modMatcher.group( 3 );
+
+                //get the egress type of the modify var
+                MvelContext modVarContext = analyzeMvelExpression( inputs,
+                                                                   drlInfo,
+                                                                   modifyVar );
+
+                Class modVarType = modVarContext.getReturnedType();
+                System.out.println( "modVarType:" + modVarType );
+
+                Collection modVarComps = getMvelCompletionsFromJDT( documentOffset,
+                                                                    "",
+                                                                    params,
+                                                                    modVarType );
+
+                //set high prio on those
+                proposals.addAll( modVarComps );
+
+                addMvelCompletions( proposals,
+                                    documentOffset,
+                                    "",
+                                    lastInnerExprContext.getContext().getVariables() );
+
+                addMvelCompletions( proposals,
+                                    documentOffset,
+                                    "",
+                                    lastInnerExprContext.getContext().getInputs() );
+
                 Collection jdtProps = getJavaCompletionProposals( documentOffset,
                                                                   prefix,
                                                                   prefix,
                                                                   params );
+
                 proposals.addAll( jdtProps );
 
+            }
+            //If expression start, then get completion for prefix with prev expr var&inputs
+            else if ( expressionStart ) {
                 addMvelCompletions( proposals,
                                     documentOffset,
                                     prefix,
-                                    compilationContext.getVariables() );
+                                    lastInnerExprContext.getContext().getVariables() );
 
                 addMvelCompletions( proposals,
                                     documentOffset,
                                     prefix,
-                                    compilationContext.getInputs() );
+                                    lastInnerExprContext.getContext().getInputs() );
 
-            } else {
-                // we are completing the methods for an existing type or
-                // variable, we need find the last type in the expression to complete against
+                Collection jdtProps = getJavaCompletionProposals( documentOffset,
+                                                                  prefix,
+                                                                  prefix,
+                                                                  params );
 
-                if ( !"".equals( compilableConsequence.trim() ) ) {
-                    Class lastType = context.getMvelReturnedType();
-                    if ( lastType == null ) {
-                        lastType = Object.class;
-                    }
+                proposals.addAll( jdtProps );
 
-                    //FIXME: there is a small chance of var name collision using this arbitrary mvdrlofc as a variable name.
-                    //ideally the varibale name should be inferred from the last memeber of the expression
-                    String syntheticVarName = "mvdrlofc";
-                    String javaText = "\n" + lastType.getName().replace( '$',
-                                                                         '.' ) + " " + syntheticVarName + ";\n" + syntheticVarName + ".";
-                    Collection jdtProps = getJavaMvelCompletionProposals( documentOffset,
-                                                                          javaText,
-                                                                          prefix,
-                                                                          params );
-                    proposals.addAll( jdtProps );
-                }
             }
 
         } catch ( Throwable e ) {
             DroolsEclipsePlugin.log( e );
         }
-
-        return proposals;
+        Set uniqueProposals = new HashSet();
+        addAllNewProposals( uniqueProposals,
+                            proposals );
+        return uniqueProposals;
     }
 
     private Map getResolvedMvelInputs(Map params) {
@@ -1035,87 +1100,186 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         return resolved;
     }
 
-    private ParserContext createMvelAnalysisContext(Map params,
-                                                    DRLInfo drlInfo,
-                                                    String compilableConsequence) {
-        String currentRulename = context.getRule().getName();
-        RuleInfo[] ruleInfos = drlInfo.getRuleInfos();
+    class MvelContext {
+        private CompiledExpression expression;
+        private ParserContext      initialContext;
+        private Class              returnedType;
+
+        public ParserContext getContext() {
+            if ( getExpression() != null ) {
+                if ( getExpression().getParserContext() != null ) {
+                    return getExpression().getParserContext();
+                }
+            }
+            return getInitialContext();
+        }
+
+        void setExpression(CompiledExpression expression) {
+            this.expression = expression;
+        }
+
+        CompiledExpression getExpression() {
+            return expression;
+        }
+
+        void setInitialContext(ParserContext initialContext) {
+            this.initialContext = initialContext;
+        }
+
+        ParserContext getInitialContext() {
+            return initialContext;
+        }
+
+        void setReturnedType(Class returnedType) {
+            this.returnedType = returnedType;
+        }
+
+        Class getReturnedType() {
+            return returnedType;
+        }
+    }
+
+    private MvelContext analyzeMvelExpression(Map params,
+                                              DRLInfo drlInfo,
+                                              String mvel) {
+
+        String macroMvel = processMacros( mvel );
+
+        String name = context.getRule().getName();
+        RuleInfo currentRule = getCurrentRule( drlInfo,
+                                               name );
+        String qName = drlInfo.getPackageName() + "." + currentRule.getRuleName();
+        MVELDialect dialect = (MVELDialect) currentRule.getDialect();
+        ParserContext initialContext = createInitialContext( params,
+                                                             qName,
+                                                             dialect );
+        MvelContext mCon = new MvelContext();
+        mCon.setInitialContext( initialContext );
+
+        try {
+            ExpressionCompiler compiler = new ExpressionCompiler( macroMvel );
+            CompiledExpression expression = compiler.compile( initialContext );
+            mCon.setExpression( expression );
+
+            ParserContext compilationContext = compiler.getParserContextState();
+
+            Class lastType = expression.getKnownEgressType();
+            if ( lastType == null ) {
+                lastType = Object.class;
+                //                mCon.setReturnedType( lastType );
+            }
+
+            if ( "java.lang.Object".equals( lastType.getName() ) ) {
+                // attempt to use the property verifier to get
+                // a better type  resolution (a recommend by cbrock, though egress gives consistent results)
+                //String lastExpression = CompletionUtil.getLastLine( macroMvel );
+                lastType = new PropertyVerifier( macroMvel,
+                                                 compilationContext ).analyze();
+            }
+
+            mCon.setReturnedType( lastType );
+        } catch ( Exception e ) {
+            //TODO: Log me?
+            //            DroolsEclipsePlugin.log( e );
+        }
+        return mCon;
+    }
+
+    private static ParserContext createInitialContext(Map params,
+                                                      String qualifiedName,
+                                                      MVELDialect dialect) {
+
+        final ParserContext context = new ParserContext( dialect.getImports(),
+                                                         null,
+                                                         qualifiedName );
+
+        for ( Iterator it = dialect.getPackgeImports().values().iterator(); it.hasNext(); ) {
+            String packageImport = (String) it.next();
+            context.addPackageImport( packageImport );
+        }
+        context.setStrictTypeEnforcement( false );
+
+        context.setInterceptors( dialect.getInterceptors() );
+        context.setInputs( params );
+        context.addInput( "drools",
+                          KnowledgeHelper.class );
+        context.setCompiled( true );
+        return context;
+    }
+
+    private String processMacros(String mvel) {
+        MVELConsequenceBuilder builder = new MVELConsequenceBuilder();
+        String macrosProcessedCompilableConsequence = builder.processMacros( mvel.trim() );
+        return macrosProcessedCompilableConsequence;
+    }
+
+    private RuleInfo getCurrentRule(DRLInfo drlInfo,
+                                    String currentRulename) {
         RuleInfo currentRule = null;
+        RuleInfo[] ruleInfos = drlInfo.getRuleInfos();
         for ( int i = 0; i < ruleInfos.length; i++ ) {
             if ( currentRulename.equals( ruleInfos[i].getRuleName() ) ) {
                 currentRule = ruleInfos[i];
                 break;
             }
         }
-        MVELDialect dialect = (MVELDialect) currentRule.getDialect();
+        return currentRule;
+    }
 
-        final ParserContext initialContext = new ParserContext( dialect.getImports(),
-                                                               null,
-                                                               drlInfo.getPackageName() + "." + currentRule.getRuleName() );
-
-        for ( Iterator it = dialect.getPackgeImports().values().iterator(); it.hasNext(); ) {
-            String packageImport = (String) it.next();
-            initialContext.addPackageImport( packageImport );
+    private Collection getMvelCompletionsFromJDT(final int documentOffset,
+                                                 final String prefix,
+                                                 Map params,
+                                                 Class lastType) {
+        if ( lastType == null ) {
+            lastType = Object.class;
         }
 
-        try {
-
-            initialContext.setStrictTypeEnforcement( dialect.isStrictMode() );
-
-            initialContext.setInterceptors( dialect.getInterceptors() );
-            initialContext.setInputs( getResolvedMvelInputs( params ) );
-            initialContext.addInput( "drools",
-                                    KnowledgeHelper.class );
-            initialContext.setCompiled( true );
-
-            //compile the expression
-            ExpressionCompiler compiler = new ExpressionCompiler( compilableConsequence );
-            CompiledExpression expression = compiler.compile( initialContext );
-            ParserContext compilationContext = compiler.getParserContextState();
-
-            Class lastType = expression.getKnownEgressType();
-            if ( lastType == null ) {
-                lastType = Object.class;
-            }
-            context.setMvelReturnedType( lastType );
-
-            if ( "java.lang.Object".equals( lastType.getName() ) ) {
-                // attempt to use the property verifier to get
-                // a better type  resolution (a recommend by cbrock, though egress gives consistent results
-                String lastExpression = CompletionUtil.getLastLine( compilableConsequence );
-                lastType = new PropertyVerifier( lastExpression,
-                                                 compilationContext ).analyze();
-            }
-
-            return compilationContext;
-        } catch ( Exception e ) {
-            return initialContext;
-        }
+        //FIXME: there is a small chance of var name collision using this arbitrary mvdrlofc as a variable name.
+        //ideally the variable name should be inferred from the last member of the expression
+        String syntheticVarName = "mvdrlofc";
+        String javaText = "\n" + lastType.getName().replace( '$',
+                                                             '.' ) + " " + syntheticVarName + ";\n" + syntheticVarName + ".";
+        Collection jdtProps = getJavaMvelCompletionProposals( documentOffset,
+                                                              javaText,
+                                                              prefix,
+                                                              params );
+        return jdtProps;
     }
 
     private void addMvelCompletions(final Collection proposals,
                                     int documentOffset,
                                     String prefix,
                                     Map inputs) {
+        Set newProposals = new HashSet();
         for ( Iterator iter = inputs.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry entry = (Map.Entry) iter.next();
             String prop = (String) entry.getKey();
 
-            //JBRULES-1134 do not add completions if they already exist
-            if (containsProposal( proposals, prop )) {
-                continue ;
-            }
-
             Class type = (Class) entry.getValue();
-            String display = prop + " - " + type.getName().replace( '$',
-                                                                    '.' );
+            String display = prop + "  " + CompletionUtil.getSimpleClassName( type );
 
             RuleCompletionProposal rcp = new RuleCompletionProposal( documentOffset - prefix.length(),
                                                                      prefix.length(),
                                                                      display,
                                                                      prop );
             rcp.setImage( DefaultCompletionProcessor.VARIABLE_ICON );
-            proposals.add( rcp );
+            newProposals.add( rcp );
+        }
+        addAllNewProposals( proposals,
+                            newProposals );
+    }
+
+    public static void addAllNewProposals(final Collection proposals,
+                                          final Collection newProposals) {
+        for ( Iterator iter = newProposals.iterator(); iter.hasNext(); ) {
+            ICompletionProposal newProp = (ICompletionProposal) iter.next();
+            String displayString = newProp.getDisplayString();
+
+            //JBRULES-1134 do not add completions if they already exist
+            if ( !containsProposal( proposals,
+                                    displayString ) ) {
+                proposals.add( newProp );
+            }
         }
     }
 
@@ -1123,24 +1287,25 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
      * Attempt to compare proposals of different types based on the tokenized display string
      * @param proposals
      * @param newProposal
-     * @return true if the collection contains a prposal which matches the new Proposal.
+     * @return true if the collection contains a proposal which matches the new Proposal.
      * The match is based on the first token based on a space split
      */
-    boolean containsProposal(final Collection proposals, String newProposal) {
+    public static boolean containsProposal(final Collection proposals,
+                                           String newProposal) {
         for ( Iterator iter = proposals.iterator(); iter.hasNext(); ) {
             ICompletionProposal prop = (ICompletionProposal) iter.next();
             String displayString = prop.getDisplayString();
             String[] existings = displayString.split( " " );
-            if (existings.length == 0) {
+            if ( existings.length == 0 ) {
                 continue;
             }
 
             String[] newProposals = newProposal.split( " " );
-            if (newProposals.length == 0) {
+            if ( newProposals.length == 0 ) {
                 continue;
             }
 
-            if (existings[0].equals( newProposals[0] )) {
+            if ( existings[0].equals( newProposals[0] ) ) {
                 return true;
             }
         }
