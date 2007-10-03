@@ -69,4 +69,5 @@
   <name>Ruleflow</name>
   <version>1.0</version>
   <type>RuleFlow</type>
+  <packageName>com.sample</packageName>
 </org.drools.ruleflow.core.impl.RuleFlowProcessImpl>

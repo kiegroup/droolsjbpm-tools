@@ -203,6 +203,7 @@
         <name>Ruleflow</name>
         <version>1.0</version>
         <type>RuleFlow</type>
+        <packageName>com.sample</packageName>
       </process>
       <routerLayout>2</routerLayout>
     </default>

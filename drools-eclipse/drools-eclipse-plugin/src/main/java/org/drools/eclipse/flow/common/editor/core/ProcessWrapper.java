@@ -50,12 +50,15 @@ public abstract class ProcessWrapper implements IPropertySource, Serializable {
     public static final String NAME = "name";
     public static final String VERSION = "version";
     public static final String ID = "id";
+    public static final String PACKAGE_NAME = "packageName";
     public static final String ROUTER_LAYOUT = "routerLayout";
+    
     static {
         descriptors = new IPropertyDescriptor[] {
             new TextPropertyDescriptor(NAME, "Name"),
             new TextPropertyDescriptor(VERSION, "Version"),
             new TextPropertyDescriptor(ID, "Id"),
+            new TextPropertyDescriptor(PACKAGE_NAME, "Package"),
             new ComboBoxPropertyDescriptor(ROUTER_LAYOUT, "Connection Layout", 
                 new String[] { "Manual", "Manhatten", "Shortest Path" }),
         };
@@ -98,6 +101,14 @@ public abstract class ProcessWrapper implements IPropertySource, Serializable {
     
     public void setId(String id) {
     	process.setId(id);
+    }
+    
+    public String getPackageName() {
+        return process.getPackageName() == null ? "" : process.getPackageName();
+    }
+    
+    public void setPackageName(String packageName) {
+        process.setPackageName(packageName);
     }
     
     public Integer getRouterLayout() {
@@ -176,6 +187,9 @@ public abstract class ProcessWrapper implements IPropertySource, Serializable {
         if (ID.equals(id)) {
             return getId() + "";
         }
+        if (PACKAGE_NAME.equals(id)) {
+            return getPackageName();
+        }
         if (ROUTER_LAYOUT.equals(id)) {
             return routerLayout;
         }
@@ -196,7 +210,10 @@ public abstract class ProcessWrapper implements IPropertySource, Serializable {
         if (ID.equals(id)) {
             setId("");
         }
-        if (ID.equals(id)) {
+        if (PACKAGE_NAME.equals(id)) {
+            setPackageName("");
+        }
+        if (ROUTER_LAYOUT.equals(id)) {
             setRouterLayout(null);
         }
     }
@@ -208,6 +225,8 @@ public abstract class ProcessWrapper implements IPropertySource, Serializable {
             setVersion((String) value);
         } else if (ID.equals(id)) {
             setId((String) value);
+        } else if (PACKAGE_NAME.equals(id)) {
+            setPackageName((String) value);
         } else if (ROUTER_LAYOUT.equals(id)) {
             setRouterLayout((Integer) value);
         }
