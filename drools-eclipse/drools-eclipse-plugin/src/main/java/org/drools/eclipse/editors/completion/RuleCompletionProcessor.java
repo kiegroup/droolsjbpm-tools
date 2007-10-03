@@ -961,7 +961,6 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
             String textWithoutPrefix = CompletionUtil.getTextWithoutPrefix( consequenceBackText,
                                                                             prefix );
             boolean expressionStart = isStartOfDialectExpression( textWithoutPrefix );
-            System.out.println("start of expre:"+expressionStart);
 
             boolean isConstrained = textWithoutPrefix.endsWith( "." );
 
@@ -975,7 +974,6 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
             MvelContext previousExprContext = analyzeMvelExpression( getResolvedMvelInputs( params ),
                                                                      drlInfo,
                                                                      previousExpression );
-            System.out.println( "previous:'" + previousExpression +"'");
 
             // attempt to compile and analyze the last and last inner expression, using as inputs the previous expression inputs and vars
             Map variables = previousExprContext.getContext().getVariables();
@@ -985,7 +983,6 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
             //last inner expression
             String lastInnerExpression = CompletionUtil.getTextWithoutPrefix( CompletionUtil.getInnerExpression( consequenceBackText ),
                                                                               prefix );
-            System.out.println( "Last inner:'" + lastInnerExpression +"'");
             String compilableLastInnerExpression = CompletionUtil.getCompilableText( lastInnerExpression );
 
             MvelContext lastInnerExprContext = analyzeMvelExpression( inputs,
@@ -994,7 +991,6 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
             //last expression
             String lastExpression = CompletionUtil.getLastExpression( consequenceBackText ).trim();
-            System.out.println( "previous:'" + lastExpression +"'");
             //is this a modify expression?
             //group 1 is the body of modify
             //group 2 if present is the whole with block including brackets
@@ -1005,7 +1001,6 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
             //if constrained, get completion for egress of last inner, filtered on prefix
             if ( isConstrained ) {
-                System.out.println( "constrained" );
                 return getMvelCompletionsFromJDT( documentOffset,
                                                   "",
                                                   params,
@@ -1013,8 +1008,6 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
             }
             //if expression start inside with block, then get completion for prefix with egrss of modif var + prev expr var&inputs
             else if ( expressionStart && isModifyBlock ) {
-                System.out.println( "modify block start" );
-                System.out.println( "match" );
                 String modifyVar = modMatcher.group( 1 );
                 //String modifyWith = modMatcher.group( 3 );
 
@@ -1024,14 +1017,12 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                                                    modifyVar );
 
                 Class modVarType = modVarContext.getReturnedType();
-                System.out.println( "modVarType:" + modVarType );
 
                 Collection modVarComps = getMvelCompletionsFromJDT( documentOffset,
                                                                     "",
                                                                     params,
                                                                     modVarType );
 
-                //set high prio on those
                 proposals.addAll( modVarComps );
 
                 addMvelCompletions( proposals,
@@ -1054,25 +1045,23 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
             }
             //If expression start, and all other cases then get completion for prefix with prev expr var&inputs
-//            else if ( expressionStart ) {
-                addMvelCompletions( proposals,
-                                    documentOffset,
-                                    prefix,
-                                    lastInnerExprContext.getContext().getVariables() );
+            addMvelCompletions( proposals,
+                                documentOffset,
+                                prefix,
+                                lastInnerExprContext.getContext().getVariables() );
 
-                addMvelCompletions( proposals,
-                                    documentOffset,
-                                    prefix,
-                                    lastInnerExprContext.getContext().getInputs() );
+            addMvelCompletions( proposals,
+                                documentOffset,
+                                prefix,
+                                lastInnerExprContext.getContext().getInputs() );
 
-                Collection jdtProps = getJavaCompletionProposals( documentOffset,
-                                                                  prefix,
-                                                                  prefix,
-                                                                  params );
+            Collection jdtProps = getJavaCompletionProposals( documentOffset,
+                                                              prefix,
+                                                              prefix,
+                                                              params );
 
-                proposals.addAll( jdtProps );
+            proposals.addAll( jdtProps );
 
-//            }
 
         } catch ( Throwable e ) {
             DroolsEclipsePlugin.log( e );
