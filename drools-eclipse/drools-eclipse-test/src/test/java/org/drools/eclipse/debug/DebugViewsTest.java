@@ -45,10 +45,17 @@ public class DebugViewsTest extends TestCase {
     	session.setGlobal("list", list);
     	Entry[] globals = ((MapGlobalResolver) session.getGlobalResolver()).getGlobals();
     	assertEquals(2, globals.length);
-    	assertEquals("list", globals[0].getKey());
-    	assertEquals(list, globals[0].getValue());
-    	assertEquals("s", globals[1].getKey());
-    	assertEquals("String", globals[1].getValue());
+    	if ("list".equals(globals[0].getKey())) {
+	    	assertEquals("list", globals[0].getKey());
+	    	assertEquals(list, globals[0].getValue());
+	    	assertEquals("s", globals[1].getKey());
+	    	assertEquals("String", globals[1].getValue());
+    	} else {
+	    	assertEquals("list", globals[1].getKey());
+	    	assertEquals(list, globals[1].getValue());
+	    	assertEquals("s", globals[0].getKey());
+	    	assertEquals("String", globals[0].getValue());
+    	}
     }
     
 	/*
