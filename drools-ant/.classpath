@@ -12,7 +12,7 @@
   <classpathentry kind="src" path="/drools-analytics"/>
   <classpathentry kind="var" path="M2_REPO/ant/ant-nodeps/1.6.5/ant-nodeps-1.6.5.jar"/>
   <classpathentry kind="var" path="M2_REPO/xerces/xercesImpl/2.4.0/xercesImpl-2.4.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/mvel/mvel14/1.2.7/mvel14-1.2.7.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/mvel/mvel14/1.2.8/mvel14-1.2.8.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/antlr/antlr-runtime/3.0/antlr-runtime-3.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/thoughtworks/xstream/xstream/1.2.2/xstream-1.2.2.jar"/>
