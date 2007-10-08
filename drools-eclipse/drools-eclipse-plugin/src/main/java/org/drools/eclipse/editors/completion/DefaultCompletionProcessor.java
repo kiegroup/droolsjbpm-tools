@@ -18,6 +18,7 @@ import org.drools.eclipse.editors.AbstractRuleEditor;
 import org.drools.eclipse.editors.DRLRuleEditor;
 import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.GlobalDescr;
+import org.drools.rule.builder.dialect.java.KnowledgeHelperFixer;
 import org.drools.util.StringUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.CompletionContext;
@@ -30,7 +31,6 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.eval.IEvaluationContext;
 import org.eclipse.jdt.internal.ui.text.java.AbstractJavaCompletionProposal;
 import org.eclipse.jdt.internal.ui.text.java.JavaMethodCompletionProposal;
-import org.eclipse.jdt.internal.ui.text.java.LazyJavaCompletionProposal;
 import org.eclipse.jdt.internal.ui.text.java.LazyJavaTypeCompletionProposal;
 import org.eclipse.jdt.ui.text.java.CompletionProposalCollector;
 import org.eclipse.jdt.ui.text.java.IJavaCompletionProposal;
@@ -65,9 +65,6 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
     protected static final Image   VARIABLE_ICON               = DroolsPluginImages.getImage( DroolsPluginImages.VARIABLE );
     protected static final Image   METHOD_ICON                 = DroolsPluginImages.getImage( DroolsPluginImages.METHOD );
     protected static final Image   CLASS_ICON                  = DroolsPluginImages.getImage( DroolsPluginImages.CLASS );
-
-    protected static final Pattern START_OF_NEW_JAVA_STATEMENT = Pattern.compile( ".*[;{}]\\s*",
-                                                                                  Pattern.DOTALL );
 
     public DefaultCompletionProcessor(AbstractRuleEditor editor) {
         super( editor );
@@ -261,81 +258,10 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
         return list;
     }
 
-    /**
-     * @return a list of "MVELified" RuleCompletionProposal. That list contains only unique proposal based on
-     * the overrriden equals in {@link RuleCompletionProposal} to avoid the situation when several
-     * accessors can exist for one property. for that case we want to keep only one proposal.
-     */
-    protected Collection getJavaMvelCompletionProposals(final int documentOffset,
-                                                        final String javaText,
-                                                        final String prefix,
-                                                        Map params) {
-        final List list = new ArrayList();
-        requestJavaCompletionProposals( javaText,
-                                        prefix,
-                                        documentOffset,
-                                        params,
-                                        list );
-
-        Collection mvelList = mvelifyProposals( list );
-        return mvelList;
-    }
-
-    /*
-     * Filters accessor method proposals to replace them with their mvel expression equivalent
-     * For instance a completion for getStatus() would be replaced by a completion for status
-     */
-    private static Collection mvelifyProposals(List list) {
-        final Collection set = new HashSet();
-
-        for ( Iterator iter = list.iterator(); iter.hasNext(); ) {
-            Object o = iter.next();
-            if ( o instanceof JavaMethodCompletionProposal ) {
-                LazyJavaCompletionProposal javaProposal = (LazyJavaCompletionProposal) o;
-                //TODO: FIXME: this is very fragile ass it uses reflection to access the private completion field.
-                //Yet this is needed to do mvel filtering based on the method signtures, IF we use the richer JDT completion
-                Object field = ReflectionUtils.getField( o,
-                                                         "fProposal" );
-                if ( field != null && field instanceof CompletionProposal ) {
-                    CompletionProposal proposal = (CompletionProposal) field;
-
-                    String completion = new String( proposal.getCompletion() );
-
-                    // get the eventual property name for that method name and signature
-                    String propertyOrMethodName = CompletionUtil.getPropertyName( completion,
-                                                                                  proposal.getSignature() );
-                    //if we got a proeprty name that differs from the orginal method name
-                    //, this is a a bean accessor
-                    boolean isAccessor = !completion.equals( propertyOrMethodName );
-
-                    // is the completion for a bean accessor? and do we have already some relevant completion?
-                    if ( isAccessor && doesNotContainFieldCompletion( propertyOrMethodName,
-                                                                      list ) ) {
-                        //TODO: craft a better JDTish display name
-                        RuleCompletionProposal prop = new RuleCompletionProposal( javaProposal.getReplacementOffset(),
-                                                                                  javaProposal.getReplacementLength(),
-                                                                                  propertyOrMethodName );
-                        prop.setImage( DefaultCompletionProcessor.VARIABLE_ICON );
-                        prop.setPriority( 1000 );
-                        set.add( prop );
-
-                    } else {
-                        set.add( o );
-                    }
-                }
-
-            } else {
-                //add other proposals as is
-                set.add( o );
-            }
-        }
-        return set;
-    }
-
     /*
      * do we already have a completion for that string that would be either a local variable or a field?
      */
-    private static boolean doesNotContainFieldCompletion(String completion,
+    protected static boolean doesNotContainFieldCompletion(String completion,
                                                          List completions) {
         if ( completion == null || completion.length() == 0 || completions == null ) {
             return false;
@@ -362,11 +288,12 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
                                                   Map params,
                                                   Collection results) {
 
+
         String javaTextWithoutPrefix = CompletionUtil.getTextWithoutPrefix( javaText,
                                                                             prefix );
         // boolean to filter default Object methods produced by code completion when in the beginning of a statement
         boolean filterObjectMethods = false;
-        if ( "".equals( javaTextWithoutPrefix.trim() ) || START_OF_NEW_JAVA_STATEMENT.matcher( javaTextWithoutPrefix ).matches() ) {
+        if ( "".equals( javaTextWithoutPrefix.trim() ) || CompletionUtil.START_OF_NEW_JAVA_STATEMENT.matcher( javaTextWithoutPrefix ).matches() ) {
             filterObjectMethods = true;
         }
         IJavaProject javaProject = getCurrentJavaProject();
@@ -393,15 +320,17 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
             }
             javaTextWithParams.append( "org.drools.spi.KnowledgeHelper drools;" );
             javaTextWithParams.append( javaText );
-            String text = javaTextWithParams.toString();
-            evalContext.codeComplete( text,
-                                      text.length(),
+            String jtext = javaTextWithParams.toString();
+            String fixedText = new KnowledgeHelperFixer().fix( jtext );
+
+            evalContext.codeComplete( fixedText,
+                                      fixedText.length(),
                                       collector );
             IJavaCompletionProposal[] proposals = collector.getJavaCompletionProposals();
             for ( int i = 0; i < proposals.length; i++ ) {
                 if ( proposals[i] instanceof AbstractJavaCompletionProposal ) {
                     AbstractJavaCompletionProposal javaProposal = (AbstractJavaCompletionProposal) proposals[i];
-                    int replacementOffset = documentOffset - (text.length() - javaProposal.getReplacementOffset());
+                    int replacementOffset = documentOffset - (fixedText.length() - javaProposal.getReplacementOffset());
                     javaProposal.setReplacementOffset( replacementOffset );
                     if ( javaProposal instanceof LazyJavaTypeCompletionProposal ) {
                         String completionPrefix = javaText.substring( javaText.length() - javaProposal.getReplacementLength() );
@@ -481,9 +410,5 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
             return ((DRLRuleEditor) getEditor()).getClassesInPackage();
         }
         return Collections.EMPTY_LIST;
-    }
-
-    protected boolean isStartOfDialectExpression(String text) {
-        return "".equals( text.trim() ) || START_OF_NEW_JAVA_STATEMENT.matcher( text ).matches();
     }
 }

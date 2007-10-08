@@ -17,13 +17,16 @@ package org.drools.eclipse.flow.ruleflow.view.property.constraint;
  */
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.editors.completion.CompletionUtil;
 import org.drools.eclipse.editors.completion.DefaultCompletionProcessor;
+import org.drools.eclipse.editors.completion.RuleCompletionProcessor;
 import org.drools.eclipse.editors.completion.RuleCompletionProposal;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -121,4 +124,24 @@ public class ImportCompletionProcessor extends DefaultCompletionProcessor {
 		DefaultCompletionProcessor.filterProposalsOnPrefix(prefix, list);
 		return list;
 	}
+
+    /**
+     * @return a list of "MVELified" RuleCompletionProposal. That list contains only unique proposal based on
+     * the overrriden equals in {@link RuleCompletionProposal} to avoid the situation when several
+     * accessors can exist for one property. for that case we want to keep only one proposal.
+     */
+    protected Collection getJavaMvelCompletionProposals(final int documentOffset,
+                                                     final String javaText,
+                                                     final String prefix,
+                                                     Map params) {
+                                                        final List list = new ArrayList();
+                                                        requestJavaCompletionProposals( javaText,
+                                                                                        prefix,
+                                                                                        documentOffset,
+                                                                                        params,
+                                                                                        list );
+                                                    
+                                                        Collection mvelList = RuleCompletionProcessor.mvelifyProposals( list, false );
+                                                        return mvelList;
+                                                    }
 }

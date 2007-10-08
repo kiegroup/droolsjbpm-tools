@@ -19,6 +19,11 @@ public class CompletionUtil {
     protected static final Pattern MODIFY_PATTERN              = Pattern.compile( ".*modify\\s*\\(\\s*(.*)\\s*\\)(\\s*\\{(.*)\\s*\\}?)?",
                                                                                   Pattern.DOTALL );
 
+    protected static final Pattern START_OF_NEW_JAVA_STATEMENT = Pattern.compile( ".*[;{}]\\s*",
+                                                                                  Pattern.DOTALL );
+    protected static final Pattern START_OF_METHOD_ARGS        = Pattern.compile( ".*[\\(]\\s*",
+                                                                                  Pattern.DOTALL );
+
     private CompletionUtil() {
     }
 
@@ -274,6 +279,49 @@ public class CompletionUtil {
     }
 
     /**
+     * Given a data depicting a method (name, # or params/args, returned type key), tries to return a  writable bean property name derived from that method.
+     * If a writable (ie setter) bean property name is not found, the initial method name is returned
+     * @param methodName
+     * @param parameterCount
+     * @param returnType
+     * @return a bean property name
+     */
+    public static String getWritablePropertyName(String methodName,
+                                                 int parameterCount,
+                                                 String returnType) {
+        if ( methodName == null ) {
+            return null;
+        }
+        String simpleName = methodName.replaceAll( "\\(\\)",
+                                                   "" );
+        if ( !isSetter( simpleName,
+                        parameterCount,
+                        returnType ) ) {
+            return methodName;
+        }
+
+        int prefixLength = 3;
+
+        char firstChar = Character.toLowerCase( simpleName.charAt( prefixLength ) );
+        String propertyName = firstChar + simpleName.substring( prefixLength + 1 );
+        return propertyName;
+    }
+
+    public static String getWritablePropertyName(String methodName,
+                                                 char[] signature) {
+        if ( signature == null || methodName == null ) {
+            return methodName;
+        }
+
+        int parameterCount = Signature.getParameterCount( signature );
+        String returnType = new String( Signature.getReturnType( signature ) );
+
+        return getWritablePropertyName( methodName,
+                                        parameterCount,
+                                        returnType );
+    }
+
+    /**
      * Determine if the given method is a bean accessor (ie getter/setter)
      * @param methodName
      * @param actualParameterCount
@@ -324,7 +372,7 @@ public class CompletionUtil {
         String javaTextWithoutPrefix = text.substring( 0,
                                                        text.length() - prefix.length() );
 
-        if ( "".equals( javaTextWithoutPrefix.trim() ) || DefaultCompletionProcessor.START_OF_NEW_JAVA_STATEMENT.matcher( javaTextWithoutPrefix ).matches() ) {
+        if ( "".equals( javaTextWithoutPrefix.trim() ) || CompletionUtil.START_OF_NEW_JAVA_STATEMENT.matcher( javaTextWithoutPrefix ).matches() ) {
             return true;
         }
         return false;
@@ -375,4 +423,13 @@ public class CompletionUtil {
         }
         return javaTextWithoutPrefix;
     }
+
+    public static boolean isStartOfDialectExpression(String text) {
+        return "".equals( text.trim() ) || CompletionUtil.START_OF_NEW_JAVA_STATEMENT.matcher( text ).matches();
+    }
+
+    public static boolean isStartOfMethodArgsExpression(String text) {
+        return CompletionUtil.START_OF_NEW_JAVA_STATEMENT.matcher( text ).matches();
+    }
+
 }

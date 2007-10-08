@@ -35,6 +35,11 @@ import org.drools.rule.builder.dialect.mvel.MVELConsequenceBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.util.asm.ClassFieldInspector;
+import org.eclipse.jdt.core.CompletionProposal;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.internal.ui.text.java.JavaCompletionProposal;
+import org.eclipse.jdt.internal.ui.text.java.JavaMethodCompletionProposal;
+import org.eclipse.jdt.internal.ui.text.java.LazyJavaCompletionProposal;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -133,7 +138,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
             context = new CompletionContext( backText );
         }
 
-        boolean startOfDialectExpression = isStartOfDialectExpression( consequenceWithoutPrefix );
+        boolean startOfDialectExpression = CompletionUtil.isStartOfDialectExpression( consequenceWithoutPrefix );
         if ( isJavaDialect() && startOfDialectExpression ) {
             addRHSKeywordCompletionProposals( list,
                                               documentOffset,
@@ -142,6 +147,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                                documentOffset,
                                                prefix );
         }
+        
 
         //if we have 1st a dialect defined locally, or 2nd a global dialect
         //the locally defined dialect will override the package default
@@ -960,7 +966,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
             String textWithoutPrefix = CompletionUtil.getTextWithoutPrefix( consequenceBackText,
                                                                             prefix );
-            boolean expressionStart = isStartOfDialectExpression( textWithoutPrefix );
+            boolean expressionStart = CompletionUtil.isStartOfDialectExpression( textWithoutPrefix );
 
             boolean isConstrained = textWithoutPrefix.endsWith( "." );
 
@@ -1001,10 +1007,19 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
             //if constrained, get completion for egress of last inner, filtered on prefix
             if ( isConstrained ) {
-                return getMvelCompletionsFromJDT( documentOffset,
-                                                  "",
-                                                  params,
-                                                  lastInnerExprContext.getReturnedType() );
+                if ( lastInnerExprContext.isStaticFlag() ) {
+                    return getMvelClassCompletionsFromJDT( documentOffset,
+                                                           "",
+                                                           params,
+                                                           lastInnerExprContext.getReturnedType() );
+
+                }
+
+                return getMvelInstanceCompletionsFromJDT( documentOffset,
+                                                          "",
+                                                          params,
+                                                          lastInnerExprContext.getReturnedType(),
+                                                          false );
             }
             //if expression start inside with block, then get completion for prefix with egrss of modif var + prev expr var&inputs
             else if ( expressionStart && isModifyBlock ) {
@@ -1018,29 +1033,30 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
                 Class modVarType = modVarContext.getReturnedType();
 
-                Collection modVarComps = getMvelCompletionsFromJDT( documentOffset,
-                                                                    "",
-                                                                    params,
-                                                                    modVarType );
+                Collection modVarComps = getMvelInstanceCompletionsFromJDT( documentOffset,
+                                                                            "",
+                                                                            params,
+                                                                            modVarType,
+                                                                            true );
 
                 proposals.addAll( modVarComps );
 
-                addMvelCompletions( proposals,
-                                    documentOffset,
-                                    "",
-                                    lastInnerExprContext.getContext().getVariables() );
-
-                addMvelCompletions( proposals,
-                                    documentOffset,
-                                    "",
-                                    lastInnerExprContext.getContext().getInputs() );
-
-                Collection jdtProps = getJavaCompletionProposals( documentOffset,
-                                                                  prefix,
-                                                                  prefix,
-                                                                  params );
-
-                proposals.addAll( jdtProps );
+                //                addMvelCompletions( proposals,
+                //                                    documentOffset,
+                //                                    "",
+                //                                    lastInnerExprContext.getContext().getVariables() );
+                //
+                //                addMvelCompletions( proposals,
+                //                                    documentOffset,
+                //                                    "",
+                //                                    lastInnerExprContext.getContext().getInputs() );
+                //
+                //                Collection jdtProps = getJavaCompletionProposals( documentOffset,
+                //                                                                  prefix,
+                //                                                                  prefix,
+                //                                                                  params );
+                //
+                //                proposals.addAll( jdtProps );
                 return proposals;
 
             }
@@ -1061,7 +1077,6 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                                               params );
 
             proposals.addAll( jdtProps );
-
 
         } catch ( Throwable e ) {
             DroolsEclipsePlugin.log( e );
@@ -1095,6 +1110,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         private CompiledExpression expression;
         private ParserContext      initialContext;
         private Class              returnedType;
+        private boolean            staticFlag;
 
         public ParserContext getContext() {
             if ( getExpression() != null ) {
@@ -1128,6 +1144,14 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         Class getReturnedType() {
             return returnedType;
         }
+
+        public boolean isStaticFlag() {
+            return staticFlag;
+        }
+
+        public void setStaticFlag(boolean staticFlag) {
+            this.staticFlag = staticFlag;
+        }
     }
 
     private MvelContext analyzeMvelExpression(Map params,
@@ -1155,23 +1179,26 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
             ParserContext compilationContext = compiler.getParserContextState();
 
             Class lastType = expression.getKnownEgressType();
-            if ( lastType == null ) {
-                lastType = Object.class;
-                //                mCon.setReturnedType( lastType );
+
+            //Statics expression may return Class as an egress type
+            if ( lastType != null && "java.lang.Class".equals( lastType.getName() ) ) {
+                mCon.setStaticFlag( true );
             }
 
-            if ( "java.lang.Object".equals( lastType.getName() ) ) {
+            if ( lastType == null || "java.lang.Object".equals( lastType.getName() ) || "java.lang.Class".equals( lastType.getName() ) ) {
                 // attempt to use the property verifier to get
                 // a better type  resolution (a recommend by cbrock, though egress gives consistent results)
-                //String lastExpression = CompletionUtil.getLastLine( macroMvel );
                 lastType = new PropertyVerifier( macroMvel,
                                                  compilationContext ).analyze();
             }
 
+            if ( lastType == null ) {
+                lastType = Object.class;
+            }
+
             mCon.setReturnedType( lastType );
         } catch ( Exception e ) {
-            //TODO: Log me?
-            //            DroolsEclipsePlugin.log( e );
+            //do nothing while doing completion.
         }
         return mCon;
     }
@@ -1198,13 +1225,13 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         return context;
     }
 
-    private String processMacros(String mvel) {
+    public static String processMacros(String mvel) {
         MVELConsequenceBuilder builder = new MVELConsequenceBuilder();
         String macrosProcessedCompilableConsequence = builder.processMacros( mvel.trim() );
         return macrosProcessedCompilableConsequence;
     }
 
-    private RuleInfo getCurrentRule(DRLInfo drlInfo,
+    private static RuleInfo getCurrentRule(DRLInfo drlInfo,
                                     String currentRulename) {
         RuleInfo currentRule = null;
         RuleInfo[] ruleInfos = drlInfo.getRuleInfos();
@@ -1217,27 +1244,65 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         return currentRule;
     }
 
-    private Collection getMvelCompletionsFromJDT(final int documentOffset,
-                                                 final String prefix,
-                                                 Map params,
-                                                 Class lastType) {
+    /*
+     * Completions for object instance members
+     */
+    private Collection getMvelInstanceCompletionsFromJDT(final int documentOffset,
+                                                         final String prefix,
+                                                         Map params,
+                                                         Class lastType,
+                                                         boolean settersOnly) {
         if ( lastType == null ) {
             lastType = Object.class;
         }
 
         //FIXME: there is a small chance of var name collision using this arbitrary mvdrlofc as a variable name.
         //ideally the variable name should be inferred from the last member of the expression
-        String syntheticVarName = "mvdrlofc";
-        String javaText = "\n" + lastType.getName().replace( '$',
-                                                             '.' ) + " " + syntheticVarName + ";\n" + syntheticVarName + ".";
-        Collection jdtProps = getJavaMvelCompletionProposals( documentOffset,
-                                                              javaText,
-                                                              prefix,
-                                                              params );
-        return jdtProps;
+        final String syntheticVarName = "mvdrlofc";
+
+        String javaText = "\n" + CompletionUtil.getSimpleClassName( lastType ) + " " + syntheticVarName + ";\n" + syntheticVarName + ".";
+        final List list1 = new ArrayList();
+        requestJavaCompletionProposals( javaText,
+                                        prefix,
+                                        documentOffset,
+                                        params,
+                                        list1 );
+
+        final List list = list1;
+
+        Collection mvelList = RuleCompletionProcessor.mvelifyProposals( list,
+                                                                        settersOnly );
+        return mvelList;
     }
 
-    private void addMvelCompletions(final Collection proposals,
+    /*
+     * Completions for static Class members
+     */
+    private Collection getMvelClassCompletionsFromJDT(final int documentOffset,
+                                                      final String prefix,
+                                                      Map params,
+                                                      Class lastType) {
+        if ( lastType == null ) {
+            lastType = Object.class;
+        }
+
+        //FIXME: there is a small chance of var name collision using this arbitrary mvdrlofc as a variable name.
+        //ideally the variable name should be inferred from the last member of the expression
+
+        String javaText = "\n" + CompletionUtil.getSimpleClassName( lastType ) + ".";
+        final List list1 = new ArrayList();
+        requestJavaCompletionProposals( javaText,
+                                        prefix,
+                                        documentOffset,
+                                        params,
+                                        list1 );
+        final List list = list1;
+        Collection mvelList = RuleCompletionProcessor.mvelifyProposals( list,
+                                                                        false );
+        return mvelList;
+    }
+
+    private static void addMvelCompletions(final Collection proposals,
                                     int documentOffset,
                                     String prefix,
                                     Map inputs) {
@@ -1469,4 +1534,109 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         return true;
     }
 
+    /*
+     * Filters accessor method proposals to replace them with their mvel expression equivalent
+     * For instance a completion for getStatus() would be replaced by a completion for status
+     * when asking for stters only, then only setters or writable fields will be returned
+     */
+    public static Collection mvelifyProposals(List list,
+                                              boolean settersOnly) {
+        final Collection set = new HashSet();
+
+        for ( Iterator iter = list.iterator(); iter.hasNext(); ) {
+            Object o = iter.next();
+            if ( o instanceof JavaMethodCompletionProposal ) {
+                //methods
+                processJavaMethodCompletionProposal( list,
+                                                     settersOnly,
+                                                     set,
+                                                     o );
+
+            } else if ( o instanceof JavaCompletionProposal ) {
+                //fields
+                processesJavaCompletionProposal( settersOnly,
+                                                 set,
+                                                 o );
+            } else if ( !settersOnly ) {
+                set.add( o );
+            }
+        }
+        return set;
+    }
+
+    private static void processesJavaCompletionProposal(boolean settersOnly,
+                                                        final Collection set,
+                                                        Object o) {
+        if ( settersOnly ) {
+            JavaCompletionProposal jcp = (JavaCompletionProposal) o;
+            //TODO: FIXME: this is very fragile as it uses reflection to access the private completion field.
+            //Yet this is needed to do mvel filtering based on the method signtures, IF we use the richer JDT completion
+            //                    Object field = ReflectionUtils.getField( o,
+            //                                                             "fProposal" );
+            IJavaElement javaElement = jcp.getJavaElement();
+            if ( javaElement.getElementType() == IJavaElement.FIELD ) {
+                set.add( o );
+
+            }
+        } else {
+            set.add( o );
+        }
+    }
+
+    private static void processJavaMethodCompletionProposal(List list,
+                                                            boolean settersOnly,
+                                                            final Collection set,
+                                                            Object o) {
+        LazyJavaCompletionProposal javaProposal = (LazyJavaCompletionProposal) o;
+        //TODO: FIXME: this is very fragile as it uses reflection to access the private completion field.
+        //Yet this is needed to do mvel filtering based on the method signtures, IF we use the richer JDT completion
+        Object field = ReflectionUtils.getField( o,
+                                                 "fProposal" );
+        if ( field != null && field instanceof CompletionProposal ) {
+            CompletionProposal proposal = (CompletionProposal) field;
+
+            String completion = new String( proposal.getCompletion() );
+
+            String propertyOrMethodName = null;
+
+            boolean isSetter = false;
+            boolean isAccessor = false;
+            if ( settersOnly ) {
+                // get the eventual writable property name for that method name and signature
+                propertyOrMethodName = CompletionUtil.getWritablePropertyName( completion,
+                                                                               proposal.getSignature() );
+                //                      if we got a property name that differs from the orginal method name
+                //then this is a bean accessor
+                isSetter = !completion.equals( propertyOrMethodName );
+
+            } else {
+                // get the eventual property name for that method name and signature
+                propertyOrMethodName = CompletionUtil.getPropertyName( completion,
+                                                                       proposal.getSignature() );
+                //if we got a property name that differs from the orginal method name
+                //then this is a bean accessor
+                isAccessor = !completion.equals( propertyOrMethodName );
+            }
+
+            // is the completion for a bean accessor? and do we have already some relevant completion?
+            boolean doesNotContainFieldCompletion = DefaultCompletionProcessor.doesNotContainFieldCompletion( propertyOrMethodName,
+                                                                                                              list );
+            if ( ((settersOnly && isSetter) || (!settersOnly && isAccessor)) && doesNotContainFieldCompletion ) {
+
+                //TODO: craft a better JDTish display name than just the property name
+                RuleCompletionProposal prop = new RuleCompletionProposal( javaProposal.getReplacementOffset(),
+                                                                          javaProposal.getReplacementLength(),
+                                                                          propertyOrMethodName );
+                prop.setImage( DefaultCompletionProcessor.VARIABLE_ICON );
+                //set high priority such that the completion for accessors shows up first
+                prop.setPriority( 1000 );
+                set.add( prop );
+
+            }
+
+            else if ( !settersOnly ) {
+                set.add( o );
+            }
+        }
+    }
 }
