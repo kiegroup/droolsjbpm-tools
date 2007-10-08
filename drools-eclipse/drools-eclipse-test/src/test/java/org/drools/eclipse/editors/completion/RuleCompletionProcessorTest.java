@@ -109,8 +109,9 @@ public class RuleCompletionProcessorTest extends TestCase {
     }
 
     public void testIsStartOfDialectExpression() {
+        //for now inside a method start, we are not starting a new expression for completion purpose
         String s = "System.out.println(\"\");\r\n" + "  update(";
-        assertTrue( CompletionUtil.isStartOfDialectExpression( s ) );
+        assertFalse( CompletionUtil.isStartOfDialectExpression( s ) );
     }
 
 }
