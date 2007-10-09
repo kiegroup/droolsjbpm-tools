@@ -158,6 +158,8 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
             IDebugUIConstants.ID_VARIABLE_VIEW);
         if (selection instanceof IStructuredSelection) {
             setViewerInput(((IStructuredSelection) selection).getFirstElement());
+        } else {
+            super.initActionState(action);
         }
     }
 
@@ -186,7 +188,7 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
 	}
 
 	public void debugContextChanged(DebugContextEvent event) {
-		selectionChanged(null, event.getContext());
+		//selectionChanged(null, event.getContext());
 	}
 	
     public void selectionChanged(IWorkbenchPart part, ISelection selection) {
