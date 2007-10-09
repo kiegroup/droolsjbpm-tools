@@ -64,73 +64,76 @@ public class MVELStackFrame extends DroolsStackFrame {
      */
     private static final IJavaReferenceType REF_TYPE                  = new IJavaReferenceType() {
 
-                                                                          public String[] getAllFieldNames() throws DebugException {
-                                                                              return null;
-                                                                          }
-
-                                                                          public String[] getAvailableStrata() throws DebugException {
-                                                                              return null;
-                                                                          }
-
-                                                                          public IJavaObject getClassLoaderObject() throws DebugException {
-                                                                              return null;
-                                                                          }
-
-                                                                          public IJavaClassObject getClassObject() throws DebugException {
-                                                                              return null;
-                                                                          }
-
-                                                                          public String[] getDeclaredFieldNames() throws DebugException {
-                                                                              return null;
-                                                                          }
-
-                                                                          public String getDefaultStratum() throws DebugException {
-                                                                              return "MVEL";
-                                                                          }
-
-                                                                          public IJavaFieldVariable getField(String name) throws DebugException {
-                                                                              return null;
-                                                                          }
-
-                                                                          public String getGenericSignature() throws DebugException {
-                                                                              return null;
-                                                                          }
-
-                                                                          public String getSourceName() throws DebugException {
-                                                                              return null;
-                                                                          }
-
-                                                                          public String[] getSourceNames(String stratum) throws DebugException {
-                                                                              return null;
-                                                                          }
-
-                                                                          public String[] getSourcePaths(String stratum) throws DebugException {
-                                                                              return null;
-                                                                          }
-
-                                                                          public String getName() throws DebugException {
-                                                                              return null;
-                                                                          }
-
-                                                                          public String getSignature() throws DebugException {
-                                                                              return null;
-                                                                          }
-
-                                                                          public IDebugTarget getDebugTarget() {
-                                                                              return null;
-                                                                          }
-
-                                                                          public ILaunch getLaunch() {
-                                                                              return null;
-                                                                          }
-
-                                                                          public String getModelIdentifier() {
-                                                                              return null;
-                                                                          }
-
-                                                                          public Object getAdapter(Class adapter) {
-                                                                              return null;
-                                                                          }
+    	public IJavaFieldVariable getField(String name) throws DebugException {
+    		return null;
+    	}
+    	public IJavaClassObject getClassObject() throws DebugException {
+    		return null;
+    	}
+    	
+    	public String[] getAvailableStrata() throws DebugException {
+    		return null;
+    	}
+    	
+    	public String getDefaultStratum() throws DebugException {
+    		return "MVEL";
+    	}
+    	
+    	public String[] getDeclaredFieldNames() throws DebugException {
+    		return null;
+    	}
+    	
+    	public String[] getAllFieldNames() throws DebugException {
+    		return null;
+    	}
+        
+        public IJavaObject getClassLoaderObject() throws DebugException {
+    		return null;
+    	}
+        
+        public String getGenericSignature() throws DebugException {
+    		return null;
+    	}
+        
+        public String getSourceName() throws DebugException {
+    		return null;
+    	}
+        
+        public String[] getSourceNames(String stratum) throws DebugException {
+    		return null;
+    	}
+        
+        public String[] getSourcePaths(String stratum) throws DebugException {
+    		return null;
+    	}
+        
+        public IJavaObject[] getInstances(long max) throws DebugException {
+    		return null;
+    	}
+        
+		public String getName() throws DebugException {
+			return null;
+		}
+		
+		public String getSignature() throws DebugException {
+			return null;
+		}
+		
+		public IDebugTarget getDebugTarget() {
+			return null;
+		}
+		
+		public ILaunch getLaunch() {
+			return null;
+		}
+		
+		public String getModelIdentifier() {
+			return null;
+		}
+		
+		public Object getAdapter(Class adapter) {
+			return null;
+		}
 
                                                                       };
 

@@ -27,8 +27,8 @@ import org.drools.ruleflow.common.datatype.impl.type.IntegerDataType;
 import org.drools.ruleflow.common.datatype.impl.type.StringDataType;
 import org.drools.ruleflow.common.datatype.impl.type.UndefinedDataType;
 
-import sun.beans.editors.FloatEditor;
-import sun.beans.editors.StringEditor;
+//import sun.beans.editors.FloatEditor;
+//import sun.beans.editors.StringEditor;
 
 /**
  * Default datatype registry containing default datatypes.
@@ -52,12 +52,12 @@ public class DefaultDataTypeRegistry {
 		registerVariableDataType(IntegerDataType.class,
 				new InstanceDataTypeFactory(IntegerDataType.class), "Integer",
 				IntegerEditor.class, EmptyEditor.class);
-		registerVariableDataType(FloatDataType.class,
-				new InstanceDataTypeFactory(FloatDataType.class), "Float",
-				FloatEditor.class, EmptyEditor.class);
-		registerVariableDataType(StringDataType.class,
-				new InstanceDataTypeFactory(StringDataType.class), "String",
-				StringEditor.class, EmptyEditor.class);
+//		registerVariableDataType(FloatDataType.class,
+//				new InstanceDataTypeFactory(FloatDataType.class), "Float",
+//				FloatEditor.class, EmptyEditor.class);
+//		registerVariableDataType(StringDataType.class,
+//				new InstanceDataTypeFactory(StringDataType.class), "String",
+//				StringEditor.class, EmptyEditor.class);
 	}
 
 	public static void registerVariableDataType(Class type,

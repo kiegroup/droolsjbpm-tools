@@ -70,7 +70,6 @@ public class ProjectClassLoader {
             IClasspathEntry[] paths = project.getResolvedClasspath(true);
             Set outputPaths = new HashSet();
             if (paths != null) {
-                
                 for ( int i = 0; i < paths.length; i++ ) {
                     IClasspathEntry path = paths[i];
                     if (path.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
@@ -85,8 +84,7 @@ public class ProjectClassLoader {
                 }
             }
             IPath location = getProjectLocation(project.getProject());
-            IPath outputPath = location.append(project.getOutputLocation()
-                    .removeFirstSegments(1));
+            IPath outputPath = location.append(project.getOutputLocation().removeFirstSegments(1));
             pathElements.add(outputPath.toFile().toURI().toURL());
             for (Iterator iterator = outputPaths.iterator(); iterator.hasNext(); ) {
             	IPath path = (IPath) iterator.next();

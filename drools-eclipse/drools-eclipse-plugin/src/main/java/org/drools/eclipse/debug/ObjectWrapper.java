@@ -95,10 +95,14 @@ public class ObjectWrapper implements IJavaObject {
     }
 
     public IJavaThread[] getWaitingThreads() throws DebugException {
-        return null;
+        return object.getWaitingThreads();
     }
 
     public IJavaThread getOwningThread() throws DebugException {
-        return null;
+        return object.getOwningThread();
     }
+
+	public IJavaObject[] getReferringObjects(long max) throws DebugException {
+		return object.getReferringObjects(max);
+	}
 }

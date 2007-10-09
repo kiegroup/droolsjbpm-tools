@@ -8,10 +8,12 @@ import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.debug.internal.ui.VariablesViewModelPresentation;
 import org.eclipse.debug.internal.ui.contexts.DebugContextManager;
-import org.eclipse.debug.internal.ui.contexts.provisional.IDebugContextListener;
 import org.eclipse.debug.ui.AbstractDebugView;
 import org.eclipse.debug.ui.IDebugModelPresentation;
 import org.eclipse.debug.ui.IDebugUIConstants;
+import org.eclipse.debug.ui.contexts.DebugContextEvent;
+import org.eclipse.debug.ui.contexts.IDebugContextListener;
+import org.eclipse.debug.ui.contexts.IDebugContextService;
 import org.eclipse.jdt.debug.core.IJavaObject;
 import org.eclipse.jdt.debug.core.IJavaStackFrame;
 import org.eclipse.jdt.debug.core.IJavaThread;
@@ -47,7 +49,7 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
     private Object[] oldExpandedElements = new Object[0];
 
     public void dispose() {
-		DebugContextManager.getDefault().removeDebugContextListener(this, getSite().getWorkbenchWindow());
+		DebugContextManager.getDefault().removeDebugContextListener(this);
         getSite().getPage().removeSelectionListener(IDebugUIConstants.ID_VARIABLE_VIEW, this);
         super.dispose();
     }
@@ -80,27 +82,30 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
     	// else get selected thread and determine if any of the stack frames
     	// is executing in a working memory, if so, use that one 
     	if (input == null) {
-    		ISelection stackSelection = DebugContextManager.getDefault().getActiveContext(getSite().getWorkbenchWindow());
-    		if (stackSelection instanceof IStructuredSelection) {
-                Object selection = ((IStructuredSelection) stackSelection).getFirstElement();
-                if (selection instanceof IJavaStackFrame) {
-                	try {
-                    	IJavaThread thread = (IJavaThread) ((IJavaStackFrame) selection).getThread();
-                    	IStackFrame[] frames = thread.getStackFrames();
-                    	for (int i = 0; i < frames.length; i++) {
-                            IJavaObject stackObj = ((IJavaStackFrame) frames[i]).getThis();
-                            if ((stackObj != null)
-                                    && (stackObj.getJavaType() != null)
-                                    && ("org.drools.reteoo.ReteooStatefulSession".equals(
-                                        stackObj.getJavaType().getName()))) {
-                                input = stackObj;
-                                break;
-                            }
-                    	}
-                    } catch (Throwable t) {
-                        DroolsEclipsePlugin.log(t);
-                    }
-                }
+    		IDebugContextService debugContextService = DebugContextManager.getDefault().getContextService(getSite().getWorkbenchWindow());
+    		if (debugContextService != null) {
+	    		ISelection stackSelection = debugContextService.getActiveContext();
+	    		if (stackSelection instanceof IStructuredSelection) {
+	                Object selection = ((IStructuredSelection) stackSelection).getFirstElement();
+	                if (selection instanceof IJavaStackFrame) {
+	                	try {
+	                    	IJavaThread thread = (IJavaThread) ((IJavaStackFrame) selection).getThread();
+	                    	IStackFrame[] frames = thread.getStackFrames();
+	                    	for (int i = 0; i < frames.length; i++) {
+	                            IJavaObject stackObj = ((IJavaStackFrame) frames[i]).getThis();
+	                            if ((stackObj != null)
+	                                    && (stackObj.getJavaType() != null)
+	                                    && ("org.drools.reteoo.ReteooStatefulSession".equals(
+	                                        stackObj.getJavaType().getName()))) {
+	                                input = stackObj;
+	                                break;
+	                            }
+	                    	}
+	                    } catch (Throwable t) {
+	                        DroolsEclipsePlugin.log(t);
+	                    }
+	                }
+	    		}
     		}
     	}
 		
@@ -127,7 +132,7 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
         variablesViewer.setLabelProvider(new VariablesViewLabelProvider(
             getModelPresentation()));
         variablesViewer.setUseHashlookup(true);
-		DebugContextManager.getDefault().addDebugContextListener(this, getSite().getWorkbenchWindow());
+		DebugContextManager.getDefault().addDebugContextListener(this);
         getSite().getPage().addSelectionListener(IDebugUIConstants.ID_VARIABLE_VIEW, this);
 		return variablesViewer;
     }
@@ -180,7 +185,8 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
 		showViewer();
 	}
 
-	public void contextChanged(ISelection selection, IWorkbenchPart part) {
+	public void debugContextChanged(DebugContextEvent event) {
+		selectionChanged(null, event.getContext());
 	}
 	
     public void selectionChanged(IWorkbenchPart part, ISelection selection) {
