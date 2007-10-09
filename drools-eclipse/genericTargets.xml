@@ -24,6 +24,7 @@
 <property name="generateVersionsLists" value="true" />
 <property name="groupConfigurations" value="false"/>
 <property name="pluginPath" value=""/>
+<property name="filteredDependencyCheck" value="false"/>
 
 <!-- ===================================================================== -->
 <!-- Fetch a single element (feature, plugin, fragment) -->
@@ -74,9 +75,13 @@
 		generateJnlp="${generateJnlp}"
 		signJars="${signJars}"
 		generateFeatureVersionSuffix="${generateFeatureVersionSuffix}"
+		significantVersionDigits="${significantVersionDigits}"
+		generatedVersionLength="${generatedVersionLength}"
 		generateVersionsLists="${generateVersionsLists}"
 		groupConfiguration="${groupConfigurations}"
 		pluginPath="${pluginPath}"
+		filteredDependencyCheck="${filteredDependencyCheck}"
+		platformProperties="${platformProperties}"
 	/>
 </target>
 

@@ -2,7 +2,7 @@
 <project name="testsuite" default="run" basedir="."> 
   <property name="eclipse-home" value="${baseLocation}"/>
   <property name="plugin-name" value="org.drools.eclipse"/>
-  <property name="library-file" location="${eclipse-home}/plugins/org.eclipse.test_3.1.0/library.xml"/>
+  <property name="library-file" location="${eclipse-home}/plugins/org.eclipse.test_3.2.0/library.xml"/>
   
   <!-- This target holds all initialization code that needs to be done for
        all tests that are to be run. Initialization for individual tests
