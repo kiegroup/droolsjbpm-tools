@@ -159,7 +159,7 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
         if (selection instanceof IStructuredSelection) {
             setViewerInput(((IStructuredSelection) selection).getFirstElement());
         } else {
-            super.initActionState(action);
+        	setViewerInput(null);
         }
     }
 
