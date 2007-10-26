@@ -138,9 +138,10 @@ public class DroolsCompilerAntTask extends MatchingTask {
 					+ srcdir.getAbsolutePath());
 		}
 
+		AntClassLoader loader = null;
 		try {
 			// create a specialized classloader
-			AntClassLoader loader = getClassLoader();
+			loader = getClassLoader();
 
 			// create a package builder configured to use the given classloader
 			PackageBuilder builder = getPackageBuilder(loader);
@@ -168,6 +169,10 @@ public class DroolsCompilerAntTask extends MatchingTask {
 		} catch (Exception e) {
 			throw new BuildException("RuleBaseTask failed: " + e.getMessage(),
 					e);
+		} finally {
+			if (loader != null) {
+				loader.resetThreadContextLoader();
+			}
 		}
 	}
 
