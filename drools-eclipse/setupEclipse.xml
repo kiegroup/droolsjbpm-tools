@@ -64,8 +64,8 @@
 
   <target name="getGefJar" depends="checkGefJar" unless="skipGetGefJar">
     <mkdir dir="${localEclipseDrop}/tools/gef/${eclipseGefBuildRevision}" />    
-    <get usetimestamp="true" src="${eclipseGefURL}/${eclipseGefBuildRevision}/GEF-runtime-${eclipseBuildId}.zip" 
-         dest="${localEclipseDrop}/tools/gef/${eclipseGefBuildRevision}/GEF-runtime-${eclipseBuildId}.zip" />
+    <get usetimestamp="true" src="${eclipseGefURL}/${eclipseGefBuildRevision}/GEF-runtime-${eclipseGefBuildId}.zip" 
+         dest="${localEclipseDrop}/tools/gef/${eclipseGefBuildRevision}/GEF-runtime-${eclipseGefBuildId}.zip" />
   </target>      
 
 	<target name="checkEclipseJar">	
@@ -77,7 +77,7 @@
 	</target>	
 		
 	<target name="checkGefJar">	
-		<available file="${localEclipseDrop}/tools/gef/${eclipseGefBuildRevision}/GEF-runtime-${eclipseBuildId}.zip" property="skipGetGefJar" />
+		<available file="${localEclipseDrop}/tools/gef/${eclipseGefBuildRevision}/GEF-runtime-${eclipseGefBuildId}.zip" property="skipGetGefJar" />
 	</target>	  
 
   <target name="setupLocalEclipseDrop"  depends="checkEclipseDir" unless="skipUnzipEclipseJars">
@@ -95,7 +95,7 @@
            src="${localEclipseDrop}/eclipse/${eclipseBuildRevision}/eclipse-test-framework-${eclipseBuildId}.zip" />   				
 				
 		<unzip dest="${base}" overwrite="true" 
-		       src="${localEclipseDrop}/tools/gef/${eclipseGefBuildRevision}/GEF-runtime-${eclipseBuildId}.zip" />				         
+		       src="${localEclipseDrop}/tools/gef/${eclipseGefBuildRevision}/GEF-runtime-${eclipseGefBuildId}.zip" />				         
   </target>    
   
   <target name="unzipEclipse" if="expandTypeZip">
