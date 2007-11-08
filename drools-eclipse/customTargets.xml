@@ -53,16 +53,16 @@
 	<target name="preSetup">
 	  <echo>preSetup</echo>	  
     <!--cleanup -->
-    <delete file="${base}/eclipse/org.drools.eclipse*.xml" />
-    <delete dir="${base}/eclipse/test-workspace"/>
+    <delete failonerror="false" file="${base}/eclipse/org.drools.eclipse*.xml" />
+    <delete failonerror="false" dir="${base}/eclipse/test-workspace"/>
     
-    <delete dir="${base}/eclipse/features/org.drools.eclipse.feature_${droolsVersion}"/>
-    <delete dir="${base}/eclipse/features/org.drools.eclipse.test-feature_${droolsVersion}"/>
+    <delete failonerror="false"  dir="${base}/eclipse/features/org.drools.eclipse.feature_${droolsVersion}"/>
+    <delete failonerror="false" dir="${base}/eclipse/features/org.drools.eclipse.test-feature_${droolsVersion}"/>
     
-    <delete file="${base}/eclipse/plugins/org.drools.eclipse_${droolsVersion}.jar"/>
-    <delete dir="${base}/eclipse/plugins/org.drools.eclipse.test_${droolsVersion}"/>            
+    <delete failonerror="false" file="${base}/eclipse/plugins/org.drools.eclipse_${droolsVersion}.jar"/>
+    <delete failonerror="false" dir="${base}/eclipse/plugins/org.drools.eclipse.test_${droolsVersion}"/>            
 	</target>
-
+	
 	<!-- ===================================================================== -->
 	<!-- Steps to do after setup but before starting the build proper -->
 	<!-- ===================================================================== -->
