@@ -24,7 +24,7 @@ import org.drools.compiler.ImportError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.ParserError;
 import org.drools.compiler.ProcessBuilder;
-import org.drools.compiler.RuleError;
+import org.drools.compiler.RuleBuildError;
 import org.drools.decisiontable.InputType;
 import org.drools.decisiontable.SpreadsheetCompiler;
 import org.drools.eclipse.DRLInfo;
@@ -349,9 +349,9 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         	DroolsError error = buildErrors[i];
         	if (error instanceof GlobalError) {
         		GlobalError globalError = (GlobalError) error;
-        		markers.add(new DroolsBuildMarker(globalError.getGlobal(), -1));
-        	} else if (error instanceof RuleError) {
-        		RuleError ruleError = (RuleError) error;
+        		markers.add(new DroolsBuildMarker("Global error: " + globalError.getGlobal(), -1));
+        	} else if (error instanceof RuleBuildError) {
+        	    RuleBuildError ruleError = (RuleBuildError) error;
         		// TODO try to retrieve line number (or even character start-end)
         		// disabled for now because line number are those of the rule class,
         		// not the rule file itself

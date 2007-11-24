@@ -18,6 +18,7 @@ public class Package extends DroolsElement {
 	private List globals = new ArrayList();
 	private List queries = new ArrayList();
 	private List templates = new ArrayList();
+	private List processes = new ArrayList();
 
 	Package(RuleSet parent, String packageName) {
 		super(parent);
@@ -46,6 +47,7 @@ public class Package extends DroolsElement {
 		children.addAll(expanders);
 		children.addAll(imports);
 		children.addAll(templates);
+		children.addAll(processes);
 		return (DroolsElement[]) children.toArray(new DroolsElement[0]);
 	}
 
@@ -112,4 +114,12 @@ public class Package extends DroolsElement {
 		templates.remove(template);
 	}
 	
+    void addProcess(Process process) {
+        processes.add(process);
+    }
+    
+    void removeProcess(Process process) {
+        processes.remove(process);
+    }
+    
 }

@@ -38,7 +38,7 @@ public class JoinWrapper extends NodeWrapper {
         descriptors = new IPropertyDescriptor[DefaultElementWrapper.descriptors.length + 1];
         System.arraycopy(DefaultElementWrapper.descriptors, 0, descriptors, 0, DefaultElementWrapper.descriptors.length);
         descriptors[descriptors.length - 1] = 
-            new ComboBoxPropertyDescriptor(TYPE, "Type", new String[] { "", "AND", "XOR" });
+            new ComboBoxPropertyDescriptor(TYPE, "Type", new String[] { "", "AND", "XOR", "Discriminator" });
     }
     
     public JoinWrapper() {

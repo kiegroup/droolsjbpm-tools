@@ -8,16 +8,17 @@ import org.eclipse.swt.graphics.Image;
 public class DroolsLabelProvider extends LabelProvider {
 
 	private static final String[] ICONS = new String[] {
-		DroolsPluginImages.PACKAGE,	// ruleset
-		DroolsPluginImages.PACKAGE,	// package
-		DroolsPluginImages.DROOLS, 	// rule
-		DroolsPluginImages.DROOLS, 	// query
-		DroolsPluginImages.METHOD, 	// function
-		DroolsPluginImages.CLASS, 	// template
-		DroolsPluginImages.DSL, 	// expander
-		DroolsPluginImages.GLOBAL, 	// global
-		DroolsPluginImages.IMPORT, 	// import
-		DroolsPluginImages.DROOLS, 	// rule attribute
+		DroolsPluginImages.PACKAGE,	 // ruleset
+		DroolsPluginImages.PACKAGE,  // package
+		DroolsPluginImages.DROOLS, 	 // rule
+		DroolsPluginImages.DROOLS, 	 // query
+		DroolsPluginImages.METHOD, 	 // function
+		DroolsPluginImages.CLASS, 	 // template
+		DroolsPluginImages.DSL, 	 // expander
+		DroolsPluginImages.GLOBAL, 	 // global
+		DroolsPluginImages.IMPORT, 	 // import
+		DroolsPluginImages.DROOLS, 	 // rule attribute
+        DroolsPluginImages.RULEFLOW, // process
 	};
 	
     public Image getImage(Object element) {

@@ -16,9 +16,11 @@ package org.drools.eclipse.flow.ruleflow.editor;
  */
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
+import org.drools.eclipse.WorkItemDefinitions;
 import org.drools.eclipse.flow.common.editor.core.ElementConnectionFactory;
 import org.drools.eclipse.flow.ruleflow.core.ActionWrapper;
 import org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper;
@@ -30,6 +32,10 @@ import org.drools.eclipse.flow.ruleflow.core.RuleSetNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.SplitWrapper;
 import org.drools.eclipse.flow.ruleflow.core.StartNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.SubFlowWrapper;
+import org.drools.eclipse.flow.ruleflow.core.WorkItemWrapper;
+import org.drools.ruleflow.common.core.WorkDefinition;
+import org.drools.ruleflow.common.core.WorkDefinitionExtension;
+import org.drools.ruleflow.common.core.impl.WorkImpl;
 import org.drools.ruleflow.core.Connection;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.ConnectionCreationToolEntry;
@@ -61,6 +67,7 @@ public class RuleFlowPaletteFactory {
         List categories = new ArrayList();
         categories.add(createControlGroup(root));
         categories.add(createComponentsDrawer());
+        categories.add(createTaskNodesDrawer());
         return categories;
     }
 
@@ -141,19 +148,63 @@ public class RuleFlowPaletteFactory {
         entries.add(combined);
                                 
         combined = new CombinedTemplateCreationEntry(
-                "Action",
-                "Create a new Action",
-                ActionWrapper.class,
-                new SimpleFactory(ActionWrapper.class),
-                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/action.gif")), 
-                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/action.gif"))
-            );
-            entries.add(combined);
-                                    
+            "Action",
+            "Create a new Action",
+            ActionWrapper.class,
+            new SimpleFactory(ActionWrapper.class),
+            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/action.gif")), 
+            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/action.gif"))
+        );
+        entries.add(combined);
+                      
         drawer.addAll(entries);
         return drawer;
     }
+    
+    private static PaletteContainer createTaskNodesDrawer() {
 
+        PaletteDrawer drawer = new PaletteDrawer("Work Items", null);
+
+        List entries = new ArrayList();
+
+        for (Iterator iterator = WorkItemDefinitions.getWorkDefinitions().iterator(); iterator.hasNext(); ) {
+            final WorkDefinition workDefinition = (WorkDefinition) iterator.next();
+            final String label;
+            String description = workDefinition.getName();
+            String icon = null;
+            if (workDefinition instanceof WorkDefinitionExtension) {
+                WorkDefinitionExtension extension = (WorkDefinitionExtension) workDefinition;
+                label = extension.getDisplayName();
+                description = extension.getExplanationText();
+                icon = extension.getIcon();
+            } else {
+                label = workDefinition.getName();
+            }
+            
+            CombinedTemplateCreationEntry combined = new CombinedTemplateCreationEntry(
+                label,
+                description,
+                WorkItemWrapper.class,
+                new SimpleFactory(WorkItemWrapper.class) {
+                    public Object getNewObject() {
+                        WorkItemWrapper taskWrapper = (WorkItemWrapper) super.getNewObject();
+                        taskWrapper.setName(label);
+                        taskWrapper.getWorkItemNode().setName(label);
+                        taskWrapper.getWorkItemNode().setWork(new WorkImpl());
+                        taskWrapper.getWorkItemNode().getWork().setName(workDefinition.getName());
+                        return taskWrapper;
+                    }
+                },
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry(icon == null? "icons/action.gif" : icon)), 
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry(icon == null? "icons/action.gif" : icon))
+            );
+            entries.add(combined);
+        }
+                                        
+        drawer.addAll(entries);
+        return drawer;
+    }
+    
     private static PaletteContainer createControlGroup(PaletteRoot root) {
         PaletteGroup controlGroup = new PaletteGroup("Control Group");
 

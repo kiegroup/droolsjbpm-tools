@@ -54,6 +54,8 @@ public class DroolsPluginImages {
     public static final String DSL = "DSL";
     public static final String GLOBAL = "Global";
     public static final String RULEFLOW = "RuleFlow";
+    public static final String RULEFLOW_GROUP = "RuleFlowGroup";
+    public static final String RULEFLOW_NODE_TRIGGERED = "RuleFlowNodeTriggered";
     
     private static ImageRegistry imageRegistry;
     private static final String PATH_SUFFIX = "/icons/";
@@ -86,6 +88,8 @@ public class DroolsPluginImages {
         declareRegistryImage(DSL, "dsl.GIF");
         declareRegistryImage(GLOBAL, "field_public_obj.gif");
         declareRegistryImage(RULEFLOW, "process.gif");
+        declareRegistryImage(RULEFLOW_GROUP, "activity.gif");
+        declareRegistryImage(RULEFLOW_NODE_TRIGGERED, "node-triggered.gif");
     }
 
     /**

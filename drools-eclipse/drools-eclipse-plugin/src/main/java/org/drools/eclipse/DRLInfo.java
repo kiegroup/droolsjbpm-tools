@@ -6,7 +6,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.compiler.Dialect;
+import org.drools.compiler.DialectRegistry;
 import org.drools.compiler.DroolsError;
+import org.drools.compiler.PackageBuilder;
+import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
@@ -27,8 +30,9 @@ public class DRLInfo {
 	// cached entry
 	private transient RuleInfo[] ruleInfos;
 	private transient FunctionInfo[] functionInfos;
+	private DialectRegistry dialectRegistry;
 
-	public DRLInfo(String sourcePathName, PackageDescr packageDescr, List parserErrors) {
+	public DRLInfo(String sourcePathName, PackageDescr packageDescr, List parserErrors, DialectRegistry dialectRegistry) {
 		if (sourcePathName == null || "".equals(sourcePathName)) {
 			throw new IllegalArgumentException("Invalid sourcePathName " + sourcePathName);
 		}
@@ -40,10 +44,11 @@ public class DRLInfo {
 		this.parserErrors =
 			parserErrors == null ? EMPTY_LIST : Collections.unmodifiableList(parserErrors);
 		this.builderErrors = EMPTY_DROOLS_ERROR_ARRAY;
+		this.dialectRegistry = dialectRegistry;
 	}
 
-	public DRLInfo(String pathName, PackageDescr packageDescr, List parserErrors, Package compiledPackage, DroolsError[] builderErrors) {
-		this(pathName, packageDescr, parserErrors);
+	public DRLInfo(String pathName, PackageDescr packageDescr, List parserErrors, Package compiledPackage, DroolsError[] builderErrors, DialectRegistry dialectRegistry) {
+		this(pathName, packageDescr, parserErrors, dialectRegistry);
 		if (compiledPackage == null) {
 			throw new IllegalArgumentException("Null package");
 		}
@@ -123,8 +128,33 @@ public class DRLInfo {
 			this.ruleDescr = ruleDescr;
 		}
 
+        public String getDialectName() {
+            String dialectName = null;
+            for (Iterator iterator = ruleDescr.getAttributes().iterator(); iterator.hasNext(); ) {
+                AttributeDescr attribute = (AttributeDescr) iterator.next();
+                if ("dialect".equals(attribute.getName())) {
+                    dialectName = (String) attribute.getValue();
+                    break;
+                }
+            }
+            if (dialectName == null) {
+                for (Iterator iterator = DRLInfo.this.packageDescr.getAttributes().iterator(); iterator.hasNext(); ) {
+                    AttributeDescr attribute = (AttributeDescr) iterator.next();
+                    if ("dialect".equals(attribute.getName())) {
+                        dialectName = (String) attribute.getValue();
+                        break;
+                    }
+                }
+            }
+            return dialectName;
+        }
+        
         public Dialect getDialect() {
-            return ruleDescr.getDialect();
+            String dialectName = getDialectName();
+            if (dialectName == null) {
+                return null;
+            }
+            return DRLInfo.this.dialectRegistry.getDialect(dialectName);
         }
 
 		public String getSourcePathName() {

@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import org.drools.audit.event.ActivationLogEvent;
 import org.drools.audit.event.LogEvent;
@@ -17,6 +18,7 @@ import org.drools.audit.event.ObjectLogEvent;
 import org.drools.audit.event.RuleBaseLogEvent;
 import org.drools.audit.event.RuleFlowGroupLogEvent;
 import org.drools.audit.event.RuleFlowLogEvent;
+import org.drools.audit.event.RuleFlowNodeLogEvent;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
 import org.drools.eclipse.debug.actions.DeleteLogAction;
@@ -100,8 +102,7 @@ public class AuditView extends AbstractDebugView {
     protected List createEventList(List logEvents) {
 		Iterator iterator = logEvents.iterator();
 		List events = new ArrayList();
-		Event currentBeforeActivationEvent = null;
-		Event currentBeforePackageEvent = null;
+		Stack beforeEvents = new Stack();
 		List newActivations = new ArrayList();
 		Map activationMap = new HashMap();
 		Map objectMap = new HashMap();
@@ -112,8 +113,8 @@ public class AuditView extends AbstractDebugView {
 				case LogEvent.INSERTED:
 					ObjectLogEvent inObjectEvent = (ObjectLogEvent) inEvent;
 					event.setString("Object inserted (" + inObjectEvent.getFactId() + "): " + inObjectEvent.getObjectToString());
-					if (currentBeforeActivationEvent != null) {
-						currentBeforeActivationEvent.addSubEvent(event);
+					if (!beforeEvents.isEmpty()) {
+						((Event) beforeEvents.peek()).addSubEvent(event);
 					} else {
 						events.add(event);
 					}
@@ -124,8 +125,8 @@ public class AuditView extends AbstractDebugView {
 				case LogEvent.UPDATED:
 					inObjectEvent = (ObjectLogEvent) inEvent;
 					event.setString("Object updated (" + inObjectEvent.getFactId() + "): " + inObjectEvent.getObjectToString());
-					if (currentBeforeActivationEvent != null) {
-						currentBeforeActivationEvent.addSubEvent(event);
+					if (!beforeEvents.isEmpty()) {
+                        ((Event) beforeEvents.peek()).addSubEvent(event);
 					} else {
 						events.add(event);
 					}
@@ -139,8 +140,8 @@ public class AuditView extends AbstractDebugView {
 				case LogEvent.RETRACTED:
 					inObjectEvent = (ObjectLogEvent) inEvent;
 					event.setString("Object removed (" + inObjectEvent.getFactId() + "): " + inObjectEvent.getObjectToString());
-					if (currentBeforeActivationEvent != null) {
-						currentBeforeActivationEvent.addSubEvent(event);
+					if (!beforeEvents.isEmpty()) {
+                        ((Event) beforeEvents.peek()).addSubEvent(event);
 					} else {
 						events.add(event);
 					}
@@ -167,99 +168,134 @@ public class AuditView extends AbstractDebugView {
 					inActivationEvent = (ActivationLogEvent) inEvent;
 					event.setString("Activation executed: Rule " + inActivationEvent.getRule() + " " + inActivationEvent.getDeclarations());
 					events.add(event);
-					currentBeforeActivationEvent = event;
+					beforeEvents.push(event);
 					event.setCauseEvent((Event) activationMap.get(((ActivationLogEvent) inEvent).getActivationId()));
 					break;
 				case LogEvent.AFTER_ACTIVATION_FIRE:
-					currentBeforeActivationEvent = null;
+				    beforeEvents.pop();
 					break;
-				case LogEvent.RULEFLOW_CREATED:
+				case LogEvent.BEFORE_RULEFLOW_CREATED:
 					RuleFlowLogEvent inRuleFlowEvent = (RuleFlowLogEvent) inEvent;
 					event.setString("RuleFlow started: " + inRuleFlowEvent.getProcessName() + "[" + inRuleFlowEvent.getProcessId() + "]");
-					if (currentBeforeActivationEvent != null) {
-						currentBeforeActivationEvent.addSubEvent(event);
+					if (!beforeEvents.isEmpty()) {
+                        ((Event) beforeEvents.peek()).addSubEvent(event);
 					} else {
 						events.add(event);
 					}
+                    beforeEvents.push(event);
 					break;
-				case LogEvent.RULEFLOW_COMPLETED:
+                case LogEvent.AFTER_RULEFLOW_CREATED:
+                    beforeEvents.pop();
+                    break;
+				case LogEvent.BEFORE_RULEFLOW_COMPLETED:
 					inRuleFlowEvent = (RuleFlowLogEvent) inEvent;
 					event.setString("RuleFlow completed: " + inRuleFlowEvent.getProcessName() + "[" + inRuleFlowEvent.getProcessId() + "]");
-					if (currentBeforeActivationEvent != null) {
-						currentBeforeActivationEvent.addSubEvent(event);
+					if (!beforeEvents.isEmpty()) {
+                        ((Event) beforeEvents.peek()).addSubEvent(event);
 					} else {
 						events.add(event);
 					}
+                    beforeEvents.push(event);
 					break;
-				case LogEvent.RULEFLOW_GROUP_ACTIVATED:
+                case LogEvent.AFTER_RULEFLOW_COMPLETED:
+                    beforeEvents.pop();
+                    break;
+                case LogEvent.BEFORE_RULEFLOW_NODE_TRIGGERED:
+                    RuleFlowNodeLogEvent inRuleFlowNodeEvent = (RuleFlowNodeLogEvent) inEvent;
+                    event.setString("RuleFlow node triggered: " + inRuleFlowNodeEvent.getNodeName() + " in process " + inRuleFlowNodeEvent.getProcessName() + "[" + inRuleFlowNodeEvent.getProcessId() + "]");
+                    if (!beforeEvents.isEmpty()) {
+                        ((Event) beforeEvents.peek()).addSubEvent(event);
+                    } else {
+                        events.add(event);
+                    }
+                    beforeEvents.push(event);
+                    break;
+                case LogEvent.AFTER_RULEFLOW_NODE_TRIGGERED:
+                    beforeEvents.pop();
+                    break;
+				case LogEvent.BEFORE_RULEFLOW_GROUP_ACTIVATED:
 					RuleFlowGroupLogEvent inRuleFlowGroupEvent = (RuleFlowGroupLogEvent) inEvent;
 					event.setString("RuleFlowGroup activated: " + inRuleFlowGroupEvent.getGroupName() + "[size=" + inRuleFlowGroupEvent.getSize() + "]");
-					if (currentBeforeActivationEvent != null) {
-						currentBeforeActivationEvent.addSubEvent(event);
+					if (!beforeEvents.isEmpty()) {
+                        ((Event) beforeEvents.peek()).addSubEvent(event);
 					} else {
 						events.add(event);
 					}
-					break;
-				case LogEvent.RULEFLOW_GROUP_DEACTIVATED:
+					beforeEvents.push(event);
+                    break;
+                case LogEvent.AFTER_RULEFLOW_GROUP_ACTIVATED:
+                    beforeEvents.pop();
+                    break;
+				case LogEvent.BEFORE_RULEFLOW_GROUP_DEACTIVATED:
 					inRuleFlowGroupEvent = (RuleFlowGroupLogEvent) inEvent;
 					event.setString("RuleFlowGroup deactivated: " + inRuleFlowGroupEvent.getGroupName() + "[size=" + inRuleFlowGroupEvent.getSize() + "]");
-					if (currentBeforeActivationEvent != null) {
-						currentBeforeActivationEvent.addSubEvent(event);
+					if (!beforeEvents.isEmpty()) {
+                        ((Event) beforeEvents.peek()).addSubEvent(event);
 					} else {
 						events.add(event);
 					}
-					break;
+                    beforeEvents.push(event);
+                    break;
+                case LogEvent.AFTER_RULEFLOW_GROUP_DEACTIVATED:
+                    beforeEvents.pop();
+                    break;
 				case LogEvent.BEFORE_PACKAGE_ADDED:
 					RuleBaseLogEvent ruleBaseEvent = (RuleBaseLogEvent) inEvent;
 					event.setString("Package added: " + ruleBaseEvent.getPackageName());
-					if (currentBeforeActivationEvent != null) {
-						currentBeforeActivationEvent.addSubEvent(event);
+					if (!beforeEvents.isEmpty()) {
+                        ((Event) beforeEvents.peek()).addSubEvent(event);
 					} else {
 						events.add(event);
 					}
-					currentBeforePackageEvent = event;
+                    beforeEvents.push(event);
 					break;
 				case LogEvent.AFTER_PACKAGE_ADDED:
-					currentBeforePackageEvent = null;
+                    beforeEvents.pop();
 					break;
 				case LogEvent.BEFORE_PACKAGE_REMOVED:
 					ruleBaseEvent = (RuleBaseLogEvent) inEvent;
 					event.setString("Package removed: " + ruleBaseEvent.getPackageName());
-					if (currentBeforeActivationEvent != null) {
-						currentBeforeActivationEvent.addSubEvent(event);
+					if (!beforeEvents.isEmpty()) {
+                        ((Event) beforeEvents.peek()).addSubEvent(event);
 					} else {
 						events.add(event);
 					}
-					currentBeforePackageEvent = event;
+                    beforeEvents.push(event);
 					break;
 				case LogEvent.AFTER_PACKAGE_REMOVED:
-					currentBeforePackageEvent = null;
+                    beforeEvents.pop();
 					break;
-				case LogEvent.AFTER_RULE_ADDED:
+                case LogEvent.BEFORE_RULE_ADDED:
 					ruleBaseEvent = (RuleBaseLogEvent) inEvent;
 					event.setString("Rule added: " + ruleBaseEvent.getRuleName());
-					if (currentBeforePackageEvent != null) {
-						currentBeforePackageEvent.addSubEvent(event);
-					} else if (currentBeforeActivationEvent != null) {
-						currentBeforeActivationEvent.addSubEvent(event);
+					if (!beforeEvents.isEmpty()) {
+                        ((Event) beforeEvents.peek()).addSubEvent(event);
 					} else {
 						events.add(event);
 					}
-					event.addSubEvents(newActivations);
-					newActivations.clear();
 					break;
-				case LogEvent.AFTER_RULE_REMOVED:
+                case LogEvent.AFTER_RULE_ADDED:
+                    if (!beforeEvents.isEmpty()) {
+                        Event beforeEvent = (Event) beforeEvents.pop();
+                        beforeEvent.addSubEvents(newActivations);
+                        newActivations.clear();
+                    }
+                    break;
+				case LogEvent.BEFORE_RULE_REMOVED:
 					ruleBaseEvent = (RuleBaseLogEvent) inEvent;
 					event.setString("Rule removed: " + ruleBaseEvent.getRuleName());
-					if (currentBeforePackageEvent != null) {
-						currentBeforePackageEvent.addSubEvent(event);
-					} else if (currentBeforeActivationEvent != null) {
-						currentBeforeActivationEvent.addSubEvent(event);
+					if (!beforeEvents.isEmpty()) {
+                        ((Event) beforeEvents.peek()).addSubEvent(event);
 					} else {
 						events.add(event);
 					}
-					event.addSubEvents(newActivations);
-					newActivations.clear();
+                    break;
+                case LogEvent.AFTER_RULE_REMOVED:
+                    if (!beforeEvents.isEmpty()) {
+                        Event beforeEvent = (Event) beforeEvents.pop();
+                        beforeEvent.addSubEvents(newActivations);
+    					newActivations.clear();
+                    }
 					break;
 			}
 		}
@@ -424,14 +460,15 @@ public class AuditView extends AbstractDebugView {
 	    			case LogEvent.ACTIVATION_CREATED: return DroolsPluginImages.getImage(DroolsPluginImages.CREATE_ACTIVATION);
 	    			case LogEvent.ACTIVATION_CANCELLED: return DroolsPluginImages.getImage(DroolsPluginImages.CANCEL_ACTIVATION);
 	    			case LogEvent.BEFORE_ACTIVATION_FIRE: return DroolsPluginImages.getImage(DroolsPluginImages.EXECUTE_ACTIVATION);
-	    			case LogEvent.RULEFLOW_CREATED: return DroolsPluginImages.getImage(DroolsPluginImages.RULEFLOW);
-	    			case LogEvent.RULEFLOW_COMPLETED: return DroolsPluginImages.getImage(DroolsPluginImages.RULEFLOW);
-	    			case LogEvent.RULEFLOW_GROUP_ACTIVATED: return DroolsPluginImages.getImage(DroolsPluginImages.RULEFLOW);
-	    			case LogEvent.RULEFLOW_GROUP_DEACTIVATED: return DroolsPluginImages.getImage(DroolsPluginImages.RULEFLOW);
+	    			case LogEvent.BEFORE_RULEFLOW_CREATED: return DroolsPluginImages.getImage(DroolsPluginImages.RULEFLOW);
+	    			case LogEvent.BEFORE_RULEFLOW_COMPLETED: return DroolsPluginImages.getImage(DroolsPluginImages.RULEFLOW);
+                    case LogEvent.BEFORE_RULEFLOW_NODE_TRIGGERED: return DroolsPluginImages.getImage(DroolsPluginImages.RULEFLOW_NODE_TRIGGERED);
+	    			case LogEvent.BEFORE_RULEFLOW_GROUP_ACTIVATED: return DroolsPluginImages.getImage(DroolsPluginImages.RULEFLOW_GROUP);
+	    			case LogEvent.BEFORE_RULEFLOW_GROUP_DEACTIVATED: return DroolsPluginImages.getImage(DroolsPluginImages.RULEFLOW_GROUP);
 	    			case LogEvent.BEFORE_PACKAGE_ADDED: return DroolsPluginImages.getImage(DroolsPluginImages.DROOLS);
 	    			case LogEvent.BEFORE_PACKAGE_REMOVED: return DroolsPluginImages.getImage(DroolsPluginImages.DROOLS);
-	    			case LogEvent.AFTER_RULE_ADDED: return DroolsPluginImages.getImage(DroolsPluginImages.DROOLS);
-	    			case LogEvent.AFTER_RULE_REMOVED: return DroolsPluginImages.getImage(DroolsPluginImages.DROOLS);
+	    			case LogEvent.BEFORE_RULE_ADDED: return DroolsPluginImages.getImage(DroolsPluginImages.DROOLS);
+	    			case LogEvent.BEFORE_RULE_REMOVED: return DroolsPluginImages.getImage(DroolsPluginImages.DROOLS);
 	    		}
 	    		return null;
 	    	}

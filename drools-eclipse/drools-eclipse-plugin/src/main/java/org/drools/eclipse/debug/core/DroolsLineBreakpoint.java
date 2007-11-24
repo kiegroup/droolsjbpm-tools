@@ -102,7 +102,7 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
 
     private String getDialect(DRLInfo info, int drlLineNumber) {
         if ( info != null ) {
-            return info.getRuleInfo( drlLineNumber ).getDialect().getId();
+            return info.getRuleInfo( drlLineNumber ).getDialectName();
         }
         return null;
     }
@@ -130,7 +130,7 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
 
                     int line = ruleInfo.getConsequenceJavaLineNumber()
                                         	+ (lineNumber - ruleInfo.getConsequenceDrlLineNumber());
-                    if (ruleInfo.getDialect().getId().equals( MVELDialect.ID )) {
+                    if (ruleInfo.getDialectName().equals( MVELDialect.ID )) {
                         return line;
                     }
                     return line+1;

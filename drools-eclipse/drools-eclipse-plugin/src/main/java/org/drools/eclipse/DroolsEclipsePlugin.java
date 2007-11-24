@@ -221,6 +221,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 		store.setDefault(IDroolsConstants.BUILD_ALL, false);
 		store.setDefault(IDroolsConstants.EDITOR_FOLDING, true);
 		store.setDefault(IDroolsConstants.CACHE_PARSED_RULES, true);
+		store.setDefault(IDroolsConstants.DSL_RULE_EDITOR_COMPLETION_FULL_SENTENCES, true);
 	}
 	
 	public DRLInfo parseResource(IResource resource, boolean compile) throws DroolsParserException {
@@ -334,12 +335,10 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                 	}
                 	parserErrors = parser.getErrors();
                 }
-                PackageBuilder builder = null;
+                PackageBuilder builder = new PackageBuilder(builder_configuration);
         		DRLInfo result = null;
             	// compile parsed rules if necessary
             	if (compile && !parser.hasErrors()) {
-                    builder = new PackageBuilder(builder_configuration);
-
                     // check whether a .package file exists and add it
                     if (resource.getParent() != null) {
                     	MyResourceVisitor visitor = new MyResourceVisitor();
@@ -354,11 +353,11 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
         			result = new DRLInfo(
 	    				resource.getProjectRelativePath().toString(),
 	    				packageDescr, parserErrors,
-	    				builder.getPackage(), builder.getErrors().getErrors());
+	    				builder.getPackage(), builder.getErrors().getErrors(), builder.getDialectRegistry());
         		} else {
         			result = new DRLInfo(
 	    				resource.getProjectRelativePath().toString(),
-	    				packageDescr, parserErrors);
+	    				packageDescr, parserErrors, builder.getDialectRegistry());
         		}
         		            		
             	// cache result

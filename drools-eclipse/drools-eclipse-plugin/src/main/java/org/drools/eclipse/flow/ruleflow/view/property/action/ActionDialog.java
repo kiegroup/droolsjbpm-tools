@@ -25,6 +25,7 @@ import org.drools.eclipse.flow.ruleflow.view.property.constraint.RuleFlowImports
 import org.drools.ruleflow.core.ActionNode;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.ruleflow.core.impl.DroolsConsequenceAction;
+import org.drools.util.ArrayUtils;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
@@ -41,8 +42,10 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -54,9 +57,12 @@ import org.eclipse.swt.widgets.TabItem;
  */
 public class ActionDialog extends EditBeanDialog {
 
+    private static final String[] DIALECTS = new String[] { "mvel", "java" };
+    
 	private RuleFlowProcess process;
 	private TabFolder tabFolder;
 	private SourceViewer actionViewer;
+	private Combo dialectCombo;
 	//private ActionCompletionProcessor completionProcessor;
 
 	public ActionDialog(Shell parentShell, RuleFlowProcess process, ActionNode actionNode) {
@@ -124,8 +130,26 @@ public class ActionDialog extends EditBeanDialog {
 		return actionViewer.getControl();
 	}
 	
+	private Control createDialectCombo(Composite parent) {
+	    dialectCombo = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
+	    dialectCombo.setItems(DIALECTS);
+	    Object action = getValue();
+	    int index = 0;
+        if (action instanceof DroolsConsequenceAction) {
+            String dialect = ((DroolsConsequenceAction) action).getDialect();
+            int found = ArrayUtils.indexOf(DIALECTS, dialect);
+            if (found >= 0) {
+                index = found;
+            }
+        }
+        dialectCombo.select(index);
+	    return dialectCombo;
+	}
+	
 	private Object getAction() {
-		return new DroolsConsequenceAction(actionViewer.getDocument().get());
+		return new DroolsConsequenceAction(
+	        dialectCombo.getItem(dialectCombo.getSelectionIndex()),
+	        actionViewer.getDocument().get());
 	}
 	
 	public Control createDialogArea(Composite parent) {
@@ -140,9 +164,13 @@ public class ActionDialog extends EditBeanDialog {
 		top.setLayoutData(gd);
 
 		layout = new GridLayout();
-		layout.numColumns = 3;
+		layout.numColumns = 4;
 		top.setLayout(layout);
-
+		
+		Label label = new Label(top, SWT.NONE);
+        label.setText("Dialect:");
+        createDialectCombo(top);
+		
 		Button importButton = new Button(top, SWT.PUSH);
 		importButton.setText("Imports ...");
 		importButton.setFont(JFaceResources.getDialogFont());
@@ -151,9 +179,7 @@ public class ActionDialog extends EditBeanDialog {
 				importButtonPressed();
 			}
 		});
-		gd = new GridData();
-		importButton.setLayoutData(gd);
-
+		
 		Button globalButton = new Button(top, SWT.PUSH);
 		globalButton.setText("Globals ...");
 		globalButton.setFont(JFaceResources.getDialogFont());
@@ -162,9 +188,7 @@ public class ActionDialog extends EditBeanDialog {
 				globalButtonPressed();
 			}
 		});
-		gd = new GridData();
-		globalButton.setLayoutData(gd);
-
+		
 		tabFolder = new TabFolder(parent, SWT.NONE);
 		gd = new GridData();
 		gd.horizontalSpan = 3;

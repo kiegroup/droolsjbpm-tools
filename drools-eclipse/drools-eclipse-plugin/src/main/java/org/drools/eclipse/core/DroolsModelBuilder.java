@@ -142,6 +142,20 @@ public class DroolsModelBuilder {
 		}
 	}
 	
+    public static Process addProcess(Package pkg, String processId, IFile file) {
+        Process process = new Process(pkg, processId);
+        process.setFile(file, -1, -1);
+        pkg.addProcess(process);
+        return process;
+    }
+
+    public static void removeProcess(Process process) {
+        Package pkg = process.getParentPackage();
+        if (pkg != null) {
+            pkg.removeProcess(process);
+        }
+    }
+
 	public static void removeElement(DroolsElement element) {
 		switch (element.getType()) {
 			case DroolsElement.RULESET:
@@ -152,23 +166,39 @@ public class DroolsModelBuilder {
 				break;
 			case DroolsElement.RULE:
 				removeRule((Rule) element);
+				removePackageIfEmpty(((Rule) element).getParentPackage());
 				break;
 			case DroolsElement.QUERY:
 				removeQuery((Query) element);
+                removePackageIfEmpty(((Query) element).getParentPackage());
 				break;
 			case DroolsElement.FUNCTION:
 				removeFunction((Function) element);
+                removePackageIfEmpty(((Function) element).getParentPackage());
 				break;
 			case DroolsElement.TEMPLATE:
 				removeTemplate((Template) element);
+                removePackageIfEmpty(((Template) element).getParentPackage());
 				break;
 			case DroolsElement.EXPANDER:
 				removeExpander((Expander) element);
+                removePackageIfEmpty(((Expander) element).getParentPackage());
 				break;
 			case DroolsElement.GLOBAL:
 				removeGlobal((Global) element);
+                removePackageIfEmpty(((Global) element).getParentPackage());
 				break;
+            case DroolsElement.PROCESS:
+                removeProcess((Process) element);
+                removePackageIfEmpty(((Process) element).getParentPackage());
+                break;
 		}
+	}
+	
+	private static void removePackageIfEmpty(Package pkg) {
+	    if (pkg.getChildren().length == 0) {
+	        removePackage(pkg);
+	    }
 	}
 
 }

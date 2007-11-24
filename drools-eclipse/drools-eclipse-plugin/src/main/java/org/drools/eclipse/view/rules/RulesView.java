@@ -1,11 +1,17 @@
 package org.drools.eclipse.view.rules;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.ProcessBuilder;
 import org.drools.eclipse.DRLInfo;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.core.DroolsElement;
@@ -14,6 +20,7 @@ import org.drools.eclipse.core.Function;
 import org.drools.eclipse.core.Global;
 import org.drools.eclipse.core.Package;
 import org.drools.eclipse.core.Query;
+import org.drools.eclipse.core.Process;
 import org.drools.eclipse.core.Rule;
 import org.drools.eclipse.core.RuleSet;
 import org.drools.eclipse.core.Template;
@@ -21,6 +28,8 @@ import org.drools.eclipse.core.ui.DroolsContentProvider;
 import org.drools.eclipse.core.ui.DroolsLabelProvider;
 import org.drools.eclipse.core.ui.DroolsTreeSorter;
 import org.drools.eclipse.core.ui.FilterActionGroup;
+import org.drools.eclipse.flow.common.editor.core.ProcessWrapper;
+import org.drools.eclipse.flow.ruleflow.core.RuleFlowProcessWrapper;
 import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.GlobalDescr;
@@ -54,6 +63,8 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
+
+import com.thoughtworks.xstream.XStream;
 
 public class RulesView extends ViewPart implements IDoubleClickListener, IResourceVisitor, IResourceChangeListener {
 
@@ -105,96 +116,130 @@ public class RulesView extends ViewPart implements IDoubleClickListener, IResour
             	return false;
             }
     		if (resource instanceof IFile 
-    				&& "drl".equals(resource.getFileExtension())
-    				&& javaProject.isOnClasspath(resource)) {
-    			try {
-    				IFile file = (IFile) resource;
-    				DRLInfo drlInfo = DroolsEclipsePlugin.getDefault().parseResource(resource, false);
-    				String packageName = drlInfo.getPackageName();
-    				Package pkg = ruleSet.getPackage(packageName);
-    				if (pkg == null) {
-    					pkg = DroolsModelBuilder.addPackage(ruleSet, packageName, 0, 0);
-    				}
-    				// add rules
-    				List rules = drlInfo.getPackageDescr().getRules();
-    				for (Iterator iterator = rules.iterator(); iterator.hasNext();) {
-    					RuleDescr ruleDescr = (RuleDescr) iterator.next();
-    					boolean isQuery = ruleDescr instanceof QueryDescr;
-    					String ruleName = ruleDescr.getName();
-    					if (!isQuery) {
-    						Rule rule = DroolsModelBuilder.addRule(
-								pkg, ruleName, file, ruleDescr.getStartCharacter(),
-								ruleDescr.getEndCharacter() - ruleDescr.getStartCharacter() + 1, null);
-	    					// create link between resource and created rule nodes
-	    					List droolsElements = (List) resourcesMap.get(file);
-	    					if (droolsElements == null) {
-	    						droolsElements = new ArrayList();
-	    						resourcesMap.put(file, droolsElements);
-	    					}
-	    					droolsElements.add(rule);
-    					} else {
-    						Query query = DroolsModelBuilder.addQuery(
-								pkg, ruleName, file, ruleDescr.getStartCharacter(), 
-								ruleDescr.getEndCharacter() - ruleDescr.getStartCharacter() + 1);
-	    					// create link between resource and created rule nodes
-	    					List droolsElements = (List) resourcesMap.get(file);
-	    					if (droolsElements == null) {
-	    						droolsElements = new ArrayList();
-	    						resourcesMap.put(file, droolsElements);
-	    					}
-	    					droolsElements.add(query);
-    					}
-    				}
-    				// add templates
-    				List templates = drlInfo.getPackageDescr().getFactTemplates();
-    				for (Iterator iterator = templates.iterator(); iterator.hasNext();) {
-    					FactTemplateDescr templateDescr = (FactTemplateDescr) iterator.next();
-						Template template = DroolsModelBuilder.addTemplate(
-							pkg, templateDescr.getName(), file, templateDescr.getStartCharacter(),
-							templateDescr.getEndCharacter() - templateDescr.getStartCharacter() + 1);
-    					// create link between resource and created rule nodes
-    					List droolsElements = (List) resourcesMap.get(file);
-    					if (droolsElements == null) {
-    						droolsElements = new ArrayList();
-    						resourcesMap.put(file, droolsElements);
-    					}
-    					droolsElements.add(template);
-    				}
-    				// add globals
-    				List globals = drlInfo.getPackageDescr().getGlobals();
-    				for (Iterator iterator = globals.iterator(); iterator.hasNext();) {
-    					GlobalDescr globalDescr = (GlobalDescr) iterator.next();
-    					Global global = DroolsModelBuilder.addGlobal(
-							pkg, globalDescr.getIdentifier(), file, globalDescr.getStartCharacter(),
-							globalDescr.getEndCharacter() - globalDescr.getStartCharacter() + 1);
-    					// create link between resource and created rule nodes
-    					List droolsElements = (List) resourcesMap.get(file);
-    					if (droolsElements == null) {
-    						droolsElements = new ArrayList();
-    						resourcesMap.put(file, droolsElements);
-    					}
-    					droolsElements.add(global);
-    				}
-    				// add functions
-    				List functions = drlInfo.getPackageDescr().getFunctions();
-    				for (Iterator iterator = functions.iterator(); iterator.hasNext();) {
-    					FunctionDescr functionDescr = (FunctionDescr) iterator.next();
-    					String functionName = functionDescr.getName();
-    					Function function = DroolsModelBuilder.addFunction(
-							pkg, functionName, file, functionDescr.getStartCharacter(),
-							functionDescr.getEndCharacter() - functionDescr.getStartCharacter() + 1);
-    					// create link between resource and created rule nodes
-    					List droolsElements = (List) resourcesMap.get(file);
-    					if (droolsElements == null) {
-    						droolsElements = new ArrayList();
-    						resourcesMap.put(file, droolsElements);
-    					}
-    					droolsElements.add(function);
-    				}
-    			} catch (Throwable t) {
-    				DroolsEclipsePlugin.log(t);
-    			}
-    			return false;
+                    && javaProject.isOnClasspath(resource)) {
+                IFile file = (IFile) resource;
+    		    if ("drl".equals(resource.getFileExtension())
+    				        || "dslr".equals(resource.getFileExtension())) {
+        			try {
+        				DRLInfo drlInfo = DroolsEclipsePlugin.getDefault().parseResource(resource, false);
+        				String packageName = drlInfo.getPackageName();
+        				Package pkg = ruleSet.getPackage(packageName);
+        				if (pkg == null) {
+        					pkg = DroolsModelBuilder.addPackage(ruleSet, packageName, 0, 0);
+        				}
+        				// add rules
+        				List rules = drlInfo.getPackageDescr().getRules();
+        				for (Iterator iterator = rules.iterator(); iterator.hasNext();) {
+        					RuleDescr ruleDescr = (RuleDescr) iterator.next();
+        					boolean isQuery = ruleDescr instanceof QueryDescr;
+        					String ruleName = ruleDescr.getName();
+        					if (!isQuery) {
+        						Rule rule = DroolsModelBuilder.addRule(
+    								pkg, ruleName, file, ruleDescr.getStartCharacter(),
+    								ruleDescr.getEndCharacter() - ruleDescr.getStartCharacter() + 1, null);
+    	    					// create link between resource and created rule nodes
+    	    					List droolsElements = (List) resourcesMap.get(file);
+    	    					if (droolsElements == null) {
+    	    						droolsElements = new ArrayList();
+    	    						resourcesMap.put(file, droolsElements);
+    	    					}
+    	    					droolsElements.add(rule);
+        					} else {
+        						Query query = DroolsModelBuilder.addQuery(
+    								pkg, ruleName, file, ruleDescr.getStartCharacter(), 
+    								ruleDescr.getEndCharacter() - ruleDescr.getStartCharacter() + 1);
+    	    					// create link between resource and created rule nodes
+    	    					List droolsElements = (List) resourcesMap.get(file);
+    	    					if (droolsElements == null) {
+    	    						droolsElements = new ArrayList();
+    	    						resourcesMap.put(file, droolsElements);
+    	    					}
+    	    					droolsElements.add(query);
+        					}
+        				}
+        				// add templates
+        				List templates = drlInfo.getPackageDescr().getFactTemplates();
+        				for (Iterator iterator = templates.iterator(); iterator.hasNext();) {
+        					FactTemplateDescr templateDescr = (FactTemplateDescr) iterator.next();
+    						Template template = DroolsModelBuilder.addTemplate(
+    							pkg, templateDescr.getName(), file, templateDescr.getStartCharacter(),
+    							templateDescr.getEndCharacter() - templateDescr.getStartCharacter() + 1);
+        					// create link between resource and created rule nodes
+        					List droolsElements = (List) resourcesMap.get(file);
+        					if (droolsElements == null) {
+        						droolsElements = new ArrayList();
+        						resourcesMap.put(file, droolsElements);
+        					}
+        					droolsElements.add(template);
+        				}
+        				// add globals
+        				List globals = drlInfo.getPackageDescr().getGlobals();
+        				for (Iterator iterator = globals.iterator(); iterator.hasNext();) {
+        					GlobalDescr globalDescr = (GlobalDescr) iterator.next();
+        					Global global = DroolsModelBuilder.addGlobal(
+    							pkg, globalDescr.getIdentifier(), file, globalDescr.getStartCharacter(),
+    							globalDescr.getEndCharacter() - globalDescr.getStartCharacter() + 1);
+        					// create link between resource and created rule nodes
+        					List droolsElements = (List) resourcesMap.get(file);
+        					if (droolsElements == null) {
+        						droolsElements = new ArrayList();
+        						resourcesMap.put(file, droolsElements);
+        					}
+        					droolsElements.add(global);
+        				}
+        				// add functions
+        				List functions = drlInfo.getPackageDescr().getFunctions();
+        				for (Iterator iterator = functions.iterator(); iterator.hasNext();) {
+        					FunctionDescr functionDescr = (FunctionDescr) iterator.next();
+        					String functionName = functionDescr.getName();
+        					Function function = DroolsModelBuilder.addFunction(
+    							pkg, functionName, file, functionDescr.getStartCharacter(),
+    							functionDescr.getEndCharacter() - functionDescr.getStartCharacter() + 1);
+        					// create link between resource and created rule nodes
+        					List droolsElements = (List) resourcesMap.get(file);
+        					if (droolsElements == null) {
+        						droolsElements = new ArrayList();
+        						resourcesMap.put(file, droolsElements);
+        					}
+        					droolsElements.add(function);
+        				}
+        			} catch (Throwable t) {
+        				DroolsEclipsePlugin.log(t);
+        			}
+        			return false;
+    		    } else if ("rf".equals(resource.getFileExtension())) {
+    		        try {
+        	            String processString = convertToString(file.getContents());
+        	            XStream stream = new XStream();
+        	            stream.setMode(XStream.ID_REFERENCES);
+        	            
+        	            ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+        	            ClassLoader newLoader = this.getClass().getClassLoader();
+        	            try {
+        	                Thread.currentThread().setContextClassLoader(newLoader);
+        	                Object o = stream.fromXML(processString);
+        	                if (o instanceof ProcessWrapper) {
+        	                    String packageName = ((ProcessWrapper) o).getProcess().getPackageName();
+                                Package pkg = ruleSet.getPackage(packageName);
+                                if (pkg == null) {
+                                    pkg = DroolsModelBuilder.addPackage(ruleSet, packageName, 0, 0);
+                                }
+                                Process process = DroolsModelBuilder.addProcess(pkg, ((ProcessWrapper) o).getProcess().getId(), file);
+                                List droolsElements = (List) resourcesMap.get(file);
+                                if (droolsElements == null) {
+                                    droolsElements = new ArrayList();
+                                    resourcesMap.put(file, droolsElements);
+                                }
+                                droolsElements.add(process);
+        	                }
+        	            } finally {
+        	                Thread.currentThread().setContextClassLoader(oldLoader);
+        	            }           
+        		    } catch (Throwable t) {
+                        DroolsEclipsePlugin.log(t);
+                    }     
+    		        return false;
+    		    }
     		}
         }
         return true;
@@ -285,4 +330,14 @@ public class RulesView extends ViewPart implements IDoubleClickListener, IResour
 		}
 	}
 
+    private static String convertToString(final InputStream inputStream) throws IOException {
+        Reader reader = new InputStreamReader(inputStream);
+        final StringBuffer text = new StringBuffer();
+        final char[] buf = new char[1024];
+        int len = 0;
+        while ((len = reader.read(buf)) >= 0) {
+            text.append(buf, 0, len);
+        }
+        return text.toString();
+    }
 }

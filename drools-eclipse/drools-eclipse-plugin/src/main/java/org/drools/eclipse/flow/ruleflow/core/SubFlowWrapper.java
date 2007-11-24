@@ -19,6 +19,7 @@ import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.ruleflow.core.SubFlowNode;
 import org.drools.ruleflow.core.impl.SubFlowNodeImpl;
+import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
@@ -33,12 +34,15 @@ public class SubFlowWrapper extends NodeWrapper {
     private static IPropertyDescriptor[] descriptors;
     
     public static final String PROCESS_ID = "ProcessId";
+    public static final String WAIT_FOR_COMPLETION = "WaitForCompletion";
 
     static {
-        descriptors = new IPropertyDescriptor[DefaultElementWrapper.descriptors.length + 1];
+        descriptors = new IPropertyDescriptor[DefaultElementWrapper.descriptors.length + 2];
         System.arraycopy(DefaultElementWrapper.descriptors, 0, descriptors, 0, DefaultElementWrapper.descriptors.length);
-        descriptors[descriptors.length - 1] = 
+        descriptors[descriptors.length - 2] = 
         	new TextPropertyDescriptor(PROCESS_ID, "ProcessId");
+        descriptors[descriptors.length - 1] = 
+            new ComboBoxPropertyDescriptor(WAIT_FOR_COMPLETION, "Wait for completion", new String[] {"true", "false"});
     }
     
     public SubFlowWrapper() {
@@ -67,12 +71,17 @@ public class SubFlowWrapper extends NodeWrapper {
         	String processId = getSubFlowNode().getProcessId();
             return processId == null ? "" : processId;
         }
+        if (WAIT_FOR_COMPLETION.equals(id)) {
+            return getSubFlowNode().isWaitForCompletion() ? new Integer(0) : new Integer(1);
+        }
         return super.getPropertyValue(id);
     }
 
     public void resetPropertyValue(Object id) {
         if (PROCESS_ID.equals(id)) {
         	getSubFlowNode().setProcessId("");
+        } else if (WAIT_FOR_COMPLETION.equals(id)) {
+            getSubFlowNode().setWaitForCompletion(true);
         } else {
             super.resetPropertyValue(id);
         }
@@ -81,6 +90,8 @@ public class SubFlowWrapper extends NodeWrapper {
     public void setPropertyValue(Object id, Object value) {
         if (PROCESS_ID.equals(id)) {
         	getSubFlowNode().setProcessId((String) value);
+        } else if (WAIT_FOR_COMPLETION.equals(id)) {
+            getSubFlowNode().setWaitForCompletion(((Integer) value).intValue() == 0);
         } else {
             super.setPropertyValue(id, value);
         }

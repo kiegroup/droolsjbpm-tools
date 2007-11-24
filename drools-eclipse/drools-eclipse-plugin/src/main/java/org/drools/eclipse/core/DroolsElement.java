@@ -22,6 +22,7 @@ public abstract class DroolsElement {
 	public static final int GLOBAL = 7;
 	public static final int IMPORT = 8;
 	public static final int RULE_ATTRIBUTE = 9;
+    public static final int PROCESS = 10;
 	
 	protected static final DroolsElement[] NO_ELEMENTS = new DroolsElement[0];
 	
