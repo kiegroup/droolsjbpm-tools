@@ -23,6 +23,8 @@ import org.drools.eclipse.editors.scanners.DRLPartionScanner;
 import org.drools.ruleflow.core.Constraint;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.ruleflow.core.impl.ConstraintImpl;
+import org.drools.ruleflow.core.impl.DroolsConsequenceAction;
+import org.drools.util.ArrayUtils;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
@@ -44,6 +46,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -59,12 +62,17 @@ import org.eclipse.swt.widgets.Text;
  */
 public class RuleFlowConstraintDialog extends Dialog {
 
-	private Constraint constraint;
+    private static final String[] DIALECTS = new String[] { "mvel", "java" };
+    private static final String[] TYPES = new String[] { "rule", "eval" };
+
+    private Constraint constraint;
 	private RuleFlowProcess process;
 	private boolean success;
 	private Button alwaysTrue;
 	private Text nameText;
 	private Text priorityText;
+    private Combo typeCombo;
+    private Combo dialectCombo;
 	private TabFolder tabFolder;
 	private SourceViewer constraintViewer;
 	private ConstraintCompletionProcessor completionProcessor;
@@ -195,6 +203,26 @@ public class RuleFlowConstraintDialog extends Dialog {
 		gd.horizontalAlignment = GridData.END;
 		globalButton.setLayoutData(gd);
 
+        Label l3 = new Label(top, SWT.NONE);
+        gd = new GridData();
+        l3.setLayoutData(gd);
+        l3.setText("Type:");
+        typeCombo = new Combo(top, SWT.DROP_DOWN | SWT.READ_ONLY);
+        typeCombo.setItems(TYPES);
+        typeCombo.select(0);
+        gd = new GridData();
+        typeCombo.setLayoutData(gd);
+        
+        Label l4 = new Label(top, SWT.NONE);
+        gd = new GridData();
+        l4.setLayoutData(gd);
+        l4.setText("Dialect:");
+        dialectCombo = new Combo(top, SWT.DROP_DOWN | SWT.READ_ONLY);
+        dialectCombo.setItems(DIALECTS);
+        dialectCombo.select(0);
+        gd = new GridData();
+        dialectCombo.setLayoutData(gd);
+        
 		tabFolder = new TabFolder(parent, SWT.NONE);
 		gd = new GridData();
 		gd.horizontalSpan = 4;
@@ -296,6 +324,8 @@ public class RuleFlowConstraintDialog extends Dialog {
 		} catch (NumberFormatException exc) {
 			constraint.setPriority(1);
 		}
+		constraint.setType(typeCombo.getItem(typeCombo.getSelectionIndex()));
+        constraint.setDialect(dialectCombo.getItem(dialectCombo.getSelectionIndex()));
 	}
 
 	public Constraint getConstraint() {
@@ -314,6 +344,20 @@ public class RuleFlowConstraintDialog extends Dialog {
 			nameText.setText(constraint.getName() == null ? "" : constraint
 					.getName());
 			priorityText.setText(constraint.getPriority() + "");
+	        int index = 0;
+            String type = constraint.getType();
+            int found = ArrayUtils.indexOf(TYPES, type);
+            if (found >= 0) {
+                index = found;
+            }
+            typeCombo.select(index);
+            index = 0;
+            String dialect = constraint.getDialect();
+            found = ArrayUtils.indexOf(DIALECTS, dialect);
+            if (found >= 0) {
+                index = found;
+	        }
+	        dialectCombo.select(index);
 			setConstraintText(constraint.getConstraint());
 		} else {
 			priorityText.setText("1");
