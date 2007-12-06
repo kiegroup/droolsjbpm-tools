@@ -292,7 +292,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
 	            Object o = stream.fromXML(ruleflow);
 	            if (o instanceof RuleFlowProcessWrapper) {
 	            	ProcessBuilder processBuilder = new ProcessBuilder(new PackageBuilder());
-	            	processBuilder.addProcess(((RuleFlowProcessWrapper) o).getRuleFlowProcess());
+	            	processBuilder.buildProcess(((RuleFlowProcessWrapper) o).getRuleFlowProcess());
 	            	markParseErrors(markers, processBuilder.getErrors());
 	            }
 	        } finally {
