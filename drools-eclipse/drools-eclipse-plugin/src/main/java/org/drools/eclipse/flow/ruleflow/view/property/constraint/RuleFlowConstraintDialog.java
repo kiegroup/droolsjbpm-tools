@@ -23,7 +23,6 @@ import org.drools.eclipse.editors.scanners.DRLPartionScanner;
 import org.drools.ruleflow.core.Constraint;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.ruleflow.core.impl.ConstraintImpl;
-import org.drools.ruleflow.core.impl.DroolsConsequenceAction;
 import org.drools.util.ArrayUtils;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.resource.JFaceResources;
@@ -63,7 +62,7 @@ import org.eclipse.swt.widgets.Text;
 public class RuleFlowConstraintDialog extends Dialog {
 
     private static final String[] DIALECTS = new String[] { "mvel", "java" };
-    private static final String[] TYPES = new String[] { "rule", "eval" };
+    private static final String[] TYPES = new String[] { "rule", "code" };
 
     private Constraint constraint;
 	private RuleFlowProcess process;
