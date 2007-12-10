@@ -16,10 +16,6 @@ import org.drools.lang.descr.PackageDescr;
 public class DroolsAnalyticsAntTask extends MatchingTask {
 
 	public static final String DRLFILEEXTENSION = ".drl";
-	public static final String BRLFILEEXTENSION = ".brl";
-	public static final String XMLFILEEXTENSION = ".xml";
-	public static final String RULEFLOWFILEEXTENSION = ".rfm";
-	public static final String DSLFILEEXTENSION = ".dslr";
 
 	private File srcdir;
 	private File toFile;

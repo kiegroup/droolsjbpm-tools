@@ -16,19 +16,6 @@
 
 package org.drools.contrib;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.ObjectOutputStream;
-import java.io.Reader;
-import java.io.StringReader;
-
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -45,10 +32,14 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.decisiontable.InputType;
+import org.drools.decisiontable.SpreadsheetCompiler;
 import org.drools.lang.Expander;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
 import org.drools.lang.dsl.DefaultExpanderResolver;
+
+import java.io.*;
 
 /**
  * An ant task to allow rulebase compilation and serialization during a build.
@@ -61,8 +52,9 @@ public class DroolsCompilerAntTask extends MatchingTask {
 	public static String XMLFILEEXTENSION = ".xml";
 	public static String RULEFLOWFILEEXTENSION = ".rfm";
 	public static String DSLFILEEXTENSION = ".dslr";
+    public static String XLSFILEEXTENSION = ".xls";
 
-	private File srcdir;
+    private File srcdir;
 	private File toFile;
 	private Path classpath;
 
@@ -206,8 +198,9 @@ public class DroolsCompilerAntTask extends MatchingTask {
 	private void compileAndAddFile(PackageBuilder builder, String fileName)
 			throws FileNotFoundException, DroolsParserException, IOException {
 		InputStreamReader instream = null;
+        File file = new File(this.srcdir, fileName);
 
-		try {
+        try {
 
 			if (fileName.endsWith(DroolsCompilerAntTask.BRLFILEEXTENSION)) {
 
@@ -223,15 +216,25 @@ public class DroolsCompilerAntTask extends MatchingTask {
 				instream = new InputStreamReader(istream);
 
 			} else {
-				File file = new File(this.srcdir, fileName);
 				instream = new InputStreamReader(new FileInputStream(file));
 			}
-
-			if (fileName.endsWith(DroolsCompilerAntTask.RULEFLOWFILEEXTENSION)) {
+            
+            if (fileName.endsWith(DroolsCompilerAntTask.RULEFLOWFILEEXTENSION)) {
 				builder.addRuleFlow(instream);
 			} else if (fileName.endsWith(DroolsCompilerAntTask.XMLFILEEXTENSION)) {
 				builder.addPackageFromXml(instream);
-			} else if (fileName.endsWith(DroolsCompilerAntTask.DSLFILEEXTENSION)) {
+            } else if (fileName.equals(DroolsCompilerAntTask.XLSFILEEXTENSION)) {
+
+                final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+                final String drl = converter.compile( new FileInputStream(file),
+                                                      InputType.XLS );
+
+
+                System.out.println(drl);
+
+                builder.addPackageFromDrl(new StringReader(drl));
+
+            } else if (fileName.endsWith(DroolsCompilerAntTask.DSLFILEEXTENSION)) {
 				DrlParser parser = new DrlParser();
 				String expandedDRL = parser.getExpandedDRL(
 						loadResource(fileName), resolveDSLFiles());
