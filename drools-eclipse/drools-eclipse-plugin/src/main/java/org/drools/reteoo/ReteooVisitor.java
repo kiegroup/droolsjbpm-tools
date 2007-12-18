@@ -75,13 +75,9 @@ public class ReteooVisitor extends ReflectiveVisitor {
         this.graph.addChild( this.rootVertex );
         this.parentVertex = this.rootVertex;
 
-        final ObjectHashMap map = rete.getObjectTypeNodes();
-
-        final Iterator it = map.iterator();
-        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-            visit( entry.getValue() );
+        for( ObjectTypeNode node : rete.getObjectTypeNodes().values() ) {
+            visit( node );
         }
-
     }
 
     public void visitBaseNode(final BaseNode node) {
