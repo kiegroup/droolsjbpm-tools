@@ -14,6 +14,7 @@ import org.drools.brms.client.modeldriven.brl.RuleModel;
 import org.drools.brms.server.util.BRDRLPersistence;
 import org.drools.brms.server.util.BRXMLPersistence;
 import org.drools.commons.jci.problems.CompilationProblem;
+import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.FactTemplateError;
@@ -385,6 +386,8 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         		markers.add(new DroolsBuildMarker(error.getMessage(), ((FactTemplateError) error).getLine()));
         	} else if (error instanceof ImportError) {
         		markers.add(new DroolsBuildMarker("ImportError: " + error.getMessage()));
+        	} else if (error instanceof DescrBuildError) {
+        		markers.add(new DroolsBuildMarker("BuildError: " + error.getMessage(), ((DescrBuildError) error).getLine()));
         	} else {
         		markers.add(new DroolsBuildMarker("Unknown DroolsError " + error.getClass() + ": " + error));
         	}
