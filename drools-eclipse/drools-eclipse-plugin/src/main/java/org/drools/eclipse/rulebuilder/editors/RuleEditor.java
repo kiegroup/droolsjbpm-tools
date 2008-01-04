@@ -134,7 +134,7 @@ public class RuleEditor extends FormEditor
 
             if ( !file.exists() ) {
                 String defaultHeader = "//This is a package configuration file";
-                defaultHeader += "\n//Add imports, globals etc here which will be used by all the rule assets in thise folder.";
+                defaultHeader += "\n//Add imports, globals etc here which will be used by all the rule assets in this folder.";
                 InputStream is = new ByteArrayInputStream( defaultHeader.getBytes() );
                 try {
                     file.create( is,
