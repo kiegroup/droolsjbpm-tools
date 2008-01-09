@@ -18,8 +18,7 @@ package org.drools.eclipse.flow.ruleflow.core;
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.ruleflow.view.property.constraint.MilestoneConstraintPropertyDescriptor;
-import org.drools.ruleflow.core.MilestoneNode;
-import org.drools.ruleflow.core.impl.MilestoneNodeImpl;
+import org.drools.workflow.core.node.MilestoneNode;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
 /**
@@ -35,7 +34,7 @@ public class MilestoneWrapper extends NodeWrapper {
     public static final String CONSTRAINT = "Constraint";
 
     public MilestoneWrapper() {
-        setNode(new MilestoneNodeImpl());
+        setNode(new MilestoneNode());
         getMilestoneNode().setName("Milestone");
     }
     

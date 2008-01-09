@@ -22,7 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.drools.eclipse.editors.DRLSourceViewerConfig;
-import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.workflow.core.WorkflowProcess;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
@@ -50,13 +50,13 @@ public class RuleFlowGlobalsDialog extends Dialog {
 	private static final Pattern GLOBAL_PATTERN = Pattern.compile(
 		"\\n\\s*global\\s+([^\\s;#]+)\\s+([^\\s;#]+);?", Pattern.DOTALL);
 	
-	private RuleFlowProcess process;
+	private WorkflowProcess process;
 	private boolean success;
 	private TabFolder tabFolder;
 	private SourceViewer globalsViewer;
 	private Map globals;
 
-	public RuleFlowGlobalsDialog(Shell parentShell, RuleFlowProcess process) {
+	public RuleFlowGlobalsDialog(Shell parentShell, WorkflowProcess process) {
 		super(parentShell);
 		this.process = process;
 		setShellStyle(getShellStyle() | SWT.RESIZE);

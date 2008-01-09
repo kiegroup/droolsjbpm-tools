@@ -17,8 +17,8 @@ package org.drools.eclipse.flow.ruleflow.view.property.constraint;
 
 import org.drools.eclipse.flow.common.view.property.BeanDialogCellEditor;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.ruleflow.core.MilestoneNode;
-import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.workflow.core.WorkflowProcess;
+import org.drools.workflow.core.node.MilestoneNode;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
@@ -29,10 +29,10 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class MilestoneConstraintCellEditor extends BeanDialogCellEditor {
 
-    private RuleFlowProcess process;
+    private WorkflowProcess process;
     private MilestoneNode milestone;
     
-    public MilestoneConstraintCellEditor(Composite parent, RuleFlowProcess process, MilestoneNode milestone) {
+    public MilestoneConstraintCellEditor(Composite parent, WorkflowProcess process, MilestoneNode milestone) {
         super(parent);
         this.process = process;
         this.milestone = milestone;

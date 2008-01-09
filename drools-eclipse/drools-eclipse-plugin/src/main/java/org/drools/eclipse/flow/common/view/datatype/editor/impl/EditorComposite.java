@@ -20,7 +20,7 @@ import java.io.Serializable;import java.lang.reflect.InvocationTargetException;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.datatype.DataTypeRegistry;
 import org.drools.eclipse.flow.common.view.datatype.editor.Editor;
-import org.drools.ruleflow.common.datatype.DataType;
+import org.drools.process.core.datatype.DataType;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 

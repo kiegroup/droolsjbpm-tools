@@ -21,10 +21,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.ruleflow.core.Connection;
-import org.drools.ruleflow.core.Constraint;
-import org.drools.ruleflow.core.Split;
-import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.workflow.core.Connection;
+import org.drools.workflow.core.Constraint;
+import org.drools.workflow.core.WorkflowProcess;
+import org.drools.workflow.core.node.Split;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -44,12 +44,12 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class ConstraintListDialog extends EditBeanDialog {
 
-	private RuleFlowProcess process;
+	private WorkflowProcess process;
 	private Split split;
 	private Map newMap;
 	private Map labels = new HashMap();
 
-	protected ConstraintListDialog(Shell parentShell, RuleFlowProcess process,
+	protected ConstraintListDialog(Shell parentShell, WorkflowProcess process,
 			Split split) {
 		super(parentShell, "Edit Constraints");
 		this.process = process;
@@ -62,7 +62,7 @@ public class ConstraintListDialog extends EditBeanDialog {
 		gridLayout.numColumns = 3;
 		composite.setLayout(gridLayout);
 
-		List outgoingConnections = split.getOutgoingConnections();
+		List outgoingConnections = split.getDefaultOutgoingConnections();
 		labels.clear();
 		for (Iterator it = outgoingConnections.iterator(); it.hasNext(); ) {
 			Connection outgoingConnection = (Connection) it.next();

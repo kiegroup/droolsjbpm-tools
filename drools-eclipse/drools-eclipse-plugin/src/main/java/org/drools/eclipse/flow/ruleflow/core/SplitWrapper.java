@@ -24,10 +24,9 @@ import java.util.Map;
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.ruleflow.view.property.constraint.ConstraintsPropertyDescriptor;
-import org.drools.ruleflow.core.Connection;
-import org.drools.ruleflow.core.Constraint;
-import org.drools.ruleflow.core.Split;
-import org.drools.ruleflow.core.impl.SplitImpl;
+import org.drools.workflow.core.Connection;
+import org.drools.workflow.core.Constraint;
+import org.drools.workflow.core.node.Split;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
@@ -45,7 +44,7 @@ public class SplitWrapper extends NodeWrapper {
     private transient IPropertyDescriptor[] descriptors;
 
     public SplitWrapper() {
-        setNode(new SplitImpl());
+        setNode(new Split());
         getSplit().setName("Split");
         setDescriptors();
     }
@@ -67,12 +66,12 @@ public class SplitWrapper extends NodeWrapper {
     }
 
     public boolean acceptsOutgoingConnection(ElementConnection connection) {
-        return connection.getType() == Connection.TYPE_NORMAL;
+        return true;
     }
 
     public IPropertyDescriptor[] getPropertyDescriptors() {
-        if (getParent() != null && (getSplit().getType() == SplitImpl.TYPE_XOR
-                || getSplit().getType() == SplitImpl.TYPE_OR)) {
+        if (getParent() != null && (getSplit().getType() == Split.TYPE_XOR
+                || getSplit().getType() == Split.TYPE_OR)) {
             IPropertyDescriptor[] result = new IPropertyDescriptor[descriptors.length + 1];
             System.arraycopy(descriptors, 0, result, 0, descriptors.length);
             result[descriptors.length] = 
@@ -87,8 +86,8 @@ public class SplitWrapper extends NodeWrapper {
             return new Integer(getSplit().getType());
         }
         if (CONSTRAINTS.equals(id)) {
-        	return getSplit().getType() == SplitImpl.TYPE_XOR
-        		|| getSplit().getType() == SplitImpl.TYPE_OR
+        	return getSplit().getType() == Split.TYPE_XOR
+        		|| getSplit().getType() == Split.TYPE_OR
         		? new MyHashMap(getSplit().getConstraints()) : new MyHashMap();
         }
         return super.getPropertyValue(id);
@@ -98,7 +97,7 @@ public class SplitWrapper extends NodeWrapper {
         if (TYPE.equals(id)) {
             getSplit().setType(Split.TYPE_UNDEFINED);
         } else if (CONSTRAINTS.equals(id)) {
-        	for (Iterator it = getSplit().getOutgoingConnections().iterator(); it.hasNext(); ) {
+        	for (Iterator it = getSplit().getDefaultOutgoingConnections().iterator(); it.hasNext(); ) {
         		Connection connection = (Connection) it.next();
         		getSplit().setConstraint(connection, null);
         	}

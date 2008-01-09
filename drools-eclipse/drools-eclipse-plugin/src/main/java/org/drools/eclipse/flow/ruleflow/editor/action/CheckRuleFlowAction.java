@@ -17,8 +17,8 @@ package org.drools.eclipse.flow.ruleflow.editor.action;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.ruleflow.editor.RuleFlowModelEditor;
-import org.drools.ruleflow.core.RuleFlowProcessValidationError;
-import org.drools.ruleflow.core.impl.RuleFlowProcessValidatorImpl;
+import org.drools.process.core.validation.ProcessValidationError;
+import org.drools.ruleflow.core.validation.RuleFlowProcessValidator;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
@@ -46,7 +46,7 @@ public class CheckRuleFlowAction extends ActionDelegate implements IEditorAction
     }
 
     private void execute() {
-        RuleFlowProcessValidationError[] errors = RuleFlowProcessValidatorImpl.getInstance().validateProcess(
+        ProcessValidationError[] errors = RuleFlowProcessValidator.getInstance().validateProcess(
             ((RuleFlowModelEditor) editor).getRuleFlowModel().getRuleFlowProcess());
         if (errors.length == 0) {
             MessageDialog.openInformation(editor.getSite().getShell(),

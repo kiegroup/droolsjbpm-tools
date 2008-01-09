@@ -17,8 +17,8 @@ package org.drools.eclipse.flow.ruleflow.view.property.constraint;
 
 import org.drools.eclipse.flow.common.view.property.BeanDialogCellEditor;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.ruleflow.core.Split;
-import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.workflow.core.WorkflowProcess;
+import org.drools.workflow.core.node.Split;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
@@ -29,10 +29,10 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class ConstraintListCellEditor extends BeanDialogCellEditor {
 
-    private RuleFlowProcess process;
+    private WorkflowProcess process;
     private Split split;
     
-    public ConstraintListCellEditor(Composite parent, RuleFlowProcess process, Split split) {
+    public ConstraintListCellEditor(Composite parent, WorkflowProcess process, Split split) {
         super(parent);
         this.process = process;
         this.split = split;

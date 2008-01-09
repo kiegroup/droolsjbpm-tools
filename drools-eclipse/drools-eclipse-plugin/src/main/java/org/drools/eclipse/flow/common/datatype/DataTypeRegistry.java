@@ -17,7 +17,7 @@ package org.drools.eclipse.flow.common.datatype;
 
 import java.util.Set;
 
-import org.drools.ruleflow.common.datatype.DataTypeFactory;
+import org.drools.process.core.datatype.DataTypeFactory;
 
 /**
  * A registry of datatypes.

@@ -16,8 +16,7 @@ package org.drools.eclipse.flow.ruleflow.core;
  */
 
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
-import org.drools.ruleflow.core.EndNode;
-import org.drools.ruleflow.core.impl.EndNodeImpl;
+import org.drools.workflow.core.node.EndNode;
 
 /**
  * Wrapper for an end node.
@@ -29,7 +28,7 @@ public class EndNodeWrapper extends NodeWrapper {
     private static final long serialVersionUID = 400L;
 
     public EndNodeWrapper() {
-        setNode(new EndNodeImpl());
+        setNode(new EndNode());
         getEndNode().setName("End");
     }
     

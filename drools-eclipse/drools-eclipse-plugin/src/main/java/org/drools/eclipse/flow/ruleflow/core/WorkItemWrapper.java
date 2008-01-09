@@ -21,11 +21,10 @@ import java.util.Set;
 import org.drools.eclipse.WorkItemDefinitions;
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
-import org.drools.ruleflow.common.core.ParameterDefinition;
-import org.drools.ruleflow.common.core.Work;
-import org.drools.ruleflow.common.core.WorkDefinition;
-import org.drools.ruleflow.core.WorkItemNode;
-import org.drools.ruleflow.core.impl.WorkItemNodeImpl;
+import org.drools.process.core.ParameterDefinition;
+import org.drools.process.core.Work;
+import org.drools.process.core.WorkDefinition;
+import org.drools.workflow.core.node.WorkItemNode;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
@@ -43,7 +42,7 @@ public class WorkItemWrapper extends NodeWrapper {
 	private IPropertyDescriptor[] descriptors;
 
     public WorkItemWrapper() {
-        setNode(new WorkItemNodeImpl());
+        setNode(new WorkItemNode());
     }
     
     public WorkItemNode getWorkItemNode() {

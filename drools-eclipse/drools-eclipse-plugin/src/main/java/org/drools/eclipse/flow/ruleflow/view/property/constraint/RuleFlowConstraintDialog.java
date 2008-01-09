@@ -20,10 +20,10 @@ import java.util.Map;
 
 import org.drools.eclipse.editors.DRLSourceViewerConfig;
 import org.drools.eclipse.editors.scanners.DRLPartionScanner;
-import org.drools.ruleflow.core.Constraint;
-import org.drools.ruleflow.core.RuleFlowProcess;
-import org.drools.ruleflow.core.impl.ConstraintImpl;
 import org.drools.util.ArrayUtils;
+import org.drools.workflow.core.Constraint;
+import org.drools.workflow.core.WorkflowProcess;
+import org.drools.workflow.core.impl.ConstraintImpl;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
@@ -65,7 +65,7 @@ public class RuleFlowConstraintDialog extends Dialog {
     private static final String[] TYPES = new String[] { "rule", "code" };
 
     private Constraint constraint;
-	private RuleFlowProcess process;
+	private WorkflowProcess process;
 	private boolean success;
 	private Button alwaysTrue;
 	private Text nameText;
@@ -76,7 +76,7 @@ public class RuleFlowConstraintDialog extends Dialog {
 	private SourceViewer constraintViewer;
 	private ConstraintCompletionProcessor completionProcessor;
 
-	public RuleFlowConstraintDialog(Shell parentShell, RuleFlowProcess process) {
+	public RuleFlowConstraintDialog(Shell parentShell, WorkflowProcess process) {
 		super(parentShell);
 		this.process = process;
 		setShellStyle(getShellStyle() | SWT.RESIZE);

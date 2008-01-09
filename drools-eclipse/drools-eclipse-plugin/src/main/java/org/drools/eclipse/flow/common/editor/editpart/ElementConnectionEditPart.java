@@ -51,7 +51,7 @@ public class ElementConnectionEditPart extends AbstractConnectionEditPart implem
     }
     
     protected ElementConnectionFactory getDefaultElementConnectionFactory() {
-    	return new ElementConnectionFactory(0);
+    	return new ElementConnectionFactory();
     }
 
     protected IFigure createFigure() {

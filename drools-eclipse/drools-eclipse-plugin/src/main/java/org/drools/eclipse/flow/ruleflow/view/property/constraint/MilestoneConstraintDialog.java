@@ -21,8 +21,8 @@ import java.util.Map;
 import org.drools.eclipse.editors.DRLSourceViewerConfig;
 import org.drools.eclipse.editors.scanners.DRLPartionScanner;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.ruleflow.core.MilestoneNode;
-import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.workflow.core.WorkflowProcess;
+import org.drools.workflow.core.node.MilestoneNode;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
@@ -55,12 +55,12 @@ import org.eclipse.swt.widgets.TabItem;
  */
 public class MilestoneConstraintDialog extends EditBeanDialog {
 
-	private RuleFlowProcess process;
+	private WorkflowProcess process;
 	private TabFolder tabFolder;
 	private SourceViewer constraintViewer;
 	private ConstraintCompletionProcessor completionProcessor;
 
-	public MilestoneConstraintDialog(Shell parentShell, RuleFlowProcess process, MilestoneNode milestone) {
+	public MilestoneConstraintDialog(Shell parentShell, WorkflowProcess process, MilestoneNode milestone) {
 		super(parentShell, "Constraint editor");
 		this.process = process;
 		setValue(milestone.getConstraint());

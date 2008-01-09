@@ -16,9 +16,8 @@ package org.drools.eclipse.flow.ruleflow.core;
  */
 
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
-import org.drools.ruleflow.core.Connection;
-import org.drools.ruleflow.core.StartNode;
-import org.drools.ruleflow.core.impl.StartNodeImpl;
+import org.drools.workflow.core.Connection;
+import org.drools.workflow.core.node.StartNode;
 
 /**
  * Wrapper for a start node.
@@ -30,7 +29,7 @@ public class StartNodeWrapper extends NodeWrapper {
     private static final long serialVersionUID = 400L;
 
     public StartNodeWrapper() {
-        setNode(new StartNodeImpl());
+        setNode(new StartNode());
         setName("Start");
     }
     
@@ -43,7 +42,6 @@ public class StartNodeWrapper extends NodeWrapper {
     }
 
     public boolean acceptsOutgoingConnection(ElementConnection connection) {
-        return connection.getType() == Connection.TYPE_NORMAL
-    		&& getOutgoingConnections().isEmpty();
+        return getOutgoingConnections().isEmpty();
     }
 }

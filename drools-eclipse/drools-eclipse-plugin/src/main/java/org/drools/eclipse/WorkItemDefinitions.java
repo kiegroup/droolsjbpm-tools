@@ -4,10 +4,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.ruleflow.common.core.WorkDefinition;
-import org.drools.ruleflow.common.core.impl.ParameterDefinitionImpl;
-import org.drools.ruleflow.common.core.impl.WorkDefinitionExtensionImpl;
-import org.drools.ruleflow.common.datatype.impl.type.StringDataType;
+import org.drools.process.core.WorkDefinition;
+import org.drools.process.core.datatype.impl.type.StringDataType;
+import org.drools.process.core.impl.ParameterDefinitionImpl;
+import org.drools.process.core.impl.WorkDefinitionExtensionImpl;
 
 public final class WorkItemDefinitions {
     

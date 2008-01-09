@@ -15,7 +15,7 @@ package org.drools.eclipse.flow.common.view.datatype.editor;
  * limitations under the License.
  */
 
-import org.drools.ruleflow.common.datatype.DataType;
+import org.drools.process.core.datatype.DataType;
 
 /**
  * An editor for a datatype.

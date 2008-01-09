@@ -37,16 +37,13 @@ public class ElementConnection implements Serializable {
 	
 	private ElementWrapper source;
     private ElementWrapper target;
-    private int type;
     private List bendpoints = new ArrayList();
     private transient List listeners = new ArrayList();
     
-    public ElementConnection(int type) {
-        this.type = type;
+    public ElementConnection() {
     }
     
-    public ElementConnection(ElementWrapper source, ElementWrapper target, int type) {
-        this(type);
+    public ElementConnection(ElementWrapper source, ElementWrapper target) {
         if (source == null) {
         	throw new IllegalArgumentException("source is null");        	
         }
@@ -99,10 +96,6 @@ public class ElementConnection implements Serializable {
         return target;
     }
 
-    public int getType() {
-        return type;
-    }
-    
     public void addBendpoint(int index, Point point) {
         bendpoints.add(index, point);
         notifyListeners(CHANGE_BENDPOINTS);

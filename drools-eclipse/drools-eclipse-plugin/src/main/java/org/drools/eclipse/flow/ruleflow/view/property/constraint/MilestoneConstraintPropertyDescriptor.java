@@ -15,8 +15,9 @@ package org.drools.eclipse.flow.ruleflow.view.property.constraint;
  * limitations under the License.
  */
 
-import org.drools.ruleflow.core.MilestoneNode;
-import org.drools.ruleflow.core.RuleFlowProcess;
+
+import org.drools.workflow.core.WorkflowProcess;
+import org.drools.workflow.core.node.MilestoneNode;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
@@ -28,16 +29,16 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
  */
 public class MilestoneConstraintPropertyDescriptor extends PropertyDescriptor {
     
-    private RuleFlowProcess process;
+    private WorkflowProcess process;
     private MilestoneNode milestone;
     
-    public MilestoneConstraintPropertyDescriptor(Object id, String displayName, MilestoneNode milestone, RuleFlowProcess process) {
+    public MilestoneConstraintPropertyDescriptor(Object id, String displayName, MilestoneNode milestone, WorkflowProcess process) {
         super(id, displayName);
         this.milestone = milestone;
         this.process = process;
     }
     
-    public RuleFlowProcess getProcess() {
+    public WorkflowProcess getProcess() {
         return process;
     }
     

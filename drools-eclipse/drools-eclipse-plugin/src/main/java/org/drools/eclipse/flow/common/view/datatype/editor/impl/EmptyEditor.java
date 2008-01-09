@@ -17,7 +17,7 @@ package org.drools.eclipse.flow.common.view.datatype.editor.impl;
 
 import java.io.Serializable;import org.drools.eclipse.flow.common.view.datatype.editor.DataTypeEditor;
 import org.drools.eclipse.flow.common.view.datatype.editor.Editor;
-import org.drools.ruleflow.common.datatype.DataType;
+import org.drools.process.core.datatype.DataType;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;

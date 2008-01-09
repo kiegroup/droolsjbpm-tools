@@ -15,8 +15,8 @@ package org.drools.eclipse.flow.ruleflow.view.property.action;
  * limitations under the License.
  */
 
-import org.drools.ruleflow.core.ActionNode;
-import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.workflow.core.WorkflowProcess;
+import org.drools.workflow.core.node.ActionNode;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
@@ -28,16 +28,16 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
  */
 public class ActionPropertyDescriptor extends PropertyDescriptor {
     
-    private RuleFlowProcess process;
+    private WorkflowProcess process;
     private ActionNode actionNode;
     
-    public ActionPropertyDescriptor(Object id, String displayName, ActionNode actionNode, RuleFlowProcess process) {
+    public ActionPropertyDescriptor(Object id, String displayName, ActionNode actionNode, WorkflowProcess process) {
         super(id, displayName);
         this.actionNode = actionNode;
         this.process = process;
     }
     
-    public RuleFlowProcess getProcess() {
+    public WorkflowProcess getProcess() {
         return process;
     }
     

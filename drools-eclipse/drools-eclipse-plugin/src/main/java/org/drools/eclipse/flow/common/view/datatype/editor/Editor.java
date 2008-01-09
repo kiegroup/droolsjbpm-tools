@@ -16,7 +16,7 @@ package org.drools.eclipse.flow.common.view.datatype.editor;
  */
 
 import java.io.Serializable;
-import org.drools.ruleflow.common.datatype.DataType;
+import org.drools.process.core.datatype.DataType;
 
 /**
  * An editor for an object with a given datatype.

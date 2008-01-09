@@ -16,8 +16,8 @@ package org.drools.eclipse.flow.common.view.datatype.editor.impl;
  */
 
 import java.io.Serializable;import org.drools.eclipse.flow.common.view.datatype.editor.Editor;
-import org.drools.ruleflow.common.datatype.DataType;
-import org.drools.ruleflow.common.datatype.impl.type.BooleanDataType;
+import org.drools.process.core.datatype.DataType;
+import org.drools.process.core.datatype.impl.type.BooleanDataType;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Combo;

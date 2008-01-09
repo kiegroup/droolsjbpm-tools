@@ -16,7 +16,7 @@ package org.drools.eclipse.flow.ruleflow.core;
  */
 
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
-import org.drools.ruleflow.core.Node;
+import org.drools.workflow.core.Node;
 
 /**
  * Wrapper for a node.

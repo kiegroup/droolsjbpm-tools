@@ -25,12 +25,11 @@ import org.drools.eclipse.flow.common.editor.core.ElementConnectionFactory;
  */
 public class ConnectionWrapperFactory extends ElementConnectionFactory {
 	
-	public ConnectionWrapperFactory(int type) {
-		super(type);
+	public ConnectionWrapperFactory() {
 	}
 	
 	public ElementConnection createElementConnection() {
-		ConnectionWrapper connection = new ConnectionWrapper(getType());
+		ConnectionWrapper connection = new ConnectionWrapper();
 		return connection;
 	}
 

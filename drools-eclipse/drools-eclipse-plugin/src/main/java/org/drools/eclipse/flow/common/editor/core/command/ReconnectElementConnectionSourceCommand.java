@@ -37,7 +37,7 @@ public class ReconnectElementConnectionSourceCommand extends Command {
         if (connection.getTarget().equals(newSource))
             return false;
             
-        List connections = newSource.getOutgoingConnections(connection.getType()); 
+        List connections = newSource.getOutgoingConnections(); 
         for (int i = 0; i < connections.size(); i++) {
             ElementConnection connection = ((ElementConnection)(connections.get(i)));
             if (connection.getTarget().equals(target) && !connection.getSource().equals(oldSource))

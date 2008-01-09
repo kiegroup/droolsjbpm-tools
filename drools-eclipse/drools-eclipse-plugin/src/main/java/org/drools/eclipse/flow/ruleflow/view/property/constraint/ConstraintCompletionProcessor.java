@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.drools.eclipse.editors.DRLRuleEditor;
 import org.drools.eclipse.editors.completion.RuleCompletionProcessor;
-import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.workflow.core.WorkflowProcess;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
@@ -44,11 +44,11 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ConstraintCompletionProcessor extends RuleCompletionProcessor {
 
-	private RuleFlowProcess process;
+	private WorkflowProcess process;
 	private List imports;
 	private List globals;
 	
-	public ConstraintCompletionProcessor(RuleFlowProcess process) {
+	public ConstraintCompletionProcessor(WorkflowProcess process) {
 		super(null);
 		this.process = process;
 	}

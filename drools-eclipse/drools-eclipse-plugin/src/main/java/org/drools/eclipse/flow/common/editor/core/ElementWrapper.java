@@ -48,8 +48,6 @@ public interface ElementWrapper {
     void removeOutgoingConnection(ElementConnection connection);
     boolean acceptsIncomingConnection(ElementConnection connection);
     boolean acceptsOutgoingConnection(ElementConnection connection);
-    List getOutgoingConnections(int type);
-    List getIncomingConnections(int type);
     
     void addListener(ModelListener listener);
     void removeListener(ModelListener listener);

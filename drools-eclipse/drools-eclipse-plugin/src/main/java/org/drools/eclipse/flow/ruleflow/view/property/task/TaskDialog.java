@@ -16,7 +16,7 @@ package org.drools.eclipse.flow.ruleflow.view.property.task;
  */
 
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.ruleflow.common.core.Work;
+import org.drools.process.core.Work;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;

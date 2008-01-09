@@ -17,7 +17,7 @@ package org.drools.eclipse.flow.common.view.datatype.editor.impl;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.datatype.DataTypeRegistry;
-import org.drools.ruleflow.common.datatype.DataType;
+import org.drools.process.core.datatype.DataType;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;

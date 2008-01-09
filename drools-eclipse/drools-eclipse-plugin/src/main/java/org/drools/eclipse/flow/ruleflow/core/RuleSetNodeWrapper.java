@@ -17,8 +17,7 @@ package org.drools.eclipse.flow.ruleflow.core;
 
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
-import org.drools.ruleflow.core.RuleSetNode;
-import org.drools.ruleflow.core.impl.RuleSetNodeImpl;
+import org.drools.workflow.core.node.RuleSetNode;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
@@ -41,7 +40,7 @@ public class RuleSetNodeWrapper extends NodeWrapper {
     }
 
     public RuleSetNodeWrapper() {
-        setNode(new RuleSetNodeImpl());
+        setNode(new RuleSetNode());
         getRuleSetNode().setName("RuleSet");
         getRuleSetNode().setRuleFlowGroup("");
     }

@@ -39,7 +39,7 @@ public class ElementConnectionCreateCommand extends Command {
         }
         
         // Check for existence of connection already
-        List connections = source.getOutgoingConnections(connection.getType());
+        List connections = source.getOutgoingConnections();
         for (Iterator it = connections.iterator(); it.hasNext(); ) {
         	ElementConnection conn = (ElementConnection) it.next();
             if (conn.getTarget().equals(target)) {

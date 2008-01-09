@@ -128,28 +128,6 @@ public abstract class DefaultElementWrapper implements IPropertySource, ElementW
 	protected void internalSetName(String name) {
 	}
 
-	public List getOutgoingConnections(int type) {
-		List result = new ArrayList();
-		for (Iterator it = outgoingConnections.iterator(); it.hasNext();) {
-			ElementConnection connection = (ElementConnection) it.next();
-			if (connection.getType() == type) {
-				result.add(connection);
-			}
-		}
-		return Collections.unmodifiableList(result);
-	}
-
-	public List getIncomingConnections(int type) {
-		List result = new ArrayList();
-		for (Iterator it = incomingConnections.iterator(); it.hasNext();) {
-			ElementConnection connection = (ElementConnection) it.next();
-			if (connection.getType() == type) {
-				result.add(connection);
-			}
-		}
-		return Collections.unmodifiableList(result);
-	}
-
 	public void addListener(ModelListener listener) {
 		listeners.add(listener);
 	}

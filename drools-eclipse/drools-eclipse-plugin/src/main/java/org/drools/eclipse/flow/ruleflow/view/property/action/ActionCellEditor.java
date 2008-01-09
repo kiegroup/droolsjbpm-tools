@@ -17,8 +17,8 @@ package org.drools.eclipse.flow.ruleflow.view.property.action;
 
 import org.drools.eclipse.flow.common.view.property.BeanDialogCellEditor;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.ruleflow.core.ActionNode;
-import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.workflow.core.WorkflowProcess;
+import org.drools.workflow.core.node.ActionNode;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
@@ -29,10 +29,10 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class ActionCellEditor extends BeanDialogCellEditor {
 
-    private RuleFlowProcess process;
+    private WorkflowProcess process;
     private ActionNode actionNode;
     
-    public ActionCellEditor(Composite parent, RuleFlowProcess process, ActionNode actionNode) {
+    public ActionCellEditor(Composite parent, WorkflowProcess process, ActionNode actionNode) {
         super(parent);
         this.process = process;
         this.actionNode = actionNode;

@@ -22,10 +22,10 @@ import org.drools.eclipse.editors.scanners.DRLPartionScanner;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
 import org.drools.eclipse.flow.ruleflow.view.property.constraint.RuleFlowGlobalsDialog;
 import org.drools.eclipse.flow.ruleflow.view.property.constraint.RuleFlowImportsDialog;
-import org.drools.ruleflow.core.ActionNode;
-import org.drools.ruleflow.core.RuleFlowProcess;
-import org.drools.ruleflow.core.impl.DroolsConsequenceAction;
 import org.drools.util.ArrayUtils;
+import org.drools.workflow.core.WorkflowProcess;
+import org.drools.workflow.core.impl.DroolsConsequenceAction;
+import org.drools.workflow.core.node.ActionNode;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
@@ -59,13 +59,13 @@ public class ActionDialog extends EditBeanDialog {
 
     private static final String[] DIALECTS = new String[] { "mvel", "java" };
     
-	private RuleFlowProcess process;
+	private WorkflowProcess process;
 	private TabFolder tabFolder;
 	private SourceViewer actionViewer;
 	private Combo dialectCombo;
 	//private ActionCompletionProcessor completionProcessor;
 
-	public ActionDialog(Shell parentShell, RuleFlowProcess process, ActionNode actionNode) {
+	public ActionDialog(Shell parentShell, WorkflowProcess process, ActionNode actionNode) {
 		super(parentShell, "Action editor");
 		this.process = process;
 		super.setValue(actionNode.getAction());

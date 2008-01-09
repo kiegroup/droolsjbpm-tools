@@ -18,8 +18,7 @@ package org.drools.eclipse.flow.ruleflow.core;
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.ruleflow.view.property.action.ActionPropertyDescriptor;
-import org.drools.ruleflow.core.ActionNode;
-import org.drools.ruleflow.core.impl.ActionNodeImpl;
+import org.drools.workflow.core.node.ActionNode;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
 /**
@@ -36,7 +35,7 @@ public class ActionWrapper extends NodeWrapper {
     public static final String ACTION = "Action";
 
     public ActionWrapper() {
-        setNode(new ActionNodeImpl());
+        setNode(new ActionNode());
         getActionNode().setName("Action");
     }
     

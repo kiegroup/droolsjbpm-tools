@@ -22,18 +22,8 @@ package org.drools.eclipse.flow.common.editor.core;
  */
 public class ElementConnectionFactory {
 	
-	private int type;
-	
-	public ElementConnectionFactory(int type) {
-		this.type = type;
-	}
-	
 	public ElementConnection createElementConnection() {
-		ElementConnection connection = new ElementConnection(type);
-		return connection;
+		return new ElementConnection();
 	}
 	
-	protected int getType() {
-		return this.type;
-	}
 }
