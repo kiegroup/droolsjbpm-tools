@@ -1,0 +1,115 @@
+<org.drools.ruleflow.core.RuleFlowProcess id="1">
+  <nodeContainer class="org.drools.workflow.core.impl.WorkflowProcessImpl$WFProcessNodeContainer" id="2">
+    <outer-class class="org.drools.ruleflow.core.RuleFlowProcess" reference="1"/>
+    <nodes id="3">
+      <entry>
+        <long>1</long>
+        <org.drools.workflow.core.node.StartNode id="4">
+          <id>1</id>
+          <name>Start</name>
+          <incomingConnections id="5"/>
+          <outgoingConnections id="6">
+            <entry>
+              <string>DROOLS_DEFAULT</string>
+              <list id="7">
+                <org.drools.workflow.core.impl.ConnectionImpl id="8">
+                  <from class="org.drools.workflow.core.node.StartNode" reference="4"/>
+                  <to class="org.drools.workflow.core.node.RuleSetNode" id="9">
+                    <ruleFlowGroup>hello</ruleFlowGroup>
+                    <id>2</id>
+                    <name>Hello</name>
+                    <incomingConnections id="10">
+                      <entry>
+                        <string>DROOLS_DEFAULT</string>
+                        <list id="11">
+                          <org.drools.workflow.core.impl.ConnectionImpl reference="8"/>
+                        </list>
+                      </entry>
+                    </incomingConnections>
+                    <outgoingConnections id="12">
+                      <entry>
+                        <string>DROOLS_DEFAULT</string>
+                        <list id="13">
+                          <org.drools.workflow.core.impl.ConnectionImpl id="14">
+                            <from class="org.drools.workflow.core.node.RuleSetNode" reference="9"/>
+                            <to class="org.drools.workflow.core.node.RuleSetNode" id="15">
+                              <ruleFlowGroup>goodbye</ruleFlowGroup>
+                              <id>3</id>
+                              <name>Goodbye</name>
+                              <incomingConnections id="16">
+                                <entry>
+                                  <string>DROOLS_DEFAULT</string>
+                                  <list id="17">
+                                    <org.drools.workflow.core.impl.ConnectionImpl reference="14"/>
+                                  </list>
+                                </entry>
+                              </incomingConnections>
+                              <outgoingConnections id="18">
+                                <entry>
+                                  <string>DROOLS_DEFAULT</string>
+                                  <list id="19">
+                                    <org.drools.workflow.core.impl.ConnectionImpl id="20">
+                                      <from class="org.drools.workflow.core.node.RuleSetNode" reference="15"/>
+                                      <to class="org.drools.workflow.core.node.EndNode" id="21">
+                                        <id>4</id>
+                                        <name>End</name>
+                                        <incomingConnections id="22">
+                                          <entry>
+                                            <string>DROOLS_DEFAULT</string>
+                                            <list id="23">
+                                              <org.drools.workflow.core.impl.ConnectionImpl reference="20"/>
+                                            </list>
+                                          </entry>
+                                        </incomingConnections>
+                                        <outgoingConnections id="24"/>
+                                        <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess" reference="1"/>
+                                      </to>
+                                      <fromType>DROOLS_DEFAULT</fromType>
+                                      <toType>DROOLS_DEFAULT</toType>
+                                    </org.drools.workflow.core.impl.ConnectionImpl>
+                                  </list>
+                                </entry>
+                              </outgoingConnections>
+                              <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess" reference="1"/>
+                            </to>
+                            <fromType>DROOLS_DEFAULT</fromType>
+                            <toType>DROOLS_DEFAULT</toType>
+                          </org.drools.workflow.core.impl.ConnectionImpl>
+                        </list>
+                      </entry>
+                    </outgoingConnections>
+                    <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess" reference="1"/>
+                  </to>
+                  <fromType>DROOLS_DEFAULT</fromType>
+                  <toType>DROOLS_DEFAULT</toType>
+                </org.drools.workflow.core.impl.ConnectionImpl>
+              </list>
+            </entry>
+          </outgoingConnections>
+          <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess" reference="1"/>
+        </org.drools.workflow.core.node.StartNode>
+      </entry>
+      <entry>
+        <long>2</long>
+        <org.drools.workflow.core.node.RuleSetNode reference="9"/>
+      </entry>
+      <entry>
+        <long>3</long>
+        <org.drools.workflow.core.node.RuleSetNode reference="15"/>
+      </entry>
+      <entry>
+        <long>4</long>
+        <org.drools.workflow.core.node.EndNode reference="21"/>
+      </entry>
+    </nodes>
+    <lastNodeId>4</lastNodeId>
+  </nodeContainer>
+  <id>com.sample.ruleflow</id>
+  <name>ruleflow</name>
+  <version>1</version>
+  <type>RuleFlow</type>
+  <packageName>com.sample</packageName>
+  <variableScope class="org.drools.process.core.impl.VariableScopeImpl" id="25">
+    <variables id="26"/>
+  </variableScope>
+</org.drools.ruleflow.core.RuleFlowProcess>
