@@ -44,7 +44,7 @@
                                         </entry>
                                       </outgoingConnections>
                                       <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess" id="17">
-                                        <nodeContainer class="org.drools.workflow.core.impl.WorkflowProcessImpl$WFProcessNodeContainer" id="18">
+                                        <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess$WorkflowProcessNodeContainer" id="18">
                                           <outer-class class="org.drools.ruleflow.core.RuleFlowProcess" reference="17"/>
                                           <nodes id="19">
                                             <entry>

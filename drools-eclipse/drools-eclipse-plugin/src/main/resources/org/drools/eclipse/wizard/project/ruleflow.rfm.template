@@ -1,5 +1,5 @@
 <org.drools.ruleflow.core.RuleFlowProcess id="1">
-  <nodeContainer class="org.drools.workflow.core.impl.WorkflowProcessImpl$WFProcessNodeContainer" id="2">
+  <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess$WorkflowProcessNodeContainer" id="2">
     <outer-class class="org.drools.ruleflow.core.RuleFlowProcess" reference="1"/>
     <nodes id="3">
       <entry>
