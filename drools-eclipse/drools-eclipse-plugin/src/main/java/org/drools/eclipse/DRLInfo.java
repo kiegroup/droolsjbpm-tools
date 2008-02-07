@@ -15,7 +15,7 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
-import org.drools.rule.PackageCompilationData;
+import org.drools.rule.DialectDatas;
 
 public class DRLInfo {
 
@@ -185,10 +185,9 @@ public class DRLInfo {
 				if (!isCompiled()) {
 					throw new IllegalArgumentException("Package has not been compiled");
 				}
-				PackageCompilationData data = compiledPackage
-                					.getPackageCompilationData();
+				DialectDatas datas = compiledPackage.getDialectDatas();
 
-                LineMappings mappings = data.getLineMappings(className);
+                LineMappings mappings = datas.getLineMappings(className);
                 consequenceJavaLineNumber = mappings.getOffset();
 
 			}
@@ -270,8 +269,7 @@ public class DRLInfo {
 				if (!isCompiled()) {
 					throw new IllegalArgumentException("Package has not been compiled");
 				}
-				javaLineNumber = compiledPackage
-					.getPackageCompilationData().getLineMappings(className).getOffset();
+				javaLineNumber = compiledPackage.getDialectDatas().getLineMappings(className).getOffset();
 			}
 			return javaLineNumber;
 		}

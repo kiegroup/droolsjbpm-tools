@@ -44,10 +44,10 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.swt.graphics.Image;
-import org.mvel.CompiledExpression;
-import org.mvel.ExpressionCompiler;
+import org.mvel.compiler.CompiledExpression;
+import org.mvel.compiler.ExpressionCompiler;
 import org.mvel.ParserContext;
-import org.mvel.PropertyVerifier;
+import org.mvel.compiler.PropertyVerifier;
 
 /**
  * For handling within rules.
