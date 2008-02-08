@@ -30,7 +30,7 @@ public class CollectNodeVertex extends BaseVertex {
      * @see org.drools.reteoo.BaseNodeVertex#getHtml()
      */
     public String getHtml() {
-        return NODE_NAME+" : " + this.node.getId() + " : Chared count = " + this.node.getSharedCount();
+        return NODE_NAME+" : " + this.node.getId() + " : Shared count=" + this.node.getSinkPropagator().size();
     }
 
     /* (non-Javadoc)
