@@ -1824,6 +1824,7 @@ public class CompletionContextTest extends TestCase {
     }
 
     public void FAILINGtestCheckRuleHeaderLocationDetermination3() {
+        // FIXME
         // KRISV: still can't make this work... apparently, ANTLR is trying to recover from
         // the error (unkown token) by deleting the token. I don't know why it continues to
         // execute actions though, if the EOF is found.
