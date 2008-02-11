@@ -15,10 +15,9 @@ package org.drools.eclipse.flow.ruleflow.editor.editpart;
  * limitations under the License.
  */
 
-import org.drools.eclipse.flow.common.editor.core.ElementConnection;
-import org.drools.eclipse.flow.common.editor.editpart.ElementConnectionEditPart;
 import org.drools.eclipse.flow.common.editor.editpart.ProcessEditPart;
 import org.drools.eclipse.flow.ruleflow.core.ActionWrapper;
+import org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper;
 import org.drools.eclipse.flow.ruleflow.core.EndNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.JoinWrapper;
 import org.drools.eclipse.flow.ruleflow.core.MilestoneWrapper;
@@ -44,8 +43,8 @@ public class RuleFlowEditPartFactory implements EditPartFactory {
             result = new ProcessEditPart();
         } else if (model instanceof RuleSetNodeWrapper) {
             result = new RuleSetNodeEditPart();
-        } else if (model instanceof ElementConnection) {
-            result = new ElementConnectionEditPart();
+        } else if (model instanceof ConnectionWrapper) {
+            result = new ConnectionWrapperEditPart();
         } else if (model instanceof StartNodeWrapper) {
             result = new StartNodeEditPart();
         } else if (model instanceof EndNodeWrapper) {
