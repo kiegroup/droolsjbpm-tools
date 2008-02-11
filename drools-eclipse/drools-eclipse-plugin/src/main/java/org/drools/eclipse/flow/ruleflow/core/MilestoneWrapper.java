@@ -35,7 +35,7 @@ public class MilestoneWrapper extends NodeWrapper {
 
     public MilestoneWrapper() {
         setNode(new MilestoneNode());
-        getMilestoneNode().setName("Milestone");
+        getMilestoneNode().setName("Event Wait");
     }
     
     private void setDescriptors() {

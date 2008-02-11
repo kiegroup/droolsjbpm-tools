@@ -128,8 +128,8 @@ public class RuleFlowPaletteFactory {
         entries.add(combined);
                         
         combined = new CombinedTemplateCreationEntry(
-            "Milestone",
-            "Create a new Milestone",
+            "Event Wait",
+            "Create a new Event Wait",
             MilestoneWrapper.class,
             new SimpleFactory(MilestoneWrapper.class),
             ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/question.gif")), 
