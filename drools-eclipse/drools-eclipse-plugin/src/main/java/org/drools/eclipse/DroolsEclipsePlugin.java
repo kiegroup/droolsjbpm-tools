@@ -27,16 +27,19 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.ProcessBuilder;
 import org.drools.eclipse.DRLInfo.FunctionInfo;
 import org.drools.eclipse.DRLInfo.RuleInfo;
 import org.drools.eclipse.builder.DroolsBuilder;
 import org.drools.eclipse.builder.Util;
 import org.drools.eclipse.dsl.editor.DSLAdapter;
 import org.drools.eclipse.editors.AbstractRuleEditor;
+import org.drools.eclipse.flow.ruleflow.core.RuleFlowProcessWrapper;
 import org.drools.eclipse.preferences.IDroolsConstants;
 import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.ruleflow.core.RuleFlowProcess;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
@@ -56,6 +59,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+
+import com.thoughtworks.xstream.XStream;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -78,6 +83,8 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 	private Map compiledRules = new HashMap();
 	private Map ruleInfoByClassNameMap = new HashMap();
 	private Map functionInfoByClassNameMap = new HashMap();
+	private Map<IResource, ProcessInfo> processInfos = new HashMap<IResource, ProcessInfo>();
+	private Map<String, ProcessInfo> processInfosById = new HashMap<String, ProcessInfo>();
 	private boolean useCachePreference;
 
     private FormColors               ruleBuilderFormColors;
@@ -115,6 +122,8 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 		compiledRules.clear();
 		ruleInfoByClassNameMap.clear();
 		functionInfoByClassNameMap.clear();
+		processInfos.clear();
+		processInfosById = null;
 	}
 
 	/**
@@ -126,6 +135,8 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 		resourceBundle = null;
 		parsedRules = null;
 		compiledRules = null;
+		processInfos = null;
+		processInfosById = null;
 		Iterator iterator = colors.values().iterator();
 		while (iterator.hasNext()) {
 			((Color) iterator.next()).dispose();
@@ -282,6 +293,10 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 			}
 		}
 		parsedRules.remove(resource);
+		ProcessInfo processInfo = processInfos.remove(resource);
+		if (processInfo != null) {
+		    processInfosById.remove(processInfo.getProcessId());
+		}
 	}
 	
 	private DRLInfo generateParsedResource(IResource resource, boolean compile) throws DroolsParserException {
@@ -393,6 +408,43 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 
 	public FunctionInfo getFunctionInfoByClass(String functionClassName) {
 		return (FunctionInfo) functionInfoByClassNameMap.get(functionClassName);
+	}
+	
+	public ProcessInfo parseProcess(String input, IResource resource) {
+	    try {
+            XStream stream = new XStream();
+            stream.setMode(XStream.ID_REFERENCES);
+            
+            ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+            ClassLoader newLoader = this.getClass().getClassLoader();
+            try {
+                Thread.currentThread().setContextClassLoader(newLoader);
+                Object o = stream.fromXML(input);
+                if (o instanceof RuleFlowProcessWrapper) {
+                    RuleFlowProcessWrapper processWrapper = (RuleFlowProcessWrapper) o;
+                    RuleFlowProcess process = processWrapper.getRuleFlowProcess();
+                    PackageBuilder packageBuilder = new PackageBuilder();
+                    ProcessBuilder processBuilder = new ProcessBuilder(packageBuilder);
+                    processBuilder.buildProcess(process);
+                    ProcessInfo processInfo = new ProcessInfo(process.getId(), processWrapper, packageBuilder.getPackage());
+                    processInfo.setErrors(processBuilder.getErrors());
+                    if (useCachePreference) {
+                        processInfos.put(resource, processInfo);
+                        processInfosById.put(process.getId(), processInfo);
+                    }
+                    return processInfo;
+                }
+            } finally {
+                Thread.currentThread().setContextClassLoader(oldLoader);
+            }           
+        } catch (Exception e) {
+            log(e);
+        }
+	    return null;
+	}
+	
+	public ProcessInfo getProcessInfo(String processId) {
+	    return processInfosById.get(processId);
 	}
 
     /**

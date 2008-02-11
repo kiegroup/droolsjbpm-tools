@@ -18,7 +18,9 @@ package org.drools.eclipse.flow.common.datatype;
 import org.drools.eclipse.flow.common.datatype.impl.DataTypeRegistryImpl;
 import org.drools.eclipse.flow.common.view.datatype.editor.impl.BooleanEditor;
 import org.drools.eclipse.flow.common.view.datatype.editor.impl.EmptyEditor;
+import org.drools.eclipse.flow.common.view.datatype.editor.impl.FloatEditor;
 import org.drools.eclipse.flow.common.view.datatype.editor.impl.IntegerEditor;
+import org.drools.eclipse.flow.common.view.datatype.editor.impl.StringEditor;
 import org.drools.process.core.datatype.DataTypeFactory;
 import org.drools.process.core.datatype.impl.InstanceDataTypeFactory;
 import org.drools.process.core.datatype.impl.type.BooleanDataType;
@@ -52,12 +54,12 @@ public class DefaultDataTypeRegistry {
 		registerVariableDataType(IntegerDataType.class,
 				new InstanceDataTypeFactory(IntegerDataType.class), "Integer",
 				IntegerEditor.class, EmptyEditor.class);
-//		registerVariableDataType(FloatDataType.class,
-//				new InstanceDataTypeFactory(FloatDataType.class), "Float",
-//				FloatEditor.class, EmptyEditor.class);
-//		registerVariableDataType(StringDataType.class,
-//				new InstanceDataTypeFactory(StringDataType.class), "String",
-//				StringEditor.class, EmptyEditor.class);
+		registerVariableDataType(FloatDataType.class,
+				new InstanceDataTypeFactory(FloatDataType.class), "Float",
+				FloatEditor.class, EmptyEditor.class);
+		registerVariableDataType(StringDataType.class,
+				new InstanceDataTypeFactory(StringDataType.class), "String",
+				StringEditor.class, EmptyEditor.class);
 	}
 
 	public static void registerVariableDataType(Class type,

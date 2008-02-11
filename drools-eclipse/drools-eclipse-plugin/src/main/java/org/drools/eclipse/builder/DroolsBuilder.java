@@ -22,15 +22,13 @@ import org.drools.compiler.FieldTemplateError;
 import org.drools.compiler.FunctionError;
 import org.drools.compiler.GlobalError;
 import org.drools.compiler.ImportError;
-import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.ParserError;
-import org.drools.compiler.ProcessBuilder;
 import org.drools.compiler.RuleBuildError;
 import org.drools.decisiontable.InputType;
 import org.drools.decisiontable.SpreadsheetCompiler;
 import org.drools.eclipse.DRLInfo;
 import org.drools.eclipse.DroolsEclipsePlugin;
-import org.drools.eclipse.flow.ruleflow.core.RuleFlowProcessWrapper;
+import org.drools.eclipse.ProcessInfo;
 import org.drools.eclipse.preferences.IDroolsConstants;
 import org.drools.lang.ExpanderException;
 import org.eclipse.core.resources.IFile;
@@ -50,8 +48,6 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-
-import com.thoughtworks.xstream.XStream;
 
 /**
  * Automatically syntax checks .drl files and adds possible
@@ -282,23 +278,10 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
     private DroolsBuildMarker[] parseRuleFlowFile(IFile file) {
     	List markers = new ArrayList();
 		try {
-			String ruleflow = convertToString(file.getContents());
-			XStream stream = new XStream();
-	        stream.setMode(XStream.ID_REFERENCES);
-	        
-	        ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
-	        ClassLoader newLoader = this.getClass().getClassLoader();
-	        try {
-	            Thread.currentThread().setContextClassLoader(newLoader);
-	            Object o = stream.fromXML(ruleflow);
-	            if (o instanceof RuleFlowProcessWrapper) {
-	            	ProcessBuilder processBuilder = new ProcessBuilder(new PackageBuilder());
-	            	processBuilder.buildProcess(((RuleFlowProcessWrapper) o).getRuleFlowProcess());
-	            	markParseErrors(markers, processBuilder.getErrors());
-	            }
-	        } finally {
-	            Thread.currentThread().setContextClassLoader(oldLoader);
-	        }			
+            String input = convertToString(file.getContents());
+		    ProcessInfo processInfo =
+                DroolsEclipsePlugin.getDefault().parseProcess(input, file);
+		    markParseErrors(markers, processInfo.getErrors());  
         } catch (Exception t) {
         	String message = t.getMessage();
             if (message == null || message.trim().equals( "" )) {

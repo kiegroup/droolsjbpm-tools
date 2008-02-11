@@ -35,7 +35,7 @@ public abstract class NodeWrapper extends DefaultElementWrapper {
     
     public String getId() {
         long id = getNode().getId();
-        return id == -1 ? null : getNode().getId() + "-Wrapper";
+        return id == -1 ? null : getNode().getId() + "";
     }
 
     public String getName() {

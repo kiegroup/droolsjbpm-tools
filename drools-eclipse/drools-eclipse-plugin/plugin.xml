@@ -37,6 +37,20 @@
       </view>
       -->
       <view
+         name="Process Instances View"
+         icon="icons/drools.gif"
+         category="org.drools.eclipse.views"
+         class="org.drools.eclipse.debug.ProcessInstancesView"
+         id="org.drools.eclipse.debug.ProcessInstancesView">
+      </view>
+      <view
+            name="Process Instance View"
+            icon="icons/drools.gif"
+            category="org.drools.eclipse.views"
+            class="org.drools.eclipse.debug.ProcessInstanceViewer"
+            id="org.drools.eclipse.debug.ProcessInstanceViewer">
+      </view>
+      <view
          name="Audit View"
          icon="icons/drools.gif"
          category="org.drools.eclipse.views"
@@ -59,6 +73,12 @@
         class="org.drools.eclipse.debug.AgendaLogicalStructureDelegate"
         modelIdentifier="org.eclipse.jdt.debug"
         description="Agenda Item">
+      </logicalStructureType>
+      <logicalStructureType
+        id="org.drools.eclipse.debug.ProcessInstanceLogicalStructures"
+        class="org.drools.eclipse.debug.ProcessInstanceLogicalStructureDelegate"
+        modelIdentifier="org.eclipse.jdt.debug"
+        description="Process Instance">
       </logicalStructureType>
    </extension>
    <extension

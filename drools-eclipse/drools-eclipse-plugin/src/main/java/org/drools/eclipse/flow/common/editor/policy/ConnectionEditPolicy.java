@@ -70,6 +70,7 @@ public class ConnectionEditPolicy extends org.eclipse.gef.editpolicies.Connectio
     }
 
     protected Command getSplitTransitionCommand(Request request) {
+        // TODO error when using this split, nodes do not know connections
     	if (elementConnectionFactory == null) {
     		throw new IllegalStateException("DefaultElementConnectionFactory is null");
     	}

@@ -25,6 +25,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.eclipse.flow.common.view.property.ListPropertyDescriptor;
+import org.drools.eclipse.flow.ruleflow.view.property.variable.VariableListCellEditor;
 import org.drools.process.core.Process;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
@@ -52,7 +54,8 @@ public abstract class ProcessWrapper implements IPropertySource, Serializable {
     public static final String ID = "id";
     public static final String PACKAGE_NAME = "packageName";
     public static final String ROUTER_LAYOUT = "routerLayout";
-    
+    public static final String VARIABLES = "variables";
+     
     static {
         descriptors = new IPropertyDescriptor[] {
             new TextPropertyDescriptor(NAME, "Name"),
@@ -61,6 +64,8 @@ public abstract class ProcessWrapper implements IPropertySource, Serializable {
             new TextPropertyDescriptor(PACKAGE_NAME, "Package"),
             new ComboBoxPropertyDescriptor(ROUTER_LAYOUT, "Connection Layout", 
                 new String[] { "Manual", "Manhatten", "Shortest Path" }),
+            new ListPropertyDescriptor(VARIABLES, "Variables",
+                VariableListCellEditor.class),
         };
     }
     
@@ -193,6 +198,9 @@ public abstract class ProcessWrapper implements IPropertySource, Serializable {
         if (ROUTER_LAYOUT.equals(id)) {
             return routerLayout;
         }
+        if (VARIABLES.equals(id)) {
+            return getProcess().getVariables();
+        }
         return null;
     }
 
@@ -216,6 +224,9 @@ public abstract class ProcessWrapper implements IPropertySource, Serializable {
         if (ROUTER_LAYOUT.equals(id)) {
             setRouterLayout(null);
         }
+        if (VARIABLES.equals(id)) {
+            getProcess().setVariables(new ArrayList());
+        }
     }
 
     public void setPropertyValue(Object id, Object value) {
@@ -229,6 +240,8 @@ public abstract class ProcessWrapper implements IPropertySource, Serializable {
             setPackageName((String) value);
         } else if (ROUTER_LAYOUT.equals(id)) {
             setRouterLayout((Integer) value);
+        } else if (VARIABLES.equals(id)) {
+            getProcess().setVariables((List) value);
         }
     }
 }

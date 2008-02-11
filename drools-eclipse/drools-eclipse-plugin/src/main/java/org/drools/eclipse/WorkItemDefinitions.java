@@ -32,12 +32,12 @@ public final class WorkItemDefinitions {
         logDefinition.setIcon("icons/open.gif");
         addWorkDefinition(logDefinition);
         // Order
-        WorkDefinitionExtensionImpl orderDefinition = new WorkDefinitionExtensionImpl();
-        orderDefinition.setName("Order");
-        orderDefinition.addParameter(new ParameterDefinitionImpl("OrderId", new StringDataType()));
-        orderDefinition.setDisplayName("Order");
-        orderDefinition.setIcon("icons/open.gif");
-        addWorkDefinition(orderDefinition);
+//        WorkDefinitionExtensionImpl orderDefinition = new WorkDefinitionExtensionImpl();
+//        orderDefinition.setName("Order");
+//        orderDefinition.addParameter(new ParameterDefinitionImpl("OrderId", new StringDataType()));
+//        orderDefinition.setDisplayName("Order");
+//        orderDefinition.setIcon("icons/open.gif");
+//        addWorkDefinition(orderDefinition);
 
     }
     

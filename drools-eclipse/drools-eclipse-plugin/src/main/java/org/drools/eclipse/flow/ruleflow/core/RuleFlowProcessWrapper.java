@@ -19,7 +19,6 @@ import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ProcessWrapper;
 import org.drools.process.core.Process;
 import org.drools.ruleflow.core.RuleFlowProcess;
-import org.drools.workflow.core.WorkflowProcess;
 
 /**
  * Wrapper for a RuleFlow process.
@@ -30,18 +29,8 @@ public class RuleFlowProcessWrapper extends ProcessWrapper {
 
 	private static final long serialVersionUID = 400L;
 
-//	private static IPropertyDescriptor[] descriptors;
-//
-//    public static final String VARIABLES = "variables";
-//    static {
-//        descriptors = new IPropertyDescriptor[ProcessWrapper.descriptors.length + 1];
-//        System.arraycopy(ProcessWrapper.descriptors, 0, descriptors, 0, ProcessWrapper.descriptors.length);
-//        descriptors[descriptors.length - 1] = 
-//            new ListPropertyDescriptor(VARIABLES, "Variables", VariableListCellEditor.class);
-//   }
-    
-    public WorkflowProcess getRuleFlowProcess() {
-        return (WorkflowProcess) getProcess();
+    public RuleFlowProcess getRuleFlowProcess() {
+        return (RuleFlowProcess) getProcess();
     }
     
     protected Process createProcess() {
@@ -56,30 +45,4 @@ public class RuleFlowProcessWrapper extends ProcessWrapper {
         getRuleFlowProcess().removeNode(((NodeWrapper) element).getNode()); 
     }
     
-//    public IPropertyDescriptor[] getPropertyDescriptors() {
-//        return descriptors;
-//    }
-//
-//    public Object getPropertyValue(Object id) {
-//        if (VARIABLES.equals(id)) {
-//            return getRuleFlowProcess().getVariables();
-//        }
-//        return super.getPropertyValue(id);
-//    }
-//
-//    public void resetPropertyValue(Object id) {
-//        if (VARIABLES.equals(id)) {
-//            getRuleFlowProcess().setVariables(new ArrayList());
-//        } else {
-//            super.resetPropertyValue(id);
-//        }
-//    }
-//
-//    public void setPropertyValue(Object id, Object value) {
-//        if (VARIABLES.equals(id)) {
-//            getRuleFlowProcess().setVariables((List) value);
-//        } else {
-//            super.setPropertyValue(id, value);
-//        }
-//    }
 }
