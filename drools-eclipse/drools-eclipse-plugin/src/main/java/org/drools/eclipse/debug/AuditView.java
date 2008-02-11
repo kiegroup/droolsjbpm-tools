@@ -1,5 +1,6 @@
 package org.drools.eclipse.debug;
 
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -47,6 +48,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.StreamException;
 
 public class AuditView extends AbstractDebugView {
 	
@@ -82,21 +84,29 @@ public class AuditView extends AbstractDebugView {
     		getViewer().setInput(null);
     		return;
     	}
+        List<LogEvent> eventList = new ArrayList<LogEvent>();
 		try {
 			XStream xstream = new XStream();
 			ObjectInputStream in = xstream.createObjectInputStream(
 				new FileReader(logFileName));
-			getViewer().setInput(createEventList((List) in.readObject()));
-			// TODO: this is necessary because otherwise, the show cause action
-			// cannot find the cause event if it hasn't been shown yet
-			((TreeViewer) getViewer()).expandAll();
+			try {
+                while (true) {
+                    eventList.add((LogEvent) in.readObject());
+                }
+            } catch (StreamException e) {
+                if (!(e.getCause() instanceof EOFException)) {
+                    throw e;
+                }
+            }
 		} catch (FileNotFoundException e) {
 			setLogFile(null);
-			getViewer().setInput(null);
 		} catch (Throwable t) {
 			DroolsEclipsePlugin.log(t);
-			getViewer().setInput(null);
 		}
+        getViewer().setInput(createEventList(eventList));
+        // TODO: this is necessary because otherwise, the show cause action
+        // cannot find the cause event if it hasn't been shown yet
+        ((TreeViewer) getViewer()).expandAll();
     }
     
     protected List createEventList(List logEvents) {
