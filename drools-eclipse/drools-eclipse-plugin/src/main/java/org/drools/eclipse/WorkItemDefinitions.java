@@ -23,6 +23,7 @@ public final class WorkItemDefinitions {
         emailDefinition.addParameter(new ParameterDefinitionImpl("Text", new StringDataType()));
         emailDefinition.setDisplayName("Email");
         emailDefinition.setIcon("icons/import_statement.gif");
+        emailDefinition.setCustomEditor("org.drools.eclipse.flow.common.editor.editpart.work.SampleCustomEditor");
         addWorkDefinition(emailDefinition);
         // Log
         WorkDefinitionExtensionImpl logDefinition = new WorkDefinitionExtensionImpl();

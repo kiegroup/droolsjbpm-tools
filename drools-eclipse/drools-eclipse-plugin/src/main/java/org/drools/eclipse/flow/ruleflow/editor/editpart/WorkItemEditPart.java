@@ -15,13 +15,17 @@ package org.drools.eclipse.flow.ruleflow.editor.editpart;
  * limitations under the License.
  */
 
+import java.lang.reflect.Constructor;
+
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.WorkItemDefinitions;
 import org.drools.eclipse.flow.common.editor.editpart.ElementEditPart;
 import org.drools.eclipse.flow.common.editor.editpart.figure.ElementFigure;
+import org.drools.eclipse.flow.common.editor.editpart.work.WorkEditor;
 import org.drools.eclipse.flow.ruleflow.core.WorkItemWrapper;
 import org.drools.process.core.WorkDefinition;
 import org.drools.process.core.WorkDefinitionExtension;
+import org.drools.workflow.core.node.WorkItemNode;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.RoundedRectangle;
 import org.eclipse.draw2d.geometry.Dimension;
@@ -29,6 +33,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 
 /**
  * EditPart for a Task node.
@@ -38,11 +43,12 @@ import org.eclipse.swt.widgets.Display;
 public class WorkItemEditPart extends ElementEditPart {
 
     private static final Color color = new Color(Display.getCurrent(), 255, 250, 205);
+
+    private transient WorkDefinition workDefinition;
     
     protected IFigure createFigure() {
         String icon = null;
-        String taskName = ((WorkItemWrapper) getElementWrapper()).getWorkItemNode().getWork().getName();
-        WorkDefinition workDefinition = WorkItemDefinitions.getWorkDefinition(taskName);
+        WorkDefinition workDefinition = getWorkDefinition();
         if (workDefinition instanceof WorkDefinitionExtension) {
             icon = ((WorkDefinitionExtension) workDefinition).getIcon();
         }
@@ -50,6 +56,42 @@ public class WorkItemEditPart extends ElementEditPart {
             icon = "icons/action.gif";
         }
         return new TaskNodeFigure(icon);
+    }
+    
+    private WorkDefinition getWorkDefinition() {
+        if (this.workDefinition == null) {
+            String taskName = ((WorkItemWrapper) getElementWrapper()).getWorkItemNode().getWork().getName();
+            this.workDefinition = WorkItemDefinitions.getWorkDefinition(taskName);
+        }
+        return workDefinition;
+    }
+    
+    protected void doubleClicked() {
+        super.doubleClicked();
+        // open custom editor pane if one exists
+        WorkDefinition workDefinition = getWorkDefinition();
+        if (workDefinition instanceof WorkDefinitionExtension) {
+            String editor = ((WorkDefinitionExtension) workDefinition).getCustomEditor();
+            if (editor != null) {
+                openEditor(editor, workDefinition);
+            }
+        }
+    }
+    
+    private void openEditor(String editorClassName, WorkDefinition workDefinition) {
+        try {
+            Class<WorkEditor> editorClass = 
+                (Class<WorkEditor>) Class.forName(editorClassName);
+            Constructor<WorkEditor> constructor = editorClass.getConstructor(Shell.class);
+            WorkEditor editor = constructor.newInstance(getViewer().getControl().getShell());
+            editor.setWorkDefinition(workDefinition);
+            WorkItemNode workItemNode = ((WorkItemWrapper) getElementWrapper()).getWorkItemNode();
+            editor.setWork(workItemNode.getWork());
+            editor.show();
+            workItemNode.setWork(editor.getWork());
+        } catch (Throwable t) {
+            DroolsEclipsePlugin.log(t);
+        }
     }
     
     public static class TaskNodeFigure extends ElementFigure {

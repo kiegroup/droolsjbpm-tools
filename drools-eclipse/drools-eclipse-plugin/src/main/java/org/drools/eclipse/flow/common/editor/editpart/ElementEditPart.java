@@ -118,9 +118,15 @@ public abstract class ElementEditPart extends AbstractGraphicalEditPart implemen
     public void performRequest(Request request) {
         if (request.getType() == RequestConstants.REQ_DIRECT_EDIT) {
             performDirectEdit();
+        } if (request.getType() == RequestConstants.REQ_OPEN) {
+            doubleClicked();
         } else {
             super.performRequest(request);
         }
+    }
+    
+    protected void doubleClicked() {
+        // do nothing
     }
     
     private void performDirectEdit() {
