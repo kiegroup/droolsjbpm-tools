@@ -40,14 +40,11 @@
            <phase>process-resources</phase>
            <configuration>
              <tasks>     
-               <unzip src="drools-eclipse-plugin/lib/drools-documentation.jar" dest="drools-eclipse-plugin/help">
-                  <patternset>
-                      <include name="eclipse/**/**"/>
-                      <include name="shared/**/**"/>
-                  </patternset>               
+               <unzip src="drools-eclipse-plugin/lib/drools-docs-userguide-eclipse.war" dest="drools-eclipse-plugin/help">
+              
                </unzip>         
                
-               <delete dir="drools-eclipse-plugin/lib/drools-documentation.jar" />     
+               <delete dir="drools-eclipse-plugin/lib/drools-docs-userguide-eclipse.war" />     
              </tasks>
            </configuration>
            <goals>
@@ -279,7 +276,10 @@
 
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-documentation</artifactId>         
+      <artifactId>drools-docs-userguide</artifactId>         
+      <classifier>eclipse</classifier>
+      <type>war</type>
+      <version>5.0.0.SNAPSHOT</version>
    </dependency>      
 </dependencies>
 
