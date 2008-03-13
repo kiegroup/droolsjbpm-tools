@@ -1,9 +1,9 @@
 <project default="rules">
 	
 	<!-- Uncomment this for Maven Runner -->
-	<property name="eclipsepath"  value=""/>   
+	<property name="eclipsepath"  value=""/>
 	<!-- Uncomment this for Eclipse Runner  -->
-	<!-- <property name="eclipsepath"  value="../../../"/> -->  
+	<!-- <property name="eclipsepath"  value="../../../"/> -->   
 	
 	<path id="cheese.classpath">
 		<pathelement location="${eclipsepath}lib/cheese.jar"/>
@@ -16,7 +16,7 @@
 		<pathelement location="target"/>
 	</path>	
 	
-	<taskdef name="rulebase" classname="org.drools.contrib.DroolsCompilerAntTask" classpathref="drools.classpath" />
+	<taskdef name="compiler" classname="org.drools.contrib.DroolsCompilerAntTask" classpathref="drools.classpath" />
 	<taskdef name="analytics" classname="org.drools.contrib.DroolsAnalyticsAntTask" classpathref="drools.classpath" />
 	
 	
@@ -31,17 +31,17 @@
 	
 	
 	<target name="dslRules" >
-		<rulebase 
+		<compiler 
 			srcdir="${eclipsepath}src/test/resources/rules" 		
-			tofile="${eclipsepath}target/cheese.rules"
-			classpathref="cheese.classpath" > 
-			
+			tofile="${eclipsepath}target/cheese.rules.dpkg"
+			classpathref="cheese.classpath" 
+			binformat="package" > 
 			<include name="*.dslr" />
-		</rulebase>
+		</compiler>
 	</target>
 
 	<target name="rules" >
-		<rulebase 
+		<compiler 
 			srcdir="${eclipsepath}src/test/resources/rules" 		
 			tofile="${eclipsepath}target/cheese.rules"
 			classpathref="cheese.classpath" > 
@@ -49,27 +49,27 @@
 			<include name="*.brl" />
 			<include name="*.xml" />
 			<include name="*.dslr" />			
-		</rulebase>
+		</compiler>
 	</target>
 	
 	<target name="rulesnopackagefile" >
-		<rulebase 
+		<compiler 
 			srcdir="${eclipsepath}src/test/resources/packagefiletest/emptydir" 		
 			tofile="${eclipsepath}target/cheese.rules"
 			classpathref="cheese.classpath" > 
 			<include name="*.drl" />
 			<include name="*.brl" />			
-		</rulebase>
+		</compiler>
 	</target>
 
 	<target name="rulesmanypackagefile" >
-		<rulebase 
+		<compiler 
 			srcdir="${eclipsepath}src/test/resources/packagefiletest" 		
 			tofile="${eclipsepath}target/cheese.rules"
 			classpathref="cheese.classpath" > 
 			<include name="*.drl" />
 			<include name="*.brl" />
-		</rulebase>
+		</compiler>
 	</target>
 
 </project>

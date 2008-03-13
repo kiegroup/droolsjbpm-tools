@@ -38,6 +38,7 @@ import org.drools.lang.Expander;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
 import org.drools.lang.dsl.DefaultExpanderResolver;
+import org.drools.rule.Package;
 
 import java.io.*;
 
@@ -53,10 +54,14 @@ public class DroolsCompilerAntTask extends MatchingTask {
 	public static String RULEFLOWFILEEXTENSION = ".rfm";
 	public static String DSLFILEEXTENSION = ".dslr";
     public static String XLSFILEEXTENSION = ".xls";
+    
+    public static String PACKAGEBINFORMAT = "package";
 
     private File srcdir;
 	private File toFile;
 	private Path classpath;
+	
+	private String binformat;
 
 	
 	/**
@@ -89,8 +94,7 @@ public class DroolsCompilerAntTask extends MatchingTask {
 	/**
 	 * Classpath to use, by reference, when compiling the rulebase
 	 * 
-	 * @param r
-	 *            a reference to an existing classpath
+	 * @param a reference to an existing classpath
 	 */
 	public void setClasspathref(Reference r) {
 		createClasspath().setRefid(r);
@@ -148,16 +152,20 @@ public class DroolsCompilerAntTask extends MatchingTask {
 
 			// gets the package
 			org.drools.rule.Package pkg = builder.getPackage();
+			
+            // creates the rulebase
+            RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 
-			// creates the rulebase
-			RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-
-			// adds the package
-			ruleBase.addPackage(pkg);
-
-			// serialize the rule base to the destination file
-			serializeRulebase(ruleBase);
-
+            // adds the package
+            ruleBase.addPackage(pkg);
+			
+			
+			if (PACKAGEBINFORMAT.equals( binformat )  ) {
+			    serializeObject( pkg );
+			} else {
+	            // serialize the rule base to the destination file
+	            serializeObject(ruleBase);
+			}
 		} catch (Exception e) {
 			throw new BuildException("RuleBaseTask failed: " + e.getMessage(),
 					e);
@@ -167,19 +175,19 @@ public class DroolsCompilerAntTask extends MatchingTask {
 			}
 		}
 	}
-
+	
 	/**
 	 * @param ruleBase
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	private void serializeRulebase(RuleBase ruleBase)
+	private void serializeObject(Object object)
 			throws FileNotFoundException, IOException {
 		ObjectOutputStream outstream = null;
 		try {
 			FileOutputStream fout = new FileOutputStream(toFile);
 			outstream = new ObjectOutputStream(fout);
-			outstream.writeObject(ruleBase);
+			outstream.writeObject(object);
 		} finally {
 			if (outstream != null) {
 				outstream.close();
@@ -369,5 +377,13 @@ public class DroolsCompilerAntTask extends MatchingTask {
 		}
 		return fileNames;
 	}
+
+    public void setBinformat(String binformat) {
+        this.binformat = binformat;
+    }
+
+    public String getBinformat() {
+        return binformat;
+    }
 
 }
