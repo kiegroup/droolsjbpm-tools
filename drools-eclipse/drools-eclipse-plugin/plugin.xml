@@ -231,7 +231,14 @@
          delegate="org.drools.eclipse.launching.DroolsLaunchConfigurationDelegate"
          sourceLocatorId="org.drools.eclipse.launching.DroolsSourceLookupDirector"
          sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer"
-         modes= "debug" />
+         modes="debug" />
+      <launchConfigurationType
+   	     id="org.drools.eclipse.launching.DroolsJUnitLaunchConfigurationDelegate"
+         name="Drools JUnit Test"
+         delegate="org.drools.eclipse.launching.DroolsJUnitLaunchConfigurationDelegate"
+         sourceLocatorId="org.drools.eclipse.launching.DroolsSourceLookupDirector"
+         sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer"
+         modes="debug" />
    </extension>
 
    <extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
@@ -239,6 +246,11 @@
          icon="icons/drools.gif"
          configTypeID="org.drools.eclipse.launching.DroolsLaunchConfigurationDelegate"
          id="org.drools.eclipse.launching.DroolsLaunchConfigurationDelegate.Image">
+      </launchConfigurationTypeImage>
+      <launchConfigurationTypeImage
+         icon="icons/drools.gif"
+         configTypeID="org.drools.eclipse.launching.DroolsJUnitLaunchConfigurationDelegate"
+         id="org.drools.eclipse.launching.DroolsJUnitLaunchConfigurationDelegate.Image">
       </launchConfigurationTypeImage>
    </extension>
 
@@ -253,9 +265,15 @@
                   perspective="org.eclipse.debug.ui.DebugPerspective"
                   description="Debug a Drools application">
             </launchMode>
+      </launchConfigurationTabGroup>
+      <launchConfigurationTabGroup
+            type="org.drools.eclipse.launching.DroolsJUnitLaunchConfigurationDelegate"
+            class="org.eclipse.jdt.internal.debug.ui.launcher.LocalJavaApplicationTabGroup"
+            id="org.eclipse.jdt.debug.ui.launchConfigurationTabGroup.localJavaApplication">
             <launchMode
-                  mode="run"
-                  description="Run a Drools application">
+                  mode="debug"
+                  perspective="org.eclipse.debug.ui.DebugPerspective"
+                  description="Debug a Drools JUnit Test">
             </launchMode>
       </launchConfigurationTabGroup>
    </extension>
@@ -284,6 +302,32 @@
              </with>
            </enablement>
   		 </contextualLaunch>
+         <perspective id="org.eclipse.jdt.ui.JavaPerspective"/>
+         <perspective id="org.drools.eclipse.DroolsPerspective"/>
+         <perspective id="org.eclipse.jdt.ui.JavaBrowsingPerspective"/>
+         <perspective id="org.eclipse.debug.ui.DebugPerspective"/>
+      </shortcut>
+      <shortcut
+            label="Drools JUnit Test"
+            icon="icons/drools.gif"
+            helpContextId="org.eclipse.jdt.junit.launch_shortcut"
+            class="org.drools.eclipse.launching.DroolsJUnitApplicationLaunchShortcut"
+            modes="debug"
+            id="org.drools.eclipse.launching.DroolsJUnitApplicationLaunchShortcut">
+         <contextualLaunch>
+            <enablement>
+               <with variable="selection">
+                  <count value="1"/>
+               	  <iterate>
+                     <adapt type="org.eclipse.jdt.core.IJavaElement">
+		                <test property="org.eclipse.jdt.core.isInJavaProject"/>
+		                <test property="org.eclipse.jdt.core.hasTypeOnClasspath" value="junit.framework.Test"/>
+		                <test property="org.eclipse.jdt.junit.canLaunchAsJUnit" forcePluginActivation="true"/>
+		             </adapt>
+		          </iterate>
+               </with>
+            </enablement>
+         </contextualLaunch>
          <perspective id="org.eclipse.jdt.ui.JavaPerspective"/>
          <perspective id="org.drools.eclipse.DroolsPerspective"/>
          <perspective id="org.eclipse.jdt.ui.JavaBrowsingPerspective"/>
@@ -357,24 +401,24 @@
            objectClass="org.eclipse.core.resources.IProject"
            id="org.drools.eclipse.action.ConvertToDroolsProject1">
         <filter name="nature" value="org.eclipse.jdt.core.javanature"/>
-	    <action id="org.drools.eclipse.action.ConvertToDroolsProjectAction"
+	    <action id="org.drools.eclipse.action.ConvertToDroolsProjectAction1"
 	       label="Convert to Drools Project"
 	       icon="icons/drools.gif"
 	       menubarPath="additions"
 	       class="org.drools.eclipse.action.ConvertToDroolsProjectAction"
-           definitionId="org.drools.eclipse.action.ConvertToDroolsProjectAction"
+           definitionId="org.drools.eclipse.action.ConvertToDroolsProjectAction1"
 	       enablesFor="1">
 	    </action>
       </objectContribution>
       <objectContribution
            objectClass="org.eclipse.jdt.core.IJavaProject"
            id="org.drools.eclipse.action.ConvertToDroolsProject2">
-	    <action id="org.drools.eclipse.action.ConvertToDroolsProjectAction"
+	    <action id="org.drools.eclipse.action.ConvertToDroolsProjectAction2"
 	       label="Convert to Drools Project"
 	       icon="icons/drools.gif"
 	       menubarPath="additions"
 	       class="org.drools.eclipse.action.ConvertToDroolsProjectAction"
-           definitionId="org.drools.eclipse.action.ConvertToDroolsProjectAction"
+           definitionId="org.drools.eclipse.action.ConvertToDroolsProjectAction2"
 	       enablesFor="1">
 	    </action>
       </objectContribution>
@@ -447,4 +491,41 @@
             id="org.drools.eclipse.rulebuilder.wizards.NewGuidedRuleFileWizard"
             name="Guided Rule"/>
    </extension>
+   
+   <!-- tabbed properties
+   <extension point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
+      <propertyContributor
+            contributorId="org.drools.eclipse.flow.ruleflow.editor.RuleFlowModelEditor"
+            labelProvider="org.drools.eclipse.flow.common.view.property.ProcessLabelProvider"
+            typeMapper="org.drools.eclipse.flow.common.view.property.ProcessTypeMapper">
+         <propertyCategory category="org.drools.eclipse.flow.general"/>
+      </propertyContributor>
+   </extension>
+   
+   <extension point="org.eclipse.ui.views.properties.tabbed.propertyTabs">
+      <propertyTabs contributorId="org.drools.eclipse.flow.ruleflow.editor.RuleFlowModelEditor">
+         <propertyTab 
+            category="org.drools.eclipse.flow.general"   
+            id="org.drools.eclipse.flow.general"
+            label="General"/>
+      </propertyTabs>
+   </extension>
+   
+   <extension point="org.eclipse.ui.views.properties.tabbed.propertySections">
+      <propertySections contributorId="org.drools.eclipse.flow.ruleflow.editor.RuleFlowModelEditor">
+         <propertySection
+               class="org.drools.eclipse.flow.ruleflow.view.property.ElementNameSection"
+               id="org.drools.eclipse.flow.ruleflow.view.property.ElementNameSection"
+               tab="org.drools.eclipse.flow.general">
+            <input type="org.drools.eclipse.flow.common.editor.core.ElementWrapper"/>
+         </propertySection>
+         <propertySection
+               class="org.drools.eclipse.flow.ruleflow.view.property.ProcessNameSection"
+               id="org.drools.eclipse.flow.ruleflow.view.property.ProcessNameSection"
+               tab="org.drools.eclipse.flow.general">
+            <input type="org.drools.eclipse.flow.common.editor.core.ProcessWrapper"/>
+         </propertySection>
+      </propertySections>
+   </extension> --> 
+   
 </plugin>

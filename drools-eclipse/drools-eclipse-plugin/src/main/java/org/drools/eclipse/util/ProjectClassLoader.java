@@ -85,11 +85,11 @@ public class ProjectClassLoader {
             }
             IPath location = getProjectLocation(project.getProject());
             IPath outputPath = location.append(project.getOutputLocation().removeFirstSegments(1));
-            pathElements.add(outputPath.toFile().toURI().toURL());
+            pathElements.add(0, outputPath.toFile().toURI().toURL());
             for (Iterator iterator = outputPaths.iterator(); iterator.hasNext(); ) {
             	IPath path = (IPath) iterator.next();
             	outputPath = location.append(path.removeFirstSegments(1));
-                pathElements.add(outputPath.toFile().toURI().toURL());
+                pathElements.add(0, outputPath.toFile().toURI().toURL());
             }
             
             // also add classpath of required projects
