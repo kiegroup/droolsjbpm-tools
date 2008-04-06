@@ -17,7 +17,7 @@ package org.drools.eclipse.flow.ruleflow.editor.editpart;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.editor.editpart.ElementEditPart;
-import org.drools.eclipse.flow.common.editor.editpart.figure.ElementFigure;
+import org.drools.eclipse.flow.common.editor.editpart.figure.AbstractElementFigure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -34,7 +34,7 @@ public class EndNodeEditPart extends ElementEditPart {
         return new EndNodeFigure();
     }
 
-    public static class EndNodeFigure extends ElementFigure {
+    public static class EndNodeFigure extends AbstractElementFigure {
         
         private static final Image icon = ImageDescriptor.createFromURL(
         	DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/process_stop.gif")).createImage();

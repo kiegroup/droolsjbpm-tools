@@ -38,13 +38,16 @@ public interface ElementWrapper {
     void setConstraint(Rectangle constraint);
     Rectangle getConstraint();
     
-    void setParent(ProcessWrapper parent);
+    void setParent(ElementContainer parent);
+    ElementContainer getParent();
     
-    List getOutgoingConnections();
-    List getIncomingConnections();
+    List<ElementConnection> getOutgoingConnections();
+    List<ElementConnection> getIncomingConnections();
     void addIncomingConnection(ElementConnection connection);
+    void localAddIncomingConnection(ElementConnection connection);
     void removeIncomingConnection(ElementConnection connection);
     void addOutgoingConnection(ElementConnection connection);
+    void localAddOutgoingConnection(ElementConnection connection);
     void removeOutgoingConnection(ElementConnection connection);
     boolean acceptsIncomingConnection(ElementConnection connection);
     boolean acceptsOutgoingConnection(ElementConnection connection);

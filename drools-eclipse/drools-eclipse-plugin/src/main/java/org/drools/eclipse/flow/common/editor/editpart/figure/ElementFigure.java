@@ -15,9 +15,8 @@ package org.drools.eclipse.flow.common.editor.editpart.figure;
  * limitations under the License.
  */
 
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
-import org.eclipse.draw2d.Panel;
-import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -25,45 +24,16 @@ import org.eclipse.swt.graphics.Image;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public abstract class ElementFigure extends Panel {
+public interface ElementFigure extends IFigure {
     
-    private boolean selected;
-    private Label label = new Label();
+    void setIcon(Image icon);
+    
+    void setText(String text);
+    
+    void setSelected(boolean b);
+    
+    boolean isSelected();
+    
+    Label getLabel();
 
-    public ElementFigure() {
-        add(label);
-        customizeFigure();
-        setSize(80, 40);
-    }
-    
-    public void setIcon(Image icon) {
-        label.setIcon(icon);
-    }
-    
-    public void setText(String text) {
-        label.setText(text);
-    }
-    
-    public Label getLabel() {
-        return label;
-    }
-    
-    public void setBounds(Rectangle bounds) {
-        super.setBounds(bounds);
-        label.setBounds(bounds);
-    }
-    
-    protected abstract void customizeFigure();
-    
-    public void setSelected(boolean b) {
-        selected = b;
-    }
-    
-    public boolean isSelected() {
-        return selected;
-    }
-
-    public void setFocus(boolean b) {
-        repaint();
-    }
 }

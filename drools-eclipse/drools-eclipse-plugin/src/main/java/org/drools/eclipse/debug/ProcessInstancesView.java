@@ -93,6 +93,7 @@ public class ProcessInstancesView extends DroolsDebugEventHandlerView {
                 }
                 nodeIds.add(nodeId);
             }
+            // TODO: pass current java project, to retrieve work item definitions
             ((ProcessInstanceViewer) view).showProcessInstance(id, processId, nodeIds);
         }
     }

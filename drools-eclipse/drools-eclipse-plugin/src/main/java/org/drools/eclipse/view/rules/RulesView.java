@@ -10,17 +10,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.ProcessBuilder;
 import org.drools.eclipse.DRLInfo;
 import org.drools.eclipse.DroolsEclipsePlugin;
+import org.drools.eclipse.ProcessInfo;
 import org.drools.eclipse.core.DroolsElement;
 import org.drools.eclipse.core.DroolsModelBuilder;
 import org.drools.eclipse.core.Function;
 import org.drools.eclipse.core.Global;
 import org.drools.eclipse.core.Package;
-import org.drools.eclipse.core.Query;
 import org.drools.eclipse.core.Process;
+import org.drools.eclipse.core.Query;
 import org.drools.eclipse.core.Rule;
 import org.drools.eclipse.core.RuleSet;
 import org.drools.eclipse.core.Template;
@@ -28,8 +27,6 @@ import org.drools.eclipse.core.ui.DroolsContentProvider;
 import org.drools.eclipse.core.ui.DroolsLabelProvider;
 import org.drools.eclipse.core.ui.DroolsTreeSorter;
 import org.drools.eclipse.core.ui.FilterActionGroup;
-import org.drools.eclipse.flow.common.editor.core.ProcessWrapper;
-import org.drools.eclipse.flow.ruleflow.core.RuleFlowProcessWrapper;
 import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.GlobalDescr;
@@ -63,8 +60,6 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
-
-import com.thoughtworks.xstream.XStream;
 
 public class RulesView extends ViewPart implements IDoubleClickListener, IResourceVisitor, IResourceChangeListener {
 
@@ -210,31 +205,21 @@ public class RulesView extends ViewPart implements IDoubleClickListener, IResour
     		    } else if ("rf".equals(resource.getFileExtension())) {
     		        try {
         	            String processString = convertToString(file.getContents());
-        	            XStream stream = new XStream();
-        	            stream.setMode(XStream.ID_REFERENCES);
-        	            
-        	            ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
-        	            ClassLoader newLoader = this.getClass().getClassLoader();
-        	            try {
-        	                Thread.currentThread().setContextClassLoader(newLoader);
-        	                Object o = stream.fromXML(processString);
-        	                if (o instanceof ProcessWrapper) {
-        	                    String packageName = ((ProcessWrapper) o).getProcess().getPackageName();
-                                Package pkg = ruleSet.getPackage(packageName);
-                                if (pkg == null) {
-                                    pkg = DroolsModelBuilder.addPackage(ruleSet, packageName, 0, 0);
-                                }
-                                Process process = DroolsModelBuilder.addProcess(pkg, ((ProcessWrapper) o).getProcess().getId(), file);
-                                List droolsElements = (List) resourcesMap.get(file);
-                                if (droolsElements == null) {
-                                    droolsElements = new ArrayList();
-                                    resourcesMap.put(file, droolsElements);
-                                }
-                                droolsElements.add(process);
-        	                }
-        	            } finally {
-        	                Thread.currentThread().setContextClassLoader(oldLoader);
-        	            }           
+                        ProcessInfo processInfo = DroolsEclipsePlugin.getDefault().parseProcess(processString, resource);
+                        if (processInfo != null && processInfo.getProcess() != null) {
+    	                    String packageName = processInfo.getProcess().getPackageName();
+                            Package pkg = ruleSet.getPackage(packageName);
+                            if (pkg == null) {
+                                pkg = DroolsModelBuilder.addPackage(ruleSet, packageName, 0, 0);
+                            }
+                            Process process = DroolsModelBuilder.addProcess(pkg, processInfo.getProcess().getId(), file);
+                            List droolsElements = (List) resourcesMap.get(file);
+                            if (droolsElements == null) {
+                                droolsElements = new ArrayList();
+                                resourcesMap.put(file, droolsElements);
+                            }
+                            droolsElements.add(process);
+    	                }
         		    } catch (Throwable t) {
                         DroolsEclipsePlugin.log(t);
                     }     
@@ -261,7 +246,9 @@ public class RulesView extends ViewPart implements IDoubleClickListener, IResour
 							treeViewer.getControl().getDisplay().asyncExec(
 						        new Runnable() {
 									public void run() {
-										treeViewer.refresh();
+									    if (!treeViewer.getControl().isDisposed()) {
+									        treeViewer.refresh();
+									    }
 									}
 								}
 					        );

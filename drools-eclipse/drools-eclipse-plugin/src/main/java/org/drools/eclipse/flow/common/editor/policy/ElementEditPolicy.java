@@ -15,6 +15,7 @@ package org.drools.eclipse.flow.common.editor.policy;
  * limitations under the License.
  */
 
+import org.drools.eclipse.flow.common.editor.core.ElementContainer;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ProcessWrapper;
 import org.drools.eclipse.flow.common.editor.core.command.DeleteElementCommand;
@@ -30,7 +31,7 @@ import org.eclipse.gef.requests.GroupRequest;
 public class ElementEditPolicy extends ComponentEditPolicy {
 
     protected Command createDeleteCommand(GroupRequest deleteRequest) {
-        ProcessWrapper parent = (ProcessWrapper) getHost().getParent().getModel();
+        ElementContainer parent = (ElementContainer) getHost().getParent().getModel();
         DeleteElementCommand deleteCmd = new DeleteElementCommand();
         deleteCmd.setParent(parent);
         deleteCmd.setChild((ElementWrapper) (getHost().getModel()));

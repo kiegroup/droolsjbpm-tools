@@ -98,7 +98,7 @@ public class DroolsPluginImages {
      * @param path  The path where the image can be found. This path is relative to where
      *              this plugin class is found (i.e. typically the packages directory)
      */
-    private final static void declareRegistryImage(String key, String path) {
+    public final static void declareRegistryImage(String key, String path) {
         ImageDescriptor desc= ImageDescriptor.getMissingImageDescriptor();
         try {
             desc= ImageDescriptor.createFromURL(makeIconFileURL(path));
@@ -130,6 +130,10 @@ public class DroolsPluginImages {
      */
     public static Image getImage(String key) {
         return getImageRegistry().get(key);
+    }
+    
+    public static void putImage(String key, Image image) {
+        getImageRegistry().put(key, image);
     }
     
     /**

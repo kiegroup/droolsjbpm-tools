@@ -16,7 +16,7 @@ package org.drools.eclipse.flow.ruleflow.view.property.variable;
  */
 
 import org.drools.eclipse.flow.common.view.property.EditListDialog;
-import org.drools.process.core.impl.VariableImpl;
+import org.drools.process.core.context.variable.Variable;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -31,6 +31,6 @@ public class VariableListDialog extends EditListDialog {
     }
 
     protected Object createItem() {
-        return new VariableImpl();
+        return new Variable();
     }
 }

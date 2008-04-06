@@ -20,10 +20,8 @@ package org.drools.eclipse.flow.common.editor.core;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class ElementConnectionFactory {
+public interface ElementConnectionFactory {
 	
-	public ElementConnection createElementConnection() {
-		return new ElementConnection();
-	}
+	ElementConnection createElementConnection();
 	
 }

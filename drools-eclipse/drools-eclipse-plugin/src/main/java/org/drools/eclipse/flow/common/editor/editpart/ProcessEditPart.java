@@ -23,7 +23,7 @@ import org.drools.eclipse.flow.common.editor.core.ModelEvent;
 import org.drools.eclipse.flow.common.editor.core.ModelListener;
 import org.drools.eclipse.flow.common.editor.core.ProcessWrapper;
 import org.drools.eclipse.flow.common.editor.editpart.figure.ElementFigure;
-import org.drools.eclipse.flow.common.editor.policy.ProcessLayoutEditPolicy;
+import org.drools.eclipse.flow.common.editor.policy.ElementContainerLayoutEditPolicy;
 import org.eclipse.draw2d.Animation;
 import org.eclipse.draw2d.AutomaticRouter;
 import org.eclipse.draw2d.BendpointConnectionRouter;
@@ -65,7 +65,7 @@ public class ProcessEditPart extends AbstractGraphicalEditPart implements ModelL
         installEditPolicy(EditPolicy.NODE_ROLE, null);
         installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, null);
         installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, null);
-        installEditPolicy(EditPolicy.LAYOUT_ROLE, new ProcessLayoutEditPolicy());
+        installEditPolicy(EditPolicy.LAYOUT_ROLE, new ElementContainerLayoutEditPolicy());
         installEditPolicy(EditPolicy.COMPONENT_ROLE, new RootComponentEditPolicy());
     }
 
@@ -73,7 +73,7 @@ public class ProcessEditPart extends AbstractGraphicalEditPart implements ModelL
         return getProcessWrapper().getElements();
     }
     
-    protected ProcessWrapper getProcessWrapper() {
+    public ProcessWrapper getProcessWrapper() {
     	return (ProcessWrapper) getModel();
     }
 

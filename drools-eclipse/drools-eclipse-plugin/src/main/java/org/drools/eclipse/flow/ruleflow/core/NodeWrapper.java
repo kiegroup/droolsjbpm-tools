@@ -1,4 +1,8 @@
 package org.drools.eclipse.flow.ruleflow.core;
+
+import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
+import org.drools.workflow.core.Node;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,36 +19,16 @@ package org.drools.eclipse.flow.ruleflow.core;
  * limitations under the License.
  */
 
-import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
-import org.drools.workflow.core.Node;
 
 /**
  * Wrapper for a node.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public abstract class NodeWrapper extends DefaultElementWrapper {
+public interface NodeWrapper extends ElementWrapper {
 	
-    protected void setNode(Node node) {
-        setElement(node);
-    }
+    void setNode(Node node);
     
-    public Node getNode() {
-        return (Node) getElement();
-    }
-    
-    public String getId() {
-        long id = getNode().getId();
-        return id == -1 ? null : getNode().getId() + "";
-    }
-
-    public String getName() {
-        return getNode().getName();
-    }
-
-    public void internalSetName(String name) {
-        getNode().setName(name);    
-        notifyListeners(CHANGE_NAME);
-    }
+    Node getNode();
     
 }

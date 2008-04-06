@@ -23,14 +23,10 @@ import org.drools.eclipse.flow.common.editor.core.ElementConnectionFactory;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class ConnectionWrapperFactory extends ElementConnectionFactory {
-	
-	public ConnectionWrapperFactory() {
-	}
+public class ConnectionWrapperFactory implements ElementConnectionFactory {
 	
 	public ElementConnection createElementConnection() {
-		ConnectionWrapper connection = new ConnectionWrapper();
-		return connection;
+		return new ConnectionWrapper();
 	}
 
 }

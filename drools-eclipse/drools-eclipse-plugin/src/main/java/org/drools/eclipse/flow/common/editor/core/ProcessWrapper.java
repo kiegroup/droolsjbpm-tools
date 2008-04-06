@@ -21,13 +21,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.eclipse.flow.common.view.property.ListPropertyDescriptor;
 import org.drools.eclipse.flow.ruleflow.view.property.variable.VariableListCellEditor;
 import org.drools.process.core.Process;
+import org.drools.process.core.context.variable.Variable;
+import org.drools.process.core.context.variable.VariableScope;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
@@ -38,7 +39,7 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public abstract class ProcessWrapper implements IPropertySource, Serializable {
+public abstract class ProcessWrapper implements ElementContainer, IPropertySource, Serializable {
 
 	public static final int CHANGE_ELEMENTS = 1;
 	public static final int CHANGE_ROUTER_LAYOUT = 2;
@@ -70,18 +71,21 @@ public abstract class ProcessWrapper implements IPropertySource, Serializable {
     }
     
     private Process process;
-    private Map elements = new HashMap();
-    private Integer routerLayout;
-    private transient List listeners = new ArrayList();
+    private Map<String, ElementWrapper> elements = new HashMap<String, ElementWrapper>();
+    private transient List<ModelListener> listeners = new ArrayList<ModelListener>();
     
     public ProcessWrapper() {
         process = createProcess();
     }
-
+    
     protected abstract Process createProcess();
 
     public Process getProcess() {
         return process;
+    }
+    
+    public void localSetProcess(Process process) {
+        this.process = process;
     }
     
     public String getName() {
@@ -117,19 +121,21 @@ public abstract class ProcessWrapper implements IPropertySource, Serializable {
     }
     
     public Integer getRouterLayout() {
+        Integer routerLayout = (Integer) process.getMetaData("routerLayout");
     	if (routerLayout == null) {
-    		routerLayout = ROUTER_LAYOUT_SHORTEST_PATH;
+    		return ROUTER_LAYOUT_MANUAL;
     	}
     	return routerLayout;
     }
     
     public void setRouterLayout(Integer routerLayout) {
-    	this.routerLayout = routerLayout;
+    	process.setMetaData("routerLayout", routerLayout);
     	notifyListeners(CHANGE_ROUTER_LAYOUT);
     }
     
-    public List getElements() {
-        return Collections.unmodifiableList(new ArrayList(elements.values()));
+    public List<ElementWrapper> getElements() {
+        return Collections.unmodifiableList(
+            new ArrayList<ElementWrapper>(elements.values()));
     }
     
     public ElementWrapper getElement(String id) {
@@ -139,8 +145,12 @@ public abstract class ProcessWrapper implements IPropertySource, Serializable {
     public void addElement(ElementWrapper element) {
         internalAddElement(element);
 		//id is set in methode above
-		elements.put(element.getId(), element);
+		localAddElement(element);
 		notifyListeners(CHANGE_ELEMENTS);
+    }
+    
+    public void localAddElement(ElementWrapper element) {
+        elements.put(element.getId(), element);
     }
     
     protected abstract void internalAddElement(ElementWrapper element);
@@ -153,6 +163,10 @@ public abstract class ProcessWrapper implements IPropertySource, Serializable {
     
     protected abstract void internalRemoveElement(ElementWrapper element);
     
+    public ProcessWrapper getProcessWrapper() {
+        return this;
+    }
+    
     public void addListener(ModelListener listener) {
         listeners.add(listener);
     }
@@ -163,15 +177,14 @@ public abstract class ProcessWrapper implements IPropertySource, Serializable {
     
     public void notifyListeners(int change) {
         ModelEvent event = new ModelEvent(change);
-        for (Iterator it = listeners.iterator(); it.hasNext(); ) {
-        	ModelListener listener = (ModelListener) it.next();
+        for (ModelListener listener: listeners) {
         	listener.modelChanged(event);
         }
     }
     
     private void readObject(ObjectInputStream aInputStream) throws ClassNotFoundException, IOException {
         aInputStream.defaultReadObject();
-        listeners = new ArrayList();
+        listeners = new ArrayList<ModelListener>();
     }
     
     public Object getEditableValue() {
@@ -196,10 +209,10 @@ public abstract class ProcessWrapper implements IPropertySource, Serializable {
             return getPackageName();
         }
         if (ROUTER_LAYOUT.equals(id)) {
-            return routerLayout;
+            return getRouterLayout();
         }
         if (VARIABLES.equals(id)) {
-            return getProcess().getVariables();
+            return ((VariableScope) getProcess().getDefaultContext(VariableScope.VARIABLE_SCOPE)).getVariables();
         }
         return null;
     }
@@ -225,7 +238,8 @@ public abstract class ProcessWrapper implements IPropertySource, Serializable {
             setRouterLayout(null);
         }
         if (VARIABLES.equals(id)) {
-            getProcess().setVariables(new ArrayList());
+            ((VariableScope) getProcess().getDefaultContext(
+                VariableScope.VARIABLE_SCOPE)).setVariables(new ArrayList<Variable>());
         }
     }
 
@@ -241,7 +255,8 @@ public abstract class ProcessWrapper implements IPropertySource, Serializable {
         } else if (ROUTER_LAYOUT.equals(id)) {
             setRouterLayout((Integer) value);
         } else if (VARIABLES.equals(id)) {
-            getProcess().setVariables((List) value);
+            ((VariableScope) getProcess().getDefaultContext(
+                VariableScope.VARIABLE_SCOPE)).setVariables((List<Variable>) value);
         }
     }
 }

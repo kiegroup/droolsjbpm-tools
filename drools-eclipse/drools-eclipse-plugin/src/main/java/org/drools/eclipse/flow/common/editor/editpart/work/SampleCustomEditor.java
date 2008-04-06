@@ -8,6 +8,7 @@ import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
 import org.drools.process.core.ParameterDefinition;
 import org.drools.process.core.Work;
 import org.drools.process.core.WorkDefinition;
+import org.drools.process.core.WorkEditor;
 import org.drools.process.core.impl.WorkImpl;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;

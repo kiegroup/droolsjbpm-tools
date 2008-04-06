@@ -17,6 +17,8 @@ package org.drools.eclipse.flow.common.editor.editpart;
 
 import java.util.List;
 
+import org.drools.eclipse.flow.common.editor.GenericModelEditor;
+import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ModelEvent;
 import org.drools.eclipse.flow.common.editor.core.ModelListener;
@@ -45,6 +47,7 @@ import org.eclipse.jface.viewers.TextCellEditor;
 public abstract class ElementEditPart extends AbstractGraphicalEditPart implements NodeEditPart, ModelListener {
     
     private DirectEditManager manager;
+    private GenericModelEditor editor;
     
     protected void createEditPolicies() {
         installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new ElementNodeEditPolicy());
@@ -52,15 +55,15 @@ public abstract class ElementEditPart extends AbstractGraphicalEditPart implemen
         installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new ElementDirectEditPolicy());
     }
     
-    protected ElementWrapper getElementWrapper() {
+    public ElementWrapper getElementWrapper() {
     	return (ElementWrapper) getModel();
     }
 
-    protected List getModelSourceConnections() {
+    protected List<ElementConnection> getModelSourceConnections() {
         return getElementWrapper().getOutgoingConnections();
     }
     
-    protected List getModelTargetConnections() {
+    protected List<ElementConnection> getModelTargetConnections() {
         return getElementWrapper().getIncomingConnections();
     }
     
@@ -135,6 +138,14 @@ public abstract class ElementEditPart extends AbstractGraphicalEditPart implemen
                 new ElementCellEditorLocator(((ElementFigure) getFigure()).getLabel()));
         }
         manager.show();
+    }
+    
+    public void setEditor(GenericModelEditor editor) {
+        this.editor = editor;
+    }
+    
+    public GenericModelEditor getEditor() {
+        return this.editor;
     }
 
 }

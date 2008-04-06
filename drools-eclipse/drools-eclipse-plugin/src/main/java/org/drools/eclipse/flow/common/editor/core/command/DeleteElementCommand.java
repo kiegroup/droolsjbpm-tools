@@ -20,8 +20,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
+import org.drools.eclipse.flow.common.editor.core.ElementContainer;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
-import org.drools.eclipse.flow.common.editor.core.ProcessWrapper;
 import org.eclipse.gef.commands.Command;
 
 /**
@@ -32,7 +32,7 @@ import org.eclipse.gef.commands.Command;
 public class DeleteElementCommand extends Command {
 
     private ElementWrapper child;
-    private ProcessWrapper parent;
+    private ElementContainer parent;
     
     private List incomingElementWrappers = new ArrayList();
     private List outgoingElementWrappers = new ArrayList();
@@ -89,7 +89,7 @@ public class DeleteElementCommand extends Command {
         this.child = child;
     }
 
-    public void setParent(ProcessWrapper parent) {
+    public void setParent(ElementContainer parent) {
         this.parent = parent;
     }
 

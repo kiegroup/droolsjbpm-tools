@@ -17,7 +17,6 @@ package org.drools.eclipse.flow.ruleflow.core;
 
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
-import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.node.Join;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
@@ -27,7 +26,7 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class JoinWrapper extends NodeWrapper {
+public class JoinWrapper extends AbstractNodeWrapper {
 
     private static final long serialVersionUID = 400L;
     private static IPropertyDescriptor[] descriptors;

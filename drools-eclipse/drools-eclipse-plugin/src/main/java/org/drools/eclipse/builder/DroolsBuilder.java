@@ -276,13 +276,19 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
     }
     
     private DroolsBuildMarker[] parseRuleFlowFile(IFile file) {
+        if (!file.exists()) {
+            return new DroolsBuildMarker[0];
+        }
     	List markers = new ArrayList();
 		try {
             String input = convertToString(file.getContents());
 		    ProcessInfo processInfo =
                 DroolsEclipsePlugin.getDefault().parseProcess(input, file);
-		    markParseErrors(markers, processInfo.getErrors());  
+		    if (processInfo != null) {
+		        markParseErrors(markers, processInfo.getErrors());
+		    }
         } catch (Exception t) {
+            t.printStackTrace();
         	String message = t.getMessage();
             if (message == null || message.trim().equals( "" )) {
                 message = "Error: " + t.getClass().getName();

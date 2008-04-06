@@ -40,7 +40,7 @@ import org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class ElementConnectionEditPart extends AbstractConnectionEditPart implements ModelListener {
+public abstract class ElementConnectionEditPart extends AbstractConnectionEditPart implements ModelListener {
     
     protected void createEditPolicies() {
     	ConnectionEditPolicy connectionEditPolicy = new ConnectionEditPolicy();
@@ -50,9 +50,7 @@ public class ElementConnectionEditPart extends AbstractConnectionEditPart implem
         installEditPolicy(EditPolicy.CONNECTION_BENDPOINTS_ROLE, new ConnectionBendpointEditPolicy());
     }
     
-    protected ElementConnectionFactory getDefaultElementConnectionFactory() {
-    	return new ElementConnectionFactory();
-    }
+    protected abstract ElementConnectionFactory getDefaultElementConnectionFactory();
 
     protected IFigure createFigure() {
         PolylineConnection result = new PolylineConnection();

@@ -18,6 +18,7 @@ package org.drools.eclipse.flow.ruleflow.core;
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.ruleflow.view.property.action.ActionPropertyDescriptor;
+import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.node.ActionNode;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
@@ -26,7 +27,7 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class ActionWrapper extends NodeWrapper {
+public class ActionWrapper extends AbstractNodeWrapper {
 
 	private static final long serialVersionUID = -3618183280436588589L;
 
@@ -43,7 +44,7 @@ public class ActionWrapper extends NodeWrapper {
         descriptors = new IPropertyDescriptor[DefaultElementWrapper.descriptors.length + 1];
         System.arraycopy(DefaultElementWrapper.descriptors, 0, descriptors, 0, DefaultElementWrapper.descriptors.length);
         descriptors[descriptors.length - 1] = 
-            new ActionPropertyDescriptor(ACTION, "Action", getActionNode(), ((RuleFlowProcessWrapper) getParent()).getRuleFlowProcess());
+            new ActionPropertyDescriptor(ACTION, "Action", getActionNode(), (WorkflowProcess) getParent().getProcessWrapper().getProcess());
     }
     
     public ActionNode getActionNode() {

@@ -19,8 +19,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.EventObject;
 
@@ -65,7 +63,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public abstract class GenericModelEditor extends GraphicalEditorWithPalette {
+public abstract class GenericModelEditor extends GraphicalEditorWithPalette { // implements ITabbedPropertySheetPageContributor {
 
 	private Object model;
 	private boolean savePreviouslyNeeded = false;
@@ -137,11 +135,7 @@ public abstract class GenericModelEditor extends GraphicalEditorWithPalette {
 		super.commandStackChanged(event);
 	}
 
-	protected void createOutputStream(OutputStream os) throws IOException {
-		ObjectOutputStream out = new ObjectOutputStream(os);
-		out.writeObject(model);
-		out.close();
-	}
+	protected abstract void writeModel(OutputStream os) throws IOException;
 
 	protected void configureGraphicalViewer() {
 		super.configureGraphicalViewer();
@@ -170,7 +164,7 @@ public abstract class GenericModelEditor extends GraphicalEditorWithPalette {
 	public void doSave(IProgressMonitor monitor) {
 		try {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			createOutputStream(out);
+			writeModel(out);
 			IFile file = ((IFileEditorInput) getEditorInput()).getFile();
 			file.setContents(new ByteArrayInputStream(out.toByteArray()), true,
 					false, monitor);
@@ -200,7 +194,7 @@ public abstract class GenericModelEditor extends GraphicalEditorWithPalette {
 					throws CoreException {
 				try {
 					ByteArrayOutputStream out = new ByteArrayOutputStream();
-					createOutputStream(out);
+					writeModel(out);
 					file.create(new ByteArrayInputStream(out.toByteArray()),
 							true, monitor);
 					out.close();
@@ -266,28 +260,24 @@ public abstract class GenericModelEditor extends GraphicalEditorWithPalette {
 	protected void setInput(IEditorInput input) {
 		super.setInput(input);
 
-		IFile file = ((IFileEditorInput) input).getFile();
+		IFile file = getFile();
 		setPartName(file.getName());
 		try {
 			InputStream is = file.getContents(false);
-			createInputStream(is);
-		} catch (Exception e) {
-			DroolsEclipsePlugin.log(e);
-			model = createModel();
+			createModel(is);
+		} catch (Throwable t) {
+			DroolsEclipsePlugin.log(t);
 		}
 		if (getGraphicalViewer() != null) {
 			initializeGraphicalViewer();
 		}
 	}
-
-	protected void createInputStream(InputStream is) throws Exception {
-		ObjectInputStream ois = new ObjectInputStreamWithLoader(is, getClass()
-				.getClassLoader());
-		model = ois.readObject();
-		ois.close();
+	
+	public IFile getFile() {
+	    return ((IFileEditorInput) getEditorInput()).getFile();
 	}
-
-	protected abstract Object createModel();
+	
+	protected abstract void createModel(InputStream is);
 
 	public Object getAdapter(Class type) {
 		if (type == IContentOutlinePage.class) {
@@ -297,6 +287,9 @@ public abstract class GenericModelEditor extends GraphicalEditorWithPalette {
 			return ((ScalableRootEditPart) getGraphicalViewer()
 					.getRootEditPart()).getZoomManager();
 		}
+//		if (type == IPropertySheetPage.class) {
+//            return new TabbedPropertySheetPage(this);
+//		}
 		return super.getAdapter(type);
 	}
 
@@ -307,5 +300,9 @@ public abstract class GenericModelEditor extends GraphicalEditorWithPalette {
 			overviewOutlinePage = new OverviewOutlinePage(rootEditPart);
 		}
 		return overviewOutlinePage;
+	}
+	
+	public String getContributorId() {
+	    return getSite().getId();
 	}
 }

@@ -26,6 +26,7 @@ import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.ruleflow.view.property.constraint.ConstraintsPropertyDescriptor;
 import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Constraint;
+import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.node.Split;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
@@ -35,7 +36,7 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class SplitWrapper extends NodeWrapper {
+public class SplitWrapper extends AbstractNodeWrapper {
 
     public static final String TYPE = "type";
     public static final String CONSTRAINTS = "constraints";
@@ -75,7 +76,7 @@ public class SplitWrapper extends NodeWrapper {
             IPropertyDescriptor[] result = new IPropertyDescriptor[descriptors.length + 1];
             System.arraycopy(descriptors, 0, result, 0, descriptors.length);
             result[descriptors.length] = 
-                new ConstraintsPropertyDescriptor(CONSTRAINTS, "Constraints", getSplit(), ((RuleFlowProcessWrapper) getParent()).getRuleFlowProcess());
+                new ConstraintsPropertyDescriptor(CONSTRAINTS, "Constraints", getSplit(), (WorkflowProcess) getParent().getProcessWrapper().getProcess());
             return result;
         }
         return descriptors;
@@ -88,7 +89,8 @@ public class SplitWrapper extends NodeWrapper {
         if (CONSTRAINTS.equals(id)) {
         	return getSplit().getType() == Split.TYPE_XOR
         		|| getSplit().getType() == Split.TYPE_OR
-        		? new MyHashMap(getSplit().getConstraints()) : new MyHashMap();
+        		? new MyHashMap<Split.ConnectionRef, Constraint>(getSplit().getConstraints())
+	            : new MyHashMap<Split.ConnectionRef, Constraint>();
         }
         return super.getPropertyValue(id);
     }
@@ -97,8 +99,7 @@ public class SplitWrapper extends NodeWrapper {
         if (TYPE.equals(id)) {
             getSplit().setType(Split.TYPE_UNDEFINED);
         } else if (CONSTRAINTS.equals(id)) {
-        	for (Iterator it = getSplit().getDefaultOutgoingConnections().iterator(); it.hasNext(); ) {
-        		Connection connection = (Connection) it.next();
+        	for (Connection connection: getSplit().getDefaultOutgoingConnections()) {
         		getSplit().setConstraint(connection, null);
         	}
         } else {
@@ -110,10 +111,21 @@ public class SplitWrapper extends NodeWrapper {
         if (TYPE.equals(id)) {
             getSplit().setType(((Integer) value).intValue());
         } else if (CONSTRAINTS.equals(id)) {
-        	Iterator iterator = ((Map) value).entrySet().iterator();
+        	Iterator<Map.Entry<Split.ConnectionRef, Constraint>> iterator = ((Map<Split.ConnectionRef, Constraint>) value).entrySet().iterator();
         	while (iterator.hasNext()) {
-				Map.Entry element = (Map.Entry) iterator.next();
-				getSplit().setConstraint((Connection) element.getKey(), (Constraint) element.getValue()); 
+				Map.Entry<Split.ConnectionRef, Constraint> element = iterator.next();
+				Split.ConnectionRef connectionRef = element.getKey();
+				Connection outgoingConnection = null; 
+				for (Connection out: getSplit().getDefaultOutgoingConnections()) {
+				    if (out.getToType().equals(connectionRef.getToType())
+			            && out.getTo().getId() == connectionRef.getNodeId()) {
+				        outgoingConnection = out;
+				    }
+				}
+				if (outgoingConnection == null) {
+				    throw new IllegalArgumentException("Could not find outgoing connection");
+				}
+				getSplit().setConstraint(outgoingConnection, (Constraint) element.getValue()); 
 			}
         } else {
             super.setPropertyValue(id, value);
@@ -125,11 +137,11 @@ public class SplitWrapper extends NodeWrapper {
         setDescriptors();
     }
 
-    public class MyHashMap extends HashMap {
+    public class MyHashMap<K, V> extends HashMap<K, V> {
 		private static final long serialVersionUID = -1748055291307174539L;
 		public MyHashMap() {
     	}
-    	public MyHashMap(Map map) {
+    	public MyHashMap(Map<K, V> map) {
     		super(map);
     	}
 		public String toString() {

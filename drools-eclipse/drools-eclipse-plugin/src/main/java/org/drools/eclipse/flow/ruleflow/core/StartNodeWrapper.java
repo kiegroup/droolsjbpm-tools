@@ -16,7 +16,6 @@ package org.drools.eclipse.flow.ruleflow.core;
  */
 
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
-import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.node.StartNode;
 
 /**
@@ -24,7 +23,7 @@ import org.drools.workflow.core.node.StartNode;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class StartNodeWrapper extends NodeWrapper {
+public class StartNodeWrapper extends AbstractNodeWrapper {
 
     private static final long serialVersionUID = 400L;
 

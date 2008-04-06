@@ -15,8 +15,8 @@ package org.drools.eclipse.flow.common.editor.core.command;
  * limitations under the License.
  */
 
+import org.drools.eclipse.flow.common.editor.core.ElementContainer;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
-import org.drools.eclipse.flow.common.editor.core.ProcessWrapper;
 import org.eclipse.gef.commands.Command;
 
 /**
@@ -27,14 +27,14 @@ import org.eclipse.gef.commands.Command;
 public class AddElementCommand extends Command {
 
     private ElementWrapper child;
-    private ProcessWrapper parent;
+    private ElementContainer parent;
 
     public void execute() {
         parent.addElement(child);
         child.setParent(parent);
     }
 
-    protected ProcessWrapper getParent() {
+    protected ElementContainer getParent() {
         return parent;
     }
     
@@ -46,7 +46,7 @@ public class AddElementCommand extends Command {
         child = newChild;
     }
 
-    public void setParent(ProcessWrapper newParent) {
+    public void setParent(ElementContainer newParent) {
         parent = newParent;
     }
 

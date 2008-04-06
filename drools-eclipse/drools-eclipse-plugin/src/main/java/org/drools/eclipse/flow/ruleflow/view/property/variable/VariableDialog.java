@@ -22,7 +22,7 @@ import org.drools.eclipse.flow.common.view.datatype.editor.impl.DataTypeCombo;
 import org.drools.eclipse.flow.common.view.datatype.editor.impl.DataTypeEditorComposite;
 import org.drools.eclipse.flow.common.view.datatype.editor.impl.EditorComposite;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.process.core.Variable;
+import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.datatype.DataType;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;

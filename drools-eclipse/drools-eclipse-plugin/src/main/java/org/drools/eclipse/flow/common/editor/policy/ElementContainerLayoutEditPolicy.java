@@ -15,8 +15,8 @@ package org.drools.eclipse.flow.common.editor.policy;
  * limitations under the License.
  */
 
+import org.drools.eclipse.flow.common.editor.core.ElementContainer;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
-import org.drools.eclipse.flow.common.editor.core.ProcessWrapper;
 import org.drools.eclipse.flow.common.editor.core.command.AddElementCommand;
 import org.drools.eclipse.flow.common.editor.core.command.ChangeConstraintCommand;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -31,11 +31,11 @@ import org.eclipse.gef.requests.CreateRequest;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class ProcessLayoutEditPolicy extends XYLayoutEditPolicy {
+public class ElementContainerLayoutEditPolicy extends XYLayoutEditPolicy {
     
     protected Command getCreateCommand(CreateRequest request) {
         AddElementCommand command = new AddElementCommand();
-        command.setParent((ProcessWrapper) getHost().getModel());
+        command.setParent((ElementContainer) getHost().getModel());
         ElementWrapper element = (ElementWrapper) request.getNewObject();
         element.setConstraint((Rectangle) getConstraintFor(request));
         command.setChild(element);
@@ -47,11 +47,8 @@ public class ProcessLayoutEditPolicy extends XYLayoutEditPolicy {
     }
 
     protected Command createAddCommand(EditPart child, Object constraint) {
-        ElementWrapper element = (ElementWrapper) child.getModel();
-        AddElementCommand add = new AddElementCommand();
-        add.setParent((ProcessWrapper) getHost().getModel());
-        add.setChild(element);
-        return add;
+        // TODO this is needed to allow dragging of elements from one container to another
+        return null;
     }
 
     protected Command createChangeConstraintCommand(EditPart child, Object constraint) {

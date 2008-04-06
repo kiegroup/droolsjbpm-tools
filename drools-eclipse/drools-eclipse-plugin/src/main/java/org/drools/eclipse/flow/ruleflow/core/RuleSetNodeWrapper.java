@@ -26,7 +26,7 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class RuleSetNodeWrapper extends NodeWrapper {
+public class RuleSetNodeWrapper extends AbstractNodeWrapper {
 
     private static final long serialVersionUID = 400L;
     private static IPropertyDescriptor[] descriptors;

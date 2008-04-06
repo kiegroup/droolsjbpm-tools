@@ -20,7 +20,6 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -33,7 +32,7 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public abstract class DefaultElementWrapper implements IPropertySource, ElementWrapper, Serializable {
+public abstract class DefaultElementWrapper implements ElementWrapper, IPropertySource, Serializable {
 
     protected static IPropertyDescriptor[] descriptors;
 
@@ -45,11 +44,11 @@ public abstract class DefaultElementWrapper implements IPropertySource, ElementW
     }
     
     private Object element;
-    private Rectangle constraint;
-    private ProcessWrapper parent;
-    private List incomingConnections = new ArrayList();
-    private List outgoingConnections = new ArrayList();
-    private transient List listeners = new ArrayList();
+    private ElementContainer parent;
+    private transient Rectangle constraint;
+    private List<ElementConnection> incomingConnections = new ArrayList<ElementConnection>();
+    private List<ElementConnection> outgoingConnections = new ArrayList<ElementConnection>();
+    private transient List<ModelListener> listeners = new ArrayList<ModelListener>();
     
     protected void setElement(Object element) {
 		this.element = element;
@@ -60,34 +59,46 @@ public abstract class DefaultElementWrapper implements IPropertySource, ElementW
 	}
 
 	public void setConstraint(Rectangle constraint) {
-		this.constraint = constraint;
+	    this.constraint = constraint;
+		internalSetConstraint(constraint);
 		notifyListeners(CHANGE_CONSTRAINT);
 	}
-
+	
+	protected abstract void internalSetConstraint(Rectangle constraint);
+	
 	public Rectangle getConstraint() {
-		return constraint;
+	    if (constraint == null) {
+	        constraint = internalGetConstraint();
+	    }
+	    return constraint;
 	}
+	
+	protected abstract Rectangle internalGetConstraint();
 
-	public void setParent(ProcessWrapper parent) {
+	public void setParent(ElementContainer parent) {
 		this.parent = parent;
 	}
 
-	protected ProcessWrapper getParent() {
+	public ElementContainer getParent() {
 		return parent;
 	}
 
-	public List getOutgoingConnections() {
+	public List<ElementConnection> getOutgoingConnections() {
 		return Collections.unmodifiableList(outgoingConnections);
 	}
 
-	public List getIncomingConnections() {
+	public List<ElementConnection> getIncomingConnections() {
 		return Collections.unmodifiableList(incomingConnections);
 	}
 
 	public void addIncomingConnection(ElementConnection connection) {
-		incomingConnections.add(connection);
+	    localAddIncomingConnection(connection);
 		internalAddIncomingConnection(connection);
 		notifyListeners(CHANGE_INCOMING_CONNECTIONS);
+	}
+	
+	public void localAddIncomingConnection(ElementConnection connection) {
+	    incomingConnections.add(connection);
 	}
 
 	protected void internalAddIncomingConnection(ElementConnection connection) {
@@ -103,10 +114,14 @@ public abstract class DefaultElementWrapper implements IPropertySource, ElementW
 	}
 
 	public void addOutgoingConnection(ElementConnection connection) {
-		outgoingConnections.add(connection);
+	    localAddOutgoingConnection(connection);
 		internalAddOutgoingConnection(connection);
 		notifyListeners(CHANGE_OUTGOING_CONNECTIONS);
 	}
+
+    public void localAddOutgoingConnection(ElementConnection connection) {
+        outgoingConnections.add(connection);
+    }
 
 	protected void internalAddOutgoingConnection(ElementConnection connection) {
 	}
@@ -138,8 +153,7 @@ public abstract class DefaultElementWrapper implements IPropertySource, ElementW
 
 	protected void notifyListeners(int change) {
 		ModelEvent event = new ModelEvent(change);
-		for (Iterator it = listeners.iterator(); it.hasNext();) {
-			ModelListener listener = (ModelListener) it.next();
+		for (ModelListener listener: listeners) {
 			listener.modelChanged(event);
 		}
 	}
@@ -147,7 +161,7 @@ public abstract class DefaultElementWrapper implements IPropertySource, ElementW
 	private void readObject(ObjectInputStream aInputStream)
 			throws ClassNotFoundException, IOException {
 		aInputStream.defaultReadObject();
-		listeners = new ArrayList();
+		listeners = new ArrayList<ModelListener>();
 	}
 
 	public IPropertyDescriptor[] getPropertyDescriptors() {

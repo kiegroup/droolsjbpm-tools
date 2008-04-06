@@ -18,20 +18,26 @@ package org.drools.eclipse.flow.ruleflow.editor.editpart;
 import java.lang.reflect.Constructor;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
-import org.drools.eclipse.WorkItemDefinitions;
+import org.drools.eclipse.DroolsPluginImages;
+import org.drools.eclipse.builder.DroolsBuilder;
 import org.drools.eclipse.flow.common.editor.editpart.ElementEditPart;
-import org.drools.eclipse.flow.common.editor.editpart.figure.ElementFigure;
-import org.drools.eclipse.flow.common.editor.editpart.work.WorkEditor;
+import org.drools.eclipse.flow.common.editor.editpart.figure.AbstractElementFigure;
 import org.drools.eclipse.flow.ruleflow.core.WorkItemWrapper;
+import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.process.core.WorkDefinition;
 import org.drools.process.core.WorkDefinitionExtension;
+import org.drools.process.core.WorkEditor;
 import org.drools.workflow.core.node.WorkItemNode;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.RoundedRectangle;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
@@ -44,8 +50,6 @@ public class WorkItemEditPart extends ElementEditPart {
 
     private static final Color color = new Color(Display.getCurrent(), 255, 250, 205);
 
-    private transient WorkDefinition workDefinition;
-    
     protected IFigure createFigure() {
         String icon = null;
         WorkDefinition workDefinition = getWorkDefinition();
@@ -55,15 +59,41 @@ public class WorkItemEditPart extends ElementEditPart {
         if (icon == null) {
             icon = "icons/action.gif";
         }
-        return new TaskNodeFigure(icon);
+        Image image = DroolsPluginImages.getImage(icon);
+        WorkItemFigure figure = new WorkItemFigure();
+        if (image == null) {
+            IProject project = getEditor().getFile().getProject();
+            if (project != null) {
+                ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+                ClassLoader newLoader = DroolsBuilder.class.getClassLoader();
+                try {
+                    if (project.getNature("org.eclipse.jdt.core.javanature") != null) {
+                        IJavaProject javaProject = JavaCore.create(project);
+                        newLoader = ProjectClassLoader.getProjectClassLoader(javaProject);
+                    }
+                    try {
+                        Thread.currentThread().setContextClassLoader(newLoader);
+                        image = ImageDescriptor.createFromURL(
+                            newLoader.getResource(icon)).createImage();
+                        DroolsPluginImages.putImage(icon, image);
+                    } finally {
+                        Thread.currentThread().setContextClassLoader(oldLoader);
+                    }
+                } catch (Exception e) {
+                    DroolsEclipsePlugin.log(e);
+                }
+            }
+        }
+        figure.setIcon(image);
+        return figure;
+    }
+    
+    protected WorkItemWrapper getWorkItemWrapper() {
+        return (WorkItemWrapper) getElementWrapper();
     }
     
     private WorkDefinition getWorkDefinition() {
-        if (this.workDefinition == null) {
-            String taskName = ((WorkItemWrapper) getElementWrapper()).getWorkItemNode().getWork().getName();
-            this.workDefinition = WorkItemDefinitions.getWorkDefinition(taskName);
-        }
-        return workDefinition;
+        return getWorkItemWrapper().getWorkDefinition();
     }
     
     protected void doubleClicked() {
@@ -79,27 +109,35 @@ public class WorkItemEditPart extends ElementEditPart {
     }
     
     private void openEditor(String editorClassName, WorkDefinition workDefinition) {
-        try {
-            Class<WorkEditor> editorClass = 
-                (Class<WorkEditor>) Class.forName(editorClassName);
-            Constructor<WorkEditor> constructor = editorClass.getConstructor(Shell.class);
-            WorkEditor editor = constructor.newInstance(getViewer().getControl().getShell());
-            editor.setWorkDefinition(workDefinition);
-            WorkItemNode workItemNode = ((WorkItemWrapper) getElementWrapper()).getWorkItemNode();
-            editor.setWork(workItemNode.getWork());
-            editor.show();
-            workItemNode.setWork(editor.getWork());
-        } catch (Throwable t) {
-            DroolsEclipsePlugin.log(t);
+        IProject project = getEditor().getFile().getProject();
+        if (project != null) {
+            ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+            ClassLoader newLoader = DroolsBuilder.class.getClassLoader();
+            try {
+                if (project.getNature("org.eclipse.jdt.core.javanature") != null) {
+                    IJavaProject javaProject = JavaCore.create(project);
+                    newLoader = ProjectClassLoader.getProjectClassLoader(javaProject);
+                }
+                try {
+                    Thread.currentThread().setContextClassLoader(newLoader);
+                    Class<WorkEditor> editorClass = (Class<WorkEditor>) newLoader.loadClass(editorClassName);
+                    Constructor<WorkEditor> constructor = editorClass.getConstructor(Shell.class);
+                    WorkEditor editor = constructor.newInstance(getViewer().getControl().getShell());
+                    editor.setWorkDefinition(workDefinition);
+                    WorkItemNode workItemNode = getWorkItemWrapper().getWorkItemNode();
+                    editor.setWork(workItemNode.getWork());
+                    editor.show();
+                    workItemNode.setWork(editor.getWork());
+                } finally {
+                    Thread.currentThread().setContextClassLoader(oldLoader);
+                }
+            } catch (Exception e) {
+                DroolsEclipsePlugin.log(e);
+            }
         }
     }
     
-    public static class TaskNodeFigure extends ElementFigure {
-        
-        public TaskNodeFigure(String icon) {
-            setIcon(ImageDescriptor.createFromURL(
-                DroolsEclipsePlugin.getDefault().getBundle().getEntry(icon)).createImage());
-        }
+    public static class WorkItemFigure extends AbstractElementFigure {
         
         private RoundedRectangle rectangle;
         

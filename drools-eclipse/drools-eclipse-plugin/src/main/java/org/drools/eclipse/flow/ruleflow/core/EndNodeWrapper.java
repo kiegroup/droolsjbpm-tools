@@ -23,7 +23,7 @@ import org.drools.workflow.core.node.EndNode;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class EndNodeWrapper extends NodeWrapper {
+public class EndNodeWrapper extends AbstractNodeWrapper {
 
     private static final long serialVersionUID = 400L;
 

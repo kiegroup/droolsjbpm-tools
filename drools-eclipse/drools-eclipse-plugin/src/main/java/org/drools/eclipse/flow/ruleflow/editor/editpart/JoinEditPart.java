@@ -16,7 +16,7 @@ package org.drools.eclipse.flow.ruleflow.editor.editpart;
  */
 
 import org.drools.eclipse.flow.common.editor.editpart.ElementEditPart;
-import org.drools.eclipse.flow.common.editor.editpart.figure.ElementFigure;
+import org.drools.eclipse.flow.common.editor.editpart.figure.AbstractElementFigure;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.Ellipse;
 import org.eclipse.draw2d.EllipseAnchor;
@@ -56,7 +56,7 @@ public class JoinEditPart extends ElementEditPart {
         return new EllipseAnchor(getFigure());
     }
 
-    public class JoinFigure extends ElementFigure {
+    public class JoinFigure extends AbstractElementFigure {
         
         private Ellipse ellipse;
         

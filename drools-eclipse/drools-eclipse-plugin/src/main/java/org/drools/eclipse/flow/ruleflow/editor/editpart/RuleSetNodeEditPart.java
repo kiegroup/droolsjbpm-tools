@@ -16,7 +16,7 @@ package org.drools.eclipse.flow.ruleflow.editor.editpart;
  */
 
 import org.drools.eclipse.flow.common.editor.editpart.ElementEditPart;
-import org.drools.eclipse.flow.common.editor.editpart.figure.ElementFigure;
+import org.drools.eclipse.flow.common.editor.editpart.figure.AbstractElementFigure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.RoundedRectangle;
 import org.eclipse.draw2d.geometry.Dimension;
@@ -37,7 +37,7 @@ public class RuleSetNodeEditPart extends ElementEditPart {
         return new RuleSetNodeFigure();
     }
     
-    public class RuleSetNodeFigure extends ElementFigure {
+    public class RuleSetNodeFigure extends AbstractElementFigure {
         
         private RoundedRectangle rectangle;
         

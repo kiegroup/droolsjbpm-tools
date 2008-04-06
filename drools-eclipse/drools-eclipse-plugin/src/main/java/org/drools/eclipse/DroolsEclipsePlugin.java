@@ -16,6 +16,7 @@ package org.drools.eclipse;
  */
 
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -34,12 +35,13 @@ import org.drools.eclipse.builder.DroolsBuilder;
 import org.drools.eclipse.builder.Util;
 import org.drools.eclipse.dsl.editor.DSLAdapter;
 import org.drools.eclipse.editors.AbstractRuleEditor;
-import org.drools.eclipse.flow.ruleflow.core.RuleFlowProcessWrapper;
 import org.drools.eclipse.preferences.IDroolsConstants;
 import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.process.core.Process;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.xml.XmlProcessReader;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
@@ -59,8 +61,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-
-import com.thoughtworks.xstream.XStream;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -412,21 +412,20 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 	
 	public ProcessInfo parseProcess(String input, IResource resource) {
 	    try {
-            XStream stream = new XStream();
-            stream.setMode(XStream.ID_REFERENCES);
-            
             ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
             ClassLoader newLoader = this.getClass().getClassLoader();
             try {
                 Thread.currentThread().setContextClassLoader(newLoader);
-                Object o = stream.fromXML(input);
-                if (o instanceof RuleFlowProcessWrapper) {
-                    RuleFlowProcessWrapper processWrapper = (RuleFlowProcessWrapper) o;
-                    RuleFlowProcess process = processWrapper.getRuleFlowProcess();
+                PackageBuilderConfiguration configuration = new PackageBuilderConfiguration();
+                XmlProcessReader xmlReader = new XmlProcessReader( configuration.getSemanticModules() );
+                
+                Process o = xmlReader.read(new StringReader(input));
+                if (o instanceof RuleFlowProcess) {
+                    RuleFlowProcess process = (RuleFlowProcess) o;
                     PackageBuilder packageBuilder = new PackageBuilder();
                     ProcessBuilder processBuilder = new ProcessBuilder(packageBuilder);
                     processBuilder.buildProcess(process);
-                    ProcessInfo processInfo = new ProcessInfo(process.getId(), processWrapper, packageBuilder.getPackage());
+                    ProcessInfo processInfo = new ProcessInfo(process.getId(), process);
                     processInfo.setErrors(processBuilder.getErrors());
                     if (useCachePreference) {
                         processInfos.put(resource, processInfo);

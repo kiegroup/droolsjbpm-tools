@@ -13,7 +13,9 @@ import org.drools.eclipse.flow.common.editor.editpart.ElementEditPart;
 import org.drools.eclipse.flow.common.editor.editpart.ProcessEditPart;
 import org.drools.eclipse.flow.common.editor.editpart.figure.ElementFigure;
 import org.drools.eclipse.flow.ruleflow.core.RuleFlowProcessWrapper;
+import org.drools.eclipse.flow.ruleflow.core.RuleFlowWrapperBuilder;
 import org.drools.eclipse.flow.ruleflow.editor.editpart.RuleFlowEditPartFactory;
+import org.drools.ruleflow.core.RuleFlowProcess;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.editparts.ScalableRootEditPart;
@@ -21,8 +23,6 @@ import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.custom.CTabFolder2Adapter;
-import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -85,7 +85,8 @@ public class ProcessInstanceViewer extends ViewPart implements ISelectionListene
             graphicalViewer.createControl(composite);
             graphicalViewer.getControl().setBackground(ColorConstants.listBackground);
             graphicalViewer.setRootEditPart(new ScalableRootEditPart());
-            graphicalViewer.setEditPartFactory(new RuleFlowEditPartFactory());
+            // TODO fix this !
+            graphicalViewer.setEditPartFactory(new RuleFlowEditPartFactory(null));
             setProcess(processInfo);
             for (String nodeId: nodeIds) {
             	handleNodeInstanceSelection(nodeId);
@@ -93,7 +94,8 @@ public class ProcessInstanceViewer extends ViewPart implements ISelectionListene
         }
         
         private void setProcess(ProcessInfo processInfo) {
-            ProcessWrapper processWrapper = processInfo.getProcessWrapper();
+            RuleFlowProcess process = (RuleFlowProcess) processInfo.getProcess();
+            ProcessWrapper processWrapper = RuleFlowWrapperBuilder.getProcessWrapper(process, null);
             graphicalViewer.setContents(
                 processWrapper == null ? new RuleFlowProcessWrapper() : processWrapper);
         }
@@ -126,7 +128,7 @@ public class ProcessInstanceViewer extends ViewPart implements ISelectionListene
     }
 
     public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-        System.out.println("Selection changed: " + selection);
+        // Do nothing
     }
 
 }

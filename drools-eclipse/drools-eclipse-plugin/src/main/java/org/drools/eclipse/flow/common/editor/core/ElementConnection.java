@@ -29,7 +29,7 @@ import org.eclipse.draw2d.geometry.Point;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class ElementConnection implements Serializable {
+public abstract class ElementConnection implements Serializable {
     
 	private static final long serialVersionUID = 400L;
 	
@@ -37,20 +37,17 @@ public class ElementConnection implements Serializable {
 	
 	private ElementWrapper source;
     private ElementWrapper target;
-    private List bendpoints = new ArrayList();
-    private transient List listeners = new ArrayList();
+    private transient List<Point> bendpoints = new ArrayList<Point>();
+    private transient List<ModelListener> listeners = new ArrayList<ModelListener>();
     
     public ElementConnection() {
     }
     
-    public ElementConnection(ElementWrapper source, ElementWrapper target) {
-        if (source == null) {
-        	throw new IllegalArgumentException("source is null");        	
-        }
-        if (target == null) {
-        	throw new IllegalArgumentException("target is null");
-        }
+    public void localSetSource(ElementWrapper source) {
     	this.source = source;
+    }
+    
+    public void localSetTarget(ElementWrapper target) {
         this.target = target;
     }
     
@@ -91,29 +88,43 @@ public class ElementConnection implements Serializable {
         return source;
     }
     
-    
     public ElementWrapper getTarget() {
         return target;
     }
 
     public void addBendpoint(int index, Point point) {
         bendpoints.add(index, point);
+        internalSetBendpoints(bendpoints);
         notifyListeners(CHANGE_BENDPOINTS);
     }
-
+    
     public void removeBendpoint(int index) {
         bendpoints.remove(index);
+        internalSetBendpoints(bendpoints);
         notifyListeners(CHANGE_BENDPOINTS);
     }
 
     public void replaceBendpoint(int index, Point point) {
         bendpoints.set(index, point);
+        internalSetBendpoints(bendpoints);
         notifyListeners(CHANGE_BENDPOINTS);
     }
 
-    public List getBendpoints() {
+    protected void internalSetBendpoints(List<Point> bendPoints) {
+    }
+
+    public void localSetBendpoints(List<Point> bendpoints) {
+        this.bendpoints = bendpoints;
+    }
+    
+    public List<Point> getBendpoints() {
+        if (bendpoints == null) {
+            bendpoints = internalGetBendpoints();
+        }
         return bendpoints;
     }
+    
+    protected abstract List<Point> internalGetBendpoints();
 
     public void addListener(ModelListener listener) {
         listeners.add(listener);

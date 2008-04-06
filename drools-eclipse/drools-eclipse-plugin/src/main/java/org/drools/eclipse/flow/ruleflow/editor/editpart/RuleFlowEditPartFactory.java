@@ -15,8 +15,10 @@ package org.drools.eclipse.flow.ruleflow.editor.editpart;
  * limitations under the License.
  */
 
+import org.drools.eclipse.flow.common.editor.editpart.ElementContainerEditPart;
 import org.drools.eclipse.flow.common.editor.editpart.ProcessEditPart;
 import org.drools.eclipse.flow.ruleflow.core.ActionWrapper;
+import org.drools.eclipse.flow.ruleflow.core.CompositeNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper;
 import org.drools.eclipse.flow.ruleflow.core.EndNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.JoinWrapper;
@@ -26,7 +28,9 @@ import org.drools.eclipse.flow.ruleflow.core.RuleSetNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.SplitWrapper;
 import org.drools.eclipse.flow.ruleflow.core.StartNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.SubFlowWrapper;
+import org.drools.eclipse.flow.ruleflow.core.TimerWrapper;
 import org.drools.eclipse.flow.ruleflow.core.WorkItemWrapper;
+import org.drools.eclipse.flow.ruleflow.editor.RuleFlowModelEditor;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
 
@@ -36,7 +40,13 @@ import org.eclipse.gef.EditPartFactory;
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class RuleFlowEditPartFactory implements EditPartFactory {
-
+    
+    private RuleFlowModelEditor editor;
+    
+    public RuleFlowEditPartFactory(RuleFlowModelEditor editor) {
+        this.editor = editor;
+    }
+    
     public EditPart createEditPart(EditPart context, Object model) {
         EditPart result = null;
         if (model instanceof RuleFlowProcessWrapper) {
@@ -61,6 +71,11 @@ public class RuleFlowEditPartFactory implements EditPartFactory {
             result = new ActionEditPart();
         } else if (model instanceof WorkItemWrapper) {
             result = new WorkItemEditPart();
+            ((WorkItemEditPart) result).setEditor(editor);
+        } else if (model instanceof TimerWrapper) {
+            result = new TimerEditPart();
+        } else if (model instanceof CompositeNodeWrapper) {
+            result = new ElementContainerEditPart();
         } else {
             throw new IllegalArgumentException(
                 "Unknown model object " + model);
