@@ -8,10 +8,8 @@ import java.util.Map;
 import org.drools.common.BaseNode;
 import org.drools.eclipse.editors.rete.model.Connection;
 import org.drools.eclipse.editors.rete.model.ReteGraph;
-import org.drools.util.Iterator;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.ReflectiveVisitor;
-import org.drools.util.ObjectHashMap.ObjectEntry;
 
 /**
  * Produces a graph in GraphViz DOT format.
@@ -105,8 +103,8 @@ public class ReteooVisitor extends ReflectiveVisitor {
             List list = null;
             if ( node instanceof ObjectSource ) {
                 list = Arrays.asList( ((ObjectSource) node).getSinkPropagator().getSinks() );
-            } else if ( node instanceof TupleSource ) {
-                list = Arrays.asList( ((TupleSource) node).getSinkPropagator().getSinks() );
+            } else if ( node instanceof LeftTupleSource ) {
+                list = Arrays.asList( ((LeftTupleSource) node).getSinkPropagator().getSinks() );
             }
 
             if ( list != null ) {
