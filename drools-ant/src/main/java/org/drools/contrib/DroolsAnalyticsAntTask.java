@@ -8,7 +8,7 @@ import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.taskdefs.MatchingTask;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
-import org.drools.analytics.Analyzer;
+import org.drools.verifier.Analyzer;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.lang.descr.PackageDescr;
