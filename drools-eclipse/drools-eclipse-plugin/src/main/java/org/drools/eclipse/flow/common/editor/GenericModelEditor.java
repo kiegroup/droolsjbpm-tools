@@ -79,7 +79,7 @@ public abstract class GenericModelEditor extends GraphicalEditorWithPalette { //
 		this.model = model;
 	}
 
-	protected Object getModel() {
+	public Object getModel() {
 		return model;
 	}
 
