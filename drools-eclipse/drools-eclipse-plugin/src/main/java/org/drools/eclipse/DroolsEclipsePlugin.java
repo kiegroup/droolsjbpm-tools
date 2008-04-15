@@ -312,7 +312,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 		return null;
 	}
 
-	private DRLInfo generateParsedResource(String content, IResource resource, boolean useCache, boolean compile) throws DroolsParserException {
+	public DRLInfo generateParsedResource(String content, IResource resource, boolean useCache, boolean compile) throws DroolsParserException {
 		useCache = useCache && useCachePreference;
         DrlParser parser = new DrlParser();
         try {

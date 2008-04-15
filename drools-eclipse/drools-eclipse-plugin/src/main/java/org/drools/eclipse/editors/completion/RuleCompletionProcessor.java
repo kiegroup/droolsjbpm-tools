@@ -35,6 +35,7 @@ import org.drools.rule.builder.dialect.mvel.MVELConsequenceBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.util.asm.ClassFieldInspector;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.CompletionProposal;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.internal.ui.text.java.JavaCompletionProposal;
@@ -44,6 +45,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.IFileEditorInput;
 import org.mvel.compiler.CompiledExpression;
 import org.mvel.compiler.ExpressionCompiler;
 import org.mvel.ParserContext;
@@ -955,14 +957,16 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
         final Set proposals = new HashSet();
 
-        if ( !(getEditor() instanceof DRLRuleEditor) ) {
+        if (!(getEditor().getEditorInput() instanceof IFileEditorInput)) {
             return proposals;
         }
 
         try {
-            DRLInfo drlInfo = DroolsEclipsePlugin.getDefault().parseResource( (DRLRuleEditor) getEditor(),
-                                                                              true,
-                                                                              true );
+            DRLInfo drlInfo = DroolsEclipsePlugin.getDefault().generateParsedResource(
+                ruleBackText,
+                ((IFileEditorInput) getEditor().getEditorInput()).getFile(),
+                false,
+                true );
 
             String textWithoutPrefix = CompletionUtil.getTextWithoutPrefix( consequenceBackText,
                                                                             prefix );
@@ -1086,7 +1090,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                             proposals );
         return uniqueProposals;
     }
-
+    
     private Map getResolvedMvelInputs(Map params) {
         ClassTypeResolver resolver = new ClassTypeResolver( getUniqueImports(),
                                                             ProjectClassLoader.getProjectClassLoader( getEditor() ) );
@@ -1211,9 +1215,11 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                                          null,
                                                          qualifiedName );
 
-        for ( Iterator it = dialect.getPackgeImports().values().iterator(); it.hasNext(); ) {
-            String packageImport = (String) it.next();
-            context.addPackageImport( packageImport );
+        if (dialect.getPackgeImports() != null) {
+            for ( Iterator it = dialect.getPackgeImports().values().iterator(); it.hasNext(); ) {
+                String packageImport = (String) it.next();
+                context.addPackageImport( packageImport );
+            }
         }
         context.setStrictTypeEnforcement( false );
 
@@ -1260,7 +1266,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         //ideally the variable name should be inferred from the last member of the expression
         final String syntheticVarName = "mvdrlofc";
 
-        String javaText = "\n" + CompletionUtil.getSimpleClassName( lastType ) + " " + syntheticVarName + ";\n" + syntheticVarName + ".";
+        String javaText = "\n" + lastType.getPackage().getName() + "." + CompletionUtil.getSimpleClassName( lastType ) + " " + syntheticVarName + ";\n" + syntheticVarName + ".";
         final List list1 = new ArrayList();
         requestJavaCompletionProposals( javaText,
                                         prefix,

@@ -18,6 +18,7 @@ package org.drools.eclipse.flow.ruleflow.view.property.action;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.eclipse.editors.DRLSourceViewerConfig;
 import org.drools.eclipse.editors.scanners.DRLPartionScanner;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
 import org.drools.eclipse.flow.ruleflow.view.property.constraint.RuleFlowGlobalsDialog;
@@ -30,6 +31,9 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentPartitioner;
+import org.eclipse.jface.text.contentassist.ContentAssistant;
+import org.eclipse.jface.text.contentassist.IContentAssistant;
+import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.rules.FastPartitioner;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewer;
@@ -38,6 +42,7 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -63,7 +68,7 @@ public class ActionDialog extends EditBeanDialog {
 	private TabFolder tabFolder;
 	private SourceViewer actionViewer;
 	private Combo dialectCombo;
-	//private ActionCompletionProcessor completionProcessor;
+	private ActionCompletionProcessor completionProcessor;
 
 	public ActionDialog(Shell parentShell, WorkflowProcess process, ActionNode actionNode) {
 		super(parentShell, "Action editor");
@@ -89,19 +94,21 @@ public class ActionDialog extends EditBeanDialog {
 
 	private Control createTextualEditor(Composite parent) {
 		actionViewer = new SourceViewer(parent, null, SWT.BORDER);
-//		actionViewer.configure(new DRLSourceViewerConfig(null) {
-//			public IReconciler getReconciler(ISourceViewer sourceViewer) {
-//				return null;
-//			}
-//			public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
-//				ContentAssistant assistant = new ContentAssistant();
-//				completionProcessor = new ActionCompletionProcessor(process);
-//				assistant.setContentAssistProcessor(
-//					completionProcessor, IDocument.DEFAULT_CONTENT_TYPE);
-//				assistant.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
-//				return assistant;
-//			}
-//		});
+		actionViewer.configure(new DRLSourceViewerConfig(null) {
+			public IReconciler getReconciler(ISourceViewer sourceViewer) {
+				return null;
+			}
+			public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
+				ContentAssistant assistant = new ContentAssistant();
+				completionProcessor = new ActionCompletionProcessor(process);
+				assistant.setContentAssistProcessor(
+					completionProcessor, IDocument.DEFAULT_CONTENT_TYPE);
+				assistant.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
+				return assistant;
+			}
+		});
+		completionProcessor.setDialect(
+            dialectCombo.getItem(dialectCombo.getSelectionIndex()));
 		Object action = getValue();
 		String value = null;
 		if (action instanceof DroolsConsequenceAction) {
@@ -143,7 +150,17 @@ public class ActionDialog extends EditBeanDialog {
             }
         }
         dialectCombo.select(index);
-	    return dialectCombo;
+        dialectCombo.addSelectionListener(new SelectionListener() {
+            public void widgetDefaultSelected(SelectionEvent e) {
+                completionProcessor.setDialect(
+                    dialectCombo.getItem(dialectCombo.getSelectionIndex()));
+            }
+            public void widgetSelected(SelectionEvent e) {
+                completionProcessor.setDialect(
+                    dialectCombo.getItem(dialectCombo.getSelectionIndex()));
+            }
+        });
+        return dialectCombo;
 	}
 	
 	private Object getAction() {
@@ -214,7 +231,7 @@ public class ActionDialog extends EditBeanDialog {
 				if (code != CANCEL) {
 					List imports = dialog.getImports();
 					process.setImports(imports);
-//					completionProcessor.reset();
+					completionProcessor.reset();
 				}
 			}
 		};
@@ -231,7 +248,7 @@ public class ActionDialog extends EditBeanDialog {
 				if (code != CANCEL) {
 					Map globals = dialog.getGlobals();
 					process.setGlobals(globals);
-//					completionProcessor.reset();
+					completionProcessor.reset();
 				}
 			}
 		};
