@@ -131,7 +131,7 @@ public class DSLTree {
     
     private void addEntry(Section section, String nl, String objname) {
         if (!nl.startsWith("-")) {
-        	if (objname != null) {
+        	if (objname != null && !"".equals(objname)) {
         		this.addObjToNLMap(objname, nl);
         	}
             String[] tokenz = nl.split("\\s");
@@ -314,6 +314,21 @@ public class DSLTree {
      */
     public Node[] getChildren(String obj, String text) {
         Node thenode = this.rootCond.getChild(obj);
+        if (thenode == null) {
+        	for (Node child: this.rootCond.getChildren()) {
+        		String tokenText = child.getToken();
+        		if (tokenText != null) {
+	        		int index = tokenText.indexOf("{");
+	        		if (index != -1) {
+	        			String substring = tokenText.substring(0, index);
+	        			System.out.println(substring);
+	        			if (obj != null && obj.startsWith(substring)) {
+	        				thenode = child;
+	        			}
+	        		}
+        		}
+        	}
+        }
     	if (thenode != null && text.length() > 0) {
             StringTokenizer tokenz = new StringTokenizer(text);
             this.last = this.current;
@@ -388,7 +403,7 @@ public class DSLTree {
      * @param addChildren
      * @return
      */
-    public ArrayList getChildrenList(String obj, String text, boolean addChildren) {
+    public ArrayList getChildrenList(String obj, String text, boolean addChildren, boolean firstLine) {
     	Node[] c = getChildren(obj,text);
     	this.suggestions.clear();
     	if (c != null) {
@@ -400,13 +415,13 @@ public class DSLTree {
 	    		}
 	    	}
     	}
-    	if (c == null || text.trim().length() == 0) {
+    	if (text.trim().length() == 0) {
 	    	// in the event the line is zero length after it is trimmed, we also add
 	    	// the top level nodes
     		Iterator top = this.rootCond.getChildren().iterator();
         	while (top.hasNext()) {
         		Node t = (Node)top.next();
-        		if (!this.suggestions.contains(t.getToken())) {
+        		if ((!firstLine || t.getToken() != null) && !this.suggestions.contains(t.getToken())) {
             		if (addChildren) {
                 		this.addChildToList(t, t.getToken(), this.suggestions);
             		} else {
@@ -430,12 +445,20 @@ public class DSLTree {
     		Iterator itr = n.getChildren().iterator();
     		while (itr.hasNext()) {
     			Node child = (Node)itr.next();
-    			String text = prefix + " " + child.getToken();
+    			if (prefix != null && "-".equals(child.getToken())) {
+    				if (!list.contains(prefix)) {
+        				list.add(prefix);
+    				}
+    				return;
+    			}
+    			String text = (prefix == null ? "" : prefix + " ") + child.getToken();
     			// list.add(text);
     			addChildToList(child,text,list);
     		}
     	} else {
-    		list.add(prefix);
+    		if (!list.contains(prefix)) {
+    			list.add(prefix);
+    		}
     	}
     }
     

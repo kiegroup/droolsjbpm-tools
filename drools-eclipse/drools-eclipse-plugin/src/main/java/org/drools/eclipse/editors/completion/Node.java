@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public class Node {
-    private HashMap children = new HashMap();
+    private HashMap<String, Node> children = new HashMap<String, Node>();
     private Node parent = null;
     private String token;
     private int depth = 0;
@@ -67,7 +67,7 @@ public class Node {
         this.children.remove(n.getToken());
     }
     
-    public Collection getChildren() {
+    public Collection<Node> getChildren() {
         return this.children.values();
     }
 

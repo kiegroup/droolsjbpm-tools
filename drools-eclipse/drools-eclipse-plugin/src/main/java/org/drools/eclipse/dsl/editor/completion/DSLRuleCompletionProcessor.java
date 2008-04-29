@@ -52,17 +52,19 @@ public class DSLRuleCompletionProcessor extends RuleCompletionProcessor {
 			String last = this.getLastLine(backText);
 			// we have to check if the last line is when. if it is we set
 			// the last line to zero length string
-			if (last.equals("when")) {
+			boolean firstLine = false;
+			if (lastobj.equals("when")) {
+				firstLine = true;
 				last = "";
 				lastobj = "*";
 			}
 			// pass the last string in the backText to getProposals
-			List dslConditions = this.getProposals(adapter, lastobj, last);
+			List dslConditions = this.getProposals(adapter, lastobj, last, firstLine);
 			// if we couldn't find any matches, we add the list from
 			// the DSLAdapter so that there's something
-			if (dslConditions.size() == 0) {
-				dslConditions.addAll(adapter.listConditionItems());
-			}
+//			if (dslConditions.size() == 0) {
+//				dslConditions.addAll(adapter.listConditionItems());
+//			}
 			addDSLProposals(list, documentOffset, prefix, dslConditions);
 		}
 	}
@@ -159,10 +161,10 @@ public class DSLRuleCompletionProcessor extends RuleCompletionProcessor {
 	 * @param last
 	 * @return
 	 */
-	protected List getProposals(DSLAdapter adapter, String obj, String last) {
+	protected List getProposals(DSLAdapter adapter, String obj, String last, boolean firstLine) {
 		if (last.length() == 0) {
 			last = " ";
 		}
-		return adapter.getDSLTree().getChildrenList(obj, last, true);
+		return adapter.getDSLTree().getChildrenList(obj, last, true, firstLine);
 	}
 }
