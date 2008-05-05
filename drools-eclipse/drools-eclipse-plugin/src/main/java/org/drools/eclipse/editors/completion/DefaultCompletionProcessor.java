@@ -92,19 +92,20 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
                     // extract function parameters
                     Map params = extractParams( matcher.group( 3 ) );
                     // add global parameters
-                    List globals = getGlobals();
-                    if ( globals != null ) {
-                        for ( Iterator iterator = globals.iterator(); iterator.hasNext(); ) {
-                            GlobalDescr global = (GlobalDescr) iterator.next();
-                            params.put( global.getIdentifier(),
-                                        global.getType() );
-                        }
-                    }
+//                    List globals = getGlobals();
+//                    if ( globals != null ) {
+//                        for ( Iterator iterator = globals.iterator(); iterator.hasNext(); ) {
+//                            GlobalDescr global = (GlobalDescr) iterator.next();
+//                            params.put( global.getIdentifier(),
+//                                        global.getType() );
+//                        }
+//                    }
                     String functionText = matcher.group( 4 );
                     props = getJavaCompletionProposals( documentOffset,
                                                         functionText,
                                                         prefix,
-                                                        params );
+                                                        params,
+                                                        false );
                     filterProposalsOnPrefix( prefix,
                                              props );
                 } else {
@@ -249,12 +250,21 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
                                               final String javaText,
                                               final String prefix,
                                               Map params) {
+        return getJavaCompletionProposals(documentOffset, javaText, prefix, params, true);
+    }
+    
+    protected List getJavaCompletionProposals(final int documentOffset,
+                                              final String javaText,
+                                              final String prefix,
+                                              Map params,
+                                              boolean useDrools) {
         final List list = new ArrayList();
         requestJavaCompletionProposals( javaText,
                                         prefix,
                                         documentOffset,
                                         params,
-                                        list );
+                                        list,
+                                        useDrools );
         return list;
     }
 
@@ -287,6 +297,15 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
                                                   final int documentOffset,
                                                   Map params,
                                                   Collection results) {
+        requestJavaCompletionProposals(javaText, prefix, documentOffset, params, results, true);
+    }
+
+    protected void requestJavaCompletionProposals(final String javaText,
+                                                  final String prefix,
+                                                  final int documentOffset,
+                                                  Map params,
+                                                  Collection results,
+                                                  boolean useDrools) {
 
 
         String javaTextWithoutPrefix = CompletionUtil.getTextWithoutPrefix( javaText,
@@ -318,7 +337,9 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
                 // evalContext.newVariable((String) entry.getValue(), (String) entry.getKey(), null);
                 javaTextWithParams.append( entry.getValue() + " " + entry.getKey() + ";\n" );
             }
-            javaTextWithParams.append( "org.drools.spi.KnowledgeHelper drools;" );
+            if (useDrools) {
+                javaTextWithParams.append( "org.drools.spi.KnowledgeHelper drools;" );
+            }
             javaTextWithParams.append( javaText );
             String jtext = javaTextWithParams.toString();
             String fixedText = new KnowledgeHelperFixer().fix( jtext );
