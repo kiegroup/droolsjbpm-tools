@@ -22,15 +22,22 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.drools.eclipse.editors.DRLSourceViewerConfig;
+import org.drools.eclipse.editors.scanners.DRLPartionScanner;
 import org.drools.workflow.core.WorkflowProcess;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentPartitioner;
+import org.eclipse.jface.text.contentassist.ContentAssistant;
+import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.reconciler.IReconciler;
+import org.eclipse.jface.text.rules.FastPartitioner;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -78,11 +85,31 @@ public class RuleFlowGlobalsDialog extends Dialog {
 				return null;
 			}
 			public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
-				return null;
+                ContentAssistant assistant = new ContentAssistant();
+                IContentAssistProcessor completionProcessor = new GlobalCompletionProcessor();
+                assistant.setContentAssistProcessor(
+                    completionProcessor, IDocument.DEFAULT_CONTENT_TYPE);
+                assistant.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
+                return assistant;
 			}
 		});
 		IDocument document = new Document(getProcessImports());
 		globalsViewer.setDocument(document);
+        IDocumentPartitioner partitioner =
+            new FastPartitioner(
+                new DRLPartionScanner(),
+                DRLPartionScanner.LEGAL_CONTENT_TYPES);
+        partitioner.connect(document);
+        document.setDocumentPartitioner(partitioner);
+        globalsViewer.getControl().addKeyListener(new KeyListener() {
+            public void keyPressed(KeyEvent e) {
+                if (e.character == ' ' && e.stateMask == SWT.CTRL) {
+                    globalsViewer.doOperation(ISourceViewer.CONTENTASSIST_PROPOSALS);
+                }
+            }
+            public void keyReleased(KeyEvent e) {
+            }
+        });
 		return globalsViewer.getControl();
 	}
 	
