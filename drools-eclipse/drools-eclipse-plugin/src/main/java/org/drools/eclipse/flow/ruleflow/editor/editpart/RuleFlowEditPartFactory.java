@@ -33,6 +33,7 @@ import org.drools.eclipse.flow.ruleflow.core.WorkItemWrapper;
 import org.drools.eclipse.flow.ruleflow.editor.RuleFlowModelEditor;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
+import org.eclipse.jdt.core.IJavaProject;
 
 /**
  * Factory for RuleFlow EditParts.
@@ -41,10 +42,10 @@ import org.eclipse.gef.EditPartFactory;
  */
 public class RuleFlowEditPartFactory implements EditPartFactory {
     
-    private RuleFlowModelEditor editor;
+    private IJavaProject project;
     
-    public RuleFlowEditPartFactory(RuleFlowModelEditor editor) {
-        this.editor = editor;
+    public RuleFlowEditPartFactory(IJavaProject project) {
+        this.project = project;
     }
     
     public EditPart createEditPart(EditPart context, Object model) {
@@ -71,7 +72,7 @@ public class RuleFlowEditPartFactory implements EditPartFactory {
             result = new ActionEditPart();
         } else if (model instanceof WorkItemWrapper) {
             result = new WorkItemEditPart();
-            ((WorkItemEditPart) result).setEditor(editor);
+            ((WorkItemEditPart) result).setProject(project);
         } else if (model instanceof TimerWrapper) {
             result = new TimerEditPart();
         } else if (model instanceof CompositeNodeWrapper) {

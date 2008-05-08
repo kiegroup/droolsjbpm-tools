@@ -67,15 +67,15 @@ public class RuleEditor extends FormEditor
     private IResourceChangeListener    packageFileTracker = new IResourceChangeListener() {
 
                                                               public void resourceChanged(IResourceChangeEvent event) {
-                                                                  IResourceDelta delta = getRootDelta( event.getDelta() );
-
-                                                                  IPath p1 = delta.getFullPath();
-                                                                  IPath p2 = packageEditorInput.getFile().getFullPath();
-                                                                  if ( p1.equals( p2 ) ) {
-                                                                      reloadCompletionEngine();
-                                                                  }
-
-                                                              }
+                                                            	  if (packageEditorInput != null) {
+	                                                                  IResourceDelta delta = getRootDelta( event.getDelta() );
+	
+	                                                                  IPath p1 = delta.getFullPath();
+	                                                                  IPath p2 = packageEditorInput.getFile().getFullPath();
+	                                                                  if ( p1.equals( p2 ) ) {
+	                                                                      reloadCompletionEngine();
+	                                                                  }
+                                                            	  }                                                              }
 
                                                           };
 

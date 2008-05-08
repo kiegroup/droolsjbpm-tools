@@ -46,8 +46,8 @@ public class ElementConnectionCreateCommand extends Command {
             	return false;
             }
         }
-        return source.acceptsOutgoingConnection(connection)
-            && target != null && target.acceptsIncomingConnection(connection);
+        return source.acceptsOutgoingConnection(connection, target)
+            && target != null && target.acceptsIncomingConnection(connection, source);
     }
 
     public void execute() {

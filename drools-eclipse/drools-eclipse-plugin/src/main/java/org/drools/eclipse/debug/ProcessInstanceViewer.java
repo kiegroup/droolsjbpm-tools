@@ -16,10 +16,15 @@ import org.drools.eclipse.flow.ruleflow.core.RuleFlowProcessWrapper;
 import org.drools.eclipse.flow.ruleflow.core.RuleFlowWrapperBuilder;
 import org.drools.eclipse.flow.ruleflow.editor.editpart.RuleFlowEditPartFactory;
 import org.drools.ruleflow.core.RuleFlowProcess;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.editparts.ScalableRootEditPart;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -67,8 +72,10 @@ public class ProcessInstanceViewer extends ViewPart implements ISelectionListene
         
         private GraphicalViewer graphicalViewer;
         private CTabItem tabItem;
+        private String projectName;
         
-        public ProcessInstanceTabItem(CTabFolder folder, String processInstanceId, String processId, List<String> nodeIds) {
+        public ProcessInstanceTabItem(CTabFolder folder, String processInstanceId, String processId, List<String> nodeIds, String projectName) {
+        	this.projectName = projectName;
             tabItem = new CTabItem(folder, SWT.NONE);
             ProcessInfo processInfo = DroolsEclipsePlugin.getDefault().getProcessInfo(processId);
             if (processInfo == null) {
@@ -85,17 +92,18 @@ public class ProcessInstanceViewer extends ViewPart implements ISelectionListene
             graphicalViewer.createControl(composite);
             graphicalViewer.getControl().setBackground(ColorConstants.listBackground);
             graphicalViewer.setRootEditPart(new ScalableRootEditPart());
-            // TODO fix this !
-            graphicalViewer.setEditPartFactory(new RuleFlowEditPartFactory(null));
+            IJavaProject javaProject = getJavaProject(projectName);
+            graphicalViewer.setEditPartFactory(new RuleFlowEditPartFactory(javaProject));
             setProcess(processInfo);
             for (String nodeId: nodeIds) {
             	handleNodeInstanceSelection(nodeId);
-            }            
+            }
+            folder.setSelection(tabItem);
         }
         
         private void setProcess(ProcessInfo processInfo) {
             RuleFlowProcess process = (RuleFlowProcess) processInfo.getProcess();
-            ProcessWrapper processWrapper = RuleFlowWrapperBuilder.getProcessWrapper(process, null);
+            ProcessWrapper processWrapper = RuleFlowWrapperBuilder.getProcessWrapper(process, getJavaProject(projectName));
             graphicalViewer.setContents(
                 processWrapper == null ? new RuleFlowProcessWrapper() : processWrapper);
         }
@@ -122,13 +130,36 @@ public class ProcessInstanceViewer extends ViewPart implements ISelectionListene
         }
     }
 
-    public void showProcessInstance(String processInstanceId, String processId, List nodeIds) {
+    public void showProcessInstance(String processInstanceId, String processId, List nodeIds, String projectName) {
         processInstanceTabItems.put(processInstanceId,
-            new ProcessInstanceTabItem(tabFolder, processInstanceId, processId, nodeIds));
+            new ProcessInstanceTabItem(tabFolder, processInstanceId, processId, nodeIds, projectName));
     }
 
     public void selectionChanged(IWorkbenchPart part, ISelection selection) {
         // Do nothing
+    }
+    
+    private IJavaProject getJavaProject(String projectName) {
+    	if (projectName != null) {
+			projectName = projectName.trim();
+			if (projectName.length() > 0) {
+				IProject project = ResourcesPlugin.getWorkspace().getRoot()
+					.getProject(projectName);
+				if (project != null) {
+					try {
+						if (project.getNature("org.eclipse.jdt.core.javanature") != null) {
+			                IJavaProject javaProject = JavaCore.create(project);
+			                if (javaProject.exists()){
+			                	return javaProject;
+			                }
+			            }
+					} catch (CoreException e) {
+						DroolsEclipsePlugin.log(e);
+					}
+				}
+			}
+		}
+    	return null;
     }
 
 }

@@ -321,7 +321,6 @@ public class DSLTree {
 	        		int index = tokenText.indexOf("{");
 	        		if (index != -1) {
 	        			String substring = tokenText.substring(0, index);
-	        			System.out.println(substring);
 	        			if (obj != null && obj.startsWith(substring)) {
 	        				thenode = child;
 	        			}

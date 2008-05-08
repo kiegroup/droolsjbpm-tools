@@ -9,6 +9,7 @@ import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.process.core.WorkDefinition;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 
@@ -18,26 +19,31 @@ public final class WorkItemDefinitions {
     }
 
     public static Map<String, WorkDefinition> getWorkDefinitions(IResource resource) {
-        return getWorkDefinitions(resource == null ? null : resource.getProject());
+    	IProject project = resource.getProject();
+    	if (project != null) {
+    		try {
+		        if (project.getNature("org.eclipse.jdt.core.javanature") != null) {
+		            IJavaProject javaProject = JavaCore.create(project);
+		            if (javaProject != null && javaProject.exists()) {
+		            	return getWorkDefinitions(javaProject);
+		            }
+		        }
+    		} catch (CoreException e) {
+    			DroolsEclipsePlugin.log(e);
+    		}
+    	}
+    	return null;
     }
     
-    public static Map<String, WorkDefinition> getWorkDefinitions(IProject project) {
+    public static Map<String, WorkDefinition> getWorkDefinitions(IJavaProject project) {
         if (project != null) {
             ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
-            ClassLoader newLoader = DroolsBuilder.class.getClassLoader();
+            ClassLoader newLoader = ProjectClassLoader.getProjectClassLoader(project);
             try {
-                if (project.getNature("org.eclipse.jdt.core.javanature") != null) {
-                    IJavaProject javaProject = JavaCore.create(project);
-                    newLoader = ProjectClassLoader.getProjectClassLoader(javaProject);
-                }
-                try {
-                    Thread.currentThread().setContextClassLoader(newLoader);
-                    return new RuleBaseConfiguration().getProcessWorkDefinitions();
-                } finally {
-                    Thread.currentThread().setContextClassLoader(oldLoader);
-                }
-            } catch (Exception e) {
-                DroolsEclipsePlugin.log(e);
+                Thread.currentThread().setContextClassLoader(newLoader);
+                return new RuleBaseConfiguration().getProcessWorkDefinitions();
+            } finally {
+                Thread.currentThread().setContextClassLoader(oldLoader);
             }
         }
         return new HashMap<String, WorkDefinition>();

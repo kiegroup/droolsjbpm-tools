@@ -27,9 +27,7 @@ import java.util.List;
 
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.eclipse.DroolsEclipsePlugin;
-import org.drools.eclipse.DroolsPluginImages;
 import org.drools.eclipse.WorkItemDefinitions;
-import org.drools.eclipse.builder.DroolsBuilder;
 import org.drools.eclipse.flow.common.editor.GenericModelEditor;
 import org.drools.eclipse.flow.ruleflow.core.RuleFlowProcessWrapper;
 import org.drools.eclipse.flow.ruleflow.core.RuleFlowWrapperBuilder;
@@ -54,10 +52,8 @@ import org.eclipse.gef.palette.PaletteDrawer;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.requests.SimpleFactory;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
@@ -71,7 +67,7 @@ import org.eclipse.ui.part.FileEditorInput;
 public class RuleFlowModelEditor extends GenericModelEditor {
 
     protected EditPartFactory createEditPartFactory() {
-        return new RuleFlowEditPartFactory(this);
+        return new RuleFlowEditPartFactory(getJavaProject());
     }
 
     protected PaletteRoot createPalette() {
@@ -99,15 +95,11 @@ public class RuleFlowModelEditor extends GenericModelEditor {
     }
     
     private void refreshPalette(IFile file) {
-        IProject project = getFile().getProject();
-        if (project != null) {
-            ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
-            ClassLoader newLoader = DroolsBuilder.class.getClassLoader();
+        IJavaProject javaProject = getJavaProject();
+        if (javaProject != null) {
             try {
-                if (project.getNature("org.eclipse.jdt.core.javanature") != null) {
-                    IJavaProject javaProject = JavaCore.create(project);
-                    newLoader = ProjectClassLoader.getProjectClassLoader(javaProject);
-                }
+                ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+                ClassLoader newLoader = ProjectClassLoader.getProjectClassLoader(javaProject);
                 try {
                     Thread.currentThread().setContextClassLoader(newLoader);
                     PaletteDrawer drawer = (PaletteDrawer) getPaletteRoot().getChildren().get(2);
@@ -233,7 +225,7 @@ public class RuleFlowModelEditor extends GenericModelEditor {
                 if (process == null) {
                     setModel(createModel());
                 } else {
-                    setModel(RuleFlowWrapperBuilder.getProcessWrapper(process, getFile()));
+                    setModel(RuleFlowWrapperBuilder.getProcessWrapper(process, getJavaProject()));
                 }
             } catch (Throwable t) {
                 DroolsEclipsePlugin.log(t);

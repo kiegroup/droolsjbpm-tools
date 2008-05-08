@@ -7,10 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.WorkItemDefinitions;
 import org.drools.eclipse.flow.common.editor.core.ElementContainer;
 import org.drools.process.core.Work;
 import org.drools.process.core.WorkDefinition;
+import org.drools.process.core.impl.WorkDefinitionImpl;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Node;
@@ -25,11 +27,11 @@ import org.drools.workflow.core.node.StartNode;
 import org.drools.workflow.core.node.SubProcessNode;
 import org.drools.workflow.core.node.TimerNode;
 import org.drools.workflow.core.node.WorkItemNode;
-import org.eclipse.core.resources.IResource;
+import org.eclipse.jdt.core.IJavaProject;
 
 public class RuleFlowWrapperBuilder {
     
-    public static RuleFlowProcessWrapper getProcessWrapper(RuleFlowProcess process, IResource resource) {
+    public static RuleFlowProcessWrapper getProcessWrapper(RuleFlowProcess process, IJavaProject project) {
         if (process == null) {
             return null;
         }
@@ -38,14 +40,14 @@ public class RuleFlowWrapperBuilder {
         Set<Node> nodes = new HashSet<Node>();
         nodes.addAll(Arrays.asList(process.getNodes()));
         Set<Connection> connections = new HashSet<Connection>();
-        processNodes(nodes, connections, processWrapper, resource);
+        processNodes(nodes, connections, processWrapper, project);
         return processWrapper;
     }
     
-    private static void processNodes(Set<Node> nodes, Set<Connection> connections, ElementContainer container, IResource resource) {
+    private static void processNodes(Set<Node> nodes, Set<Connection> connections, ElementContainer container, IJavaProject project) {
         Map<Node, NodeWrapper> nodeWrappers = new HashMap<Node, NodeWrapper>();
         for (Node node: nodes) {
-            NodeWrapper nodeWrapper = getNodeWrapper(node, resource);
+            NodeWrapper nodeWrapper = getNodeWrapper(node, project);
             nodeWrapper.setNode(node);
             nodeWrapper.setParent(container);
             container.localAddElement(nodeWrapper);
@@ -74,7 +76,7 @@ public class RuleFlowWrapperBuilder {
         }
     }
     
-    private static NodeWrapper getNodeWrapper(Node node, IResource resource) {
+    private static NodeWrapper getNodeWrapper(Node node, IJavaProject project) {
         if (node instanceof StartNode) {
             return new StartNodeWrapper();
         } else if (node instanceof EndNode) {
@@ -100,11 +102,13 @@ public class RuleFlowWrapperBuilder {
             Work work = ((WorkItemNode) node).getWork();
             if (work != null && work.getName() != null) {
                 WorkDefinition workDefinition = 
-                    WorkItemDefinitions.getWorkDefinitions(resource)
+                    WorkItemDefinitions.getWorkDefinitions(project)
                         .get(work.getName());
                 if (workDefinition == null) {
-                    throw new IllegalArgumentException(
-                        "Could not find work definition for work " + work.getName());
+                	DroolsEclipsePlugin.log(
+                        new IllegalArgumentException("Could not find work definition for work " + work.getName()));
+                    workDefinition = new WorkDefinitionImpl();
+                    ((WorkDefinitionImpl) workDefinition).setName(work.getName());
                 }
                 workItemWrapper.setWorkDefinition(workDefinition);
             }

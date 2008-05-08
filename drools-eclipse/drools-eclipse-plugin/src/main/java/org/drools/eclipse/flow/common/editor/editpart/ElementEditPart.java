@@ -17,7 +17,6 @@ package org.drools.eclipse.flow.common.editor.editpart;
 
 import java.util.List;
 
-import org.drools.eclipse.flow.common.editor.GenericModelEditor;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ModelEvent;
@@ -29,6 +28,7 @@ import org.drools.eclipse.flow.common.editor.policy.ElementEditPolicy;
 import org.drools.eclipse.flow.common.editor.policy.ElementNodeEditPolicy;
 import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.ConnectionAnchor;
+import org.eclipse.draw2d.Label;
 import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalEditPart;
@@ -37,6 +37,7 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.tools.DirectEditManager;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.viewers.TextCellEditor;
 
 /**
@@ -47,7 +48,7 @@ import org.eclipse.jface.viewers.TextCellEditor;
 public abstract class ElementEditPart extends AbstractGraphicalEditPart implements NodeEditPart, ModelListener {
     
     private DirectEditManager manager;
-    private GenericModelEditor editor;
+    private IJavaProject project;
     
     protected void createEditPolicies() {
         installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new ElementNodeEditPolicy());
@@ -133,19 +134,23 @@ public abstract class ElementEditPart extends AbstractGraphicalEditPart implemen
     }
     
     private void performDirectEdit() {
+    	Label label = ((ElementFigure) getFigure()).getLabel();
+    	if (label == null) {
+    		return;
+    	}
         if (manager == null) {
             manager = new ElementDirectEditManager(this, TextCellEditor.class,
-                new ElementCellEditorLocator(((ElementFigure) getFigure()).getLabel()));
+                new ElementCellEditorLocator(label));
         }
         manager.show();
     }
     
-    public void setEditor(GenericModelEditor editor) {
-        this.editor = editor;
+    public void setProject(IJavaProject project) {
+        this.project = project;
     }
     
-    public GenericModelEditor getEditor() {
-        return this.editor;
+    public IJavaProject getProject() {
+        return this.project;
     }
 
 }

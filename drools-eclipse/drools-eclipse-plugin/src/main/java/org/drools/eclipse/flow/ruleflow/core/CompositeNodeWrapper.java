@@ -63,12 +63,16 @@ public class CompositeNodeWrapper extends ElementContainerElementWrapper impleme
         return (CompositeNode) getNode();
     }
     
-    public boolean acceptsIncomingConnection(ElementConnection connection) {
-        return getIncomingConnections().isEmpty();
+    public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
+        return getIncomingConnections().isEmpty()
+        	&& (source == null || 
+    			((NodeWrapper) source).getNode().getNodeContainer() == getNode().getNodeContainer());
     }
 
-    public boolean acceptsOutgoingConnection(ElementConnection connection) {
-        return getOutgoingConnections().isEmpty();
+    public boolean acceptsOutgoingConnection(ElementConnection connection, ElementWrapper target) {
+        return getOutgoingConnections().isEmpty()
+        	&& (target == null || 
+    			((NodeWrapper) target).getNode().getNodeContainer() == getNode().getNodeContainer());
     }
 
     protected void internalAddElement(ElementWrapper element) {

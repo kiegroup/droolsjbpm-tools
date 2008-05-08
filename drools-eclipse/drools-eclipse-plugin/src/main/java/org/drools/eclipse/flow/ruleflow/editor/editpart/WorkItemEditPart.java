@@ -16,25 +16,30 @@ package org.drools.eclipse.flow.ruleflow.editor.editpart;
  */
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
-import org.drools.eclipse.builder.DroolsBuilder;
 import org.drools.eclipse.flow.common.editor.editpart.ElementEditPart;
 import org.drools.eclipse.flow.common.editor.editpart.figure.AbstractElementFigure;
+import org.drools.eclipse.flow.common.editor.editpart.figure.FixedConnectionAnchor;
 import org.drools.eclipse.flow.ruleflow.core.WorkItemWrapper;
 import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.process.core.WorkDefinition;
 import org.drools.process.core.WorkDefinitionExtension;
 import org.drools.process.core.WorkEditor;
 import org.drools.workflow.core.node.WorkItemNode;
-import org.eclipse.core.resources.IProject;
+import org.eclipse.draw2d.ChopboxAnchor;
+import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.RoundedRectangle;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.Request;
+import org.eclipse.gef.requests.DropRequest;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -62,15 +67,11 @@ public class WorkItemEditPart extends ElementEditPart {
         Image image = DroolsPluginImages.getImage(icon);
         WorkItemFigure figure = new WorkItemFigure();
         if (image == null) {
-            IProject project = getEditor().getFile().getProject();
-            if (project != null) {
-                ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
-                ClassLoader newLoader = DroolsBuilder.class.getClassLoader();
+            IJavaProject javaProject = getProject();
+            if (javaProject != null) {
                 try {
-                    if (project.getNature("org.eclipse.jdt.core.javanature") != null) {
-                        IJavaProject javaProject = JavaCore.create(project);
-                        newLoader = ProjectClassLoader.getProjectClassLoader(javaProject);
-                    }
+                    ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+                    ClassLoader newLoader = ProjectClassLoader.getProjectClassLoader(javaProject);
                     try {
                         Thread.currentThread().setContextClassLoader(newLoader);
                         image = ImageDescriptor.createFromURL(
@@ -96,6 +97,11 @@ public class WorkItemEditPart extends ElementEditPart {
         return getWorkItemWrapper().getWorkDefinition();
     }
     
+    public ConnectionAnchor getSourceConnectionAnchor(Request request) {
+    	Point p = ((DropRequest) request).getLocation();
+    	return ((WorkItemFigure) getFigure()).getOutgoingConnectionAnchorAt(p);
+    }
+    
     protected void doubleClicked() {
         super.doubleClicked();
         // open custom editor pane if one exists
@@ -109,15 +115,11 @@ public class WorkItemEditPart extends ElementEditPart {
     }
     
     private void openEditor(String editorClassName, WorkDefinition workDefinition) {
-        IProject project = getEditor().getFile().getProject();
-        if (project != null) {
-            ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
-            ClassLoader newLoader = DroolsBuilder.class.getClassLoader();
+        IJavaProject javaProject = getProject();
+        if (javaProject != null) {
             try {
-                if (project.getNature("org.eclipse.jdt.core.javanature") != null) {
-                    IJavaProject javaProject = JavaCore.create(project);
-                    newLoader = ProjectClassLoader.getProjectClassLoader(javaProject);
-                }
+                ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+                ClassLoader newLoader = ProjectClassLoader.getProjectClassLoader(javaProject);
                 try {
                     Thread.currentThread().setContextClassLoader(newLoader);
                     Class<WorkEditor> editorClass = (Class<WorkEditor>) newLoader.loadClass(editorClassName);
@@ -140,6 +142,42 @@ public class WorkItemEditPart extends ElementEditPart {
     public static class WorkItemFigure extends AbstractElementFigure {
         
         private RoundedRectangle rectangle;
+        private ConnectionAnchor defaultConnectionAnchor;
+        private List<ConnectionAnchor> outgoingConnectionAnchors = new ArrayList<ConnectionAnchor>();
+        
+        public WorkItemFigure() {
+        	defaultConnectionAnchor = new ChopboxAnchor(this);
+//        	FixedConnectionAnchor c = new FixedConnectionAnchor(this);
+//        	outgoingConnectionAnchors.add(c);
+//        	c = new FixedConnectionAnchor(this);
+//        	outgoingConnectionAnchors.add(c);
+        }
+        
+        public void layoutConnectionAnchors() {
+//        	FixedConnectionAnchor c = (FixedConnectionAnchor) outgoingConnectionAnchors.get(0);
+//        	c.setOffsetV(getBounds().height);
+//        	c.setOffsetH(0);
+//        	c = (FixedConnectionAnchor) outgoingConnectionAnchors.get(1);
+//        	c.setOffsetV(getBounds().height);
+//        	c.setOffsetH(getBounds().width);
+        }
+        
+        public ConnectionAnchor getOutgoingConnectionAnchorAt(Point p) {
+        	ConnectionAnchor closest = null;
+        	long min = Long.MAX_VALUE;
+        	for (ConnectionAnchor c: outgoingConnectionAnchors) {
+        		Point p2 = c.getLocation(null);
+        		long d = p.getDistance2(p2);
+        		if (d < min) {
+        			min = d;
+        			closest = c;
+        		}
+        	}
+        	if (min > 100) {
+        		return defaultConnectionAnchor;
+        	}
+        	return closest;
+        }
         
         protected void customizeFigure() {
             rectangle = new RoundedRectangle();
@@ -159,6 +197,12 @@ public class WorkItemEditPart extends ElementEditPart {
             super.setSelected(b);
             rectangle.setLineWidth(b ? 3 : 1);
             repaint();
+        }
+        
+        public void validate() {
+        	if(isValid()) return;
+        	layoutConnectionAnchors();
+        	super.validate();
         }
     }
 }

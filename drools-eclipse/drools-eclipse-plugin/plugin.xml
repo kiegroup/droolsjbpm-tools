@@ -431,7 +431,7 @@
             extensions="rf, ruleflow, rflow"
             icon="icons/process.gif"
             contributorClass="org.drools.eclipse.flow.common.editor.GenericActionBarContributor"
-            class="org.drools.eclipse.flow.ruleflow.editor.RuleFlowModelEditor2"
+            class="org.drools.eclipse.flow.ruleflow.editor.RuleFlowModelEditor"
             id="org.drools.eclipse.flow.ruleflow.editor.RuleFlowModelEditor">
       </editor>
    </extension>

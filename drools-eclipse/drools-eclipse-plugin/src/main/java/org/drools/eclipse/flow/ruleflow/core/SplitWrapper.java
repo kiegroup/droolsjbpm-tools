@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
+import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.eclipse.flow.ruleflow.view.property.constraint.ConstraintsPropertyDescriptor;
 import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Constraint;
@@ -62,12 +63,9 @@ public class SplitWrapper extends AbstractNodeWrapper {
         return (Split) getNode();
     }
     
-    public boolean acceptsIncomingConnection(ElementConnection connection) {
-        return getIncomingConnections().isEmpty();
-    }
-
-    public boolean acceptsOutgoingConnection(ElementConnection connection) {
-        return true;
+    public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
+        return super.acceptsIncomingConnection(connection, source)
+        	&& getIncomingConnections().isEmpty();
     }
 
     public IPropertyDescriptor[] getPropertyDescriptors() {

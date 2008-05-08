@@ -25,6 +25,7 @@ public class ElementContainerFigure extends Figure implements ElementFigure {
         add(scrollpane);
         scrollpane.setViewport(new FreeformViewport());
         scrollpane.setContents(pane);
+        setBorder(new LineBorder(1));
     }
 
     public Label getLabel() {

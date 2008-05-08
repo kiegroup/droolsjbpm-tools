@@ -109,7 +109,7 @@ public class DebugUtil {
      * Return the current stack frame context, or a valid stack frame for the
      * given value.
      */
-    private static IJavaStackFrame getStackFrame(IValue value)
+    public static IJavaStackFrame getStackFrame(IValue value)
             throws CoreException {
         IStatusHandler handler = getStackFrameProvider();
         if (handler != null) {

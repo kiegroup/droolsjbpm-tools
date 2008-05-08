@@ -49,8 +49,8 @@ public interface ElementWrapper {
     void addOutgoingConnection(ElementConnection connection);
     void localAddOutgoingConnection(ElementConnection connection);
     void removeOutgoingConnection(ElementConnection connection);
-    boolean acceptsIncomingConnection(ElementConnection connection);
-    boolean acceptsOutgoingConnection(ElementConnection connection);
+    boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source);
+    boolean acceptsOutgoingConnection(ElementConnection connection, ElementWrapper target);
     
     void addListener(ModelListener listener);
     void removeListener(ModelListener listener);

@@ -23,7 +23,9 @@ import java.io.OutputStream;
 import java.util.EventObject;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
+import org.drools.eclipse.util.ProjectClassLoader;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -45,6 +47,8 @@ import org.eclipse.gef.ui.actions.GEFActionConstants;
 import org.eclipse.gef.ui.actions.ToggleGridAction;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithPalette;
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.swt.SWT;
@@ -275,6 +279,31 @@ public abstract class GenericModelEditor extends GraphicalEditorWithPalette { //
 	
 	public IFile getFile() {
 	    return ((IFileEditorInput) getEditorInput()).getFile();
+	}
+	
+	public IProject getProject() {
+		IFile file = getFile();
+		if (file != null) {
+			return file.getProject();
+		}
+		return null;
+	}
+	
+	public IJavaProject getJavaProject() {
+		IProject project = getProject();
+		if (project != null) {
+			try {
+				if (project.getNature("org.eclipse.jdt.core.javanature") != null) {
+	                IJavaProject javaProject = JavaCore.create(project);
+	                if (javaProject.exists()){
+	                	return javaProject;
+	                }
+	            }
+			} catch (CoreException e) {
+				DroolsEclipsePlugin.log(e);
+			}
+		}
+		return null;
 	}
 	
 	protected abstract void createModel(InputStream is);

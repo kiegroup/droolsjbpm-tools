@@ -16,6 +16,7 @@ package org.drools.eclipse.flow.ruleflow.core;
  */
 
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
+import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.workflow.core.node.StartNode;
 
 /**
@@ -36,11 +37,12 @@ public class StartNodeWrapper extends AbstractNodeWrapper {
         return (StartNode) getNode();
     }
     
-    public boolean acceptsIncomingConnection(ElementConnection connection) {
+    public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
         return false;
     }
 
-    public boolean acceptsOutgoingConnection(ElementConnection connection) {
-        return getOutgoingConnections().isEmpty();
+    public boolean acceptsOutgoingConnection(ElementConnection connection, ElementWrapper target) {
+        return super.acceptsOutgoingConnection(connection, target)
+        	&& getOutgoingConnections().isEmpty();
     }
 }

@@ -337,7 +337,7 @@ public class RuleFlowConstraintDialog extends Dialog {
 			if ("eval(true)".equals(constraint.getConstraint())) {
 				alwaysTrue.setSelection(true);
 			} else {
-				setConstraintText(constraint.getConstraint().toString());
+				setConstraintText(constraint.getConstraint() == null ? "" : constraint.getConstraint());
 			}
 			tabFolder.setVisible(!alwaysTrue.getSelection());
 			nameText.setText(constraint.getName() == null ? "" : constraint

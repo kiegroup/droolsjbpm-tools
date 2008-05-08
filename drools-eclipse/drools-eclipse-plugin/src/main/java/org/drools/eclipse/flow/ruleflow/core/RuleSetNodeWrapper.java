@@ -17,6 +17,7 @@ package org.drools.eclipse.flow.ruleflow.core;
 
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
+import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.workflow.core.node.RuleSetNode;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
@@ -53,12 +54,14 @@ public class RuleSetNodeWrapper extends AbstractNodeWrapper {
         return descriptors;
     }
 
-    public boolean acceptsIncomingConnection(ElementConnection connection) {
-        return getIncomingConnections().isEmpty();
+    public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
+        return super.acceptsIncomingConnection(connection, source)
+        	&& getIncomingConnections().isEmpty();
     }
 
-    public boolean acceptsOutgoingConnection(ElementConnection connection) {
-        return getOutgoingConnections().isEmpty();
+    public boolean acceptsOutgoingConnection(ElementConnection connection, ElementWrapper target) {
+        return super.acceptsOutgoingConnection(connection, target)
+        	&& getOutgoingConnections().isEmpty();
     }
     
     public Object getPropertyValue(Object id) {

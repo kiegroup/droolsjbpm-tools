@@ -17,6 +17,7 @@ package org.drools.eclipse.flow.ruleflow.core;
 
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
+import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.workflow.core.node.Join;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
@@ -48,12 +49,9 @@ public class JoinWrapper extends AbstractNodeWrapper {
         return (Join) getNode();
     }
     
-    public boolean acceptsIncomingConnection(ElementConnection connection) {
-        return true;
-    }
-
-    public boolean acceptsOutgoingConnection(ElementConnection connection) {
-        return getOutgoingConnections().isEmpty();
+    public boolean acceptsOutgoingConnection(ElementConnection connection, ElementWrapper target) {
+        return super.acceptsOutgoingConnection(connection, target)
+        	&& getOutgoingConnections().isEmpty();
     }
 
     public IPropertyDescriptor[] getPropertyDescriptors() {

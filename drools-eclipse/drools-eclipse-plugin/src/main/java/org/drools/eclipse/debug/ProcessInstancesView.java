@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.jdt.debug.core.IJavaArray;
 import org.eclipse.jdt.debug.core.IJavaValue;
 import org.eclipse.jdt.debug.core.IJavaVariable;
+import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ISelection;
@@ -93,8 +95,14 @@ public class ProcessInstancesView extends DroolsDebugEventHandlerView {
                 }
                 nodeIds.add(nodeId);
             }
-            // TODO: pass current java project, to retrieve work item definitions
-            ((ProcessInstanceViewer) view).showProcessInstance(id, processId, nodeIds);
+            String projectName = null;
+            try {
+            	projectName = processInstance.getLaunch().getLaunchConfiguration().getAttribute(
+        			IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, (String) null);
+            } catch (CoreException e) {
+            	DroolsEclipsePlugin.log(e);
+            }
+            ((ProcessInstanceViewer) view).showProcessInstance(id, processId, nodeIds, projectName);
         }
     }
 }

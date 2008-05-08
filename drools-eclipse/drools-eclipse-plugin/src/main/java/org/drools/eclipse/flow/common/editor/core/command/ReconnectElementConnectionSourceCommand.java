@@ -43,7 +43,7 @@ public class ReconnectElementConnectionSourceCommand extends Command {
             if (connection.getTarget().equals(target) && !connection.getSource().equals(oldSource))
                 return false;
         }
-        return newSource.acceptsOutgoingConnection(connection); //XXX    
+        return newSource.acceptsOutgoingConnection(connection, target); //XXX    
     }
 
     public void execute() {

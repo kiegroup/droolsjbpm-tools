@@ -16,6 +16,8 @@ package org.drools.eclipse.flow.ruleflow.core;
  */
 
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
+import org.drools.eclipse.flow.common.editor.core.ElementConnection;
+import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.workflow.core.Node;
 import org.eclipse.draw2d.geometry.Rectangle;
 
@@ -68,4 +70,15 @@ public abstract class AbstractNodeWrapper extends DefaultElementWrapper implemen
             width == null ? -1 : width,
             height == null ? -1 : height);
     }
+
+    public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
+        return source == null
+    		|| ((NodeWrapper) source).getNode().getNodeContainer() == getNode().getNodeContainer();
+    }
+
+    public boolean acceptsOutgoingConnection(ElementConnection connection, ElementWrapper target) {
+        return target == null
+    		|| ((NodeWrapper) target).getNode().getNodeContainer() == getNode().getNodeContainer();
+    }
+    
 }
