@@ -56,7 +56,7 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
 			"\\s*package\\s+([^\\s;#]+);?", Pattern.DOTALL);
 
 	private static final Pattern FUNCTION_PATTERN = Pattern.compile(
-			"\\n\\s*function\\s+(\\S+)\\s+(\\S+)\\(.*\\)", Pattern.DOTALL);
+			"\\n\\s*function\\s+(\\S+)\\s+(\\S+)\\(.*?\\)", Pattern.DOTALL);
 
 	private static final Pattern TEMPLATE_PATTERN = Pattern.compile(
 			"\\n\\s*template\\s+([^\\s;#\"]+)", Pattern.DOTALL);
