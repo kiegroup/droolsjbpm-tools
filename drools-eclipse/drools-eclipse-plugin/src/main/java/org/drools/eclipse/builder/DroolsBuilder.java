@@ -159,6 +159,20 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             	createMarker(res, t.getMessage(), -1);
             }
             return false;
+        } else if (res instanceof IFile && "csv".equals(res.getFileExtension())) {
+            removeProblemsFor(res);
+            try {
+                if (clean) {
+                    DroolsEclipsePlugin.getDefault().invalidateResource(res);
+                }
+                DroolsBuildMarker[] markers = parseCSVFile((IFile) res);
+                for (int i = 0; i < markers.length; i++) {
+                    createMarker(res, markers[i].getText(), markers[i].getLine());
+                }
+            } catch (Throwable t) {
+                createMarker(res, t.getMessage(), -1);
+            }
+            return false;
         } else if (res instanceof IFile && "brl".equals(res.getFileExtension())) {
             removeProblemsFor(res);
             try {
@@ -236,6 +250,33 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             }
         } catch (Exception t) {
         	String message = t.getMessage();
+            if (message == null || message.trim().equals( "" )) {
+                message = "Error: " + t.getClass().getName();
+            }
+            markers.add(new DroolsBuildMarker(message));
+        }
+        return (DroolsBuildMarker[]) markers.toArray(new DroolsBuildMarker[markers.size()]);
+    }
+
+    private DroolsBuildMarker[] parseCSVFile(IFile file) {
+        List markers = new ArrayList();
+        try {
+            SpreadsheetCompiler converter = new SpreadsheetCompiler();
+            String drl = converter.compile(file.getContents(), InputType.CSV);
+            DRLInfo drlInfo =
+                DroolsEclipsePlugin.getDefault().parseXLSResource(drl, file);
+            // parser errors
+            markParseErrors(markers, drlInfo.getParserErrors());  
+            markOtherErrors(markers, drlInfo.getBuilderErrors());
+        } catch (DroolsParserException e) {
+            // we have an error thrown from DrlParser
+            Throwable cause = e.getCause();
+            if (cause instanceof RecognitionException ) {
+                RecognitionException recogErr = (RecognitionException) cause;
+                markers.add(new DroolsBuildMarker(recogErr.getMessage(), recogErr.line)); //flick back the line number
+            }
+        } catch (Exception t) {
+            String message = t.getMessage();
             if (message == null || message.trim().equals( "" )) {
                 message = "Error: " + t.getClass().getName();
             }
