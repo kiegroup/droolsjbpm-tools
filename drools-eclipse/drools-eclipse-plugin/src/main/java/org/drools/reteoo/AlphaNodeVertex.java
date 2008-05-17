@@ -3,11 +3,11 @@
  */
 package org.drools.reteoo;
 
-import org.drools.base.ClassFieldExtractor;
+import org.drools.base.ClassFieldReader;
 import org.drools.rule.LiteralConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Constraint;
-import org.drools.spi.FieldExtractor;
+import org.drools.spi.InternalReadAccessor;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Color;
 
@@ -38,10 +38,10 @@ public class AlphaNodeVertex extends BaseVertex {
     	AlphaNodeFieldConstraint constraint = this.node.getConstraint();
         if (constraint instanceof LiteralConstraint) {
         	LiteralConstraint literalConstraint = (LiteralConstraint) constraint;
-            FieldExtractor extractor = literalConstraint.getFieldExtractor();
-            if (extractor instanceof ClassFieldExtractor) {
-            	ClassFieldExtractor classFieldExtractor = (ClassFieldExtractor) extractor;
-            	return NODE_NAME + "<BR/>field : " + classFieldExtractor.getFieldName() + "<BR/>evaluator : " + literalConstraint.getEvaluator() + "<BR/>value :  " + literalConstraint.getField();
+            InternalReadAccessor accessor = literalConstraint.getFieldExtractor();
+            if (accessor instanceof ClassFieldReader) {
+                ClassFieldReader classFieldReader = (ClassFieldReader) accessor;
+            	return NODE_NAME + "<BR/>field : " + classFieldReader.getFieldName() + "<BR/>evaluator : " + literalConstraint.getEvaluator() + "<BR/>value :  " + literalConstraint.getField();
             }
         }
         return NODE_NAME + "<BR/>";
@@ -71,9 +71,9 @@ public class AlphaNodeVertex extends BaseVertex {
     	AlphaNodeFieldConstraint constraint = this.node.getConstraint();
         if (constraint instanceof LiteralConstraint) {
         	LiteralConstraint literalConstraint = (LiteralConstraint) constraint;
-            FieldExtractor extractor = literalConstraint.getFieldExtractor();
-            if (extractor instanceof ClassFieldExtractor) {
-            	return ((ClassFieldExtractor) extractor).getFieldName();
+            InternalReadAccessor accessor = literalConstraint.getFieldExtractor();
+            if (accessor instanceof ClassFieldReader) {
+            	return ((ClassFieldReader) accessor).getFieldName();
             }
         }
         return null;
