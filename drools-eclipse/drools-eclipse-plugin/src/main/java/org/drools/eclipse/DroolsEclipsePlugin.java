@@ -319,17 +319,20 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
             Reader dslReader = DSLAdapter.getDSLContent(content, resource);
             ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
             ClassLoader newLoader = DroolsBuilder.class.getClassLoader();
-            PackageBuilderConfiguration builder_configuration = new PackageBuilderConfiguration();
+            String level = null;
             if (resource.getProject().getNature("org.eclipse.jdt.core.javanature") != null) {
                 IJavaProject project = JavaCore.create(resource.getProject());
                 newLoader = ProjectClassLoader.getProjectClassLoader(project);
-                String level = project.getOption(JavaCore.COMPILER_COMPLIANCE, true);
-                JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) builder_configuration.getDialectConfiguration( "java" );
-                javaConf.setJavaLanguageLevel(level);
+                level = project.getOption(JavaCore.COMPILER_COMPLIANCE, true);
             }
             try {
-            	builder_configuration.setClassLoader(newLoader);
                 Thread.currentThread().setContextClassLoader(newLoader);
+                PackageBuilderConfiguration builder_configuration = new PackageBuilderConfiguration();
+                if (level != null) {
+	                JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) builder_configuration.getDialectConfiguration( "java" );
+	                javaConf.setJavaLanguageLevel(level);
+                }
+                builder_configuration.setClassLoader(newLoader);
 
                 // first parse the source
                 PackageDescr packageDescr = null;
