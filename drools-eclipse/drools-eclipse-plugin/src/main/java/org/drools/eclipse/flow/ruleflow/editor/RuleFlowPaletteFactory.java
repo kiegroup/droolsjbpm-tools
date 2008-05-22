@@ -162,15 +162,15 @@ public class RuleFlowPaletteFactory {
         );
         entries.add(combined);
                           
-        combined = new CombinedTemplateCreationEntry(
-            "Composite Node",
-            "Create a new Composite Node",
-            CompositeNodeWrapper.class,
-            new SimpleFactory(CompositeNodeWrapper.class),
-            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/composite.gif")), 
-            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/composite.gif"))
-        );
-        entries.add(combined);
+//        combined = new CombinedTemplateCreationEntry(
+//            "Composite Node",
+//            "Create a new Composite Node",
+//            CompositeNodeWrapper.class,
+//            new SimpleFactory(CompositeNodeWrapper.class),
+//            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/composite.gif")), 
+//            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/composite.gif"))
+//        );
+//        entries.add(combined);
                           
         drawer.addAll(entries);
         return drawer;
