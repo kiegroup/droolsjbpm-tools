@@ -86,7 +86,7 @@ public class RuleFlowWrapperBuilder {
         } else if (node instanceof RuleSetNode) {
             return new RuleSetNodeWrapper();
         } else if (node instanceof SubProcessNode) {
-            return new SubFlowWrapper();
+            return new SubProcessWrapper();
         } else if (node instanceof CompositeNode) {
             return new CompositeNodeWrapper();
         } else if (node instanceof Join) {

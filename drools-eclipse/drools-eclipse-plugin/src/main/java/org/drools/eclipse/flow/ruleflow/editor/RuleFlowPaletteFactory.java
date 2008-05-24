@@ -30,7 +30,7 @@ import org.drools.eclipse.flow.ruleflow.core.MilestoneWrapper;
 import org.drools.eclipse.flow.ruleflow.core.RuleSetNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.SplitWrapper;
 import org.drools.eclipse.flow.ruleflow.core.StartNodeWrapper;
-import org.drools.eclipse.flow.ruleflow.core.SubFlowWrapper;
+import org.drools.eclipse.flow.ruleflow.core.SubProcessWrapper;
 import org.drools.eclipse.flow.ruleflow.core.TimerWrapper;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.ConnectionCreationToolEntry;
@@ -135,8 +135,8 @@ public class RuleFlowPaletteFactory {
         combined = new CombinedTemplateCreationEntry(
             "SubFlow",
             "Create a new SubFlow",
-            SubFlowWrapper.class,
-            new SimpleFactory(SubFlowWrapper.class),
+            SubProcessWrapper.class,
+            new SimpleFactory(SubProcessWrapper.class),
             ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/process.gif")), 
             ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/process.gif"))
         );

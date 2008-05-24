@@ -15,9 +15,14 @@ package org.drools.eclipse.flow.ruleflow.core;
  * limitations under the License.
  */
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
+import org.drools.eclipse.flow.ruleflow.view.property.subprocess.SubProcessParameterInMappingPropertyDescriptor;
+import org.drools.eclipse.flow.ruleflow.view.property.subprocess.SubProcessParameterOutMappingPropertyDescriptor;
 import org.drools.workflow.core.node.SubProcessNode;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
@@ -28,24 +33,33 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class SubFlowWrapper extends AbstractNodeWrapper {
+public class SubProcessWrapper extends AbstractNodeWrapper {
 
 	private static final long serialVersionUID = 3668348577732020324L;
     private static IPropertyDescriptor[] descriptors;
     
     public static final String PROCESS_ID = "ProcessId";
     public static final String WAIT_FOR_COMPLETION = "WaitForCompletion";
+    public static final String INDEPENDENT = "Independent";
+    public static final String PARAMETER_IN_MAPPING = "ParameterInMapping";
+    public static final String PARAMETER_OUT_MAPPING = "ParameterOutMapping";
 
-    static {
-        descriptors = new IPropertyDescriptor[DefaultElementWrapper.descriptors.length + 2];
+    private void setDescriptors() {
+        descriptors = new IPropertyDescriptor[DefaultElementWrapper.descriptors.length + 5];
         System.arraycopy(DefaultElementWrapper.descriptors, 0, descriptors, 0, DefaultElementWrapper.descriptors.length);
+        descriptors[descriptors.length - 5] = 
+            new SubProcessParameterInMappingPropertyDescriptor(PARAMETER_IN_MAPPING, "Parameter In Mapping", getSubProcessNode());
+        descriptors[descriptors.length - 4] = 
+            new SubProcessParameterOutMappingPropertyDescriptor(PARAMETER_OUT_MAPPING, "Parameter Out Mapping", getSubProcessNode());
+        descriptors[descriptors.length - 3] = 
+            new ComboBoxPropertyDescriptor(INDEPENDENT, "Independent", new String[] {"true", "false"});
         descriptors[descriptors.length - 2] = 
         	new TextPropertyDescriptor(PROCESS_ID, "ProcessId");
         descriptors[descriptors.length - 1] = 
             new ComboBoxPropertyDescriptor(WAIT_FOR_COMPLETION, "Wait for completion", new String[] {"true", "false"});
     }
     
-    public SubFlowWrapper() {
+    public SubProcessWrapper() {
         setNode(new SubProcessNode());
         getSubProcessNode().setName("SubProcess");
     }
@@ -55,6 +69,9 @@ public class SubFlowWrapper extends AbstractNodeWrapper {
     }
     
     public IPropertyDescriptor[] getPropertyDescriptors() {
+        if (descriptors == null) {
+            setDescriptors();
+        }
         return descriptors;
     }
 
@@ -76,6 +93,15 @@ public class SubFlowWrapper extends AbstractNodeWrapper {
         if (WAIT_FOR_COMPLETION.equals(id)) {
             return getSubProcessNode().isWaitForCompletion() ? new Integer(0) : new Integer(1);
         }
+        if (INDEPENDENT.equals(id)) {
+            return getSubProcessNode().isIndependent() ? new Integer(0) : new Integer(1);
+        }
+        if (PARAMETER_IN_MAPPING.equals(id)) {
+            return getSubProcessNode().getInMappings();
+        } 
+        if (PARAMETER_OUT_MAPPING.equals(id)) {
+            return getSubProcessNode().getOutMappings();
+        } 
         return super.getPropertyValue(id);
     }
 
@@ -84,6 +110,12 @@ public class SubFlowWrapper extends AbstractNodeWrapper {
         	getSubProcessNode().setProcessId("");
         } else if (WAIT_FOR_COMPLETION.equals(id)) {
             getSubProcessNode().setWaitForCompletion(true);
+        } else if (INDEPENDENT.equals(id)) {
+            getSubProcessNode().setIndependent(true);
+        } else if (PARAMETER_IN_MAPPING.equals(id)) {
+            getSubProcessNode().setInMappings(new HashMap<String, String>());
+        } else if (PARAMETER_OUT_MAPPING.equals(id)) {
+            getSubProcessNode().setOutMappings(new HashMap<String, String>());
         } else {
             super.resetPropertyValue(id);
         }
@@ -94,6 +126,12 @@ public class SubFlowWrapper extends AbstractNodeWrapper {
         	getSubProcessNode().setProcessId((String) value);
         } else if (WAIT_FOR_COMPLETION.equals(id)) {
             getSubProcessNode().setWaitForCompletion(((Integer) value).intValue() == 0);
+        } else if (INDEPENDENT.equals(id)) {
+            getSubProcessNode().setIndependent(((Integer) value).intValue() == 0);
+        } else if (PARAMETER_IN_MAPPING.equals(id)) {
+            getSubProcessNode().setInMappings((Map<String, String>) value);
+        } else if (PARAMETER_OUT_MAPPING.equals(id)) {
+            getSubProcessNode().setOutMappings((Map<String, String>) value);
         } else {
             super.setPropertyValue(id, value);
         }
