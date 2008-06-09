@@ -67,7 +67,9 @@ import org.eclipse.ui.part.FileEditorInput;
 public class RuleFlowModelEditor extends GenericModelEditor {
 
     protected EditPartFactory createEditPartFactory() {
-        return new RuleFlowEditPartFactory(getJavaProject());
+    	RuleFlowEditPartFactory factory = new RuleFlowEditPartFactory();
+    	factory.setProject(getJavaProject());
+        return factory;
     }
 
     protected PaletteRoot createPalette() {
@@ -225,7 +227,7 @@ public class RuleFlowModelEditor extends GenericModelEditor {
                 if (process == null) {
                     setModel(createModel());
                 } else {
-                    setModel(RuleFlowWrapperBuilder.getProcessWrapper(process, getJavaProject()));
+                    setModel(new RuleFlowWrapperBuilder().getProcessWrapper(process, getJavaProject()));
                 }
             } catch (Throwable t) {
                 DroolsEclipsePlugin.log(t);
