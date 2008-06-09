@@ -6,6 +6,7 @@ import java.io.StringReader;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
 import org.drools.eclipse.dsl.editor.DSLAdapter;
 import org.drools.eclipse.dsl.editor.DSLRuleEditor;
@@ -99,8 +100,7 @@ public class DSLRuleCompletionProcessor extends RuleCompletionProcessor {
 				}
 			}
 		} catch (IOException e) {
-			// TODO need to log this.
-			// I'm leaving this for mic_hat, so he has something to do
+			DroolsEclipsePlugin.log(e);
 		}
 		// now that all the conditions for a single object are on the same line
 		// we need to check for the left parenthesis
@@ -140,8 +140,7 @@ public class DSLRuleCompletionProcessor extends RuleCompletionProcessor {
 				}
 			}
 		} catch (IOException e) {
-			// TODO need to log this.
-			// I'm leaving this for mic_hat, so he has something to do
+			DroolsEclipsePlugin.log(e);
 		}
 		if (last.indexOf("(") > -1 && !last.endsWith(")")) {
 			last = last.substring(0, last.indexOf("("));
