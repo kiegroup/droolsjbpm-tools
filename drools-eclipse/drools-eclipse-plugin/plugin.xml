@@ -450,6 +450,30 @@
             class="org.drools.eclipse.flow.ruleflow.editor.action.CheckRuleFlowAction"
          />
       </editorContribution>
+      <editorContribution
+            id="org.drools.eclipse.flow.common.editor.action.VerticalAutoLayoutAction"
+            targetID="org.drools.eclipse.flow.ruleflow.editor.RuleFlowModelEditor">
+	     <action
+	        id="org.drools.eclipse.flow.common.editor.action.VerticalAutoLayoutAction"
+            label="Auto Layout (Vertical)"
+	        toolbarPath="Drools"
+            icon="icons/processV.gif"
+            tooltip="Auto layout the workflow (vertical)"
+            class="org.drools.eclipse.flow.common.editor.action.VerticalAutoLayoutAction"
+         />
+      </editorContribution>
+      <editorContribution
+            id="org.drools.eclipse.flow.common.editor.action.HorizontalAutoLayoutAction"
+            targetID="org.drools.eclipse.flow.ruleflow.editor.RuleFlowModelEditor">
+	     <action
+	        id="org.drools.eclipse.flow.common.editor.action.HorizontalAutoLayoutAction"
+            label="Auto Layout (Horizontal)"
+	        toolbarPath="Drools"
+            icon="icons/process.gif"
+            tooltip="Auto layout the workflow (horizontal)"
+            class="org.drools.eclipse.flow.common.editor.action.HorizontalAutoLayoutAction"
+         />
+      </editorContribution>
    </extension>
 
    <extension
@@ -469,6 +493,15 @@
 	  </wizard>
    </extension>
 
+   <extension-point id="processExtension" name="Process Extension" schema="schema/processExtension.exsd"/>
+
+   <extension
+         point="org.drools.eclipse.processExtension">
+      <processExtension
+            className="org.drools.eclipse.flow.ruleflow.RuleFlowExtension">
+      </processExtension>
+   </extension>
+   
    <!-- RuleBuilder Extensions -->
       <extension
          point="org.eclipse.ui.editors">

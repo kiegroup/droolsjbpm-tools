@@ -41,6 +41,7 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.process.core.Process;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.workflow.core.WorkflowProcess;
 import org.drools.xml.XmlProcessReader;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -421,20 +422,12 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                 Thread.currentThread().setContextClassLoader(newLoader);
                 PackageBuilderConfiguration configuration = new PackageBuilderConfiguration();
                 XmlProcessReader xmlReader = new XmlProcessReader( configuration.getSemanticModules() );
-                
-                Process o = xmlReader.read(new StringReader(input));
-                if (o instanceof RuleFlowProcess) {
-                    RuleFlowProcess process = (RuleFlowProcess) o;
-                    PackageBuilder packageBuilder = new PackageBuilder();
-                    ProcessBuilder processBuilder = new ProcessBuilder(packageBuilder);
-                    processBuilder.buildProcess(process);
-                    ProcessInfo processInfo = new ProcessInfo(process.getId(), process);
-                    processInfo.setErrors(processBuilder.getErrors());
-                    if (useCachePreference) {
-                        processInfos.put(resource, processInfo);
-                        processInfosById.put(process.getId(), processInfo);
-                    }
-                    return processInfo;
+                Process process = xmlReader.read(new StringReader(input));
+                if (process != null) {
+                    return parseProcess(process, resource);
+                } else {
+                    throw new IllegalArgumentException(
+                        "Could not parse process " + resource);
                 }
             } finally {
                 Thread.currentThread().setContextClassLoader(oldLoader);
@@ -447,6 +440,19 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 	
 	public ProcessInfo getProcessInfo(String processId) {
 	    return processInfosById.get(processId);
+	}
+	
+	public ProcessInfo parseProcess(Process process, IResource resource) {
+        PackageBuilder packageBuilder = new PackageBuilder();
+        ProcessBuilder processBuilder = new ProcessBuilder(packageBuilder);
+        processBuilder.buildProcess(process);
+        ProcessInfo processInfo = new ProcessInfo(process.getId(), process);
+        processInfo.setErrors(processBuilder.getErrors());
+        if (useCachePreference) {
+            processInfos.put(resource, processInfo);
+            processInfosById.put(process.getId(), processInfo);
+        }
+        return processInfo;
 	}
 
     /**

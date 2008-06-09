@@ -115,7 +115,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         }
     }
     
-    private boolean parseResource(IResource res, boolean clean) {
+    protected boolean parseResource(IResource res, boolean clean) {
         try {
             IJavaProject project = JavaCore.create(res.getProject());
             // exclude files that are located in the output directory,
@@ -316,7 +316,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         return (DroolsBuildMarker[]) markers.toArray(new DroolsBuildMarker[markers.size()]);
     }
     
-    private DroolsBuildMarker[] parseRuleFlowFile(IFile file) {
+    protected DroolsBuildMarker[] parseRuleFlowFile(IFile file) {
         if (!file.exists()) {
             return new DroolsBuildMarker[0];
         }
@@ -339,7 +339,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         return (DroolsBuildMarker[]) markers.toArray(new DroolsBuildMarker[markers.size()]);
     }
     
-    private static String convertToString(final InputStream inputStream) throws IOException {
+    protected static String convertToString(final InputStream inputStream) throws IOException {
     	Reader reader = new InputStreamReader(inputStream);
     	final StringBuffer text = new StringBuffer();
         final char[] buf = new char[1024];
@@ -354,7 +354,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
      * This will create markers for parse errors.
      * Parse errors mean that antlr has picked up some major typos in the input source.
      */
-    private void markParseErrors(List markers, List parserErrors) {
+    protected void markParseErrors(List markers, List parserErrors) {
         for ( Iterator iter = parserErrors.iterator(); iter.hasNext(); ) {
         	Object error = iter.next();
         	if (error instanceof ParserError) {
@@ -424,7 +424,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         }
     }
 
-    private void createMarker(final IResource res, final String message, final int lineNumber) {
+    protected void createMarker(final IResource res, final String message, final int lineNumber) {
         try {
         	IWorkspaceRunnable r= new IWorkspaceRunnable() {
         		public void run(IProgressMonitor monitor) throws CoreException {
@@ -442,7 +442,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         }
     }
     
-    private void removeProblemsFor(IResource resource) {
+    protected void removeProblemsFor(IResource resource) {
         try {
             if (resource != null && resource.exists()) {
                 resource.deleteMarkers(

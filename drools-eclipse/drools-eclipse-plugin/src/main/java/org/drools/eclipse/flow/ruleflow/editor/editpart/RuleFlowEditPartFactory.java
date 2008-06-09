@@ -17,6 +17,7 @@ package org.drools.eclipse.flow.ruleflow.editor.editpart;
 
 import org.drools.eclipse.flow.common.editor.editpart.ElementContainerEditPart;
 import org.drools.eclipse.flow.common.editor.editpart.ProcessEditPart;
+import org.drools.eclipse.flow.common.editor.editpart.ProcessEditPartFactory;
 import org.drools.eclipse.flow.ruleflow.core.ActionWrapper;
 import org.drools.eclipse.flow.ruleflow.core.CompositeNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper;
@@ -30,9 +31,7 @@ import org.drools.eclipse.flow.ruleflow.core.StartNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.SubProcessWrapper;
 import org.drools.eclipse.flow.ruleflow.core.TimerWrapper;
 import org.drools.eclipse.flow.ruleflow.core.WorkItemWrapper;
-import org.drools.eclipse.flow.ruleflow.editor.RuleFlowModelEditor;
 import org.eclipse.gef.EditPart;
-import org.eclipse.gef.EditPartFactory;
 import org.eclipse.jdt.core.IJavaProject;
 
 /**
@@ -40,11 +39,11 @@ import org.eclipse.jdt.core.IJavaProject;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class RuleFlowEditPartFactory implements EditPartFactory {
+public class RuleFlowEditPartFactory implements ProcessEditPartFactory {
     
     private IJavaProject project;
     
-    public RuleFlowEditPartFactory(IJavaProject project) {
+    public void setProject(IJavaProject project) {
         this.project = project;
     }
     

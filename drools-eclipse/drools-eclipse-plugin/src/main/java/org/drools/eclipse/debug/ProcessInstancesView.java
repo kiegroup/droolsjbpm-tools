@@ -91,6 +91,7 @@ public class ProcessInstancesView extends DroolsDebugEventHandlerView {
                     IVariable var = vars[j];
                     if ("nodeId".equals(var.getName())) {
                         nodeId = ((IJavaValue) var.getValue()).getValueString();
+                        break;
                     }
                 }
                 nodeIds.add(nodeId);

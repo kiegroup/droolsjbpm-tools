@@ -10,6 +10,9 @@ import java.util.Set;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.WorkItemDefinitions;
 import org.drools.eclipse.flow.common.editor.core.ElementContainer;
+import org.drools.eclipse.flow.common.editor.core.ProcessWrapper;
+import org.drools.eclipse.flow.common.editor.core.ProcessWrapperBuilder;
+import org.drools.process.core.Process;
 import org.drools.process.core.Work;
 import org.drools.process.core.WorkDefinition;
 import org.drools.process.core.impl.WorkDefinitionImpl;
@@ -29,19 +32,20 @@ import org.drools.workflow.core.node.TimerNode;
 import org.drools.workflow.core.node.WorkItemNode;
 import org.eclipse.jdt.core.IJavaProject;
 
-public class RuleFlowWrapperBuilder {
+public class RuleFlowWrapperBuilder implements ProcessWrapperBuilder {
     
-    public static RuleFlowProcessWrapper getProcessWrapper(RuleFlowProcess process, IJavaProject project) {
-        if (process == null) {
-            return null;
+    public ProcessWrapper getProcessWrapper(Process process, IJavaProject project) {
+        if (process instanceof RuleFlowProcess) {
+            RuleFlowProcess ruleFlowProcess = (RuleFlowProcess) process;
+            RuleFlowProcessWrapper processWrapper = new RuleFlowProcessWrapper();
+            processWrapper.localSetProcess(process);
+            Set<Node> nodes = new HashSet<Node>();
+            nodes.addAll(Arrays.asList(ruleFlowProcess.getNodes()));
+            Set<Connection> connections = new HashSet<Connection>();
+            processNodes(nodes, connections, processWrapper, project);
+            return processWrapper;
         }
-        RuleFlowProcessWrapper processWrapper = new RuleFlowProcessWrapper();
-        processWrapper.localSetProcess(process);
-        Set<Node> nodes = new HashSet<Node>();
-        nodes.addAll(Arrays.asList(process.getNodes()));
-        Set<Connection> connections = new HashSet<Connection>();
-        processNodes(nodes, connections, processWrapper, project);
-        return processWrapper;
+        return null;
     }
     
     private static void processNodes(Set<Node> nodes, Set<Connection> connections, ElementContainer container, IJavaProject project) {

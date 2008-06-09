@@ -7,18 +7,20 @@ import java.util.Map;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.ProcessInfo;
+import org.drools.eclipse.flow.common.editor.ProcessExtension;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ProcessWrapper;
 import org.drools.eclipse.flow.common.editor.editpart.ElementEditPart;
 import org.drools.eclipse.flow.common.editor.editpart.ProcessEditPart;
+import org.drools.eclipse.flow.common.editor.editpart.ProcessEditPartFactory;
 import org.drools.eclipse.flow.common.editor.editpart.figure.ElementFigure;
-import org.drools.eclipse.flow.ruleflow.core.RuleFlowProcessWrapper;
-import org.drools.eclipse.flow.ruleflow.core.RuleFlowWrapperBuilder;
-import org.drools.eclipse.flow.ruleflow.editor.editpart.RuleFlowEditPartFactory;
-import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.process.core.Process;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.editparts.ScalableRootEditPart;
@@ -93,21 +95,35 @@ public class ProcessInstanceViewer extends ViewPart implements ISelectionListene
             graphicalViewer.getControl().setBackground(ColorConstants.listBackground);
             graphicalViewer.setRootEditPart(new ScalableRootEditPart());
             IJavaProject javaProject = getJavaProject(projectName);
-            graphicalViewer.setEditPartFactory(new RuleFlowEditPartFactory(javaProject));
-            setProcess(processInfo);
+            
+            IExtensionRegistry reg = Platform.getExtensionRegistry();
+            IConfigurationElement[] extensions =
+                reg.getConfigurationElementsFor(
+                    "org.drools.eclipse.processExtension");
+            for (IConfigurationElement element: extensions) {
+                try {
+                    ProcessExtension processExtension = (ProcessExtension)
+                        element.createExecutableExtension("className");
+                    Process process = processInfo.getProcess();
+                    if (processExtension.acceptsProcess(process.getType())) {
+                        ProcessEditPartFactory editPartFactory = processExtension.getProcessEditPartFactory();
+                        editPartFactory.setProject(javaProject);
+                        graphicalViewer.setEditPartFactory(editPartFactory);
+                        ProcessWrapper processWrapper = processExtension.getProcessWrapperBuilder().getProcessWrapper(process, javaProject);
+                        graphicalViewer.setContents(processWrapper);
+                        break;
+                    }
+                } catch (CoreException e) {
+                    DroolsEclipsePlugin.log(e);
+                }
+            }
+
             for (String nodeId: nodeIds) {
             	handleNodeInstanceSelection(nodeId);
             }
             folder.setSelection(tabItem);
         }
         
-        private void setProcess(ProcessInfo processInfo) {
-            RuleFlowProcess process = (RuleFlowProcess) processInfo.getProcess();
-            ProcessWrapper processWrapper = RuleFlowWrapperBuilder.getProcessWrapper(process, getJavaProject(projectName));
-            graphicalViewer.setContents(
-                processWrapper == null ? new RuleFlowProcessWrapper() : processWrapper);
-        }
-
         private void handleNodeInstanceSelection(String nodeId) {
             boolean found = false;
             Iterator iterator = ((ProcessEditPart) graphicalViewer.getContents()).getChildren().iterator();
