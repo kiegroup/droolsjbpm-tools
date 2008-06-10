@@ -17,13 +17,14 @@ package org.drools.eclipse.flow.common.editor;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.EventObject;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
-import org.drools.eclipse.util.ProjectClassLoader;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
@@ -31,12 +32,17 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PositionConstants;
+import org.eclipse.draw2d.SWTGraphics;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.EditPartFactory;
 import org.eclipse.gef.KeyHandler;
 import org.eclipse.gef.KeyStroke;
+import org.eclipse.gef.LayerConstants;
+import org.eclipse.gef.editparts.LayerManager;
 import org.eclipse.gef.editparts.ScalableRootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.palette.PaletteRoot;
@@ -52,6 +58,11 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
@@ -333,5 +344,44 @@ public abstract class GenericModelEditor extends GraphicalEditorWithPalette { //
 	
 	public String getContributorId() {
 	    return getSite().getId();
+	}
+	
+	/**
+	 * Writes the content of this editor to the given stream.
+	 * Possible formats are for example SWT.IMAGE_BMP, IMAGE_GIF,
+	 * IMAGE_JPEG, IMAGE_PNG.
+	 * @param stream
+	 * @param format
+	 */
+	public void createImage(OutputStream stream, int format) {
+        SWTGraphics g = null;
+        GC gc = null;
+        Image image = null;
+        LayerManager layerManager = (LayerManager)
+            getGraphicalViewer().getEditPartRegistry().get(LayerManager.ID);
+        IFigure figure = layerManager.getLayer(LayerConstants.PRINTABLE_LAYERS);
+        Rectangle r = figure.getBounds();
+        try {
+            image = new Image(Display.getDefault(), r.width, r.height);
+            gc = new GC(image);
+            g = new SWTGraphics(gc);
+            g.translate(r.x * -1, r.y * -1);
+            figure.paint(g);
+            ImageLoader imageLoader = new ImageLoader();
+            imageLoader.data = new ImageData[] { image.getImageData() };
+            imageLoader.save(stream, format);
+        } catch (Throwable t) {
+            DroolsEclipsePlugin.log(t);
+	    } finally {
+            if (g != null) {
+                g.dispose();
+            }
+            if (gc != null) {
+                gc.dispose();
+            }
+            if (image != null) {
+                image.dispose();
+            }
+        }
 	}
 }
