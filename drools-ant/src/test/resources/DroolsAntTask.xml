@@ -17,16 +17,16 @@
 	</path>	
 	
 	<taskdef name="compiler" classname="org.drools.contrib.DroolsCompilerAntTask" classpathref="drools.classpath" />
-	<taskdef name="analytics" classname="org.drools.contrib.DroolsAnalyticsAntTask" classpathref="drools.classpath" />
+	<taskdef name="verifier" classname="org.drools.contrib.DroolsVerifierAntTask" classpathref="drools.classpath" />
 	
 	
-	<target name="analyticsreport">
-		<analytics
-			srcdir="${eclipsepath}src/test/resources/org/drools/analytics" 		
+	<target name="verifierreport">
+		<verifier
+			srcdir="${eclipsepath}src/test/resources/org/drools/verifier" 		
 			tofile="${eclipsepath}target/"
 			classpathref="cheese.classpath" >
 			<include name="*.drl" />
-		</analytics>
+		</verifier>
 	</target>
 	
 	

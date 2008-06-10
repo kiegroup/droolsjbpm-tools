@@ -31,9 +31,9 @@ public class DroolsAntTaskTest extends BuildFileTest {
         configureProject( "src/test/resources/DroolsAntTask.xml" );
     }
     
-    public void testAnalyticsReport() {
+    public void testVerifierReport() {
         try {
-            executeTarget( "analyticsreport" );
+            executeTarget( "verifierreport" );
         } catch (Exception e) {
             e.printStackTrace();
         }

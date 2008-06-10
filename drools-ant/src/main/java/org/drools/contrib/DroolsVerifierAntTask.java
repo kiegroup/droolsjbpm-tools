@@ -8,12 +8,12 @@ import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.taskdefs.MatchingTask;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
-import org.drools.verifier.Analyzer;
+import org.drools.verifier.Verifier;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.lang.descr.PackageDescr;
 
-public class DroolsAnalyticsAntTask extends MatchingTask {
+public class DroolsVerifierAntTask extends MatchingTask {
 
 	public static final String DRLFILEEXTENSION = ".drl";
 
@@ -96,7 +96,7 @@ public class DroolsAnalyticsAntTask extends MatchingTask {
 			
 			// create a specialized classloader
 
-			Analyzer droolsanalyzer = new Analyzer();
+			Verifier droolsanalyzer = new Verifier();
 
 			// get the list of files to be added to the rulebase
 			String[] fileNames = getFileList();
@@ -108,22 +108,22 @@ public class DroolsAnalyticsAntTask extends MatchingTask {
 			droolsanalyzer.fireAnalysis();
 			droolsanalyzer.writeComponentsHTML(toFile.getAbsolutePath() + "/");
 			
-			System.out.println("Writing analytics report to " + toFile.getAbsolutePath() + "/report");
+			System.out.println("Writing verifier report to " + toFile.getAbsolutePath() + "/report");
 			
 		} catch (Exception e) {
 			throw new BuildException("RuleBaseTask failed: " + e.getMessage(),
 					e);
 		}
 	}
-	private void compileAndAnalyzeFile(Analyzer droolsanalyzer, String filename) throws DroolsParserException {
+	private void compileAndAnalyzeFile(Verifier droolsanalyzer, String filename) throws DroolsParserException {
 		
-		// Analytics just works with drl files 
-		if ( !filename.endsWith(DroolsAnalyticsAntTask.DRLFILEEXTENSION) ) {
+		// Verifier just works with drl files 
+		if ( !filename.endsWith(DroolsVerifierAntTask.DRLFILEEXTENSION) ) {
 			throw new UnsupportedOperationException();
 		}
 		
 		PackageDescr descr = new DrlParser()
-				.parse(new InputStreamReader(Analyzer.class
+				.parse(new InputStreamReader(Verifier.class
 						.getResourceAsStream(filename)));
 		
 		droolsanalyzer.addPackageDescr(descr);
