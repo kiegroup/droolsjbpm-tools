@@ -160,7 +160,7 @@ public class RuleFlowModelEditor extends GenericModelEditor {
     protected void writeModel(OutputStream os, boolean includeGraphics) throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(os);
         try {
-            XmlRuleFlowProcessDumper dumper = new XmlRuleFlowProcessDumper();
+            XmlRuleFlowProcessDumper dumper = XmlRuleFlowProcessDumper.INSTANCE;
             String out = dumper.dump(getRuleFlowModel().getRuleFlowProcess(), includeGraphics);
             writer.write(out);
         } catch (Throwable t) {
@@ -180,7 +180,7 @@ public class RuleFlowModelEditor extends GenericModelEditor {
 	            public void execute(final IProgressMonitor monitor)
 	                    throws CoreException {
 	                try {
-	                    XmlRuleFlowProcessDumper dumper = new XmlRuleFlowProcessDumper();
+	                    XmlRuleFlowProcessDumper dumper = XmlRuleFlowProcessDumper.INSTANCE;
 	                    String out = dumper.dump(getRuleFlowModel().getRuleFlowProcess(), false);
 	                    modelFile.create(new ByteArrayInputStream(out.getBytes()), true, monitor);
 	                } catch (Exception e) {
@@ -199,7 +199,7 @@ public class RuleFlowModelEditor extends GenericModelEditor {
 	        }
 		} else {
 	        try {
-	            XmlRuleFlowProcessDumper dumper = new XmlRuleFlowProcessDumper();
+	            XmlRuleFlowProcessDumper dumper = XmlRuleFlowProcessDumper.INSTANCE;
                 String out = dumper.dump(getRuleFlowModel().getRuleFlowProcess(), false);
 	            modelFile.setContents(new ByteArrayInputStream(out.getBytes()), true, false, monitor);
 	        } catch (Throwable t) {
