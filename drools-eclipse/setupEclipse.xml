@@ -94,8 +94,8 @@
     <unzip dest="${base}" overwrite="true"
            src="${localEclipseDrop}/eclipse/${eclipseBuildRevision}/eclipse-test-framework-${eclipseBuildId}.zip" />   				
 				
-		<unzip dest="${base}" overwrite="true" 
-		       src="${localEclipseDrop}/tools/gef/${eclipseGefBuildRevision}/GEF-runtime-${eclipseGefBuildId}.zip" />				         
+	<unzip dest="${base}" overwrite="true" 
+	       src="${localEclipseDrop}/tools/gef/${eclipseGefBuildRevision}/GEF-runtime-${eclipseGefBuildId}.zip" />				         
   </target>    
   
   <target name="unzipEclipse" if="expandTypeZip">
