@@ -70,7 +70,7 @@
                       fork="true"
                       failonerror="true"
                       maxmemory="128m">
-                     <arg line="-application org.eclipse.ant.core.antRunner -consoleLog -data ${basedir}/target/workspace -DmavenCompilePhase=true"/>
+                     <arg line="-application org.eclipse.ant.core.antRunner -consoleLog -data '${basedir}/target/workspace' -DmavenCompilePhase=true"/>
                 </java>                 
              </tasks>
            </configuration>
@@ -164,7 +164,7 @@
                       fork="true"
                       failonerror="true"
                       maxmemory="128m">
-                     <arg line="-application org.eclipse.ant.core.antRunner -consoleLog -data ${basedir}/target/workspace -Dbaseos=${baseos} -Dbasews=${basews} -Dbasearch=${basearch} ${mavenTestPhase}"/>
+                     <arg line="-application org.eclipse.ant.core.antRunner -consoleLog -data '${basedir}/target/workspace' -Dbaseos=${baseos} -Dbasews=${basews} -Dbasearch=${basearch} ${mavenTestPhase}"/>
                 </java>                 
              </tasks>
            </configuration>
