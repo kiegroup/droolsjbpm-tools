@@ -218,13 +218,6 @@
     </plugins>
   </build>
 
-  <repositories>
-    <repository>
-      <id>basedir</id>
-      <url>file://${basedir}/../m2_repo</url>
-    </repository>
-  </repositories>
-
   <dependencies>
 
     <!-- this should include core and compiler -->

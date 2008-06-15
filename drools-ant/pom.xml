@@ -10,13 +10,6 @@
   <artifactId>drools-ant</artifactId>
   <name>Drools :: Ant Task</name>
 
-  <repositories>
-    <repository>
-      <id>basedir</id>
-      <url>file://${basedir}/../m2_repo</url>
-    </repository>
-  </repositories>  
-
   <dependencies>   
     <dependency>
       <groupId>org.drools</groupId>

@@ -10,9 +10,6 @@
 	</path>	
 	
 	<path id="drools.classpath">
-		<fileset dir="${eclipsepath}../m2_repo">
-			<include name="**/*.jar"/>
-		</fileset>		
 		<pathelement location="target"/>
 	</path>	
 	
