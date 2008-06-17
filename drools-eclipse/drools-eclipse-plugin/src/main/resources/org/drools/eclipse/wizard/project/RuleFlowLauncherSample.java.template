@@ -5,7 +5,7 @@ import java.io.Reader;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
+import org.drools.StatefulSession;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
 
@@ -14,86 +14,34 @@ import org.drools.rule.Package;
  */
 public class RuleFlowTest {
 
-    public static final void main(String[] args) {
-        try {
-        	
-        	//load up the rulebase
-            RuleBase ruleBase = readRule();
-            WorkingMemory workingMemory = ruleBase.newStatefulSession();
-            
-            //go !
-            Message message = new Message();
-            message.setMessage(  "Hello World" );
-            message.setStatus( Message.HELLO );
-            workingMemory.insert( message );
-            
-            workingMemory.startProcess("com.sample.ruleflow");
-            workingMemory.fireAllRules();   
-            
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
-    }
+	public static final void main(String[] args) {
+		try {
+			//load the process
+			RuleBase ruleBase = createKnowledgeBase();
+			// create a new session
+			StatefulSession session = ruleBase.newStatefulSession();
+			// start a new process instance
+			session.startProcess("com.sample.ruleflow");
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+	}
 
-    /**
-     * Please note that this is the "low level" rule assembly API.
-     */
-	private static RuleBase readRule() throws Exception {
-		//read in the source
-		Reader source = new InputStreamReader( RuleFlowTest.class.getResourceAsStream( "/ruleflow.drl" ) );
-		
-		//optionally read in the DSL (if you are using it).
-		//Reader dsl = new InputStreamReader( DroolsTest.class.getResourceAsStream( "/mylang.dsl" ) );
-
-		//Use package builder to build up a rule package.
-		//An alternative lower level class called "DrlParser" can also be used...
-		
+	/**
+	 * Creates the knowledge base by loading the process definition.
+	 */
+	private static RuleBase createKnowledgeBase() throws Exception {
+		// create a builder
 		PackageBuilder builder = new PackageBuilder();
-
-		//this will parse and compile in one step
-		//NOTE: There are 2 methods here, the one argument one is for normal DRL.
-		builder.addPackageFromDrl( source );
-
-		//Use the following instead of above if you are using a DSL:
-		//builder.addPackageFromDrl( source, dsl );
-		
-		//add ruleflow
-		source = new InputStreamReader( RuleFlowTest.class.getResourceAsStream( "/ruleflow.rfm" ) );
-		builder.addRuleFlow(source);
-		
-		//get the compiled package (which is serializable)
+		// load the process
+		Reader source = new InputStreamReader(
+			RuleFlowTest.class.getResourceAsStream("/ruleflow.rf"));
+		builder.addProcessFromXml(source);
+		// create the knowledge base 
 		Package pkg = builder.getPackage();
-		
-		//add the package to a rulebase (deploy the rule package).
 		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-		ruleBase.addPackage( pkg );
-		
+		ruleBase.addPackage(pkg);
 		return ruleBase;
 	}
-	
-	public static class Message {
-		public static final int HELLO = 0;
-		public static final int GOODBYE = 1;
-		
-		private String message;
-		
-		private int status;
-		
-		public String getMessage() {
-			return this.message;
-		}
-		
-		public void setMessage(String message) {
-			this.message = message;
-		}
-		
-		public int getStatus() {
-			return this.status;
-		}
-		
-		public void setStatus( int status ) {
-			this.status = status;
-		}
-	}
-    
+
 }

@@ -357,24 +357,6 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
         } else {
         	file.setContents(inputstream, true, false, monitor);
         }
-        fileName = "org/drools/eclipse/wizard/project/ruleflow.rfm.template";
-        folder = project.getProject().getFolder("src/main/rules");
-        file = folder.getFile("ruleflow.rfm");
-        inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
-        if (!file.exists()) {
-        	file.create(inputstream, true, monitor);
-        } else {
-        	file.setContents(inputstream, true, false, monitor);
-        }
-        fileName = "org/drools/eclipse/wizard/project/ruleflow.drl.template";
-        folder = project.getProject().getFolder("src/main/rules");
-        file = folder.getFile("ruleflow.drl");
-        inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
-        if (!file.exists()) {
-        	file.create(inputstream, true, monitor);
-        } else {
-        	file.setContents(inputstream, true, false, monitor);
-        }
     }
 
     /**

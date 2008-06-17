@@ -15,7 +15,6 @@ package org.drools.eclipse.flow.ruleflow.editor;
  * limitations under the License.
  */
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -41,10 +40,6 @@ import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.xml.XmlProcessReader;
 import org.drools.xml.XmlRuleFlowProcessDumper;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPartFactory;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
@@ -52,12 +47,9 @@ import org.eclipse.gef.palette.PaletteDrawer;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.requests.SimpleFactory;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.actions.WorkspaceModifyOperation;
-import org.eclipse.ui.part.FileEditorInput;
 
 /**
  * Graphical editor for a RuleFlow.
@@ -169,54 +161,6 @@ public class RuleFlowModelEditor extends GenericModelEditor {
         writer.close();
     }
     
-    public void doSave(IProgressMonitor monitor) {
-        super.doSave(monitor);
-        // save process as separate model file as well
-        IFile file = ((IFileEditorInput) getEditorInput()).getFile();
-        final IFile modelFile = getModelFile(file);
-
-		if (!modelFile.exists()) {
-	        WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
-	            public void execute(final IProgressMonitor monitor)
-	                    throws CoreException {
-	                try {
-	                    XmlRuleFlowProcessDumper dumper = XmlRuleFlowProcessDumper.INSTANCE;
-	                    String out = dumper.dump(getRuleFlowModel().getRuleFlowProcess(), false);
-	                    modelFile.create(new ByteArrayInputStream(out.getBytes()), true, monitor);
-	                } catch (Exception e) {
-	                    e.printStackTrace();
-	                }
-	            }
-	        };
-	        
-	        try {
-	            new ProgressMonitorDialog(getSite().getWorkbenchWindow().getShell())
-	                    .run(false, true, op);
-	            setInput(new FileEditorInput(file));
-	            getCommandStack().markSaveLocation();
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-		} else {
-	        try {
-	            XmlRuleFlowProcessDumper dumper = XmlRuleFlowProcessDumper.INSTANCE;
-                String out = dumper.dump(getRuleFlowModel().getRuleFlowProcess(), false);
-	            modelFile.setContents(new ByteArrayInputStream(out.getBytes()), true, false, monitor);
-	        } catch (Throwable t) {
-	        	DroolsEclipsePlugin.log(t);
-	        }
-		}
-    }
-
-	private IFile getModelFile(IFile file) {
-		IProject project = file.getProject();
-		IPath path = file.getProjectRelativePath();
-		String fileName = file.getName().substring(0, file.getName().length() - 2) + "rfm";
-		IPath modelPath = path.removeLastSegments(1).append(fileName);
-		IFile modelFile = project.getFile(modelPath);
-		return modelFile;
-	}
-
     protected void createModel(InputStream is) {
         try {
             InputStreamReader reader = new InputStreamReader(is);

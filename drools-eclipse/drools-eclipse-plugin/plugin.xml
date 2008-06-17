@@ -27,15 +27,6 @@
          class="org.drools.eclipse.debug.ApplicationDataView"
          id="org.drools.eclipse.debug.ApplicationDataView">
       </view>
-      <!--
-      <view
-         name="Realtime Audit View"
-         icon="icons/drools.gif"
-         category="org.drools.eclipse.views"
-         class="org.drools.eclipse.debug.RealtimeAuditView"
-         id="org.drools.eclipse.debug.RealtimeAuditView">
-      </view>
-      -->
       <view
          name="Process Instances View"
          icon="icons/drools.gif"
@@ -124,7 +115,7 @@
             name="Domain Specific Language"/>
       <wizard
             id = "org.drools.eclipse.wizards.new.project"
-            name = "Rule Project"
+            name = "Drools Project"
             class= "org.drools.eclipse.wizard.project.NewDroolsProjectWizard"
             category= "org.drools.eclipse.new"
             project= "true"
