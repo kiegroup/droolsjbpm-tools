@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JBoss Guvnor Tools Plug-in
+Bundle-SymbolicName: org.guvnor.tools;singleton:=true
+Bundle-Version: 0.5.0
+Bundle-Activator: org.guvnor.tools.Activator
+Bundle-Vendor: JBoss.org
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.ui.ide,
+ org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ org.eclipse.webdav
+Eclipse-LazyStart: true

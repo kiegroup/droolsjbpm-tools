@@ -1,0 +1,162 @@
+package org.guvnor.tools.views.model;
+
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
+import org.eclipse.ui.progress.IElementCollector;
+import org.guvnor.tools.Activator;
+import org.guvnor.tools.GuvnorRepository;
+import org.guvnor.tools.utils.webdav.ResourceProperties;
+import org.guvnor.tools.utils.webdav.WebDavClient;
+import org.guvnor.tools.utils.webdav.WebDavServerCache;
+
+public class TreeParent extends TreeObject implements IDeferredWorkbenchAdapter {
+		
+		private ArrayList<TreeObject> children;
+		
+		public TreeParent(String name, Type nodeType) {
+			super(name, nodeType);
+			children = new ArrayList<TreeObject>();
+		}
+		public void addChild(TreeObject child) {
+			children.add(child);
+			child.setParent(this);
+		}
+		public void removeChild(TreeObject child) {
+			children.remove(child);
+			child.setParent(null);
+		}
+		public TreeObject [] getChildren() {
+			return (TreeObject [])children.toArray(new TreeObject[children.size()]);
+		}
+		public boolean hasChildren() {
+			return children.size()>0;
+		}
+		
+		/*
+		 * (non-Javadoc)
+		 * @see org.eclipse.ui.progress.IDeferredWorkbenchAdapter#fetchDeferredChildren(java.lang.Object, org.eclipse.ui.progress.IElementCollector, org.eclipse.core.runtime.IProgressMonitor)
+		 */
+		public void fetchDeferredChildren(Object object,
+										 IElementCollector collector, 
+										 IProgressMonitor monitor) {
+			if (!(object instanceof TreeParent)) {
+				return;
+			}
+			TreeParent node = (TreeParent)object;
+			if (node.getNodeType() == Type.NONE) {
+				List<GuvnorRepository> reps = Activator.getLocationManager().getRepositories();
+				monitor.beginTask("Pending...", reps.size());
+				for (int i = 0; i < reps.size(); i++) {
+					TreeParent p = new TreeParent(reps.get(i).getLocation(), Type.REPOSITORY);
+					p.setGuvnorRepository(reps.get(i));
+					ResourceProperties props = new ResourceProperties();
+					props.setBase("");
+					p.setResourceProps(props);
+					collector.add(p, monitor);
+					monitor.worked(1);
+					if (i < reps.size() - 1) pause(500);
+				}
+				monitor.done();
+			}
+			if (node.getNodeType() == Type.REPOSITORY
+			   || node.getNodeType() == Type.PACKAGE) {
+				   listDirectory(node, collector, monitor);
+			}
+		}
+		
+		public void listDirectory(TreeParent node,
+				 		         IElementCollector collector, 
+				                 IProgressMonitor monitor) {
+			monitor.beginTask("Pending...", 1);
+			
+			monitor.worked(1);
+			GuvnorRepository rep = node.getGuvnorRepository();
+			try {
+				WebDavClient webdav = WebDavServerCache.getWebDavClient(rep.getLocation());
+				if (webdav == null) {
+					webdav = new WebDavClient(new URL(rep.getLocation()), 
+							                 rep.getUsername(), rep.getPassword());
+					WebDavServerCache.cacheWebDavClient(rep.getLocation(), webdav);
+				}
+				Map<String, ResourceProperties> listing = webdav.listDirectory(node.getFullPath());
+				for (String s: listing.keySet()) {
+					ResourceProperties resProps = listing.get(s);
+					TreeObject o = null;
+					if (resProps.isDirectory()) {
+						o = new TreeParent(s, Type.PACKAGE);	
+					} else {
+						o = new TreeObject(s, Type.RESOURCE);
+					}
+					o.setGuvnorRepository(rep);
+					o.setResourceProps(resProps);
+					collector.add(o, monitor);
+				}
+				monitor.worked(1);
+			} catch (Exception e) {
+				Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+			}
+		}
+		
+		private void pause(long msec){
+		  try {
+		    Thread.sleep(msec);
+		  } catch (InterruptedException e) {
+		    e.printStackTrace();
+		  }
+		}
+		
+		/*
+		 * (non-Javadoc)
+		 * @see org.eclipse.ui.progress.IDeferredWorkbenchAdapter#getRule(java.lang.Object)
+		 */
+		public ISchedulingRule getRule(Object object) {
+			return null;
+		}
+		/*
+		 * (non-Javadoc)
+		 * @see org.eclipse.ui.progress.IDeferredWorkbenchAdapter#isContainer()
+		 */
+		public boolean isContainer() {
+			return (this instanceof TreeParent);
+		}
+		/*
+		 * (non-Javadoc)
+		 * @see org.eclipse.ui.model.IWorkbenchAdapter#getChildren(java.lang.Object)
+		 */
+		public Object[] getChildren(Object o) {
+			return children.toArray();
+		}
+		/*
+		 * (non-Javadoc)
+		 * @see org.eclipse.ui.model.IWorkbenchAdapter#getImageDescriptor(java.lang.Object)
+		 */
+		public ImageDescriptor getImageDescriptor(Object object) {
+			return null;
+		}
+		/*
+		 * (non-Javadoc)
+		 * @see org.eclipse.ui.model.IWorkbenchAdapter#getLabel(java.lang.Object)
+		 */
+		public String getLabel(Object o) {
+			return o.toString();
+		}
+		/*
+		 * (non-Javadoc)
+		 * @see org.eclipse.ui.model.IWorkbenchAdapter#getParent(java.lang.Object)
+		 */
+		public Object getParent(Object o) {
+			if (o instanceof TreeObject) {
+				return ((TreeObject)o).getParent();
+			} else {
+				return null;
+			}
+		}
+}
