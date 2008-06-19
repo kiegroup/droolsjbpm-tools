@@ -3,7 +3,7 @@ package org.drools.eclipse.rulebuilder.ui;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.brms.client.modeldriven.brl.RuleAttribute;
+import org.drools.guvnor.client.modeldriven.brl.RuleAttribute;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;

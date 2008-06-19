@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.antlr.runtime.RecognitionException;
-import org.drools.brms.client.modeldriven.brl.RuleModel;
-import org.drools.brms.server.util.BRDRLPersistence;
-import org.drools.brms.server.util.BRXMLPersistence;
+import org.drools.guvnor.client.modeldriven.brl.RuleModel;
+import org.drools.guvnor.server.util.BRDRLPersistence;
+import org.drools.guvnor.server.util.BRXMLPersistence;
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.DroolsError;

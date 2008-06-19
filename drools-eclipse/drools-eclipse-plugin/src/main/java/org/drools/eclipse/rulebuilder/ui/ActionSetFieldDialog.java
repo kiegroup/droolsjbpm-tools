@@ -1,7 +1,7 @@
 package org.drools.eclipse.rulebuilder.ui;
 
-import org.drools.brms.client.modeldriven.brl.ActionFieldValue;
-import org.drools.brms.client.modeldriven.brl.ActionSetField;
+import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
+import org.drools.guvnor.client.modeldriven.brl.ActionSetField;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;

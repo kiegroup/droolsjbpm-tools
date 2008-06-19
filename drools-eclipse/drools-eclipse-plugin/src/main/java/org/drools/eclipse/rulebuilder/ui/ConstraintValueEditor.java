@@ -2,8 +2,8 @@ package org.drools.eclipse.rulebuilder.ui;
 
 import java.util.List;
 
-import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;

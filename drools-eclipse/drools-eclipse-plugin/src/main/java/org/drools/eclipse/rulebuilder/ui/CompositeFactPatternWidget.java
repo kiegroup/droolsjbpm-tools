@@ -1,7 +1,7 @@
 package org.drools.eclipse.rulebuilder.ui;
 
-import org.drools.brms.client.modeldriven.brl.CompositeFactPattern;
-import org.drools.brms.client.modeldriven.brl.FactPattern;
+import org.drools.guvnor.client.modeldriven.brl.CompositeFactPattern;
+import org.drools.guvnor.client.modeldriven.brl.FactPattern;
 import org.drools.eclipse.rulebuilder.modeldriven.HumanReadable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;

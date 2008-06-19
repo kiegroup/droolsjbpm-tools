@@ -1,10 +1,10 @@
 package org.drools.eclipse.rulebuilder.ui;
 
-import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brl.CompositeFieldConstraint;
-import org.drools.brms.client.modeldriven.brl.FactPattern;
-import org.drools.brms.client.modeldriven.brl.ISingleFieldConstraint;
-import org.drools.brms.client.modeldriven.brl.SingleFieldConstraint;
+import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint;
+import org.drools.guvnor.client.modeldriven.brl.FactPattern;
+import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;

@@ -1,7 +1,7 @@
 package org.drools.eclipse.rulebuilder.editors;
 
-import org.drools.brms.client.modeldriven.brl.RuleModel;
-import org.drools.brms.server.util.BRXMLPersistence;
+import org.drools.guvnor.client.modeldriven.brl.RuleModel;
+import org.drools.guvnor.server.util.BRXMLPersistence;
 import org.drools.eclipse.rulebuilder.ui.RuleModeller;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;

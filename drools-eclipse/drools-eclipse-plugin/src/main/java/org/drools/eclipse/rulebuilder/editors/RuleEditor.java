@@ -10,10 +10,10 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.server.rules.SuggestionCompletionLoader;
-import org.drools.brms.server.util.BRDRLPersistence;
-import org.drools.brms.server.util.BRXMLPersistence;
+import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.guvnor.server.rules.SuggestionCompletionLoader;
+import org.drools.guvnor.server.util.BRDRLPersistence;
+import org.drools.guvnor.server.util.BRXMLPersistence;
 import org.drools.compiler.DrlParser;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.dsl.editor.DSLAdapter;

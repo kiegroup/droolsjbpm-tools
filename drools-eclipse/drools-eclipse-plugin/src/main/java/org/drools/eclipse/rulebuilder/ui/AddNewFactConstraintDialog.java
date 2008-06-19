@@ -1,8 +1,8 @@
 package org.drools.eclipse.rulebuilder.ui;
 
-import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brl.CompositeFactPattern;
-import org.drools.brms.client.modeldriven.brl.FactPattern;
+import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.guvnor.client.modeldriven.brl.CompositeFactPattern;
+import org.drools.guvnor.client.modeldriven.brl.FactPattern;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;

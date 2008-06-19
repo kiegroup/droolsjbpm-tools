@@ -1,9 +1,9 @@
 package org.drools.eclipse.rulebuilder.ui;
 
-import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brl.ActionInsertFact;
-import org.drools.brms.client.modeldriven.brl.ActionFieldValue;
-import org.drools.brms.client.modeldriven.brl.ActionInsertLogicalFact;
+import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.guvnor.client.modeldriven.brl.ActionInsertFact;
+import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
+import org.drools.guvnor.client.modeldriven.brl.ActionInsertLogicalFact;
 import org.drools.eclipse.rulebuilder.modeldriven.HumanReadable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;

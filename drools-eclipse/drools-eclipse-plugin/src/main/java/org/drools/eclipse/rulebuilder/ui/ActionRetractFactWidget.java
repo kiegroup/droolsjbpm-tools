@@ -1,6 +1,6 @@
 package org.drools.eclipse.rulebuilder.ui;
 
-import org.drools.brms.client.modeldriven.brl.ActionRetractFact;
+import org.drools.guvnor.client.modeldriven.brl.ActionRetractFact;
 import org.drools.eclipse.rulebuilder.modeldriven.HumanReadable;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
