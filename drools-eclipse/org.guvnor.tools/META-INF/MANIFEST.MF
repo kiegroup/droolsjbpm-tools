@@ -1,10 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: JBoss Guvnor Tools Plug-in
+Bundle-Name: %plugin.name
 Bundle-SymbolicName: org.guvnor.tools;singleton:=true
 Bundle-Version: 0.5.0
 Bundle-Activator: org.guvnor.tools.Activator
-Bundle-Vendor: JBoss.org
+Bundle-Vendor: %plugin.provider
+Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.ide,
  org.eclipse.core.resources,

@@ -1,6 +1,11 @@
 package org.guvnor.tools.wizards;
 
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
@@ -34,10 +39,12 @@ public class NewRepLocationWizard extends Wizard implements INewWizard, IGuvnorW
 	@Override
 	public boolean performFinish() {
 		try {
-			Activator.getLocationManager().addRepository(
-					new GuvnorRepository(model.getRepLocation(), 
-							            model.getUsername(), 
-							            model.getPassword()));
+			Activator.getLocationManager().addRepository(new GuvnorRepository(model.getRepLocation()));
+			Map<String, String> info = new HashMap<String, String>();
+			//TODO: Deal with case where un or password are not specified
+			info.put("username", model.getUsername());
+			info.put("password", model.getPassword());
+			Platform.addAuthorizationInfo(new URL(model.getRepLocation()), "", "basic", info);
 		} catch (Exception e) {
 			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
 		}

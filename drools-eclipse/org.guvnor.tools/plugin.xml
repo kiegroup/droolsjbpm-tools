@@ -3,17 +3,17 @@
 <plugin>
 
    <extension point="org.eclipse.ui.views">
-      <category name="Guvnor" id="org.guvnor.tools"/>
-      <view name="Guvnor Repositories"
+      <category name="%category.name" id="org.guvnor.tools"/>
+      <view name="%repositories.view.name"
             icon="icons/guvnor_rep.gif"
             category="org.guvnor.tools"
             class="org.guvnor.tools.views.RepositoryView"
             id="org.guvnor.tools.views.RepositoryView"/>
-      <view category="org.guvnor.tools"
-            class="org.guvnor.tools.views.ResourceHistoryView"
+      <view name="%resource.history.view.name"
             icon="icons/guvnor_rep.gif"
-            id="org.guvnor.tools.views.ResourceHistoryView"
-            name="Guvnor Resource History"/>
+            category="org.guvnor.tools"
+            class="org.guvnor.tools.views.ResourceHistoryView"
+            id="org.guvnor.tools.views.ResourceHistoryView"/>
    </extension>
    
    <extension point="org.eclipse.ui.perspectiveExtensions">
@@ -26,7 +26,7 @@
    </extension>
   
   <extension point = "org.eclipse.ui.newWizards">
-		<category id = "org.guvnor.tools.wizcat" name="Guvnor"/>
+		<category id = "org.guvnor.tools.wizcat" name="%category.name"/>
 		<!--
 	 	<wizard id = "org.guvnor.tools.wizards.CheckoutWizard"
 	      	    name = "Checkout Projects from Guvnor"
@@ -37,12 +37,12 @@
 	    	   <description>Checkout Projects from Guvnor</description>
 		</wizard>
 		-->
-		<wizard id = "org.guvnor.tools.wizards.NewRepLocationWizard"
-	      	    name = "Guvnor repository location"
+		<wizard name = "%wiz.new.repository.location"
+		        id = "org.guvnor.tools.wizards.NewRepLocationWizard"
 		        class="org.guvnor.tools.wizards.NewRepLocationWizard"
 		        category="org.guvnor.tools.wizcat"
 		        icon="icons/guvnor_rep.gif">
-	    	   <description>New Guvnor repository location</description>
+	    	   <description>%wiz.new.repository.location.desc</description>
 		</wizard>
 	</extension>
 	<!--
@@ -73,7 +73,7 @@
   </extension>
  
   <extension point="org.eclipse.ui.perspectives">
-      <perspective name="Guvnor Repository Exploring"
+      <perspective name="%persp.name"
                    icon="icons/guvnor_rep.gif"
                    class="org.guvnor.tools.perspectives.GuvnorRepExplorerPerspective"
                    id="org.guvnor.tools.perspectives.GuvnorRepExplorerPerspective"/>

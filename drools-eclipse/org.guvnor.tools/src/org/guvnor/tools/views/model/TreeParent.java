@@ -82,8 +82,7 @@ public class TreeParent extends TreeObject implements IDeferredWorkbenchAdapter 
 			try {
 				WebDavClient webdav = WebDavServerCache.getWebDavClient(rep.getLocation());
 				if (webdav == null) {
-					webdav = new WebDavClient(new URL(rep.getLocation()), 
-							                 rep.getUsername(), rep.getPassword());
+					webdav = new WebDavClient(new URL(rep.getLocation()));
 					WebDavServerCache.cacheWebDavClient(rep.getLocation(), webdav);
 				}
 				Map<String, ResourceProperties> listing = webdav.listDirectory(node.getFullPath());

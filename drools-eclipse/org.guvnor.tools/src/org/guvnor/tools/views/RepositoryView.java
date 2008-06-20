@@ -4,10 +4,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.rmi.server.UID;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -105,16 +109,10 @@ public class RepositoryView extends ViewPart {
 					return;
 				}
 				try {
-					String contents = getResourceContents(target);
-					IPath path = Activator.getDefault().getStateLocation();
-					File transfer = new File(path.toOSString() + File.separator + target.getName());
-					transfer.deleteOnExit();
-					FileOutputStream fos = new FileOutputStream(transfer);
-					PrintWriter writer = new PrintWriter(fos);
-					writer.write(contents);
-					writer.flush();
-					writer.close();
-					event.data = new String[] { transfer.getAbsolutePath() };
+					List<String> files = prepareFileTransfer(target);
+					String[] res = new String[files.size()];
+					files.toArray(res);
+					event.data = res;
 				} catch (Exception e) {
 					Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
 				}
@@ -133,7 +131,46 @@ public class RepositoryView extends ViewPart {
 			}
 		});
 	}
-
+	
+	private List<String> prepareFileTransfer(TreeObject node) throws Exception {
+		List<String> res = new ArrayList<String>();
+		String contents = getResourceContents(node);
+		IPath path = new Path(Activator.getDefault().getStateLocation().toOSString() + 
+								File.separator + new UID().toString());
+		if (!path.toFile().mkdir()) {
+			throw new Exception("Could not create directory " + path.toOSString());
+		}
+		path.toFile().deleteOnExit();
+		File transfer = new File(path + File.separator + node.getName());
+		transfer.deleteOnExit();
+		FileOutputStream fos = new FileOutputStream(transfer);
+		PrintWriter writer = new PrintWriter(fos);
+		writer.write(contents);
+		writer.flush();
+		writer.close();
+		res.add(transfer.getAbsolutePath());
+		
+		IPath metaPath = new Path(path.toOSString() + File.separator + ".guvnorinfo");
+		if (!metaPath.toFile().mkdir()) {
+			throw new Exception("Could not create directory " + metaPath.toOSString());
+		}
+		metaPath.toFile().deleteOnExit();
+		File metaFile = new File(metaPath.toOSString() + File.separator + node.getName());
+		metaFile.deleteOnExit();
+		fos = new FileOutputStream(metaFile);
+		Properties props = new Properties();
+		props.put("repository", node.getGuvnorRepository().getLocation());
+		props.put("fullpath", node.getFullPath());
+		props.put("filename", node.getName());
+		props.put("lastmodified", node.getResourceProps().getLastModifiedDate());
+		props.store(fos, null);
+		fos.flush();
+		fos.close();
+		res.add(metaFile.getAbsolutePath());
+		
+		return res;
+	}
+	
 	private void hookContextMenu() {
 		MenuManager menuMgr = new MenuManager("#PopupMenu");
 		menuMgr.setRemoveAllWhenShown(true);
@@ -252,8 +289,7 @@ public class RepositoryView extends ViewPart {
 		GuvnorRepository rep = node.getGuvnorRepository();
 		WebDavClient webdav = WebDavServerCache.getWebDavClient(rep.getLocation());
 		if (webdav == null) {
-			webdav = new WebDavClient(new URL(rep.getLocation()), 
-					                 rep.getUsername(), rep.getPassword());
+			webdav = new WebDavClient(new URL(rep.getLocation()));
 			WebDavServerCache.cacheWebDavClient(rep.getLocation(), webdav);
 		}
 		return webdav.getResourceContents(node.getFullPath());	

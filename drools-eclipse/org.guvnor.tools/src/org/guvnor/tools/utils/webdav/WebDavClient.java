@@ -22,14 +22,10 @@ public class WebDavClient {
 	/**
 	 * Ctor for this wrapper WebDav client.
 	 * @param serverUrl The WebDav repository location (server)
-	 * @param username User identification
-	 * @param password User password
 	 * @param scheme The authentication scheme { Basic | Digest }
 	 */
-	public WebDavClient(URL serverUrl, String username, 
-			           String password, String scheme) {
-		WebDavAuthenticator authen =  new WebDavAuthenticator(serverUrl, username, 
-				                                             password, scheme);
+	public WebDavClient(URL serverUrl, String scheme) {
+		WebDavAuthenticator authen =  new WebDavAuthenticator(serverUrl, scheme);
 		HttpClient hClient = new HttpClient();
 		hClient.setAuthenticator(authen);
 		client = new RemoteDAVClient(new WebDAVFactory(), hClient);
@@ -38,14 +34,10 @@ public class WebDavClient {
 	/**
 	 * Ctor for this wrapper WebDav client, assuming "basic" authentication.
 	 * @param serverUrl The WebDav repository location (server)
-	 * @param username User identification
-	 * @param password User password
 	 */
-	public WebDavClient(URL serverUrl,
-			           String username,
-			           String password) {
+	public WebDavClient(URL serverUrl) {
 		// basic authentication is assumed as the default
-		this(serverUrl, username, password, "basic");
+		this(serverUrl, "basic");
 	}
 	
 	/**

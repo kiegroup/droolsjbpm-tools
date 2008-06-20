@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.webdav.http.client.IAuthenticator;
 
 public class WebDavAuthenticator implements IAuthenticator {
@@ -33,14 +34,10 @@ public class WebDavAuthenticator implements IAuthenticator {
 		serverAuthMaps = new HashMap<String, ServerAuthenInfo>();
 	}
 	
-	public WebDavAuthenticator(URL serverUrl, 
-							  String username, 
-							  String password, 
-							  String scheme) {
+	@SuppressWarnings("unchecked")
+	public WebDavAuthenticator(URL serverUrl, String scheme) {
 		this();
-		HashMap<String, String> info = new HashMap<String, String>();
-		info.put("username", username);
-		info.put("password", password);
+		Map info = Platform.getAuthorizationInfo(serverUrl, "", scheme);
 		addAuthenticationInfo(serverUrl, null, scheme, info);
 	}
 	

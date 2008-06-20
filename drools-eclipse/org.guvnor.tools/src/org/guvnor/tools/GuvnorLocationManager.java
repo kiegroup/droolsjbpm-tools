@@ -6,10 +6,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 
 public class GuvnorLocationManager {
 	
@@ -28,8 +30,8 @@ public class GuvnorLocationManager {
 		}
 	}
 	
-	public void addRespository(String location, String username, String password) throws Exception {
-		addRepository(new GuvnorRepository(location, username, password));
+	public void addRespository(String location) throws Exception {
+		addRepository(new GuvnorRepository(location));
 	}
 	
 	public void addRepository(GuvnorRepository rep) throws Exception {
@@ -50,13 +52,15 @@ public class GuvnorLocationManager {
 	}
 	
 	public boolean removeRepository(String rep) {
-		GuvnorRepository theRep = findRepository(rep);
-		if (theRep == null) {
-			return false;
-		}
-		boolean res = repList.remove(theRep);
-		notifyListeners(IRepositorySetListener.REP_ADDED);
+		boolean res = false;
 		try {
+			GuvnorRepository theRep = findRepository(rep);
+			if (theRep == null) {
+				return false;
+			}
+			res = repList.remove(theRep);
+Platform.flushAuthorizationInfo(new URL(rep), "", "basic");
+			notifyListeners(IRepositorySetListener.REP_ADDED);
 			commit();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -83,14 +87,13 @@ public class GuvnorLocationManager {
 		for (int i = 0; i < repList.size(); i++) {
 			GuvnorRepository oneRep = repList.get(i);
 			writer.println(oneRep.getLocation());
-			writer.println(oneRep.getUsername());
-			writer.println(oneRep.getPassword());
 		}
 		writer.flush();
 		fos.flush();
 		fos.close();
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void load() throws Exception {
 		repList.clear();
 		File repFile = Activator.getDefault().getStateLocation().
@@ -103,17 +106,8 @@ public class GuvnorLocationManager {
 		String oneRep = null;
 		do {
 			oneRep = reader.readLine();
-			if (oneRep != null && oneRep.trim().length() == 0) {
-				oneRep = null;
-			}
-			String oneUN = reader.readLine();
-			String onePW = reader.readLine();
-			if (oneRep != null) {
-				if (oneUN != null && onePW != null) {
-					repList.add(new GuvnorRepository(oneRep, oneUN, onePW));
-				} else {
-					System.out.println("incomplete rep: " + oneRep);
-				}
+			if (oneRep != null && oneRep.trim().length() > 0) {
+				repList.add(new GuvnorRepository(oneRep));
 			}
 		} while (oneRep != null);
 	}
