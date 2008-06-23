@@ -6,16 +6,16 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.compiler.Dialect;
-import org.drools.compiler.DialectRegistry;
+import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.rule.DialectRuntimeRegistry;
 import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
-import org.drools.rule.DialectDatas;
 
 public class DRLInfo {
 
@@ -30,9 +30,9 @@ public class DRLInfo {
 	// cached entry
 	private transient RuleInfo[] ruleInfos;
 	private transient FunctionInfo[] functionInfos;
-	private DialectRegistry dialectRegistry;
+	private DialectCompiletimeRegistry dialectRegistry;
 
-	public DRLInfo(String sourcePathName, PackageDescr packageDescr, List parserErrors, DialectRegistry dialectRegistry) {
+	public DRLInfo(String sourcePathName, PackageDescr packageDescr, List parserErrors, DialectCompiletimeRegistry dialectRegistry) {
 		if (sourcePathName == null || "".equals(sourcePathName)) {
 			throw new IllegalArgumentException("Invalid sourcePathName " + sourcePathName);
 		}
@@ -47,7 +47,7 @@ public class DRLInfo {
 		this.dialectRegistry = dialectRegistry;
 	}
 
-	public DRLInfo(String pathName, PackageDescr packageDescr, List parserErrors, Package compiledPackage, DroolsError[] builderErrors, DialectRegistry dialectRegistry) {
+	public DRLInfo(String pathName, PackageDescr packageDescr, List parserErrors, Package compiledPackage, DroolsError[] builderErrors, DialectCompiletimeRegistry dialectRegistry) {
 		this(pathName, packageDescr, parserErrors, dialectRegistry);
 		if (compiledPackage == null) {
 			throw new IllegalArgumentException("Null package");
@@ -185,7 +185,7 @@ public class DRLInfo {
 				if (!isCompiled()) {
 					throw new IllegalArgumentException("Package has not been compiled");
 				}
-				DialectDatas datas = compiledPackage.getDialectDatas();
+				DialectRuntimeRegistry datas = compiledPackage.getDialectRuntimeRegistry();
 
                 LineMappings mappings = datas.getLineMappings(className);
                 consequenceJavaLineNumber = mappings.getOffset();
@@ -269,7 +269,7 @@ public class DRLInfo {
 				if (!isCompiled()) {
 					throw new IllegalArgumentException("Package has not been compiled");
 				}
-				javaLineNumber = compiledPackage.getDialectDatas().getLineMappings(className).getOffset();
+				javaLineNumber = compiledPackage.getDialectRuntimeRegistry().getLineMappings(className).getOffset();
 			}
 			return javaLineNumber;
 		}
