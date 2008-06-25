@@ -1,7 +1,6 @@
 package org.guvnor.tools.utils.webdav;
 
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Platform;
@@ -9,36 +8,15 @@ import org.eclipse.webdav.http.client.IAuthenticator;
 
 public class WebDavAuthenticator implements IAuthenticator {
 	
-	private class ServerAuthenInfo {
-		private String serverUrl;
-		private HashMap<String, Map<String, String>> authInfo;
-		
-		public ServerAuthenInfo(String serverUrl) {
-			this.serverUrl = serverUrl;
-			authInfo = new HashMap<String, Map<String, String>>();
-		}
-		public Map<String, String> getAuthenicationInfo(String scheme) {
-			return authInfo.get(scheme);
-		}
-		public void addAuthenicationInfo(String scheme, Map<String, String> info) {
-			authInfo.put(scheme, info);
-		}
-		public String getServerURL() {
-			return serverUrl;
-		}
-	}
+	private URL repLocation;
 	
-	private HashMap<String, ServerAuthenInfo> serverAuthMaps;
-
 	public WebDavAuthenticator() {
-		serverAuthMaps = new HashMap<String, ServerAuthenInfo>();
 	}
 	
 	@SuppressWarnings("unchecked")
-	public WebDavAuthenticator(URL serverUrl, String scheme) {
+	public WebDavAuthenticator(URL serverUrl) {
 		this();
-		Map info = Platform.getAuthorizationInfo(serverUrl, "", scheme);
-		addAuthenticationInfo(serverUrl, null, scheme, info);
+		repLocation = serverUrl;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -46,12 +24,7 @@ public class WebDavAuthenticator implements IAuthenticator {
 			                         String realm,
 			                         String scheme, 
 			                         Map info) {
-		ServerAuthenInfo authInfo = serverAuthMaps.get(serverUrl);
-		if (authInfo == null) {
-			authInfo = new ServerAuthenInfo(serverUrl.getHost());
-			serverAuthMaps.put(serverUrl.getHost().toLowerCase(), authInfo);
-		}
-		authInfo.addAuthenicationInfo(scheme.toLowerCase(), info);
+		// Not storing any local authentication information: using the platform's key ring
 	}
 
 	public void addProtectionSpace(URL resourceUrl, 
@@ -63,11 +36,7 @@ public class WebDavAuthenticator implements IAuthenticator {
 	public Map getAuthenticationInfo(URL serverUrl, 
 			                        String realm, 
 			                        String scheme) {
-		ServerAuthenInfo authInfo = serverAuthMaps.get(serverUrl.getHost().toLowerCase());
-		if (authInfo == null) {
-			return null;
-		}
-		return authInfo.getAuthenicationInfo(scheme.toLowerCase());
+		return Platform.getAuthorizationInfo(repLocation, "", scheme);
 	}
 
 	public String getProtectionSpace(URL resourceUrl) {

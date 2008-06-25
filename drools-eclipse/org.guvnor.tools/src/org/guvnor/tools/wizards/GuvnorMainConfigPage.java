@@ -62,6 +62,9 @@ public class GuvnorMainConfigPage extends WizardPage {
 			}
 		});
 
+		new Label(composite, SWT.NONE).setText("NOTE: ") ;
+		new Label(composite, SWT.WRAP).setText("Saved passwords are stored on your computer in a file that is difficult, but not impossible, for an intruder to read.");
+		
 		super.setControl(composite);
 	}
 
