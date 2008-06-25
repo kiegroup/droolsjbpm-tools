@@ -7,7 +7,6 @@ import org.drools.eclipse.DRLInfo;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DRLInfo.FunctionInfo;
 import org.drools.eclipse.DRLInfo.RuleInfo;
-import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -130,7 +129,7 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
 
                     int line = ruleInfo.getConsequenceJavaLineNumber()
                                         	+ (lineNumber - ruleInfo.getConsequenceDrlLineNumber());
-                    if (ruleInfo.getDialectName() != null && ruleInfo.getDialectName().equals( MVELDialect.ID )) {
+                    if (ruleInfo.getDialectName() != null && ruleInfo.getDialectName().equals( "mvel" )) {
                         return line;
                     }
                     return line+1;

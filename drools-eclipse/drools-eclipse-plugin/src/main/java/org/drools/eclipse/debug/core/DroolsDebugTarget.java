@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
-import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugEvent;
@@ -75,7 +74,7 @@ public class DroolsDebugTarget extends JDIDebugTarget {
 
                 final DroolsLineBreakpoint d = (DroolsLineBreakpoint) breakpoint;
 
-                if ( d.getDialectName().equals( MVELDialect.ID ) ) {
+                if ( d.getDialectName().equals( "mvel" ) ) {
                     //getBreakpoints().add( breakpoint );
                     //super.breakpointAdded(breakpoint);
 
@@ -448,7 +447,7 @@ public class DroolsDebugTarget extends JDIDebugTarget {
 
                     final DroolsLineBreakpoint d = (DroolsLineBreakpoint) breakpoint;
 
-                    if ( d.getDialectName().equals( MVELDialect.ID ) ) {
+                    if ( d.getDialectName().equals( "mvel" ) ) {
                         removeRemoteBreakpoint( (DroolsLineBreakpoint) breakpoint,
                                                 delta );
                     }
@@ -764,7 +763,7 @@ public class DroolsDebugTarget extends JDIDebugTarget {
         Iterator iterator = getBreakpoints().iterator();
         while ( iterator.hasNext() ) {
             IJavaBreakpoint element = (IJavaBreakpoint) iterator.next();
-            if ( element instanceof DroolsLineBreakpoint && ((DroolsLineBreakpoint) element).getDialectName().equals( MVELDialect.ID ) ) {
+            if ( element instanceof DroolsLineBreakpoint && ((DroolsLineBreakpoint) element).getDialectName().equals( "mvel" ) ) {
                 DroolsLineBreakpoint l = (DroolsLineBreakpoint) element;
                 try {
 
