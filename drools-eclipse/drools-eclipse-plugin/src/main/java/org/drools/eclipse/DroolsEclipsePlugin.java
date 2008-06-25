@@ -30,6 +30,7 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.PackageRegistry;
 import org.drools.compiler.ProcessBuilder;
 import org.drools.eclipse.DRLInfo.FunctionInfo;
 import org.drools.eclipse.DRLInfo.RuleInfo;
@@ -41,6 +42,7 @@ import org.drools.eclipse.preferences.IDroolsConstants;
 import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.process.core.Process;
+import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.workflow.core.WorkflowProcess;
@@ -423,7 +425,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                     result = new DRLInfo( resource.getProjectRelativePath().toString(),
                                           packageDescr,
                                           parserErrors,
-                                          builder.getPackageRegistry( builder.getDefaultNamespace() ).getDialectCompiletimeRegistry() );
+                                          new PackageRegistry(builder, new Package("")).getDialectCompiletimeRegistry() );
                 }
 
                 // cache result
