@@ -11,10 +11,14 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 import org.eclipse.ui.progress.IElementCollector;
+import org.eclipse.webdav.IResponse;
 import org.guvnor.tools.Activator;
 import org.guvnor.tools.GuvnorRepository;
+import org.guvnor.tools.utils.PlatformUtils;
+import org.guvnor.tools.utils.webdav.IWebDavClient;
 import org.guvnor.tools.utils.webdav.ResourceProperties;
-import org.guvnor.tools.utils.webdav.WebDavClient;
+import org.guvnor.tools.utils.webdav.WebDavClientFactory;
+import org.guvnor.tools.utils.webdav.WebDavException;
 import org.guvnor.tools.utils.webdav.WebDavServerCache;
 
 public class TreeParent extends TreeObject implements IDeferredWorkbenchAdapter {
@@ -62,7 +66,6 @@ public class TreeParent extends TreeObject implements IDeferredWorkbenchAdapter 
 					p.setResourceProps(props);
 					collector.add(p, monitor);
 					monitor.worked(1);
-					if (i < reps.size() - 1) pause(500);
 				}
 				monitor.done();
 			}
@@ -72,6 +75,12 @@ public class TreeParent extends TreeObject implements IDeferredWorkbenchAdapter 
 			}
 		}
 		
+		/**
+		 * Creates a directory listing.
+		 * @param node The directory to list.
+		 * @param collector The collector for the elements listed.
+		 * @param monitor Progress monitor for the operation.
+		 */
 		public void listDirectory(TreeParent node,
 				 		         IElementCollector collector, 
 				                 IProgressMonitor monitor) {
@@ -80,36 +89,49 @@ public class TreeParent extends TreeObject implements IDeferredWorkbenchAdapter 
 			monitor.worked(1);
 			GuvnorRepository rep = node.getGuvnorRepository();
 			try {
-				WebDavClient webdav = WebDavServerCache.getWebDavClient(rep.getLocation());
+				IWebDavClient webdav = WebDavServerCache.getWebDavClient(rep.getLocation());
 				if (webdav == null) {
-					webdav = new WebDavClient(new URL(rep.getLocation()));
+					webdav = WebDavClientFactory.createClient(new URL(rep.getLocation()));
 					WebDavServerCache.cacheWebDavClient(rep.getLocation(), webdav);
 				}
-				Map<String, ResourceProperties> listing = webdav.listDirectory(node.getFullPath());
-				for (String s: listing.keySet()) {
-					ResourceProperties resProps = listing.get(s);
-					TreeObject o = null;
-					if (resProps.isDirectory()) {
-						o = new TreeParent(s, Type.PACKAGE);	
-					} else {
-						o = new TreeObject(s, Type.RESOURCE);
+				Map<String, ResourceProperties> listing = null;
+				try {
+					listing = webdav.listDirectory(node.getFullPath());
+				} catch (WebDavException wde) {
+					if (wde.getErrorCode() != IResponse.SC_UNAUTHORIZED) {
+						// If not an authentication failure, we don't know what to do with it
+						throw wde;
 					}
-					o.setGuvnorRepository(rep);
-					o.setResourceProps(resProps);
-					collector.add(o, monitor);
+					boolean retry = PlatformUtils.getInstance().authenticateForServer(
+												node.getGuvnorRepository().getLocation(), webdav); 
+					if (retry) {
+						listing = webdav.listDirectory(node.getFullPath());
+					}
 				}
+				if (listing != null) {
+					for (String s: listing.keySet()) {
+						ResourceProperties resProps = listing.get(s);
+						TreeObject o = null;
+						if (resProps.isDirectory()) {
+							o = new TreeParent(s, Type.PACKAGE);	
+						} else {
+							o = new TreeObject(s, Type.RESOURCE);
+						}
+						o.setGuvnorRepository(rep);
+						o.setResourceProps(resProps);
+						collector.add(o, monitor);
+					}
+				} 
 				monitor.worked(1);
+			} catch (WebDavException e) {
+				if (e.getErrorCode() == IResponse.SC_UNAUTHORIZED) {
+					PlatformUtils.reportAuthenticationFailure();
+				} else {
+					Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+				}
 			} catch (Exception e) {
 				Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
 			}
-		}
-		
-		private void pause(long msec){
-		  try {
-		    Thread.sleep(msec);
-		  } catch (InterruptedException e) {
-		    e.printStackTrace();
-		  }
 		}
 		
 		/*

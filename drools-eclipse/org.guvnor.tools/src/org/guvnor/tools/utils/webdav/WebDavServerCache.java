@@ -9,18 +9,18 @@ import java.util.HashMap;
  */
 public class WebDavServerCache {
 	
-	private static HashMap<String, WebDavClient> cache;
+	private static HashMap<String, IWebDavClient> cache;
 	
-	public static WebDavClient getWebDavClient(String serverUrl) {
+	public static IWebDavClient getWebDavClient(String serverUrl) {
 		if (cache == null) {
 			return null;
 		}
 		return cache.get(serverUrl);
 	}
 	
-	public static void cacheWebDavClient(String serverUrl, WebDavClient client) {
+	public static void cacheWebDavClient(String serverUrl, IWebDavClient client) {
 		if (cache == null) {
-			cache = new HashMap<String, WebDavClient>();
+			cache = new HashMap<String, IWebDavClient>();
 		}
 		cache.put(serverUrl, client);
 	}

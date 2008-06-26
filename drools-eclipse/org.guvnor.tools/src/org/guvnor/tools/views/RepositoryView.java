@@ -44,7 +44,8 @@ import org.guvnor.tools.Activator;
 import org.guvnor.tools.GuvnorRepository;
 import org.guvnor.tools.GuvnorLocationManager.IRepositorySetListener;
 import org.guvnor.tools.utils.PlatformUtils;
-import org.guvnor.tools.utils.webdav.WebDavClient;
+import org.guvnor.tools.utils.webdav.IWebDavClient;
+import org.guvnor.tools.utils.webdav.WebDavClientFactory;
 import org.guvnor.tools.utils.webdav.WebDavServerCache;
 import org.guvnor.tools.views.model.TreeObject;
 import org.guvnor.tools.views.model.TreeParent;
@@ -54,8 +55,8 @@ public class RepositoryView extends ViewPart {
 	
 	private TreeViewer viewer;
 	private DrillDownAdapter drillDownAdapter;
-	private Action action1;
-	private Action action2;
+	private Action deleteRepositoryLoc;
+	private Action addRepositoryLoc;
 	private Action doubleClickAction;
 	
 	class NameSorter extends ViewerSorter {
@@ -114,6 +115,12 @@ public class RepositoryView extends ViewPart {
 					files.toArray(res);
 					event.data = res;
 				} catch (Exception e) {
+					// Note: we could catch a 401 (not authorized) WebDav error and retry,
+					// like we do when listing directories. But since we have to first list
+					// directories to get to files, and the act of listing directories authenticates
+					// for the server, currently we do not have a situation requiring authentication
+					// for specific files. This might be different in the future if the Guvnor security
+					// model changes, or users can directly connect to specific files.
 					Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
 				}
 			}
@@ -191,14 +198,14 @@ public class RepositoryView extends ViewPart {
 	}
 
 	private void fillLocalPullDown(IMenuManager manager) {
-		manager.add(action1);
+		manager.add(deleteRepositoryLoc);
 		manager.add(new Separator());
-		manager.add(action2);
+		manager.add(addRepositoryLoc);
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
-		manager.add(action1);
-		manager.add(action2);
+		manager.add(deleteRepositoryLoc);
+		manager.add(addRepositoryLoc);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 		// Other plug-ins can contribute there actions here
@@ -206,14 +213,14 @@ public class RepositoryView extends ViewPart {
 	}
 	
 	private void fillLocalToolBar(IToolBarManager manager) {
-		manager.add(action1);
-		manager.add(action2);
+		manager.add(deleteRepositoryLoc);
+		manager.add(addRepositoryLoc);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 	}
 
 	private void makeActions() {
-		action1 = new Action() {
+		deleteRepositoryLoc = new Action() {
 			public void run() {
 				ISelection selection = viewer.getSelection();
 				Object obj = ((IStructuredSelection)selection).getFirstElement();
@@ -227,12 +234,12 @@ public class RepositoryView extends ViewPart {
 				}
 			}
 		};
-		action1.setText("Delete");
-		action1.setToolTipText("Delete Guvnor repository location");
-		action1.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+		deleteRepositoryLoc.setText("Delete");
+		deleteRepositoryLoc.setToolTipText("Delete Guvnor repository location");
+		deleteRepositoryLoc.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 			getImageDescriptor(ISharedImages.IMG_TOOL_DELETE));
 		
-		action2 = new Action() {
+		addRepositoryLoc = new Action() {
 			public void run() {
 				NewRepLocationWizard wiz = new NewRepLocationWizard();
 				wiz.init(Activator.getDefault().getWorkbench(), null);
@@ -242,9 +249,9 @@ public class RepositoryView extends ViewPart {
 			    dialog.open();
 			}
 		};
-		action2.setText("Add");
-		action2.setToolTipText("Add a Guvnor respository location");
-		action2.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+		addRepositoryLoc.setText("Add");
+		addRepositoryLoc.setToolTipText("Add a Guvnor respository location");
+		addRepositoryLoc.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 				getImageDescriptor(ISharedImages.IMG_TOOL_NEW_WIZARD));
 		doubleClickAction = new Action() {
 			public void run() {
@@ -280,6 +287,12 @@ public class RepositoryView extends ViewPart {
 				String contents = getResourceContents(node);
 				PlatformUtils.openEditor(contents, node.getName());
 			} catch (Exception e) {
+				// Note: we could catch a 401 (not authorized) WebDav error and retry,
+				// like we do when listing directories. But since we have to first list
+				// directories to get to files, and the act of listing directories authenticates
+				// for the server, currently we do not have a situation requiring authentication
+				// for specific files. This might be different in the future if the Guvnor security
+				// model changes, or users can directly connect to specific files.
 				Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
 			}
 		}
@@ -287,9 +300,9 @@ public class RepositoryView extends ViewPart {
 	
 	private String getResourceContents(TreeObject node) throws Exception {
 		GuvnorRepository rep = node.getGuvnorRepository();
-		WebDavClient webdav = WebDavServerCache.getWebDavClient(rep.getLocation());
+		IWebDavClient webdav = WebDavServerCache.getWebDavClient(rep.getLocation());
 		if (webdav == null) {
-			webdav = new WebDavClient(new URL(rep.getLocation()));
+			webdav = WebDavClientFactory.createClient(new URL(rep.getLocation()));
 			WebDavServerCache.cacheWebDavClient(rep.getLocation(), webdav);
 		}
 		return webdav.getResourceContents(node.getFullPath());	

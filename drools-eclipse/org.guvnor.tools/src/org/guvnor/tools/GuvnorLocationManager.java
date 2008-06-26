@@ -60,6 +60,7 @@ public class GuvnorLocationManager {
 			}
 			res = repList.remove(theRep);
 			Platform.flushAuthorizationInfo(new URL(rep), "", "basic");
+			Activator.getLocationManager().removeRepository(theRep.getLocation());
 			notifyListeners(IRepositorySetListener.REP_ADDED);
 			commit();
 		} catch (Exception e) {
