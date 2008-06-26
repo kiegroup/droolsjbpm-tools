@@ -26,7 +26,6 @@ import org.drools.eclipse.flow.ruleflow.view.property.constraint.RuleFlowImports
 import org.drools.util.ArrayUtils;
 import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
-import org.drools.workflow.core.node.ActionNode;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
@@ -70,17 +69,11 @@ public class ActionDialog extends EditBeanDialog {
 	private Combo dialectCombo;
 	private ActionCompletionProcessor completionProcessor;
 
-	public ActionDialog(Shell parentShell, WorkflowProcess process, ActionNode actionNode) {
+	public ActionDialog(Shell parentShell, WorkflowProcess process) {
 		super(parentShell, "Action editor");
 		this.process = process;
-		super.setValue(actionNode.getAction());
 	}
 	
-    public void setValue(Object value) {
-        // the value is automatically retrieved from the actionNode
-    	// and cannot be set manually
-    }
-
 	protected Object updateValue(Object value) {
 		if (tabFolder.getSelectionIndex() == 0) {
 			return getAction();

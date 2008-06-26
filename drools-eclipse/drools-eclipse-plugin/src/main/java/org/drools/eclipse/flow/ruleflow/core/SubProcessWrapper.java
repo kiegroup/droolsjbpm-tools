@@ -33,7 +33,7 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class SubProcessWrapper extends AbstractNodeWrapper {
+public class SubProcessWrapper extends ExtendedNodeWrapper {
 
 	private static final long serialVersionUID = 3668348577732020324L;
     private static IPropertyDescriptor[] descriptors;
@@ -45,8 +45,10 @@ public class SubProcessWrapper extends AbstractNodeWrapper {
     public static final String PARAMETER_OUT_MAPPING = "ParameterOutMapping";
 
     private void setDescriptors() {
-        descriptors = new IPropertyDescriptor[DefaultElementWrapper.descriptors.length + 5];
+        descriptors = new IPropertyDescriptor[DefaultElementWrapper.descriptors.length + 7];
         System.arraycopy(DefaultElementWrapper.descriptors, 0, descriptors, 0, DefaultElementWrapper.descriptors.length);
+        descriptors[descriptors.length - 7] = getOnEntryPropertyDescriptor();
+        descriptors[descriptors.length - 6] = getOnExitPropertyDescriptor();
         descriptors[descriptors.length - 5] = 
             new SubProcessParameterInMappingPropertyDescriptor(PARAMETER_IN_MAPPING, "Parameter In Mapping", getSubProcessNode());
         descriptors[descriptors.length - 4] = 

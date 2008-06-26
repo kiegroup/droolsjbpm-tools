@@ -116,7 +116,11 @@ public abstract class EditListDialog extends EditBeanDialog {
     
     public void setValue(Object value) {
         super.setValue(value);
-        this.newList = new ArrayList((List) value);
+        if (value == null) {
+        	this.newList = new ArrayList();
+        } else {
+        	this.newList = new ArrayList((List) value);
+        }
     }
     
     protected Object updateValue(Object value) {
@@ -159,7 +163,7 @@ public abstract class EditListDialog extends EditBeanDialog {
         }
     }
     
-    private EditBeanDialog createEditItemDialog() {
+    protected EditBeanDialog createEditItemDialog() {
         try {
             return (EditBeanDialog) editItemDialogClass.getConstructor(
                 new Class[] { Shell.class }).newInstance(

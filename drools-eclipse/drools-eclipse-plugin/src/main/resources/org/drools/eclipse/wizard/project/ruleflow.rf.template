@@ -9,7 +9,9 @@
 
   <nodes>
     <start id="1" name="Start" x="16" y="16" />
-    <action id="2" name="Hello" x="128" y="16" dialect="mvel" >System.out.println("Hello World");</action>
+    <actionNode id="2" name="Hello" x="128" y="16" >
+      <action type="expression" dialect="mvel" >System.out.println("Hello World");</action>
+    </actionNode>
     <end id="3" name="End" x="240" y="16" />
   </nodes>
 

@@ -39,7 +39,7 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class WorkItemWrapper extends AbstractNodeWrapper {
+public class WorkItemWrapper extends ExtendedNodeWrapper {
 
     public static final String WAIT_FOR_COMPLETION = "WaitForCompletion";
     public static final String RESULT_MAPPING = "ResultMapping";
@@ -104,13 +104,15 @@ public class WorkItemWrapper extends AbstractNodeWrapper {
     
     protected IPropertyDescriptor[] createPropertyDescriptors() {
         Set<ParameterDefinition> parameters = workDefinition.getParameters();
-        IPropertyDescriptor[] descriptors = new IPropertyDescriptor[DefaultElementWrapper.descriptors.length + parameters.size() + 3];
+            descriptors = new IPropertyDescriptor[DefaultElementWrapper.descriptors.length + parameters.size() + 5];
         System.arraycopy(DefaultElementWrapper.descriptors, 0, descriptors, 0, DefaultElementWrapper.descriptors.length);
         int i = 0;
         for (ParameterDefinition def: parameters) {
             descriptors[DefaultElementWrapper.descriptors.length + (i++)] = 
                 new TextPropertyDescriptor(def.getName(), def.getName());
         }
+        descriptors[descriptors.length - 5] = getOnEntryPropertyDescriptor();
+        descriptors[descriptors.length - 4] = getOnExitPropertyDescriptor();
         descriptors[descriptors.length - 3] = 
             new ComboBoxPropertyDescriptor(WAIT_FOR_COMPLETION, "Wait for completion", new String[] {"true", "false"});
         descriptors[descriptors.length - 2] = 

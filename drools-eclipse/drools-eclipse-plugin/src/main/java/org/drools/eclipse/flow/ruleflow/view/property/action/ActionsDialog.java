@@ -15,39 +15,31 @@ package org.drools.eclipse.flow.ruleflow.view.property.action;
  * limitations under the License.
  */
 
-import org.drools.eclipse.flow.common.view.property.BeanDialogCellEditor;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
+import org.drools.eclipse.flow.common.view.property.EditListDialog;
+import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.WorkflowProcess;
-import org.drools.workflow.core.node.ActionNode;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
 /**
- * Cell editor for an action.
+ * Dialog for editing actions.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class ActionCellEditor extends BeanDialogCellEditor {
-
-    private WorkflowProcess process;
-    private ActionNode actionNode;
+public class ActionsDialog extends EditListDialog {
     
-    public ActionCellEditor(Composite parent, WorkflowProcess process, ActionNode actionNode) {
-        super(parent);
-        this.process = process;
-        this.actionNode = actionNode;
+	private WorkflowProcess process;
+
+	protected ActionsDialog(Shell parentShell, WorkflowProcess process) {
+		super(parentShell, "Edit Actions", ActionDialog.class);
+		this.process = process;
+	}
+
+    protected Object createItem() {
+        return new DroolsAction();
     }
 
-    protected EditBeanDialog createDialog(Shell shell) {
-        ActionDialog dialog = new ActionDialog(shell, process);
-        dialog.setValue(actionNode.getAction());
-        return dialog;
-    }
-    
-    protected String getLabelText(Object value) {
-    	if (actionNode == null || actionNode.getAction() == null) {
-    		return "";
-    	}
-        return actionNode.getAction().toString();
+    protected EditBeanDialog createEditItemDialog() {
+    	return new ActionDialog(getShell(), process);
     }
 }

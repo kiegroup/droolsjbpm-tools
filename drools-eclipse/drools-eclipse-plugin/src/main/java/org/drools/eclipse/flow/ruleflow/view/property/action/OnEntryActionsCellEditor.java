@@ -18,36 +18,33 @@ package org.drools.eclipse.flow.ruleflow.view.property.action;
 import org.drools.eclipse.flow.common.view.property.BeanDialogCellEditor;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
 import org.drools.workflow.core.WorkflowProcess;
-import org.drools.workflow.core.node.ActionNode;
+import org.drools.workflow.core.impl.ExtendedNodeImpl;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
 /**
- * Cell editor for an action.
+ * Cell editor for on entry actions.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class ActionCellEditor extends BeanDialogCellEditor {
+public class OnEntryActionsCellEditor extends BeanDialogCellEditor {
 
     private WorkflowProcess process;
-    private ActionNode actionNode;
+    private ExtendedNodeImpl extendedNode;
     
-    public ActionCellEditor(Composite parent, WorkflowProcess process, ActionNode actionNode) {
+    public OnEntryActionsCellEditor(Composite parent, WorkflowProcess process, ExtendedNodeImpl extendedNode) {
         super(parent);
         this.process = process;
-        this.actionNode = actionNode;
+        this.extendedNode = extendedNode;
     }
 
     protected EditBeanDialog createDialog(Shell shell) {
-        ActionDialog dialog = new ActionDialog(shell, process);
-        dialog.setValue(actionNode.getAction());
+        ActionsDialog dialog = new ActionsDialog(shell, process);
+        dialog.setValue(extendedNode.getActions(ExtendedNodeImpl.EVENT_NODE_ENTER));
         return dialog;
     }
     
     protected String getLabelText(Object value) {
-    	if (actionNode == null || actionNode.getAction() == null) {
-    		return "";
-    	}
-        return actionNode.getAction().toString();
+    	return "";
     }
 }

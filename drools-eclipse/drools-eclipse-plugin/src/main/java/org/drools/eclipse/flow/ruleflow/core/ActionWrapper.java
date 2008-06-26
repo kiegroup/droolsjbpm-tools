@@ -19,6 +19,7 @@ import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.eclipse.flow.ruleflow.view.property.action.ActionPropertyDescriptor;
+import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.node.ActionNode;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
@@ -72,7 +73,7 @@ public class ActionWrapper extends AbstractNodeWrapper {
     public Object getPropertyValue(Object id) {
         if (ACTION.equals(id)) {
         	Object action = getActionNode().getAction();
-            return action == null ? "" : action.toString();
+            return action == null ? "" : action;
         }
         return super.getPropertyValue(id);
     }
@@ -87,7 +88,7 @@ public class ActionWrapper extends AbstractNodeWrapper {
 
     public void setPropertyValue(Object id, Object value) {
         if (ACTION.equals(id)) {
-        	getActionNode().setAction(value);
+        	getActionNode().setAction((DroolsAction) value);
         } else {
             super.setPropertyValue(id, value);
         }
