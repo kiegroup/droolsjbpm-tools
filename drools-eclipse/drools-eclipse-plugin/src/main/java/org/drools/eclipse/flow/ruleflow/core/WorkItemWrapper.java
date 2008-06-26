@@ -95,24 +95,29 @@ public class WorkItemWrapper extends AbstractNodeWrapper {
     
     private void setDescriptors() {
         if (workDefinition != null) {
-            Set<ParameterDefinition> parameters = workDefinition.getParameters();
-            descriptors = new IPropertyDescriptor[DefaultElementWrapper.descriptors.length + parameters.size() + 3];
-            System.arraycopy(DefaultElementWrapper.descriptors, 0, descriptors, 0, DefaultElementWrapper.descriptors.length);
-            int i = 0;
-            for (ParameterDefinition def: parameters) {
-                descriptors[DefaultElementWrapper.descriptors.length + (i++)] = 
-                    new TextPropertyDescriptor(def.getName(), def.getName());
-            }
-            descriptors[descriptors.length - 3] = 
-                new ComboBoxPropertyDescriptor(WAIT_FOR_COMPLETION, "Wait for completion", new String[] {"true", "false"});
-            descriptors[descriptors.length - 2] = 
-                new WorkItemParameterMappingPropertyDescriptor(PARAMETER_MAPPING, "Parameter Mapping", getWorkItemNode());
-            descriptors[descriptors.length - 1] = 
-                new WorkItemResultMappingPropertyDescriptor(RESULT_MAPPING, "Result Mapping", getWorkItemNode());
+            descriptors = createPropertyDescriptors();
         }
         if (descriptors == null) {
             descriptors = DefaultElementWrapper.descriptors;
         }
+    }
+    
+    protected IPropertyDescriptor[] createPropertyDescriptors() {
+        Set<ParameterDefinition> parameters = workDefinition.getParameters();
+        IPropertyDescriptor[] descriptors = new IPropertyDescriptor[DefaultElementWrapper.descriptors.length + parameters.size() + 3];
+        System.arraycopy(DefaultElementWrapper.descriptors, 0, descriptors, 0, DefaultElementWrapper.descriptors.length);
+        int i = 0;
+        for (ParameterDefinition def: parameters) {
+            descriptors[DefaultElementWrapper.descriptors.length + (i++)] = 
+                new TextPropertyDescriptor(def.getName(), def.getName());
+        }
+        descriptors[descriptors.length - 3] = 
+            new ComboBoxPropertyDescriptor(WAIT_FOR_COMPLETION, "Wait for completion", new String[] {"true", "false"});
+        descriptors[descriptors.length - 2] = 
+            new WorkItemParameterMappingPropertyDescriptor(PARAMETER_MAPPING, "Parameter Mapping", getWorkItemNode());
+        descriptors[descriptors.length - 1] = 
+            new WorkItemResultMappingPropertyDescriptor(RESULT_MAPPING, "Result Mapping", getWorkItemNode());
+        return descriptors;
     }
     
     public IPropertyDescriptor[] getPropertyDescriptors() {

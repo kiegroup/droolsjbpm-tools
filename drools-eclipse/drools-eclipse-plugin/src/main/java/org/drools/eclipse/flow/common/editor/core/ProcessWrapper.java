@@ -25,8 +25,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.eclipse.flow.common.view.property.ListPropertyDescriptor;
+import org.drools.eclipse.flow.ruleflow.view.property.swimlane.SwimlanesCellEditor;
 import org.drools.eclipse.flow.ruleflow.view.property.variable.VariableListCellEditor;
 import org.drools.process.core.Process;
+import org.drools.process.core.context.swimlane.Swimlane;
+import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
@@ -56,6 +59,7 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
     public static final String PACKAGE_NAME = "packageName";
     public static final String ROUTER_LAYOUT = "routerLayout";
     public static final String VARIABLES = "variables";
+    public static final String SWIMLANES = "swimlanes";
      
     static {
         descriptors = new IPropertyDescriptor[] {
@@ -67,6 +71,8 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
                 new String[] { "Manual", "Manhatten", "Shortest Path" }),
             new ListPropertyDescriptor(VARIABLES, "Variables",
                 VariableListCellEditor.class),
+            new ListPropertyDescriptor(SWIMLANES, "Swimlanes",
+                SwimlanesCellEditor.class),
         };
     }
     
@@ -214,6 +220,9 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
         if (VARIABLES.equals(id)) {
             return ((VariableScope) getProcess().getDefaultContext(VariableScope.VARIABLE_SCOPE)).getVariables();
         }
+        if (SWIMLANES.equals(id)) {
+            return ((SwimlaneContext) getProcess().getDefaultContext(SwimlaneContext.SWIMLANE_SCOPE)).getSwimlanes();
+        }
         return null;
     }
 
@@ -241,6 +250,10 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
             ((VariableScope) getProcess().getDefaultContext(
                 VariableScope.VARIABLE_SCOPE)).setVariables(new ArrayList<Variable>());
         }
+        if (SWIMLANES.equals(id)) {
+            ((SwimlaneContext) getProcess().getDefaultContext(
+                SwimlaneContext.SWIMLANE_SCOPE)).setSwimlanes(new ArrayList<Swimlane>());
+        }
     }
 
     public void setPropertyValue(Object id, Object value) {
@@ -257,6 +270,9 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
         } else if (VARIABLES.equals(id)) {
             ((VariableScope) getProcess().getDefaultContext(
                 VariableScope.VARIABLE_SCOPE)).setVariables((List<Variable>) value);
-        }
+        } else if (SWIMLANES.equals(id)) {
+            ((SwimlaneContext) getProcess().getDefaultContext(
+                SwimlaneContext.SWIMLANE_SCOPE)).setSwimlanes((List<Swimlane>) value);
+            }
     }
 }

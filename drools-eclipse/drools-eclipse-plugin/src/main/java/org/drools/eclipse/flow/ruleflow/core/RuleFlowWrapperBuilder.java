@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.WorkItemDefinitions;
 import org.drools.eclipse.flow.common.editor.core.ElementContainer;
 import org.drools.eclipse.flow.common.editor.core.ProcessWrapper;
@@ -22,6 +21,7 @@ import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.core.node.CompositeNode;
 import org.drools.workflow.core.node.EndNode;
+import org.drools.workflow.core.node.HumanTaskNode;
 import org.drools.workflow.core.node.Join;
 import org.drools.workflow.core.node.MilestoneNode;
 import org.drools.workflow.core.node.RuleSetNode;
@@ -101,6 +101,8 @@ public class RuleFlowWrapperBuilder implements ProcessWrapperBuilder {
             return new MilestoneWrapper();
         } else if (node instanceof TimerNode) {
             return new TimerWrapper();
+        } else if (node instanceof HumanTaskNode) {
+            return new HumanTaskNodeWrapper();
         } else if (node instanceof WorkItemNode) {
             WorkItemWrapper workItemWrapper = new WorkItemWrapper();
             Work work = ((WorkItemNode) node).getWork();
@@ -109,8 +111,8 @@ public class RuleFlowWrapperBuilder implements ProcessWrapperBuilder {
                     WorkItemDefinitions.getWorkDefinitions(project)
                         .get(work.getName());
                 if (workDefinition == null) {
-                	DroolsEclipsePlugin.log(
-                        new IllegalArgumentException("Could not find work definition for work " + work.getName()));
+//                	DroolsEclipsePlugin.log(
+//                        new IllegalArgumentException("Could not find work definition for work " + work.getName()));
                     workDefinition = new WorkDefinitionImpl();
                     ((WorkDefinitionImpl) workDefinition).setName(work.getName());
                 }

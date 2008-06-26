@@ -25,6 +25,7 @@ import org.drools.eclipse.flow.ruleflow.core.CompositeNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper;
 import org.drools.eclipse.flow.ruleflow.core.ConnectionWrapperFactory;
 import org.drools.eclipse.flow.ruleflow.core.EndNodeWrapper;
+import org.drools.eclipse.flow.ruleflow.core.HumanTaskNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.JoinWrapper;
 import org.drools.eclipse.flow.ruleflow.core.MilestoneWrapper;
 import org.drools.eclipse.flow.ruleflow.core.RuleSetNodeWrapper;
@@ -162,6 +163,16 @@ public class RuleFlowPaletteFactory {
         );
         entries.add(combined);
                           
+        combined = new CombinedTemplateCreationEntry(
+            "Human Task",
+            "Create a new Human Task",
+            HumanTaskNodeWrapper.class,
+            new SimpleFactory(HumanTaskNodeWrapper.class),
+            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/human_task.gif")), 
+            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/human_task.gif"))
+        );
+        entries.add(combined);
+                              
 //        combined = new CombinedTemplateCreationEntry(
 //            "Composite Node",
 //            "Create a new Composite Node",
