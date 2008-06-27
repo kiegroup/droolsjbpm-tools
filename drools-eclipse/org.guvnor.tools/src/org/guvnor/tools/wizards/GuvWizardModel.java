@@ -7,6 +7,7 @@ public class GuvWizardModel {
 	private String username;
 	private String password;
 	private boolean createNewRep;
+	private boolean saveAuthInfo;
 	
 	private String targetProject;
 	private boolean createNewProj;
@@ -21,13 +22,13 @@ public class GuvWizardModel {
 		this.repLocation = repLocation;
 	}
 	public String getUsername() {
-		return username;
+		return username != null?username:"";
 	}
 	public void setUsername(String username) {
 		this.username = username;
 	}
 	public String getPassword() {
-		return password;
+		return password != null?password:"";
 	}
 	public void setPassword(String password) {
 		this.password = password;
@@ -47,8 +48,14 @@ public class GuvWizardModel {
 	public boolean isCreateNewProj() {
 		return createNewProj;
 	}
+	public boolean shouldSaveAuthInfo() {
+		return saveAuthInfo;
+	}
 	public void setCreateNewProj(boolean createNewProj) {
 		this.createNewProj = createNewProj;
+	}
+	public void setSaveAuthInfo(boolean saveAuthInfo) {
+		this.saveAuthInfo = saveAuthInfo;
 	}
 	public List<String> getResources() {
 		return resources;

@@ -78,4 +78,23 @@
                    class="org.guvnor.tools.perspectives.GuvnorRepExplorerPerspective"
                    id="org.guvnor.tools.perspectives.GuvnorRepExplorerPerspective"/>
   </extension>
+  
+  <extension point="org.eclipse.ui.popupMenus">
+  	<objectContribution objectClass="org.guvnor.tools.views.model.TreeObject"
+                        adaptable="true"
+                        id="org.guvnor.tools.view.model.actions">
+    	<action label="%action.properties"
+                tooltip="%action.properties.tooltip"
+                class="org.guvnor.tools.actions.RepositoryElementPropsAction"
+                menubarPath="additions"
+                id="org.guvnor.tools.view.model.actions.properties">
+         </action>
+  	</objectContribution>
+  </extension>
+  
+  <extension point = "org.eclipse.ui.propertyPages">
+        <page id="org.guvnor.tools.proppage.ifile"
+              name="%category.name"
+	          class="org.guvnor.tools.properties.GuvnorWorkspaceFilePage"/>
+  </extension>
 </plugin>

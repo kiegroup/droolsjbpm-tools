@@ -18,6 +18,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.guvnor.tools.Activator;
 import org.guvnor.tools.utils.webdav.IWebDavClient;
+import org.guvnor.tools.utils.webdav.WebDavClientFactory;
+import org.guvnor.tools.utils.webdav.WebDavServerCache;
 import org.guvnor.tools.utils.webdav.WebDavSessionAuthenticator;
 
 /**
@@ -80,6 +82,28 @@ public class PlatformUtils {
 			return true;
 		} else {
 			return false;
+		}
+	}
+	
+	public void updateAuthentication(String server, String username, 
+			                        String password, boolean saveInfo) throws Exception {
+		Map<String, String> info = new HashMap<String, String>();
+		info.put("username", username);
+		info.put("password", password);
+		URL serverUrl = new URL(server);
+		IWebDavClient client = WebDavServerCache.getWebDavClient(server);
+		if (client == null) {
+			client = WebDavClientFactory.createClient(serverUrl);
+			WebDavServerCache.cacheWebDavClient(server, client);
+		}
+		if (saveInfo) {
+			Platform.flushAuthorizationInfo(serverUrl, "", "basic");
+			Platform.addAuthorizationInfo(serverUrl, "", "basic", info);
+		} else {
+			WebDavSessionAuthenticator authen = new WebDavSessionAuthenticator();
+			authen.addAuthenticationInfo(new URL(server), "", "basic", info);
+			client.setSessionAuthenticator(authen);
+			client.setSessionAuthentication(true);
 		}
 	}
 	
