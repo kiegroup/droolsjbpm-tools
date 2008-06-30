@@ -162,7 +162,7 @@ public class RepositoryView extends ViewPart {
 			throw new Exception("Could not create directory " + metaPath.toOSString());
 		}
 		metaPath.toFile().deleteOnExit();
-		File metaFile = new File(metaPath.toOSString() + File.separator + node.getName());
+		File metaFile = new File(metaPath.toOSString() + File.separator + "." + node.getName());
 		metaFile.deleteOnExit();
 		fos = new FileOutputStream(metaFile);
 		Properties props = new Properties();

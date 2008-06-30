@@ -60,5 +60,13 @@ public interface IWebDavClient {
 	 */
 	public String getResourceContents(String resource) throws Exception;
 	
+	/**
+	 * Get the <code>InputStream</code> of a resource from a WebDav repository.
+	 * @param resource The address of the resource
+	 * @return An code>InputStream</code> for the resource
+	 * @throws Exception Various WebDav errors can occur (See IResponse for details)
+	 */
+	public InputStream getInputStream(String resource) throws Exception;
+	
 	public void putResource(String location, String name, InputStream is) throws Exception;
 }

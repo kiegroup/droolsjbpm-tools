@@ -43,7 +43,7 @@ public class GuvnorLocationManager {
 		try {
 			commit();
 		} catch (Exception e) {
-			e.printStackTrace();
+			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
 		}
 	}
 	
@@ -64,7 +64,7 @@ public class GuvnorLocationManager {
 			notifyListeners(IRepositorySetListener.REP_ADDED);
 			commit();
 		} catch (Exception e) {
-			e.printStackTrace();
+			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
 		}
 		return res;
 	}

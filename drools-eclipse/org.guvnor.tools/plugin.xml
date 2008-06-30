@@ -90,6 +90,50 @@
                 id="org.guvnor.tools.view.model.actions.properties">
          </action>
   	</objectContribution>
+    <objectContribution id="org.guvnor.tools.contribution1"
+                        objectClass="org.eclipse.core.resources.IFile">
+      <menu id="org.guvnor.tools.popupmenu"
+            label="%category.name"
+            path="additions">
+         <separator name="group1"/>
+      </menu>
+      <action class="org.guvnor.tools.actions.DisconnectAction"
+              enablesFor="1"
+              id="org.guvnor.tools.actions.disconnectaction"
+            label="%action.popup.disconnect"
+            menubarPath="org.guvnor.tools.popupmenu/group1">
+      </action>
+      <action class="org.guvnor.tools.actions.SwitchVersionAction"
+              enablesFor="1"
+              id="org.guvnor.tools.actions.switchversionaction"
+            label="%action.popup.switchversion"
+            menubarPath="org.guvnor.tools.popupmenu/group1">
+      </action>
+      <action class="org.guvnor.tools.actions.CompareVersionAction"
+              enablesFor="1"
+              id="org.guvnor.tools.actions.compareversionaction"
+            label="%action.popup.compareversion"
+            menubarPath="org.guvnor.tools.popupmenu/group1">
+      </action>
+      <action class="org.guvnor.tools.actions.ShowHistoryAction"
+              enablesFor="1"
+              id="org.guvnor.tools.actions.showhistoryaction"
+            label="%action.popup.showhistory"
+            menubarPath="org.guvnor.tools.popupmenu/group1">
+      </action>
+      <action class="org.guvnor.tools.actions.CommitAction"
+              enablesFor="1"
+              id="org.guvnor.tools.actions.commitaction"
+            label="%action.popup.commit"
+            menubarPath="org.guvnor.tools.popupmenu/group1">
+      </action>
+      <action class="org.guvnor.tools.actions.UpdateAction"
+              enablesFor="1"
+              id="org.guvnor.tools.actions.updateaction"
+            label="%action.popup.update"
+            menubarPath="org.guvnor.tools.popupmenu/group1">
+      </action>
+   </objectContribution>
   </extension>
   
   <extension point = "org.eclipse.ui.propertyPages">
@@ -97,4 +141,19 @@
               name="%category.name"
 	          class="org.guvnor.tools.properties.GuvnorWorkspaceFilePage"/>
   </extension>
+  
+  <extension point="org.eclipse.ui.decorators">
+      <decorator lightweight="true" adaptable="true" 
+                 label="%category.name" state="true"
+                 class="org.guvnor.tools.GuvnorDecorator"
+                 id="org.guvnor.tools.decorator">
+         <description>
+            %decorator.desc
+         </description>
+         <enablement>
+            <objectClass name="org.eclipse.core.resources.IResource"/>
+         </enablement>
+      </decorator>
+   </extension>
+   
 </plugin>

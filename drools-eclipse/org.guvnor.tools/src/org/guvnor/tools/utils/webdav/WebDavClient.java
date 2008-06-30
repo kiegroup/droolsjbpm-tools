@@ -118,13 +118,28 @@ public class WebDavClient implements IWebDavClient {
 	 * @see org.guvnor.tools.utils.webdav.IWebDavClient#getResourceContents(java.lang.String)
 	 */
 	public String getResourceContents(String resource) throws Exception {
+		return StreamProcessingUtils.getStreamContents(getInputStream(resource));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.guvnor.tools.utils.webdav.IWebDavClient#getInputStream(java.lang.String)
+	 */
+	public InputStream getInputStream(String resource) throws Exception {
+		if (isUsingSessionAuthenication()) {
+			if (sessionAuthen != null) {
+				hClient.setAuthenticator(sessionAuthen);
+			} else {
+				setSessionAuthentication(false);
+			}
+		}
 		ILocator locator = WebDAVFactory.locatorFactory.newLocator(resource);
 		IResponse response = client.get(locator, createContext());
 		if (response.getStatusCode() != IResponse.SC_OK) {
 			throw new WebDavException("WebDav error: " + response.getStatusCode(), 
 									 response.getStatusCode());
 		}
-		return StreamProcessingUtils.getStreamContents(response.getInputStream());
+		return response.getInputStream();
 	}
 	
 	/*
