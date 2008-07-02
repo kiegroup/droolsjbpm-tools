@@ -283,6 +283,7 @@ public class AuditView extends AbstractDebugView {
 					} else {
 						events.add(event);
 					}
+					beforeEvents.push(event);
 					break;
                 case LogEvent.AFTER_RULE_ADDED:
                     if (!beforeEvents.isEmpty()) {
@@ -299,7 +300,8 @@ public class AuditView extends AbstractDebugView {
 					} else {
 						events.add(event);
 					}
-                    break;
+					beforeEvents.push(event);
+					break;
                 case LogEvent.AFTER_RULE_REMOVED:
                     if (!beforeEvents.isEmpty()) {
                         Event beforeEvent = (Event) beforeEvents.pop();

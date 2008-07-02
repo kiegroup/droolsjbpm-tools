@@ -82,7 +82,7 @@ public class ActionCompletionProcessor extends RuleCompletionProcessor {
         String prefix = doc.get(startPart, documentOffset - startPart);
         return "package dummy.package \n rule dummy "
             + (dialect == null ? "" : " dialect \"" + dialect + "\" ")
-            + "\n when \n then \n " + prefix;
+            + "\n when \n then \n org.drools.workflow.instance.NodeInstance nodeInstance; \n " + prefix;
     }
     
     public List getImports() {
