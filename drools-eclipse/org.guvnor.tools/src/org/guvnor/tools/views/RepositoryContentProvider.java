@@ -19,6 +19,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider,
 	private DeferredTreeContentManager manager;
 	private AbstractTreeViewer viewer;
 	
+	private String repUrl;
+	
 	public void inputChanged(Viewer v, Object oldInput, Object newInput) {
 		if (v instanceof AbstractTreeViewer) {
 			viewer = (AbstractTreeViewer)v;
@@ -56,15 +58,32 @@ public class RepositoryContentProvider implements IStructuredContentProvider,
 	}
 
 	private void initialize() {
+		boolean shouldAdd = true;
 		invisibleRoot = new TreeParent("", TreeObject.Type.NONE);
 		List<GuvnorRepository> reps = Activator.getLocationManager().getRepositories();
 		for (int i = 0; i < reps.size(); i++) {
-			TreeParent p = new TreeParent(reps.get(i).getLocation(), TreeObject.Type.REPOSITORY);
-			p.setGuvnorRepository(reps.get(i));
-			ResourceProperties props = new ResourceProperties();
-			props.setBase("");
-			p.setResourceProps(props);
-			invisibleRoot.addChild(p);
+			if (repUrl != null) {
+				if (repUrl.equals(reps.get(i).getLocation())) {
+					shouldAdd = true;
+				} else {
+					shouldAdd = false;
+				}
+			} else {
+				shouldAdd = true;
+			}
+			if (shouldAdd) {
+				TreeParent p = new TreeParent(reps.get(i).getLocation(), 
+						                     TreeObject.Type.REPOSITORY);
+				p.setGuvnorRepository(reps.get(i));
+				ResourceProperties props = new ResourceProperties();
+				props.setBase("");
+				p.setResourceProps(props);
+				invisibleRoot.addChild(p);
+			}
 		}
+	}
+	
+	public void setRepositorySelection(String repUrl) {
+		this.repUrl = repUrl;
 	}
 }

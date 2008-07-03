@@ -11,6 +11,8 @@ import org.guvnor.tools.utils.GuvnorMetadataUtils;
 
 public class GuvnorDecorator implements ILightweightLabelDecorator {
 	
+	public static final String DECORATOR_ID = "org.guvnor.tools.decorator";
+	
 	private boolean isGuvnorResource(Object element) {
 		if (element instanceof IResource) {
 			return GuvnorMetadataUtils.findGuvnorMetadata((IResource)element) != null;
@@ -20,17 +22,23 @@ public class GuvnorDecorator implements ILightweightLabelDecorator {
 	}
 	
 	private void decorateResource(IResource resource, IDecoration decoration) {
-		if (resource instanceof IFile) {
-			decoration.addOverlay(Activator.getImageDescriptor(Activator.IMG_GUVCONTROLLED), 
-					             IDecoration.TOP_RIGHT);
-			try {
+		try {	
+			if (resource instanceof IFile) {
+				if (GuvnorMetadataUtils.isGuvnorResourceCurrent(resource)) {
+					decoration.addOverlay(
+							Activator.getImageDescriptor(Activator.IMG_GUVCONTROLLED), 
+							IDecoration.TOP_RIGHT);
+				} else {
+					//TODO: Would like a different overlay icon, instead of this, but for the time being...
+					decoration.addPrefix("{g} ");
+				}
 				GuvnorMetadataProps props = GuvnorMetadataUtils.getGuvnorMetadata(resource);
 				if (props.getVersion() != null) {
 					decoration.addSuffix(" " + props.getVersion());
 				}
-			} catch (Exception e) {
-				Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
 			}
+		} catch (Exception e) {
+			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
 		}
 	}
 	
@@ -46,22 +54,17 @@ public class GuvnorDecorator implements ILightweightLabelDecorator {
 	}
 
 	public void addListener(ILabelProviderListener listener) {
-		// TODO Auto-generated method stub
-		
+		// TODO: Need to implement this?
 	}
 
-	public void dispose() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void dispose() { }
 
 	public boolean isLabelProperty(Object element, String property) {
-		// TODO Auto-generated method stub
+		// TODO: Need to implement this?
 		return false;
 	}
 
 	public void removeListener(ILabelProviderListener listener) {
-		// TODO Auto-generated method stub
-		
+		// TODO: Need to implement this?
 	}
 }

@@ -27,36 +27,36 @@
   
   <extension point = "org.eclipse.ui.newWizards">
 		<category id = "org.guvnor.tools.wizcat" name="%category.name"/>
-		<!--
-	 	<wizard id = "org.guvnor.tools.wizards.CheckoutWizard"
-	      	    name = "Checkout Projects from Guvnor"
+<!--
+	 	<wizard id = "org.guvnor.tools.wizards.checkoutwizard"
+	      	    name = "%wiz.copy.resources"
 		        class="org.guvnor.tools.wizards.CheckoutWizard"
 		        category="org.guvnor.tools.wizcat"
 		        project="true"
 		        icon="icons/guvnor_rep.gif">
-	    	   <description>Checkout Projects from Guvnor</description>
+	    	   <description>%wiz.copy.resources.desc</description>
 		</wizard>
-		-->
+-->
 		<wizard name = "%wiz.new.repository.location"
-		        id = "org.guvnor.tools.wizards.NewRepLocationWizard"
+		        id = "org.guvnor.tools.wizards.newreplocationwizard"
 		        class="org.guvnor.tools.wizards.NewRepLocationWizard"
 		        category="org.guvnor.tools.wizcat"
 		        icon="icons/guvnor_rep.gif">
 	    	   <description>%wiz.new.repository.location.desc</description>
 		</wizard>
 	</extension>
-	<!--
+<!--
 	<extension point = "org.eclipse.ui.importWizards">
-	    <category id = "org.guvnor.tools.importwizcat" name="Guvnor"/>
-	 	<wizard id = "org.guvnor.tools.CheckoutWizard"
-	      	    name = "Checkout Projects from Guvnor"
+	    <category id = "org.guvnor.tools.importwizcat" name="%category.name"/>
+	 	<wizard id = "org.guvnor.tools.checkoutwizard"
+	      	    name = "%wiz.import.resources"
 	            category="org.guvnor.tools.importwizcat"
 		        class="org.guvnor.tools.wizards.CheckoutWizard"
 		        icon="icons/guvnor_rep.gif">
-	    	   <description>Checkout Projects from Guvnor</description>
+	    	   <description>%wiz.import.resources.desc</description>
 		</wizard>
 	</extension>
-	-->
+-->
 	<extension point="org.eclipse.ui.perspectiveExtensions">
     	<perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">
            <view id="org.guvnor.tools.views.RepositoriesView"
@@ -125,6 +125,12 @@
               enablesFor="1"
               id="org.guvnor.tools.actions.commitaction"
             label="%action.popup.commit"
+            menubarPath="org.guvnor.tools.popupmenu/group1">
+      </action>
+      <action class="org.guvnor.tools.actions.AddAction"
+              enablesFor="1"
+              id="org.guvnor.tools.actions.addaction"
+            label="%action.popup.add"
             menubarPath="org.guvnor.tools.popupmenu/group1">
       </action>
       <action class="org.guvnor.tools.actions.UpdateAction"

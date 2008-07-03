@@ -9,8 +9,7 @@ public class GuvWizardModel {
 	private boolean createNewRep;
 	private boolean saveAuthInfo;
 	
-	private String targetProject;
-	private boolean createNewProj;
+	private String targetLocation;
 	
 	private List<String> resources;
 	private String version;
@@ -33,26 +32,20 @@ public class GuvWizardModel {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public boolean isCreateNewRep() {
+	public boolean shouldCreateNewRep() {
 		return createNewRep;
 	}
 	public void setCreateNewRep(boolean createNewRep) {
 		this.createNewRep = createNewRep;
 	}
-	public String getTargetProject() {
-		return targetProject;
+	public String getTargetLocation() {
+		return targetLocation;
 	}
-	public void setTargetProject(String targetProject) {
-		this.targetProject = targetProject;
-	}
-	public boolean isCreateNewProj() {
-		return createNewProj;
+	public void setTargetLocation(String targetLocation) {
+		this.targetLocation = targetLocation;
 	}
 	public boolean shouldSaveAuthInfo() {
 		return saveAuthInfo;
-	}
-	public void setCreateNewProj(boolean createNewProj) {
-		this.createNewProj = createNewProj;
 	}
 	public void setSaveAuthInfo(boolean saveAuthInfo) {
 		this.saveAuthInfo = saveAuthInfo;
@@ -70,8 +63,9 @@ public class GuvWizardModel {
 		this.version = version;
 	}
 	
-	public boolean isModelComplete() {
-		// TODO: Check if model is complete
-		return true;
+	public boolean isModelComplete() {		
+		return this.repLocation != null && 
+		       this.targetLocation != null && 
+		       this.resources != null;
 	}
 }

@@ -1,29 +1,26 @@
 package org.guvnor.tools.actions;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionDelegate;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.guvnor.tools.Activator;
-import org.guvnor.tools.utils.GuvnorMetadataProps;
 import org.guvnor.tools.utils.GuvnorMetadataUtils;
-import org.guvnor.tools.utils.PlatformUtils;
 
-public class DisconnectAction implements IObjectActionDelegate {
+public class AddAction implements IObjectActionDelegate {
 	
 	private IFile selectedFile;
-	
+
 	/**
 	 * Constructor for Action1.
 	 */
-	public DisconnectAction() {
+	public AddAction() {
 		super();
 	}
 
@@ -37,20 +34,11 @@ public class DisconnectAction implements IObjectActionDelegate {
 	 * @see IActionDelegate#run(IAction)
 	 */
 	public void run(IAction action) {
-		if (selectedFile == null) {
-			return;
-		}
-		IFile mdFile = GuvnorMetadataUtils.findGuvnorMetadata(selectedFile);
-		if (mdFile == null) {
-			return;
-		}
-		try {
-			IWorkspace ws = mdFile.getWorkspace();
-			ws.delete(new IResource[] { mdFile }, true, null);
-			PlatformUtils.updateDecoration();
-		} catch (CoreException e) {
-			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
-		}
+		Shell shell = new Shell();
+		MessageDialog.openInformation(
+			shell,
+			"JBoss Guvnor Tools Plug-in",
+			"Show History was executed.");
 	}
 
 	/**
@@ -65,9 +53,8 @@ public class DisconnectAction implements IObjectActionDelegate {
 			if (selection instanceof IStructuredSelection) {
 				IStructuredSelection sel = (IStructuredSelection)selection;
 				if (sel.getFirstElement() instanceof IFile) {
-					GuvnorMetadataProps props = GuvnorMetadataUtils.
-													getGuvnorMetadata((IFile)sel.getFirstElement());
-					if (props != null) {
+					IFile mdFile = GuvnorMetadataUtils.findGuvnorMetadata((IFile)sel.getFirstElement());
+					if (mdFile == null) {
 						selectedFile = (IFile)sel.getFirstElement();
 						action.setEnabled(true);
 					}

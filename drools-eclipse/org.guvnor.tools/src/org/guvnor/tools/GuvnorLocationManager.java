@@ -69,7 +69,7 @@ public class GuvnorLocationManager {
 		return res;
 	}
 	
-	private GuvnorRepository findRepository(String rep) {
+	public GuvnorRepository findRepository(String rep) {
 		GuvnorRepository theRep = null;
 		for (int i = 0; i < repList.size(); i++) {
 			if (repList.get(i).getLocation().equals(rep)) {

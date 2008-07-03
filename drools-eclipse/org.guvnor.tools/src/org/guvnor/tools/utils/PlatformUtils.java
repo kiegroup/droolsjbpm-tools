@@ -11,12 +11,14 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.guvnor.tools.Activator;
+import org.guvnor.tools.GuvnorDecorator;
 import org.guvnor.tools.utils.webdav.IWebDavClient;
 import org.guvnor.tools.utils.webdav.WebDavClientFactory;
 import org.guvnor.tools.utils.webdav.WebDavServerCache;
@@ -42,6 +44,10 @@ public class PlatformUtils {
 		return instance;
 	}
 	
+	public static void updateDecoration() {
+		IDecoratorManager manager = Activator.getDefault().getWorkbench().getDecoratorManager();
+		manager.update(GuvnorDecorator.DECORATOR_ID);
+	}
 	/**
 	 * Opens a read-only, in-memory editor.
 	 * @param contents The contents for the editor

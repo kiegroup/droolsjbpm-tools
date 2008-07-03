@@ -57,6 +57,8 @@ public class GuvnorMainConfigPage extends WizardPage {
 		});
 		addDropSupport(serverField);
 		
+		serverField.setFocus();
+		
 		new Label(composite, SWT.NONE).setText("Port: ");
 		portField = new Text(composite, SWT.SINGLE | SWT.BORDER);
 		portField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -165,7 +167,9 @@ public class GuvnorMainConfigPage extends WizardPage {
 		try {
 			URL server = new URL(dropped);
 			serverField.setText(server.getHost());
-			portField.setText(String.valueOf(server.getPort()));
+			if (server.getPort() != -1) {
+				portField.setText(String.valueOf(server.getPort()));
+			}
 			replocField.setText(server.getFile());
 		} catch (MalformedURLException e) {
 			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
@@ -191,13 +195,17 @@ public class GuvnorMainConfigPage extends WizardPage {
 			model.setPassword(pwField.getText());
 			model.setSaveAuthInfo(saveAuthInfo);
 			model.setCreateNewRep(true);
-			GuvnorMainConfigPage.super.setPageComplete(true);
 		} catch (Exception e) {
-			GuvnorMainConfigPage.super.setPageComplete(false);
+			model.setRepLocation(null);
 		}
+		super.getWizard().getContainer().updateButtons();
 	}
 
 	private URL validateUrl() throws Exception {
+		// If the server text box is empty, this is not a valid location
+		if (serverField.getText().trim().length() == 0) {
+			return null;
+		}
 		// First we'll test if the server text box is a complete
 		// URL in itself. If so, we'll parse it out into the other
 		// fields and leave early
@@ -234,5 +242,11 @@ public class GuvnorMainConfigPage extends WizardPage {
 			// If it is not a valid URL, we just move along...
 		}
 		return res;
+	}
+
+	@Override
+	public boolean isPageComplete() {
+		GuvWizardModel model = ((IGuvnorWizard)super.getWizard()).getModel();
+		return model.getRepLocation() != null;
 	}
 }

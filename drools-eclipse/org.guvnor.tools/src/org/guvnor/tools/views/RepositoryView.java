@@ -7,7 +7,6 @@ import java.net.URL;
 import java.rmi.server.UID;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
@@ -43,6 +42,8 @@ import org.eclipse.ui.part.ViewPart;
 import org.guvnor.tools.Activator;
 import org.guvnor.tools.GuvnorRepository;
 import org.guvnor.tools.GuvnorLocationManager.IRepositorySetListener;
+import org.guvnor.tools.utils.GuvnorMetadataProps;
+import org.guvnor.tools.utils.GuvnorMetadataUtils;
 import org.guvnor.tools.utils.PlatformUtils;
 import org.guvnor.tools.utils.webdav.IWebDavClient;
 import org.guvnor.tools.utils.webdav.WebDavClientFactory;
@@ -157,22 +158,18 @@ public class RepositoryView extends ViewPart {
 		writer.close();
 		res.add(transfer.getAbsolutePath());
 		
-		IPath metaPath = new Path(path.toOSString() + File.separator + ".guvnorinfo");
-		if (!metaPath.toFile().mkdir()) {
-			throw new Exception("Could not create directory " + metaPath.toOSString());
-		}
+		IPath metaPath = GuvnorMetadataUtils.
+							createGuvnorMetadataLocation(path.toOSString());
 		metaPath.toFile().deleteOnExit();
-		File metaFile = new File(metaPath.toOSString() + File.separator + "." + node.getName());
+		File metaFile = GuvnorMetadataUtils.
+							getGuvnorMetadataFile(metaPath.toOSString(), node.getName());
 		metaFile.deleteOnExit();
-		fos = new FileOutputStream(metaFile);
-		Properties props = new Properties();
-		props.put("repository", node.getGuvnorRepository().getLocation());
-		props.put("fullpath", node.getFullPath());
-		props.put("filename", node.getName());
-		props.put("lastmodified", node.getResourceProps().getLastModifiedDate());
-		props.store(fos, null);
-		fos.flush();
-		fos.close();
+		GuvnorMetadataProps mdProps = 
+			new GuvnorMetadataProps(node.getName(), 
+					               node.getGuvnorRepository().getLocation(),
+				                   node.getFullPath(), 
+				                   node.getResourceProps().getLastModifiedDate());
+		GuvnorMetadataUtils.setGuvnorMetadataProps(metaFile, mdProps);
 		res.add(metaFile.getAbsolutePath());
 		
 		return res;

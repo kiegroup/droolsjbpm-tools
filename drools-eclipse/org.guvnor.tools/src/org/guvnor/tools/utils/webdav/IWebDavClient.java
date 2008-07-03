@@ -48,9 +48,17 @@ public interface IWebDavClient {
 	 * Lists a directory (collection) in WebDav.
 	 * @param path The directory (collection) to list
 	 * @return An association of directory content names and their properties
-	 * @throws Exception Exception Various WebDav errors can occur (See IResponse for details)
+	 * @throws Exception Various WebDav errors can occur (See IResponse for details)
 	 */
 	public Map<String, ResourceProperties> listDirectory(String path) throws Exception;
+	
+	/**
+	 * Queries the server for properties of a given resource.
+	 * @param resource The resource to get properties for
+	 * @return The resource properties
+	 * @throws Exception Various WebDav errors can occur (See IResponse for details)
+	 */
+	public ResourceProperties queryProperties(String resource) throws Exception;
 	
 	/**
 	 * Get the contents of a resource from a WebDav repository.

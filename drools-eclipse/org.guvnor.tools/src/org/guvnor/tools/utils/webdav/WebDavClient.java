@@ -115,6 +115,41 @@ public class WebDavClient implements IWebDavClient {
 	
 	/*
 	 * (non-Javadoc)
+	 * @see org.guvnor.tools.utils.webdav.IWebDavClient#queryProperties(java.lang.String)
+	 */
+	public ResourceProperties queryProperties(String resource) throws Exception {
+		if (isUsingSessionAuthenication()) {
+			if (sessionAuthen != null) {
+				hClient.setAuthenticator(sessionAuthen);
+			} else {
+				setSessionAuthentication(false);
+			}
+		}
+		try {
+			IContext context = createContext();
+			context.put("Depth", "1");
+			ILocator locator = WebDAVFactory.locatorFactory.newLocator(resource);
+			IResponse response = client.propfind(locator, context, null);
+			if (response.getStatusCode() != IResponse.SC_MULTI_STATUS 
+			   && response.getStatusCode() != IResponse.SC_MULTI_STATUS) {
+				throw new WebDavException("WebDav error: " + response.getStatusCode(), 
+									     response.getStatusCode());
+			}
+			Map<String, ResourceProperties> props = 
+				StreamProcessingUtils.parseListing("", response.getInputStream());
+			if (props.keySet().size() != 1) {
+				throw new Exception(props.keySet().size() + " entries found for " + resource);
+			}
+			return props.get(props.keySet().iterator().next());
+		} finally {
+			if (isUsingSessionAuthenication()) {
+				hClient.setAuthenticator(authen);
+			}
+		}
+	}
+	
+	/*
+	 * (non-Javadoc)
 	 * @see org.guvnor.tools.utils.webdav.IWebDavClient#getResourceContents(java.lang.String)
 	 */
 	public String getResourceContents(String resource) throws Exception {

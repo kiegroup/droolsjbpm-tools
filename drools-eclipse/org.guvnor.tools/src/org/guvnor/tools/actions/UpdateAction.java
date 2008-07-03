@@ -70,6 +70,8 @@ public class UpdateAction implements IObjectActionDelegate {
 			}
 			if (ins != null) {
 				selectedFile.setContents(ins, true, true, null);
+				GuvnorMetadataUtils.markCurrentGuvnorResource(selectedFile);
+				PlatformUtils.updateDecoration();
 			}
 		} catch (Exception e) {
 			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);

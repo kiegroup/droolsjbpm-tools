@@ -59,6 +59,13 @@ public class SelectGuvnorRepPage extends WizardPage {
 		
 		repLocations = new List(composite, SWT.BORDER | SWT.MULTI);
 		repLocations.setLayoutData(new GridData(GridData.FILL_BOTH));
+		repLocations.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent e) { }
+
+			public void widgetSelected(SelectionEvent e) {
+				updateModel();
+			}
+		});
 		addRepositoryList();
 		super.setControl(composite);
 	}
@@ -70,6 +77,7 @@ public class SelectGuvnorRepPage extends WizardPage {
 		}
 		if (repLocations.getItemCount() > 0) {
 			repLocations.setSelection(0);
+			updateModel();
 		}
 	}
 	
@@ -82,8 +90,19 @@ public class SelectGuvnorRepPage extends WizardPage {
 		composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		return composite;
 	}
-
-	@Override
+	
+	private void updateModel() {
+		GuvWizardModel model = ((IGuvnorWizard)super.getWizard()).getModel();
+		String selected = null;
+		if (repLocations.getSelection().length > 0) {
+			selected = repLocations.getSelection()[0];
+		}
+		if (selected != null) {
+			model.setRepLocation(repLocations.getSelection()[0]);
+		}
+	}
+	
+ 	@Override
 	public IWizardPage getNextPage() {
 		if (createRep.getSelection()) {
 			return getWizard().getPage("config_page");
