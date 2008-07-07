@@ -1,17 +1,17 @@
 package org.guvnor.tools.wizards;
 
-import java.util.Properties;
+import java.io.ByteArrayInputStream;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.guvnor.tools.Activator;
+import org.guvnor.tools.utils.GuvnorMetadataProps;
 import org.guvnor.tools.utils.GuvnorMetadataUtils;
 import org.guvnor.tools.utils.webdav.IWebDavClient;
 import org.guvnor.tools.utils.webdav.ResourceProperties;
@@ -77,14 +77,33 @@ public class CheckoutWizard extends Wizard implements INewWizard, IGuvnorWizard 
 			// to choose resources. Therefore, we should have a cached repository connection
 			// that is authenticated already. If not, something is really strange.
 			assert(webdav != null);
-			IPath metaPath = GuvnorMetadataUtils.createGuvnorMetadataLocation(model.getTargetLocation());
-			IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
 			for (String oneResource:model.getResources()) {
 				// Get the metadata properties
 				ResourceProperties resprops = webdav.queryProperties(oneResource);
 				if (resprops == null) {
 					throw new Exception("Null resource properties for " + oneResource);
 				}
+				webdav.closeResponse();
+				String contents = webdav.getResourceContents(oneResource);
+				webdav.closeResponse();
+				IPath targetLocation = new Path(model.getTargetLocation());
+				IFile targetFile = Activator.getDefault().getWorkspace().
+									getRoot().getFile(targetLocation.append(
+											oneResource.substring(oneResource.lastIndexOf('/'))));
+				ByteArrayInputStream bis = 
+							new ByteArrayInputStream(contents.getBytes(targetFile.getCharset()));
+				if (targetFile.exists()) {
+					//TODO: Prompt for overwrite
+					targetFile.setContents(bis, true, true, null);
+				} else {
+					targetFile.create(bis, true, null);
+				}
+				GuvnorMetadataProps mdProps = new GuvnorMetadataProps(targetFile.getName(), 
+						                                             model.getRepLocation(), 
+						                                             oneResource, 
+						                                             resprops.getLastModifiedDate());
+				GuvnorMetadataUtils.setGuvnorMetadataProps(targetFile.getFullPath(), mdProps);
+				GuvnorMetadataUtils.markCurrentGuvnorResource(targetFile);
 			}
 		} catch (Exception e) {
 			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);

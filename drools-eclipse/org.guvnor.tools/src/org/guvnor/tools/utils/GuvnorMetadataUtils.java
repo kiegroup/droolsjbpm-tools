@@ -1,16 +1,20 @@
 package org.guvnor.tools.utils;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.Properties;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
+import org.guvnor.tools.Activator;
 
 /**
  * A set of utilities for dealing with (local) Guvnor metadata.
@@ -52,7 +56,7 @@ public class GuvnorMetadataUtils {
 				                       props.getProperty("lastmodified"));
 	}
 	
-	public static void setGuvnorMetadataProps(File mdFile, 
+	public static void writeGuvnorMetadataProps(File mdFile, 
 			                                 GuvnorMetadataProps mdProps) throws Exception {
 		FileOutputStream fos = new FileOutputStream(mdFile);
 		Properties props = new Properties();
@@ -63,6 +67,42 @@ public class GuvnorMetadataUtils {
 		props.store(fos, null);
 		fos.flush();
 		fos.close();	
+	}
+	
+	public static void setGuvnorMetadataProps(IPath controlledFile,
+			                                 GuvnorMetadataProps mdProps) throws Exception {
+		IWorkspaceRoot root = Activator.getDefault().getWorkspace().getRoot();
+		IFolder mdFolder = root.getFolder(
+							controlledFile.removeLastSegments(1).append(".guvnorinfo"));
+		if (!mdFolder.exists()) {
+			mdFolder.create(true, true, null);
+		}
+		IFile mdFile = root.getFile(
+						mdFolder.getFullPath().append("." + controlledFile.lastSegment()));
+		Properties props = new Properties();
+		if (!mdFile.exists()) {
+			mdFile.create(new ByteArrayInputStream(new byte[] {}), true, null);
+		} else {
+			props.load(mdFile.getContents());
+		}
+		if (mdProps.getRepository() != null) {
+			props.put("repository", mdProps.getRepository());
+		}
+		if (mdProps.getFullpath() != null) {
+			props.put("fullpath", mdProps.getFullpath());
+		}
+		if (mdProps.getFilename() != null) {
+			props.put("filename", mdProps.getFilename());
+		}
+		if (mdProps.getVersion() != null) {
+			props.put("lastmodified", mdProps.getVersion());
+		}
+		OutputStream os = new FileOutputStream(
+							new File(mdFile.getLocation().toOSString()));
+		props.store(os, null);
+		os.flush();
+		os.close();
+		mdFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
 	}
 	
 	public static IPath createGuvnorMetadataLocation(String rootPath) throws Exception {
@@ -80,15 +120,17 @@ public class GuvnorMetadataUtils {
 	}
 	
 	public static IFile getGuvnorControlledResource(IResource resource) throws Exception {
+		IFile res = null;
 		if (resource instanceof IFile) {
 			Properties props = new Properties();
 			props.load(((IFile)resource).getContents());
-			return (IFile)ResourcesPlugin.getWorkspace().
+			if (props.getProperty("filename") != null) {
+				res = (IFile)Activator.getDefault().getWorkspace().
 								getRoot().findMember(resource.getFullPath().
 										removeLastSegments(2).append(props.getProperty("filename")));
-		} else {
-			return null;
+			}
 		}
+		return res;
 	}
 	
 	public static boolean isGuvnorMetadata(IResource resource) {

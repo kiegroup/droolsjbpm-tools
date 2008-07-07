@@ -27,7 +27,6 @@
   
   <extension point = "org.eclipse.ui.newWizards">
 		<category id = "org.guvnor.tools.wizcat" name="%category.name"/>
-<!--
 	 	<wizard id = "org.guvnor.tools.wizards.checkoutwizard"
 	      	    name = "%wiz.copy.resources"
 		        class="org.guvnor.tools.wizards.CheckoutWizard"
@@ -36,7 +35,6 @@
 		        icon="icons/guvnor_rep.gif">
 	    	   <description>%wiz.copy.resources.desc</description>
 		</wizard>
--->
 		<wizard name = "%wiz.new.repository.location"
 		        id = "org.guvnor.tools.wizards.newreplocationwizard"
 		        class="org.guvnor.tools.wizards.NewRepLocationWizard"
@@ -45,7 +43,6 @@
 	    	   <description>%wiz.new.repository.location.desc</description>
 		</wizard>
 	</extension>
-<!--
 	<extension point = "org.eclipse.ui.importWizards">
 	    <category id = "org.guvnor.tools.importwizcat" name="%category.name"/>
 	 	<wizard id = "org.guvnor.tools.checkoutwizard"
@@ -56,7 +53,6 @@
 	    	   <description>%wiz.import.resources.desc</description>
 		</wizard>
 	</extension>
--->
 	<extension point="org.eclipse.ui.perspectiveExtensions">
     	<perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">
            <view id="org.guvnor.tools.views.RepositoriesView"

@@ -43,8 +43,7 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		workspace.addResourceChangeListener(new ResourceChangeListener());
+		getWorkspace().addResourceChangeListener(new ResourceChangeListener());
 	}
 
 	/*
@@ -63,6 +62,10 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public static Activator getDefault() {
 		return plugin;
+	}
+	
+	public IWorkspace getWorkspace() {
+		return ResourcesPlugin.getWorkspace();
 	}
 	
 	public void writeLog(int severity, String msg, Throwable t) {
@@ -124,7 +127,7 @@ public class Activator extends AbstractUIPlugin {
 	private static ImageDescriptor GUVLOCADD_IMG;
 	private static ImageDescriptor GUVREPWIZBAN_IMG;
 	
-	public static final String IMG_GUVCONTROLLED = "guvnor_controlled.gif";
-	public static final String IMG_GUVLOCADD = "guvnor_rep_add.gif";
-	public static final String IMG_GUVREPWIZBAN = "guvnor_rep_wizban.gif";
+	public static final String IMG_GUVCONTROLLED 		= "guvnor_controlled.gif";
+	public static final String IMG_GUVLOCADD 			= "guvnor_rep_add.gif";
+	public static final String IMG_GUVREPWIZBAN 		= "guvnor_rep_wizban.gif";
 }

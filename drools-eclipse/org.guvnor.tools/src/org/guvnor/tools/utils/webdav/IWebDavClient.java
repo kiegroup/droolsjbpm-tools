@@ -76,5 +76,17 @@ public interface IWebDavClient {
 	 */
 	public InputStream getInputStream(String resource) throws Exception;
 	
-	public void putResource(String location, String name, InputStream is) throws Exception;
+	/**
+	 * Write a file to the WebDav repository
+	 * @param resource The path and name of the resource
+	 * @param is A stream to the file contents
+	 * @throws Exception Various WebDav errors can occur (See IResponse for details)
+	 */
+	public void putResource(String resource, InputStream is) throws Exception;
+	
+	/**
+	 * <b>Must</b> be called after server operation methods to ensure
+	 * resource clean up.
+	 */
+	public void closeResponse() throws Exception;
 }

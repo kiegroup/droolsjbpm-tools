@@ -25,6 +25,8 @@ public class WebDavClient implements IWebDavClient {
 	private HttpClient hClient;
 	private boolean usingSessionAuthen;
 	
+	private IResponse response;
+	
 	/**
 	 * Ctor for this wrapper WebDav client.
 	 * @param serverUrl The WebDav repository location (server)
@@ -99,9 +101,8 @@ public class WebDavClient implements IWebDavClient {
 			IContext context = createContext();
 			context.put("Depth", "1");
 			ILocator locator = WebDAVFactory.locatorFactory.newLocator(path);
-			IResponse response = client.propfind(locator, context, null);
-			if (response.getStatusCode() != IResponse.SC_MULTI_STATUS 
-			   && response.getStatusCode() != IResponse.SC_MULTI_STATUS) {
+			response = client.propfind(locator, context, null);
+			if (response.getStatusCode() != IResponse.SC_MULTI_STATUS) {
 				throw new WebDavException("WebDav error: " + response.getStatusCode(), 
 									     response.getStatusCode());
 			}
@@ -129,9 +130,8 @@ public class WebDavClient implements IWebDavClient {
 			IContext context = createContext();
 			context.put("Depth", "1");
 			ILocator locator = WebDAVFactory.locatorFactory.newLocator(resource);
-			IResponse response = client.propfind(locator, context, null);
-			if (response.getStatusCode() != IResponse.SC_MULTI_STATUS 
-			   && response.getStatusCode() != IResponse.SC_MULTI_STATUS) {
+			response = client.propfind(locator, context, null);
+			if (response.getStatusCode() != IResponse.SC_MULTI_STATUS) {
 				throw new WebDavException("WebDav error: " + response.getStatusCode(), 
 									     response.getStatusCode());
 			}
@@ -179,14 +179,33 @@ public class WebDavClient implements IWebDavClient {
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.guvnor.tools.utils.webdav.IWebDavClient#putResource(java.lang.String, java.lang.String, java.io.InputStream)
+	 * @see org.guvnor.tools.utils.webdav.IWebDavClient#putResource(java.lang.String, java.io.InputStream)
 	 */
-	public void putResource(String location, String name, InputStream is) throws Exception {
-		ILocator locator = WebDAVFactory.locatorFactory.newLocator(location + "/" + name);
-		IResponse response = client.post(locator, createContext(), is);
-		if (response.getStatusCode() != IResponse.SC_OK) {
+	public void putResource(String resource, InputStream is) throws Exception {
+		if (isUsingSessionAuthenication()) {
+			if (sessionAuthen != null) {
+				hClient.setAuthenticator(sessionAuthen);
+			} else {
+				setSessionAuthentication(false);
+			}
+		}
+		ILocator locator = WebDAVFactory.locatorFactory.newLocator(resource);
+		IResponse response = client.put(locator, createContext(), is);
+		if (response.getStatusCode() != IResponse.SC_OK
+		   && response.getStatusCode() != IResponse.SC_NO_CONTENT) {
 			throw new WebDavException("WebDav error: " + response.getStatusCode(), 
 									 response.getStatusCode());
+		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.guvnor.tools.utils.webdav.IWebDavClient#closeResponse()
+	 */
+	public void closeResponse() throws Exception {
+		if (response != null) {
+			response.close();
+			response = null;
 		}
 	}
 }

@@ -17,6 +17,7 @@ import org.guvnor.tools.utils.GuvnorMetadataProps;
 import org.guvnor.tools.utils.GuvnorMetadataUtils;
 import org.guvnor.tools.utils.PlatformUtils;
 import org.guvnor.tools.utils.webdav.IWebDavClient;
+import org.guvnor.tools.utils.webdav.ResourceProperties;
 import org.guvnor.tools.utils.webdav.WebDavClientFactory;
 import org.guvnor.tools.utils.webdav.WebDavException;
 import org.guvnor.tools.utils.webdav.WebDavServerCache;
@@ -70,7 +71,13 @@ public class UpdateAction implements IObjectActionDelegate {
 			}
 			if (ins != null) {
 				selectedFile.setContents(ins, true, true, null);
+				client.closeResponse();
 				GuvnorMetadataUtils.markCurrentGuvnorResource(selectedFile);
+				ResourceProperties resProps = client.queryProperties(props.getFullpath());
+				client.closeResponse();
+				GuvnorMetadataProps mdProps = GuvnorMetadataUtils.getGuvnorMetadata(selectedFile);
+				mdProps.setVersion(resProps.getLastModifiedDate());
+				GuvnorMetadataUtils.setGuvnorMetadataProps(selectedFile.getFullPath(), mdProps);
 				PlatformUtils.updateDecoration();
 			}
 		} catch (Exception e) {

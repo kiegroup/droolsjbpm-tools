@@ -169,7 +169,7 @@ public class RepositoryView extends ViewPart {
 					               node.getGuvnorRepository().getLocation(),
 				                   node.getFullPath(), 
 				                   node.getResourceProps().getLastModifiedDate());
-		GuvnorMetadataUtils.setGuvnorMetadataProps(metaFile, mdProps);
+		GuvnorMetadataUtils.writeGuvnorMetadataProps(metaFile, mdProps);
 		res.add(metaFile.getAbsolutePath());
 		
 		return res;
@@ -302,7 +302,9 @@ public class RepositoryView extends ViewPart {
 			webdav = WebDavClientFactory.createClient(new URL(rep.getLocation()));
 			WebDavServerCache.cacheWebDavClient(rep.getLocation(), webdav);
 		}
-		return webdav.getResourceContents(node.getFullPath());	
+		String res = webdav.getResourceContents(node.getFullPath());
+		webdav.closeResponse();
+		return res;
 	}
 	
 //	private void putResource(TreeParent node, String name, InputStream is) throws Exception {

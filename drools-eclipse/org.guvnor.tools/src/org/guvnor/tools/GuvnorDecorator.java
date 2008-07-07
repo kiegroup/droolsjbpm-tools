@@ -24,13 +24,10 @@ public class GuvnorDecorator implements ILightweightLabelDecorator {
 	private void decorateResource(IResource resource, IDecoration decoration) {
 		try {	
 			if (resource instanceof IFile) {
-				if (GuvnorMetadataUtils.isGuvnorResourceCurrent(resource)) {
-					decoration.addOverlay(
-							Activator.getImageDescriptor(Activator.IMG_GUVCONTROLLED), 
-							IDecoration.TOP_RIGHT);
-				} else {
-					//TODO: Would like a different overlay icon, instead of this, but for the time being...
-					decoration.addPrefix("{g} ");
+				decoration.addOverlay(Activator.getImageDescriptor(Activator.IMG_GUVCONTROLLED), 
+						             IDecoration.TOP_RIGHT);
+				if (!GuvnorMetadataUtils.isGuvnorResourceCurrent(resource)) {
+					decoration.addSuffix(" >");
 				}
 				GuvnorMetadataProps props = GuvnorMetadataUtils.getGuvnorMetadata(resource);
 				if (props.getVersion() != null) {
