@@ -57,7 +57,7 @@ public class UpdateAction implements IObjectActionDelegate {
 			}
 			InputStream ins = null;
 			try {
-				ins = client.getInputStream(props.getFullpath());
+				ins = client.getResourceInputStream(props.getFullpath());
 			} catch (WebDavException wde) {
 				if (wde.getErrorCode() != IResponse.SC_UNAUTHORIZED) {
 					// If not an authentication failure, we don't know what to do with it
@@ -66,7 +66,7 @@ public class UpdateAction implements IObjectActionDelegate {
 				boolean retry = PlatformUtils.getInstance().
 									authenticateForServer(props.getRepository(), client); 
 				if (retry) {
-					ins = client.getInputStream(props.getFullpath());
+					ins = client.getResourceInputStream(props.getFullpath());
 				}
 			}
 			if (ins != null) {

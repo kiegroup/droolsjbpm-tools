@@ -54,7 +54,8 @@ public class SwitchVersionAction implements IObjectActionDelegate {
 		try {
 			if (selection instanceof IStructuredSelection) {
 				IStructuredSelection sel = (IStructuredSelection)selection;
-				if (sel.getFirstElement() instanceof IFile) {
+				if (sel.getFirstElement() instanceof IFile
+				   && sel.size() == 1) {
 					props = GuvnorMetadataUtils.getGuvnorMetadata((IFile)sel.getFirstElement());
 					if (props != null) {
 						selectedFile = (IFile)sel.getFirstElement();

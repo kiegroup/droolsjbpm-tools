@@ -7,6 +7,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
@@ -70,6 +71,24 @@ public class CheckoutWizard extends Wizard implements INewWizard, IGuvnorWizard 
 	}
 	
 	@Override
+	public IWizardPage getNextPage(IWizardPage page) {
+		if (page.getName().equals("select_rep_page")) {
+			if (model.shouldCreateNewRep()) {
+				return mainConfigPage;
+			} else {
+				return selectResPage;
+			}
+		}
+		if (page.getName().equals("config_page")) {
+			return selectResPage;
+		}
+		if (page.getName().equals("select_res_page")) {
+			return selectLocalTargetPage;
+		}
+		return null;
+	}
+	
+	@Override
 	public boolean performFinish() {
 		try {
 			IWebDavClient webdav = WebDavServerCache.getWebDavClient(model.getRepLocation());
@@ -116,7 +135,9 @@ public class CheckoutWizard extends Wizard implements INewWizard, IGuvnorWizard 
 	}
 
 	@Override
-	public boolean canFinish() {
-		return model.isModelComplete();
+	public boolean canFinish() {	
+		return model.getRepLocation() != null 
+		       && model.getTargetLocation() != null 
+		       && model.getResources() != null;
 	}
 }

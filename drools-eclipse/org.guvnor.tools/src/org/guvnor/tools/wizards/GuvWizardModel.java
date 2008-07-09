@@ -62,10 +62,4 @@ public class GuvWizardModel {
 	public void setVersion(String version) {
 		this.version = version;
 	}
-	
-	public boolean isModelComplete() {		
-		return this.repLocation != null && 
-		       this.targetLocation != null && 
-		       this.resources != null;
-	}
 }

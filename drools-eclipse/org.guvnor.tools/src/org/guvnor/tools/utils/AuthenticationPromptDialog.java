@@ -38,6 +38,8 @@ public class AuthenticationPromptDialog extends TitleAreaDialog {
 	private String password;
 	private boolean saveInfo;
 	
+	private Label warningLabel;
+	
 	public AuthenticationPromptDialog(Shell parentShell, String serverName) {
 		super(parentShell);
 		super.setShellStyle(getShellStyle() | SWT.RESIZE);
@@ -78,6 +80,7 @@ public class AuthenticationPromptDialog extends TitleAreaDialog {
 
 			public void widgetSelected(SelectionEvent e) {
 				saveInfo = cbSavePassword.getSelection();
+				warningLabel.setEnabled(saveInfo);
 			}
 			
 		});
@@ -89,7 +92,8 @@ public class AuthenticationPromptDialog extends TitleAreaDialog {
 		new Label(pwgroup, SWT.NONE).setText("Save user name and password");
 		
 		new Label(composite, SWT.NONE).setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		new Label(composite, SWT.WRAP).setText("NOTE: Saved passwords are stored on your computer in a file that is difficult, but not impossible, for an intruder to read.");
+		warningLabel = new Label(composite, SWT.WRAP);
+		warningLabel.setText("NOTE: Saved passwords are stored on your computer in a file that is difficult, but not impossible, for an intruder to read.");
 		
 		return super.createDialogArea(parent);
 	}

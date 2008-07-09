@@ -27,7 +27,6 @@ public class WizardUtils {
 			WebDavSessionAuthenticator authen = new WebDavSessionAuthenticator();
 			authen.addAuthenticationInfo(serverUrl, "", "basic", info);
 			client.setSessionAuthenticator(authen);
-			client.setSessionAuthentication(true);
 		}
 	}
 }

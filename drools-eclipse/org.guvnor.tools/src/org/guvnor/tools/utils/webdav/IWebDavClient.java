@@ -14,23 +14,11 @@ import org.eclipse.webdav.http.client.IAuthenticator;
 public interface IWebDavClient {
 	/**
 	 * Tell the client to use the supplied authenticator, instead
-	 * of one tied to the platform key ring.
+	 * of one tied to the platform key ring. If the authenticator is
+	 * null, the client defaults back to the platform key ring authenticator.
 	 * @param sessionAuthen The authenticator
 	 */
 	public void setSessionAuthenticator(IAuthenticator sessionAuthen);
-	
-	/**
-	 * Answers whether a session-oriented authenticator is in use or not.
-	 */
-	public boolean isUsingSessionAuthenication();
-	
-	/**
-	 * Tell the client to use a session authenticator or not.
-	 * @param useSession true to use session authentication, false for default authentication
-	 * @return false if a session authenticator is not registered but the request is
-	 *         to use session authentication.
-	 */
-	public boolean setSessionAuthentication(boolean useSession);
 	
 	/**
 	 * Provides access to the underlying RemoteDAVClient.
@@ -74,7 +62,22 @@ public interface IWebDavClient {
 	 * @return An code>InputStream</code> for the resource
 	 * @throws Exception Various WebDav errors can occur (See IResponse for details)
 	 */
-	public InputStream getInputStream(String resource) throws Exception;
+	public InputStream getResourceInputStream(String resource) throws Exception;
+	
+	/**
+	 * Same as createResource(resource, is, true)
+	 */
+	public boolean createResource(String resource, InputStream is) throws Exception;
+
+	/**
+	 * Creates a file in the WebDav repository
+	 * @param resource The path and name of the resource
+	 * @param is A stream to the file contents
+	 * @param overwrite Whether to overwrite the file if it already exists
+	 * @return false if the file exists and overwrite = false
+	 * @throws Exception Various WebDav errors can occur (See IResponse for details)
+	 */
+	public boolean createResource(String resource, InputStream is, boolean overwrite) throws Exception;
 	
 	/**
 	 * Write a file to the WebDav repository
@@ -83,6 +86,14 @@ public interface IWebDavClient {
 	 * @throws Exception Various WebDav errors can occur (See IResponse for details)
 	 */
 	public void putResource(String resource, InputStream is) throws Exception;
+	
+	/**
+	 * Gets all the version information for a resource
+	 * @param resource The file to get version information about
+	 * @return A stream to the version properties
+	 * @throws Exception Various WebDav errors can occur (See IResponse for details)
+	 */
+	public InputStream getResourceVersions(String resource) throws Exception;
 	
 	/**
 	 * <b>Must</b> be called after server operation methods to ensure

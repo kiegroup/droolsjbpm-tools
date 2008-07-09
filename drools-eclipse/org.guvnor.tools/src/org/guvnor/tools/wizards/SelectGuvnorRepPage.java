@@ -1,7 +1,6 @@
 package org.guvnor.tools.wizards;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -42,6 +41,7 @@ public class SelectGuvnorRepPage extends WizardPage {
 
 			public void widgetSelected(SelectionEvent e) {
 				repLocations.setEnabled(existingRep.getSelection());
+				updateModel();
 			}
 		});
 		
@@ -54,6 +54,7 @@ public class SelectGuvnorRepPage extends WizardPage {
 
 			public void widgetSelected(SelectionEvent e) {
 				repLocations.setEnabled(existingRep.getSelection());
+				updateModel();
 			}
 		});
 		
@@ -93,21 +94,18 @@ public class SelectGuvnorRepPage extends WizardPage {
 	
 	private void updateModel() {
 		GuvWizardModel model = ((IGuvnorWizard)super.getWizard()).getModel();
-		String selected = null;
-		if (repLocations.getSelection().length > 0) {
-			selected = repLocations.getSelection()[0];
-		}
-		if (selected != null) {
-			model.setRepLocation(repLocations.getSelection()[0]);
-		}
-	}
-	
- 	@Override
-	public IWizardPage getNextPage() {
 		if (createRep.getSelection()) {
-			return getWizard().getPage("config_page");
+			model.setCreateNewRep(true);
+			model.setRepLocation(null);
 		} else {
-			return getWizard().getPage("select_res_page");
+			model.setCreateNewRep(false);
+			String selected = null;
+			if (repLocations.getSelection().length > 0) {
+				selected = repLocations.getSelection()[0];
+			}
+			if (selected != null) {
+				model.setRepLocation(repLocations.getSelection()[0]);
+			}
 		}
 	}
 }

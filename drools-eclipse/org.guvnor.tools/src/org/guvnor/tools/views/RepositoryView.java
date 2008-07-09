@@ -95,7 +95,11 @@ public class RepositoryView extends ViewPart {
 		
 		addDragDropSupport();
 	}
-
+	
+	public void refresh() {
+		viewer.refresh();
+	}
+	
 	private void addDragDropSupport() {
 		// TODO: Support drag and drop of multiple files, directories, etc.
 		Transfer[] transfers = new Transfer[] { FileTransfer.getInstance()};
@@ -306,17 +310,6 @@ public class RepositoryView extends ViewPart {
 		webdav.closeResponse();
 		return res;
 	}
-	
-//	private void putResource(TreeParent node, String name, InputStream is) throws Exception {
-//		GuvnorRepository rep = node.getGuvnorRepository();
-//		WebDavClient webdav = WebDavServerCache.getWebDavClient(rep.getLocation());
-//		if (webdav == null) {
-//			webdav = new WebDavClient(new URL(rep.getLocation()), 
-//					                 rep.getUsername(), rep.getPassword());
-//			WebDavServerCache.cacheWebDavClient(rep.getLocation(), webdav);
-//		}
-//		webdav.putResource(node.getFullPath(), name, is);
-//	}
 	
 	/*
 	 * (non-Javadoc)

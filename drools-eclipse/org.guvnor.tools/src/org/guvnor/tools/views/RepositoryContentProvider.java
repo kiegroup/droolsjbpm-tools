@@ -21,14 +21,28 @@ public class RepositoryContentProvider implements IStructuredContentProvider,
 	
 	private String repUrl;
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+	 */
 	public void inputChanged(Viewer v, Object oldInput, Object newInput) {
 		if (v instanceof AbstractTreeViewer) {
 			viewer = (AbstractTreeViewer)v;
 		    manager = new DeferredTreeContentManager(this, viewer);
 		}
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
+	 */
 	public void dispose() {
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
+	 */
 	public Object[] getElements(Object parent) {
 		if (parent.equals(viewer)) {
 			if (invisibleRoot == null) initialize();
@@ -36,12 +50,22 @@ public class RepositoryContentProvider implements IStructuredContentProvider,
 		}
 		return getChildren(parent);
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
+	 */
 	public Object getParent(Object child) {
 		if (child instanceof TreeObject) {
 			return ((TreeObject)child).getParent();
 		}
 		return null;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
+	 */
 	public Object [] getChildren(Object parent) {
 		if (parent == invisibleRoot) {
 			return ((TreeParent)invisibleRoot).getChildren();
@@ -50,6 +74,11 @@ public class RepositoryContentProvider implements IStructuredContentProvider,
 		}
 		return new Object[0];
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
+	 */
 	public boolean hasChildren(Object parent) {
 		if (parent instanceof TreeParent) {
 			return manager.mayHaveChildren(parent);

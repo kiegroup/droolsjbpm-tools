@@ -60,6 +60,7 @@ public class TreeParent extends TreeObject implements IDeferredWorkbenchAdapter 
 				monitor.beginTask("Pending...", reps.size());
 				for (int i = 0; i < reps.size(); i++) {
 					TreeParent p = new TreeParent(reps.get(i).getLocation(), Type.REPOSITORY);
+					p.setParent(node);
 					p.setGuvnorRepository(reps.get(i));
 					ResourceProperties props = new ResourceProperties();
 					props.setBase("");
@@ -121,6 +122,7 @@ public class TreeParent extends TreeObject implements IDeferredWorkbenchAdapter 
 						}
 						o.setGuvnorRepository(rep);
 						o.setResourceProps(resProps);
+						node.addChild(o);
 						collector.add(o, monitor);
 					}
 				} 

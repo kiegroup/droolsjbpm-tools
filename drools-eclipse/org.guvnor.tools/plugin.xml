@@ -79,12 +79,18 @@
   	<objectContribution objectClass="org.guvnor.tools.views.model.TreeObject"
                         adaptable="true"
                         id="org.guvnor.tools.view.model.actions">
-    	<action label="%action.properties"
+        <action label="%action.properties"
                 tooltip="%action.properties.tooltip"
                 class="org.guvnor.tools.actions.RepositoryElementPropsAction"
                 menubarPath="additions"
                 id="org.guvnor.tools.view.model.actions.properties">
-         </action>
+        </action>
+        <action class="org.guvnor.tools.actions.ShowHistoryAction"
+                enablesFor="1"
+                id="org.guvnor.tools.actions.showhistoryaction"
+                label="%action.popup.showhistory"
+                menubarPath="additions">
+        </action>
   	</objectContribution>
     <objectContribution id="org.guvnor.tools.contribution1"
                         objectClass="org.eclipse.core.resources.IFile">

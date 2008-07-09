@@ -23,6 +23,9 @@ import org.guvnor.tools.utils.webdav.IWebDavClient;
 import org.guvnor.tools.utils.webdav.WebDavClientFactory;
 import org.guvnor.tools.utils.webdav.WebDavServerCache;
 import org.guvnor.tools.utils.webdav.WebDavSessionAuthenticator;
+import org.guvnor.tools.views.IGuvnorConstants;
+import org.guvnor.tools.views.RepositoryView;
+import org.guvnor.tools.views.ResourceHistoryView;
 
 /**
  * A set of utilities for interacting with the Eclipse platform.
@@ -44,10 +47,53 @@ public class PlatformUtils {
 		return instance;
 	}
 	
+	/**
+	 * Causes the platform to update Guvnor decoration notions.
+	 */
 	public static void updateDecoration() {
 		IDecoratorManager manager = Activator.getDefault().getWorkbench().getDecoratorManager();
 		manager.update(GuvnorDecorator.DECORATOR_ID);
 	}
+	
+	/**
+	 * Causes the Repository view to refresh, if it is open.
+	 */
+	public static void refreshRepositoryView() {
+		IWorkbenchWindow activeWindow = Activator.getDefault().
+											getWorkbench().getActiveWorkbenchWindow();
+		// If there is no active workbench window, then there can be no Repository view
+		if (activeWindow == null) {
+			return;
+		}
+		// If there is no active workbench page, then there can be no Repository view
+		IWorkbenchPage page = activeWindow.getActivePage();
+		if (page == null) {
+			return;
+		}
+		RepositoryView view = (RepositoryView)page.findView(IGuvnorConstants.REPVIEW_ID);
+		if (view != null) {
+			view.refresh();
+		}
+	}
+	
+	/**
+	 * Tries to find the Resource History view, attempting to open it if necessary.
+	 */
+	public static ResourceHistoryView getResourceHistoryView() throws Exception {
+		IWorkbenchWindow activeWindow = Activator.getDefault().
+											getWorkbench().getActiveWorkbenchWindow();
+		// If there is no active workbench window, then there can be no Repository History view
+		if (activeWindow == null) {
+			return null;
+		}
+		// If there is no active workbench page, then there can be no Repository History view
+		IWorkbenchPage page = activeWindow.getActivePage();
+		if (page == null) {
+			return null;
+		}
+		return (ResourceHistoryView)page.showView(IGuvnorConstants.RESHISTORYVIEW_ID);
+	}
+	
 	/**
 	 * Opens a read-only, in-memory editor.
 	 * @param contents The contents for the editor
@@ -83,7 +129,6 @@ public class PlatformUtils {
 				WebDavSessionAuthenticator authen = new WebDavSessionAuthenticator();
 				authen.addAuthenticationInfo(new URL(server), "", "basic", res.getAuthInfo());
 				client.setSessionAuthenticator(authen);
-				client.setSessionAuthentication(true);
 			}
 			return true;
 		} else {
@@ -109,7 +154,6 @@ public class PlatformUtils {
 			WebDavSessionAuthenticator authen = new WebDavSessionAuthenticator();
 			authen.addAuthenticationInfo(new URL(server), "", "basic", info);
 			client.setSessionAuthenticator(authen);
-			client.setSessionAuthentication(true);
 		}
 	}
 	
