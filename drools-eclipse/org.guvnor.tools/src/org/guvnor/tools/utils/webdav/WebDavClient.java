@@ -2,7 +2,10 @@ package org.guvnor.tools.utils.webdav;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
+import java.util.StringTokenizer;
 
 import org.eclipse.webdav.IContext;
 import org.eclipse.webdav.ILocator;
@@ -81,7 +84,33 @@ public class WebDavClient implements IWebDavClient {
 			throw new WebDavException("WebDav error: " + response.getStatusCode(), 
 								     response.getStatusCode());
 		}
-		return StreamProcessingUtils.parseListing(path, response.getInputStream());
+		Map<String, ResourceProperties> res = StreamProcessingUtils.
+												parseListing(path, response.getInputStream());
+		addGuvnorResourceProperties(res, path);
+		return res;
+	}
+	
+	private void addGuvnorResourceProperties(Map<String, ResourceProperties> props, 
+			                                String path) throws Exception {
+		try {
+			String apiVer = changeToAPICall(path);
+			Properties guvProps = new Properties();
+			guvProps.load(getResourceInputStream(apiVer));
+			for (Iterator<String> it = props.keySet().iterator(); it.hasNext();) {
+				String oneKey = it.next();
+				String val = guvProps.getProperty(oneKey);
+				if (val != null) {
+					ResourceProperties resProps = props.get(oneKey);
+					StringTokenizer tokens = new StringTokenizer(val, ",");
+					String dateStamp = tokens.nextToken();
+					String revision = tokens.nextToken();
+					resProps.setLastModifiedDate(dateStamp);
+					resProps.setRevision(revision);
+				}
+			}
+		} catch (Exception e) {
+//TODO: Getting some server internal errors here. Why?
+		}
 	}
 	
 	/*
@@ -103,7 +132,34 @@ public class WebDavClient implements IWebDavClient {
 		if (props.keySet().size() != 1) {
 			throw new Exception(props.keySet().size() + " entries found for " + resource);
 		}
-		return props.get(props.keySet().iterator().next());
+		String filename = props.keySet().iterator().next();
+		ResourceProperties res = props.get(filename);
+		addGuvnorResourceProperties(res, filename, resource);
+		return res;
+	}
+	
+	private void addGuvnorResourceProperties(ResourceProperties props, 
+			                                String filename, String resource) throws Exception {
+		if (props == null) {
+			return;
+		}
+		try {
+			String path = resource.substring(0, resource.lastIndexOf('/'));
+			String apiVer = changeToAPICall(path);
+			Properties guvProps = new Properties();
+			guvProps.load(getResourceInputStream(apiVer));
+			String val = guvProps.getProperty(filename);
+			if (val != null) {
+				StringTokenizer tokens = new StringTokenizer(val, ",");
+				String dateStamp = tokens.nextToken();
+				String revision = tokens.nextToken();
+				props.setLastModifiedDate(dateStamp);
+				props.setRevision(revision);
+			}
+		} catch (Exception e) {
+//TODO: Getting some server internal errors here. Why?
+			System.out.println(e.getMessage());
+		}
 	}
 	
 	/*
@@ -112,6 +168,15 @@ public class WebDavClient implements IWebDavClient {
 	 */
 	public String getResourceContents(String resource) throws Exception {
 		return StreamProcessingUtils.getStreamContents(getResourceInputStream(resource));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.guvnor.tools.utils.webdav.IWebDavClient#getResourceVersionContents(java.lang.String, java.lang.String)
+	 */
+	public String getResourceVersionContents(String resource, String version) throws Exception {
+		String apiVer = changeToAPICall(resource) + "?version=" + version;
+		return getResourceContents(apiVer);
 	}
 	
 	/*
@@ -126,6 +191,15 @@ public class WebDavClient implements IWebDavClient {
 									 response.getStatusCode());
 		}
 		return response.getInputStream();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.guvnor.tools.utils.webdav.IWebDavClient#getResourceVersionInputStream(java.lang.String, java.lang.String)
+	 */
+	public InputStream getResourceVersionInputStream(String resource, String version) throws Exception {
+		String apiVer = changeToAPICall(resource) + "?version=" + version;
+		return getResourceInputStream(apiVer);
 	}
 	
 	/*

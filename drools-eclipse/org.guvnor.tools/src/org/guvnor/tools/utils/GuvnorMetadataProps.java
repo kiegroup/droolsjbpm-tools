@@ -5,6 +5,7 @@ public class GuvnorMetadataProps {
 	private String repository;
 	private String fullpath;
 	private String version;
+	private String revision;
 	
 	public GuvnorMetadataProps(String filename, String repository,
 			                  String fullpath, String version) {
@@ -12,6 +13,7 @@ public class GuvnorMetadataProps {
 		this.repository = repository;
 		this.fullpath = fullpath;
 		this.version = version;
+//		this.revision = revision;
 	}
 	public String getFilename() {
 		return filename;
@@ -36,5 +38,11 @@ public class GuvnorMetadataProps {
 	}
 	public void setVersion(String version) {
 		this.version = version;
+	}
+	public String getRevision() {
+		return revision;
+	}
+	public void setRevision(String revision) {
+		this.revision = revision;
 	}
 }

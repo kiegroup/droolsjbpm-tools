@@ -22,7 +22,8 @@ public class TreePropertyProvider implements IPropertySource {
 			new TextPropertyDescriptor("location", "Location"),
 			new TextPropertyDescriptor("type", "Type"),
 			new TextPropertyDescriptor("creationdate", "Created"),
-			new TextPropertyDescriptor("lastmodified", "Last Modified")
+			new TextPropertyDescriptor("lastmodified", "Last Modified"),
+			new TextPropertyDescriptor("revision", "Revision")
 		};
 	}
 
@@ -49,6 +50,9 @@ public class TreePropertyProvider implements IPropertySource {
 		}
 		if (id.equals("lastmodified")) {
 			return node.getResourceProps().getLastModifiedDate();
+		}
+		if (id.equals("revision")) {
+			return node.getResourceProps().getRevision();
 		}
 		return "";
 	}

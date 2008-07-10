@@ -4,10 +4,10 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
+import org.guvnor.tools.utils.PlatformUtils;
 
 public class SelectResourceVersionPage extends WizardPage {
 	
@@ -22,7 +22,7 @@ public class SelectResourceVersionPage extends WizardPage {
 	}
 	
 	public void createControl(Composite parent) {
-		Composite composite = createComposite(parent, 1);
+		Composite composite = PlatformUtils.createComposite(parent, 1);
 		new Label(composite, SWT.NONE).setText("Select version:");
 		
 		versions = new List(composite, SWT.BORDER | SWT.MULTI);
@@ -38,15 +38,5 @@ public class SelectResourceVersionPage extends WizardPage {
 		versions.add("v20080522");
 		versions.add("v20080705");
 		versions.setSelection(0);
-	}
-	
-	private Composite createComposite(Composite parent, int numColumns) {
-		Composite composite = new Composite(parent, SWT.NULL);
-		
-		GridLayout layout = new GridLayout();
-		layout.numColumns = numColumns;
-		composite.setLayout(layout);
-		composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		return composite;
 	}
 }

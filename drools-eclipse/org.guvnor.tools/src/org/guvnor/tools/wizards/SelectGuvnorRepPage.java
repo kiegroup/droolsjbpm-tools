@@ -6,13 +6,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.guvnor.tools.Activator;
 import org.guvnor.tools.GuvnorRepository;
+import org.guvnor.tools.utils.PlatformUtils;
 
 public class SelectGuvnorRepPage extends WizardPage {
 	
@@ -29,7 +29,7 @@ public class SelectGuvnorRepPage extends WizardPage {
 	}
 	
 	public void createControl(Composite parent) {
-		Composite composite = createComposite(parent, 1);
+		Composite composite = PlatformUtils.createComposite(parent, 1);
 		new Label(composite, SWT.NONE).setText("This wizard allow you to check out resource from a Guvnor repository");
 		
 		createRep = new Button(composite, SWT.RADIO);
@@ -80,16 +80,6 @@ public class SelectGuvnorRepPage extends WizardPage {
 			repLocations.setSelection(0);
 			updateModel();
 		}
-	}
-	
-	private Composite createComposite(Composite parent, int numColumns) {
-		Composite composite = new Composite(parent, SWT.NULL);
-		
-		GridLayout layout = new GridLayout();
-		layout.numColumns = numColumns;
-		composite.setLayout(layout);
-		composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		return composite;
 	}
 	
 	private void updateModel() {

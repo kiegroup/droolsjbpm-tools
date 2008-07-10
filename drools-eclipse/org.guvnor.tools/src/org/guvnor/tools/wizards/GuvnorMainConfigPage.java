@@ -18,12 +18,12 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.guvnor.tools.Activator;
+import org.guvnor.tools.utils.PlatformUtils;
 
 public class GuvnorMainConfigPage extends WizardPage {
 	
@@ -36,6 +36,8 @@ public class GuvnorMainConfigPage extends WizardPage {
 	private Button cbSavePassword;
 	private boolean saveAuthInfo;
 	
+	private Label warningLabel;
+	
 	public GuvnorMainConfigPage(String pageName) {
 		super(pageName);
 	}
@@ -46,7 +48,7 @@ public class GuvnorMainConfigPage extends WizardPage {
 
 	public void createControl(Composite parent) {
 		
-		Composite composite = createComposite(parent, 2);
+		Composite composite = PlatformUtils.createComposite(parent, 2);
 		new Label(composite, SWT.NONE).setText("Location: ");
 		serverField = new Text(composite, SWT.SINGLE | SWT.BORDER);
 		serverField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -97,13 +99,14 @@ public class GuvnorMainConfigPage extends WizardPage {
 
 		new Label(composite, SWT.NONE).setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
-		Composite pwgroup = createComposite(composite, 2);
+		Composite pwgroup = PlatformUtils.createComposite(composite, 2);
 		cbSavePassword = new Button(pwgroup, SWT.CHECK);
 		cbSavePassword.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) { }
 
 			public void widgetSelected(SelectionEvent e) {
 				saveAuthInfo = cbSavePassword.getSelection();
+				warningLabel.setEnabled(saveAuthInfo);
 				updateModel();
 			}
 			
@@ -115,7 +118,8 @@ public class GuvnorMainConfigPage extends WizardPage {
 		
 		new Label(pwgroup, SWT.NONE).setText("Save user name and password");
 		new Label(composite, SWT.NONE).setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		new Label(composite, SWT.WRAP).setText("NOTE: Saved passwords are stored on your computer in a file that is difficult, but not impossible, for an intruder to read.");
+		warningLabel = new Label(composite, SWT.WRAP);
+		warningLabel.setText("NOTE: Saved passwords are stored on your computer in a file that is difficult, but not impossible, for an intruder to read.");
 		
 		super.setControl(composite);
 	}
@@ -174,16 +178,6 @@ public class GuvnorMainConfigPage extends WizardPage {
 		} catch (MalformedURLException e) {
 			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
 		}
-	}
-	
-	private Composite createComposite(Composite parent, int numColumns) {
-		Composite composite = new Composite(parent, SWT.NULL);
-		
-		GridLayout layout = new GridLayout();
-		layout.numColumns = numColumns;
-		composite.setLayout(layout);
-		composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		return composite;
 	}
 	
 	private void updateModel() {

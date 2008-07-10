@@ -3,8 +3,6 @@ package org.guvnor.tools.properties;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -13,6 +11,7 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import org.guvnor.tools.Activator;
 import org.guvnor.tools.utils.GuvnorMetadataProps;
 import org.guvnor.tools.utils.GuvnorMetadataUtils;
+import org.guvnor.tools.utils.PlatformUtils;
 
 public class GuvnorWorkspaceFilePage extends PropertyPage implements IWorkbenchPropertyPage {
 
@@ -22,7 +21,7 @@ public class GuvnorWorkspaceFilePage extends PropertyPage implements IWorkbenchP
 
 	@Override
 	protected Control createContents(Composite parent) {
-		Composite composite = createComposite(parent, 2);
+		Composite composite = PlatformUtils.createComposite(parent, 2);
 		IResource resource = (IResource)super.getElement().getAdapter(IResource.class);
 		if (resource != null) {
 			displayGuvnorProperties(composite, resource);
@@ -70,15 +69,5 @@ public class GuvnorWorkspaceFilePage extends PropertyPage implements IWorkbenchP
 
 	private void indicateNotGuvnorAssociated(Composite composite) {
 		new Label(composite, SWT.NONE).setText("(Not associated with Guvnor)");
-	}
-	
-	private Composite createComposite(Composite parent, int numColumns) {
-		Composite composite = new Composite(parent, SWT.NULL);
-		
-		GridLayout layout = new GridLayout();
-		layout.numColumns = numColumns;
-		composite.setLayout(layout);
-		composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		return composite;
 	}
 }

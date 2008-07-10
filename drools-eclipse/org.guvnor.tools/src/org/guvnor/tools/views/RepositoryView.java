@@ -56,8 +56,8 @@ public class RepositoryView extends ViewPart {
 	
 	private TreeViewer viewer;
 	private DrillDownAdapter drillDownAdapter;
-	private Action deleteRepositoryLoc;
-	private Action addRepositoryLoc;
+	private Action deleteRepositoryLocAction;
+	private Action addRepositoryLocAction;
 	private Action doubleClickAction;
 	
 	class NameSorter extends ViewerSorter {
@@ -199,14 +199,14 @@ public class RepositoryView extends ViewPart {
 	}
 
 	private void fillLocalPullDown(IMenuManager manager) {
-		manager.add(deleteRepositoryLoc);
+		manager.add(deleteRepositoryLocAction);
 		manager.add(new Separator());
-		manager.add(addRepositoryLoc);
+		manager.add(addRepositoryLocAction);
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
-		manager.add(deleteRepositoryLoc);
-		manager.add(addRepositoryLoc);
+		manager.add(deleteRepositoryLocAction);
+		manager.add(addRepositoryLocAction);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 		// Other plug-ins can contribute there actions here
@@ -214,14 +214,14 @@ public class RepositoryView extends ViewPart {
 	}
 	
 	private void fillLocalToolBar(IToolBarManager manager) {
-		manager.add(deleteRepositoryLoc);
-		manager.add(addRepositoryLoc);
+		manager.add(deleteRepositoryLocAction);
+		manager.add(addRepositoryLocAction);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 	}
 
 	private void makeActions() {
-		deleteRepositoryLoc = new Action() {
+		deleteRepositoryLocAction = new Action() {
 			public void run() {
 				ISelection selection = viewer.getSelection();
 				Object obj = ((IStructuredSelection)selection).getFirstElement();
@@ -235,12 +235,12 @@ public class RepositoryView extends ViewPart {
 				}
 			}
 		};
-		deleteRepositoryLoc.setText("Delete");
-		deleteRepositoryLoc.setToolTipText("Delete Guvnor repository location");
-		deleteRepositoryLoc.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+		deleteRepositoryLocAction.setText("Delete");
+		deleteRepositoryLocAction.setToolTipText("Delete Guvnor repository location");
+		deleteRepositoryLocAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 			getImageDescriptor(ISharedImages.IMG_TOOL_DELETE));
 		
-		addRepositoryLoc = new Action() {
+		addRepositoryLocAction = new Action() {
 			public void run() {
 				NewRepLocationWizard wiz = new NewRepLocationWizard();
 				wiz.init(Activator.getDefault().getWorkbench(), null);
@@ -250,9 +250,9 @@ public class RepositoryView extends ViewPart {
 			    dialog.open();
 			}
 		};
-		addRepositoryLoc.setText("Add");
-		addRepositoryLoc.setToolTipText("Add a Guvnor respository location");
-		addRepositoryLoc.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+		addRepositoryLocAction.setText("Add");
+		addRepositoryLocAction.setToolTipText("Add a Guvnor respository location");
+		addRepositoryLocAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 				getImageDescriptor(ISharedImages.IMG_TOOL_NEW_WIZARD));
 		doubleClickAction = new Action() {
 			public void run() {

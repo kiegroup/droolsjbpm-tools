@@ -23,7 +23,7 @@ public class GuvnorDecorator implements ILightweightLabelDecorator {
 	
 	private void decorateResource(IResource resource, IDecoration decoration) {
 		try {	
-			if (resource instanceof IFile) {
+			if (resource instanceof IFile) { 
 				decoration.addOverlay(Activator.getImageDescriptor(Activator.IMG_GUVCONTROLLED), 
 						             IDecoration.TOP_RIGHT);
 				if (!GuvnorMetadataUtils.isGuvnorResourceCurrent(resource)) {
@@ -50,18 +50,13 @@ public class GuvnorDecorator implements ILightweightLabelDecorator {
 		}
 	}
 
-	public void addListener(ILabelProviderListener listener) {
-		// TODO: Need to implement this?
-	}
+	public void addListener(ILabelProviderListener listener) { }
 
 	public void dispose() { }
 
 	public boolean isLabelProperty(Object element, String property) {
-		// TODO: Need to implement this?
 		return false;
 	}
 
-	public void removeListener(ILabelProviderListener listener) {
-		// TODO: Need to implement this?
-	}
+	public void removeListener(ILabelProviderListener listener) { }
 }

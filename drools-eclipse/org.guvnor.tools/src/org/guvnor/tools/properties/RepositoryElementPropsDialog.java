@@ -14,7 +14,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -27,6 +26,7 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 import org.guvnor.tools.Activator;
+import org.guvnor.tools.utils.PlatformUtils;
 import org.guvnor.tools.views.model.TreeObject;
 
 public class RepositoryElementPropsDialog extends TitleAreaDialog {
@@ -58,13 +58,13 @@ public class RepositoryElementPropsDialog extends TitleAreaDialog {
 		folder.setLayoutData(new GridData(GridData.FILL_BOTH));
 		TabItem tab = new TabItem(folder, SWT.NONE);
 		tab.setText("Basic");
-		Composite composite = createComposite(folder, 2);
+		Composite composite = PlatformUtils.createComposite(folder, 2);
 		tab.setControl(composite);
 		addElementProperties(composite);
 		
 		tab = new TabItem(folder, SWT.NONE);
 		tab.setText("Security");
-		composite = createComposite(folder, 2);
+		composite = PlatformUtils.createComposite(folder, 2);
 		tab.setControl(composite);
 		addSecurityProperties(composite);
 		
@@ -109,7 +109,7 @@ public class RepositoryElementPropsDialog extends TitleAreaDialog {
 		
 		new Label(composite, SWT.NONE).setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
-		Composite pwgroup = createComposite(composite, 2);
+		Composite pwgroup = PlatformUtils.createComposite(composite, 2);
 		cbSavePassword = new Button(pwgroup, SWT.CHECK);
 		cbSavePassword.addSelectionListener(new SelectionListener() {
 
@@ -162,16 +162,6 @@ public class RepositoryElementPropsDialog extends TitleAreaDialog {
 	protected Point getInitialSize() {
 		// Try to set a reasonable default size.
 		return new Point(INITIAL_WIDTH, INITIAL_HEIGHT);
-	}
-	
-	private Composite createComposite(Composite parent, int numColumns) {
-		Composite composite = new Composite(parent, SWT.NULL);
-		
-		GridLayout layout = new GridLayout();
-		layout.numColumns = numColumns;
-		composite.setLayout(layout);
-		composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		return composite;
 	}
 
 	public String getUsername() {

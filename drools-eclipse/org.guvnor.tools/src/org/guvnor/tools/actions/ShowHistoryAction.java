@@ -87,7 +87,7 @@ public class ShowHistoryAction implements IObjectActionDelegate {
 				verProps.load(ins);
 				ResourceHistoryView view = PlatformUtils.getResourceHistoryView();
 				if (view != null) {
-					view.setEntries(verProps);
+					view.setEntries(repositoryLoc, fullPath, verProps);
 				}
 			}
 		} catch (Exception e) {

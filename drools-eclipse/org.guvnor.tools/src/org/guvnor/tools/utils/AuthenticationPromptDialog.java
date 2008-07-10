@@ -8,7 +8,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -52,7 +51,7 @@ public class AuthenticationPromptDialog extends TitleAreaDialog {
 		super.setMessage("Authentication required for repository: " + serverName);
 		super.setTitleImage(Activator.getImageDescriptor(Activator.IMG_GUVREPWIZBAN).createImage());
 		
-		Composite composite = createComposite(parent, 2);
+		Composite composite = PlatformUtils.createComposite(parent, 2);
 		new Label(composite, SWT.NONE).setText("User Name: ");
 		unField = new Text(composite, SWT.SINGLE | SWT.BORDER);
 		unField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -73,7 +72,7 @@ public class AuthenticationPromptDialog extends TitleAreaDialog {
 		
 		new Label(composite, SWT.NONE).setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
-		Composite pwgroup = createComposite(composite, 2);
+		Composite pwgroup = PlatformUtils.createComposite(composite, 2);
 		cbSavePassword = new Button(pwgroup, SWT.CHECK);
 		cbSavePassword.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) { }
@@ -102,16 +101,6 @@ public class AuthenticationPromptDialog extends TitleAreaDialog {
 	protected Point getInitialSize() {
 		// Try to set a reasonable default size.
 		return new Point(INITIAL_WIDTH, INITIAL_HEIGHT);
-	}
-	
-	private Composite createComposite(Composite parent, int numColumns) {
-		Composite composite = new Composite(parent, SWT.NULL);
-		
-		GridLayout layout = new GridLayout();
-		layout.numColumns = numColumns;
-		composite.setLayout(layout);
-		composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		return composite;
 	}
 	
 	public String getUserName() {

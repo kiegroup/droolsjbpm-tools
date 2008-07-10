@@ -9,11 +9,11 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.guvnor.tools.Activator;
 import org.guvnor.tools.GuvnorRepository;
+import org.guvnor.tools.utils.PlatformUtils;
 import org.guvnor.tools.views.RepositoryContentProvider;
 import org.guvnor.tools.views.RepositoryLabelProvider;
 import org.guvnor.tools.views.model.TreeObject;
@@ -33,7 +33,7 @@ public class SelectGuvnorFolderPage extends WizardPage {
 	}
 	
 	public void createControl(Composite parent) {
-		Composite composite = createComposite(parent, 1);
+		Composite composite = PlatformUtils.createComposite(parent, 1);
 		new Label(composite, SWT.NONE).setText("Select folder:");
 		
 		viewer = new TreeViewer(composite, SWT.BORDER | SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL);
@@ -99,16 +99,6 @@ public class SelectGuvnorFolderPage extends WizardPage {
 			}
 		}
 		super.setVisible(visible);
-	}
-
-	private Composite createComposite(Composite parent, int numColumns) {
-		Composite composite = new Composite(parent, SWT.NULL);
-		
-		GridLayout layout = new GridLayout();
-		layout.numColumns = numColumns;
-		composite.setLayout(layout);
-		composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		return composite;
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -9,8 +9,14 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IStorageEditorInput;
@@ -45,6 +51,16 @@ public class PlatformUtils {
 			instance = new PlatformUtils();
 		}
 		return instance;
+	}
+	
+	public static Composite createComposite(Composite parent, int numColumns) {
+		Composite composite = new Composite(parent, SWT.NULL);
+		
+		GridLayout layout = new GridLayout();
+		layout.numColumns = numColumns;
+		composite.setLayout(layout);
+		composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		return composite;
 	}
 	
 	/**
@@ -118,6 +134,43 @@ public class PlatformUtils {
 		} catch (Exception e) {
 			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
 		}
+	}
+	
+	public static Table createResourceHistoryTable(Composite parent) {
+		int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | 
+		            SWT.FULL_SELECTION | SWT.HIDE_SELECTION;
+
+		Table table = new Table(parent, style);
+
+		GridData gridData = new GridData(GridData.FILL_BOTH);
+		gridData.grabExcessVerticalSpace = true;
+		gridData.horizontalSpan = 3;
+		table.setLayoutData(gridData);		
+		
+		table.setLinesVisible(true);
+		table.setHeaderVisible(true);
+
+		TableColumn column = new TableColumn(table, SWT.LEFT, 0);
+		column.setResizable(true);
+		column.setText("Revision");
+		column.setWidth(100);
+
+		column = new TableColumn(table, SWT.LEFT, 1);
+		column.setResizable(true);
+		column.setText("Date");
+		column.setWidth(175);
+
+		column = new TableColumn(table, SWT.LEFT, 2);
+		column.setResizable(true);
+		column.setText("Author");
+		column.setWidth(200);
+
+		column = new TableColumn(table, SWT.CENTER, 3);
+		column.setResizable(true);
+		column.setText("Comment");
+		column.setWidth(350);
+
+		return table;
 	}
 	
 	public boolean authenticateForServer(String server, IWebDavClient client) throws Exception {

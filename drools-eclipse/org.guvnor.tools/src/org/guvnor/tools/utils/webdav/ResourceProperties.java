@@ -4,6 +4,7 @@ public class ResourceProperties {
 	private boolean isDirectory;
 	private String creationDate;
 	private String lastModifiedDate;
+	private String revision;
 	private String base;
 	
 	public String getBase() {
@@ -29,5 +30,11 @@ public class ResourceProperties {
 	}
 	public void setLastModifiedDate(String lastModifiedDate) {
 		this.lastModifiedDate = lastModifiedDate;
+	}
+	public String getRevision() {
+		return revision != null?revision:"";
+	}
+	public void setRevision(String revision) {
+		this.revision = revision;
 	}
 }

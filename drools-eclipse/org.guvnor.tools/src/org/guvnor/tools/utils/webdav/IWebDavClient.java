@@ -8,7 +8,7 @@ import org.eclipse.webdav.client.RemoteDAVClient;
 import org.eclipse.webdav.http.client.IAuthenticator;
 
 /**
- * Client methods for interacting with WebDav.
+ * Client methods for interacting with Guvnor through WebDav.
  * @author jgraham
  */
 public interface IWebDavClient {
@@ -33,7 +33,7 @@ public interface IWebDavClient {
 	public IContext createContext();
 	
 	/**
-	 * Lists a directory (collection) in WebDav.
+	 * Lists a directory (collection) in Guvnor through WebDav.
 	 * @param path The directory (collection) to list
 	 * @return An association of directory content names and their properties
 	 * @throws Exception Various WebDav errors can occur (See IResponse for details)
@@ -49,7 +49,7 @@ public interface IWebDavClient {
 	public ResourceProperties queryProperties(String resource) throws Exception;
 	
 	/**
-	 * Get the contents of a resource from a WebDav repository.
+	 * Get the contents of a resource from Guvnor through WebDav.
 	 * @param resource The address of the resource
 	 * @return The contents of the resource
 	 * @throws Exception Various WebDav errors can occur (See IResponse for details)
@@ -57,7 +57,16 @@ public interface IWebDavClient {
 	public String getResourceContents(String resource) throws Exception;
 	
 	/**
-	 * Get the <code>InputStream</code> of a resource from a WebDav repository.
+	 * Get the contents for a specific version of a resource from a Guvnor repository.
+	 * @param resource The address of the resource
+	 * @param version The version number of the resource
+	 * @return The contents of the resource
+	 * @throws Exception Various WebDav errors can occur (See IResponse for details)
+	 */
+	public String getResourceVersionContents(String resource, String version) throws Exception;
+	
+	/**
+	 * Get the <code>InputStream</code> of a resource from Guvnor through WebDav.
 	 * @param resource The address of the resource
 	 * @return An code>InputStream</code> for the resource
 	 * @throws Exception Various WebDav errors can occur (See IResponse for details)
@@ -65,12 +74,21 @@ public interface IWebDavClient {
 	public InputStream getResourceInputStream(String resource) throws Exception;
 	
 	/**
+	 * Get the <code>InputStream</code> for a specific version of a resource from Guvnor through WebDav.
+	 * @param resource The address of the resource
+	 * @param version The version number of the resource
+	 * @return An code>InputStream</code> for the resource
+	 * @throws Exception Various WebDav errors can occur (See IResponse for details)
+	 */
+	public InputStream getResourceVersionInputStream(String resource, String version) throws Exception;
+	
+	/**
 	 * Same as createResource(resource, is, true)
 	 */
 	public boolean createResource(String resource, InputStream is) throws Exception;
 
 	/**
-	 * Creates a file in the WebDav repository
+	 * Creates a file in Guvnor through WebDav.
 	 * @param resource The path and name of the resource
 	 * @param is A stream to the file contents
 	 * @param overwrite Whether to overwrite the file if it already exists
@@ -80,7 +98,7 @@ public interface IWebDavClient {
 	public boolean createResource(String resource, InputStream is, boolean overwrite) throws Exception;
 	
 	/**
-	 * Write a file to the WebDav repository
+	 * Write a file to Guvnor through WebDav.
 	 * @param resource The path and name of the resource
 	 * @param is A stream to the file contents
 	 * @throws Exception Various WebDav errors can occur (See IResponse for details)

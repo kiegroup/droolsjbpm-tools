@@ -4,7 +4,10 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.Enumeration;
+import java.util.NoSuchElementException;
 import java.util.Properties;
+import java.util.StringTokenizer;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -15,6 +18,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
 import org.guvnor.tools.Activator;
+import org.guvnor.tools.views.model.ResourceHistoryEntry;
 
 /**
  * A set of utilities for dealing with (local) Guvnor metadata.
@@ -160,5 +164,27 @@ public class GuvnorMetadataUtils {
 	
 	private static QualifiedName generateQualifiedName(String attr) {
 		return new QualifiedName("org.guvnor.tools", attr); 
+	}
+	
+	public static ResourceHistoryEntry[] parseHistoryProperties(Properties entryProps) {
+		ResourceHistoryEntry[] entries = new ResourceHistoryEntry[entryProps.size()];
+		Enumeration<Object> en = entryProps.keys();
+		for (int i = 0; i < entryProps.size(); i++) {
+			String oneRevision = (String)en.nextElement();
+			String val = entryProps.getProperty(oneRevision);
+			StringTokenizer tokens = new StringTokenizer(val, ",");
+			String verDate = null;
+			String author = null;
+			String comment = null;
+			try {
+				verDate = tokens.nextToken();
+				author = tokens.nextToken();
+				comment = tokens.nextToken();
+			} catch (NoSuchElementException e) {
+				// Don't care if some fields are missing
+			}
+			entries[i] = new ResourceHistoryEntry(oneRevision, verDate, author, comment);
+		}
+		return entries;
 	}
 }
