@@ -69,7 +69,7 @@
   </target>      
 
 	<target name="checkEclipseJar">	
-		<available file="${localEclipseDrop}/eclipse/${eclipseBuildRevision}/eclipse-SDK-${eclipseBuildId}-win32.zip" property="skipGetEclipseJar" />
+		<available file="${localEclipseDrop}/eclipse/${eclipseBuildRevision}/eclipse-SDK-${eclipseBuildId}-${download.type}.zip" property="skipGetEclipseJar" />
 	</target>
 	
 	<target name="checkTestJar">	
