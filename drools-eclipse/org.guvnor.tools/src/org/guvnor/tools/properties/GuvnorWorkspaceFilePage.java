@@ -46,24 +46,25 @@ public class GuvnorWorkspaceFilePage extends PropertyPage implements IWorkbenchP
 	}
 	
 	private void addGuvnorProperties(Composite composite, GuvnorMetadataProps props) {
-		new Label(composite, SWT.NONE).setText("Local name:");
-		Label l = new Label(composite, SWT.NONE);
-		String val = props.getFilename() != null?props.getFilename():"";
-		l.setText(val);
-		
+			
 		new Label(composite, SWT.NONE).setText("Repository:");
-		l = new Label(composite, SWT.NONE);
-		val = props.getRepository() != null?props.getRepository():"";
+		Label l = new Label(composite, SWT.NONE);
+		String val = props.getRepository() != null?props.getRepository():"";
 		l.setText(val);
 		
-		new Label(composite, SWT.NONE).setText("Repository Path:");
+		new Label(composite, SWT.NONE).setText("Path:");
 		l = new Label(composite, SWT.NONE);
-		val = props.getFullpath() != null?props.getFullpath():"";
-		l.setText(val);
+		String fullpath = props.getFullpath() != null?props.getFullpath().substring(val.length()):"";
+		l.setText(fullpath);
 		
-		new Label(composite, SWT.NONE).setText("Repository Version:");
+		new Label(composite, SWT.NONE).setText("Version:");
 		l = new Label(composite, SWT.NONE);
 		val = props.getVersion() != null?props.getVersion():"";
+		l.setText(val);
+		
+		new Label(composite, SWT.NONE).setText("Revision:");
+		l = new Label(composite, SWT.NONE);
+		val = props.getVersion() != null?props.getRevision():"";
 		l.setText(val);
 	}
 

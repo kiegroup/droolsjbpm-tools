@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.Map;
 
 import org.eclipse.webdav.IContext;
+import org.eclipse.webdav.IResponse;
 import org.eclipse.webdav.client.RemoteDAVClient;
 import org.eclipse.webdav.http.client.IAuthenticator;
 
@@ -68,19 +69,19 @@ public interface IWebDavClient {
 	/**
 	 * Get the <code>InputStream</code> of a resource from Guvnor through WebDav.
 	 * @param resource The address of the resource
-	 * @return An code>InputStream</code> for the resource
+	 * @return The <code>IResponse</code> object, which the client <b>must</b> close
 	 * @throws Exception Various WebDav errors can occur (See IResponse for details)
 	 */
-	public InputStream getResourceInputStream(String resource) throws Exception;
+	public IResponse getResourceInputStream(String resource) throws Exception;
 	
 	/**
 	 * Get the <code>InputStream</code> for a specific version of a resource from Guvnor through WebDav.
 	 * @param resource The address of the resource
 	 * @param version The version number of the resource
-	 * @return An code>InputStream</code> for the resource
+	 * @return The <code>IResponse</code> object, which the client <b>must</b> close
 	 * @throws Exception Various WebDav errors can occur (See IResponse for details)
 	 */
-	public InputStream getResourceVersionInputStream(String resource, String version) throws Exception;
+	public IResponse getResourceVersionInputStream(String resource, String version) throws Exception;
 	
 	/**
 	 * Same as createResource(resource, is, true)
@@ -108,14 +109,8 @@ public interface IWebDavClient {
 	/**
 	 * Gets all the version information for a resource
 	 * @param resource The file to get version information about
-	 * @return A stream to the version properties
+	 * @return The <code>IResponse</code> object, which the client <b>must</b> close
 	 * @throws Exception Various WebDav errors can occur (See IResponse for details)
 	 */
-	public InputStream getResourceVersions(String resource) throws Exception;
-	
-	/**
-	 * <b>Must</b> be called after server operation methods to ensure
-	 * resource clean up.
-	 */
-	public void closeResponse() throws Exception;
+	public IResponse getResourceVersions(String resource) throws Exception;
 }

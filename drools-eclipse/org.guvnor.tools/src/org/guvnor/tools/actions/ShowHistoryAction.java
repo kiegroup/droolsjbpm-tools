@@ -1,5 +1,6 @@
 package org.guvnor.tools.actions;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
@@ -62,6 +63,7 @@ public class ShowHistoryAction implements IObjectActionDelegate {
 			fullPath = props.getFullpath();
 		}
 		
+		IResponse response = null;
 		try {
 			IWebDavClient client = WebDavServerCache.getWebDavClient(repositoryLoc);
 			if (client == null) {
@@ -70,7 +72,8 @@ public class ShowHistoryAction implements IObjectActionDelegate {
 			}
 			InputStream ins = null;
 			try {
-				ins = client.getResourceVersions(fullPath);
+				response = client.getResourceVersions(fullPath);
+				ins = response.getInputStream();
 			} catch (WebDavException wde) {
 				if (wde.getErrorCode() != IResponse.SC_UNAUTHORIZED) {
 					// If not an authentication failure, we don't know what to do with it
@@ -79,7 +82,8 @@ public class ShowHistoryAction implements IObjectActionDelegate {
 				boolean retry = PlatformUtils.getInstance().
 									authenticateForServer(repositoryLoc, client); 
 				if (retry) {
-					ins = client.getResourceVersions(fullPath);
+					response = client.getResourceVersions(fullPath);
+					ins = response.getInputStream();
 				}
 			}
 			if (ins != null) {
@@ -92,6 +96,14 @@ public class ShowHistoryAction implements IObjectActionDelegate {
 			}
 		} catch (Exception e) {
 			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+		} finally {
+			if (response != null) {
+				try {
+					response.close();
+				} catch (IOException ioe) {
+					Activator.getDefault().writeLog(IStatus.ERROR, ioe.getMessage(), ioe);
+				}
+			}
 		}
 	}
 

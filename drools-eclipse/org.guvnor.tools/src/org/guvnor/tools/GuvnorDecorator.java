@@ -31,7 +31,7 @@ public class GuvnorDecorator implements ILightweightLabelDecorator {
 				}
 				GuvnorMetadataProps props = GuvnorMetadataUtils.getGuvnorMetadata(resource);
 				if (props.getVersion() != null) {
-					decoration.addSuffix(" " + props.getVersion());
+					decoration.addSuffix(" " + props.getRevision() + ", " + props.getVersion());
 				}
 			}
 		} catch (Exception e) {

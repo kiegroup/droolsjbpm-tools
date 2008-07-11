@@ -28,7 +28,7 @@ public class GuvnorMetadataUtils {
 	/**
 	 * Finds the local Guvnor metadata file associated with a given resource.
 	 * @param resource The resource to locate metadata for.
-	 * @return The metadata for the given resource, null if metadata is not found.
+	 * @return The metadata file for the given resource, null if metadata is not found.
 	 */
 	public static IFile findGuvnorMetadata(IResource resource) {
 		IFile res = null;
@@ -43,8 +43,37 @@ public class GuvnorMetadataUtils {
 		return res;
 	}
 	
+	/**
+	 * Finds the local Guvnor metadata file associated with a given resource.
+	 * @param resource The resource path to locate metadata for.
+	 * @return The metadata file for the given resource, null if metadata is not found.
+	 */
+	public static IFile findGuvnorMetadata(IPath resource) {
+		IFile res = null;
+		IPath dir = resource.removeLastSegments(1);
+		IPath mdpath = dir.append(".guvnorinfo").append("." + resource.lastSegment());
+		IResource mdResource = Activator.getDefault().getWorkspace().
+											getRoot().findMember(mdpath);
+		if (mdResource != null 
+		   && mdResource.exists() 
+		   && mdResource instanceof IFile) {
+			res = (IFile)mdResource;
+		}
+		return res;
+	}
+	
 	public static boolean isGuvnorControlledResource(IResource resource) {
 		return findGuvnorMetadata(resource) != null;
+	}
+	
+	public static GuvnorMetadataProps loadGuvnorMetadata(IFile mdFile) throws Exception {
+		Properties props = new Properties();
+		props.load(mdFile.getContents());
+		return new GuvnorMetadataProps(props.getProperty("filename"),
+				                       props.getProperty("repository"),
+				                       props.getProperty("fullpath"),
+				                       props.getProperty("lastmodified"),
+				                       props.getProperty("revision"));
 	}
 	
 	public static GuvnorMetadataProps getGuvnorMetadata(IResource resource) throws Exception {
@@ -52,12 +81,7 @@ public class GuvnorMetadataUtils {
 		if (mdFile == null) {
 			return null;
 		}
-		Properties props = new Properties();
-		props.load(mdFile.getContents());
-		return new GuvnorMetadataProps(props.getProperty("filename"),
-				                       props.getProperty("repository"),
-				                       props.getProperty("fullpath"),
-				                       props.getProperty("lastmodified"));
+		return loadGuvnorMetadata(mdFile);
 	}
 	
 	public static void writeGuvnorMetadataProps(File mdFile, 
@@ -68,6 +92,7 @@ public class GuvnorMetadataUtils {
 		props.put("fullpath", 		mdProps.getFullpath());
 		props.put("filename", 		mdProps.getFilename());
 		props.put("lastmodified", 	mdProps.getVersion());
+		props.put("revision",		mdProps.getRevision());
 		props.store(fos, null);
 		fos.flush();
 		fos.close();	
@@ -100,6 +125,9 @@ public class GuvnorMetadataUtils {
 		}
 		if (mdProps.getVersion() != null) {
 			props.put("lastmodified", mdProps.getVersion());
+		}
+		if (mdProps.getRevision() != null) {
+			props.put("revision", mdProps.getRevision());
 		}
 		OutputStream os = new FileOutputStream(
 							new File(mdFile.getLocation().toOSString()));

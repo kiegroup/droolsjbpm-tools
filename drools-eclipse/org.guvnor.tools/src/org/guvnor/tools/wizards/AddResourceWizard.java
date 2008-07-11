@@ -103,7 +103,6 @@ public class AddResourceWizard extends Wizard implements INewWizard, IGuvnorWiza
 			}
 			try {
 				res = client.createResource(fullPath, selectedFile.getContents(), false);
-				client.closeResponse();
 				if (!res) {
 					setDuplicateFileError();
 				}
@@ -116,7 +115,6 @@ public class AddResourceWizard extends Wizard implements INewWizard, IGuvnorWiza
 									authenticateForServer(model.getRepLocation(), client); 
 				if (retry) {
 					res = client.createResource(fullPath, selectedFile.getContents());
-					client.closeResponse();
 					if (!res) {
 						setDuplicateFileError();
 					}
@@ -125,11 +123,11 @@ public class AddResourceWizard extends Wizard implements INewWizard, IGuvnorWiza
 			if (res) {
 				GuvnorMetadataUtils.markCurrentGuvnorResource(selectedFile);
 				ResourceProperties resProps = client.queryProperties(fullPath);
-				client.closeResponse();
 				GuvnorMetadataProps mdProps = 
 						new GuvnorMetadataProps(selectedFile.getName(),
 					                           model.getRepLocation(),
-					                           fullPath, resProps.getLastModifiedDate());
+					                           fullPath, resProps.getLastModifiedDate(),
+					                           resProps.getRevision());
 				GuvnorMetadataUtils.setGuvnorMetadataProps(selectedFile.getFullPath(), mdProps);
 				PlatformUtils.updateDecoration();
 			}

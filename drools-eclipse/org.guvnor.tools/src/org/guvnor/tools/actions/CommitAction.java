@@ -55,7 +55,6 @@ public class CommitAction implements IObjectActionDelegate {
 			}
 			try {
 				client.putResource(props.getFullpath(), selectedFile.getContents());
-				client.closeResponse();
 			} catch (WebDavException wde) {
 				if (wde.getErrorCode() != IResponse.SC_UNAUTHORIZED) {
 					// If not an authentication failure, we don't know what to do with it
@@ -65,14 +64,13 @@ public class CommitAction implements IObjectActionDelegate {
 									authenticateForServer(props.getRepository(), client); 
 				if (retry) {
 					client.putResource(props.getFullpath(), selectedFile.getContents());
-					client.closeResponse();
 				}
 			}
 			GuvnorMetadataUtils.markCurrentGuvnorResource(selectedFile);
 			ResourceProperties resProps = client.queryProperties(props.getFullpath());
-			client.closeResponse();
 			GuvnorMetadataProps mdProps = GuvnorMetadataUtils.getGuvnorMetadata(selectedFile);
 			mdProps.setVersion(resProps.getLastModifiedDate());
+			mdProps.setRevision(resProps.getRevision());
 			GuvnorMetadataUtils.setGuvnorMetadataProps(selectedFile.getFullPath(), mdProps);
 			PlatformUtils.updateDecoration();
 		} catch (Exception e) {

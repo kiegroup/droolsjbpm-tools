@@ -1,5 +1,6 @@
 package org.guvnor.tools.actions;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
@@ -19,7 +20,6 @@ import org.guvnor.tools.utils.GuvnorMetadataUtils;
 import org.guvnor.tools.utils.PlatformUtils;
 import org.guvnor.tools.utils.VersionChooserDialog;
 import org.guvnor.tools.utils.webdav.IWebDavClient;
-import org.guvnor.tools.utils.webdav.ResourceProperties;
 import org.guvnor.tools.utils.webdav.WebDavClientFactory;
 import org.guvnor.tools.utils.webdav.WebDavException;
 import org.guvnor.tools.utils.webdav.WebDavServerCache;
@@ -62,30 +62,39 @@ public class SwitchVersionAction implements IObjectActionDelegate {
 					                selectedFile.getName(), 
 					                getVersionEntries());
 		if (dialog.open() == VersionChooserDialog.OK) {
-			updateSelectedFile(dialog.getSelectedEntry().getRevision());
+			updateSelectedFile(dialog.getSelectedEntry());
 		}
  	}
 	
-	private void updateSelectedFile(String version) {
+	private void updateSelectedFile(ResourceHistoryEntry verInfo) {
+		IResponse response = null;
 		try {
-			InputStream ins = client.getResourceVersionInputStream(props.getFullpath(), version);
+			response = client.getResourceVersionInputStream(props.getFullpath(), verInfo.getRevision());
+			InputStream ins = response.getInputStream();
 			if (ins != null) {
 				selectedFile.setContents(ins, true, true, null);
-				client.closeResponse();
 				GuvnorMetadataUtils.markCurrentGuvnorResource(selectedFile);
-				ResourceProperties resProps = client.queryProperties(props.getFullpath());
-				client.closeResponse();
 				GuvnorMetadataProps mdProps = GuvnorMetadataUtils.getGuvnorMetadata(selectedFile);
-				mdProps.setVersion(resProps.getLastModifiedDate());
+				mdProps.setVersion(verInfo.getDate());
+				mdProps.setRevision(verInfo.getRevision());
 				GuvnorMetadataUtils.setGuvnorMetadataProps(selectedFile.getFullPath(), mdProps);
 				PlatformUtils.updateDecoration();
 			}
 		} catch (Exception e) {
 			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+		} finally {
+			if (response != null) {
+				try {
+					response.close();
+				} catch (IOException ioe) {
+					Activator.getDefault().writeLog(IStatus.ERROR, ioe.getMessage(), ioe);
+				}
+			}
 		}
 	}
 	private ResourceHistoryEntry[] getVersionEntries() {
 		ResourceHistoryEntry[] entries = new ResourceHistoryEntry[0];
+		IResponse response = null;
 		try {
 			client = WebDavServerCache.getWebDavClient(props.getRepository());
 			if (client == null) {
@@ -94,7 +103,8 @@ public class SwitchVersionAction implements IObjectActionDelegate {
 			}
 			InputStream ins = null;
 			try {
-				ins = client.getResourceVersions(props.getFullpath());
+				response = client.getResourceVersions(props.getFullpath());
+				ins = response.getInputStream();
 			} catch (WebDavException wde) {
 				if (wde.getErrorCode() != IResponse.SC_UNAUTHORIZED) {
 					// If not an authentication failure, we don't know what to do with it
@@ -103,7 +113,8 @@ public class SwitchVersionAction implements IObjectActionDelegate {
 				boolean retry = PlatformUtils.getInstance().
 									authenticateForServer(props.getRepository(), client); 
 				if (retry) {
-					ins = client.getResourceVersions(props.getFullpath());
+					response = client.getResourceVersions(props.getFullpath());
+					ins = response.getInputStream();
 				}
 			}
 			if (ins != null) {
@@ -113,6 +124,14 @@ public class SwitchVersionAction implements IObjectActionDelegate {
 			}
 		} catch (Exception e) {
 			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+		} finally {
+			if (response != null) {
+				try {
+					response.close();
+				} catch (IOException ioe) {
+					Activator.getDefault().writeLog(IStatus.ERROR, ioe.getMessage(), ioe);
+				}
+			}
 		}
 		return entries;
 	}

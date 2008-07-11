@@ -32,7 +32,7 @@ public class TreePropertyProvider implements IPropertySource {
 			return node.getName();
 		}
 		if (id.equals("location")) {
-			return node.getFullPath();
+			return node.getFullPath().substring(node.getGuvnorRepository().getLocation().length());
 		}
 		if (id.equals("type")) {
 			if (node.getNodeType() == TreeObject.Type.REPOSITORY) {

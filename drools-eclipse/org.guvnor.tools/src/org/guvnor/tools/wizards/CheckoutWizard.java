@@ -102,9 +102,7 @@ public class CheckoutWizard extends Wizard implements INewWizard, IGuvnorWizard 
 				if (resprops == null) {
 					throw new Exception("Null resource properties for " + oneResource);
 				}
-				webdav.closeResponse();
 				String contents = webdav.getResourceContents(oneResource);
-				webdav.closeResponse();
 				IPath targetLocation = new Path(model.getTargetLocation());
 				IFile targetFile = Activator.getDefault().getWorkspace().
 									getRoot().getFile(targetLocation.append(
@@ -120,7 +118,8 @@ public class CheckoutWizard extends Wizard implements INewWizard, IGuvnorWizard 
 				GuvnorMetadataProps mdProps = new GuvnorMetadataProps(targetFile.getName(), 
 						                                             model.getRepLocation(), 
 						                                             oneResource, 
-						                                             resprops.getLastModifiedDate());
+						                                             resprops.getLastModifiedDate(),
+						                                             resprops.getRevision());
 				GuvnorMetadataUtils.setGuvnorMetadataProps(targetFile.getFullPath(), mdProps);
 				GuvnorMetadataUtils.markCurrentGuvnorResource(targetFile);
 			}

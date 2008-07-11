@@ -42,6 +42,8 @@ public class RepositoryElementPropsDialog extends TitleAreaDialog {
 	private String password;
 	private boolean saveInfo;
 	
+	private Label warningLabel;
+	
 	public RepositoryElementPropsDialog(Shell parentShell, TreeObject node) {
 		super(parentShell);
 		super.setShellStyle(getShellStyle() | SWT.RESIZE);
@@ -117,6 +119,7 @@ public class RepositoryElementPropsDialog extends TitleAreaDialog {
 
 			public void widgetSelected(SelectionEvent e) {
 				saveInfo = cbSavePassword.getSelection();
+				warningLabel.setEnabled(saveInfo);
 			}
 			
 		});
@@ -124,11 +127,13 @@ public class RepositoryElementPropsDialog extends TitleAreaDialog {
 		new Label(pwgroup, SWT.NONE).setText("Save user name and password");
 		
 		new Label(composite, SWT.NONE).setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		new Label(composite, SWT.WRAP).setText("NOTE: Saved passwords are stored on your computer in a file that is difficult, but not impossible, for an intruder to read.");
+		warningLabel = new Label(composite, SWT.WRAP);
+		warningLabel.setText("NOTE: Saved passwords are stored on your computer in a file that is difficult, but not impossible, for an intruder to read.");
 		
 		populateSecuritySettings();
 		if (unField.getText().trim().length() == 0) {
 			cbSavePassword.setSelection(false);
+			warningLabel.setEnabled(false);
 		} else {
 			// WTF? setSelection(true) is not picked up by the control, so we have to set 
 			// this initial value explicitly. After that toggle seems to work...

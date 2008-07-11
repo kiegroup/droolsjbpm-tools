@@ -98,7 +98,6 @@ public class TreeParent extends TreeObject implements IDeferredWorkbenchAdapter 
 				Map<String, ResourceProperties> listing = null;
 				try {
 					listing = webdav.listDirectory(node.getFullPath());
-					webdav.closeResponse();
 				} catch (WebDavException wde) {
 					if (wde.getErrorCode() != IResponse.SC_UNAUTHORIZED) {
 						// If not an authentication failure, we don't know what to do with it
@@ -108,7 +107,6 @@ public class TreeParent extends TreeObject implements IDeferredWorkbenchAdapter 
 												node.getGuvnorRepository().getLocation(), webdav); 
 					if (retry) {
 						listing = webdav.listDirectory(node.getFullPath());
-						webdav.closeResponse();
 					}
 				}
 				if (listing != null) {

@@ -1,5 +1,6 @@
 package org.guvnor.tools.actions;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -49,6 +50,7 @@ public class UpdateAction implements IObjectActionDelegate {
 		   || props == null) {
 			return;
 		}
+		IResponse response = null;
 		try {
 			IWebDavClient client = WebDavServerCache.getWebDavClient(props.getRepository());
 			if (client == null) {
@@ -57,7 +59,8 @@ public class UpdateAction implements IObjectActionDelegate {
 			}
 			InputStream ins = null;
 			try {
-				ins = client.getResourceInputStream(props.getFullpath());
+				response = client.getResourceInputStream(props.getFullpath()); 
+				ins = response.getInputStream();
 			} catch (WebDavException wde) {
 				if (wde.getErrorCode() != IResponse.SC_UNAUTHORIZED) {
 					// If not an authentication failure, we don't know what to do with it
@@ -66,22 +69,30 @@ public class UpdateAction implements IObjectActionDelegate {
 				boolean retry = PlatformUtils.getInstance().
 									authenticateForServer(props.getRepository(), client); 
 				if (retry) {
-					ins = client.getResourceInputStream(props.getFullpath());
+					response = client.getResourceInputStream(props.getFullpath());
+					ins = response.getInputStream();
 				}
 			}
 			if (ins != null) {
 				selectedFile.setContents(ins, true, true, null);
-				client.closeResponse();
 				GuvnorMetadataUtils.markCurrentGuvnorResource(selectedFile);
 				ResourceProperties resProps = client.queryProperties(props.getFullpath());
-				client.closeResponse();
 				GuvnorMetadataProps mdProps = GuvnorMetadataUtils.getGuvnorMetadata(selectedFile);
 				mdProps.setVersion(resProps.getLastModifiedDate());
+				mdProps.setRevision(resProps.getRevision());
 				GuvnorMetadataUtils.setGuvnorMetadataProps(selectedFile.getFullPath(), mdProps);
 				PlatformUtils.updateDecoration();
 			}
 		} catch (Exception e) {
 			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+		} finally {
+			if (response != null) {
+				try {
+					response.close();
+				} catch (IOException ioe) {
+					Activator.getDefault().writeLog(IStatus.ERROR, ioe.getMessage(), ioe);
+				}
+			}
 		}
 	}
 

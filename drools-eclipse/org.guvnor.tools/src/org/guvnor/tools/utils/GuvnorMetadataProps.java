@@ -1,5 +1,8 @@
 package org.guvnor.tools.utils;
-
+/**
+ * Model for properties associated with Guvnor resources.
+ * @author jgraham
+ */
 public class GuvnorMetadataProps {
 	private String filename;
 	private String repository;
@@ -8,12 +11,12 @@ public class GuvnorMetadataProps {
 	private String revision;
 	
 	public GuvnorMetadataProps(String filename, String repository,
-			                  String fullpath, String version) {
+			                  String fullpath, String version, String revision) {
 		this.filename = filename;
 		this.repository = repository;
 		this.fullpath = fullpath;
 		this.version = version;
-//		this.revision = revision;
+		this.revision = revision;
 	}
 	public String getFilename() {
 		return filename;
