@@ -1,5 +1,8 @@
 package org.guvnor.tools;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -19,6 +22,7 @@ import org.guvnor.tools.utils.PlatformUtils;
 public class ResourceChangeListener implements IResourceChangeListener {
 
 	public void resourceChanged(IResourceChangeEvent event) {
+		final List<IResource> toDelete = new ArrayList<IResource>();
 		try {
 			event.getDelta().accept(new IResourceDeltaVisitor() {
 				public boolean visit(IResourceDelta delta) throws CoreException {
@@ -30,7 +34,7 @@ public class ResourceChangeListener implements IResourceChangeListener {
 							handleResourceChanged(delta.getResource());
 						}
 						if (delta.getKind() == IResourceDelta.REMOVED) {
-							handleResourceDelete(delta.getResource());
+							handleResourceDelete(delta.getResource(), toDelete);
 						}
 						if (delta.getMovedFromPath() != null) {
 							handleResourceMoved(delta.getResource(), delta.getMovedFromPath());
@@ -41,13 +45,13 @@ public class ResourceChangeListener implements IResourceChangeListener {
 					return true;
 				}
 			});
+			deleteResources(toDelete);
 		} catch (Exception e) {
 			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
 		}
 	}
 	
 	private void handleResourceAdded(IResource resource) throws Exception {
-//System.out.println("Added: " + resource.getFullPath().toString());
 		if (GuvnorMetadataUtils.isGuvnorMetadata(resource)) {
 			// Look for the corresponding file
 			IFile target = GuvnorMetadataUtils.getGuvnorControlledResource(resource);
@@ -69,18 +73,15 @@ public class ResourceChangeListener implements IResourceChangeListener {
 		}
 	}
 	
-	private void handleResourceDelete(IResource resource) throws CoreException {
-//System.out.println("Deleted: " + resource.getFullPath().toString());
-		final IFile mdFile = GuvnorMetadataUtils.findGuvnorMetadata(resource);
-		if (mdFile == null) {
-			return;
-		}
-		final IWorkspace ws = mdFile.getWorkspace();
+	private void deleteResources(final List<IResource> resources) throws CoreException {
 		Display display = PlatformUI.getWorkbench().getDisplay();
 		display.syncExec(new Runnable() {
 			public void run() {
+				IWorkspace ws = Activator.getDefault().getWorkspace();
 				try {
-					ws.delete(new IResource[] { mdFile }, true, null);
+					IResource[] res = new IResource[resources.size()];
+					resources.toArray(res);
+					ws.delete(res, true, null);
 				} catch (CoreException e) {
 					Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
 				}
@@ -89,9 +90,15 @@ public class ResourceChangeListener implements IResourceChangeListener {
 		});
 	}
 	
+	private void handleResourceDelete(IResource resource, List<IResource> resources) {
+		final IFile mdFile = GuvnorMetadataUtils.findGuvnorMetadata(resource);
+		if (mdFile == null) {
+			return;
+		}
+		resources.add(mdFile);
+	}
+	
 	private void handleResourceMoved(final IResource resource, IPath fromPath) throws Exception {
-//System.out.println("Moved: " + resource.getFullPath().toString() + " from " + fromPath.toString());
-//System.out.println(GuvnorMetadataUtils.isGuvnorResourceCurrent(resource));
 		IFile mdFile = GuvnorMetadataUtils.findGuvnorMetadata(fromPath);
 		if (mdFile == null) {
 			return;
