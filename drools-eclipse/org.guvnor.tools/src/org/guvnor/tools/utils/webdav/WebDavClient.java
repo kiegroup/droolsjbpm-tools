@@ -34,7 +34,12 @@ public class WebDavClient implements IWebDavClient {
 	 * @param serverUrl The WebDav repository location (server)
 	 */
 	/** package */ WebDavClient(URL serverUrl) {
-		HttpClient httpClient = new HttpClient();
+		HttpClient httpClient = null;
+		if (Activator.getDefault().useDebugHttpClient()) {
+			httpClient = new DebugHttpClient();
+		} else {
+			httpClient = new HttpClient();
+		}
 		platformAuthenticator =  new WebDavAuthenticator(serverUrl);
 		httpClient.setAuthenticator(platformAuthenticator);
 		client = new RemoteDAVClient(new WebDAVFactory(), httpClient);
@@ -323,6 +328,29 @@ public class WebDavClient implements IWebDavClient {
 		return getResourceInputStream(apiVer);
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.guvnor.tools.utils.webdav.IWebDavClient#deleteResource(java.lang.String)
+	 */
+	public void deleteResource(String resource) throws Exception {
+		IResponse response = null;
+		try {
+			ILocator locator = WebDAVFactory.locatorFactory.newLocator(resource);
+			response = client.delete(locator, createContext());
+			if (response.getStatusCode() != IResponse.SC_NO_CONTENT
+			   && response.getStatusCode() != IResponse.SC_OK) {
+				throw new WebDavException(response);
+			}
+		} finally {
+			if (response != null) {
+				response.close();
+			}
+		}
+	}
+	
+	/**
+	 * Converts the WedDav resource path to a Guvnor "API path."
+	 */
 	private String changeToAPICall(String path) {
 		return path.replaceFirst("/webdav/", "/api/");
 	}

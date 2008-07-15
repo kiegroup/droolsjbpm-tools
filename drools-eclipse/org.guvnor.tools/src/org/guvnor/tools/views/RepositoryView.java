@@ -46,6 +46,7 @@ import org.guvnor.tools.utils.GuvnorMetadataProps;
 import org.guvnor.tools.utils.GuvnorMetadataUtils;
 import org.guvnor.tools.utils.PlatformUtils;
 import org.guvnor.tools.utils.webdav.IWebDavClient;
+import org.guvnor.tools.utils.webdav.ResourceProperties;
 import org.guvnor.tools.utils.webdav.WebDavClientFactory;
 import org.guvnor.tools.utils.webdav.WebDavServerCache;
 import org.guvnor.tools.views.model.TreeObject;
@@ -168,16 +169,25 @@ public class RepositoryView extends ViewPart {
 		File metaFile = GuvnorMetadataUtils.
 							getGuvnorMetadataFile(metaPath.toOSString(), node.getName());
 		metaFile.deleteOnExit();
-		GuvnorMetadataProps mdProps = 
-			new GuvnorMetadataProps(node.getName(), 
-					               node.getGuvnorRepository().getLocation(),
-				                   node.getFullPath(), 
-				                   node.getResourceProps().getLastModifiedDate(),
-				                   node.getResourceProps().getRevision());
-		GuvnorMetadataUtils.writeGuvnorMetadataProps(metaFile, mdProps);
+		GuvnorMetadataUtils.writeGuvnorMetadataProps(metaFile, getGuvnorMetadataProps(node));
 		res.add(metaFile.getAbsolutePath());
 		
 		return res;
+	}
+	
+	private GuvnorMetadataProps getGuvnorMetadataProps(TreeObject node) throws Exception {
+		GuvnorRepository rep = node.getGuvnorRepository();
+		IWebDavClient webdav = WebDavServerCache.getWebDavClient(rep.getLocation());
+		if (webdav == null) {
+			webdav = WebDavClientFactory.createClient(new URL(rep.getLocation()));
+			WebDavServerCache.cacheWebDavClient(rep.getLocation(), webdav);
+		}
+		ResourceProperties props  = webdav.queryProperties(node.getFullPath());
+		return new GuvnorMetadataProps(node.getName(), 
+	                                  node.getGuvnorRepository().getLocation(),
+                                      node.getFullPath(), 
+                                      props.getLastModifiedDate(),
+                                      props.getRevision());
 	}
 	
 	private void hookContextMenu() {

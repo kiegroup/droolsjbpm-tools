@@ -6,6 +6,7 @@ import java.net.URL;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -130,4 +131,8 @@ public class Activator extends AbstractUIPlugin {
 	public static final String IMG_GUVCONTROLLED 		= "guvnor_controlled.gif";
 	public static final String IMG_GUVLOCADD 			= "guvnor_rep_add.gif";
 	public static final String IMG_GUVREPWIZBAN 		= "guvnor_rep_wizban.gif";
+	
+	public boolean useDebugHttpClient() {
+		return Boolean.parseBoolean(Platform.getDebugOption("org.guvnor.tools/debugHttpClient"));
+	}
 }

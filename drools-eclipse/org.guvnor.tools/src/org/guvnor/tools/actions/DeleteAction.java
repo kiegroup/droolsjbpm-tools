@@ -1,5 +1,6 @@
 package org.guvnor.tools.actions;
 
+import java.net.URL;
 import java.util.Iterator;
 
 import org.eclipse.core.resources.IFile;
@@ -7,25 +8,27 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.IActionDelegate;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.webdav.IResponse;
 import org.guvnor.tools.Activator;
 import org.guvnor.tools.utils.GuvnorMetadataProps;
 import org.guvnor.tools.utils.GuvnorMetadataUtils;
 import org.guvnor.tools.utils.PlatformUtils;
-import org.guvnor.tools.wizards.AddResourceWizard;
+import org.guvnor.tools.utils.webdav.IWebDavClient;
+import org.guvnor.tools.utils.webdav.WebDavClientFactory;
+import org.guvnor.tools.utils.webdav.WebDavException;
+import org.guvnor.tools.utils.webdav.WebDavServerCache;
 
-public class AddAction implements IObjectActionDelegate {
+public class DeleteAction implements IObjectActionDelegate {
 	
 	private IStructuredSelection selectedItems;
-	private IWorkbenchPart targetPart;
 	
 	/**
 	 * Constructor for Action1.
 	 */
-	public AddAction() {
+	public DeleteAction() {
 		super();
 	}
 
@@ -33,21 +36,53 @@ public class AddAction implements IObjectActionDelegate {
 	 * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
 	 */
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		this.targetPart = targetPart;
 	}
 
 	/**
 	 * @see IActionDelegate#run(IAction)
 	 */
+	@SuppressWarnings("unchecked")
 	public void run(IAction action) {
-		assert(targetPart != null && selectedItems != null);
-		AddResourceWizard wiz = new AddResourceWizard();
-		wiz.init(Activator.getDefault().getWorkbench(), selectedItems);
-		WizardDialog dialog = new WizardDialog(targetPart.getSite().getShell(), wiz);
-	    dialog.create();
-	    if (dialog.open() == WizardDialog.OK) {
-	    	PlatformUtils.refreshRepositoryView();
-	    }
+		if (selectedItems == null) {
+			return;
+		}
+		for (Iterator it = selectedItems.iterator(); it.hasNext();) {
+			Object oneItem = it.next();
+			if (oneItem instanceof IFile) {
+				processDelete((IFile)oneItem);
+			}
+		}
+		DisconnectAction dsAction = new DisconnectAction();
+		dsAction.disconnect(selectedItems);
+		PlatformUtils.refreshRepositoryView();
+	}
+
+	private void processDelete(IFile selectedFile) {
+		try {
+			GuvnorMetadataProps props = GuvnorMetadataUtils.getGuvnorMetadata(selectedFile);
+			assert(props != null);
+			IWebDavClient client = WebDavServerCache.getWebDavClient(props.getRepository());
+			if (client == null) {
+				client = WebDavClientFactory.createClient(new URL(props.getRepository()));
+				WebDavServerCache.cacheWebDavClient(props.getRepository(), client);
+			}
+			try {
+				client.deleteResource(props.getFullpath());
+			} catch (WebDavException wde) {
+				if (wde.getErrorCode() != IResponse.SC_UNAUTHORIZED) {
+					// If not an authentication failure, we don't know what to do with it
+					throw wde;
+				}
+				boolean retry = PlatformUtils.getInstance().
+									authenticateForServer(props.getRepository(), client); 
+				if (retry) {
+					client.deleteResource(props.getFullpath());
+				}
+			}
+			
+		} catch (Exception e) {
+			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+		}
 	}
 	
 	/**
@@ -67,7 +102,7 @@ public class AddAction implements IObjectActionDelegate {
 					if (oneSelection instanceof IFile) {
 						GuvnorMetadataProps props = GuvnorMetadataUtils.
 														getGuvnorMetadata((IFile)oneSelection);
-						if (props != null) {
+						if (props == null) {
 							action.setEnabled(false);
 							break;
 						}

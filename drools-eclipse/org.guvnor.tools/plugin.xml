@@ -105,6 +105,12 @@
             label="%action.popup.disconnect"
             menubarPath="org.guvnor.tools.popupmenu/group1">
       </action>
+      <action class="org.guvnor.tools.actions.DeleteAction"
+              enablesFor="1"
+              id="org.guvnor.tools.actions.deleteaction"
+            label="%action.popup.delete"
+            menubarPath="org.guvnor.tools.popupmenu/group1">
+      </action>
       <action class="org.guvnor.tools.actions.SwitchVersionAction"
               enablesFor="1"
               id="org.guvnor.tools.actions.switchversionaction"

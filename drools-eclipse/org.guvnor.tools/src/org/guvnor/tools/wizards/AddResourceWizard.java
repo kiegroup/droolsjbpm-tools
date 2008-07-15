@@ -1,6 +1,7 @@
 package org.guvnor.tools.wizards;
 
 import java.net.URL;
+import java.util.Iterator;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IStatus;
@@ -22,11 +23,11 @@ import org.guvnor.tools.utils.webdav.WebDavServerCache;
 
 public class AddResourceWizard extends Wizard implements INewWizard, IGuvnorWizard {
 	
-	private IFile selectedFile;
-	
 	private SelectGuvnorRepPage		selectRepPage;
 	private GuvnorMainConfigPage 	mainConfigPage;
 	private SelectGuvnorFolderPage 	selectFolderPage;
+	
+	private IStructuredSelection 	selectedItems;
 	
 	private GuvWizardModel model;
 	
@@ -39,12 +40,7 @@ public class AddResourceWizard extends Wizard implements INewWizard, IGuvnorWiza
 	}
 	
 	public void init(IWorkbench workbench, IStructuredSelection selection) { 
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection sel = (IStructuredSelection)selection;
-			if (sel.getFirstElement() instanceof IFile) {
-				selectedFile = (IFile)sel.getFirstElement();
-			}
-		}
+		selectedItems = selection;
 	}
 	
 	@Override
@@ -82,7 +78,7 @@ public class AddResourceWizard extends Wizard implements INewWizard, IGuvnorWiza
 		return null;
 	}
 	
-	private void setDuplicateFileError() {
+	private void setDuplicateFileError(IFile selectedFile) {
 		selectFolderPage.setErrorMessage(selectedFile.getName() +
 				                        " already exists in folder " +
 				                        model.getTargetLocation());
@@ -90,9 +86,7 @@ public class AddResourceWizard extends Wizard implements INewWizard, IGuvnorWiza
 		super.getContainer().updateButtons();
 	}
 	
-	@Override
-	public boolean performFinish() {
-		assert(selectedFile != null);
+	private boolean processSelectedFile(IFile selectedFile) {
 		boolean res = false;
 		try {
 			String fullPath = model.getTargetLocation() + selectedFile.getName();
@@ -104,7 +98,7 @@ public class AddResourceWizard extends Wizard implements INewWizard, IGuvnorWiza
 			try {
 				res = client.createResource(fullPath, selectedFile.getContents(), false);
 				if (!res) {
-					setDuplicateFileError();
+					setDuplicateFileError(selectedFile);
 				}
 			} catch (WebDavException wde) {
 				if (wde.getErrorCode() != IResponse.SC_UNAUTHORIZED) {
@@ -116,7 +110,7 @@ public class AddResourceWizard extends Wizard implements INewWizard, IGuvnorWiza
 				if (retry) {
 					res = client.createResource(fullPath, selectedFile.getContents());
 					if (!res) {
-						setDuplicateFileError();
+						setDuplicateFileError(selectedFile);
 					}
 				}
 			}
@@ -133,6 +127,23 @@ public class AddResourceWizard extends Wizard implements INewWizard, IGuvnorWiza
 			}
 		} catch (Exception e) {
 			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+		}
+		return res;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean performFinish() {
+		boolean res = true;
+		assert(selectedItems != null);
+		for (Iterator it = selectedItems.iterator(); it.hasNext();) {
+			Object oneItem = it.next();
+			if (oneItem instanceof IFile) {
+				res = processSelectedFile((IFile)oneItem);
+				if (!res) {
+					break;
+				}
+			}
 		}
 		return res;
 	}

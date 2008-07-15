@@ -1,6 +1,7 @@
 package org.guvnor.tools.actions;
 
 import java.net.URL;
+import java.util.Iterator;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IStatus;
@@ -23,8 +24,7 @@ import org.guvnor.tools.utils.webdav.WebDavServerCache;
 
 public class CommitAction implements IObjectActionDelegate {
 	
-	private IFile selectedFile;
-	private GuvnorMetadataProps props;
+	private IStructuredSelection selectedItems;
 	
 	/**
 	 * Constructor for Action1.
@@ -42,12 +42,20 @@ public class CommitAction implements IObjectActionDelegate {
 	/**
 	 * @see IActionDelegate#run(IAction)
 	 */
+	@SuppressWarnings("unchecked")
 	public void run(IAction action) {
-		if (selectedFile == null
-		   || props == null) {
-			return;
+		assert(selectedItems != null);
+		for (Iterator it = selectedItems.iterator(); it.hasNext();) {
+			Object oneSelection = it.next();
+			if (oneSelection instanceof IFile) {
+				processCommit((IFile)oneSelection);
+			}
 		}
+	}
+
+	private void processCommit(IFile selectedFile) {
 		try {
+			GuvnorMetadataProps props = GuvnorMetadataUtils.getGuvnorMetadata(selectedFile);
 			IWebDavClient client = WebDavServerCache.getWebDavClient(props.getRepository());
 			if (client == null) {
 				client = WebDavClientFactory.createClient(new URL(props.getRepository()));
@@ -77,29 +85,36 @@ public class CommitAction implements IObjectActionDelegate {
 			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
 		}
 	}
-
+	
 	/**
 	 * @see IActionDelegate#selectionChanged(IAction, ISelection)
 	 */
+	@SuppressWarnings("unchecked")
 	public void selectionChanged(IAction action, ISelection selection) {
 		// Reset state to default
-		selectedFile = null;
-		props = null;
-		action.setEnabled(false);
+		selectedItems = null;
+		action.setEnabled(true);
 		// See if we should enable for the selection
 		try {
 			if (selection instanceof IStructuredSelection) {
 				IStructuredSelection sel = (IStructuredSelection)selection;
-				if (sel.getFirstElement() instanceof IFile) {
-					IFile theFile = (IFile)sel.getFirstElement();
-					props = GuvnorMetadataUtils.getGuvnorMetadata(theFile);
-					if (props != null
-					   && !GuvnorMetadataUtils.isGuvnorResourceCurrent(theFile)) {
-						selectedFile = theFile;
-						action.setEnabled(true);
+				for (Iterator<Object> it = sel.iterator(); it.hasNext();) {
+					Object oneSelection = it.next();
+					if (oneSelection instanceof IFile) {
+						GuvnorMetadataProps props = GuvnorMetadataUtils.
+														getGuvnorMetadata((IFile)oneSelection);
+						if (props == null) {
+							action.setEnabled(false);
+							break;
+						}
 					}
 				}
-			} 
+				if (action.isEnabled()) {
+					selectedItems = sel;
+				}
+			} else {
+				action.setEnabled(false);
+			}
 		} catch (Exception e) {
 			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
 		}

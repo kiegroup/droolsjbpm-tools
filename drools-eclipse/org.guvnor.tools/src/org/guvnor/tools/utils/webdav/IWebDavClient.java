@@ -113,4 +113,11 @@ public interface IWebDavClient {
 	 * @throws Exception Various WebDav errors can occur (See IResponse for details)
 	 */
 	public IResponse getResourceVersions(String resource) throws Exception;
+	
+	/**
+	 * Deletes a resource in the repository.
+	 * @param resource The resource to delete
+	 * @throws Exception Various WebDav errors can occur (See IResponse for details)
+	 */
+	public void deleteResource(String resource) throws Exception;
 }
