@@ -60,6 +60,7 @@ public class RepositoryView extends ViewPart {
 	private Action deleteRepositoryLocAction;
 	private Action addRepositoryLocAction;
 	private Action doubleClickAction;
+	private Action refreshAction;
 	
 	class NameSorter extends ViewerSorter {
 	}
@@ -213,11 +214,14 @@ public class RepositoryView extends ViewPart {
 		manager.add(deleteRepositoryLocAction);
 		manager.add(new Separator());
 		manager.add(addRepositoryLocAction);
+		manager.add(new Separator());
+		manager.add(refreshAction);
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
 		manager.add(deleteRepositoryLocAction);
 		manager.add(addRepositoryLocAction);
+		manager.add(refreshAction);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 		// Other plug-ins can contribute there actions here
@@ -265,6 +269,7 @@ public class RepositoryView extends ViewPart {
 		addRepositoryLocAction.setToolTipText("Add a Guvnor respository location");
 		addRepositoryLocAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 				getImageDescriptor(ISharedImages.IMG_TOOL_NEW_WIZARD));
+		
 		doubleClickAction = new Action() {
 			public void run() {
 				ISelection selection = viewer.getSelection();
@@ -274,6 +279,22 @@ public class RepositoryView extends ViewPart {
 				}
 			}
 		};
+		
+		refreshAction = new Action() {
+			public void run() {
+				ISelection selection = viewer.getSelection();
+				if (selection instanceof IStructuredSelection) {
+					IStructuredSelection strucSel = (IStructuredSelection)selection;
+					if (!strucSel.isEmpty()) {
+						viewer.refresh(strucSel.getFirstElement());
+					}
+				}
+			}
+		};
+		refreshAction.setText("Refresh");
+		refreshAction.setToolTipText("Refreshes the current node and its children");
+		refreshAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+				getImageDescriptor(ISharedImages.IMG_TOOL_REDO));
 	}
 	
 	private void hookDoubleClickAction() {

@@ -6,6 +6,8 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -42,6 +44,18 @@ public class SelectGuvnorFolderPage extends WizardPage {
 		viewer.addPostSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				updateModel();	
+			}
+		});
+		viewer.addFilter(new ViewerFilter() {
+			@Override
+			public boolean select(Viewer viewer, Object parentElement, Object element) {
+				// The snapshots directory in Guvnor is read-only for Eclipse tools
+				if (element instanceof TreeObject) {
+					TreeObject o = (TreeObject)element;
+					return o.getFullPath().indexOf("/snapshots/") == -1;
+				} else {
+					return true;
+				}
 			}
 		});
 		super.setControl(composite);

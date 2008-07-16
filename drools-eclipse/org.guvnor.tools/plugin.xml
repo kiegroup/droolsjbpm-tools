@@ -117,6 +117,12 @@
             label="%action.popup.switchversion"
             menubarPath="org.guvnor.tools.popupmenu/group1">
       </action>
+       <action class="org.guvnor.tools.actions.CompareVersionAction"
+              enablesFor="1"
+              id="org.guvnor.tools.actions.compareversionaction"
+            label="%action.popup.compareversion"
+            menubarPath="org.guvnor.tools.popupmenu/group1">
+      </action>
       <action class="org.guvnor.tools.actions.ShowHistoryAction"
               enablesFor="1"
               id="org.guvnor.tools.actions.showhistoryaction"

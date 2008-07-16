@@ -8,11 +8,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IActionDelegate;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.webdav.IResponse;
 import org.guvnor.tools.Activator;
+import org.guvnor.tools.utils.ActionUtils;
 import org.guvnor.tools.utils.GuvnorMetadataProps;
 import org.guvnor.tools.utils.GuvnorMetadataUtils;
 import org.guvnor.tools.utils.PlatformUtils;
@@ -39,7 +39,7 @@ public class CommitAction implements IObjectActionDelegate {
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 	}
 
-	/**
+	/*
 	 * @see IActionDelegate#run(IAction)
 	 */
 	@SuppressWarnings("unchecked")
@@ -86,37 +86,18 @@ public class CommitAction implements IObjectActionDelegate {
 		}
 	}
 	
-	/**
+	/*
 	 * @see IActionDelegate#selectionChanged(IAction, ISelection)
 	 */
-	@SuppressWarnings("unchecked")
 	public void selectionChanged(IAction action, ISelection selection) {
-		// Reset state to default
-		selectedItems = null;
-		action.setEnabled(true);
-		// See if we should enable for the selection
-		try {
-			if (selection instanceof IStructuredSelection) {
-				IStructuredSelection sel = (IStructuredSelection)selection;
-				for (Iterator<Object> it = sel.iterator(); it.hasNext();) {
-					Object oneSelection = it.next();
-					if (oneSelection instanceof IFile) {
-						GuvnorMetadataProps props = GuvnorMetadataUtils.
-														getGuvnorMetadata((IFile)oneSelection);
-						if (props == null) {
-							action.setEnabled(false);
-							break;
-						}
-					}
-				}
-				if (action.isEnabled()) {
-					selectedItems = sel;
-				}
-			} else {
-				action.setEnabled(false);
-			}
-		} catch (Exception e) {
-			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+		boolean validResourceSet = ActionUtils.checkResourceSet(selection, true) 
+		                           && ActionUtils.areFilesDirty(selection);
+		if (validResourceSet) {
+			action.setEnabled(true);
+			selectedItems = (IStructuredSelection)selection;
+		} else {
+			action.setEnabled(false);
+			selectedItems = null;
 		}
 	}
 }

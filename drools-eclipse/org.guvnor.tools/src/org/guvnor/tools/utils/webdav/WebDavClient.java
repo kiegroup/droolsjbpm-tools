@@ -122,13 +122,8 @@ public class WebDavClient implements IWebDavClient {
 					resProps.setLastModifiedDate(dateStamp);
 					resProps.setRevision(revision);
 				} 
-//				else {
-//					Exception nfe = new Exception("Failed to get Guvnor properties for " + oneKey);
-//					Activator.getDefault().writeLog(IStatus.WARNING, nfe.getMessage(), nfe);
-//				}
 			}
 		} catch (Exception e) {
-			//TODO: Getting some server internal errors here. Why?
 			Activator.getDefault().writeLog(IStatus.WARNING, e.getMessage(), e);
 		} finally {
 			if (response != null) {
@@ -200,7 +195,6 @@ public class WebDavClient implements IWebDavClient {
 				Activator.getDefault().writeLog(IStatus.WARNING, nfe.getMessage(), nfe);
 			}
 		} catch (Exception e) {
-			//TODO: Getting some server internal errors here. Why?
 			Activator.getDefault().writeLog(IStatus.WARNING, e.getMessage(), e);
 		} finally {
 			if (response != null) {

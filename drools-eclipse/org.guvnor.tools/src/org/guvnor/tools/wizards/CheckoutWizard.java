@@ -3,9 +3,12 @@ package org.guvnor.tools.wizards;
 import java.io.ByteArrayInputStream;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.dialogs.IInputValidator;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
@@ -104,13 +107,19 @@ public class CheckoutWizard extends Wizard implements INewWizard, IGuvnorWizard 
 				}
 				String contents = webdav.getResourceContents(oneResource);
 				IPath targetLocation = new Path(model.getTargetLocation());
-				IFile targetFile = Activator.getDefault().getWorkspace().
-									getRoot().getFile(targetLocation.append(
+				IWorkspaceRoot root = Activator.getDefault().getWorkspace().getRoot();
+				IFile targetFile = root.getFile(
+										targetLocation.append(
 											oneResource.substring(oneResource.lastIndexOf('/'))));
+				if (targetFile.exists()) {
+					targetFile = resolveNameConflict(targetFile);
+				}
+				if (targetFile == null) {
+					continue;
+				}
 				ByteArrayInputStream bis = 
 							new ByteArrayInputStream(contents.getBytes(targetFile.getCharset()));
 				if (targetFile.exists()) {
-					//TODO: Prompt for overwrite
 					targetFile.setContents(bis, true, true, null);
 				} else {
 					targetFile.create(bis, true, null);
@@ -128,10 +137,33 @@ public class CheckoutWizard extends Wizard implements INewWizard, IGuvnorWizard 
 		}
 		return true;
 	}
-
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		
+	
+	public IFile resolveNameConflict(IFile conflictingFile) {
+		final IWorkspaceRoot root = Activator.getDefault().getWorkspace().getRoot();
+		final IPath basePath = conflictingFile.getFullPath().removeLastSegments(1);
+		InputDialog dialog = new InputDialog(super.getShell(),
+                                            "Name Conflict",
+                                            "Enter a new name for " + conflictingFile.getName(),
+                                            "CopyOf" + conflictingFile.getName(),
+        new IInputValidator() {
+			public String isValid(String newText) {
+				IFile temp = root.getFile(basePath.append(newText));
+				if (temp == null
+				   || !temp.exists()) {
+					return null;
+				} else {
+					return newText + " already exists";
+				}
+			}
+		});
+		if (dialog.open() == InputDialog.OK) {
+			return root.getFile(basePath.append(dialog.getValue()));
+		} else {
+			return null;
+		}
 	}
+	
+	public void init(IWorkbench workbench, IStructuredSelection selection) { }
 
 	@Override
 	public boolean canFinish() {	
