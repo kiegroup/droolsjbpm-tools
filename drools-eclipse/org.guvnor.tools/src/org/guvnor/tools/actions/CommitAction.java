@@ -6,6 +6,7 @@ import java.util.Iterator;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
@@ -25,6 +26,7 @@ import org.guvnor.tools.utils.webdav.WebDavServerCache;
 public class CommitAction implements IObjectActionDelegate {
 	
 	private IStructuredSelection selectedItems;
+	private IWorkbenchPart targetPart;
 	
 	/**
 	 * Constructor for Action1.
@@ -37,6 +39,7 @@ public class CommitAction implements IObjectActionDelegate {
 	 * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
 	 */
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		this.targetPart = targetPart;
 	}
 
 	/*
@@ -51,6 +54,7 @@ public class CommitAction implements IObjectActionDelegate {
 				processCommit((IFile)oneSelection);
 			}
 		}
+		PlatformUtils.updateDecoration();
 	}
 
 	private void processCommit(IFile selectedFile) {
@@ -61,8 +65,9 @@ public class CommitAction implements IObjectActionDelegate {
 				client = WebDavClientFactory.createClient(new URL(props.getRepository()));
 				WebDavServerCache.cacheWebDavClient(props.getRepository(), client);
 			}
+			ResourceProperties remoteProps = null;
 			try {
-				client.putResource(props.getFullpath(), selectedFile.getContents());
+				remoteProps = client.queryProperties(props.getFullpath());
 			} catch (WebDavException wde) {
 				if (wde.getErrorCode() != IResponse.SC_UNAUTHORIZED) {
 					// If not an authentication failure, we don't know what to do with it
@@ -71,16 +76,33 @@ public class CommitAction implements IObjectActionDelegate {
 				boolean retry = PlatformUtils.getInstance().
 									authenticateForServer(props.getRepository(), client); 
 				if (retry) {
-					client.putResource(props.getFullpath(), selectedFile.getContents());
+					remoteProps = client.queryProperties(props.getFullpath());
 				}
 			}
-			GuvnorMetadataUtils.markCurrentGuvnorResource(selectedFile);
-			ResourceProperties resProps = client.queryProperties(props.getFullpath());
-			GuvnorMetadataProps mdProps = GuvnorMetadataUtils.getGuvnorMetadata(selectedFile);
-			mdProps.setVersion(resProps.getLastModifiedDate());
-			mdProps.setRevision(resProps.getRevision());
-			GuvnorMetadataUtils.setGuvnorMetadataProps(selectedFile.getFullPath(), mdProps);
-			PlatformUtils.updateDecoration();
+			if (remoteProps == null) {
+				throw new Exception("Could not retrieve server version of " + props.getFullpath());
+			}
+			// Check to make sure that the version in the repository is the same as the base
+			// version for the local copy
+			boolean proceed = true;
+			if (!props.getRevision().equals(remoteProps.getRevision())) {
+				String msg = "The Guvnor revision for " + selectedFile.getName() + " is " +
+				             remoteProps.getRevision() + ", but the local copy is based on revision " +
+				             props.getRevision() + 
+				             ".\r\nOverwrite Guvnor repository revision with current local file contents?";
+				proceed = MessageDialog.openQuestion(targetPart.getSite().getShell(), 
+						                            "Revision Conflict", msg);
+						
+			}
+			if (proceed) {
+				client.putResource(props.getFullpath(), selectedFile.getContents());
+				GuvnorMetadataUtils.markCurrentGuvnorResource(selectedFile);
+				ResourceProperties resProps = client.queryProperties(props.getFullpath());
+				GuvnorMetadataProps mdProps = GuvnorMetadataUtils.getGuvnorMetadata(selectedFile);
+				mdProps.setVersion(resProps.getLastModifiedDate());
+				mdProps.setRevision(resProps.getRevision());
+				GuvnorMetadataUtils.setGuvnorMetadataProps(selectedFile.getFullPath(), mdProps);
+			}
 		} catch (Exception e) {
 			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
 		}

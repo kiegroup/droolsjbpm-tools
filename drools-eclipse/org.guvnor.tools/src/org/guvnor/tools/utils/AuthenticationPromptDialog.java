@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.guvnor.tools.Activator;
+import org.guvnor.tools.preferences.GuvnorPreferencePage;
 
 /**
  * A dialog for collecting user authentication information
@@ -85,14 +86,16 @@ public class AuthenticationPromptDialog extends TitleAreaDialog {
 		});
 		// WTF? setSelection(true) is not picked up by the control, so we have to set 
 		// this initial value explicitly. After that toggle seems to work...
-		saveInfo = true;
-		cbSavePassword.setSelection(true);
+		boolean shouldSavePasswords = GuvnorPreferencePage.shouldSavePasswords();
+		saveInfo = shouldSavePasswords;
+		cbSavePassword.setSelection(shouldSavePasswords);
 		
 		new Label(pwgroup, SWT.NONE).setText("Save user name and password");
 		
 		new Label(composite, SWT.NONE).setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		warningLabel = new Label(composite, SWT.WRAP);
 		warningLabel.setText("NOTE: Saved passwords are stored on your computer in a file that is difficult, but not impossible, for an intruder to read.");
+		warningLabel.setEnabled(shouldSavePasswords);
 		
 		return super.createDialogArea(parent);
 	}

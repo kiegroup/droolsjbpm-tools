@@ -43,6 +43,7 @@ public class DisconnectAction implements IObjectActionDelegate {
 			return;
 		}
 		disconnect(selectedItems);
+		PlatformUtils.updateDecoration();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -62,7 +63,6 @@ public class DisconnectAction implements IObjectActionDelegate {
 			toDelete.toArray(mdFiles);
 			IWorkspace ws = Activator.getDefault().getWorkspace();
 			ws.delete(mdFiles, true, null);
-			PlatformUtils.updateDecoration();
 		} catch (CoreException e) {
 			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
 		}

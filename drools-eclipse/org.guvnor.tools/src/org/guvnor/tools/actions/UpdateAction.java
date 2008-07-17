@@ -38,8 +38,7 @@ public class UpdateAction implements IObjectActionDelegate {
 	/*
 	 * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
 	 */
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-	}
+	public void setActivePart(IAction action, IWorkbenchPart targetPart) { }
 
 	/*
 	 * @throws Exception 
@@ -54,6 +53,7 @@ public class UpdateAction implements IObjectActionDelegate {
 				processUpdate((IFile)oneItem);
 			}
 		}
+		PlatformUtils.updateDecoration();
 	}
 	
 	private void processUpdate(IFile selectedFile) {
@@ -89,7 +89,6 @@ public class UpdateAction implements IObjectActionDelegate {
 				mdProps.setVersion(resProps.getLastModifiedDate());
 				mdProps.setRevision(resProps.getRevision());
 				GuvnorMetadataUtils.setGuvnorMetadataProps(selectedFile.getFullPath(), mdProps);
-				PlatformUtils.updateDecoration();
 			}
 		} catch (Exception e) {
 			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
@@ -104,12 +103,78 @@ public class UpdateAction implements IObjectActionDelegate {
 		}
 	}
 	
+	private ResourceProperties getRemoteResourceProps(IFile file, GuvnorMetadataProps localProps) {
+		ResourceProperties remoteProps = null;
+		try {
+			IWebDavClient client = WebDavServerCache.getWebDavClient(localProps.getRepository());
+			if (client == null) {
+				client = WebDavClientFactory.createClient(new URL(localProps.getRepository()));
+				WebDavServerCache.cacheWebDavClient(localProps.getRepository(), client);
+			}
+			try {
+				remoteProps = client.queryProperties(localProps.getFullpath());
+			} catch (WebDavException wde) {
+				if (wde.getErrorCode() != IResponse.SC_UNAUTHORIZED) {
+					// If not an authentication failure, we don't know what to do with it
+					throw wde;
+				}
+				boolean retry = PlatformUtils.getInstance().
+									authenticateForServer(localProps.getRepository(), client); 
+				if (retry) {
+					remoteProps = client.queryProperties(localProps.getFullpath());
+				}
+			}
+		} catch (Exception e) {
+			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+		}
+		return remoteProps;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private boolean hasChangedRevision(ISelection selection) {
+		boolean res = true;
+		try {
+			if (!(selection instanceof IStructuredSelection)) {
+				return false;
+			}
+			IStructuredSelection sel = (IStructuredSelection)selection;
+			for (Iterator<Object> it = sel.iterator(); it.hasNext();) {
+				Object oneSelection = it.next();
+				if (oneSelection instanceof IFile) {
+					GuvnorMetadataProps localProps = 
+						GuvnorMetadataUtils.getGuvnorMetadata((IFile)oneSelection);
+					if (localProps != null) {
+						ResourceProperties remoteProps = 
+							getRemoteResourceProps((IFile)oneSelection, localProps);
+						if (remoteProps == null) {
+							res = false;
+							break;
+						}
+						if (remoteProps.getRevision().equals(localProps.getRevision())) {
+							res = false;
+							break;
+						}
+					} else {
+						res = false;
+						break;
+					}
+				}
+			}
+		} catch (Exception e) {
+			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+			res = false;
+		}
+		return res;
+	}
+	
 	/*
 	 * @see IActionDelegate#selectionChanged(IAction, ISelection)
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
-		boolean validResourceSet = ActionUtils.checkResourceSet(selection, true) 
-                                   && ActionUtils.areFilesDirty(selection);
+		boolean validResourceSet = 
+			(ActionUtils.checkResourceSet(selection, true) && ActionUtils.areFilesDirty(selection))
+			|| hasChangedRevision(selection);
+		
 		if (validResourceSet) {
 			action.setEnabled(true);
 			selectedItems = (IStructuredSelection)selection;

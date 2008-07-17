@@ -155,7 +155,11 @@
               name="%category.name"
 	          class="org.guvnor.tools.properties.GuvnorWorkspaceFilePage"/>
   </extension>
-  
+  <extension point="org.eclipse.ui.preferencePages">
+		<page name="%preferences.guvnor.page"  
+		      class="org.guvnor.tools.preferences.GuvnorPreferencePage" 
+		      id="org.guvnor.tools.preferences.guvnorpreferencepage"/>
+  </extension>
   <extension point="org.eclipse.ui.decorators">
       <decorator lightweight="true" adaptable="true" 
                  label="%category.name" state="true"

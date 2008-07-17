@@ -123,7 +123,6 @@ public class AddResourceWizard extends Wizard implements INewWizard, IGuvnorWiza
 					                           fullPath, resProps.getLastModifiedDate(),
 					                           resProps.getRevision());
 				GuvnorMetadataUtils.setGuvnorMetadataProps(selectedFile.getFullPath(), mdProps);
-				PlatformUtils.updateDecoration();
 			}
 		} catch (Exception e) {
 			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
@@ -145,6 +144,7 @@ public class AddResourceWizard extends Wizard implements INewWizard, IGuvnorWiza
 				}
 			}
 		}
+		PlatformUtils.updateDecoration();
 		return res;
 	}
 	

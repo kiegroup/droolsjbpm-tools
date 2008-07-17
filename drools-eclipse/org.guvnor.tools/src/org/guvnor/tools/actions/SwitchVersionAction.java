@@ -63,6 +63,7 @@ public class SwitchVersionAction implements IObjectActionDelegate {
 					                getVersionEntries());
 		if (dialog.open() == VersionChooserDialog.OK) {
 			updateSelectedFile(dialog.getSelectedEntry());
+			PlatformUtils.updateDecoration();
 		}
  	}
 	
@@ -78,7 +79,6 @@ public class SwitchVersionAction implements IObjectActionDelegate {
 				mdProps.setVersion(verInfo.getDate());
 				mdProps.setRevision(verInfo.getRevision());
 				GuvnorMetadataUtils.setGuvnorMetadataProps(selectedFile.getFullPath(), mdProps);
-				PlatformUtils.updateDecoration();
 			}
 		} catch (Exception e) {
 			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);

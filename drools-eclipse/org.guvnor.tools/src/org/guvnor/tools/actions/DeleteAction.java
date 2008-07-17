@@ -69,6 +69,7 @@ public class DeleteAction implements IObjectActionDelegate {
 		}
 		DisconnectAction dsAction = new DisconnectAction();
 		dsAction.disconnect(selectedItems);
+		PlatformUtils.updateDecoration();
 		PlatformUtils.refreshRepositoryView();
 	}
 

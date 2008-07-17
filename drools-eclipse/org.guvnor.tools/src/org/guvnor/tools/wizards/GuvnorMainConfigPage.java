@@ -5,6 +5,7 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.wizard.IWizardContainer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -23,6 +24,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.guvnor.tools.Activator;
+import org.guvnor.tools.preferences.GuvnorPreferencePage;
 import org.guvnor.tools.utils.PlatformUtils;
 
 public class GuvnorMainConfigPage extends WizardPage {
@@ -111,15 +113,18 @@ public class GuvnorMainConfigPage extends WizardPage {
 			}
 			
 		});
+		
+		boolean shouldSavePasswords = GuvnorPreferencePage.shouldSavePasswords();
 		// WTF? setSelection(true) is not picked up by the control, so we have to set 
 		// this initial value explicitly. After that toggle seems to work...
-		saveAuthInfo = true;
-		cbSavePassword.setSelection(true);
+		saveAuthInfo = shouldSavePasswords;
+		cbSavePassword.setSelection(shouldSavePasswords);
 		
 		new Label(pwgroup, SWT.NONE).setText("Save user name and password");
 		new Label(composite, SWT.NONE).setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		warningLabel = new Label(composite, SWT.WRAP);
 		warningLabel.setText("NOTE: Saved passwords are stored on your computer in a file that is difficult, but not impossible, for an intruder to read.");
+		warningLabel.setEnabled(shouldSavePasswords);
 		
 		super.setControl(composite);
 	}
@@ -192,7 +197,10 @@ public class GuvnorMainConfigPage extends WizardPage {
 		} catch (Exception e) {
 			model.setRepLocation(null);
 		}
-		super.getWizard().getContainer().updateButtons();
+		IWizardContainer container = super.getWizard().getContainer();
+		if (container != null) {
+			container.updateButtons();
+		}
 	}
 
 	private URL validateUrl() throws Exception {
@@ -242,5 +250,20 @@ public class GuvnorMainConfigPage extends WizardPage {
 	public boolean isPageComplete() {
 		GuvWizardModel model = ((IGuvnorWizard)super.getWizard()).getModel();
 		return model.getRepLocation() != null;
+	}
+	
+	private boolean initialized = false;
+	
+	@Override
+	public void setVisible(boolean visible) {
+		if (visible && !initialized) {
+			// See if there is a preference setting for the default values and, if so, use it
+			String guvnorLocTemplate = GuvnorPreferencePage.getGuvnorTemplatePref();
+			if (guvnorLocTemplate != null && guvnorLocTemplate.trim().length() > 0) {
+				parseCandidateUrl(guvnorLocTemplate);
+			}
+			initialized = true;
+		}
+		super.setVisible(visible);
 	}
 }
