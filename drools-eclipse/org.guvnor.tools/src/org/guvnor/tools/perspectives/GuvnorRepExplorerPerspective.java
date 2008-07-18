@@ -4,19 +4,24 @@ import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.guvnor.tools.views.IGuvnorConstants;
-
+/**
+ * Definition of the Guvnor repository perspective.
+ * @author jgraham
+ */
 public class GuvnorRepExplorerPerspective implements IPerspectiveFactory {
 
 	public void createInitialLayout(IPageLayout layout) {
 		String editorArea = layout.getEditorArea();
 		IFolderLayout top =
-			layout.createFolder("top", IPageLayout.LEFT, 0.40f, editorArea);	//$NON-NLS-1$
+			layout.createFolder("top", IPageLayout.LEFT, 0.30f, editorArea);
 		top.addView(IGuvnorConstants.REPVIEW_ID);
 		IFolderLayout botLeft = 
 			layout.createFolder("botleft", IPageLayout.BOTTOM, 0.70f, "top");
-//		botLeft.addView(IPageLayout.ID_OUTLINE);
 		botLeft.addView(IPageLayout.ID_PROP_SHEET);
 		layout.addView(IGuvnorConstants.RESHISTORYVIEW_ID, IPageLayout.BOTTOM, 0.70f, editorArea);
+		IFolderLayout right =
+			layout.createFolder("right", IPageLayout.RIGHT, 0.70f, editorArea);
+		right.addView(IPageLayout.ID_RES_NAV);
 		layout.setEditorAreaVisible(true);
 		
 		addActions(layout);

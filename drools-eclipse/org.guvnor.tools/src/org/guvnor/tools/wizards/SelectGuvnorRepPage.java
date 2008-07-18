@@ -8,7 +8,6 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.guvnor.tools.Activator;
 import org.guvnor.tools.GuvnorRepository;
@@ -29,9 +28,7 @@ public class SelectGuvnorRepPage extends WizardPage {
 	}
 	
 	public void createControl(Composite parent) {
-		Composite composite = PlatformUtils.createComposite(parent, 1);
-		new Label(composite, SWT.NONE).setText("This wizard allow you to check out resource from a Guvnor repository");
-		
+		Composite composite = PlatformUtils.createComposite(parent, 1);		
 		createRep = new Button(composite, SWT.RADIO);
 		createRep.setText("Create a new Guvnor repository location");
 		createRep.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
