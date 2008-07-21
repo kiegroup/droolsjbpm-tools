@@ -8,7 +8,10 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -72,6 +75,27 @@ public class Activator extends AbstractUIPlugin {
 	public void writeLog(int severity, String msg, Throwable t) {
 		IStatus status = new Status(severity, PLUGIN_ID, msg, t);
 		super.getLog().log(status);
+	}
+	
+	public void displayMessage(final int severity, final String msg) {
+		final Display display = PlatformUI.getWorkbench().getDisplay();
+		display.syncExec(new Runnable() {
+			public void run() {
+				switch (severity) {
+					case IStatus.ERROR:
+						MessageDialog.openError(display.getActiveShell(), "Error", msg);
+					break;
+					case IStatus.WARNING:
+						MessageDialog.openWarning(display.getActiveShell(), "Warning", msg);
+					break;
+				}
+			}
+		});
+	}
+	
+	public void displayError(int severity, String msg, Throwable t) {
+		writeLog(severity, msg, t);
+		displayMessage(severity, msg);
 	}
 	
 	/**

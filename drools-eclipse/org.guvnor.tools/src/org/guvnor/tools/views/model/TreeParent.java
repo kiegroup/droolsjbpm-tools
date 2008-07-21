@@ -129,10 +129,10 @@ public class TreeParent extends TreeObject implements IDeferredWorkbenchAdapter 
 				if (e.getErrorCode() == IResponse.SC_UNAUTHORIZED) {
 					PlatformUtils.reportAuthenticationFailure();
 				} else {
-					Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+					Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e);
 				}
 			} catch (Exception e) {
-				Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+				Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e);
 			}
 		}
 		

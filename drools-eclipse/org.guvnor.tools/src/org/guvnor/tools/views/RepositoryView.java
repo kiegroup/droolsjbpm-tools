@@ -128,7 +128,7 @@ public class RepositoryView extends ViewPart {
 					// for the server, currently we do not have a situation requiring authentication
 					// for specific files. This might be different in the future if the Guvnor security
 					// model changes, or users can directly connect to specific files.
-					Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+					Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e);
 				}
 			}
 			
@@ -326,7 +326,7 @@ public class RepositoryView extends ViewPart {
 				// for the server, currently we do not have a situation requiring authentication
 				// for specific files. This might be different in the future if the Guvnor security
 				// model changes, or users can directly connect to specific files.
-				Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+				Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e);
 			}
 		}
 	}

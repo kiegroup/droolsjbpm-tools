@@ -123,8 +123,6 @@ public class WebDavClient implements IWebDavClient {
 					resProps.setRevision(revision);
 				} 
 			}
-		} catch (Exception e) {
-			Activator.getDefault().writeLog(IStatus.WARNING, e.getMessage(), e);
 		} finally {
 			if (response != null) {
 				response.close();
@@ -194,8 +192,6 @@ public class WebDavClient implements IWebDavClient {
 				Exception nfe = new Exception("Failed to get Guvnor properties for " + filename);
 				Activator.getDefault().writeLog(IStatus.WARNING, nfe.getMessage(), nfe);
 			}
-		} catch (Exception e) {
-			Activator.getDefault().writeLog(IStatus.WARNING, e.getMessage(), e);
 		} finally {
 			if (response != null) {
 				response.close();

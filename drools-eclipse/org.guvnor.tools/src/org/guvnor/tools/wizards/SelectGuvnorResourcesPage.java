@@ -64,7 +64,7 @@ public class SelectGuvnorResourcesPage extends WizardPage {
 				WizardUtils.createGuvnorRepository(model);
 			} catch (Exception e) {
 				super.setErrorMessage(e.getMessage());
-				Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+				Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e);
 			}
 		}
 	}

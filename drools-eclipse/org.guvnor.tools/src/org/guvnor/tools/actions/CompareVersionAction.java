@@ -91,7 +91,7 @@ public class CompareVersionAction implements IObjectActionDelegate {
 						                 rightContents, "UTF-8");
 			CompareUI.openCompareEditorOnPage(new GuvnorCompareEditorInput(left, right), page);
 		} catch (Exception e) {
-			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+			Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e);
 		} finally {
 			if (response != null) {
 				try {

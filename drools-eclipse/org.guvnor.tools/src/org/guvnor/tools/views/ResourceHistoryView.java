@@ -176,7 +176,7 @@ public class ResourceHistoryView extends ViewPart {
 					PlatformUtils.openEditor(contents, editorTitle + ", " + theEntry.getRevision());
 				}
 			} catch (Exception e) {
-				Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+				Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e);
 			}
 		}
 	}
