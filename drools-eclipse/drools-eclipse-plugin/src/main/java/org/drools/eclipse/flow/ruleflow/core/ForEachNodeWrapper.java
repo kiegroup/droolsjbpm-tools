@@ -53,8 +53,8 @@ public class ForEachNodeWrapper extends CompositeNodeWrapper {
 
     public boolean acceptsOutgoingConnection(ElementConnection connection, ElementWrapper target) {
         return target == null
-			|| (target.getParent() == getParent() && getOutgoingConnections().isEmpty())
-			|| (target.getParent() == this && getForEachNode().getLinkedIncomingNode(Node.CONNECTION_DEFAULT_TYPE) == null);
+			|| (target.getParent() == getParent() && getOutgoingConnections().isEmpty());
+//			|| (target.getParent() == this && getForEachNode().getLinkedIncomingNode(Node.CONNECTION_DEFAULT_TYPE) == null);
     }
     
     public Object getPropertyValue(Object id) {
