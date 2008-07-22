@@ -21,6 +21,7 @@ import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.core.node.CompositeNode;
 import org.drools.workflow.core.node.EndNode;
+import org.drools.workflow.core.node.ForEachNode;
 import org.drools.workflow.core.node.HumanTaskNode;
 import org.drools.workflow.core.node.Join;
 import org.drools.workflow.core.node.MilestoneNode;
@@ -48,7 +49,7 @@ public class RuleFlowWrapperBuilder implements ProcessWrapperBuilder {
         return null;
     }
     
-    private static void processNodes(Set<Node> nodes, Set<Connection> connections, ElementContainer container, IJavaProject project) {
+    public static void processNodes(Set<Node> nodes, Set<Connection> connections, ElementContainer container, IJavaProject project) {
         Map<Node, NodeWrapper> nodeWrappers = new HashMap<Node, NodeWrapper>();
         for (Node node: nodes) {
             NodeWrapper nodeWrapper = getNodeWrapper(node, project);
@@ -66,17 +67,26 @@ public class RuleFlowWrapperBuilder implements ProcessWrapperBuilder {
                     connections.add(connection);
                 }
             }
+            if (node instanceof CompositeNode) {
+            	Set<Node> subNodes = new HashSet<Node>();
+            	for (Node subNode: ((CompositeNode) node).getNodes()) {
+            		subNodes.add(subNode);
+            	}
+            	processNodes(subNodes, new HashSet<Connection>(), (CompositeNodeWrapper) nodeWrapper, project);
+            }
         }
         for (Connection connection: connections) {
             ConnectionWrapper connectionWrapper = new ConnectionWrapper();
             connectionWrapper.localSetConnection(connection);
             connectionWrapper.localSetBendpoints(null);
             NodeWrapper from = nodeWrappers.get(connection.getFrom());
-            connectionWrapper.localSetSource(from);
-            from.localAddOutgoingConnection(connectionWrapper);
             NodeWrapper to = nodeWrappers.get(connection.getTo());
-            connectionWrapper.localSetTarget(to);
-            to.localAddIncomingConnection(connectionWrapper);
+            if (from != null && to != null) {
+	            connectionWrapper.localSetSource(from);
+	            from.localAddOutgoingConnection(connectionWrapper);
+	            connectionWrapper.localSetTarget(to);
+	            to.localAddIncomingConnection(connectionWrapper);
+            }
         }
     }
     
@@ -91,6 +101,8 @@ public class RuleFlowWrapperBuilder implements ProcessWrapperBuilder {
             return new RuleSetNodeWrapper();
         } else if (node instanceof SubProcessNode) {
             return new SubProcessWrapper();
+        } else if (node instanceof ForEachNode) {
+            return new ForEachNodeWrapper();
         } else if (node instanceof CompositeNode) {
             return new CompositeNodeWrapper();
         } else if (node instanceof Join) {

@@ -23,6 +23,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
@@ -37,9 +39,15 @@ public abstract class DefaultElementWrapper implements ElementWrapper, IProperty
     protected static IPropertyDescriptor[] descriptors;
 
     public static final String NAME = "Name";
+    public static final String ID = "Id";
     static {
         descriptors = new IPropertyDescriptor[] {
             new TextPropertyDescriptor(NAME, "Name"),
+            new TextPropertyDescriptor(ID, "Id") {
+            	public CellEditor createPropertyEditor(Composite parent) {
+                    return null;
+                }
+            },
         };
     }
     
@@ -179,6 +187,9 @@ public abstract class DefaultElementWrapper implements ElementWrapper, IProperty
 	public Object getPropertyValue(Object id) {
 		if (NAME.equals(id)) {
 			return getName();
+		}
+		if (ID.equals(id)) {
+			return getId();
 		}
 		return null;
 	}

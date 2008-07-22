@@ -3,6 +3,7 @@ package org.drools.eclipse.flow.ruleflow.core;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementContainerElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
+import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.CompositeNode;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -65,14 +66,16 @@ public class CompositeNodeWrapper extends ElementContainerElementWrapper impleme
     
     public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
         return getIncomingConnections().isEmpty()
-        	&& (source == null || 
-    			((NodeWrapper) source).getNode().getNodeContainer() == getNode().getNodeContainer());
+        	&& (source == null
+    			|| ((NodeWrapper) source).getNode().getNodeContainer() == getNode().getNodeContainer()
+    			|| ((NodeWrapper) source).getNode().getNodeContainer() == getNode());
     }
 
     public boolean acceptsOutgoingConnection(ElementConnection connection, ElementWrapper target) {
         return getOutgoingConnections().isEmpty()
-        	&& (target == null || 
-    			((NodeWrapper) target).getNode().getNodeContainer() == getNode().getNodeContainer());
+        	&& (target == null
+    			|| ((NodeWrapper) target).getNode().getNodeContainer() == getNode().getNodeContainer()
+        		|| ((NodeWrapper) target).getNode().getNodeContainer() == getNode());
     }
 
     protected void internalAddElement(ElementWrapper element) {
@@ -82,5 +85,5 @@ public class CompositeNodeWrapper extends ElementContainerElementWrapper impleme
     protected void internalRemoveElement(ElementWrapper element) {
         getCompositeNode().removeNode(((NodeWrapper) element).getNode());
     }
-
+ 
 }

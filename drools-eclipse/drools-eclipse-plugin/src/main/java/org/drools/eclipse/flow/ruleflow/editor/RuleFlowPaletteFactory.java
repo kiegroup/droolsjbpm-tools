@@ -25,6 +25,7 @@ import org.drools.eclipse.flow.ruleflow.core.CompositeNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper;
 import org.drools.eclipse.flow.ruleflow.core.ConnectionWrapperFactory;
 import org.drools.eclipse.flow.ruleflow.core.EndNodeWrapper;
+import org.drools.eclipse.flow.ruleflow.core.ForEachNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.HumanTaskNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.JoinWrapper;
 import org.drools.eclipse.flow.ruleflow.core.MilestoneWrapper;
@@ -183,6 +184,16 @@ public class RuleFlowPaletteFactory {
 //        );
 //        entries.add(combined);
                           
+	      combined = new CombinedTemplateCreationEntry(
+		      "ForEach Node",
+		      "Create a new ForEach Node",
+		      ForEachNodeWrapper.class,
+		      new SimpleFactory(ForEachNodeWrapper.class),
+		      ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/composite.gif")), 
+		      ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/composite.gif"))
+		  );
+		  entries.add(combined);
+                    
         drawer.addAll(entries);
         return drawer;
     }

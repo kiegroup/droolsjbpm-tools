@@ -73,12 +73,14 @@ public abstract class AbstractNodeWrapper extends DefaultElementWrapper implemen
 
     public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
         return source == null
-    		|| ((NodeWrapper) source).getNode().getNodeContainer() == getNode().getNodeContainer();
+    		|| source.getParent() == getParent()
+    		|| getParent() == source;
     }
 
     public boolean acceptsOutgoingConnection(ElementConnection connection, ElementWrapper target) {
         return target == null
-    		|| ((NodeWrapper) target).getNode().getNodeContainer() == getNode().getNodeContainer();
+    		|| ((NodeWrapper) target).getNode().getNodeContainer() == getNode().getNodeContainer()
+    		|| ((NodeWrapper) target).getNode() == getNode().getNodeContainer();
     }
     
 }
