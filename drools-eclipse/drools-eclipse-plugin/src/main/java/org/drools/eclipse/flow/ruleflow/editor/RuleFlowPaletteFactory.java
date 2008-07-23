@@ -21,10 +21,10 @@ import java.util.List;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.editor.core.ElementConnectionFactory;
 import org.drools.eclipse.flow.ruleflow.core.ActionWrapper;
-import org.drools.eclipse.flow.ruleflow.core.CompositeNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper;
 import org.drools.eclipse.flow.ruleflow.core.ConnectionWrapperFactory;
 import org.drools.eclipse.flow.ruleflow.core.EndNodeWrapper;
+import org.drools.eclipse.flow.ruleflow.core.EventNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.ForEachNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.HumanTaskNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.JoinWrapper;
@@ -163,7 +163,17 @@ public class RuleFlowPaletteFactory {
             ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/timer.gif"))
         );
         entries.add(combined);
-                          
+                      
+        combined = new CombinedTemplateCreationEntry(
+		    "Event",
+		    "Create a new Event Node",
+		    EventNodeWrapper.class,
+		    new SimpleFactory(EventNodeWrapper.class),
+		    ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/event.gif")), 
+		    ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/event.gif"))
+		);
+		entries.add(combined);
+	                    
         combined = new CombinedTemplateCreationEntry(
             "Human Task",
             "Create a new Human Task",

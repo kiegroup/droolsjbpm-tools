@@ -21,6 +21,7 @@ import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.core.node.CompositeNode;
 import org.drools.workflow.core.node.EndNode;
+import org.drools.workflow.core.node.EventNode;
 import org.drools.workflow.core.node.ForEachNode;
 import org.drools.workflow.core.node.HumanTaskNode;
 import org.drools.workflow.core.node.Join;
@@ -131,6 +132,8 @@ public class RuleFlowWrapperBuilder implements ProcessWrapperBuilder {
                 workItemWrapper.setWorkDefinition(workDefinition);
             }
             return workItemWrapper;
+        } else if (node instanceof EventNode) {
+            return new EventNodeWrapper();
         }
         throw new IllegalArgumentException(
             "Could not find node wrapper for node " + node);

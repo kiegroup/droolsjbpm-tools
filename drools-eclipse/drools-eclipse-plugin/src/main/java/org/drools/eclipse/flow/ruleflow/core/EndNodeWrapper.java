@@ -15,9 +15,12 @@ package org.drools.eclipse.flow.ruleflow.core;
  * limitations under the License.
  */
 
+import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.workflow.core.node.EndNode;
+import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
+import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
 /**
  * Wrapper for an end node.
@@ -26,8 +29,18 @@ import org.drools.workflow.core.node.EndNode;
  */
 public class EndNodeWrapper extends AbstractNodeWrapper {
 
-    private static final long serialVersionUID = 400L;
+    public static final String TERMINATE = "terminate";
 
+    private static final long serialVersionUID = 400L;
+    private static IPropertyDescriptor[] descriptors;
+
+    static {
+        descriptors = new IPropertyDescriptor[DefaultElementWrapper.descriptors.length + 1];
+        System.arraycopy(DefaultElementWrapper.descriptors, 0, descriptors, 0, DefaultElementWrapper.descriptors.length);
+        descriptors[descriptors.length - 1] = 
+            new ComboBoxPropertyDescriptor(TERMINATE, "Terminate", new String[] { "true", "false" });
+    }
+    
     public EndNodeWrapper() {
         setNode(new EndNode());
         getEndNode().setName("End");
@@ -37,6 +50,33 @@ public class EndNodeWrapper extends AbstractNodeWrapper {
         return (EndNode) getNode();
     }
     
+    public IPropertyDescriptor[] getPropertyDescriptors() {
+        return descriptors;
+    }
+
+    public Object getPropertyValue(Object id) {
+        if (TERMINATE.equals(id)) {
+            return getEndNode().isTerminate() ? new Integer(0) : new Integer(1);
+        }
+        return super.getPropertyValue(id);
+    }
+
+    public void resetPropertyValue(Object id) {
+        if (TERMINATE.equals(id)) {
+            getEndNode().setTerminate(true);
+        } else {
+            super.resetPropertyValue(id);
+        }
+    }
+
+    public void setPropertyValue(Object id, Object value) {
+        if (TERMINATE.equals(id)) {
+            getEndNode().setTerminate(((Integer) value).intValue() == 0);
+        } else {
+            super.setPropertyValue(id, value);
+        }
+    }
+
     public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
         return super.acceptsIncomingConnection(connection, source)
         	&& getIncomingConnections().isEmpty();

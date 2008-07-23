@@ -22,6 +22,7 @@ import org.drools.eclipse.flow.ruleflow.core.ActionWrapper;
 import org.drools.eclipse.flow.ruleflow.core.CompositeNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper;
 import org.drools.eclipse.flow.ruleflow.core.EndNodeWrapper;
+import org.drools.eclipse.flow.ruleflow.core.EventNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.ForEachNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.JoinWrapper;
 import org.drools.eclipse.flow.ruleflow.core.MilestoneWrapper;
@@ -79,6 +80,8 @@ public class RuleFlowEditPartFactory implements ProcessEditPartFactory {
             result = new ForEachNodeEditPart();
         } else if (model instanceof CompositeNodeWrapper) {
             result = new ElementContainerEditPart();
+        } else if (model instanceof EventNodeWrapper) {
+            result = new EventNodeEditPart();
         } else {
             throw new IllegalArgumentException(
                 "Unknown model object " + model);
