@@ -281,12 +281,12 @@ public class WebDavClient implements IWebDavClient {
 					throw new WebDavException(response);
 				}
 			}
-			return res;
 		} finally {
 			if (response != null) {
 				response.close();
 			}
 		}
+		return res;
 	}
 	
 	/*
@@ -299,7 +299,8 @@ public class WebDavClient implements IWebDavClient {
 			ILocator locator = WebDAVFactory.locatorFactory.newLocator(resource);
 			response = client.put(locator, createContext(), is);
 			if (response.getStatusCode() != IResponse.SC_OK
-		       && response.getStatusCode() != IResponse.SC_NO_CONTENT) {
+		       && response.getStatusCode() != IResponse.SC_NO_CONTENT
+		       && response.getStatusCode() != IResponse.SC_CREATED) {
 				throw new WebDavException(response);
 			}
 		} finally {

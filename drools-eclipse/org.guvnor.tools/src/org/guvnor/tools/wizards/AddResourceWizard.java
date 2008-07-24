@@ -1,5 +1,6 @@
 package org.guvnor.tools.wizards;
 
+import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.Iterator;
 
@@ -96,10 +97,16 @@ public class AddResourceWizard extends Wizard implements INewWizard, IGuvnorWiza
 				WebDavServerCache.cacheWebDavClient(model.getRepLocation(), client);
 			}
 			try {
-				res = client.createResource(fullPath, selectedFile.getContents(), false);
+				// Hack: When creating a file, if the actual contents are passed first,
+				// the client hangs for about 20 seconds when closing the InputStream.
+				// Don't know why...
+				// But, if the file is created with empty contents, and then the contents
+				// set, the operation is fast (less than a couple of seconds)
+				res = client.createResource(fullPath, new ByteArrayInputStream(new byte[0]), false);
 				if (!res) {
 					setDuplicateFileError(selectedFile);
 				}
+				client.putResource(fullPath, selectedFile.getContents());
 			} catch (WebDavException wde) {
 				if (wde.getErrorCode() != IResponse.SC_UNAUTHORIZED) {
 					// If not an authentication failure, we don't know what to do with it
@@ -108,10 +115,12 @@ public class AddResourceWizard extends Wizard implements INewWizard, IGuvnorWiza
 				boolean retry = PlatformUtils.getInstance().
 									authenticateForServer(model.getRepLocation(), client); 
 				if (retry) {
-					res = client.createResource(fullPath, selectedFile.getContents());
+					// See Hack note immediately above...
+					res = client.createResource(fullPath, new ByteArrayInputStream(new byte[0]), false);
 					if (!res) {
 						setDuplicateFileError(selectedFile);
 					}
+					client.putResource(fullPath, selectedFile.getContents());
 				}
 			}
 			if (res) {
