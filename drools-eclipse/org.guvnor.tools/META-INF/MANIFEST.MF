@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %plugin.name
 Bundle-SymbolicName: org.guvnor.tools;singleton:=true
-Bundle-Version: 0.6.0.200807241535
+Bundle-Version: 0.6.0.200807241635
 Bundle-Activator: org.guvnor.tools.Activator
 Bundle-Vendor: %plugin.provider
 Bundle-Localization: plugin
@@ -13,3 +13,13 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.compare,
  org.eclipse.webdav
 Eclipse-LazyStart: true
+Export-Package: org.guvnor.tools,
+ org.guvnor.tools.actions,
+ org.guvnor.tools.perspectives,
+ org.guvnor.tools.preferences,
+ org.guvnor.tools.properties,
+ org.guvnor.tools.utils,
+ org.guvnor.tools.utils.webdav,
+ org.guvnor.tools.views,
+ org.guvnor.tools.views.model,
+ org.guvnor.tools.wizards
