@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IStorageEditorInput;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -67,8 +68,15 @@ public class PlatformUtils {
 	 * Causes the platform to update Guvnor decoration notions.
 	 */
 	public static void updateDecoration() {
-		IDecoratorManager manager = Activator.getDefault().getWorkbench().getDecoratorManager();
-		manager.update(GuvnorDecorator.DECORATOR_ID);
+		final IWorkbench workbench = Activator.getDefault().getWorkbench();
+		workbench.getDisplay().syncExec(new Runnable() {
+			public void run() {
+				IDecoratorManager manager = workbench.getDecoratorManager();
+				manager.update(GuvnorDecorator.DECORATOR_ID);
+			}
+		});
+//		IDecoratorManager manager = Activator.getDefault().getWorkbench().getDecoratorManager();
+//		manager.update(GuvnorDecorator.DECORATOR_ID);
 	}
 	
 	/**

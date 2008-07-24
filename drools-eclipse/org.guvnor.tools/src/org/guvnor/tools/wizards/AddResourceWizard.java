@@ -97,6 +97,7 @@ public class AddResourceWizard extends Wizard implements INewWizard, IGuvnorWiza
 				WebDavServerCache.cacheWebDavClient(model.getRepLocation(), client);
 			}
 			try {
+//				res = client.createResource(fullPath, selectedFile.getContents(), false);
 				// Hack: When creating a file, if the actual contents are passed first,
 				// the client hangs for about 20 seconds when closing the InputStream.
 				// Don't know why...
@@ -115,6 +116,7 @@ public class AddResourceWizard extends Wizard implements INewWizard, IGuvnorWiza
 				boolean retry = PlatformUtils.getInstance().
 									authenticateForServer(model.getRepLocation(), client); 
 				if (retry) {
+//					res = client.createResource(fullPath, selectedFile.getContents(), false);
 					// See Hack note immediately above...
 					res = client.createResource(fullPath, new ByteArrayInputStream(new byte[0]), false);
 					if (!res) {
