@@ -105,4 +105,16 @@ public class ObjectWrapper implements IJavaObject {
 	public IJavaObject[] getReferringObjects(long max) throws DebugException {
 		return object.getReferringObjects(max);
 	}
+
+	public void disableCollection() throws DebugException {
+		object.disableCollection();
+	}
+
+	public void enableCollection() throws DebugException {
+		object.enableCollection();
+	}
+
+	public long getUniqueId() throws DebugException {
+		return object.getUniqueId();
+	}
 }
