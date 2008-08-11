@@ -73,7 +73,7 @@
                   <property name="localEclipseDrop" value="${localEclipseDrop}" />
                 </ant>                
                  
-                <java jar="${eclipse.home}/plugins/org.eclipse.equinox.launcher_1.0.1.R33x_v20070828.jar"
+                <java jar="${eclipse.home}/plugins/org.eclipse.equinox.launcher_1.0.100.v20080509-1800.jar"
                       fork="true"
                       failonerror="true"
                       maxmemory="128m">
@@ -167,7 +167,7 @@
                 
                 <echo>-application org.eclipse.ant.core.antRunner -Dbaseos=${baseos} -Dbasews=${basews} -Dbasearch=${basearch} ${mavenTestPhase}</echo>
                  
-                <java jar="${eclipse.home}/plugins/org.eclipse.equinox.launcher_1.0.1.R33x_v20070828.jar"
+                <java jar="${eclipse.home}/plugins/org.eclipse.equinox.launcher_1.0.100.v20080509-1800.jar"
                       fork="true"
                       failonerror="true"
                       maxmemory="128m">
