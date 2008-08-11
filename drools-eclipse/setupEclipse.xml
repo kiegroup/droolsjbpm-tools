@@ -64,7 +64,7 @@
 
   <target name="getGefJar" depends="checkGefJar" unless="skipGetGefJar">
     <mkdir dir="${localEclipseDrop}/tools/gef/${eclipseGefBuildRevision}" />    
-    <get usetimestamp="true" src="${eclipseGefURL}/${eclipseGefBuildRevision}/GEF-runtime-${eclipseGefBuildId}.zip" 
+    <get usetimestamp="true" src="${eclipseGefURL}/${eclipseGefBuildId}/${eclipseGefBuildRevision}/GEF-runtime-${eclipseGefBuildId}.zip" 
          dest="${localEclipseDrop}/tools/gef/${eclipseGefBuildRevision}/GEF-runtime-${eclipseGefBuildId}.zip" />
   </target>      
 
