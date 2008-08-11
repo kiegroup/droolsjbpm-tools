@@ -59,7 +59,7 @@ public class DroolsClasspathContainer implements IClasspathContainer {
         File pluginRoot = new Path(pluginRootString).toFile();
         File[] files = pluginRoot.listFiles();
         for (int i = 0; i < files.length; i++) {
-	        if (files[i].getAbsolutePath().indexOf("org.eclipse.jdt.core_3.3") > -1) {
+	        if (files[i].getAbsolutePath().indexOf("org.eclipse.jdt.core_3.4") > -1) {
 	        	Path path = new Path(files[i].getAbsolutePath());
 	        	list.add(JavaCore.newLibraryEntry(path, path, null));
 	        	break;
