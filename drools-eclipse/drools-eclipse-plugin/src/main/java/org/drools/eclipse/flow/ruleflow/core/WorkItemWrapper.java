@@ -27,6 +27,7 @@ import org.drools.eclipse.flow.ruleflow.view.property.workitem.WorkItemResultMap
 import org.drools.process.core.ParameterDefinition;
 import org.drools.process.core.Work;
 import org.drools.process.core.WorkDefinition;
+import org.drools.process.core.datatype.DataType;
 import org.drools.process.core.impl.WorkImpl;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.WorkItemNode;
@@ -149,11 +150,12 @@ public class WorkItemWrapper extends ExtendedNodeWrapper {
         } else if (id instanceof String) {
             String name = (String) id;
             if (workParameterExists(name)) {
+            	DataType type = getWorkItemNode().getWork().getParameterDefinition(name).getType();
             	Object value = getWorkItemNode().getWork().getParameter(name);
-            	if (value instanceof String) {
-            	    return value;
+            	if (value == null) {
+                	return "";
             	}
-            	return "";
+        	    return type.writeValue(value);
             }
         }
         return super.getPropertyValue(id);
@@ -181,7 +183,8 @@ public class WorkItemWrapper extends ExtendedNodeWrapper {
         } else if (RESULT_MAPPING.equals(id)) {
             getWorkItemNode().setOutMappings((Map<String, String>) value);
         } else if (id instanceof String && workParameterExists((String) id)) {
-            getWorkItemNode().getWork().setParameter((String) id, value);
+        	DataType type = getWorkItemNode().getWork().getParameterDefinition((String) id).getType();
+        	getWorkItemNode().getWork().setParameter((String) id, type.readValue((String) value));
         } else {
             super.setPropertyValue(id, value);
         }

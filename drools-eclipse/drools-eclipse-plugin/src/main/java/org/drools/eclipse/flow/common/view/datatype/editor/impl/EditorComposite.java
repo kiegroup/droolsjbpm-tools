@@ -15,7 +15,7 @@ package org.drools.eclipse.flow.common.view.datatype.editor.impl;
  * limitations under the License.
  */
 
-import java.io.Serializable;import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.InvocationTargetException;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.datatype.DataTypeRegistry;
@@ -77,11 +77,11 @@ public class EditorComposite extends Composite {
         }
     }
     
-    public void setValue(Serializable value) {
+    public void setValue(Object value) {
         editor.setValue(value);
     }
     
-    public Serializable getValue() {
+    public Object getValue() {
         return editor.getValue();
     }
 

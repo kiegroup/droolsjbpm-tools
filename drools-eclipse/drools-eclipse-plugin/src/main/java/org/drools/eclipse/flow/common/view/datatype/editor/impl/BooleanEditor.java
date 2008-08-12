@@ -15,7 +15,7 @@ package org.drools.eclipse.flow.common.view.datatype.editor.impl;
  * limitations under the License.
  */
 
-import java.io.Serializable;import org.drools.eclipse.flow.common.view.datatype.editor.Editor;
+import org.drools.eclipse.flow.common.view.datatype.editor.Editor;
 import org.drools.process.core.datatype.DataType;
 import org.drools.process.core.datatype.impl.type.BooleanDataType;
 import org.eclipse.swt.SWT;
@@ -48,11 +48,11 @@ public class BooleanEditor extends Composite implements Editor {
         }
     }
 
-    public Serializable getValue() {
+    public Object getValue() {
         return Boolean.valueOf(combo.getSelectionIndex() == 0);
     }
     
-    public void setValue(Serializable value) {
+    public void setValue(Object value) {
         if (value == null) {
             combo.select(1);
         } else if (value instanceof Boolean) {

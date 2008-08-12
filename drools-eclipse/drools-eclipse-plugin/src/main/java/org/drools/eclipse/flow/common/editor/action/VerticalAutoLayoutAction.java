@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.eclipse.flow.common.editor.GenericModelEditor;
+import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ProcessWrapper;
-import org.drools.eclipse.flow.ruleflow.core.AbstractNodeWrapper;
 import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.WorkflowProcess;
 import org.eclipse.draw2d.geometry.Dimension;
@@ -60,9 +60,9 @@ public class VerticalAutoLayoutAction extends ActionDelegate implements IEditorA
         layout.visit(graph);
         for (Map.Entry<Long, Node> entry: mapping.entrySet()) {
             Node node = entry.getValue();
-            AbstractNodeWrapper nodeWrapper = (AbstractNodeWrapper)
+            DefaultElementWrapper elementWrapper = (DefaultElementWrapper)
                 ((ProcessWrapper) ((GenericModelEditor) editor).getModel()).getElement(entry.getKey() + "");
-            nodeWrapper.setConstraint(new Rectangle(node.x, node.y, node.width, node.height));
+            elementWrapper.setConstraint(new Rectangle(node.x, node.y, node.width, node.height));
         }
         // TODO: implement changes as a command, so we can support undo
         editor.doSave(null);

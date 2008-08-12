@@ -15,7 +15,7 @@ package org.drools.eclipse.flow.common.view.datatype.editor.impl;
  * limitations under the License.
  */
 
-import java.io.Serializable;import org.drools.eclipse.flow.common.view.datatype.editor.Editor;
+import org.drools.eclipse.flow.common.view.datatype.editor.Editor;
 import org.drools.process.core.datatype.DataType;
 import org.drools.process.core.datatype.impl.type.StringDataType;
 import org.eclipse.swt.SWT;
@@ -44,11 +44,11 @@ public class StringEditor extends Composite implements Editor {
         }
     }
 
-    public Serializable getValue() {
+    public Object getValue() {
         return text.getText();
     }
 
-    public void setValue(Serializable value) {
+    public void setValue(Object value) {
         if (value == null) {
             text.setText("");
         } else if (value instanceof String) {

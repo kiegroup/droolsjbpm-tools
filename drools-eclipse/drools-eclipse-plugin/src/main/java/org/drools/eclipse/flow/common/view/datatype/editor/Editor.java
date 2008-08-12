@@ -15,7 +15,6 @@ package org.drools.eclipse.flow.common.view.datatype.editor;
  * limitations under the License.
  */
 
-import java.io.Serializable;
 import org.drools.process.core.datatype.DataType;
 
 /**
@@ -27,9 +26,9 @@ public interface Editor {
 
     void setDataType(DataType dataType);
     
-	Serializable getValue();
+	Object getValue();
     
-    void setValue(Serializable value);
+    void setValue(Object value);
     
     void reset();
     

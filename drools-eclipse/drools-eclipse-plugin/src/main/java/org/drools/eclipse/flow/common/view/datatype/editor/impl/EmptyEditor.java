@@ -15,7 +15,7 @@ package org.drools.eclipse.flow.common.view.datatype.editor.impl;
  * limitations under the License.
  */
 
-import java.io.Serializable;import org.drools.eclipse.flow.common.view.datatype.editor.DataTypeEditor;
+import org.drools.eclipse.flow.common.view.datatype.editor.DataTypeEditor;
 import org.drools.eclipse.flow.common.view.datatype.editor.Editor;
 import org.drools.process.core.datatype.DataType;
 import org.eclipse.swt.SWT;
@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Label;
 public class EmptyEditor extends Composite implements Editor, DataTypeEditor {
 
     private DataType dataType;
-    private Serializable value;
+    private Object value;
     private Label label;
     
     public EmptyEditor(Composite parent) {
@@ -50,11 +50,11 @@ public class EmptyEditor extends Composite implements Editor, DataTypeEditor {
         this.dataType = dataType;
     }
 
-    public Serializable getValue() {
+    public Object getValue() {
         return value;
     }
 
-    public void setValue(Serializable value) {
+    public void setValue(Object value) {
         this.value = value;
     }
 
