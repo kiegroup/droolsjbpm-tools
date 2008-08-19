@@ -465,6 +465,18 @@
             class="org.drools.eclipse.flow.common.editor.action.HorizontalAutoLayoutAction"
          />
       </editorContribution>
+      <editorContribution
+            id="org.drools.eclipse.flow.common.editor.action.ExportImageAction"
+            targetID="org.drools.eclipse.flow.ruleflow.editor.RuleFlowModelEditor">
+	     <action
+	        id="org.drools.eclipse.flow.common.editor.action.ExportImageAction"
+            label="Export Image"
+	        toolbarPath="Drools"
+            icon="icons/export.gif"
+            tooltip="Export image (PNG)"
+            class="org.drools.eclipse.flow.common.editor.action.ExportImageAction"
+         />
+      </editorContribution>
    </extension>
 
    <extension

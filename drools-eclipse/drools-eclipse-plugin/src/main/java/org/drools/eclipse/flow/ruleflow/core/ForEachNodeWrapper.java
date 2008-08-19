@@ -68,11 +68,11 @@ public class ForEachNodeWrapper extends CompositeNodeWrapper {
         }
         if (START_NODE.equals(id)) {
         	CompositeNode.NodeAndType link = getForEachNode().getLinkedIncomingNode(Node.CONNECTION_DEFAULT_TYPE);
-        	return link == null ? "" : link.getNodeId();
+        	return link == null ? "" : link.getNodeId() + "";
         }
         if (END_NODE.equals(id)) {
         	CompositeNode.NodeAndType link = getForEachNode().getLinkedOutgoingNode(Node.CONNECTION_DEFAULT_TYPE);
-        	return link == null ? "" : link.getNodeId();
+        	return link == null ? "" : link.getNodeId() + "";
         }
         return super.getPropertyValue(id);
     }
