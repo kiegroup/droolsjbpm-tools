@@ -231,7 +231,7 @@ public class DroolsCompilerAntTask extends MatchingTask {
 				builder.addRuleFlow(instream);
 			} else if (fileName.endsWith(DroolsCompilerAntTask.XMLFILEEXTENSION)) {
 				builder.addPackageFromXml(instream);
-            } else if (fileName.equals(DroolsCompilerAntTask.XLSFILEEXTENSION)) {
+            } else if (fileName.endsWith(DroolsCompilerAntTask.XLSFILEEXTENSION)) {
 
                 final SpreadsheetCompiler converter = new SpreadsheetCompiler();
                 final String drl = converter.compile( new FileInputStream(file),
