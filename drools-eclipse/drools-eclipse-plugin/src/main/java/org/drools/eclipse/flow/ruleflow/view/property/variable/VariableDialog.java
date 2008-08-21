@@ -127,7 +127,13 @@ public class VariableDialog extends EditBeanDialog {
     
     protected Object updateValue(Object value) {
         Variable variable = (Variable) getValue();
-        variable.setName(nameText.getText());
+        String name = nameText.getText();
+        if ("".equals(name)) {
+        	String message = "Name should not be empty";
+        	showError(message);
+        	throw new IllegalArgumentException(message);
+        }
+        variable.setName(name);
         try {
             variable.setType(dataTypeEditorComposite.getDataType());
         } catch (IllegalArgumentException e) {

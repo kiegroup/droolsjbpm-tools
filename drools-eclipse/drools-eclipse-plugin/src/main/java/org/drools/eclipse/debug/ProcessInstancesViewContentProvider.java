@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
+import org.drools.process.instance.ProcessInstance;
+import org.drools.reteoo.ReteooStatefulSession;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
@@ -77,6 +79,11 @@ public class ProcessInstancesViewContentProvider extends DroolsDebugViewContentP
             return result.toArray(new IVariable[result.size()]);
         }
         return null;
+    }
+    
+    @SuppressWarnings("unused")
+	private ProcessInstance[] getProcessInstances(ReteooStatefulSession session) {
+    	return (ProcessInstance[]) session.getProcessInstances().toArray();
     }
     
 }
