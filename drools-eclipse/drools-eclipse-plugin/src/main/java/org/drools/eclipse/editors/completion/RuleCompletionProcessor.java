@@ -18,7 +18,6 @@ import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
 import org.drools.eclipse.DRLInfo.RuleInfo;
 import org.drools.eclipse.editors.AbstractRuleEditor;
-import org.drools.eclipse.editors.DRLRuleEditor;
 import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.lang.Location;
 import org.drools.lang.descr.AndDescr;
@@ -35,7 +34,6 @@ import org.drools.rule.builder.dialect.mvel.MVELConsequenceBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.util.asm.ClassFieldInspector;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.CompletionProposal;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.internal.ui.text.java.JavaCompletionProposal;
@@ -46,9 +44,9 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IFileEditorInput;
+import org.mvel.ParserContext;
 import org.mvel.compiler.CompiledExpression;
 import org.mvel.compiler.ExpressionCompiler;
-import org.mvel.ParserContext;
 import org.mvel.compiler.PropertyVerifier;
 
 /**
@@ -68,7 +66,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
      * A CompletionContext contains the DRL backtext parsing results, to avoid
      * multilpe parser invocations
      */
-    private CompletionContext   context;
+    private CompletionContext context;
 
     public RuleCompletionProcessor(AbstractRuleEditor editor) {
         super( editor );

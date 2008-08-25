@@ -19,14 +19,13 @@ package org.drools.eclipse;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.DrlParser;
+import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
@@ -44,8 +43,6 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.process.core.Process;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
-import org.drools.ruleflow.core.RuleFlowProcess;
-import org.drools.workflow.core.WorkflowProcess;
 import org.drools.xml.XmlProcessReader;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -83,11 +80,11 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
     private static DroolsEclipsePlugin  plugin;
     //Resource bundle.
     private ResourceBundle              resourceBundle;
-    private Map                         colors                     = new HashMap();
-    private Map                         parsedRules                = new HashMap();
-    private Map                         compiledRules              = new HashMap();
-    private Map                         ruleInfoByClassNameMap     = new HashMap();
-    private Map                         functionInfoByClassNameMap = new HashMap();
+    private Map<String, Color>          colors                     = new HashMap<String, Color>();
+    private Map<IResource, DRLInfo>     parsedRules                = new HashMap<IResource, DRLInfo>();
+    private Map<IResource, DRLInfo>     compiledRules              = new HashMap<IResource, DRLInfo>();
+    private Map<String, RuleInfo>       ruleInfoByClassNameMap     = new HashMap<String, RuleInfo>();
+    private Map<String, FunctionInfo>   functionInfoByClassNameMap = new HashMap<String, FunctionInfo>();
     private Map<IResource, ProcessInfo> processInfos               = new HashMap<IResource, ProcessInfo>();
     private Map<String, ProcessInfo>    processInfosById           = new HashMap<String, ProcessInfo>();
     private boolean                     useCachePreference;
@@ -142,9 +139,8 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
         compiledRules = null;
         processInfos = null;
         processInfosById = null;
-        Iterator iterator = colors.values().iterator();
-        while ( iterator.hasNext() ) {
-            ((Color) iterator.next()).dispose();
+        for (Color color: colors.values()) {
+            color.dispose();
         }
     }
 
@@ -378,7 +374,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 
                 // first parse the source
                 PackageDescr packageDescr = null;
-                List parserErrors = null;
+                List<DroolsError> parserErrors = null;
                 if ( useCache ) {
                     DRLInfo cachedDrlInfo = (DRLInfo) parsedRules.get( resource );
                     if ( cachedDrlInfo != null ) {

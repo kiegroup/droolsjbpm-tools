@@ -74,8 +74,8 @@ public class DebugViewsTest extends TestCase {
     	List list = new ArrayList();
     	session.setGlobal("list", list);
     	session.insert("String1");
-    	AgendaGroup focus = session.getAgenda().getFocus();
-    	assertEquals("MAIN", focus.getName());
+    	String focusName = session.getAgenda().getFocusName();
+    	assertEquals("MAIN", focusName);
     	AgendaGroup[] agendaGroups = session.getAgenda().getAgendaGroups();
     	assertEquals(1, agendaGroups.length);
     	assertEquals("MAIN", agendaGroups[0].getName());

@@ -2,13 +2,11 @@ package org.drools.eclipse;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.DroolsError;
-import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -20,11 +18,11 @@ import org.drools.rule.Package;
 public class DRLInfo {
 
 	private static final DroolsError[] EMPTY_DROOLS_ERROR_ARRAY = new DroolsError[0];
-	private static final List EMPTY_LIST = Collections.unmodifiableList(Collections.EMPTY_LIST);
+	private static final List<DroolsError> EMPTY_LIST = Collections.unmodifiableList(new ArrayList<DroolsError>());
 
 	private String sourcePathName;
 	private PackageDescr packageDescr;
-	private List parserErrors;
+	private List<DroolsError> parserErrors;
 	private Package compiledPackage;
 	private DroolsError[] builderErrors;
 	// cached entry
@@ -32,7 +30,7 @@ public class DRLInfo {
 	private transient FunctionInfo[] functionInfos;
 	private DialectCompiletimeRegistry dialectRegistry;
 
-	public DRLInfo(String sourcePathName, PackageDescr packageDescr, List parserErrors, DialectCompiletimeRegistry dialectRegistry) {
+	public DRLInfo(String sourcePathName, PackageDescr packageDescr, List<DroolsError> parserErrors, DialectCompiletimeRegistry dialectRegistry) {
 		if (sourcePathName == null || "".equals(sourcePathName)) {
 			throw new IllegalArgumentException("Invalid sourcePathName " + sourcePathName);
 		}
@@ -47,7 +45,7 @@ public class DRLInfo {
 		this.dialectRegistry = dialectRegistry;
 	}
 
-	public DRLInfo(String pathName, PackageDescr packageDescr, List parserErrors, Package compiledPackage, DroolsError[] builderErrors, DialectCompiletimeRegistry dialectRegistry) {
+	public DRLInfo(String pathName, PackageDescr packageDescr, List<DroolsError> parserErrors, Package compiledPackage, DroolsError[] builderErrors, DialectCompiletimeRegistry dialectRegistry) {
 		this(pathName, packageDescr, parserErrors, dialectRegistry);
 		if (compiledPackage == null) {
 			throw new IllegalArgumentException("Null package");
@@ -65,7 +63,7 @@ public class DRLInfo {
 		return packageDescr;
 	}
 
-	public List getParserErrors() {
+	public List<DroolsError> getParserErrors() {
 		return parserErrors;
 	}
 
@@ -87,9 +85,8 @@ public class DRLInfo {
 
 	public RuleInfo[] getRuleInfos() {
 		if (ruleInfos == null) {
-			List ruleInfosList = new ArrayList();
-	        for (Iterator rules = packageDescr.getRules().iterator(); rules.hasNext(); ) {
-	    		RuleDescr ruleDescr = (RuleDescr) rules.next();
+			List<RuleInfo> ruleInfosList = new ArrayList<RuleInfo>();
+	        for (RuleDescr ruleDescr: packageDescr.getRules()) {
 	    		RuleInfo ruleInfo = new RuleInfo(ruleDescr);
 	    		ruleInfosList.add(ruleInfo);
 	    	}
@@ -130,16 +127,14 @@ public class DRLInfo {
 
         public String getDialectName() {
             String dialectName = null;
-            for (Iterator iterator = ruleDescr.getAttributes().iterator(); iterator.hasNext(); ) {
-                AttributeDescr attribute = (AttributeDescr) iterator.next();
+            for (AttributeDescr attribute: ruleDescr.getAttributes()) {
                 if ("dialect".equals(attribute.getName())) {
                     dialectName = (String) attribute.getValue();
                     break;
                 }
             }
             if (dialectName == null) {
-                for (Iterator iterator = DRLInfo.this.packageDescr.getAttributes().iterator(); iterator.hasNext(); ) {
-                    AttributeDescr attribute = (AttributeDescr) iterator.next();
+                for (AttributeDescr attribute: DRLInfo.this.packageDescr.getAttributes()) {
                     if ("dialect".equals(attribute.getName())) {
                         dialectName = (String) attribute.getValue();
                         break;
@@ -205,9 +200,8 @@ public class DRLInfo {
 
 	public FunctionInfo[] getFunctionInfos() {
 		if (functionInfos == null) {
-			List functionInfosList = new ArrayList();
-	        for (Iterator functions = packageDescr.getFunctions().iterator(); functions.hasNext(); ) {
-	    		FunctionDescr functionDescr = (FunctionDescr) functions.next();
+			List<FunctionInfo> functionInfosList = new ArrayList<FunctionInfo>();
+	        for (FunctionDescr functionDescr: packageDescr.getFunctions()) {
 	    		FunctionInfo functionInfo = new FunctionInfo(functionDescr);
 	    		functionInfosList.add(functionInfo);
 	    	}

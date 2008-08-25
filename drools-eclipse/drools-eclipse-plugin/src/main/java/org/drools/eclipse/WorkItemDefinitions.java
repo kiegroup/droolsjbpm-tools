@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.eclipse.builder.DroolsBuilder;
 import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.process.core.WorkDefinition;
 import org.eclipse.core.resources.IProject;
