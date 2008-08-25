@@ -19,7 +19,7 @@ import org.drools.eclipse.flow.common.editor.editpart.ElementContainerEditPart;
 import org.drools.eclipse.flow.common.editor.editpart.ProcessEditPart;
 import org.drools.eclipse.flow.common.editor.editpart.ProcessEditPartFactory;
 import org.drools.eclipse.flow.ruleflow.core.ActionWrapper;
-import org.drools.eclipse.flow.ruleflow.core.CompositeNodeWrapper;
+import org.drools.eclipse.flow.ruleflow.core.CompositeContextNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper;
 import org.drools.eclipse.flow.ruleflow.core.EndNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.EventNodeWrapper;
@@ -78,7 +78,7 @@ public class RuleFlowEditPartFactory implements ProcessEditPartFactory {
             result = new TimerEditPart();
         } else if (model instanceof ForEachNodeWrapper) {
             result = new ForEachNodeEditPart();
-        } else if (model instanceof CompositeNodeWrapper) {
+        } else if (model instanceof CompositeContextNodeWrapper) {
             result = new ElementContainerEditPart();
         } else if (model instanceof EventNodeWrapper) {
             result = new EventNodeEditPart();

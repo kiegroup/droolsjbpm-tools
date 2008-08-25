@@ -21,6 +21,7 @@ import java.util.List;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.editor.core.ElementConnectionFactory;
 import org.drools.eclipse.flow.ruleflow.core.ActionWrapper;
+import org.drools.eclipse.flow.ruleflow.core.CompositeContextNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper;
 import org.drools.eclipse.flow.ruleflow.core.ConnectionWrapperFactory;
 import org.drools.eclipse.flow.ruleflow.core.EndNodeWrapper;
@@ -184,25 +185,25 @@ public class RuleFlowPaletteFactory {
         );
         entries.add(combined);
                               
-//        combined = new CombinedTemplateCreationEntry(
-//            "Composite Node",
-//            "Create a new Composite Node",
-//            CompositeNodeWrapper.class,
-//            new SimpleFactory(CompositeNodeWrapper.class),
-//            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/composite.gif")), 
-//            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/composite.gif"))
-//        );
-//        entries.add(combined);
+        combined = new CombinedTemplateCreationEntry(
+            "Composite",
+            "Create a new Composite Node",
+            CompositeContextNodeWrapper.class,
+            new SimpleFactory(CompositeContextNodeWrapper.class),
+            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/composite.gif")), 
+            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/composite.gif"))
+        );
+        entries.add(combined);
                           
-	      combined = new CombinedTemplateCreationEntry(
-		      "ForEach Node",
-		      "Create a new ForEach Node",
-		      ForEachNodeWrapper.class,
-		      new SimpleFactory(ForEachNodeWrapper.class),
-		      ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/composite.gif")), 
-		      ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/composite.gif"))
-		  );
-		  entries.add(combined);
+	    combined = new CombinedTemplateCreationEntry(
+		    "For Each",
+		    "Create a new ForEach Node",
+		    ForEachNodeWrapper.class,
+		    new SimpleFactory(ForEachNodeWrapper.class),
+		    ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/composite.gif")), 
+		    ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/composite.gif"))
+		);
+		entries.add(combined);
                     
         drawer.addAll(entries);
         return drawer;

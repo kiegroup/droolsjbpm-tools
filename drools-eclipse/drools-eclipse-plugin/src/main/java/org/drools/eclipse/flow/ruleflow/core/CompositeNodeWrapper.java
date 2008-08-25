@@ -3,19 +3,13 @@ package org.drools.eclipse.flow.ruleflow.core;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementContainerElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
-import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.CompositeNode;
 import org.eclipse.draw2d.geometry.Rectangle;
 
-public class CompositeNodeWrapper extends ElementContainerElementWrapper implements NodeWrapper {
+public abstract class CompositeNodeWrapper extends ElementContainerElementWrapper implements NodeWrapper {
 
     private static final long serialVersionUID = 400L;
-
-    public CompositeNodeWrapper() {
-        setNode(new CompositeNode());
-        getCompositeNode().setName("CompositeNode");
-    }
     
     public void setNode(Node node) {
         setElement(node);

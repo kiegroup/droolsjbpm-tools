@@ -19,6 +19,7 @@ import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.ActionNode;
+import org.drools.workflow.core.node.CompositeContextNode;
 import org.drools.workflow.core.node.CompositeNode;
 import org.drools.workflow.core.node.EndNode;
 import org.drools.workflow.core.node.EventNode;
@@ -104,8 +105,8 @@ public class RuleFlowWrapperBuilder implements ProcessWrapperBuilder {
             return new SubProcessWrapper();
         } else if (node instanceof ForEachNode) {
             return new ForEachNodeWrapper();
-        } else if (node instanceof CompositeNode) {
-            return new CompositeNodeWrapper();
+        } else if (node instanceof CompositeContextNode) {
+            return new CompositeContextNodeWrapper();
         } else if (node instanceof Join) {
             return new JoinWrapper();
         } else if (node instanceof Split) {
