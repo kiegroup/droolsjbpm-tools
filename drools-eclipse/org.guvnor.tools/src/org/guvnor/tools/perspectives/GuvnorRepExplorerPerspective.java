@@ -13,14 +13,14 @@ public class GuvnorRepExplorerPerspective implements IPerspectiveFactory {
 	public void createInitialLayout(IPageLayout layout) {
 		String editorArea = layout.getEditorArea();
 		IFolderLayout top =
-			layout.createFolder("top", IPageLayout.LEFT, 0.30f, editorArea);
+			layout.createFolder("top", IPageLayout.LEFT, 0.30f, editorArea); //$NON-NLS-1$
 		top.addView(IGuvnorConstants.REPVIEW_ID);
 		IFolderLayout botLeft = 
-			layout.createFolder("botleft", IPageLayout.BOTTOM, 0.70f, "top");
+			layout.createFolder("botleft", IPageLayout.BOTTOM, 0.70f, "top"); //$NON-NLS-1$ //$NON-NLS-2$
 		botLeft.addView(IPageLayout.ID_PROP_SHEET);
 		layout.addView(IGuvnorConstants.RESHISTORYVIEW_ID, IPageLayout.BOTTOM, 0.70f, editorArea);
 		IFolderLayout right =
-			layout.createFolder("right", IPageLayout.RIGHT, 0.70f, editorArea);
+			layout.createFolder("right", IPageLayout.RIGHT, 0.70f, editorArea); //$NON-NLS-1$
 		right.addView(IPageLayout.ID_RES_NAV);
 		layout.setEditorAreaVisible(true);
 		

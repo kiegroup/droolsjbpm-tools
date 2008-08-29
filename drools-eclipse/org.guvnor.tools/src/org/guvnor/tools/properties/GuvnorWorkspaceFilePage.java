@@ -9,6 +9,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbenchPropertyPage;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.guvnor.tools.Activator;
+import org.guvnor.tools.Messages;
 import org.guvnor.tools.utils.GuvnorMetadataProps;
 import org.guvnor.tools.utils.GuvnorMetadataUtils;
 import org.guvnor.tools.utils.PlatformUtils;
@@ -47,28 +48,28 @@ public class GuvnorWorkspaceFilePage extends PropertyPage implements IWorkbenchP
 	
 	private void addGuvnorProperties(Composite composite, GuvnorMetadataProps props) {
 			
-		new Label(composite, SWT.NONE).setText("Repository:");
+		new Label(composite, SWT.NONE).setText(Messages.getString("repository.label")); //$NON-NLS-1$
 		Label l = new Label(composite, SWT.NONE);
-		String val = props.getRepository() != null?props.getRepository():"";
+		String val = props.getRepository() != null?props.getRepository():""; //$NON-NLS-1$
 		l.setText(val);
 		
-		new Label(composite, SWT.NONE).setText("Path:");
+		new Label(composite, SWT.NONE).setText(Messages.getString("repository.path")); //$NON-NLS-1$
 		l = new Label(composite, SWT.NONE);
-		String fullpath = props.getFullpath() != null?props.getFullpath().substring(val.length()):"";
+		String fullpath = props.getFullpath() != null?props.getFullpath().substring(val.length()):""; //$NON-NLS-1$
 		l.setText(fullpath);
 		
-		new Label(composite, SWT.NONE).setText("Version:");
+		new Label(composite, SWT.NONE).setText(Messages.getString("repository.resource.version")); //$NON-NLS-1$
 		l = new Label(composite, SWT.NONE);
-		val = props.getVersion() != null?props.getVersion():"";
+		val = props.getVersion() != null?props.getVersion():""; //$NON-NLS-1$
 		l.setText(val);
 		
-		new Label(composite, SWT.NONE).setText("Revision:");
+		new Label(composite, SWT.NONE).setText(Messages.getString("repository.resource.revision")); //$NON-NLS-1$
 		l = new Label(composite, SWT.NONE);
-		val = props.getVersion() != null?props.getRevision():"";
+		val = props.getVersion() != null?props.getRevision():""; //$NON-NLS-1$
 		l.setText(val);
 	}
 
 	private void indicateNotGuvnorAssociated(Composite composite) {
-		new Label(composite, SWT.NONE).setText("(Not associated with Guvnor)");
+		new Label(composite, SWT.NONE).setText(Messages.getString("not.guvnor.associated")); //$NON-NLS-1$
 	}
 }

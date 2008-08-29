@@ -17,7 +17,7 @@ import org.guvnor.tools.utils.GuvnorMetadataUtils;
  */
 public class GuvnorDecorator implements ILightweightLabelDecorator {
 	
-	public static final String DECORATOR_ID = "org.guvnor.tools.decorator";
+	public static final String DECORATOR_ID = "org.guvnor.tools.decorator"; //$NON-NLS-1$
 	
 	private boolean isGuvnorResource(Object element) {
 		if (element instanceof IResource) {
@@ -54,14 +54,14 @@ public class GuvnorDecorator implements ILightweightLabelDecorator {
 			boolean showRevision = GuvnorPreferencePage.shouldShowRevision();
 			boolean showDateTime = GuvnorPreferencePage.shouldShowTimeDateStamp();
 			if (showRevision || showDateTime) {
-				decoration.addSuffix(" ");	
+				decoration.addSuffix(" ");	 //$NON-NLS-1$
 			}
 			if (showRevision) {
 				decoration.addSuffix(props.getRevision());
 			}
 			if (showDateTime) {
 				if (showRevision) {
-					decoration.addSuffix(", " + props.getVersion());		
+					decoration.addSuffix(", " + props.getVersion());		 //$NON-NLS-1$
 				} else {
 					decoration.addSuffix(props.getVersion());
 				}
@@ -73,7 +73,7 @@ public class GuvnorDecorator implements ILightweightLabelDecorator {
 			throws CoreException {
 		if (!GuvnorMetadataUtils.isGuvnorResourceCurrent(resource)
 		   && GuvnorPreferencePage.shouldShowChangeIndicator()) {
-			decoration.addSuffix(" >");
+			decoration.addSuffix(" >"); //$NON-NLS-1$
 		}
 	}
 	
@@ -83,7 +83,7 @@ public class GuvnorDecorator implements ILightweightLabelDecorator {
 				decorateResource((IResource)element, decoration);
 			} else {
 				Activator.getDefault().writeLog(IStatus.ERROR, 
-						"Called to decorate unknown: " + element.getClass().toString(), new Exception());
+						"Called to decorate unknown: " + element.getClass().toString(), new Exception()); //$NON-NLS-1$
 			}
 		}
 	}

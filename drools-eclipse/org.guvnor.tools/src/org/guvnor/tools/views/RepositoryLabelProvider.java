@@ -6,6 +6,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.PendingUpdateAdapter;
 import org.guvnor.tools.Activator;
+import org.guvnor.tools.Messages;
 import org.guvnor.tools.views.model.TreeParent;
 import org.guvnor.tools.views.model.TreeObject.Type;
 
@@ -18,7 +19,7 @@ public class RepositoryLabelProvider extends LabelProvider {
 	
 	public String getText(Object obj) {
 		if (obj instanceof PendingUpdateAdapter) {
-			return "Pending...";
+			return Messages.getString("pending"); //$NON-NLS-1$
 		} else {
 			return obj.toString();
 		}

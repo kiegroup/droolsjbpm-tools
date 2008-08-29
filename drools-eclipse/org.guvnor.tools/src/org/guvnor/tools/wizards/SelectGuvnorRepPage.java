@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.List;
 import org.guvnor.tools.Activator;
 import org.guvnor.tools.GuvnorRepository;
+import org.guvnor.tools.Messages;
 import org.guvnor.tools.utils.PlatformUtils;
 
 public class SelectGuvnorRepPage extends WizardPage {
@@ -30,7 +31,7 @@ public class SelectGuvnorRepPage extends WizardPage {
 	public void createControl(Composite parent) {
 		Composite composite = PlatformUtils.createComposite(parent, 1);		
 		createRep = new Button(composite, SWT.RADIO);
-		createRep.setText("Create a new Guvnor repository location");
+		createRep.setText(Messages.getString("select.rep.guvnor.loc")); //$NON-NLS-1$
 		createRep.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		createRep.setSelection(false);
 		createRep.addSelectionListener(new SelectionListener() {
@@ -43,7 +44,7 @@ public class SelectGuvnorRepPage extends WizardPage {
 		});
 		
 		existingRep = new Button(composite, SWT.RADIO);
-		existingRep.setText("Use an existing Guvnor repository location");
+		existingRep.setText(Messages.getString("select.rep.guvnor.loc.desc")); //$NON-NLS-1$
 		existingRep.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		existingRep.setSelection(true);
 		existingRep.addSelectionListener(new SelectionListener() {

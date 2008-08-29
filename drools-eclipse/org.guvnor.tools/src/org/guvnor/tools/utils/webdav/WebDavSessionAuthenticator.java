@@ -65,7 +65,7 @@ public class WebDavSessionAuthenticator implements IAuthenticator {
 	public String getProtectionSpace(URL resourceUrl) {
 		// We don't have the notion of "realm," but the client
 		// requires a non-null return value.
-		return "";
+		return ""; //$NON-NLS-1$
 	}
 	
 	@SuppressWarnings("unchecked")

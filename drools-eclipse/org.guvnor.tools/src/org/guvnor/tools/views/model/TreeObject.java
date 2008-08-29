@@ -69,10 +69,10 @@ public class TreeObject implements IAdaptable {
 	}
 	public String getFullPath() {
 		if (props.getBase().trim().length() > 0) {
-			if (props.getBase().endsWith("/")) {
+			if (props.getBase().endsWith("/")) { //$NON-NLS-1$
 				return props.getBase() + getName();
 			} else {
-				return props.getBase() + "/" + getName();
+				return props.getBase() + "/" + getName(); //$NON-NLS-1$
 			}
 		} else {
 			return getName();

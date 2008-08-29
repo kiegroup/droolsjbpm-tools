@@ -20,15 +20,15 @@ public class ResourceHistoryEntry {
 	}
 	
 	public String getRevision() {
-		return revision != null?revision:"";
+		return revision != null?revision:""; //$NON-NLS-1$
 	}
 	public String getDate() {
-		return date != null?date:"";
+		return date != null?date:""; //$NON-NLS-1$
 	}
 	public String getAuthor() {
-		return author != null?author:"";
+		return author != null?author:""; //$NON-NLS-1$
 	}
 	public String getComment() {
-		return comment != null?comment:"";
+		return comment != null?comment:""; //$NON-NLS-1$
 	}
 }

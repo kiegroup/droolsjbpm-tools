@@ -21,13 +21,13 @@ public class GuvWizardModel {
 		this.repLocation = repLocation;
 	}
 	public String getUsername() {
-		return username != null?username:"";
+		return username != null?username:""; //$NON-NLS-1$
 	}
 	public void setUsername(String username) {
 		this.username = username;
 	}
 	public String getPassword() {
-		return password != null?password:"";
+		return password != null?password:""; //$NON-NLS-1$
 	}
 	public void setPassword(String password) {
 		this.password = password;

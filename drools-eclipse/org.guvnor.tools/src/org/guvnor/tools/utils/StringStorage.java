@@ -26,7 +26,7 @@ public class StringStorage extends PlatformObject implements IStorage {
 	}
 
 	public String getName() {
-		return name + " (Read only)";
+		return name + " (Read only)"; //$NON-NLS-1$
 	}
 
 	public boolean isReadOnly() {

@@ -13,6 +13,7 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.webdav.IResponse;
 import org.guvnor.tools.Activator;
+import org.guvnor.tools.Messages;
 import org.guvnor.tools.utils.GuvnorMetadataProps;
 import org.guvnor.tools.utils.GuvnorMetadataUtils;
 import org.guvnor.tools.utils.PlatformUtils;
@@ -46,19 +47,19 @@ public class AddResourceWizard extends Wizard implements INewWizard, IGuvnorWiza
 	
 	@Override
 	public void addPages() {
-		selectRepPage = new SelectGuvnorRepPage("select_rep_page", "Select Guvnor repository location",
+		selectRepPage = new SelectGuvnorRepPage("select_rep_page", Messages.getString("select.guvnor.rep.location"), //$NON-NLS-1$ //$NON-NLS-2$
 								Activator.getImageDescriptor(Activator.IMG_GUVREPWIZBAN));
-		selectRepPage.setDescription("Select an existing Guvnor repository location or create a new one");
+		selectRepPage.setDescription(Messages.getString("select.guvnor.rep.location.desc")); //$NON-NLS-1$
 		super.addPage(selectRepPage);
 		
-		mainConfigPage = new GuvnorMainConfigPage("config_page", "New Guvnor repository location", 
+		mainConfigPage = new GuvnorMainConfigPage("config_page", Messages.getString("new.guvnor.rep.loc"),  //$NON-NLS-1$ //$NON-NLS-2$
 								Activator.getImageDescriptor(Activator.IMG_GUVREPWIZBAN));
-		mainConfigPage.setDescription("Creates a connection to a Guvnor repository");
+		mainConfigPage.setDescription(Messages.getString("new.guvnor.rep.loc.desc")); //$NON-NLS-1$
 		super.addPage(mainConfigPage);
 
-		selectFolderPage = new SelectGuvnorFolderPage("select_folder_page", "Select folder",
+		selectFolderPage = new SelectGuvnorFolderPage("select_folder_page", Messages.getString("select.folder"), //$NON-NLS-1$ //$NON-NLS-2$
 								Activator.getImageDescriptor(Activator.IMG_GUVREPWIZBAN));
-		selectFolderPage.setDescription("Select the target folder in the Guvnor repository");
+		selectFolderPage.setDescription(Messages.getString("select.folder.desc")); //$NON-NLS-1$
 		super.addPage(selectFolderPage);
 
 		super.addPages();
@@ -66,14 +67,14 @@ public class AddResourceWizard extends Wizard implements INewWizard, IGuvnorWiza
 	
 	@Override
 	public IWizardPage getNextPage(IWizardPage page) {
-		if (page.getName().equals("select_rep_page")) {
+		if (page.getName().equals("select_rep_page")) { //$NON-NLS-1$
 			if (model.shouldCreateNewRep()) {
 				return mainConfigPage;
 			} else {
 				return selectFolderPage;
 			}
 		}
-		if (page.getName().equals("config_page")) {
+		if (page.getName().equals("config_page")) { //$NON-NLS-1$
 			return selectFolderPage;
 		}
 		return null;
@@ -81,7 +82,7 @@ public class AddResourceWizard extends Wizard implements INewWizard, IGuvnorWiza
 	
 	private void setDuplicateFileError(IFile selectedFile) {
 		selectFolderPage.setErrorMessage(selectedFile.getName() +
-				                        " already exists in folder " +
+				                        Messages.getString("already.exists") + //$NON-NLS-1$
 				                        model.getTargetLocation());
 		model.setTargetLocation(null);
 		super.getContainer().updateButtons();

@@ -9,8 +9,8 @@ public class WebDavException extends Exception {
 	private int errCode;
 	
 	public WebDavException(IResponse response) {
-		super("WebDav error: " + response.getStatusMessage() + 
-	          " (" + response.getStatusCode() + ")");
+		super("WebDav error: " + response.getStatusMessage() +  //$NON-NLS-1$
+	          " (" + response.getStatusCode() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 		this.errCode = response.getStatusCode();
 	}
 	

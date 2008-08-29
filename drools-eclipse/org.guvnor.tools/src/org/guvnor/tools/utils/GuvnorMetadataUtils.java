@@ -33,7 +33,7 @@ public class GuvnorMetadataUtils {
 	public static IFile findGuvnorMetadata(IResource resource) {
 		IFile res = null;
 		IPath dir = resource.getFullPath().removeLastSegments(1);
-		IPath mdpath = dir.append(".guvnorinfo").append("." + resource.getName());
+		IPath mdpath = dir.append(".guvnorinfo").append("." + resource.getName()); //$NON-NLS-1$ //$NON-NLS-2$
 		IResource mdResource = resource.getWorkspace().getRoot().findMember(mdpath);
 		if (mdResource != null 
 		   && mdResource.exists() 
@@ -51,7 +51,7 @@ public class GuvnorMetadataUtils {
 	public static IFile findGuvnorMetadata(IPath resource) {
 		IFile res = null;
 		IPath dir = resource.removeLastSegments(1);
-		IPath mdpath = dir.append(".guvnorinfo").append("." + resource.lastSegment());
+		IPath mdpath = dir.append(".guvnorinfo").append("." + resource.lastSegment()); //$NON-NLS-1$ //$NON-NLS-2$
 		IResource mdResource = Activator.getDefault().getWorkspace().
 											getRoot().findMember(mdpath);
 		if (mdResource != null 
@@ -69,11 +69,11 @@ public class GuvnorMetadataUtils {
 	public static GuvnorMetadataProps loadGuvnorMetadata(IFile mdFile) throws Exception {
 		Properties props = new Properties();
 		props.load(mdFile.getContents());
-		return new GuvnorMetadataProps(props.getProperty("filename"),
-				                       props.getProperty("repository"),
-				                       props.getProperty("fullpath"),
-				                       props.getProperty("lastmodified"),
-				                       props.getProperty("revision"));
+		return new GuvnorMetadataProps(props.getProperty("filename"), //$NON-NLS-1$
+				                       props.getProperty("repository"), //$NON-NLS-1$
+				                       props.getProperty("fullpath"), //$NON-NLS-1$
+				                       props.getProperty("lastmodified"), //$NON-NLS-1$
+				                       props.getProperty("revision")); //$NON-NLS-1$
 	}
 	
 	public static GuvnorMetadataProps getGuvnorMetadata(IResource resource) throws Exception {
@@ -88,11 +88,11 @@ public class GuvnorMetadataUtils {
 			                                 GuvnorMetadataProps mdProps) throws Exception {
 		FileOutputStream fos = new FileOutputStream(mdFile);
 		Properties props = new Properties();
-		props.put("repository", 	mdProps.getRepository());
-		props.put("fullpath", 		mdProps.getFullpath());
-		props.put("filename", 		mdProps.getFilename());
-		props.put("lastmodified", 	mdProps.getVersion());
-		props.put("revision",		mdProps.getRevision());
+		props.put("repository", 	mdProps.getRepository()); //$NON-NLS-1$
+		props.put("fullpath", 		mdProps.getFullpath()); //$NON-NLS-1$
+		props.put("filename", 		mdProps.getFilename()); //$NON-NLS-1$
+		props.put("lastmodified", 	mdProps.getVersion()); //$NON-NLS-1$
+		props.put("revision",		mdProps.getRevision()); //$NON-NLS-1$
 		props.store(fos, null);
 		fos.flush();
 		fos.close();	
@@ -102,12 +102,12 @@ public class GuvnorMetadataUtils {
 			                                 GuvnorMetadataProps mdProps) throws Exception {
 		IWorkspaceRoot root = Activator.getDefault().getWorkspace().getRoot();
 		IFolder mdFolder = root.getFolder(
-							controlledFile.removeLastSegments(1).append(".guvnorinfo"));
+							controlledFile.removeLastSegments(1).append(".guvnorinfo")); //$NON-NLS-1$
 		if (!mdFolder.exists()) {
 			mdFolder.create(true, true, null);
 		}
 		IFile mdFile = root.getFile(
-						mdFolder.getFullPath().append("." + controlledFile.lastSegment()));
+						mdFolder.getFullPath().append("." + controlledFile.lastSegment())); //$NON-NLS-1$
 		Properties props = new Properties();
 		if (!mdFile.exists()) {
 			mdFile.create(new ByteArrayInputStream(new byte[] {}), true, null);
@@ -115,19 +115,19 @@ public class GuvnorMetadataUtils {
 			props.load(mdFile.getContents());
 		}
 		if (mdProps.getRepository() != null) {
-			props.put("repository", mdProps.getRepository());
+			props.put("repository", mdProps.getRepository()); //$NON-NLS-1$
 		}
 		if (mdProps.getFullpath() != null) {
-			props.put("fullpath", mdProps.getFullpath());
+			props.put("fullpath", mdProps.getFullpath()); //$NON-NLS-1$
 		}
 		if (mdProps.getFilename() != null) {
-			props.put("filename", mdProps.getFilename());
+			props.put("filename", mdProps.getFilename()); //$NON-NLS-1$
 		}
 		if (mdProps.getVersion() != null) {
-			props.put("lastmodified", mdProps.getVersion());
+			props.put("lastmodified", mdProps.getVersion()); //$NON-NLS-1$
 		}
 		if (mdProps.getRevision() != null) {
-			props.put("revision", mdProps.getRevision());
+			props.put("revision", mdProps.getRevision()); //$NON-NLS-1$
 		}
 		OutputStream os = new FileOutputStream(
 							new File(mdFile.getLocation().toOSString()));
@@ -138,17 +138,17 @@ public class GuvnorMetadataUtils {
 	}
 	
 	public static IPath createGuvnorMetadataLocation(String rootPath) throws Exception {
-		IPath path = new Path(rootPath + File.separator + ".guvnorinfo");
+		IPath path = new Path(rootPath + File.separator + ".guvnorinfo"); //$NON-NLS-1$
 		if (!path.toFile().exists()) {
 			if (!path.toFile().mkdir()) {
-				throw new Exception("Could not create directory " + path.toOSString());
+				throw new Exception("Could not create directory " + path.toOSString()); //$NON-NLS-1$
 			}
 		}
 		return path;
 	}
 	
 	public static File getGuvnorMetadataFile(String path, String fname) {
-		return new File(path + File.separator + "." + fname);
+		return new File(path + File.separator + "." + fname); //$NON-NLS-1$
 	}
 	
 	public static IFile getGuvnorControlledResource(IResource resource) throws Exception {
@@ -156,10 +156,10 @@ public class GuvnorMetadataUtils {
 		if (resource instanceof IFile) {
 			Properties props = new Properties();
 			props.load(((IFile)resource).getContents());
-			if (props.getProperty("filename") != null) {
+			if (props.getProperty("filename") != null) { //$NON-NLS-1$
 				res = (IFile)Activator.getDefault().getWorkspace().
 								getRoot().findMember(resource.getFullPath().
-										removeLastSegments(2).append(props.getProperty("filename")));
+										removeLastSegments(2).append(props.getProperty("filename"))); //$NON-NLS-1$
 			}
 		}
 		return res;
@@ -167,31 +167,31 @@ public class GuvnorMetadataUtils {
 	
 	public static boolean isGuvnorMetadata(IResource resource) {
 		return resource.getFullPath().removeLastSegments(1).
-							toOSString().endsWith(".guvnorinfo");
+							toOSString().endsWith(".guvnorinfo"); //$NON-NLS-1$
 	}
 	
 	public static void markCurrentGuvnorResource(IResource resource) throws CoreException {
-		resource.setPersistentProperty(generateQualifiedName("version"), "current");
+		resource.setPersistentProperty(generateQualifiedName("version"), "current"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	public static void markExpiredGuvnorResource(IResource resource) throws CoreException {
-		resource.setPersistentProperty(generateQualifiedName("version"), "expired");
+		resource.setPersistentProperty(generateQualifiedName("version"), "expired"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	public static String getGuvnorResourceProperty(IResource resource) throws CoreException {
-		return resource.getPersistentProperty(generateQualifiedName("version"));
+		return resource.getPersistentProperty(generateQualifiedName("version")); //$NON-NLS-1$
 	}
 	
 	public static boolean isGuvnorResourceCurrent(IResource resource) throws CoreException {
-		String ver = resource.getPersistentProperty(generateQualifiedName("version"));
+		String ver = resource.getPersistentProperty(generateQualifiedName("version")); //$NON-NLS-1$
 		if (ver == null) {
 			return false;
 		}
-		return ver.equals("current");
+		return ver.equals("current"); //$NON-NLS-1$
 	}
 	
 	private static QualifiedName generateQualifiedName(String attr) {
-		return new QualifiedName("org.guvnor.tools", attr); 
+		return new QualifiedName("org.guvnor.tools", attr);  //$NON-NLS-1$
 	}
 	
 	public static ResourceHistoryEntry[] parseHistoryProperties(Properties entryProps) {
@@ -200,7 +200,7 @@ public class GuvnorMetadataUtils {
 		for (int i = 0; i < entryProps.size(); i++) {
 			String oneRevision = (String)en.nextElement();
 			String val = entryProps.getProperty(oneRevision);
-			StringTokenizer tokens = new StringTokenizer(val, ",");
+			StringTokenizer tokens = new StringTokenizer(val, ","); //$NON-NLS-1$
 			String verDate = null;
 			String author = null;
 			String comment = null;

@@ -72,7 +72,7 @@ public class WebDavClient implements IWebDavClient {
 	public IContext createContext() {
 		IContext context = WebDAVFactory.contextFactory.newContext();
 		// Need to make sure the USER-AGENT header is present for Guvnor
-		context.put("USER-AGENT", "guvnor");
+		context.put("USER-AGENT", "guvnor"); //$NON-NLS-1$ //$NON-NLS-2$
 		return context;
 	}
 	
@@ -84,7 +84,7 @@ public class WebDavClient implements IWebDavClient {
 		IResponse response = null;
 		try {
 			IContext context = createContext();
-			context.put("Depth", "1");
+			context.put("Depth", "1"); //$NON-NLS-1$ //$NON-NLS-2$
 			ILocator locator = WebDAVFactory.locatorFactory.newLocator(path);
 			response = client.propfind(locator, context, null);
 			if (response.getStatusCode() != IResponse.SC_MULTI_STATUS) {
@@ -116,7 +116,7 @@ public class WebDavClient implements IWebDavClient {
 				String val = guvProps.getProperty(oneKey);
 				if (val != null) {
 					ResourceProperties resProps = props.get(oneKey);
-					StringTokenizer tokens = new StringTokenizer(val, ",");
+					StringTokenizer tokens = new StringTokenizer(val, ","); //$NON-NLS-1$
 					String dateStamp = tokens.nextToken();
 					String revision = tokens.nextToken();
 					resProps.setLastModifiedDate(dateStamp);
@@ -138,7 +138,7 @@ public class WebDavClient implements IWebDavClient {
 		IResponse response = null;
 		try {
 			IContext context = createContext();
-			context.put("Depth", "1");
+			context.put("Depth", "1"); //$NON-NLS-1$ //$NON-NLS-2$
 			ILocator locator = WebDAVFactory.locatorFactory.newLocator(resource);
 			response = client.propfind(locator, context, null);
 			if (response.getStatusCode() != IResponse.SC_MULTI_STATUS
@@ -146,9 +146,9 @@ public class WebDavClient implements IWebDavClient {
 				throw new WebDavException(response);
 			}
 			Map<String, ResourceProperties> props = 
-				StreamProcessingUtils.parseListing("", response.getInputStream());
+				StreamProcessingUtils.parseListing("", response.getInputStream()); //$NON-NLS-1$
 			if (props.keySet().size() != 1) {
-				throw new Exception(props.keySet().size() + " entries found for " + resource);
+				throw new Exception(props.keySet().size() + " entries found for " + resource); //$NON-NLS-1$
 			}
 			String fullpath = props.keySet().iterator().next();
 			ResourceProperties res = props.get(fullpath);
@@ -183,13 +183,13 @@ public class WebDavClient implements IWebDavClient {
 			guvProps.load(response.getInputStream());
 			String val = guvProps.getProperty(filename);
 			if (val != null) {
-				StringTokenizer tokens = new StringTokenizer(val, ",");
+				StringTokenizer tokens = new StringTokenizer(val, ","); //$NON-NLS-1$
 				String dateStamp = tokens.nextToken();
 				String revision = tokens.nextToken();
 				props.setLastModifiedDate(dateStamp);
 				props.setRevision(revision);
 			} else {
-				Exception nfe = new Exception("Failed to get Guvnor properties for " + filename);
+				Exception nfe = new Exception("Failed to get Guvnor properties for " + filename); //$NON-NLS-1$
 				Activator.getDefault().writeLog(IStatus.WARNING, nfe.getMessage(), nfe);
 			}
 		} finally {
@@ -220,7 +220,7 @@ public class WebDavClient implements IWebDavClient {
 	 * @see org.guvnor.tools.utils.webdav.IWebDavClient#getResourceVersionContents(java.lang.String, java.lang.String)
 	 */
 	public String getResourceVersionContents(String resource, String version) throws Exception {
-		String apiVer = changeToAPICall(resource) + "?version=" + version;
+		String apiVer = changeToAPICall(resource) + "?version=" + version; //$NON-NLS-1$
 		return getResourceContents(apiVer);
 	}
 	
@@ -242,7 +242,7 @@ public class WebDavClient implements IWebDavClient {
 	 * @see org.guvnor.tools.utils.webdav.IWebDavClient#getResourceVersionInputStream(java.lang.String, java.lang.String)
 	 */
 	public IResponse getResourceVersionInputStream(String resource, String version) throws Exception {
-		String apiVer = changeToAPICall(resource) + "?version=" + version;
+		String apiVer = changeToAPICall(resource) + "?version=" + version; //$NON-NLS-1$
 		return getResourceInputStream(apiVer);
 	}
 	
@@ -315,7 +315,7 @@ public class WebDavClient implements IWebDavClient {
 	 * @see org.guvnor.tools.utils.webdav.IWebDavClient#getResourceVersions(java.lang.String)
 	 */
 	public IResponse getResourceVersions(String resource) throws Exception {
-		String apiVer = changeToAPICall(resource) + "?version=all";
+		String apiVer = changeToAPICall(resource) + "?version=all"; //$NON-NLS-1$
 		return getResourceInputStream(apiVer);
 	}
 	
@@ -343,6 +343,6 @@ public class WebDavClient implements IWebDavClient {
 	 * Converts the WedDav resource path to a Guvnor "API path."
 	 */
 	private String changeToAPICall(String path) {
-		return path.replaceFirst("/webdav/", "/api/");
+		return path.replaceFirst("/webdav/", "/api/"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }

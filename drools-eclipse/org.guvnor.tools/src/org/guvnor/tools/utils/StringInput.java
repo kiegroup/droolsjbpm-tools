@@ -34,6 +34,6 @@ public class StringInput extends PlatformObject implements IStorageEditorInput {
 	}
 
 	public String getToolTipText() {
-		return "String-based file: " + storage.getName();
+		return "String-based file: " + storage.getName(); //$NON-NLS-1$
 	}
 }

@@ -15,6 +15,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.guvnor.tools.Activator;
+import org.guvnor.tools.Messages;
 import org.guvnor.tools.utils.GuvnorMetadataProps;
 import org.guvnor.tools.utils.GuvnorMetadataUtils;
 import org.guvnor.tools.utils.webdav.IWebDavClient;
@@ -45,24 +46,24 @@ public class CheckoutWizard extends Wizard implements INewWizard, IGuvnorWizard 
 	
 	@Override
 	public void addPages() {
-		selectRepPage = new SelectGuvnorRepPage("select_rep_page", "Select Guvnor repository location",
+		selectRepPage = new SelectGuvnorRepPage("select_rep_page", Messages.getString("select.guvnor.rep"), //$NON-NLS-1$ //$NON-NLS-2$
                 							Activator.getImageDescriptor(Activator.IMG_GUVREPWIZBAN));
-		selectRepPage.setDescription("Select an existing Guvnor repository location or create a new one");
+		selectRepPage.setDescription(Messages.getString("select.guvnor.rep.desc")); //$NON-NLS-1$
 		super.addPage(selectRepPage);
 		
-		mainConfigPage = new GuvnorMainConfigPage("config_page", "New Guvnor repository location", 
+		mainConfigPage = new GuvnorMainConfigPage("config_page", Messages.getString("new.guvnor.rep"),  //$NON-NLS-1$ //$NON-NLS-2$
 											Activator.getImageDescriptor(Activator.IMG_GUVREPWIZBAN));
-		mainConfigPage.setDescription("Creates a connection to a Guvnor repository");
+		mainConfigPage.setDescription(Messages.getString("new.guvnor.rep.desc")); //$NON-NLS-1$
 		super.addPage(mainConfigPage);
 		
-		selectResPage = new SelectGuvnorResourcesPage("select_res_page", "Select resources",
+		selectResPage = new SelectGuvnorResourcesPage("select_res_page", Messages.getString("select.resources"), //$NON-NLS-1$ //$NON-NLS-2$
 											Activator.getImageDescriptor(Activator.IMG_GUVREPWIZBAN));
-		selectResPage.setDescription("Select resources to copy from the Guvnor repository");
+		selectResPage.setDescription(Messages.getString("select.resources.desc")); //$NON-NLS-1$
 		super.addPage(selectResPage);
 		
-		selectLocalTargetPage = new SelectLocalTargetPage("local_target_page", "Select copy location",
+		selectLocalTargetPage = new SelectLocalTargetPage("local_target_page", Messages.getString("select.target.loc"), //$NON-NLS-1$ //$NON-NLS-2$
 											Activator.getImageDescriptor(Activator.IMG_GUVREPWIZBAN));
-		selectLocalTargetPage.setDescription("Select the destination location");
+		selectLocalTargetPage.setDescription(Messages.getString("select.target.loc.desc")); //$NON-NLS-1$
 		super.addPage(selectLocalTargetPage);
 		
 //		selectVerPage = new SelectResourceVersionPage("select_version_page", "Select resource versions",
@@ -75,17 +76,17 @@ public class CheckoutWizard extends Wizard implements INewWizard, IGuvnorWizard 
 	
 	@Override
 	public IWizardPage getNextPage(IWizardPage page) {
-		if (page.getName().equals("select_rep_page")) {
+		if (page.getName().equals("select_rep_page")) { //$NON-NLS-1$
 			if (model.shouldCreateNewRep()) {
 				return mainConfigPage;
 			} else {
 				return selectResPage;
 			}
 		}
-		if (page.getName().equals("config_page")) {
+		if (page.getName().equals("config_page")) { //$NON-NLS-1$
 			return selectResPage;
 		}
-		if (page.getName().equals("select_res_page")) {
+		if (page.getName().equals("select_res_page")) { //$NON-NLS-1$
 			return selectLocalTargetPage;
 		}
 		return null;
@@ -103,7 +104,7 @@ public class CheckoutWizard extends Wizard implements INewWizard, IGuvnorWizard 
 				// Get the metadata properties
 				ResourceProperties resprops = webdav.queryProperties(oneResource);
 				if (resprops == null) {
-					throw new Exception("Null resource properties for " + oneResource);
+					throw new Exception("Null resource properties for " + oneResource); //$NON-NLS-1$
 				}
 				String contents = webdav.getResourceContents(oneResource);
 				IPath targetLocation = new Path(model.getTargetLocation());
@@ -142,9 +143,9 @@ public class CheckoutWizard extends Wizard implements INewWizard, IGuvnorWizard 
 		final IWorkspaceRoot root = Activator.getDefault().getWorkspace().getRoot();
 		final IPath basePath = conflictingFile.getFullPath().removeLastSegments(1);
 		InputDialog dialog = new InputDialog(super.getShell(),
-                                            "Name Conflict",
-                                            "Enter a new name for " + conflictingFile.getName(),
-                                            "CopyOf" + conflictingFile.getName(),
+                                            Messages.getString("name.conflict"), //$NON-NLS-1$
+                                            Messages.getString("name.conflict.request") + conflictingFile.getName(), //$NON-NLS-1$
+                                            Messages.getString("copy.of") + conflictingFile.getName(), //$NON-NLS-1$
         new IInputValidator() {
 			public String isValid(String newText) {
 				IFile temp = root.getFile(basePath.append(newText));
@@ -152,7 +153,7 @@ public class CheckoutWizard extends Wizard implements INewWizard, IGuvnorWizard 
 				   || !temp.exists()) {
 					return null;
 				} else {
-					return newText + " already exists";
+					return newText + Messages.getString("alreadfy.exists"); //$NON-NLS-1$
 				}
 			}
 		});

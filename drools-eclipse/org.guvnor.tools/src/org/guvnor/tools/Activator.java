@@ -21,7 +21,7 @@ import org.osgi.framework.BundleContext;
 public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "org.drools.guvnor";
+	public static final String PLUGIN_ID = "org.drools.guvnor"; //$NON-NLS-1$
 
 	// The shared instance
 	private static Activator plugin;
@@ -83,10 +83,10 @@ public class Activator extends AbstractUIPlugin {
 			public void run() {
 				switch (severity) {
 					case IStatus.ERROR:
-						MessageDialog.openError(display.getActiveShell(), "Error", msg);
+						MessageDialog.openError(display.getActiveShell(), Messages.getString("error"), msg); //$NON-NLS-1$
 					break;
 					case IStatus.WARNING:
-						MessageDialog.openWarning(display.getActiveShell(), "Warning", msg);
+						MessageDialog.openWarning(display.getActiveShell(), Messages.getString("warning"), msg); //$NON-NLS-1$
 					break;
 				}
 			}
@@ -152,11 +152,11 @@ public class Activator extends AbstractUIPlugin {
 	private static ImageDescriptor GUVLOCADD_IMG;
 	private static ImageDescriptor GUVREPWIZBAN_IMG;
 	
-	public static final String IMG_GUVCONTROLLED 		= "guvnor_controlled.gif";
-	public static final String IMG_GUVLOCADD 			= "guvnor_rep_add.gif";
-	public static final String IMG_GUVREPWIZBAN 		= "guvnor_rep_wizban.gif";
+	public static final String IMG_GUVCONTROLLED 		= "guvnor_controlled.gif"; //$NON-NLS-1$
+	public static final String IMG_GUVLOCADD 			= "guvnor_rep_add.gif"; //$NON-NLS-1$
+	public static final String IMG_GUVREPWIZBAN 		= "guvnor_rep_wizban.gif"; //$NON-NLS-1$
 	
 	public boolean useDebugHttpClient() {
-		return Boolean.parseBoolean(Platform.getDebugOption("org.guvnor.tools/debugHttpClient"));
+		return Boolean.parseBoolean(Platform.getDebugOption("org.guvnor.tools/debugHttpClient")); //$NON-NLS-1$
 	}
 }

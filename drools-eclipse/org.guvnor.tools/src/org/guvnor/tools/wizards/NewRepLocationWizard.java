@@ -6,6 +6,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.guvnor.tools.Activator;
+import org.guvnor.tools.Messages;
 
 public class NewRepLocationWizard extends Wizard implements INewWizard, IGuvnorWizard {
 	
@@ -19,9 +20,9 @@ public class NewRepLocationWizard extends Wizard implements INewWizard, IGuvnorW
 	
 	@Override
 	public void addPages() {
-		mainPage = new GuvnorMainConfigPage("config_page", "New Guvnor location", 
+		mainPage = new GuvnorMainConfigPage("config_page", Messages.getString("new.guvnor.loc"),  //$NON-NLS-1$ //$NON-NLS-2$
 										Activator.getImageDescriptor(Activator.IMG_GUVLOCADD));
-		mainPage.setDescription("Create a new Guvnor repository connection");
+		mainPage.setDescription(Messages.getString("new.guvnor.loc.desc")); //$NON-NLS-1$
 		super.addPage(mainPage);
 		super.addPages();
 	}

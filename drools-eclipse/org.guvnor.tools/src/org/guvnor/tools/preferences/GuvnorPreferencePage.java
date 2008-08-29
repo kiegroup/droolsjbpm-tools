@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.guvnor.tools.Activator;
+import org.guvnor.tools.Messages;
 import org.guvnor.tools.utils.PlatformUtils;
 
 /**
@@ -52,16 +53,16 @@ public class GuvnorPreferencePage extends PreferencePage implements IWorkbenchPr
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 1;
 		group.setLayout(layout);
-		group.setText("Repository Connections");
+		group.setText(Messages.getString("prepage.repository.connections")); //$NON-NLS-1$
 		
 		Composite doubleLine = PlatformUtils.createComposite(group, 2);
-		new Label(doubleLine, SWT.NONE).setText("Guvnor URL template: ");
+		new Label(doubleLine, SWT.NONE).setText(Messages.getString("prepage.guvnor.url.template")); //$NON-NLS-1$
 		guvnorURLTemplate = new Text(doubleLine, SWT.BORDER);
 		guvnorURLTemplate.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		guvnorURLTemplate.setText(getGuvnorTemplatePref());
 		
 		savePassword = new Button(group, SWT.CHECK);
-		savePassword.setText("Save passwords in platform key-ring");
+		savePassword.setText(Messages.getString("prepage.save.passwords")); //$NON-NLS-1$
 		savePassword.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		savePassword.setSelection(true);
 		
@@ -71,10 +72,10 @@ public class GuvnorPreferencePage extends PreferencePage implements IWorkbenchPr
 		layout = new GridLayout();
 		layout.numColumns = 1;
 		group.setLayout(layout);
-		group.setText("File Decoration");
+		group.setText(Messages.getString("prepage.file.decoration")); //$NON-NLS-1$
 		
 		doubleLine = PlatformUtils.createComposite(group, 2);
-		new Label(doubleLine, SWT.NONE).setText("Icon decoration location: ");
+		new Label(doubleLine, SWT.NONE).setText(Messages.getString("prepage.decoration.location")); //$NON-NLS-1$
 		decorationIconLoc = new Combo(doubleLine, SWT.BORDER | SWT.DROP_DOWN);
 		String[] locs = IGuvnorPreferenceConstants.OVERLAY_LOCATIONS;
 		for (int i = 0; i < locs.length; i++) {
@@ -88,20 +89,20 @@ public class GuvnorPreferencePage extends PreferencePage implements IWorkbenchPr
 		layout = new GridLayout();
 		layout.numColumns = 1;
 		textDec.setLayout(layout);
-		textDec.setText("Text");
+		textDec.setText(Messages.getString("prepage.decoration.text")); //$NON-NLS-1$
 		
 		incChangeIndicator = new Button(textDec, SWT.CHECK);
-		incChangeIndicator.setText("Include change indication (>)");
+		incChangeIndicator.setText(Messages.getString("prepage.include.change.indicator")); //$NON-NLS-1$
 		incChangeIndicator.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		incChangeIndicator.setSelection(shouldShowChangeIndicator());
 		
 		incRevision = new Button(textDec, SWT.CHECK);
-		incRevision.setText("Include revision");
+		incRevision.setText(Messages.getString("prepage.include.revision")); //$NON-NLS-1$
 		incRevision.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		incRevision.setSelection(shouldShowRevision());
 		
 		incDateStamp = new Button(textDec, SWT.CHECK);
-		incDateStamp.setText("Include date/time stamp");
+		incDateStamp.setText(Messages.getString("prepage.include.date.time.stamp")); //$NON-NLS-1$
 		incDateStamp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		incDateStamp.setSelection(shouldShowTimeDateStamp());
 		

@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.guvnor.tools.Activator;
+import org.guvnor.tools.Messages;
 import org.guvnor.tools.preferences.GuvnorPreferencePage;
 
 /**
@@ -48,12 +49,12 @@ public class AuthenticationPromptDialog extends TitleAreaDialog {
 	
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		super.setTitle("Guvnor Repository Log in");
-		super.setMessage("Authentication required for repository: " + serverName);
+		super.setTitle(Messages.getString("login.dialog.caption")); //$NON-NLS-1$
+		super.setMessage(Messages.getString("login.dialog.desc") + serverName); //$NON-NLS-1$
 		super.setTitleImage(Activator.getImageDescriptor(Activator.IMG_GUVREPWIZBAN).createImage());
 		
 		Composite composite = PlatformUtils.createComposite(parent, 2);
-		new Label(composite, SWT.NONE).setText("User Name: ");
+		new Label(composite, SWT.NONE).setText(Messages.getString("user.name")); //$NON-NLS-1$
 		unField = new Text(composite, SWT.SINGLE | SWT.BORDER);
 		unField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		unField.addModifyListener(new ModifyListener() {
@@ -62,7 +63,7 @@ public class AuthenticationPromptDialog extends TitleAreaDialog {
 			}
 		});
 		
-		new Label(composite, SWT.NONE).setText("Password: ");
+		new Label(composite, SWT.NONE).setText(Messages.getString("password")); //$NON-NLS-1$
 		pwField = new Text(composite, SWT.SINGLE | SWT.BORDER | SWT.PASSWORD);
 		pwField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		pwField.addModifyListener(new ModifyListener() {
@@ -90,11 +91,11 @@ public class AuthenticationPromptDialog extends TitleAreaDialog {
 		saveInfo = shouldSavePasswords;
 		cbSavePassword.setSelection(shouldSavePasswords);
 		
-		new Label(pwgroup, SWT.NONE).setText("Save user name and password");
+		new Label(pwgroup, SWT.NONE).setText(Messages.getString("save.password")); //$NON-NLS-1$
 		
 		new Label(composite, SWT.NONE).setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		warningLabel = new Label(composite, SWT.WRAP);
-		warningLabel.setText("NOTE: Saved passwords are stored on your computer in a file that is difficult, but not impossible, for an intruder to read.");
+		warningLabel.setText(Messages.getString("password.warning")); //$NON-NLS-1$
 		warningLabel.setEnabled(shouldSavePasswords);
 		
 		return super.createDialogArea(parent);

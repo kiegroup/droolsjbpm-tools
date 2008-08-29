@@ -26,6 +26,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.guvnor.tools.Activator;
 import org.guvnor.tools.GuvnorDecorator;
+import org.guvnor.tools.Messages;
 import org.guvnor.tools.utils.webdav.IWebDavClient;
 import org.guvnor.tools.utils.webdav.WebDavClientFactory;
 import org.guvnor.tools.utils.webdav.WebDavServerCache;
@@ -134,7 +135,7 @@ public class PlatformUtils {
         							getEditorRegistry().getDefaultEditor(name);
 		// If there is no editor associated with the given file name, we'll just
 		// use the eclipse text editor as a default
-		String editorId = desc != null?desc.getId():"org.eclipse.ui.DefaultTextEditor";
+		String editorId = desc != null?desc.getId():"org.eclipse.ui.DefaultTextEditor"; //$NON-NLS-1$
 		try {
 		if (page != null) {
 			page.openEditor(input, editorId);
@@ -160,22 +161,22 @@ public class PlatformUtils {
 
 		TableColumn column = new TableColumn(table, SWT.LEFT, 0);
 		column.setResizable(true);
-		column.setText("Revision");
+		column.setText(Messages.getString("history.revision")); //$NON-NLS-1$
 		column.setWidth(100);
 
 		column = new TableColumn(table, SWT.LEFT, 1);
 		column.setResizable(true);
-		column.setText("Date");
+		column.setText(Messages.getString("history.date")); //$NON-NLS-1$
 		column.setWidth(175);
 
 		column = new TableColumn(table, SWT.LEFT, 2);
 		column.setResizable(true);
-		column.setText("Author");
+		column.setText(Messages.getString("history.author")); //$NON-NLS-1$
 		column.setWidth(200);
 
 		column = new TableColumn(table, SWT.CENTER, 3);
 		column.setResizable(true);
-		column.setText("Comment");
+		column.setText(Messages.getString("history.comment")); //$NON-NLS-1$
 		column.setWidth(350);
 
 		return table;
@@ -185,10 +186,10 @@ public class PlatformUtils {
 		AuthPromptResults res = promptForAuthentication(server);
 		if (res != null) {
 			if (res.wasSaved()) {
-				Platform.addAuthorizationInfo(new URL(server), "", "basic", res.getAuthInfo());
+				Platform.addAuthorizationInfo(new URL(server), "", "basic", res.getAuthInfo()); //$NON-NLS-1$ //$NON-NLS-2$
 			} else {
 				WebDavSessionAuthenticator authen = new WebDavSessionAuthenticator();
-				authen.addAuthenticationInfo(new URL(server), "", "basic", res.getAuthInfo());
+				authen.addAuthenticationInfo(new URL(server), "", "basic", res.getAuthInfo()); //$NON-NLS-1$ //$NON-NLS-2$
 				client.setSessionAuthenticator(authen);
 			}
 			return true;
@@ -200,8 +201,8 @@ public class PlatformUtils {
 	public void updateAuthentication(String server, String username, 
 			                        String password, boolean saveInfo) throws Exception {
 		Map<String, String> info = new HashMap<String, String>();
-		info.put("username", username);
-		info.put("password", password);
+		info.put("username", username); //$NON-NLS-1$
+		info.put("password", password); //$NON-NLS-1$
 		URL serverUrl = new URL(server);
 		IWebDavClient client = WebDavServerCache.getWebDavClient(server);
 		if (client == null) {
@@ -209,11 +210,11 @@ public class PlatformUtils {
 			WebDavServerCache.cacheWebDavClient(server, client);
 		}
 		if (saveInfo) {
-			Platform.flushAuthorizationInfo(serverUrl, "", "basic");
-			Platform.addAuthorizationInfo(serverUrl, "", "basic", info);
+			Platform.flushAuthorizationInfo(serverUrl, "", "basic"); //$NON-NLS-1$ //$NON-NLS-2$
+			Platform.addAuthorizationInfo(serverUrl, "", "basic", info); //$NON-NLS-1$ //$NON-NLS-2$
 		} else {
 			WebDavSessionAuthenticator authen = new WebDavSessionAuthenticator();
-			authen.addAuthenticationInfo(new URL(server), "", "basic", info);
+			authen.addAuthenticationInfo(new URL(server), "", "basic", info); //$NON-NLS-1$ //$NON-NLS-2$
 			client.setSessionAuthenticator(authen);
 		}
 	}
@@ -227,8 +228,8 @@ public class PlatformUtils {
 			public void run() {
 				Display display = Display.getCurrent();
 				Shell shell = display.getActiveShell();
-				MessageDialog.openError(shell, "Guvnor Repository Log in", 
-						               "Authentication failure");
+				MessageDialog.openError(shell, Messages.getString("login.failure.dialog.caption"),  //$NON-NLS-1$
+						               Messages.getString("login.failure.dialog.message")); //$NON-NLS-1$
 			}
 		});
 	}
@@ -267,8 +268,8 @@ public class PlatformUtils {
             AuthenticationPromptDialog diag = new AuthenticationPromptDialog(shell, server);
             if (diag.open() == Dialog.OK) {
             	Map<String, String> info = new HashMap<String, String>();
-            	info.put("username", diag.getUserName());
-            	info.put("password", diag.getPassword());
+            	info.put("username", diag.getUserName()); //$NON-NLS-1$
+            	info.put("password", diag.getPassword()); //$NON-NLS-1$
             	res = new AuthPromptResults(info, diag.saveAuthenInfo());
             }
         }

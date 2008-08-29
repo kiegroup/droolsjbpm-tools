@@ -55,7 +55,7 @@
 	</extension>
 	<extension point="org.eclipse.ui.perspectiveExtensions">
     	<perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">
-           <view id="org.guvnor.tools.views.RepositoriesView"
+           <view id="org.guvnor.tools.views.RepositoryView"
                  ratio="0.5"
                  relationship="right"
                  relative="org.eclipse.ui.views.TaskList"/>

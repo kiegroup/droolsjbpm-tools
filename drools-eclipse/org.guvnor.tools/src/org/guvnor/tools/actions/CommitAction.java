@@ -13,6 +13,7 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.webdav.IResponse;
 import org.guvnor.tools.Activator;
+import org.guvnor.tools.Messages;
 import org.guvnor.tools.utils.ActionUtils;
 import org.guvnor.tools.utils.GuvnorMetadataProps;
 import org.guvnor.tools.utils.GuvnorMetadataUtils;
@@ -80,18 +81,18 @@ public class CommitAction implements IObjectActionDelegate {
 				}
 			}
 			if (remoteProps == null) {
-				throw new Exception("Could not retrieve server version of " + props.getFullpath());
+				throw new Exception("Could not retrieve server version of " + props.getFullpath()); //$NON-NLS-1$
 			}
 			// Check to make sure that the version in the repository is the same as the base
 			// version for the local copy
 			boolean proceed = true;
 			if (!props.getRevision().equals(remoteProps.getRevision())) {
-				String msg = "The Guvnor revision for " + selectedFile.getName() + " is " +
-				             remoteProps.getRevision() + ", but the local copy is based on revision " +
+				String msg = Messages.getString("overwrite.confirmation.prefix") + selectedFile.getName() + Messages.getString("overwrite.confirmation.infix") + //$NON-NLS-1$ //$NON-NLS-2$
+				             remoteProps.getRevision() + Messages.getString("overwrite.confirmation.suffix") + //$NON-NLS-1$
 				             props.getRevision() + 
-				             ".\r\nOverwrite Guvnor repository revision with current local file contents?";
+				             Messages.getString("overwrite.confirmation.question"); //$NON-NLS-1$
 				proceed = MessageDialog.openQuestion(targetPart.getSite().getShell(), 
-						                            "Revision Conflict", msg);
+						                            Messages.getString("overwrite.confirmation.caption"), msg); //$NON-NLS-1$
 						
 			}
 			if (proceed) {

@@ -41,6 +41,7 @@ import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 import org.guvnor.tools.Activator;
 import org.guvnor.tools.GuvnorRepository;
+import org.guvnor.tools.Messages;
 import org.guvnor.tools.GuvnorLocationManager.IRepositorySetListener;
 import org.guvnor.tools.utils.GuvnorMetadataProps;
 import org.guvnor.tools.utils.GuvnorMetadataUtils;
@@ -152,7 +153,7 @@ public class RepositoryView extends ViewPart {
 		IPath path = new Path(Activator.getDefault().getStateLocation().toOSString() + 
 								File.separator + new UID().toString());
 		if (!path.toFile().mkdir()) {
-			throw new Exception("Could not create directory " + path.toOSString());
+			throw new Exception("Could not create directory " + path.toOSString()); //$NON-NLS-1$
 		}
 		path.toFile().deleteOnExit();
 		File transfer = new File(path + File.separator + node.getName());
@@ -192,7 +193,7 @@ public class RepositoryView extends ViewPart {
 	}
 	
 	private void hookContextMenu() {
-		MenuManager menuMgr = new MenuManager("#PopupMenu");
+		MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
@@ -243,15 +244,15 @@ public class RepositoryView extends ViewPart {
 				if (obj instanceof TreeParent) {
 					GuvnorRepository rep = ((TreeParent)obj).getGuvnorRepository();
 					if (MessageDialog.openConfirm(RepositoryView.this.getSite().getShell(), 
-							                     "Remove repository location", "Confirm removing " + 
+							                     Messages.getString("remove.rep.dialog.caption"), Messages.getString("remove.rep.dialog.msg") +  //$NON-NLS-1$ //$NON-NLS-2$
 							                     rep.getLocation())) {
 						Activator.getLocationManager().removeRepository(rep.getLocation());
 					}
 				}
 			}
 		};
-		deleteRepositoryLocAction.setText("Delete");
-		deleteRepositoryLocAction.setToolTipText("Delete Guvnor repository location");
+		deleteRepositoryLocAction.setText(Messages.getString("action.delete.rep")); //$NON-NLS-1$
+		deleteRepositoryLocAction.setToolTipText(Messages.getString("action.delete.rep.desc")); //$NON-NLS-1$
 		deleteRepositoryLocAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 			getImageDescriptor(ISharedImages.IMG_TOOL_DELETE));
 		
@@ -265,8 +266,8 @@ public class RepositoryView extends ViewPart {
 			    dialog.open();
 			}
 		};
-		addRepositoryLocAction.setText("Add");
-		addRepositoryLocAction.setToolTipText("Add a Guvnor respository location");
+		addRepositoryLocAction.setText(Messages.getString("action.add.rep")); //$NON-NLS-1$
+		addRepositoryLocAction.setToolTipText(Messages.getString("action.add.rep.desc")); //$NON-NLS-1$
 		addRepositoryLocAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 				getImageDescriptor(ISharedImages.IMG_TOOL_NEW_WIZARD));
 		
@@ -291,8 +292,8 @@ public class RepositoryView extends ViewPart {
 				}
 			}
 		};
-		refreshAction.setText("Refresh");
-		refreshAction.setToolTipText("Refreshes the current node and its children");
+		refreshAction.setText(Messages.getString("action.refresh.rep")); //$NON-NLS-1$
+		refreshAction.setToolTipText(Messages.getString("action.refresh.rep.desc")); //$NON-NLS-1$
 		refreshAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 				getImageDescriptor(ISharedImages.IMG_TOOL_REDO));
 	}

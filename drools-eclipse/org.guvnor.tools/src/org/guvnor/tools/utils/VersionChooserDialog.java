@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.guvnor.tools.Activator;
+import org.guvnor.tools.Messages;
 import org.guvnor.tools.views.ResourceHistoryContentProvider;
 import org.guvnor.tools.views.ResourceHistoryLabelProvider;
 import org.guvnor.tools.views.model.ResourceHistoryEntry;
@@ -37,8 +38,8 @@ public class VersionChooserDialog extends TitleAreaDialog {
 	
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		super.setTitle("Resource Versions");
-		super.setMessage("Choose a version for " + fileName);
+		super.setTitle(Messages.getString("version.dialog.caption")); //$NON-NLS-1$
+		super.setMessage(Messages.getString("version.dialog.message") + fileName); //$NON-NLS-1$
 		super.setTitleImage(Activator.getImageDescriptor(Activator.IMG_GUVREPWIZBAN).createImage());
 		
 		viewer = new TableViewer(PlatformUtils.createResourceHistoryTable(parent));

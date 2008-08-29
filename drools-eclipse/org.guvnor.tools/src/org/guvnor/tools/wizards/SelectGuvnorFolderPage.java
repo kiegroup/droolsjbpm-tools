@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.guvnor.tools.Activator;
 import org.guvnor.tools.GuvnorRepository;
+import org.guvnor.tools.Messages;
 import org.guvnor.tools.utils.PlatformUtils;
 import org.guvnor.tools.views.RepositoryContentProvider;
 import org.guvnor.tools.views.RepositoryLabelProvider;
@@ -36,7 +37,7 @@ public class SelectGuvnorFolderPage extends WizardPage {
 	
 	public void createControl(Composite parent) {
 		Composite composite = PlatformUtils.createComposite(parent, 1);
-		new Label(composite, SWT.NONE).setText("Select folder:");
+		new Label(composite, SWT.NONE).setText(Messages.getString("select.folder")); //$NON-NLS-1$
 		
 		viewer = new TreeViewer(composite, SWT.BORDER | SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL);
 		viewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -52,7 +53,7 @@ public class SelectGuvnorFolderPage extends WizardPage {
 				// The snapshots directory in Guvnor is read-only for Eclipse tools
 				if (element instanceof TreeObject) {
 					TreeObject o = (TreeObject)element;
-					return o.getFullPath().indexOf("/snapshots/") == -1;
+					return o.getFullPath().indexOf("/snapshots/") == -1; //$NON-NLS-1$
 				} else {
 					return true;
 				}
@@ -115,7 +116,6 @@ public class SelectGuvnorFolderPage extends WizardPage {
 		super.setVisible(visible);
 	}
 	
-	@SuppressWarnings("unchecked")
 	private void updateModel() {
 		if (super.getErrorMessage() != null) {
 			super.setErrorMessage(null);
@@ -127,7 +127,7 @@ public class SelectGuvnorFolderPage extends WizardPage {
 			if (node.getNodeType() == TreeObject.Type.PACKAGE
 			   || node.getNodeType() == TreeObject.Type.REPOSITORY) {
 				viewer.expandToLevel(node, 1);
-				String base = node.getFullPath().endsWith("/")?node.getFullPath():node.getFullPath() + "/";
+				String base = node.getFullPath().endsWith("/")?node.getFullPath():node.getFullPath() + "/"; //$NON-NLS-1$ //$NON-NLS-2$
 				model.setTargetLocation(base);
 				super.getWizard().getContainer().updateButtons();
 			} else {

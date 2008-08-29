@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.guvnor.tools.Activator;
+import org.guvnor.tools.Messages;
 import org.guvnor.tools.preferences.GuvnorPreferencePage;
 import org.guvnor.tools.utils.PlatformUtils;
 
@@ -51,7 +52,7 @@ public class GuvnorMainConfigPage extends WizardPage {
 	public void createControl(Composite parent) {
 		
 		Composite composite = PlatformUtils.createComposite(parent, 2);
-		new Label(composite, SWT.NONE).setText("Location: ");
+		new Label(composite, SWT.NONE).setText(Messages.getString("mainconfig.guvnor.loc")); //$NON-NLS-1$
 		serverField = new Text(composite, SWT.SINGLE | SWT.BORDER);
 		serverField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		serverField.addModifyListener(new ModifyListener() {
@@ -63,7 +64,7 @@ public class GuvnorMainConfigPage extends WizardPage {
 		
 		serverField.setFocus();
 		
-		new Label(composite, SWT.NONE).setText("Port: ");
+		new Label(composite, SWT.NONE).setText(Messages.getString("mainconfig.port")); //$NON-NLS-1$
 		portField = new Text(composite, SWT.SINGLE | SWT.BORDER);
 		portField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		portField.addModifyListener(new ModifyListener() {
@@ -72,7 +73,7 @@ public class GuvnorMainConfigPage extends WizardPage {
 			}
 		});
 		
-		new Label(composite, SWT.NONE).setText("Repository: ");
+		new Label(composite, SWT.NONE).setText(Messages.getString("mainconfig.rep")); //$NON-NLS-1$
 		replocField = new Text(composite, SWT.SINGLE | SWT.BORDER);
 		replocField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		replocField.addModifyListener(new ModifyListener() {
@@ -81,7 +82,7 @@ public class GuvnorMainConfigPage extends WizardPage {
 			}
 		});
 		
-		new Label(composite, SWT.NONE).setText("User Name: ");
+		new Label(composite, SWT.NONE).setText(Messages.getString("mainconfig.user.name")); //$NON-NLS-1$
 		unField = new Text(composite, SWT.SINGLE | SWT.BORDER);
 		unField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		unField.addModifyListener(new ModifyListener() {
@@ -90,7 +91,7 @@ public class GuvnorMainConfigPage extends WizardPage {
 			}
 		});
 		
-		new Label(composite, SWT.NONE).setText("Password: ");
+		new Label(composite, SWT.NONE).setText(Messages.getString("mainconfig.password")); //$NON-NLS-1$
 		pwField = new Text(composite, SWT.SINGLE | SWT.BORDER | SWT.PASSWORD);
 		pwField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		pwField.addModifyListener(new ModifyListener() {
@@ -120,10 +121,10 @@ public class GuvnorMainConfigPage extends WizardPage {
 		saveAuthInfo = shouldSavePasswords;
 		cbSavePassword.setSelection(shouldSavePasswords);
 		
-		new Label(pwgroup, SWT.NONE).setText("Save user name and password");
+		new Label(pwgroup, SWT.NONE).setText(Messages.getString("mainconfig.save.password")); //$NON-NLS-1$
 		new Label(composite, SWT.NONE).setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		warningLabel = new Label(composite, SWT.WRAP);
-		warningLabel.setText("NOTE: Saved passwords are stored on your computer in a file that is difficult, but not impossible, for an intruder to read.");
+		warningLabel.setText(Messages.getString("mainconfig.save.password.warning")); //$NON-NLS-1$
 		warningLabel.setEnabled(shouldSavePasswords);
 		
 		super.setControl(composite);
@@ -218,19 +219,19 @@ public class GuvnorMainConfigPage extends WizardPage {
 		// Try to construct a valid URL from the text boxes
 		String repPath = null;
 		if (replocField.getText().trim().length() > 0) {
-			if (replocField.getText().startsWith("/")) {
+			if (replocField.getText().startsWith("/")) { //$NON-NLS-1$
 				repPath = replocField.getText();
 			} else {
-				repPath = "/" + replocField.getText();
+				repPath = "/" + replocField.getText(); //$NON-NLS-1$
 			}
 		} else {
-			repPath = "";
+			repPath = ""; //$NON-NLS-1$
 		}
 		if (portField.getText().trim().length() > 0) {
 			int port = Integer.parseInt(portField.getText());
-			res = new URL("http", serverField.getText(), port, repPath);
+			res = new URL("http", serverField.getText(), port, repPath); //$NON-NLS-1$
 		} else {
-			res = new URL("http", serverField.getText(), repPath);
+			res = new URL("http", serverField.getText(), repPath); //$NON-NLS-1$
 		}
 		return res;
 	}

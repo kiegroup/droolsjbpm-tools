@@ -14,6 +14,7 @@ import org.eclipse.ui.progress.IElementCollector;
 import org.eclipse.webdav.IResponse;
 import org.guvnor.tools.Activator;
 import org.guvnor.tools.GuvnorRepository;
+import org.guvnor.tools.Messages;
 import org.guvnor.tools.utils.PlatformUtils;
 import org.guvnor.tools.utils.webdav.IWebDavClient;
 import org.guvnor.tools.utils.webdav.ResourceProperties;
@@ -57,13 +58,13 @@ public class TreeParent extends TreeObject implements IDeferredWorkbenchAdapter 
 			TreeParent node = (TreeParent)object;
 			if (node.getNodeType() == Type.NONE) {
 				List<GuvnorRepository> reps = Activator.getLocationManager().getRepositories();
-				monitor.beginTask("Pending...", reps.size());
+				monitor.beginTask(Messages.getString("pending"), reps.size()); //$NON-NLS-1$
 				for (int i = 0; i < reps.size(); i++) {
 					TreeParent p = new TreeParent(reps.get(i).getLocation(), Type.REPOSITORY);
 					p.setParent(node);
 					p.setGuvnorRepository(reps.get(i));
 					ResourceProperties props = new ResourceProperties();
-					props.setBase("");
+					props.setBase(""); //$NON-NLS-1$
 					p.setResourceProps(props);
 					collector.add(p, monitor);
 					monitor.worked(1);
@@ -85,7 +86,7 @@ public class TreeParent extends TreeObject implements IDeferredWorkbenchAdapter 
 		public void listDirectory(TreeParent node,
 				 		         IElementCollector collector, 
 				                 IProgressMonitor monitor) {
-			monitor.beginTask("Pending...", 1);
+			monitor.beginTask(Messages.getString("pending"), 1); //$NON-NLS-1$
 			
 			monitor.worked(1);
 			GuvnorRepository rep = node.getGuvnorRepository();

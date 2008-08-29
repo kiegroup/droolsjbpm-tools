@@ -13,6 +13,7 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.webdav.IResponse;
 import org.guvnor.tools.Activator;
+import org.guvnor.tools.Messages;
 import org.guvnor.tools.utils.ActionUtils;
 import org.guvnor.tools.utils.GuvnorMetadataProps;
 import org.guvnor.tools.utils.GuvnorMetadataUtils;
@@ -52,13 +53,13 @@ public class DeleteAction implements IObjectActionDelegate {
 		}
 		String msg = null;
 		if (selectedItems.size() == 1) {
-			msg = "Delete " + 
-			      ((IFile)selectedItems.getFirstElement()).getName() + " in Guvnor?";
+			msg = Messages.getString("delete.singlefile.confirmation.prefix") +  //$NON-NLS-1$
+			      ((IFile)selectedItems.getFirstElement()).getName() + Messages.getString("delete.singlefile.confirmation.suffix"); //$NON-NLS-1$
 		} else {
-			msg = "Delete these " + selectedItems.size() + " resources in Guvnor?";
+			msg = Messages.getString("delete.multifile.confirmation.prefix") + selectedItems.size() + Messages.getString("delete.multifile.confirmation.suffix"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		if (!MessageDialog.openConfirm(targetPart.getSite().getShell(), 
-				                      "Confirm Delete", msg)) {
+				                      Messages.getString("delete.confirmation.dialog.caption"), msg)) { //$NON-NLS-1$
 			return;
 		}
 		for (Iterator it = selectedItems.iterator(); it.hasNext();) {

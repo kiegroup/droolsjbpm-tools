@@ -88,7 +88,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider,
 
 	private void initialize() {
 		boolean shouldAdd = true;
-		invisibleRoot = new TreeParent("", TreeObject.Type.NONE);
+		invisibleRoot = new TreeParent("", TreeObject.Type.NONE); //$NON-NLS-1$
 		List<GuvnorRepository> reps = Activator.getLocationManager().getRepositories();
 		for (int i = 0; i < reps.size(); i++) {
 			if (repUrl != null) {
@@ -105,7 +105,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider,
 						                     TreeObject.Type.REPOSITORY);
 				p.setGuvnorRepository(reps.get(i));
 				ResourceProperties props = new ResourceProperties();
-				props.setBase("");
+				props.setBase(""); //$NON-NLS-1$
 				p.setResourceProps(props);
 				invisibleRoot.addChild(p);
 			}

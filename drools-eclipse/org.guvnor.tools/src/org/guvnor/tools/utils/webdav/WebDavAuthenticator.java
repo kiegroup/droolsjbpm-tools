@@ -13,7 +13,6 @@ public class WebDavAuthenticator implements IAuthenticator {
 	public WebDavAuthenticator() {
 	}
 	
-	@SuppressWarnings("unchecked")
 	public WebDavAuthenticator(URL serverUrl) {
 		this();
 		repLocation = serverUrl;
@@ -36,13 +35,13 @@ public class WebDavAuthenticator implements IAuthenticator {
 	public Map getAuthenticationInfo(URL serverUrl, 
 			                        String realm, 
 			                        String scheme) {
-		return Platform.getAuthorizationInfo(repLocation, "", scheme);
+		return Platform.getAuthorizationInfo(repLocation, "", scheme); //$NON-NLS-1$
 	}
 
 	public String getProtectionSpace(URL resourceUrl) {
 		// We don't have the notion of "realm," but the client
 		// requires a non-null return value.
-		return "";
+		return ""; //$NON-NLS-1$
 	}
 	
 	@SuppressWarnings("unchecked")

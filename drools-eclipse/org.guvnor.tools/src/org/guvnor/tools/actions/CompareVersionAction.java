@@ -86,9 +86,9 @@ public class CompareVersionAction implements IObjectActionDelegate {
 			String rightContents = StreamProcessingUtils.getStreamContents(response.getInputStream());
 			//Assuming UTF-8 for Guvnor resources...
 			GuvnorResourceEdition right = 
-				new GuvnorResourceEdition(selectedFile.getName() + ", " + revision.getRevision(),
+				new GuvnorResourceEdition(selectedFile.getName() + ", " + revision.getRevision(), //$NON-NLS-1$
 						                 ITypedElement.TEXT_TYPE, 
-						                 rightContents, "UTF-8");
+						                 rightContents, "UTF-8"); //$NON-NLS-1$
 			CompareUI.openCompareEditorOnPage(new GuvnorCompareEditorInput(left, right), page);
 		} catch (Exception e) {
 			Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e);

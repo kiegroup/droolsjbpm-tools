@@ -3,6 +3,7 @@ package org.guvnor.tools.views.model;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
+import org.guvnor.tools.Messages;
 
 public class TreePropertyProvider implements IPropertySource {
 	
@@ -18,43 +19,43 @@ public class TreePropertyProvider implements IPropertySource {
 
 	public IPropertyDescriptor[] getPropertyDescriptors() { 
 		return new IPropertyDescriptor[] {
-			new TextPropertyDescriptor("name", "Name"),
-			new TextPropertyDescriptor("location", "Location"),
-			new TextPropertyDescriptor("type", "Type"),
-			new TextPropertyDescriptor("creationdate", "Created"),
-			new TextPropertyDescriptor("lastmodified", "Last Modified"),
-			new TextPropertyDescriptor("revision", "Revision")
+			new TextPropertyDescriptor("name", Messages.getString("prop.name")), //$NON-NLS-1$ //$NON-NLS-2$
+			new TextPropertyDescriptor("location", Messages.getString("prop.location")), //$NON-NLS-1$ //$NON-NLS-2$
+			new TextPropertyDescriptor("type", Messages.getString("prop.type")), //$NON-NLS-1$ //$NON-NLS-2$
+			new TextPropertyDescriptor("creationdate", Messages.getString("prop.created")), //$NON-NLS-1$ //$NON-NLS-2$
+			new TextPropertyDescriptor("lastmodified", Messages.getString("prop.lastmod")), //$NON-NLS-1$ //$NON-NLS-2$
+			new TextPropertyDescriptor("revision", Messages.getString("prop.revision")) //$NON-NLS-1$ //$NON-NLS-2$
 		};
 	}
 
 	public Object getPropertyValue(Object id) {
-		if (id.equals("name")) {
+		if (id.equals("name")) { //$NON-NLS-1$
 			return node.getName();
 		}
-		if (id.equals("location")) {
+		if (id.equals("location")) { //$NON-NLS-1$
 			return node.getFullPath().substring(node.getGuvnorRepository().getLocation().length());
 		}
-		if (id.equals("type")) {
+		if (id.equals("type")) { //$NON-NLS-1$
 			if (node.getNodeType() == TreeObject.Type.REPOSITORY) {
-				return "repository";
+				return Messages.getString("prop.rep.value"); //$NON-NLS-1$
 			}
 			if (node.getNodeType() == TreeObject.Type.PACKAGE) {
-				return "directory";
+				return Messages.getString("prop.dir.value"); //$NON-NLS-1$
 			}
 			if (node.getNodeType() == TreeObject.Type.RESOURCE) {
-				return "file";
+				return Messages.getString("prop.file.value"); //$NON-NLS-1$
 			}
 		}
-		if (id.equals("creationdate")) {
+		if (id.equals("creationdate")) { //$NON-NLS-1$
 			return node.getResourceProps().getCreationDate();
 		}
-		if (id.equals("lastmodified")) {
+		if (id.equals("lastmodified")) { //$NON-NLS-1$
 			return node.getResourceProps().getLastModifiedDate();
 		}
-		if (id.equals("revision")) {
+		if (id.equals("revision")) { //$NON-NLS-1$
 			return node.getResourceProps().getRevision();
 		}
-		return "";
+		return ""; //$NON-NLS-1$
 	}
 
 	public boolean isPropertySet(Object id) {

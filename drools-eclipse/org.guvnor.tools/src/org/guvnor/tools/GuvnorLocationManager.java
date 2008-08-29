@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.Platform;
 
 public class GuvnorLocationManager {
 	
-	private static final String REP_CACHE_NAME = ".replist";
+	private static final String REP_CACHE_NAME = ".replist"; //$NON-NLS-1$
 	
 	private ArrayList<GuvnorRepository> repList = new ArrayList<GuvnorRepository>();
 	
@@ -36,7 +36,7 @@ public class GuvnorLocationManager {
 	
 	public void addRepository(GuvnorRepository rep) throws Exception {
 		if (findRepository(rep.getLocation()) != null) {
-			throw new Exception("Duplicate repository: " + rep.getLocation());
+			throw new Exception("Duplicate repository: " + rep.getLocation()); //$NON-NLS-1$
 		}
 		repList.add(rep);
 		notifyListeners(IRepositorySetListener.REP_ADDED);
@@ -59,7 +59,7 @@ public class GuvnorLocationManager {
 				return false;
 			}
 			res = repList.remove(theRep);
-			Platform.flushAuthorizationInfo(new URL(rep), "", "basic");
+			Platform.flushAuthorizationInfo(new URL(rep), "", "basic"); //$NON-NLS-1$ //$NON-NLS-2$
 			Activator.getLocationManager().removeRepository(theRep.getLocation());
 			notifyListeners(IRepositorySetListener.REP_ADDED);
 			commit();
@@ -94,7 +94,6 @@ public class GuvnorLocationManager {
 		fos.close();
 	}
 	
-	@SuppressWarnings("unchecked")
 	private void load() throws Exception {
 		repList.clear();
 		File repFile = Activator.getDefault().getStateLocation().

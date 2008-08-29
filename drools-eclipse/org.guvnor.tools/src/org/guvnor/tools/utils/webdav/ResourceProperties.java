@@ -20,19 +20,19 @@ public class ResourceProperties {
 		this.isDirectory = isDirectory;
 	}
 	public String getCreationDate() {
-		return creationDate != null?creationDate:"";
+		return creationDate != null?creationDate:""; //$NON-NLS-1$
 	}
 	public void setCreationDate(String creationDate) {
 		this.creationDate = creationDate;
 	}
 	public String getLastModifiedDate() {
-		return lastModifiedDate != null?lastModifiedDate:"";
+		return lastModifiedDate != null?lastModifiedDate:""; //$NON-NLS-1$
 	}
 	public void setLastModifiedDate(String lastModifiedDate) {
 		this.lastModifiedDate = lastModifiedDate;
 	}
 	public String getRevision() {
-		return revision != null?revision:"";
+		return revision != null?revision:""; //$NON-NLS-1$
 	}
 	public void setRevision(String revision) {
 		this.revision = revision;

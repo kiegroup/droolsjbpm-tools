@@ -28,6 +28,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.webdav.IResponse;
 import org.guvnor.tools.Activator;
+import org.guvnor.tools.Messages;
 import org.guvnor.tools.utils.GuvnorMetadataUtils;
 import org.guvnor.tools.utils.PlatformUtils;
 import org.guvnor.tools.utils.webdav.IWebDavClient;
@@ -77,11 +78,11 @@ public class ResourceHistoryView extends ViewPart {
 		Composite composite = PlatformUtils.createComposite(parent, 1);
 		
 		repositoryLabel = new Label(composite, SWT.NONE);
-		repositoryLabel.setText("Repository: ");
+		repositoryLabel.setText(Messages.getString("history.rep.label")); //$NON-NLS-1$
 		repositoryLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
 		resourceLabel = new Label(composite, SWT.NONE);
-		resourceLabel.setText("Resource: ");
+		resourceLabel.setText(Messages.getString("history.resource.label")); //$NON-NLS-1$
 		resourceLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
 		viewer = new TableViewer(PlatformUtils.createResourceHistoryTable(composite));
@@ -98,7 +99,7 @@ public class ResourceHistoryView extends ViewPart {
 	}
 
 	private void hookContextMenu() {
-		MenuManager menuMgr = new MenuManager("#PopupMenu");
+		MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
@@ -131,8 +132,8 @@ public class ResourceHistoryView extends ViewPart {
 				showResourceVersionContents();
 			}
 		};
-		showVersionAction.setText("Open (read-only)");
-		showVersionAction.setToolTipText("Opens a read-only editor with the version contents");
+		showVersionAction.setText(Messages.getString("action.open")); //$NON-NLS-1$
+		showVersionAction.setToolTipText(Messages.getString("action.open.desc")); //$NON-NLS-1$
 		showVersionAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 			getImageDescriptor(ISharedImages.IMG_OBJ_FILE));
 	}
@@ -166,14 +167,14 @@ public class ResourceHistoryView extends ViewPart {
 				}
 				if (contents != null) {
 					String editorTitle = null;
-					int pos = fullPath.lastIndexOf("/");
+					int pos = fullPath.lastIndexOf("/"); //$NON-NLS-1$
 					if (pos != -1
 					   && pos + 1 < fullPath.length()) {
 						editorTitle = fullPath.substring(pos + 1);
 					} else {
 						editorTitle = fullPath;
 					}
-					PlatformUtils.openEditor(contents, editorTitle + ", " + theEntry.getRevision());
+					PlatformUtils.openEditor(contents, editorTitle + ", " + theEntry.getRevision()); //$NON-NLS-1$
 				}
 			} catch (Exception e) {
 				Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e);
@@ -189,9 +190,9 @@ public class ResourceHistoryView extends ViewPart {
 	}
 	
 	public void setEntries(String repository, String fullPath, Properties entryProps) {
-		repositoryLabel.setText("Repository: " + repository);
+		repositoryLabel.setText(Messages.getString("history.rep.label") + repository); //$NON-NLS-1$
 		repositoryLabel.setToolTipText(repository);
-		resourceLabel.setText("Resource: " + fullPath.substring(repository.length()));
+		resourceLabel.setText(Messages.getString("history.resource.label") + fullPath.substring(repository.length())); //$NON-NLS-1$
 		resourceLabel.setToolTipText(fullPath);
 		ResourceHistoryEntry[] entries = GuvnorMetadataUtils.parseHistoryProperties(entryProps);
 		viewer.setContentProvider(new ResourceHistoryContentProvider(entries));

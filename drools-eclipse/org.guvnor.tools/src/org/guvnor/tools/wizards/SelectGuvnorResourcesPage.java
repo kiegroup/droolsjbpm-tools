@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.guvnor.tools.Activator;
 import org.guvnor.tools.GuvnorRepository;
+import org.guvnor.tools.Messages;
 import org.guvnor.tools.utils.PlatformUtils;
 import org.guvnor.tools.views.RepositoryContentProvider;
 import org.guvnor.tools.views.RepositoryLabelProvider;
@@ -36,7 +37,7 @@ public class SelectGuvnorResourcesPage extends WizardPage {
 	
 	public void createControl(Composite parent) {
 		Composite composite = PlatformUtils.createComposite(parent, 1);
-		new Label(composite, SWT.NONE).setText("Select resources:");
+		new Label(composite, SWT.NONE).setText(Messages.getString("select.resources")); //$NON-NLS-1$
 		
 		viewer = new TreeViewer(composite, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		viewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
