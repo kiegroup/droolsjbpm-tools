@@ -104,10 +104,10 @@ public class RepositoryView extends ViewPart {
 	}
 	
 	private void addDragDropSupport() {
-		// TODO: Support drag and drop of multiple files, directories, etc.
+		// TODO: Support drag and drop of directories
 		Transfer[] transfers = new Transfer[] { FileTransfer.getInstance()};
 		viewer.addDragSupport(DND.DROP_COPY, transfers, new DragSourceListener() {
-			private TreeObject target;
+			private TreeObject[] target;
 			
 			public void dragFinished(DragSourceEvent event) {
 				target = null;
@@ -134,46 +134,77 @@ public class RepositoryView extends ViewPart {
 			}
 			
 			public void dragStart(DragSourceEvent event) {
+				List<TreeObject> transferNodes = new ArrayList<TreeObject>();
 				ISelection selection = viewer.getSelection();
-				Object obj = ((IStructuredSelection)selection).getFirstElement();
-				if (obj instanceof TreeObject
-				   && ((TreeObject)obj).getNodeType() == TreeObject.Type.RESOURCE) {
-					target = (TreeObject)obj;
+				Object[] objs = ((IStructuredSelection)selection).toArray();
+				for (int i = 0; i < objs.length; i++) {
+					if (objs[i] instanceof TreeObject
+					    && ((TreeObject)objs[i]).getNodeType() == TreeObject.Type.RESOURCE) {
+						transferNodes.add((TreeObject)objs[i]);
+					}
+				}
+				if (transferNodes.size() > 0) {
 					event.doit = true;
+					target = new TreeObject[transferNodes.size()];
+					transferNodes.toArray(target);
 				} else {
 					event.doit = false;
 				}
 			}
 		});
+		
+//		viewer.addDropSupport(DND.DROP_COPY | DND.DROP_MOVE, transfers, new ViewerDropAdapter(viewer) {
+//			
+//			private TreeParent targetNode;
+//			
+//			@Override
+//			public boolean performDrop(Object data) {
+//				return false;
+//			}
+//
+//			@Override
+//			public boolean validateDrop(Object target, int operation,
+//					TransferData transferType) {
+//				if (target == null
+//					|| !(target instanceof TreeParent)) {
+//					targetNode = null;
+//					return false;
+//				}
+//				targetNode = (TreeParent)target;
+//				return true;
+//			}
+//			
+//		});
 	}
 	
-	private List<String> prepareFileTransfer(TreeObject node) throws Exception {
+	private List<String> prepareFileTransfer(TreeObject[] nodes) throws Exception {
 		List<String> res = new ArrayList<String>();
-		String contents = getResourceContents(node);
-		IPath path = new Path(Activator.getDefault().getStateLocation().toOSString() + 
-								File.separator + new UID().toString());
-		if (!path.toFile().mkdir()) {
-			throw new Exception("Could not create directory " + path.toOSString()); //$NON-NLS-1$
+		for (int i = 0; i < nodes.length; i++) {
+			String contents = getResourceContents(nodes[i]);
+			IPath path = new Path(Activator.getDefault().getStateLocation().toOSString() + 
+								  File.separator + new UID().toString());
+			if (!path.toFile().mkdir()) {
+				throw new Exception("Could not create directory " + path.toOSString()); //$NON-NLS-1$
+			}
+			path.toFile().deleteOnExit();
+			File transfer = new File(path + File.separator + nodes[i].getName());
+			transfer.deleteOnExit();
+			FileOutputStream fos = new FileOutputStream(transfer);
+			PrintWriter writer = new PrintWriter(fos);
+			writer.write(contents);
+			writer.flush();
+			writer.close();
+			res.add(transfer.getAbsolutePath());
+		
+			IPath metaPath = GuvnorMetadataUtils.
+								createGuvnorMetadataLocation(path.toOSString());
+			metaPath.toFile().deleteOnExit();
+			File metaFile = GuvnorMetadataUtils.
+								getGuvnorMetadataFile(metaPath.toOSString(), nodes[i].getName());
+			metaFile.deleteOnExit();
+			GuvnorMetadataUtils.writeGuvnorMetadataProps(metaFile, getGuvnorMetadataProps(nodes[i]));
+			res.add(metaFile.getAbsolutePath());
 		}
-		path.toFile().deleteOnExit();
-		File transfer = new File(path + File.separator + node.getName());
-		transfer.deleteOnExit();
-		FileOutputStream fos = new FileOutputStream(transfer);
-		PrintWriter writer = new PrintWriter(fos);
-		writer.write(contents);
-		writer.flush();
-		writer.close();
-		res.add(transfer.getAbsolutePath());
-		
-		IPath metaPath = GuvnorMetadataUtils.
-							createGuvnorMetadataLocation(path.toOSString());
-		metaPath.toFile().deleteOnExit();
-		File metaFile = GuvnorMetadataUtils.
-							getGuvnorMetadataFile(metaPath.toOSString(), node.getName());
-		metaFile.deleteOnExit();
-		GuvnorMetadataUtils.writeGuvnorMetadataProps(metaFile, getGuvnorMetadataProps(node));
-		res.add(metaFile.getAbsolutePath());
-		
 		return res;
 	}
 	

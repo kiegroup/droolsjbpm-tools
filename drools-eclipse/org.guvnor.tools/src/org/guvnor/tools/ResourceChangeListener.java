@@ -75,7 +75,7 @@ public class ResourceChangeListener implements IResourceChangeListener {
 	
 	private void deleteResources(final List<IResource> resources) throws CoreException {
 		Display display = PlatformUI.getWorkbench().getDisplay();
-		display.syncExec(new Runnable() {
+		display.asyncExec(new Runnable() {
 			public void run() {
 				IWorkspace ws = Activator.getDefault().getWorkspace();
 				try {
@@ -105,7 +105,7 @@ public class ResourceChangeListener implements IResourceChangeListener {
 		}
 		final GuvnorMetadataProps mdProps = GuvnorMetadataUtils.loadGuvnorMetadata(mdFile);
 		Display display = PlatformUI.getWorkbench().getDisplay();
-		display.syncExec(new Runnable() {
+		display.asyncExec(new Runnable() {
 			public void run() {
 				try {
 					GuvnorMetadataUtils.setGuvnorMetadataProps(resource.getFullPath(), mdProps);

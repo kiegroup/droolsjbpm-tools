@@ -76,8 +76,6 @@ public class PlatformUtils {
 				manager.update(GuvnorDecorator.DECORATOR_ID);
 			}
 		});
-//		IDecoratorManager manager = Activator.getDefault().getWorkbench().getDecoratorManager();
-//		manager.update(GuvnorDecorator.DECORATOR_ID);
 	}
 	
 	/**
