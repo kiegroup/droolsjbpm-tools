@@ -551,24 +551,21 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                                       2,
                                                       DROOLS_ICON ) );
                 // add parameters with possibly matching type
-                if ( context.getRule() != null ) {
-                    Map result = new HashMap();
-                    addRuleParameters( result,
-                                       context.getRule().getLhs().getDescrs() );
-                    Iterator iterator2 = result.entrySet().iterator();
-                    while ( iterator2.hasNext() ) {
-                        Map.Entry entry = (Map.Entry) iterator2.next();
-                        String paramName = (String) entry.getKey();
-                        String paramType = (String) entry.getValue();
-                        if ( isSubtypeOf( paramType,
-                                          type ) ) {
-                            RuleCompletionProposal proposal = new RuleCompletionProposal( documentOffset - prefix.length(),
-                                                                                          prefix.length(),
-                                                                                          paramName );
-                            proposal.setPriority( -1 );
-                            proposal.setImage( VARIABLE_ICON );
-                            list.add( proposal );
-                        }
+                Map result = new HashMap();
+                addRuleParameters( result, context.getRuleParameters() );
+                Iterator iterator2 = result.entrySet().iterator();
+                while ( iterator2.hasNext() ) {
+                    Map.Entry entry = (Map.Entry) iterator2.next();
+                    String paramName = (String) entry.getKey();
+                    String paramType = (String) entry.getValue();
+                    if ( isSubtypeOf( paramType,
+                                      type ) ) {
+                        RuleCompletionProposal proposal = new RuleCompletionProposal( documentOffset - prefix.length(),
+                                                                                      prefix.length(),
+                                                                                      paramName );
+                        proposal.setPriority( -1 );
+                        proposal.setImage( VARIABLE_ICON );
+                        list.add( proposal );
                     }
                 }
                 // add globals with possibly matching type
@@ -626,7 +623,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                     PackageBuilderConfiguration config = new PackageBuilderConfiguration( ProjectClassLoader.getProjectClassLoader( getEditor() ),
                                                                                           null );
                     Map accumulateFunctions = config.getAccumulateFunctionsMap();
-                    for ( Iterator iterator2 = accumulateFunctions.keySet().iterator(); iterator2.hasNext(); ) {
+                    for ( iterator2 = accumulateFunctions.keySet().iterator(); iterator2.hasNext(); ) {
                         String accumulateFunction = (String) iterator2.next();
                         list.add( new RuleCompletionProposal( documentOffset - prefix.length(),
                                                               prefix.length(),
@@ -772,12 +769,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         if ( context == null ) {
             context = new CompletionContext( backText );
         }
-        if ( context.getRule() == null ) {
-            return result;
-        }
-        // add parameters defined in conditions
-        addRuleParameters( result,
-                           context.getRule().getLhs().getDescrs() );
+        addRuleParameters( result, context.getRuleParameters() );
         return result;
     }
 
@@ -1162,7 +1154,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
         String macroMvel = processMacros( mvel );
 
-        String name = context.getRule().getName();
+        String name = context.getRuleName();
         RuleInfo currentRule = getCurrentRule( drlInfo,
                                                name );
         String qName = drlInfo.getPackageName() + "." + currentRule.getRuleName();
@@ -1372,68 +1364,19 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         return false;
     }
 
-    private void addRuleParameters(Map result,
-                                   List descrs) {
-        if ( descrs == null ) {
-            return;
-        }
-        Iterator iterator = descrs.iterator();
-        while ( iterator.hasNext() ) {
-            BaseDescr descr = (BaseDescr) iterator.next();
-            addRuleParameters( result,
-                               descr );
-        }
-    }
-
-    private void addRuleParameters(Map result,
-                                   BaseDescr descr) {
-        if ( descr == null ) {
-            return;
-        }
-        if ( descr instanceof PatternDescr ) {
-            String name = ((PatternDescr) descr).getIdentifier();
-            if ( name != null ) {
-                result.put( name,
-                            ((PatternDescr) descr).getObjectType() );
+    private void addRuleParameters(Map<String, String> result,
+                                   Map<String, String[]> ruleParameters) {
+        for (Map.Entry<String, String[]> entry: ruleParameters.entrySet()) {
+            String name = entry.getKey();
+            String clazz = entry.getValue()[0];
+            String field = entry.getValue()[1];
+            String type;
+            if (field == null) {
+            	type = clazz;
+            } else {
+            	type = getPropertyClass( clazz, field );
             }
-            addRuleSubParameters( result,
-                                  ((PatternDescr) descr).getDescrs(),
-                                  ((PatternDescr) descr).getObjectType() );
-        } else if ( descr instanceof AndDescr ) {
-            addRuleParameters( result,
-                               ((AndDescr) descr).getDescrs() );
-        } else if ( descr instanceof OrDescr ) {
-            addRuleParameters( result,
-                               ((OrDescr) descr).getDescrs() );
-        } else if ( descr instanceof ExistsDescr ) {
-            addRuleParameters( result,
-                               ((ExistsDescr) descr).getDescrs() );
-        } else if ( descr instanceof NotDescr ) {
-            addRuleParameters( result,
-                               ((NotDescr) descr).getDescrs() );
-        }
-    }
-
-    private void addRuleSubParameters(Map result,
-                                      List descrs,
-                                      String clazz) {
-        if ( descrs == null ) {
-            return;
-        }
-        Iterator iterator = descrs.iterator();
-        while ( iterator.hasNext() ) {
-            BaseDescr descr = (BaseDescr) iterator.next();
-            if ( descr instanceof FieldBindingDescr ) {
-                FieldBindingDescr fieldDescr = (FieldBindingDescr) descr;
-                String name = fieldDescr.getIdentifier();
-                String field = fieldDescr.getFieldName();
-                String type = getPropertyClass( clazz,
-                                                field );
-                if ( name != null ) {
-                    result.put( name,
-                                type );
-                }
-            }
+            result.put( name, type );
         }
     }
 

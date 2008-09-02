@@ -385,10 +385,9 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 
                 if ( packageDescr == null ) {
                     if ( dslReader != null ) {
-                        packageDescr = parser.parse( content,
-                                                     dslReader );
+                        packageDescr = parser.parse( true, content, dslReader );
                     } else {
-                        packageDescr = parser.parse( content );
+                        packageDescr = parser.parse( true, content );
                     }
                     parserErrors = parser.getErrors();
                 }

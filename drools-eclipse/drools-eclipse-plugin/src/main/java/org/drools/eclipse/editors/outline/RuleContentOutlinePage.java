@@ -234,10 +234,12 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
     		DRLInfo drlInfo = DroolsEclipsePlugin.getDefault().parseResource(editor, true, false);
     		if (drlInfo != null) {
 		    	PackageDescr packageDescr = drlInfo.getPackageDescr();
-	    		for (Iterator iterator = packageDescr.getRules().iterator(); iterator.hasNext(); ) {
-	    			RuleDescr ruleDescr = (RuleDescr) iterator.next();
-	    			rules.put(ruleDescr.getName(), ruleDescr);
-	    		}
+		    	if (packageDescr != null) {
+		    		for (Iterator iterator = packageDescr.getRules().iterator(); iterator.hasNext(); ) {
+		    			RuleDescr ruleDescr = (RuleDescr) iterator.next();
+		    			rules.put(ruleDescr.getName(), ruleDescr);
+		    		}	
+		    	}
     		}
     	} catch (DroolsParserException e) {
     		DroolsEclipsePlugin.log(e);

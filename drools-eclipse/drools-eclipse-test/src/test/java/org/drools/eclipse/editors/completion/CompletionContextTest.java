@@ -1,8 +1,10 @@
 package org.drools.eclipse.editors.completion;
 
-import org.drools.lang.Location;
+import java.util.Map;
 
 import junit.framework.TestCase;
+
+import org.drools.lang.Location;
 
 /**
  * Test to check the location determination when doing code completion inside
@@ -13,6 +15,30 @@ import junit.framework.TestCase;
  */
 public class CompletionContextTest extends TestCase {
 
+    public void testCheckLHSLocationDetermination_RULE_NAME_1() {
+        String input =
+        	"rule \"MyRule\" ";
+        assertEquals("MyRule", new CompletionContext(input).getRuleName());
+    }
+
+    public void testCheckLHSLocationDetermination_RULE_NAME_2() {
+        String input =
+        	"rule \"MyRule\"";
+        assertEquals("MyRule", new CompletionContext(input).getRuleName());
+    }
+
+    public void testCheckLHSLocationDetermination_RULE_NAME_3() {
+        String input =
+        	"rule MyRule ";
+        assertEquals("MyRule", new CompletionContext(input).getRuleName());
+    }
+	
+    public void testCheckLHSLocationDetermination_RULE_NAME_4() {
+        String input =
+        	"rule MyRule";
+        assertEquals("MyRule", new CompletionContext(input).getRuleName());
+    }
+
     public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION1() {
         String input =
         	"rule MyRule \n" +
@@ -20,6 +46,7 @@ public class CompletionContextTest extends TestCase {
         	"		";
         Location location = new CompletionContext(input).getLocation();
         assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION, location.getType());
+        assertNull(location.getProperty(Location.LOCATION_PROPERTY_CLASS_NAME));
     }
 
     public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION2() {
@@ -30,6 +57,7 @@ public class CompletionContextTest extends TestCase {
         	"		";
         Location location = new CompletionContext(input).getLocation();
         assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION, location.getType());
+        assertNull(location.getProperty(Location.LOCATION_PROPERTY_CLASS_NAME));
     }
 
     public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION3() {
@@ -40,6 +68,7 @@ public class CompletionContextTest extends TestCase {
         	"		";
         Location location = new CompletionContext(input).getLocation();
         assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION, location.getType());
+        assertNull(location.getProperty(Location.LOCATION_PROPERTY_CLASS_NAME));
     }
 
     public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION4() {
@@ -476,7 +505,7 @@ public class CompletionContextTest extends TestCase {
         assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT, location.getType());
         assertEquals("Class", location.getProperty(Location.LOCATION_PROPERTY_CLASS_NAME));
         assertEquals("property", location.getProperty(Location.LOCATION_PROPERTY_PROPERTY_NAME));
-        assertEquals("in", location.getProperty(Location.LOCATION_PROPERTY_OPERATOR));
+        assertEquals("not in", location.getProperty(Location.LOCATION_PROPERTY_OPERATOR));
         }
 
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_END2() {
@@ -542,7 +571,7 @@ public class CompletionContextTest extends TestCase {
         assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT, location.getType());
         assertEquals("Class", location.getProperty(Location.LOCATION_PROPERTY_CLASS_NAME));
         assertEquals("property", location.getProperty(Location.LOCATION_PROPERTY_PROPERTY_NAME));
-        assertEquals("memberOf", location.getProperty(Location.LOCATION_PROPERTY_OPERATOR));
+        assertEquals("not memberOf", location.getProperty(Location.LOCATION_PROPERTY_OPERATOR));
         }
 
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_END4() {
@@ -1430,11 +1459,11 @@ public class CompletionContextTest extends TestCase {
         	"	when \n" +
         	"		Class ( property > 0 ) from accumulate( \n" +
         	"			$cheese : Cheese( type == $likes ), \n" +
-        	"			init( int total = 0; ), \n" +
+        	"			init( int total = 0 ; ), \n" +
         	"			action( ";
         Location location = new CompletionContext(input).getLocation();
         assertEquals(Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE, location.getType());
-        assertEquals(" int total = 0; ", location.getProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT));
+        assertEquals("int total = 0 ;", location.getProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT));
         assertEquals("", location.getProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT));
         }
 
@@ -1450,7 +1479,7 @@ public class CompletionContextTest extends TestCase {
         	"           result( ";
         Location location = new CompletionContext(input).getLocation();
         assertEquals(Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE, location.getType());
-        assertEquals(" int total = 0; ", location.getProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT));
+        assertEquals("int total = 0;", location.getProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT));
         assertEquals(" total += $cheese.getPrice(); ", location.getProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT));
         assertEquals("", location.getProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_RESULT_CONTENT));
         }
@@ -1475,12 +1504,12 @@ public class CompletionContextTest extends TestCase {
         	"	when \n" +
         	"		Class ( property > 0 ) from accumulate( \n" +
         	"			$cheese : Cheese( type == $likes ), \n" +
-        	"			init( int total = 0; ), \n" +
+        	"			init( int total = 0 ; ), \n" +
         	"			action( total += $ch";
         Location location = new CompletionContext(input).getLocation();
         assertEquals(Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE, location.getType());
-        assertEquals(" int total = 0; ", location.getProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT));
-        assertEquals("total += $ch", location.getProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT));
+        assertEquals("int total = 0 ;", location.getProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT));
+        assertEquals("total + = $ch", location.getProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT));
         }
 
     // TODO
@@ -1490,14 +1519,14 @@ public class CompletionContextTest extends TestCase {
         	"	when \n" +
         	"		Class ( property > 0 ) from accumulate( \n" +
         	"			$cheese : Cheese( type == $likes ), \n" +
-        	"			init( int total = 0; ), \n" +
+        	"			init( int total = 0 ; ), \n" +
         	"			action( total += $cheese.getPrice(); ), \n" +
-        	"           result( new Integer( tot";
+        	"           result( new Integer ( tot";
         Location location = new CompletionContext(input).getLocation();
         assertEquals(Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE, location.getType());
-        assertEquals(" int total = 0; ", location.getProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT));
-        assertEquals(" total += $cheese.getPrice(); ", location.getProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT));
-        assertEquals("new Integer( tot", location.getProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_RESULT_CONTENT));
+        assertEquals("int total = 0 ;", location.getProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT));
+        assertEquals("total + = $cheese . getPrice ( ) ;", location.getProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT));
+        assertEquals("new Integer ( tot", location.getProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_RESULT_CONTENT));
         }
 
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START() {
@@ -1795,8 +1824,8 @@ public class CompletionContextTest extends TestCase {
         	"rule MyRule \n" +
         	"	salience 12 activation-group \"my";
         Location location = new CompletionContext(input).getLocation();
-        assertEquals(Location.LOCATION_RULE_HEADER, location.getType());
-        assertEquals("salience 12 activation-group \"my", location.getProperty(Location.LOCATION_HEADER_CONTENT));
+        assertEquals(Location.LOCATION_RULE_HEADER_KEYWORD, location.getType());
+        assertEquals("activation-group", location.getProperty(Location.LOCATION_HEADER_CONTENT));
     }
 
     public void testCheckRuleHeaderLocationDetermination3() {
@@ -1804,7 +1833,7 @@ public class CompletionContextTest extends TestCase {
           "rule \"Hello World\" ruleflow-group \"hello\" s";
         Location location = new CompletionContext(input).getLocation();
         assertEquals(Location.LOCATION_RULE_HEADER, location.getType());
-        assertEquals("ruleflow-group \"hello\" s", location.getProperty(Location.LOCATION_HEADER_CONTENT));
+        assertEquals("s", location.getProperty(Location.LOCATION_HEADER_CONTENT));
     }
 
     public void testCheckRuleHeaderLocationDetermination_dialect1() {
@@ -1813,7 +1842,7 @@ public class CompletionContextTest extends TestCase {
         	"	dialect \"java\"";
         Location location = new CompletionContext(input).getLocation();
         assertEquals(Location.LOCATION_RULE_HEADER, location.getType());
-        assertEquals("dialect \"java\"", location.getProperty(Location.LOCATION_HEADER_CONTENT));
+        assertEquals("", location.getProperty(Location.LOCATION_HEADER_CONTENT));
     }
 
     public void testCheckRuleHeaderLocationDetermination_dialect2() {
@@ -1822,7 +1851,7 @@ public class CompletionContextTest extends TestCase {
         	"	dialect \"mvel\"";
         Location location = new CompletionContext(input).getLocation();
         assertEquals(Location.LOCATION_RULE_HEADER, location.getType());
-        assertEquals("dialect \"mvel\"", location.getProperty(Location.LOCATION_HEADER_CONTENT));
+        assertEquals("", location.getProperty(Location.LOCATION_HEADER_CONTENT));
     }
 
     public void testCheckRuleHeaderLocationDetermination_dialect3() {
@@ -1830,8 +1859,8 @@ public class CompletionContextTest extends TestCase {
         	"rule MyRule \n" +
         	"	dialect ";
         Location location = new CompletionContext(input).getLocation();
-        assertEquals(Location.LOCATION_RULE_HEADER, location.getType());
-        assertEquals("dialect ", location.getProperty(Location.LOCATION_HEADER_CONTENT));
+        assertEquals(Location.LOCATION_RULE_HEADER_KEYWORD, location.getType());
+        assertEquals("dialect", location.getProperty(Location.LOCATION_HEADER_CONTENT));
     }
 
     public void testCheckRuleHeaderLocationDetermination_dialect4() {
@@ -1839,8 +1868,17 @@ public class CompletionContextTest extends TestCase {
         	"rule MyRule \n" +
         	"	dialect \"";
         Location location = new CompletionContext(input).getLocation();
-        assertEquals(Location.LOCATION_RULE_HEADER, location.getType());
-        assertEquals("dialect \"", location.getProperty(Location.LOCATION_HEADER_CONTENT));
+        assertEquals(Location.LOCATION_RULE_HEADER_KEYWORD, location.getType());
+        assertEquals("dialect", location.getProperty(Location.LOCATION_HEADER_CONTENT));
+    }
+
+    public void testCheckRuleHeaderLocationDetermination_dialect5() {
+        String input  =
+        	"rule MyRule \n" +
+        	"	dialect";
+        Location location = new CompletionContext(input).getLocation();
+        assertEquals(Location.LOCATION_RULE_HEADER_KEYWORD, location.getType());
+        assertEquals("dialect", location.getProperty(Location.LOCATION_HEADER_CONTENT));
     }
 
     public void testCheckQueryLocationDetermination_RULE_HEADER1() {
@@ -1873,4 +1911,128 @@ public class CompletionContextTest extends TestCase {
         assertEquals("Class", location.getProperty(Location.LOCATION_PROPERTY_CLASS_NAME));
     }
     
+    public void testRuleParameters_PATTERN_1() {
+        String input =
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		c: Class (";
+        Map<String, String[]> parameters = new CompletionContext(input).getRuleParameters();
+        assertEquals(1, parameters.size());
+        assertEquals("Class", parameters.get("c")[0]);
+        assertNull(parameters.get("c")[1]);
+    }
+    
+    public void testRuleParameters_PATTERN_2() {
+        String input =
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		c: Class ( ) \n" +
+        	"	    c2: Class2 ( ) \n" +
+        	"	    l: java.util.List ( ";
+        Map<String, String[]> parameters = new CompletionContext(input).getRuleParameters();
+        assertEquals(3, parameters.size());
+        assertEquals("Class", parameters.get("c")[0]);
+        assertNull(parameters.get("c")[1]);
+        assertEquals("Class2", parameters.get("c2")[0]);
+        assertNull(parameters.get("c2")[1]);
+        assertEquals("java.util.List", parameters.get("l")[0]);
+        assertNull(parameters.get("l")[1]);
+    }
+    
+    public void testRuleParameters_PATTERN_3() {
+        String input =
+        	"rule MyRule \n" + 
+        	"	when \n" + 
+        	"		name : Class ( name2: property ) and ";
+        Map<String, String[]> parameters = new CompletionContext(input).getRuleParameters();
+        assertEquals(2, parameters.size());
+        assertEquals("Class", parameters.get("name")[0]);
+        assertNull(parameters.get("name")[1]);
+        assertEquals("Class", parameters.get("name2")[0]);
+        assertEquals("property", parameters.get("name2")[1]);
+    }
+    
+    public void testRuleParameters_PATTERN_4() {
+        String input =
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		c: Class.SubClass (";
+        Map<String, String[]> parameters = new CompletionContext(input).getRuleParameters();
+        assertEquals(1, parameters.size());
+        assertEquals("Class.SubClass", parameters.get("c")[0]);
+        assertNull(parameters.get("c")[1]);
+    }
+    
+    public void testRuleParameters_FIELD_1() {
+        String input =
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		c: Class ( param: property, ";
+        Map<String, String[]> parameters = new CompletionContext(input).getRuleParameters();
+        assertEquals(2, parameters.size());
+        assertEquals("Class", parameters.get("param")[0]);
+        assertEquals("property", parameters.get("param")[1]);
+        assertEquals("Class", parameters.get("c")[0]);
+        assertNull(parameters.get("c")[1]);
+    }
+
+    public void testRuleParameters_FIELD_2() {
+        String input =
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		c: Class ( param: prop1.prop2.prop3, ";
+        Map<String, String[]> parameters = new CompletionContext(input).getRuleParameters();
+        assertEquals(2, parameters.size());
+        assertEquals("Class", parameters.get("param")[0]);
+        assertEquals("prop1.prop2.prop3", parameters.get("param")[1]);
+        assertEquals("Class", parameters.get("c")[0]);
+        assertNull(parameters.get("c")[1]);
+    }
+
+    public void testRuleParameters_FIELD_3() {
+        String input =
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		c: Class ( param: this.prop1[\"key\"], ";
+        Map<String, String[]> parameters = new CompletionContext(input).getRuleParameters();
+        assertEquals(2, parameters.size());
+        assertEquals("Class", parameters.get("param")[0]);
+        assertEquals("this.prop1[\"key\"]", parameters.get("param")[1]);
+        assertEquals("Class", parameters.get("c")[0]);
+        assertNull(parameters.get("c")[1]);
+    }
+
+    public void testRuleParameters_FIELD_4() {
+        String input =
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		c: Class ( prop1 > 10, param: prop1, ";
+        Map<String, String[]> parameters = new CompletionContext(input).getRuleParameters();
+        assertEquals(2, parameters.size());
+        assertEquals("Class", parameters.get("param")[0]);
+        assertEquals("prop1", parameters.get("param")[1]);
+        assertEquals("Class", parameters.get("c")[0]);
+        assertNull(parameters.get("c")[1]);
+    }
+
+    public void testRuleParameters_FIELD_5() {
+        String input =
+        	"rule MyRule \n" +
+        	"	when \n" +
+        	"		c: Class ( prop1 > 10, param: prop1 ) \n" +
+        	"   	Class ( ) \n" +
+        	"   	c2: Class2 ( name: name, ";
+        Map<String, String[]> parameters = new CompletionContext(input).getRuleParameters();
+        assertEquals(4, parameters.size());
+        assertEquals("Class", parameters.get("param")[0]);
+        assertEquals("prop1", parameters.get("param")[1]);
+        assertEquals("Class", parameters.get("c")[0]);
+        assertNull(parameters.get("c")[1]);
+        assertEquals("Class2", parameters.get("name")[0]);
+        assertEquals("name", parameters.get("name")[1]);
+        assertEquals("Class2", parameters.get("c2")[0]);
+        assertNull(parameters.get("c2")[1]);
+    }
+ 
+    // TODO: and, or, exists, not
 }

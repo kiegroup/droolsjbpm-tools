@@ -34,9 +34,6 @@ public class DRLInfo {
 		if (sourcePathName == null || "".equals(sourcePathName)) {
 			throw new IllegalArgumentException("Invalid sourcePathName " + sourcePathName);
 		}
-		if (packageDescr == null) {
-			throw new IllegalArgumentException("Null packageDescr");
-		}
 		this.sourcePathName = sourcePathName;
 		this.packageDescr = packageDescr;
 		this.parserErrors =
@@ -76,7 +73,7 @@ public class DRLInfo {
 	}
 
 	public String getPackageName() {
-		return packageDescr.getName();
+		return packageDescr == null ? null : packageDescr.getName();
 	}
 
 	public boolean isCompiled() {
@@ -86,10 +83,12 @@ public class DRLInfo {
 	public RuleInfo[] getRuleInfos() {
 		if (ruleInfos == null) {
 			List<RuleInfo> ruleInfosList = new ArrayList<RuleInfo>();
-	        for (RuleDescr ruleDescr: packageDescr.getRules()) {
-	    		RuleInfo ruleInfo = new RuleInfo(ruleDescr);
-	    		ruleInfosList.add(ruleInfo);
-	    	}
+			if (packageDescr != null) {
+		        for (RuleDescr ruleDescr: packageDescr.getRules()) {
+		    		RuleInfo ruleInfo = new RuleInfo(ruleDescr);
+		    		ruleInfosList.add(ruleInfo);
+		    	}
+			}
 	    	ruleInfos = (RuleInfo[]) ruleInfosList.toArray(new RuleInfo[0]);
 		}
 		return ruleInfos;
@@ -133,7 +132,7 @@ public class DRLInfo {
                     break;
                 }
             }
-            if (dialectName == null) {
+            if (dialectName == null && packageDescr != null) {
                 for (AttributeDescr attribute: DRLInfo.this.packageDescr.getAttributes()) {
                     if ("dialect".equals(attribute.getName())) {
                         dialectName = (String) attribute.getValue();
@@ -162,7 +161,8 @@ public class DRLInfo {
 				throw new IllegalArgumentException("Package has not been compiled");
 			}
 			if (className == null) {
-	    		className = getPackageName() + "." + ruleDescr.getClassName();
+				String packageName = getPackageName(); 
+	    		className = (packageName == null ? "" : packageName + ".") + ruleDescr.getClassName();
 			}
 			return className;
 		}
@@ -190,7 +190,7 @@ public class DRLInfo {
 		}
 
 		public String getPackageName() {
-			return packageDescr.getName();
+			return packageDescr == null ? null : packageDescr.getName();
 		}
 
 		public String getRuleName() {
@@ -201,10 +201,12 @@ public class DRLInfo {
 	public FunctionInfo[] getFunctionInfos() {
 		if (functionInfos == null) {
 			List<FunctionInfo> functionInfosList = new ArrayList<FunctionInfo>();
-	        for (FunctionDescr functionDescr: packageDescr.getFunctions()) {
-	    		FunctionInfo functionInfo = new FunctionInfo(functionDescr);
-	    		functionInfosList.add(functionInfo);
-	    	}
+			if (packageDescr != null) {
+		        for (FunctionDescr functionDescr: packageDescr.getFunctions()) {
+		    		FunctionInfo functionInfo = new FunctionInfo(functionDescr);
+		    		functionInfosList.add(functionInfo);
+		    	}
+			}
 	        functionInfos = (FunctionInfo[]) functionInfosList.toArray(new FunctionInfo[0]);
 		}
 		return functionInfos;
@@ -269,7 +271,7 @@ public class DRLInfo {
 		}
 
 		public String getPackageName() {
-			return packageDescr.getName();
+			return packageDescr == null ? null : packageDescr.getName();
 		}
 
 		public String getFunctionName() {
