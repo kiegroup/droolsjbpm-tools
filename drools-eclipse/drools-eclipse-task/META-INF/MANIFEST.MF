@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Drools Eclipse Task Plug-in
+Bundle-SymbolicName: org.drools.eclipse.task; singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.drools.eclipse.task.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ClassPath: .,
+ lib/drools-process-task-5.0.0.SNAPSHOT.jar,
+ lib/mina-core-2.0.0-M3.jar,
+ lib/slf4j-api-1.5.2.jar,
+ lib/slf4j-jdk14-1.5.2.jar,
+ lib/ejb3-persistence-1.0.2.GA.jar
