@@ -15,8 +15,6 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -31,6 +29,7 @@ import org.guvnor.tools.Activator;
 import org.guvnor.tools.Messages;
 import org.guvnor.tools.utils.GuvnorMetadataUtils;
 import org.guvnor.tools.utils.PlatformUtils;
+import org.guvnor.tools.utils.ResourceHistorySorter;
 import org.guvnor.tools.utils.webdav.IWebDavClient;
 import org.guvnor.tools.utils.webdav.WebDavClientFactory;
 import org.guvnor.tools.utils.webdav.WebDavException;
@@ -44,22 +43,6 @@ import org.guvnor.tools.views.model.ResourceHistoryEntry;
  *
  */
 public class ResourceHistoryView extends ViewPart {
-	
-	class ResourceHistorySorter extends ViewerSorter {
-
-		@Override
-		public int compare(Viewer viewer, Object e1, Object e2) {
-			if (e1 instanceof ResourceHistoryEntry
-			   && e2 instanceof ResourceHistoryEntry) {
-				ResourceHistoryEntry entry1 = (ResourceHistoryEntry)e1;
-				ResourceHistoryEntry entry2 = (ResourceHistoryEntry)e2;
-				return Integer.parseInt(entry2.getRevision()) - Integer.parseInt(entry1.getRevision());
-			} else {
-				return super.compare(viewer, e1, e2);
-			}
-		}
-		
-	}
 	
 	private Label repositoryLabel;
 	private Label resourceLabel;

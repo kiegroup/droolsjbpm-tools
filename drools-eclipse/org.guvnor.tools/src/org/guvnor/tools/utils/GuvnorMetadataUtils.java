@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 import java.util.Properties;
@@ -15,9 +16,20 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.webdav.IResponse;
 import org.guvnor.tools.Activator;
+import org.guvnor.tools.Messages;
+import org.guvnor.tools.utils.webdav.IWebDavClient;
+import org.guvnor.tools.utils.webdav.ResourceProperties;
+import org.guvnor.tools.utils.webdav.WebDavClientFactory;
+import org.guvnor.tools.utils.webdav.WebDavException;
+import org.guvnor.tools.utils.webdav.WebDavServerCache;
 import org.guvnor.tools.views.model.ResourceHistoryEntry;
 
 /**
@@ -41,6 +53,124 @@ public class GuvnorMetadataUtils {
 			res = (IFile)mdResource;
 		}
 		return res;
+	}
+	
+	/**
+	 * Adds a resource to Guvnor.
+	 * @param repLoc The location of the Guvnor repository
+	 * @param targetLoc The location in Guvnor to add the resource
+	 * @param selectedFile The resource to add
+	 * @return true if the resource is added, false if there is already a resource
+	 *         with the same name in the given location.
+	 */
+	public static boolean addResourceToGuvnor(String repLoc, 
+											 String targetLoc, 
+			                                 IFile selectedFile) {
+		boolean res = false;
+		try {
+			String fullPath = targetLoc + selectedFile.getName();
+			IWebDavClient client = WebDavServerCache.getWebDavClient(repLoc);
+			if (client == null) {
+				client = WebDavClientFactory.createClient(new URL(repLoc));
+				WebDavServerCache.cacheWebDavClient(repLoc, client);
+			}
+			try {
+//				res = client.createResource(fullPath, selectedFile.getContents(), false);
+				// Hack: When creating a file, if the actual contents are passed first,
+				// the client hangs for about 20 seconds when closing the InputStream.
+				// Don't know why...
+				// But, if the file is created with empty contents, and then the contents
+				// set, the operation is fast (less than a couple of seconds)
+				res = client.createResource(fullPath, new ByteArrayInputStream(new byte[0]), false);
+				if (res) {
+					client.putResource(fullPath, selectedFile.getContents());
+				}
+			} catch (WebDavException wde) {
+				if (wde.getErrorCode() != IResponse.SC_UNAUTHORIZED) {
+					// If not an authentication failure, we don't know what to do with it
+					throw wde;
+				}
+				boolean retry = PlatformUtils.getInstance().
+									authenticateForServer(repLoc, client); 
+				if (retry) {
+//					res = client.createResource(fullPath, selectedFile.getContents(), false);
+					// See Hack note immediately above...
+					res = client.createResource(fullPath, new ByteArrayInputStream(new byte[0]), false);
+					if (res) {
+						client.putResource(fullPath, selectedFile.getContents());
+					}
+				}
+			}
+			if (res) {
+				GuvnorMetadataUtils.markCurrentGuvnorResource(selectedFile);
+				ResourceProperties resProps = client.queryProperties(fullPath);
+				GuvnorMetadataProps mdProps = 
+						new GuvnorMetadataProps(selectedFile.getName(),
+								               repLoc,
+					                           fullPath, resProps.getLastModifiedDate(),
+					                           resProps.getRevision());
+				GuvnorMetadataUtils.setGuvnorMetadataProps(selectedFile.getFullPath(), mdProps);
+			}
+		} catch (Exception e) {
+			Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e);
+		}
+		return res;
+	}
+	
+	/**
+	 * Commits changes to Guvnor.
+	 * @param selectedFile The Guvnor controlled file with pending changes
+	 */
+	public static void commitFileChanges(IFile selectedFile) {
+		try {
+			GuvnorMetadataProps props = GuvnorMetadataUtils.getGuvnorMetadata(selectedFile);
+			IWebDavClient client = WebDavServerCache.getWebDavClient(props.getRepository());
+			if (client == null) {
+				client = WebDavClientFactory.createClient(new URL(props.getRepository()));
+				WebDavServerCache.cacheWebDavClient(props.getRepository(), client);
+			}
+			ResourceProperties remoteProps = null;
+			try {
+				remoteProps = client.queryProperties(props.getFullpath());
+			} catch (WebDavException wde) {
+				if (wde.getErrorCode() != IResponse.SC_UNAUTHORIZED) {
+					// If not an authentication failure, we don't know what to do with it
+					throw wde;
+				}
+				boolean retry = PlatformUtils.getInstance().
+									authenticateForServer(props.getRepository(), client); 
+				if (retry) {
+					remoteProps = client.queryProperties(props.getFullpath());
+				}
+			}
+			if (remoteProps == null) {
+				throw new Exception("Could not retrieve server version of " + props.getFullpath()); //$NON-NLS-1$
+			}
+			// Check to make sure that the version in the repository is the same as the base
+			// version for the local copy
+			boolean proceed = true;
+			if (!props.getRevision().equals(remoteProps.getRevision())) {
+				String msg = Messages.getString("overwrite.confirmation.prefix") + selectedFile.getName() + Messages.getString("overwrite.confirmation.infix") + //$NON-NLS-1$ //$NON-NLS-2$
+				             remoteProps.getRevision() + Messages.getString("overwrite.confirmation.suffix") + //$NON-NLS-1$
+				             props.getRevision() + 
+				             Messages.getString("overwrite.confirmation.question"); //$NON-NLS-1$
+				Display display = PlatformUI.getWorkbench().getDisplay();
+				proceed = MessageDialog.openQuestion(display.getActiveShell(), 
+						                            Messages.getString("overwrite.confirmation.caption"), msg); //$NON-NLS-1$
+						
+			}
+			if (proceed) {
+				client.putResource(props.getFullpath(), selectedFile.getContents());
+				GuvnorMetadataUtils.markCurrentGuvnorResource(selectedFile);
+				ResourceProperties resProps = client.queryProperties(props.getFullpath());
+				GuvnorMetadataProps mdProps = GuvnorMetadataUtils.getGuvnorMetadata(selectedFile);
+				mdProps.setVersion(resProps.getLastModifiedDate());
+				mdProps.setRevision(resProps.getRevision());
+				GuvnorMetadataUtils.setGuvnorMetadataProps(selectedFile.getFullPath(), mdProps);
+			}
+		} catch (Exception e) {
+			Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e);
+		}
 	}
 	
 	/**

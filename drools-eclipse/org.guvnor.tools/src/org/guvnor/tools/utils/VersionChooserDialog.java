@@ -47,6 +47,7 @@ public class VersionChooserDialog extends TitleAreaDialog {
 		
 		viewer.setContentProvider(new ResourceHistoryContentProvider(entries));
 		viewer.setLabelProvider(new ResourceHistoryLabelProvider());
+		viewer.setSorter(new ResourceHistorySorter());
 		viewer.setInput(this);
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {

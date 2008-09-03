@@ -4,8 +4,10 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -53,6 +55,16 @@ public class PlatformUtils {
 			instance = new PlatformUtils();
 		}
 		return instance;
+	}
+	
+	/**
+	 * Resolves a file system location to an Eclipse workspace resource.
+	 * @param location The file system location
+	 * @return The Eclipse <code>IFile</code>, null if not found
+	 */
+	public static IFile getResourceFromFSPath(String location) {
+		return Activator.getDefault().getWorkspace().
+				getRoot().getFileForLocation(new Path(location));
 	}
 	
 	public static Composite createComposite(Composite parent, int numColumns) {

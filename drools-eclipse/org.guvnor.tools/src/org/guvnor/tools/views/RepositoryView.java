@@ -8,6 +8,7 @@ import java.rmi.server.UID;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
@@ -23,6 +24,7 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
@@ -31,6 +33,7 @@ import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
@@ -153,28 +156,96 @@ public class RepositoryView extends ViewPart {
 			}
 		});
 		
-//		viewer.addDropSupport(DND.DROP_COPY | DND.DROP_MOVE, transfers, new ViewerDropAdapter(viewer) {
-//			
-//			private TreeParent targetNode;
-//			
-//			@Override
-//			public boolean performDrop(Object data) {
-//				return false;
-//			}
-//
-//			@Override
-//			public boolean validateDrop(Object target, int operation,
-//					TransferData transferType) {
-//				if (target == null
-//					|| !(target instanceof TreeParent)) {
-//					targetNode = null;
-//					return false;
-//				}
-//				targetNode = (TreeParent)target;
-//				return true;
-//			}
-//			
-//		});
+		viewer.addDropSupport(DND.DROP_COPY | DND.DROP_MOVE, transfers, new ViewerDropAdapter(viewer) {
+			
+			private TreeParent targetNode;
+			
+			@Override
+			public boolean performDrop(Object data) {
+				if (targetNode == null) {
+					return false;
+				}
+				String[] items = (String[])data;
+				String[] errors = processDrop(targetNode, items);
+				if (errors.length != 0) {
+					StringBuilder msg = new StringBuilder();
+					for (int i = 0; i < errors.length; i++) {
+						msg.append(errors[i]);
+						msg.append("\r\n");
+					}
+					Activator.getDefault().
+						displayMessage(IStatus.ERROR, msg.toString());
+				}
+				if (items.length != errors.length) {
+					// At least one item did not have an error,
+					// so refresh the views
+					PlatformUtils.updateDecoration();
+					PlatformUtils.refreshRepositoryView();
+				}
+				return items.length != errors.length;
+			}
+
+			@Override
+			public boolean validateDrop(Object target, 
+					                   int operation,
+					                   TransferData transferType) {
+				// The drop target needs to be a directory
+				if (target == null
+					|| !(target instanceof TreeParent)) {
+					targetNode = null;
+					return false;
+				}
+				targetNode = (TreeParent)target;
+				return true;
+			}
+			
+		});
+	}
+	
+	private String[] processDrop(TreeParent target, String[] items) {
+		List<String> errors = new ArrayList<String>();
+		
+		for (int i = 0; i < items.length; i++) {
+			IFile sourceFile = PlatformUtils.getResourceFromFSPath(items[i]);
+			if (sourceFile != null) {
+				try {
+					GuvnorMetadataProps md = GuvnorMetadataUtils.getGuvnorMetadata(sourceFile);
+					if (md == null) {
+						// The file is not already associated with Guvnor, so just add it
+						boolean res = GuvnorMetadataUtils.
+										addResourceToGuvnor(target.getGuvnorRepository().getLocation(), 
+										                   target.getFullPath(), sourceFile);
+						if (!res) {
+							errors.add("Could not add " + items[i] + 
+									   " to " + target.getFullPath());
+						}
+					} else {
+						// Need to check if the drop location is the same as the Guvnor
+						// associated location. If so, then perform commit. 
+						// If not, disallow the drop.
+						String itemPath = target.getFullPath() + sourceFile.getName();
+						if (itemPath.equals(md.getFullpath())) {
+							// If there are pending changes
+							if (!GuvnorMetadataUtils.isGuvnorResourceCurrent(sourceFile)) {
+								GuvnorMetadataUtils.commitFileChanges(sourceFile);
+							}
+						} else {
+							errors.add(items[i] + " is already in Guvnor as " + md.getFullpath());
+						}
+					}
+				} catch (Exception e) {
+					Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+				}
+			} else {
+				Activator.getDefault().
+					writeLog(IStatus.WARNING, 
+							"Could not resolve: " + items[i], 
+							new Exception());
+			}
+		}
+		String[] res = new String[errors.size()];
+		errors.toArray(res);
+		return res;
 	}
 	
 	private List<String> prepareFileTransfer(TreeObject[] nodes) throws Exception {
