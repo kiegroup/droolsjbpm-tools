@@ -14,6 +14,10 @@ import org.guvnor.tools.utils.GuvnorMetadataProps;
 import org.guvnor.tools.utils.GuvnorMetadataUtils;
 import org.guvnor.tools.utils.PlatformUtils;
 
+/**
+ * A property page for displaying Guvnor details for a given resource.
+ * @author jgraham
+ */
 public class GuvnorWorkspaceFilePage extends PropertyPage implements IWorkbenchPropertyPage {
 
 	public GuvnorWorkspaceFilePage() {

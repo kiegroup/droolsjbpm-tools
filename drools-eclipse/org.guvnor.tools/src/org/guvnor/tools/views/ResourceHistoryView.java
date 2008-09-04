@@ -2,6 +2,7 @@ package org.guvnor.tools.views;
 
 
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.Properties;
 
 import org.eclipse.core.runtime.IStatus;
@@ -37,8 +38,7 @@ import org.guvnor.tools.utils.webdav.WebDavServerCache;
 import org.guvnor.tools.views.model.ResourceHistoryEntry;
 
 /**
- * View showing the versions of a given resource.
- * 
+ * View showing the revisions of a given resource.
  * @author jgraham
  *
  */
@@ -65,7 +65,8 @@ public class ResourceHistoryView extends ViewPart {
 		repositoryLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
 		resourceLabel = new Label(composite, SWT.NONE);
-		resourceLabel.setText(Messages.getString("history.resource.label")); //$NON-NLS-1$
+		resourceLabel.setText(MessageFormat.format(Messages.getString("history.resource.label"), //$NON-NLS-1$
+                                                  new Object[] { "" })); 
 		resourceLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
 		viewer = new TableViewer(PlatformUtils.createResourceHistoryTable(composite));
@@ -175,7 +176,8 @@ public class ResourceHistoryView extends ViewPart {
 	public void setEntries(String repository, String fullPath, Properties entryProps) {
 		repositoryLabel.setText(Messages.getString("history.rep.label") + repository); //$NON-NLS-1$
 		repositoryLabel.setToolTipText(repository);
-		resourceLabel.setText(Messages.getString("history.resource.label") + fullPath.substring(repository.length())); //$NON-NLS-1$
+		resourceLabel.setText(MessageFormat.format(Messages.getString("history.resource.label"), //$NON-NLS-1$
+				                                  new Object[] { fullPath.substring(repository.length()) })); 
 		resourceLabel.setToolTipText(fullPath);
 		ResourceHistoryEntry[] entries = GuvnorMetadataUtils.parseHistoryProperties(entryProps);
 		viewer.setContentProvider(new ResourceHistoryContentProvider(entries));

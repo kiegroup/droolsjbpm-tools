@@ -12,6 +12,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+/**
+ * Utilities for dealing with streams.
+ * @author jgraham
+ */
 public class StreamProcessingUtils {
 	
 	public static String getStreamContents(InputStream is) throws IOException {

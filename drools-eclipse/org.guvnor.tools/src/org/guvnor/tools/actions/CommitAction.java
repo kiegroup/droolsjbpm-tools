@@ -12,6 +12,10 @@ import org.guvnor.tools.utils.ActionUtils;
 import org.guvnor.tools.utils.GuvnorMetadataUtils;
 import org.guvnor.tools.utils.PlatformUtils;
 
+/**
+ * Commits changes to Guvnor resources.
+ * @author jgraham
+ */
 public class CommitAction implements IObjectActionDelegate {
 	
 	private IStructuredSelection selectedItems;

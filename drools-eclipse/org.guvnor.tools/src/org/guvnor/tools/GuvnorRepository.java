@@ -1,5 +1,9 @@
 package org.guvnor.tools;
 
+/**
+ * A simple representation of a Guvnor repository.
+ * @author jgraham
+ */
 public class GuvnorRepository {
 	private String location;
 	

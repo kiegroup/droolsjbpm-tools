@@ -2,6 +2,7 @@ package org.guvnor.tools.properties;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
@@ -46,7 +47,8 @@ public class RepositoryElementPropsDialog extends TitleAreaDialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		super.setTitle(Messages.getString("guvnor.repository.element")); //$NON-NLS-1$
-		super.setMessage(Messages.getString("guvnor.resource.properties") + node.getName()); //$NON-NLS-1$
+		super.setMessage(MessageFormat.format(Messages.getString("guvnor.resource.properties"), //$NON-NLS-1$ 
+				                              new Object[] { node.getName() })); 
 		super.setTitleImage(Activator.getImageDescriptor(Activator.IMG_GUVREPWIZBAN).createImage());
 		
 		TabFolder folder = new TabFolder(parent, SWT.TOP);
@@ -75,7 +77,9 @@ public class RepositoryElementPropsDialog extends TitleAreaDialog {
 		for (int i = 0; i < desc.length; i++) {
 			if (desc[i] instanceof TextPropertyDescriptor) {
 				TextPropertyDescriptor oneDesc = (TextPropertyDescriptor)desc[i];
-				new Label(composite, SWT.NONE).setText(oneDesc.getDisplayName() + ":"); //$NON-NLS-1$
+				new Label(composite, SWT.NONE).
+						setText(MessageFormat.format(Messages.getString("guvnor.resource.property"), //$NON-NLS-1$
+								new Object[] { oneDesc.getDisplayName() })); 
 				String val = ps.getPropertyValue(oneDesc.getId()) != null?
 								(String)ps.getPropertyValue(oneDesc.getId()):""; //$NON-NLS-1$
 				new Label(composite, SWT.NONE).setText(val);

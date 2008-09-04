@@ -2,6 +2,11 @@ package org.guvnor.tools.utils.webdav;
 
 import org.eclipse.webdav.IResponse;
 
+/**
+ * An Exception specifically for WebDav errors. Stores the response code and status message.
+ * @author jgraham
+ *
+ */
 public class WebDavException extends Exception {
 	
 	private static final long serialVersionUID = -2421203349714311291L;

@@ -25,6 +25,10 @@ import org.guvnor.tools.utils.webdav.WebDavServerCache;
 import org.guvnor.tools.views.ResourceHistoryView;
 import org.guvnor.tools.views.model.TreeObject;
 
+/**
+ * Shows the revision history for a given resource.
+ * @author jgraham
+ */
 public class ShowHistoryAction implements IObjectActionDelegate {
 	
 	private IFile selectedFile;

@@ -19,6 +19,10 @@ import org.guvnor.tools.utils.GuvnorMetadataProps;
 import org.guvnor.tools.utils.GuvnorMetadataUtils;
 import org.guvnor.tools.utils.PlatformUtils;
 
+/**
+ * Updates local Guvnor properties when changes occur in the Eclipse workspace.
+ * @author jgraham
+ */
 public class ResourceChangeListener implements IResourceChangeListener {
 
 	public void resourceChanged(IResourceChangeEvent event) {

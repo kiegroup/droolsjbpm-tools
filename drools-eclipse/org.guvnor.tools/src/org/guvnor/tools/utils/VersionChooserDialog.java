@@ -1,5 +1,7 @@
 package org.guvnor.tools.utils;
 
+import java.text.MessageFormat;
+
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -17,6 +19,10 @@ import org.guvnor.tools.views.ResourceHistoryContentProvider;
 import org.guvnor.tools.views.ResourceHistoryLabelProvider;
 import org.guvnor.tools.views.model.ResourceHistoryEntry;
 
+/**
+ * Dialog for choosing a Guvnor revision of a selected resource.
+ * @author jgraham
+ */
 public class VersionChooserDialog extends TitleAreaDialog {
 	
 	private static final int INITIAL_WIDTH = 790;
@@ -39,7 +45,8 @@ public class VersionChooserDialog extends TitleAreaDialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		super.setTitle(Messages.getString("version.dialog.caption")); //$NON-NLS-1$
-		super.setMessage(Messages.getString("version.dialog.message") + fileName); //$NON-NLS-1$
+		super.setMessage(MessageFormat.format(Messages.getString("version.dialog.message"), //$NON-NLS-1$
+				                             new Object[] { fileName })); 
 		super.setTitleImage(Activator.getImageDescriptor(Activator.IMG_GUVREPWIZBAN).createImage());
 		
 		viewer = new TableViewer(PlatformUtils.createResourceHistoryTable(parent));

@@ -5,6 +5,11 @@ import org.eclipse.ui.views.properties.IPropertySource;
 import org.guvnor.tools.GuvnorRepository;
 import org.guvnor.tools.utils.webdav.ResourceProperties;
 
+/**
+ * Basic node for the tree representation of Guvnor contents.
+ * @author jgraham
+ *
+ */
 public class TreeObject implements IAdaptable {
 	
 	private GuvnorRepository theRep;

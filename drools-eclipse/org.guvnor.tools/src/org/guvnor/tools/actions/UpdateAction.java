@@ -24,6 +24,10 @@ import org.guvnor.tools.utils.webdav.WebDavClientFactory;
 import org.guvnor.tools.utils.webdav.WebDavException;
 import org.guvnor.tools.utils.webdav.WebDavServerCache;
 
+/**
+ * Updates a local resource with the latest contents from Guvnor.
+ * @author jgraham
+ */
 public class UpdateAction implements IObjectActionDelegate {
 	
 	private IStructuredSelection selectedItems;

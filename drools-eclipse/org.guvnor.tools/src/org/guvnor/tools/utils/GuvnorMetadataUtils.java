@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 import java.util.Properties;
@@ -150,10 +151,10 @@ public class GuvnorMetadataUtils {
 			// version for the local copy
 			boolean proceed = true;
 			if (!props.getRevision().equals(remoteProps.getRevision())) {
-				String msg = Messages.getString("overwrite.confirmation.prefix") + selectedFile.getName() + Messages.getString("overwrite.confirmation.infix") + //$NON-NLS-1$ //$NON-NLS-2$
-				             remoteProps.getRevision() + Messages.getString("overwrite.confirmation.suffix") + //$NON-NLS-1$
-				             props.getRevision() + 
-				             Messages.getString("overwrite.confirmation.question"); //$NON-NLS-1$
+				String msg = MessageFormat.format(Messages.getString("overwrite.confirmation"), //$NON-NLS-1$
+						                         new Object[] { selectedFile.getName(),
+					                                            remoteProps.getRevision(),
+					                                            props.getRevision() });
 				Display display = PlatformUI.getWorkbench().getDisplay();
 				proceed = MessageDialog.openQuestion(display.getActiveShell(), 
 						                            Messages.getString("overwrite.confirmation.caption"), msg); //$NON-NLS-1$

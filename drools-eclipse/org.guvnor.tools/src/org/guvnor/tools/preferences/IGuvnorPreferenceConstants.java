@@ -31,11 +31,11 @@ public interface IGuvnorPreferenceConstants {
 	public int OVERLAY_LOCATION_DEFAULT = 1;
 	
 	// Value is a boolean, true by default
-	public String SHOW_CHANGE_INDICATOR_PREF = Messages.getString("9"); //$NON-NLS-1$
+	public String SHOW_CHANGE_INDICATOR_PREF = "show_change_indicator"; //$NON-NLS-1$
 	
 	// Value is a boolean, true by default
-	public String SHOW_REVISION_PREF = Messages.getString("10"); //$NON-NLS-1$
+	public String SHOW_REVISION_PREF = "show_revision"; //$NON-NLS-1$
 	
 	// Value is a boolean, true by default
-	public String SHOW_DATETIME_PREF = Messages.getString("11"); //$NON-NLS-1$
+	public String SHOW_DATETIME_PREF = "show_datetime"; //$NON-NLS-1$
 }

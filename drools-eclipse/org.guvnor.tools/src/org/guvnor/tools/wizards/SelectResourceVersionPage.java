@@ -10,6 +10,10 @@ import org.eclipse.swt.widgets.List;
 import org.guvnor.tools.Messages;
 import org.guvnor.tools.utils.PlatformUtils;
 
+/**
+ * Wizard page for selecting the revision of a given resource.
+ * @author jgraham
+ */
 public class SelectResourceVersionPage extends WizardPage {
 	
 	private List versions;

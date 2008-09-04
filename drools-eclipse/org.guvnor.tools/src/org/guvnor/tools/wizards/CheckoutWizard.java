@@ -1,6 +1,7 @@
 package org.guvnor.tools.wizards;
 
 import java.io.ByteArrayInputStream;
+import java.text.MessageFormat;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -22,6 +23,10 @@ import org.guvnor.tools.utils.webdav.IWebDavClient;
 import org.guvnor.tools.utils.webdav.ResourceProperties;
 import org.guvnor.tools.utils.webdav.WebDavServerCache;
 
+/**
+ * Wizard for copying Guvnor resources to the local workspace.
+ * @author jgraham
+ */
 public class CheckoutWizard extends Wizard implements INewWizard, IGuvnorWizard {
 	
 	private GuvnorMainConfigPage 			mainConfigPage;
@@ -144,7 +149,8 @@ public class CheckoutWizard extends Wizard implements INewWizard, IGuvnorWizard 
 		final IPath basePath = conflictingFile.getFullPath().removeLastSegments(1);
 		InputDialog dialog = new InputDialog(super.getShell(),
                                             Messages.getString("name.conflict"), //$NON-NLS-1$
-                                            Messages.getString("name.conflict.request") + conflictingFile.getName(), //$NON-NLS-1$
+                                            MessageFormat.format(Messages.getString("name.conflict.request"), //$NON-NLS-1$
+                                            		            new Object[] { conflictingFile.getName() }),
                                             Messages.getString("copy.of") + conflictingFile.getName(), //$NON-NLS-1$
         new IInputValidator() {
 			public String isValid(String newText) {
@@ -153,7 +159,8 @@ public class CheckoutWizard extends Wizard implements INewWizard, IGuvnorWizard 
 				   || !temp.exists()) {
 					return null;
 				} else {
-					return newText + Messages.getString("alreadfy.exists"); //$NON-NLS-1$
+					return MessageFormat.format(Messages.getString("already.exists"), //$NON-NLS-1$
+							                   new Object[] { newText });
 				}
 			}
 		});

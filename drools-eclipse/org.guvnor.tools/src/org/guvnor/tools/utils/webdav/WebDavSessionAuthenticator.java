@@ -6,6 +6,11 @@ import java.util.Map;
 
 import org.eclipse.webdav.http.client.IAuthenticator;
 
+/**
+ * Authenticates based on in-memory credentials, and is limited to the VM session.
+ * @author jgraham
+ *
+ */
 public class WebDavSessionAuthenticator implements IAuthenticator {
 	
 	private class ServerAuthenInfo {

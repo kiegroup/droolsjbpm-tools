@@ -11,6 +11,10 @@ import org.guvnor.tools.utils.ActionUtils;
 import org.guvnor.tools.utils.PlatformUtils;
 import org.guvnor.tools.wizards.AddResourceWizard;
 
+/**
+ * Adds a new resource to Guvnor.
+ * @author jgraham
+ */
 public class AddAction implements IObjectActionDelegate {
 	
 	private IStructuredSelection selectedItems;

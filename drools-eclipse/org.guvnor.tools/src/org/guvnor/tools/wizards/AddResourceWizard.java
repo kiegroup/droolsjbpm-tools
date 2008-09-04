@@ -1,5 +1,6 @@
 package org.guvnor.tools.wizards;
 
+import java.text.MessageFormat;
 import java.util.Iterator;
 
 import org.eclipse.core.resources.IFile;
@@ -13,6 +14,10 @@ import org.guvnor.tools.Messages;
 import org.guvnor.tools.utils.GuvnorMetadataUtils;
 import org.guvnor.tools.utils.PlatformUtils;
 
+/**
+ * Wizard for adding resources to Guvnor.
+ * @author jgraham
+ */
 public class AddResourceWizard extends Wizard implements INewWizard, IGuvnorWizard {
 	
 	private SelectGuvnorRepPage		selectRepPage;
@@ -71,9 +76,10 @@ public class AddResourceWizard extends Wizard implements INewWizard, IGuvnorWiza
 	}
 	
 	private void setDuplicateFileError(IFile selectedFile) {
-		selectFolderPage.setErrorMessage(selectedFile.getName() +
-				                        Messages.getString("already.exists") + //$NON-NLS-1$
-				                        model.getTargetLocation());
+		selectFolderPage.setErrorMessage(MessageFormat.format(
+											Messages.getString("already.exists.folder"), //$NON-NLS-1$
+				                            new Object[] { selectedFile.getName(),
+				                                           model.getTargetLocation() }));
 		model.setTargetLocation(null);
 		super.getContainer().updateButtons();
 	}

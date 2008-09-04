@@ -8,6 +8,11 @@ import org.eclipse.ui.IWorkbench;
 import org.guvnor.tools.Activator;
 import org.guvnor.tools.Messages;
 
+/**
+ * Wizard page for creating a new Guvnor connection.
+ * @author jgraham
+ *
+ */
 public class NewRepLocationWizard extends Wizard implements INewWizard, IGuvnorWizard {
 	
 	private GuvnorMainConfigPage mainPage;

@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.rmi.server.UID;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +58,10 @@ import org.guvnor.tools.views.model.TreeObject;
 import org.guvnor.tools.views.model.TreeParent;
 import org.guvnor.tools.wizards.NewRepLocationWizard;
 
+/**
+ * A view showing Guvnor structure in a tree.
+ * @author jgraham
+ */
 public class RepositoryView extends ViewPart {
 	
 	private TreeViewer viewer;
@@ -171,7 +176,7 @@ public class RepositoryView extends ViewPart {
 					StringBuilder msg = new StringBuilder();
 					for (int i = 0; i < errors.length; i++) {
 						msg.append(errors[i]);
-						msg.append("\r\n");
+						msg.append("\r\n"); //$NON-NLS-1$
 					}
 					Activator.getDefault().
 						displayMessage(IStatus.ERROR, msg.toString());
@@ -216,8 +221,9 @@ public class RepositoryView extends ViewPart {
 										addResourceToGuvnor(target.getGuvnorRepository().getLocation(), 
 										                   target.getFullPath(), sourceFile);
 						if (!res) {
-							errors.add("Could not add " + items[i] + 
-									   " to " + target.getFullPath());
+							errors.add(MessageFormat.format(Messages.getString("add.failure"), //$NON-NLS-1$ 
+								                            new Object[] { items[i],
+								                                           target.getFullPath() }));
 						}
 					} else {
 						// Need to check if the drop location is the same as the Guvnor
@@ -230,7 +236,9 @@ public class RepositoryView extends ViewPart {
 								GuvnorMetadataUtils.commitFileChanges(sourceFile);
 							}
 						} else {
-							errors.add(items[i] + " is already in Guvnor as " + md.getFullpath());
+							errors.add(MessageFormat.format(Messages.getString("already.guvnor.as"), //$NON-NLS-1$ 
+									                       new Object[] { items[i],
+								                                          md.getFullpath() }));
 						}
 					}
 				} catch (Exception e) {
@@ -239,7 +247,7 @@ public class RepositoryView extends ViewPart {
 			} else {
 				Activator.getDefault().
 					writeLog(IStatus.WARNING, 
-							"Could not resolve: " + items[i], 
+							"Could not resolve: " + items[i],  //$NON-NLS-1$
 							new Exception());
 			}
 		}
@@ -345,9 +353,10 @@ public class RepositoryView extends ViewPart {
 				Object obj = ((IStructuredSelection)selection).getFirstElement();
 				if (obj instanceof TreeParent) {
 					GuvnorRepository rep = ((TreeParent)obj).getGuvnorRepository();
-					if (MessageDialog.openConfirm(RepositoryView.this.getSite().getShell(), 
-							                     Messages.getString("remove.rep.dialog.caption"), Messages.getString("remove.rep.dialog.msg") +  //$NON-NLS-1$ //$NON-NLS-2$
-							                     rep.getLocation())) {
+					if (MessageDialog.openConfirm(RepositoryView.this.getSite().getShell(),
+							                     Messages.getString("remove.rep.dialog.caption"), //$NON-NLS-1$
+							                     MessageFormat.format(Messages.getString("remove.rep.dialog.msg"), //$NON-NLS-1$
+							                                         new Object[] { rep.getLocation() }))) {
 						Activator.getLocationManager().removeRepository(rep.getLocation());
 					}
 				}

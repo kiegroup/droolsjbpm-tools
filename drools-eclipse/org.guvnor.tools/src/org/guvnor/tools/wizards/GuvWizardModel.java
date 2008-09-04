@@ -2,6 +2,10 @@ package org.guvnor.tools.wizards;
 
 import java.util.List;
 
+/**
+ * Container for Guvnor connection details.
+ * @author jgraham
+ */
 public class GuvWizardModel {
 	private String repLocation;
 	private String username;

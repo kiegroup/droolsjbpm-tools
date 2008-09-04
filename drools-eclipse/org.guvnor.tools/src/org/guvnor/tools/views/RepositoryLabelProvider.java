@@ -10,6 +10,11 @@ import org.guvnor.tools.Messages;
 import org.guvnor.tools.views.model.TreeParent;
 import org.guvnor.tools.views.model.TreeObject.Type;
 
+/**
+ * Label providers for Guvnor structure.
+ * @author jgraham
+ *
+ */
 public class RepositoryLabelProvider extends LabelProvider {
 	private Image repImage;
 	

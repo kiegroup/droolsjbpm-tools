@@ -1,5 +1,7 @@
 package org.guvnor.tools.utils;
 
+import java.text.MessageFormat;
+
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -50,7 +52,8 @@ public class AuthenticationPromptDialog extends TitleAreaDialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		super.setTitle(Messages.getString("login.dialog.caption")); //$NON-NLS-1$
-		super.setMessage(Messages.getString("login.dialog.desc") + serverName); //$NON-NLS-1$
+		super.setMessage(MessageFormat.format(Messages.getString("login.dialog.desc"), //$NON-NLS-1$ 
+				                             new Object[] { serverName })); 
 		super.setTitleImage(Activator.getImageDescriptor(Activator.IMG_GUVREPWIZBAN).createImage());
 		
 		Composite composite = PlatformUtils.createComposite(parent, 2);

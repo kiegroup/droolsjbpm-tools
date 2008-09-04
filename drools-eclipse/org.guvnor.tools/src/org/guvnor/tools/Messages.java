@@ -3,6 +3,10 @@ package org.guvnor.tools;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+/**
+ * Auto-generated class for dealing with externalized strings.
+ * @author jgraham
+ */
 public class Messages {
 	private static final String BUNDLE_NAME = "org.guvnor.tools.messages"; //$NON-NLS-1$
 

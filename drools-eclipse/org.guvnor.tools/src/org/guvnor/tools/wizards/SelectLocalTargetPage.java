@@ -19,6 +19,11 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.guvnor.tools.Messages;
 import org.guvnor.tools.utils.PlatformUtils;
 
+/**
+ * Wizard page for selecting the location where Guvnor resources will be copied.
+ * @author jgraham
+ *
+ */
 public class SelectLocalTargetPage extends WizardPage {
 	
 	private TreeViewer viewer;

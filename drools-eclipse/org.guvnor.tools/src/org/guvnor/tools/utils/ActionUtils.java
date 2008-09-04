@@ -8,6 +8,10 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.guvnor.tools.Activator;
 
+/**
+ * Convenience methods for actions.
+ * @author jgraham
+ */
 public class ActionUtils {
 	
 	@SuppressWarnings("unchecked")

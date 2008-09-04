@@ -28,6 +28,10 @@ import org.guvnor.tools.Messages;
 import org.guvnor.tools.preferences.GuvnorPreferencePage;
 import org.guvnor.tools.utils.PlatformUtils;
 
+/**
+ * Wizard page for entering Guvnor connection details.
+ * @author jgraham
+ */
 public class GuvnorMainConfigPage extends WizardPage {
 	
 	private Text serverField;
@@ -124,7 +128,7 @@ public class GuvnorMainConfigPage extends WizardPage {
 		new Label(pwgroup, SWT.NONE).setText(Messages.getString("mainconfig.save.password")); //$NON-NLS-1$
 		new Label(composite, SWT.NONE).setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		warningLabel = new Label(composite, SWT.WRAP);
-		warningLabel.setText(Messages.getString("mainconfig.save.password.warning")); //$NON-NLS-1$
+		warningLabel.setText(Messages.getString("password.warning")); //$NON-NLS-1$
 		warningLabel.setEnabled(shouldSavePasswords);
 		
 		super.setControl(composite);

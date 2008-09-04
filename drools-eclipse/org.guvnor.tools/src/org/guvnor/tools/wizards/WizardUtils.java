@@ -12,6 +12,10 @@ import org.guvnor.tools.utils.webdav.WebDavClientFactory;
 import org.guvnor.tools.utils.webdav.WebDavServerCache;
 import org.guvnor.tools.utils.webdav.WebDavSessionAuthenticator;
 
+/**
+ * Utilities for the Guvnor wizards.
+ * @author jgraham
+ */
 public class WizardUtils {
 	public static void createGuvnorRepository(GuvWizardModel model) throws Exception {
 		Activator.getLocationManager().addRepository(new GuvnorRepository(model.getRepLocation()));

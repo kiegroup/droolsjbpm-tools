@@ -25,6 +25,10 @@ import org.guvnor.tools.utils.webdav.WebDavException;
 import org.guvnor.tools.utils.webdav.WebDavServerCache;
 import org.guvnor.tools.views.model.ResourceHistoryEntry;
 
+/**
+ * Switches to a specific revision of a given resource.
+ * @author jgraham
+ */
 public class SwitchVersionAction implements IObjectActionDelegate {
 	
 	private IFile selectedFile;

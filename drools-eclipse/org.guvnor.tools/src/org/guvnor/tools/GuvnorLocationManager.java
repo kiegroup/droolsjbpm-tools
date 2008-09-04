@@ -13,6 +13,10 @@ import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 
+/**
+ * Reads and writes Guvnor location information to disk.
+ * @author jgraham
+ */
 public class GuvnorLocationManager {
 	
 	private static final String REP_CACHE_NAME = ".replist"; //$NON-NLS-1$

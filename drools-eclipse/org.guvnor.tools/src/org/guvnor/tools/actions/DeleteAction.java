@@ -1,6 +1,7 @@
 package org.guvnor.tools.actions;
 
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.Iterator;
 
 import org.eclipse.core.resources.IFile;
@@ -23,6 +24,10 @@ import org.guvnor.tools.utils.webdav.WebDavClientFactory;
 import org.guvnor.tools.utils.webdav.WebDavException;
 import org.guvnor.tools.utils.webdav.WebDavServerCache;
 
+/**
+ * Deletes a resource in Guvnor.
+ * @author jgraham
+ */
 public class DeleteAction implements IObjectActionDelegate {
 	
 	private IStructuredSelection selectedItems;
@@ -53,10 +58,11 @@ public class DeleteAction implements IObjectActionDelegate {
 		}
 		String msg = null;
 		if (selectedItems.size() == 1) {
-			msg = Messages.getString("delete.singlefile.confirmation.prefix") +  //$NON-NLS-1$
-			      ((IFile)selectedItems.getFirstElement()).getName() + Messages.getString("delete.singlefile.confirmation.suffix"); //$NON-NLS-1$
+			msg = MessageFormat.format(Messages.getString("delete.singlefile.confirmation"), //$NON-NLS-1$
+					                  new Object[] { ((IFile)selectedItems.getFirstElement()).getName() });
 		} else {
-			msg = Messages.getString("delete.multifile.confirmation.prefix") + selectedItems.size() + Messages.getString("delete.multifile.confirmation.suffix"); //$NON-NLS-1$ //$NON-NLS-2$
+			msg = MessageFormat.format(Messages.getString("delete.multifile.confirmation"), //$NON-NLS-1$
+	                                  new Object[] { String.valueOf(selectedItems.size()) });
 		}
 		if (!MessageDialog.openConfirm(targetPart.getSite().getShell(), 
 				                      Messages.getString("delete.confirmation.dialog.caption"), msg)) { //$NON-NLS-1$

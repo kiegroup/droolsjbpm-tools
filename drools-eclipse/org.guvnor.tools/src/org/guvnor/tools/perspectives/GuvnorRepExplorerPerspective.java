@@ -36,8 +36,6 @@ public class GuvnorRepExplorerPerspective implements IPerspectiveFactory {
 		// Add "show views". They will be present in "show view" menu
 		layout.addShowViewShortcut(IPageLayout.ID_RES_NAV);
 		layout.addShowViewShortcut(IPageLayout.ID_PROP_SHEET);
-//		layout.addShowViewShortcut(IPageLayout.ID_OUTLINE);
-//		layout.addShowViewShortcut(IPageLayout.ID_TASK_LIST);
 		layout.addShowViewShortcut(IGuvnorConstants.RESHISTORYVIEW_ID);
 		layout.addShowViewShortcut(IGuvnorConstants.REPVIEW_ID);
 		
