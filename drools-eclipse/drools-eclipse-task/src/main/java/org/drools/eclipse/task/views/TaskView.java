@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
+import org.drools.eclipse.task.Activator;
+import org.drools.eclipse.task.preferences.DroolsTaskConstants;
 import org.drools.task.Status;
 import org.drools.task.User;
 import org.drools.task.query.TaskSummary;
@@ -20,18 +22,20 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -79,12 +83,21 @@ public class TaskView extends ViewPart {
 	
 	private String ipAddress = "127.0.0.1";
 	private int port = 9123;
+	private String language = "en-UK";
 	
 	private Text userNameText;
 	private Table table;
 	private TableViewer tableViewer;
 	private Action refreshAction;
-	private Action doubleClickAction;
+	private Button claimButton;
+	private Button startButton;
+	private Button stopButton;
+	private Button releaseButton;
+	private Button suspendButton;
+	private Button resumeButton;
+	private Button skipButton;
+	private Button completeButton;
+	private Button failButton;
 
 	private class ViewContentProvider implements IStructuredContentProvider {
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
@@ -134,23 +147,41 @@ public class TaskView extends ViewPart {
 		}
 	}
 	
+	public TaskView() {
+		IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
+    	ipAddress = preferenceStore.getString(DroolsTaskConstants.SERVER_IP_ADDRESS);
+    	port = preferenceStore.getInt(DroolsTaskConstants.SERVER_PORT);
+    	language = preferenceStore.getString(DroolsTaskConstants.LANGUAGE);
+    	preferenceStore.addPropertyChangeListener(new IPropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent event) {
+				if (DroolsTaskConstants.SERVER_IP_ADDRESS.equals(event.getProperty())) {
+					ipAddress = (String) event.getNewValue();
+				} else if (DroolsTaskConstants.SERVER_PORT.equals(event.getProperty())) {
+					port = (Integer) event.getNewValue();
+				} else if (DroolsTaskConstants.LANGUAGE.equals(event.getProperty())) {
+					language = (String) event.getNewValue();
+				}
+			}
+    	});
+	}
+	
 	public void createPartControl(Composite parent) {
-		parent.setLayout(new GridLayout(4, false));
+		parent.setLayout(new GridLayout(10, false));
 		Label userNameLabel = new Label(parent, SWT.NONE);
-		userNameLabel.setText("UserName");
+		userNameLabel.setText("UserId");
 		userNameText = new Text(parent, SWT.NONE);
 		GridData layoutData = new GridData();
-		layoutData.horizontalSpan = 2;
+		layoutData.horizontalSpan = 8;
 		layoutData.grabExcessHorizontalSpace = true;
 		layoutData.horizontalAlignment = GridData.FILL_HORIZONTAL;
-		Button add = new Button(parent, SWT.PUSH | SWT.CENTER);
-		add.setText("Refresh");
-		add.addSelectionListener(new SelectionAdapter() {
+		userNameText.setLayoutData(layoutData);
+		Button refresh = new Button(parent, SWT.PUSH | SWT.CENTER);
+		refresh.setText("Refresh");
+		refresh.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				refresh();
 			}
 		});
-		userNameText.setLayoutData(layoutData);
 		createTable(parent);
 		createTableViewer();
 		tableViewer.setContentProvider(new ViewContentProvider());
@@ -159,7 +190,6 @@ public class TaskView extends ViewPart {
 		createButtons(parent);
 		makeActions();
 		hookContextMenu();
-		hookDoubleClickAction();
 		contributeToActionBars();
 	}
 
@@ -172,7 +202,7 @@ public class TaskView extends ViewPart {
 		table = new Table(parent, style);
 		GridData gridData = new GridData(GridData.FILL_BOTH);
 		gridData.grabExcessVerticalSpace = true;
-		gridData.horizontalSpan = 4;
+		gridData.horizontalSpan = 10;
 		table.setLayoutData(gridData);		
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
@@ -201,15 +231,101 @@ public class TaskView extends ViewPart {
 	}
 	
 	private void createButtons(Composite parent) {
-		Button add = new Button(parent, SWT.PUSH | SWT.CENTER);
-		add.setText("Refresh");
-
-		GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		gridData.widthHint = 80;
-		add.setLayoutData(gridData);
-		add.addSelectionListener(new SelectionAdapter() {
+		claimButton = new Button(parent, SWT.PUSH | SWT.CENTER);
+		claimButton.setText("Claim");
+		claimButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				refresh();
+				claim();
+			}
+		});
+		claimButton.setEnabled(false);
+		startButton = new Button(parent, SWT.PUSH | SWT.CENTER);
+		startButton.setText("Start");
+		startButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				start();
+			}
+		});
+		startButton.setEnabled(false);
+		stopButton = new Button(parent, SWT.PUSH | SWT.CENTER);
+		stopButton.setText("Stop");
+		stopButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				stop();
+			}
+		});
+		stopButton.setEnabled(false);
+		releaseButton = new Button(parent, SWT.PUSH | SWT.CENTER);
+		releaseButton.setText("Release");
+		releaseButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				release();
+			}
+		});
+		releaseButton.setEnabled(false);
+		suspendButton = new Button(parent, SWT.PUSH | SWT.CENTER);
+		suspendButton.setText("Suspend");
+		suspendButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				suspend();
+			}
+		});
+		suspendButton.setEnabled(false);
+		resumeButton = new Button(parent, SWT.PUSH | SWT.CENTER);
+		resumeButton.setText("Resume");
+		resumeButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				resume();
+			}
+		});
+		resumeButton.setEnabled(false);
+		skipButton = new Button(parent, SWT.PUSH | SWT.CENTER);
+		skipButton.setText("Skip");
+		skipButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				skip();
+			}
+		});
+		skipButton.setEnabled(false);
+		completeButton = new Button(parent, SWT.PUSH | SWT.CENTER);
+		completeButton.setText("Complete");
+		completeButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				complete();
+			}
+		});
+		completeButton.setEnabled(false);
+		failButton = new Button(parent, SWT.PUSH | SWT.CENTER);
+		failButton.setText("Fail");
+		failButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				fail();
+			}
+		});
+		failButton.setEnabled(false);
+		GridData layoutData = new GridData();
+		layoutData.horizontalSpan = 2;
+		layoutData.horizontalAlignment = SWT.BEGINNING;
+		failButton.setLayoutData(layoutData);
+		table.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent e) {
+				System.out.println(e);
+			}
+			public void widgetSelected(SelectionEvent e) {
+				boolean selected = table.getSelectionCount() == 1;
+				TaskSummary task = getSelectedTask();
+				claimButton.setEnabled(selected && Status.Created.equals(task.getStatus()));
+				startButton.setEnabled(selected && 
+					(Status.Ready.equals(task.getStatus()) || Status.Reserved.equals(task.getStatus())));
+				stopButton.setEnabled(selected && Status.InProgress.equals(task.getStatus()));
+				releaseButton.setEnabled(selected && 
+					(Status.Reserved.equals(task.getStatus()) || Status.InProgress.equals(task.getStatus())));
+				suspendButton.setEnabled(selected && 
+					(Status.Ready.equals(task.getStatus()) || Status.Reserved.equals(task.getStatus()) || Status.InProgress.equals(task.getStatus())));
+				resumeButton.setEnabled(selected && Status.Suspended.equals(task.getStatus()));
+				skipButton.setEnabled(selected && !Status.Completed.equals(task.getStatus()) && !Status.Failed.equals(task.getStatus()));
+				completeButton.setEnabled(selected && Status.InProgress.equals(task.getStatus()));
+				failButton.setEnabled(selected && Status.InProgress.equals(task.getStatus()));
 			}
 		});
 	}
@@ -256,23 +372,8 @@ public class TaskView extends ViewPart {
 		refreshAction.setToolTipText("Refresh the task list");
 		refreshAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
-		
-		doubleClickAction = new Action() {
-			public void run() {
-				ISelection selection = tableViewer.getSelection();
-				Object obj = ((IStructuredSelection)selection).getFirstElement();
-				showMessage("Double-click detected on " + obj.toString());
-			}
-		};
 	}
 
-	private void hookDoubleClickAction() {
-		tableViewer.addDoubleClickListener(new IDoubleClickListener() {
-			public void doubleClick(DoubleClickEvent event) {
-				doubleClickAction.run();
-			}
-		});
-	}
 	private void showMessage(String message) {
 		MessageDialog.openInformation(
 			tableViewer.getControl().getShell(), "Task View", message);
@@ -283,6 +384,216 @@ public class TaskView extends ViewPart {
 	}
 	
 	private void refresh() {
+		Long userId = getUserId();
+		if (userId == null) {
+			return;
+		}
+		
+		MinaTaskClient client = getTaskClient();
+		if (client == null) {
+			return;
+		}
+		
+		BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
+		client.getTasksAssignedAsPotentialOwner(userId, language, responseHandler);
+        List<TaskSummary> tasks = responseHandler.getResults();
+        client.disconnect();
+        
+        tableViewer.setInput(tasks);
+        tableViewer.refresh();
+        tableViewer.setSelection(null);
+	}
+	
+	public void claim() {
+		MinaTaskClient client = getTaskClient();
+		if (client == null) {
+			return;
+		}
+		
+		Long userId = getUserId();
+		if (userId == null) {
+			return;
+		}
+		
+		TaskSummary taskSummary = getSelectedTask();
+		if (taskSummary == null) {
+			return;
+		}
+		
+		client.claim(taskSummary.getId(), userId);
+        client.disconnect();
+        refresh();
+	}
+	
+	public void start() {
+		MinaTaskClient client = getTaskClient();
+		if (client == null) {
+			return;
+		}
+		
+		Long userId = getUserId();
+		if (userId == null) {
+			return;
+		}
+		
+		TaskSummary taskSummary = getSelectedTask();
+		if (taskSummary == null) {
+			return;
+		}
+		
+		client.start(taskSummary.getId(), userId);
+        client.disconnect();
+        refresh();
+	}
+	
+	public void stop() {
+		MinaTaskClient client = getTaskClient();
+		if (client == null) {
+			return;
+		}
+		
+		Long userId = getUserId();
+		if (userId == null) {
+			return;
+		}
+		
+		TaskSummary taskSummary = getSelectedTask();
+		if (taskSummary == null) {
+			return;
+		}
+		
+		client.stop(taskSummary.getId(), userId);
+        client.disconnect();
+        refresh();
+	}
+	
+	public void release() {
+		MinaTaskClient client = getTaskClient();
+		if (client == null) {
+			return;
+		}
+		
+		Long userId = getUserId();
+		if (userId == null) {
+			return;
+		}
+		
+		TaskSummary taskSummary = getSelectedTask();
+		if (taskSummary == null) {
+			return;
+		}
+		
+		client.release(taskSummary.getId(), userId);
+        client.disconnect();
+        refresh();
+	}
+	
+	public void suspend() {
+		MinaTaskClient client = getTaskClient();
+		if (client == null) {
+			return;
+		}
+		
+		Long userId = getUserId();
+		if (userId == null) {
+			return;
+		}
+		
+		TaskSummary taskSummary = getSelectedTask();
+		if (taskSummary == null) {
+			return;
+		}
+		
+		client.suspend(taskSummary.getId(), userId);
+        client.disconnect();
+        refresh();
+	}
+	
+	public void resume() {
+		MinaTaskClient client = getTaskClient();
+		if (client == null) {
+			return;
+		}
+		
+		Long userId = getUserId();
+		if (userId == null) {
+			return;
+		}
+		
+		TaskSummary taskSummary = getSelectedTask();
+		if (taskSummary == null) {
+			return;
+		}
+		
+		client.resume(taskSummary.getId(), userId);
+        client.disconnect();
+        refresh();
+	}
+	
+	public void skip() {
+		MinaTaskClient client = getTaskClient();
+		if (client == null) {
+			return;
+		}
+		
+		Long userId = getUserId();
+		if (userId == null) {
+			return;
+		}
+		
+		TaskSummary taskSummary = getSelectedTask();
+		if (taskSummary == null) {
+			return;
+		}
+		
+		client.skip(taskSummary.getId(), userId);
+        client.disconnect();
+        refresh();
+	}
+	
+	public void complete() {
+		MinaTaskClient client = getTaskClient();
+		if (client == null) {
+			return;
+		}
+		
+		Long userId = getUserId();
+		if (userId == null) {
+			return;
+		}
+		
+		TaskSummary taskSummary = getSelectedTask();
+		if (taskSummary == null) {
+			return;
+		}
+		
+		client.complete(taskSummary.getId(), userId);
+        client.disconnect();
+        refresh();
+	}
+	
+	public void fail() {
+		MinaTaskClient client = getTaskClient();
+		if (client == null) {
+			return;
+		}
+		
+		Long userId = getUserId();
+		if (userId == null) {
+			return;
+		}
+		
+		TaskSummary taskSummary = getSelectedTask();
+		if (taskSummary == null) {
+			return;
+		}
+		
+		client.fail(taskSummary.getId(), userId);
+        client.disconnect();
+        refresh();
+	}
+	
+	private MinaTaskClient getTaskClient() {
 		MinaTaskClient client = new MinaTaskClient(
 			"org.drools.eclipse.task.views.TaskView", new TaskClientHandler());
 		NioSocketConnector connector = new NioSocketConnector();
@@ -290,29 +601,31 @@ public class TaskView extends ViewPart {
 		boolean connected = client.connect(connector, address);
 		if (!connected) {
 			showMessage("Could not connect to task server: " + ipAddress + " [port " + port + "]");
-			return;
+			return null;
 		}
-		
-		BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
+		return client;
+	}
+	
+	private Long getUserId() {
 		Long userId = null;
 		try {
 			userId = new Long(userNameText.getText());
 		} catch (NumberFormatException e) {
 			showMessage("Could not convert user id, should be a long value.");
-			return;
+			return null;
 		}
-        client.getTasksAssignedAsPotentialOwner(userId, "en-UK", responseHandler);
-        List<TaskSummary> tasks = responseHandler.getResults();
-        client.disconnect();
-        
-        System.out.println("<<<<<< Tasks");
-        for (TaskSummary task: tasks) {
-        	System.out.println(task);
-        }
-        System.out.println("Tasks >>>>>>");
-        
-        tableViewer.setInput(tasks);
-        tableViewer.refresh();
+		return userId;
+	}
+	
+	private TaskSummary getSelectedTask() {
+		ISelection selection = tableViewer.getSelection();
+		if (selection instanceof StructuredSelection) {
+			Object selected = ((StructuredSelection) selection).getFirstElement();
+			if (selected instanceof TaskSummary) {
+				return (TaskSummary) selected;
+			}
+		}
+		return null;
 	}
 	
 	private class BlockingTaskSummaryResponseHandler implements TaskSummaryResponseHandler {
