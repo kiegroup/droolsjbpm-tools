@@ -10,12 +10,13 @@
       </category>
       <view
             name="Task View"
-            icon="icons/sample.gif"
+            icon="icons/human_task.gif"
             category="org.drools.eclipse.task"
             class="org.drools.eclipse.task.views.TaskView"
-            id="org.drools.eclipse.task.views.SampleView">
+            id="org.drools.eclipse.task.views.TaskView">
       </view>
    </extension>
+   
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
@@ -24,15 +25,16 @@
                ratio="0.5"
                relative="org.eclipse.ui.views.TaskList"
                relationship="right"
-               id="org.drools.eclipse.task.views.SampleView">
+               id="org.drools.eclipse.task.views.TaskView">
          </view>
       </perspectiveExtension>
    </extension>
-   <extension
-         point="org.eclipse.help.contexts">
-      <contexts
-            file="contexts.xml">
-      </contexts>
+
+   <extension point = "org.eclipse.ui.preferencePages">
+      <page id="org.drools.eclipse.task.preferences.DroolsTaskPreferencePage"
+         class="org.drools.eclipse.task.preferences.DroolsTaskPreferencePage"
+         name="Drools Task Preferences">
+      </page>
    </extension>
 
 </plugin>
