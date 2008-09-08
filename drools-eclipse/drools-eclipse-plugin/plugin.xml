@@ -140,7 +140,7 @@
       <actionSet
             id="org.drools.eclipse.workbenchMenu"
             label="Drools"
-            visible="true">
+            visible="false">
          <action
                class="org.drools.eclipse.menu.RuleHelperActionDelegate"
                icon="icons/drools.gif"
@@ -150,6 +150,13 @@
                toolbarPath="Normal/additions"
                tooltip="Drools workbench"/>
       </actionSet>
+   </extension>
+
+   <extension point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.drools.eclipse.DroolsPerspective">
+         <actionSet id="org.drools.eclipse.workbenchMenu" />
+      </perspectiveExtension>
    </extension>
 
    <extension
