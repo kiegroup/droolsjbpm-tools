@@ -17,7 +17,6 @@ package org.drools.eclipse.flow.ruleflow.view.property.swimlane;
 
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
 import org.drools.process.core.context.swimlane.Swimlane;
-import org.drools.process.core.context.variable.Variable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -32,7 +31,7 @@ import org.eclipse.swt.widgets.Text;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class SwimlaneDialog extends EditBeanDialog {
+public class SwimlaneDialog extends EditBeanDialog<Swimlane> {
     
     private Text nameText;
 
@@ -59,10 +58,9 @@ public class SwimlaneDialog extends EditBeanDialog {
         return composite;
     }
     
-    protected Object updateValue(Object value) {
-        Swimlane swimlane = (Swimlane) getValue();
-        swimlane.setName(nameText.getText());
-        return swimlane;
+    protected Swimlane updateValue(Swimlane value) {
+        value.setName(nameText.getText());
+        return value;
     }
     
 }

@@ -26,6 +26,7 @@ import org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper;
 import org.drools.eclipse.flow.ruleflow.core.ConnectionWrapperFactory;
 import org.drools.eclipse.flow.ruleflow.core.EndNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.EventNodeWrapper;
+import org.drools.eclipse.flow.ruleflow.core.FaultNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.ForEachNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.HumanTaskNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.JoinWrapper;
@@ -40,6 +41,7 @@ import org.eclipse.gef.palette.ConnectionCreationToolEntry;
 import org.eclipse.gef.palette.MarqueeToolEntry;
 import org.eclipse.gef.palette.PaletteContainer;
 import org.eclipse.gef.palette.PaletteDrawer;
+import org.eclipse.gef.palette.PaletteEntry;
 import org.eclipse.gef.palette.PaletteGroup;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.palette.SelectionToolEntry;
@@ -61,8 +63,8 @@ public class RuleFlowPaletteFactory {
         return flowPalette;
     }
     
-    private static List createCategories(PaletteRoot root) {
-        List categories = new ArrayList();
+    private static List<PaletteEntry> createCategories(PaletteRoot root) {
+        List<PaletteEntry> categories = new ArrayList<PaletteEntry>();
         categories.add(createControlGroup(root));
         categories.add(createComponentsDrawer());
         categories.add(createWorkNodesDrawer());
@@ -73,7 +75,7 @@ public class RuleFlowPaletteFactory {
 
         PaletteDrawer drawer = new PaletteDrawer("Components", null);
 
-        List entries = new ArrayList();
+        List<PaletteEntry> entries = new ArrayList<PaletteEntry>();
 
         CombinedTemplateCreationEntry combined = new CombinedTemplateCreationEntry(
             "Start",
@@ -166,6 +168,16 @@ public class RuleFlowPaletteFactory {
         entries.add(combined);
                       
         combined = new CombinedTemplateCreationEntry(
+            "Fault",
+            "Create a new Fault",
+            FaultNodeWrapper.class,
+            new SimpleFactory(FaultNodeWrapper.class),
+            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/fault.gif")), 
+            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/fault.gif"))
+        );
+        entries.add(combined);
+                          
+        combined = new CombinedTemplateCreationEntry(
 		    "Event",
 		    "Create a new Event Node",
 		    EventNodeWrapper.class,
@@ -256,7 +268,7 @@ public class RuleFlowPaletteFactory {
     private static PaletteContainer createControlGroup(PaletteRoot root) {
         PaletteGroup controlGroup = new PaletteGroup("Control Group");
 
-        List entries = new ArrayList();
+        List<PaletteEntry> entries = new ArrayList<PaletteEntry>();
 
         ToolEntry tool = new SelectionToolEntry();
         entries.add(tool);

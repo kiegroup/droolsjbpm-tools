@@ -28,9 +28,9 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
  */
 public class ListPropertyDescriptor extends PropertyDescriptor {
     
-    private Class cellEditorClass;
+    private Class<? extends CellEditor> cellEditorClass;
     
-    public ListPropertyDescriptor(Object id, String displayName, Class cellEditorClass) {
+    public ListPropertyDescriptor(Object id, String displayName, Class<? extends CellEditor> cellEditorClass) {
         super(id, displayName);
         this.cellEditorClass = cellEditorClass;
     }

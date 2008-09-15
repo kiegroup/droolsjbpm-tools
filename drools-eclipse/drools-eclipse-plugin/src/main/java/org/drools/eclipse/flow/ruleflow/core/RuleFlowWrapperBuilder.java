@@ -23,6 +23,7 @@ import org.drools.workflow.core.node.CompositeContextNode;
 import org.drools.workflow.core.node.CompositeNode;
 import org.drools.workflow.core.node.EndNode;
 import org.drools.workflow.core.node.EventNode;
+import org.drools.workflow.core.node.FaultNode;
 import org.drools.workflow.core.node.ForEachNode;
 import org.drools.workflow.core.node.HumanTaskNode;
 import org.drools.workflow.core.node.Join;
@@ -113,6 +114,8 @@ public class RuleFlowWrapperBuilder implements ProcessWrapperBuilder {
             return new SplitWrapper();
         } else if (node instanceof MilestoneNode) {
             return new MilestoneWrapper();
+        } else if (node instanceof FaultNode) {
+            return new FaultNodeWrapper();
         } else if (node instanceof TimerNode) {
             return new TimerWrapper();
         } else if (node instanceof HumanTaskNode) {

@@ -24,13 +24,13 @@ import org.eclipse.swt.widgets.Shell;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class VariableListDialog extends EditListDialog {
+public class VariableListDialog extends EditListDialog<Variable> {
     
     protected VariableListDialog(Shell parentShell) {
         super(parentShell, "Variable List Editor", VariableDialog.class);
     }
 
-    protected Object createItem() {
+    protected Variable createItem() {
         return new Variable();
     }
 }

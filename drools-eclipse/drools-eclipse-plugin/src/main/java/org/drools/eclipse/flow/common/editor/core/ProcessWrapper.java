@@ -25,9 +25,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.eclipse.flow.common.view.property.ListPropertyDescriptor;
+import org.drools.eclipse.flow.ruleflow.view.property.exceptionHandler.ExceptionHandlersPropertyDescriptor;
 import org.drools.eclipse.flow.ruleflow.view.property.swimlane.SwimlanesCellEditor;
 import org.drools.eclipse.flow.ruleflow.view.property.variable.VariableListCellEditor;
 import org.drools.process.core.Process;
+import org.drools.process.core.context.exception.ExceptionHandler;
+import org.drools.process.core.context.exception.ExceptionScope;
 import org.drools.process.core.context.swimlane.Swimlane;
 import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.Variable;
@@ -44,14 +47,14 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  */
 public abstract class ProcessWrapper implements ElementContainer, IPropertySource, Serializable {
 
+	private static final long serialVersionUID = 4L;
+	
 	public static final int CHANGE_ELEMENTS = 1;
 	public static final int CHANGE_ROUTER_LAYOUT = 2;
 
     public static final Integer ROUTER_LAYOUT_MANUAL = new Integer(0);
     public static final Integer ROUTER_LAYOUT_MANHATTAN = new Integer(1);
     public static final Integer ROUTER_LAYOUT_SHORTEST_PATH = new Integer(2);
-
-    protected static IPropertyDescriptor[] descriptors;
 
     public static final String NAME = "name";
     public static final String VERSION = "version";
@@ -60,25 +63,12 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
     public static final String ROUTER_LAYOUT = "routerLayout";
     public static final String VARIABLES = "variables";
     public static final String SWIMLANES = "swimlanes";
+    public static final String EXCEPTION_HANDLERS = "exceptionHandlers";
      
-    static {
-        descriptors = new IPropertyDescriptor[] {
-            new TextPropertyDescriptor(NAME, "Name"),
-            new TextPropertyDescriptor(VERSION, "Version"),
-            new TextPropertyDescriptor(ID, "Id"),
-            new TextPropertyDescriptor(PACKAGE_NAME, "Package"),
-            new ComboBoxPropertyDescriptor(ROUTER_LAYOUT, "Connection Layout", 
-                new String[] { "Manual", "Manhatten", "Shortest Path" }),
-            new ListPropertyDescriptor(VARIABLES, "Variables",
-                VariableListCellEditor.class),
-            new ListPropertyDescriptor(SWIMLANES, "Swimlanes",
-                SwimlanesCellEditor.class),
-        };
-    }
-    
     private Process process;
     private Map<String, ElementWrapper> elements = new HashMap<String, ElementWrapper>();
     private transient List<ModelListener> listeners = new ArrayList<ModelListener>();
+    protected IPropertyDescriptor[] descriptors;
     
     public ProcessWrapper() {
         process = createProcess();
@@ -198,9 +188,28 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
     }
 
     public IPropertyDescriptor[] getPropertyDescriptors() {
+    	if (descriptors == null) {
+    		initPropertyDescriptors();
+    	}
         return descriptors;
     }
 
+    public void initPropertyDescriptors() {
+        descriptors = new IPropertyDescriptor[] {
+            new TextPropertyDescriptor(NAME, "Name"),
+            new TextPropertyDescriptor(VERSION, "Version"),
+            new TextPropertyDescriptor(ID, "Id"),
+            new TextPropertyDescriptor(PACKAGE_NAME, "Package"),
+            new ComboBoxPropertyDescriptor(ROUTER_LAYOUT, "Connection Layout", 
+                new String[] { "Manual", "Manhatten", "Shortest Path" }),
+            new ListPropertyDescriptor(VARIABLES, "Variables", VariableListCellEditor.class),
+            new ListPropertyDescriptor(SWIMLANES, "Swimlanes",
+                SwimlanesCellEditor.class),
+            new ExceptionHandlersPropertyDescriptor(EXCEPTION_HANDLERS,
+        		"Exception Handlers", process),
+        };
+    }
+    
     public Object getPropertyValue(Object id) {
         if (NAME.equals(id)) {
             return getName();
@@ -222,6 +231,9 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
         }
         if (SWIMLANES.equals(id)) {
             return ((SwimlaneContext) getProcess().getDefaultContext(SwimlaneContext.SWIMLANE_SCOPE)).getSwimlanes();
+        }
+        if (EXCEPTION_HANDLERS.equals(id)) {
+            return ((ExceptionScope) getProcess().getDefaultContext(ExceptionScope.EXCEPTION_SCOPE)).getExceptionHandlers();
         }
         return null;
     }
@@ -254,9 +266,14 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
             ((SwimlaneContext) getProcess().getDefaultContext(
                 SwimlaneContext.SWIMLANE_SCOPE)).setSwimlanes(new ArrayList<Swimlane>());
         }
+        if (EXCEPTION_HANDLERS.equals(id)) {
+            ((ExceptionScope) getProcess().getDefaultContext(
+                ExceptionScope.EXCEPTION_SCOPE)).setExceptionHandlers(new HashMap<String, ExceptionHandler>());
+        }
     }
 
-    public void setPropertyValue(Object id, Object value) {
+    @SuppressWarnings("unchecked")
+	public void setPropertyValue(Object id, Object value) {
         if (NAME.equals(id)) {
             setName((String) value);
         } else if (VERSION.equals(id)) {
@@ -273,6 +290,9 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
         } else if (SWIMLANES.equals(id)) {
             ((SwimlaneContext) getProcess().getDefaultContext(
                 SwimlaneContext.SWIMLANE_SCOPE)).setSwimlanes((List<Swimlane>) value);
-            }
+        } else if (EXCEPTION_HANDLERS.equals(id)) {
+        	((ExceptionScope) getProcess().getDefaultContext(
+                ExceptionScope.EXCEPTION_SCOPE)).setExceptionHandlers((Map<String, ExceptionHandler>) value);
+        }
     }
 }

@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.Text;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class VariableDialog extends EditBeanDialog {
+public class VariableDialog extends EditBeanDialog<Variable> {
     
     private Text nameText;
     private DataTypeCombo dataTypeCombo;
@@ -75,7 +75,7 @@ public class VariableDialog extends EditBeanDialog {
         
         dataTypeCombo = new DataTypeCombo(composite,
     		SWT.NONE, DefaultDataTypeRegistry.getInstance());
-        DataType dataType = ((Variable) getValue()).getType();
+        DataType dataType = getValue().getType();
         dataTypeCombo.setDataType(dataType);
         dataTypeCombo.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
@@ -125,7 +125,7 @@ public class VariableDialog extends EditBeanDialog {
         return composite;
     }
     
-    protected Object updateValue(Object value) {
+    protected Variable updateValue(Variable value) {
         Variable variable = (Variable) getValue();
         String name = nameText.getText();
         if ("".equals(name)) {

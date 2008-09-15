@@ -23,6 +23,7 @@ import org.drools.eclipse.flow.ruleflow.core.CompositeContextNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper;
 import org.drools.eclipse.flow.ruleflow.core.EndNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.EventNodeWrapper;
+import org.drools.eclipse.flow.ruleflow.core.FaultNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.ForEachNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.JoinWrapper;
 import org.drools.eclipse.flow.ruleflow.core.MilestoneWrapper;
@@ -74,6 +75,8 @@ public class RuleFlowEditPartFactory implements ProcessEditPartFactory {
         } else if (model instanceof WorkItemWrapper) {
             result = new WorkItemEditPart();
             ((WorkItemEditPart) result).setProject(project);
+        } else if (model instanceof FaultNodeWrapper) {
+            result = new FaultNodeEditPart();
         } else if (model instanceof TimerWrapper) {
             result = new TimerEditPart();
         } else if (model instanceof ForEachNodeWrapper) {

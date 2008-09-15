@@ -15,8 +15,11 @@ package org.drools.eclipse.flow.ruleflow.view.property.variable;
  * limitations under the License.
  */
 
+import java.util.List;
+
 import org.drools.eclipse.flow.common.view.property.BeanDialogCellEditor;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
+import org.drools.process.core.context.variable.Variable;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
@@ -25,13 +28,13 @@ import org.eclipse.swt.widgets.Shell;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class VariableListCellEditor extends BeanDialogCellEditor {
+public class VariableListCellEditor extends BeanDialogCellEditor<List<Variable>> {
 
     public VariableListCellEditor(Composite parent) {
         super(parent);
     }
 
-    protected EditBeanDialog createDialog(Shell shell) {
+    protected EditBeanDialog<List<Variable>> createDialog(Shell shell) {
         return new VariableListDialog(shell);
     }
 }

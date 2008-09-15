@@ -26,15 +26,16 @@ import org.eclipse.swt.widgets.Shell;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public abstract class BeanDialogCellEditor extends DialogCellEditor {
+public abstract class BeanDialogCellEditor<T> extends DialogCellEditor {
 
     public BeanDialogCellEditor(Composite parent) {
         super(parent);
     }
 
-    protected Object openDialogBox(Control cellEditorWindow) {
-        EditBeanDialog dialog = createDialog(cellEditorWindow.getShell());
-        Object value = getValue();
+    @SuppressWarnings("unchecked")
+	protected Object openDialogBox(Control cellEditorWindow) {
+        EditBeanDialog<T> dialog = createDialog(cellEditorWindow.getShell());
+        T value = (T) getValue();
         if (value != null) {
             dialog.setValue(value);
         }
@@ -45,7 +46,7 @@ public abstract class BeanDialogCellEditor extends DialogCellEditor {
         return dialog.getValue();
     }
     
-    protected abstract EditBeanDialog createDialog(Shell shell);
+    protected abstract EditBeanDialog<T> createDialog(Shell shell);
 
     protected void updateContents(Object value) {
         getDefaultLabel().setText(getLabelText(value));

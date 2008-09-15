@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Text;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class TaskDialog extends EditBeanDialog {
+public class TaskDialog extends EditBeanDialog<Work> {
     
     private Text nameText;
 //    private DataTypeCombo dataTypeCombo;
@@ -54,7 +54,7 @@ public class TaskDialog extends EditBeanDialog {
         gridData.grabExcessHorizontalSpace = true;
         gridData.horizontalAlignment = GridData.FILL;
         nameText.setLayoutData(gridData);
-        String name = ((Work) getValue()).getName();
+        String name = getValue().getName();
         nameText.setText(name == null ? "" : name);
 
 //        Label typeLabel = new Label(composite, SWT.NONE);
@@ -90,10 +90,9 @@ public class TaskDialog extends EditBeanDialog {
         return composite;
     }
     
-    protected Object updateValue(Object value) {
-        Work task = (Work) getValue();
-        task.setName(nameText.getText());
-        return task;
+    protected Work updateValue(Work value) {
+        value.setName(nameText.getText());
+        return value;
     }
 
 }

@@ -16,7 +16,6 @@ package org.drools.eclipse.flow.ruleflow.view.property.constraint;
  */
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -61,7 +60,7 @@ public class RuleFlowImportsDialog extends Dialog {
 	private boolean success;
 	private TabFolder tabFolder;
 	private SourceViewer importsViewer;
-	private List imports;
+	private List<String> imports;
 
 	public RuleFlowImportsDialog(Shell parentShell, WorkflowProcess process) {
 		super(parentShell);
@@ -115,10 +114,10 @@ public class RuleFlowImportsDialog extends Dialog {
 	
 	private String getProcessImports() {
 		String result = "# define your imports here: e.g. import com.sample.MyClass\n";
-		List imports = process.getImports();
+		List<String> imports = process.getImports();
 		if (imports != null) {
-			for (Iterator iterator = imports.iterator(); iterator.hasNext(); ) {
-				result += "import " + (String) iterator.next() + "\n";
+			for (String importString: imports) {
+				result += "import " + importString + "\n";
 			}
 		}
 		return result;
@@ -151,12 +150,12 @@ public class RuleFlowImportsDialog extends Dialog {
 		return success;
 	}
 
-	public List getImports() {
+	public List<String> getImports() {
 		return imports;
 	}
 	
 	private void updateImports() {
-		this.imports = new ArrayList();
+		this.imports = new ArrayList<String>();
 		Matcher matcher = IMPORT_PATTERN.matcher(importsViewer.getDocument().get());
 		while (matcher.find()) {
 			this.imports.add(matcher.group(1));

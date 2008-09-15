@@ -1,13 +1,18 @@
 package org.drools.eclipse.flow.ruleflow.core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.eclipse.flow.common.view.property.ListPropertyDescriptor;
+import org.drools.eclipse.flow.ruleflow.view.property.exceptionHandler.ExceptionHandlersPropertyDescriptor;
 import org.drools.eclipse.flow.ruleflow.view.property.variable.VariableListCellEditor;
+import org.drools.process.core.context.exception.ExceptionHandler;
+import org.drools.process.core.context.exception.ExceptionScope;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.workflow.core.Node;
@@ -21,21 +26,12 @@ public class CompositeContextNodeWrapper extends CompositeNodeWrapper {
     public static final String VARIABLES = "variables";
     public static final String START_NODE = "startNodeId";
     public static final String END_NODE = "endNodeId";
+    public static final String EXCEPTION_HANDLERS = "exceptionHandlers";
 
     private static final long serialVersionUID = 400L;
-    private static IPropertyDescriptor[] descriptors;
 
-    static {
-        descriptors = new IPropertyDescriptor[DefaultElementWrapper.descriptors.length + 3];
-        System.arraycopy(DefaultElementWrapper.descriptors, 0, descriptors, 0, DefaultElementWrapper.descriptors.length);
-        descriptors[descriptors.length - 3] = 
-            new TextPropertyDescriptor(START_NODE, "StartNodeId");
-        descriptors[descriptors.length - 2] = 
-            new TextPropertyDescriptor(END_NODE, "EndNodeId");
-        descriptors[descriptors.length - 1] = 
-        	new ListPropertyDescriptor(VARIABLES, "Variables", VariableListCellEditor.class);
-    }
-    
+    private IPropertyDescriptor[] descriptors;
+
     public CompositeContextNodeWrapper() {
         setNode(new CompositeContextNode());
         getCompositeNode().setName("CompositeNode");
@@ -45,9 +41,26 @@ public class CompositeContextNodeWrapper extends CompositeNodeWrapper {
     }
     
 	public IPropertyDescriptor[] getPropertyDescriptors() {
+		if (descriptors == null) {
+			initPropertyDescriptors();
+		}
 		return descriptors;
 	}
 
+    private void initPropertyDescriptors() {
+        descriptors = new IPropertyDescriptor[DefaultElementWrapper.descriptors.length + 4];
+        System.arraycopy(DefaultElementWrapper.descriptors, 0, descriptors, 0, DefaultElementWrapper.descriptors.length);
+        descriptors[descriptors.length - 4] = 
+            new TextPropertyDescriptor(START_NODE, "StartNodeId");
+        descriptors[descriptors.length - 3] = 
+            new TextPropertyDescriptor(END_NODE, "EndNodeId");
+        descriptors[descriptors.length - 2] = 
+        	new ListPropertyDescriptor(VARIABLES, "Variables", VariableListCellEditor.class);
+        descriptors[descriptors.length - 1] = 
+        	new ExceptionHandlersPropertyDescriptor(EXCEPTION_HANDLERS,
+        		"Exception Handlers", getProcessWrapper().getProcess());
+    }
+    
     public CompositeContextNode getCompositeContextNode() {
         return (CompositeContextNode) getNode();
     }
@@ -86,6 +99,14 @@ public class CompositeContextNodeWrapper extends CompositeNodeWrapper {
         	CompositeNode.NodeAndType link = getCompositeNode().getLinkedOutgoingNode(Node.CONNECTION_DEFAULT_TYPE);
         	return link == null ? "" : link.getNodeId() + "";
         }
+        if (EXCEPTION_HANDLERS.equals(id)) {
+        	ExceptionScope exceptionScope = (ExceptionScope)
+        		getCompositeContextNode().getDefaultContext(ExceptionScope.EXCEPTION_SCOPE);
+        	if (exceptionScope == null) {
+        		return new HashMap<String, ExceptionHandler>();
+        	}
+            return exceptionScope.getExceptionHandlers();
+        }
         return super.getPropertyValue(id);
     }
 
@@ -97,6 +118,12 @@ public class CompositeContextNodeWrapper extends CompositeNodeWrapper {
             getCompositeNode().linkIncomingConnections(Node.CONNECTION_DEFAULT_TYPE, null);
         } else if (END_NODE.equals(id)) {
             getCompositeNode().linkOutgoingConnections(null, Node.CONNECTION_DEFAULT_TYPE);
+        } else if (EXCEPTION_HANDLERS.equals(id)) {
+        	ExceptionScope exceptionScope = (ExceptionScope)
+    			getCompositeContextNode().getDefaultContext(ExceptionScope.EXCEPTION_SCOPE);
+        	if (exceptionScope != null) {
+        		exceptionScope.setExceptionHandlers(new HashMap<String, ExceptionHandler>());
+        	}
         } else {
         	super.resetPropertyValue(id);
         }
@@ -111,6 +138,15 @@ public class CompositeContextNodeWrapper extends CompositeNodeWrapper {
             getCompositeNode().linkIncomingConnections(Node.CONNECTION_DEFAULT_TYPE, new Long((String) value), Node.CONNECTION_DEFAULT_TYPE);
         } else if (END_NODE.equals(id)) {
             getCompositeNode().linkOutgoingConnections(new Long((String) value), Node.CONNECTION_DEFAULT_TYPE, Node.CONNECTION_DEFAULT_TYPE);
+        } else if (EXCEPTION_HANDLERS.equals(id)) {
+        	ExceptionScope exceptionScope = (ExceptionScope)
+    			getCompositeContextNode().getDefaultContext(ExceptionScope.EXCEPTION_SCOPE);
+        	if (exceptionScope == null) {
+        		exceptionScope = new ExceptionScope();
+        		getCompositeContextNode().addContext(exceptionScope);
+        		getCompositeContextNode().setDefaultContext(exceptionScope);
+        	}
+    		exceptionScope.setExceptionHandlers((Map<String, ExceptionHandler>) value);
         } else {
             super.setPropertyValue(id, value);
         }

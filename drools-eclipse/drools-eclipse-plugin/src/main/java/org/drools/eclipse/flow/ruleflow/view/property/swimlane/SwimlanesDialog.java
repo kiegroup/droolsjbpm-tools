@@ -24,13 +24,13 @@ import org.eclipse.swt.widgets.Shell;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class SwimlanesDialog extends EditListDialog {
+public class SwimlanesDialog extends EditListDialog<Swimlane> {
     
     protected SwimlanesDialog(Shell parentShell) {
         super(parentShell, "Swimlanes", SwimlaneDialog.class);
     }
 
-    protected Object createItem() {
+    protected Swimlane createItem() {
         return new Swimlane();
     }
 }

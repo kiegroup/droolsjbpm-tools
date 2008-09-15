@@ -16,7 +16,6 @@ package org.drools.eclipse.flow.ruleflow.view.property.constraint;
  */
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -61,7 +60,7 @@ public class RuleFlowGlobalsDialog extends Dialog {
 	private boolean success;
 	private TabFolder tabFolder;
 	private SourceViewer globalsViewer;
-	private Map globals;
+	private Map<String, String> globals;
 
 	public RuleFlowGlobalsDialog(Shell parentShell, WorkflowProcess process) {
 		super(parentShell);
@@ -115,10 +114,9 @@ public class RuleFlowGlobalsDialog extends Dialog {
 	
 	private String getProcessImports() {
 		String result = "# define your globals here: e.g. global java.util.List myList\n";
-		Map globals = process.getGlobals();
+		Map<String, String> globals = process.getGlobals();
 		if (globals != null) {
-			for (Iterator iterator = globals.entrySet().iterator(); iterator.hasNext(); ) {
-				Map.Entry entry = (Map.Entry) iterator.next();
+			for (Map.Entry<String, String> entry: globals.entrySet()) {
 				result += "global " + entry.getValue() + " " + entry.getKey() + "\n";
 			}
 		}
@@ -152,12 +150,12 @@ public class RuleFlowGlobalsDialog extends Dialog {
 		return success;
 	}
 
-	public Map getGlobals() {
+	public Map<String, String> getGlobals() {
 		return globals;
 	}
 	
 	private void updateGlobals() {
-		this.globals = new HashMap();
+		this.globals = new HashMap<String, String>();
 		Matcher matcher = GLOBAL_PATTERN.matcher(globalsViewer.getDocument().get());
 		while (matcher.find()) {
 			this.globals.put(matcher.group(2), matcher.group(1));

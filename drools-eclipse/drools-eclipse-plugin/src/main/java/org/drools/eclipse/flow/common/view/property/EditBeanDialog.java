@@ -25,10 +25,10 @@ import org.eclipse.swt.widgets.Shell;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public abstract class EditBeanDialog extends Dialog {
+public abstract class EditBeanDialog<T> extends Dialog {
 
     private String title;
-    private Object value;
+    private T value;
     
     protected EditBeanDialog(Shell parentShell, String title) {
         super(parentShell);
@@ -45,7 +45,7 @@ public abstract class EditBeanDialog extends Dialog {
         return new Point(400, 200);
     }
     
-    public Object getValue() {
+    public T getValue() {
         return value;
     }
     
@@ -58,9 +58,9 @@ public abstract class EditBeanDialog extends Dialog {
         }
     }
     
-    protected abstract Object updateValue(Object value);
+    protected abstract T updateValue(T value);
     
-    public void setValue(Object value) {
+    public void setValue(T value) {
         this.value = value;
     }
 }

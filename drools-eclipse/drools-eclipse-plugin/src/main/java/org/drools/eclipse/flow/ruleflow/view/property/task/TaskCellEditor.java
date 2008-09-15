@@ -17,6 +17,7 @@ package org.drools.eclipse.flow.ruleflow.view.property.task;
 
 import org.drools.eclipse.flow.common.view.property.BeanDialogCellEditor;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
+import org.drools.process.core.Work;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
@@ -25,13 +26,13 @@ import org.eclipse.swt.widgets.Shell;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class TaskCellEditor extends BeanDialogCellEditor {
+public class TaskCellEditor extends BeanDialogCellEditor<Work> {
 
     public TaskCellEditor(Composite parent) {
         super(parent);
     }
 
-    protected EditBeanDialog createDialog(Shell shell) {
+    protected EditBeanDialog<Work> createDialog(Shell shell) {
         return new TaskDialog(shell);
     }
     

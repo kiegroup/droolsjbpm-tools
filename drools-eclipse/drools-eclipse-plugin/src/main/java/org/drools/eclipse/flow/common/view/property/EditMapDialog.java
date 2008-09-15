@@ -16,9 +16,9 @@ package org.drools.eclipse.flow.common.view.property;
  */
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ListViewer;
@@ -39,15 +39,15 @@ import org.eclipse.swt.widgets.Shell;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public abstract class EditListDialog<T> extends EditBeanDialog<List<T>> {
+public abstract class EditMapDialog<T> extends EditBeanDialog<Map<String, T>> {
     
     private Class<? extends EditBeanDialog<T>> editItemDialogClass;
-    private List<T> newList;
+    private Map<String, T> newMap;
     private ListViewer listViewer;
     private Button removeButton;
     private Button editButton;
 
-    protected EditListDialog(Shell parentShell, String title, Class<? extends EditBeanDialog<T>> editItemDialogClass) {
+    protected EditMapDialog(Shell parentShell, String title, Class<? extends EditBeanDialog<T>> editItemDialogClass) {
         super(parentShell, title);
         this.editItemDialogClass = editItemDialogClass;
     }
@@ -59,7 +59,7 @@ public abstract class EditListDialog<T> extends EditBeanDialog<List<T>> {
         composite.setLayout(gridLayout);
 
         listViewer = new ListViewer(composite, SWT.SINGLE);
-        listViewer.add(newList.toArray());
+        listViewer.add(newMap.keySet().toArray());
         listViewer.addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
                 removeButton.setEnabled(!event.getSelection().isEmpty());
@@ -114,27 +114,30 @@ public abstract class EditListDialog<T> extends EditBeanDialog<List<T>> {
         return composite;
     }
     
-    public void setValue(List<T> value) {
+	public void setValue(Map<String, T> value) {
         super.setValue(value);
         if (value == null) {
-        	this.newList = new ArrayList<T>();
+        	this.newMap = new HashMap<String, T>();
         } else {
-        	this.newList = new ArrayList<T>((List<T>) value);
+        	this.newMap = new HashMap<String, T>((Map<String, T>) value);
         }
     }
     
-    protected List<T> updateValue(List<T> value) {
-        return newList;
+    protected Map<String, T> updateValue(Map<String, T> value) {
+        return newMap;
     }
 
     private void addItem() {
         EditBeanDialog<T> dialog = createEditItemDialog();
         dialog.setValue(createItem());
         int code = dialog.open();
+        String key = ((MapItemDialog) dialog).getKey();
         T result = dialog.getValue();
         if (code != CANCEL) {
-            newList.add(result);
-            listViewer.add(result);
+            T object = newMap.put(key, result);
+            if (object == null) {
+            	listViewer.add(key);
+            }
         }
     }
     
@@ -143,29 +146,31 @@ public abstract class EditListDialog<T> extends EditBeanDialog<List<T>> {
     @SuppressWarnings("unchecked")
 	private void editItem() {
         EditBeanDialog<T> dialog = createEditItemDialog();
-        Iterator<T> iterator = ((StructuredSelection) listViewer.getSelection()).iterator();
+        Iterator<String> iterator = ((StructuredSelection) listViewer.getSelection()).iterator();
         if (iterator.hasNext()) {
-            dialog.setValue(iterator.next());
+        	String key = iterator.next();
+            ((MapItemDialog) dialog).setKey(key);
+            dialog.setValue(newMap.get(key));
             int code = dialog.open();
-            Object result = dialog.getValue();
+            T result = dialog.getValue();
             if (code != CANCEL) {
-                listViewer.update(result, null);
+                newMap.put(key, result);
             }
         }
     }
     
     @SuppressWarnings("unchecked")
 	private void removeItem() {
-        Iterator<T> iterator = ((StructuredSelection) listViewer.getSelection()).iterator();
+        Iterator<String> iterator = ((StructuredSelection) listViewer.getSelection()).iterator();
         // single selection only allowed
         if (iterator.hasNext()) {
-            Object item = iterator.next();
-            newList.remove(item);
-            listViewer.remove(item);
+            String key = iterator.next();
+            newMap.remove(key);
+            listViewer.remove(key);
         }
     }
     
-    protected EditBeanDialog<T> createEditItemDialog() {
+	protected EditBeanDialog<T> createEditItemDialog() {
         try {
             return (EditBeanDialog<T>) editItemDialogClass.getConstructor(
                 new Class[] { Shell.class }).newInstance(
