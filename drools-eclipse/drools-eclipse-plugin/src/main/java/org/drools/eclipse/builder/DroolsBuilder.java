@@ -142,6 +142,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
 		        	createMarker(res, markers[i].getText(), markers[i].getLine());
 		        }
             } catch (Throwable t) {
+            	DroolsEclipsePlugin.log(t);
             	createMarker(res, t.getMessage(), -1);
             }
             return false;
