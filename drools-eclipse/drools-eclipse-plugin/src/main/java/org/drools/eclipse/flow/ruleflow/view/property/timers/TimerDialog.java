@@ -1,4 +1,4 @@
-package org.drools.eclipse.flow.ruleflow.view.property.exceptionHandler;
+package org.drools.eclipse.flow.ruleflow.view.property.timers;
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -25,7 +25,7 @@ import org.drools.eclipse.flow.common.view.property.MapItemDialog;
 import org.drools.eclipse.flow.ruleflow.view.property.action.ActionCompletionProcessor;
 import org.drools.eclipse.flow.ruleflow.view.property.constraint.RuleFlowGlobalsDialog;
 import org.drools.eclipse.flow.ruleflow.view.property.constraint.RuleFlowImportsDialog;
-import org.drools.process.core.context.exception.ActionExceptionHandler;
+import org.drools.process.core.timer.Timer;
 import org.drools.util.ArrayUtils;
 import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.WorkflowProcess;
@@ -64,21 +64,21 @@ import org.eclipse.swt.widgets.Text;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class ExceptionHandlerDialog extends EditBeanDialog<ActionExceptionHandler> implements MapItemDialog<String> {
+public class TimerDialog extends EditBeanDialog<DroolsAction> implements MapItemDialog<Timer> {
     
     private static final String[] DIALECTS = new String[] { "mvel", "java" };
     
-    private String key;
-    private Text nameText;
-    private Text faultVariableText;
+    private Timer key;
+    private Text delayText;
+    private Text periodText;
 	private WorkflowProcess process;
 	private TabFolder tabFolder;
 	private SourceViewer actionViewer;
 	private Combo dialectCombo;
 	private ActionCompletionProcessor completionProcessor;
 
-    public ExceptionHandlerDialog(Shell parentShell, WorkflowProcess process) {
-        super(parentShell, "Edit Exception Handler");
+    public TimerDialog(Shell parentShell, WorkflowProcess process) {
+        super(parentShell, "Edit Timer");
         this.process = process;
     }
     
@@ -92,29 +92,28 @@ public class ExceptionHandlerDialog extends EditBeanDialog<ActionExceptionHandle
         gridLayout.numColumns = 2;
         composite.setLayout(gridLayout);
         
-        Label nameLabel = new Label(composite, SWT.NONE);
-        nameLabel.setText("Name: ");
-        nameText = new Text(composite, SWT.NONE);
+        Label label = new Label(composite, SWT.NONE);
+        label.setText("Timer delay: ");
+        delayText = new Text(composite, SWT.NONE);
         GridData gridData = new GridData();
         gridData.grabExcessHorizontalSpace = true;
         gridData.horizontalAlignment = GridData.FILL;
-        nameText.setLayoutData(gridData);
+        delayText.setLayoutData(gridData);
         if (key != null) {
-        	nameText.setText(key);
-        	nameText.setEditable(false);
+        	delayText.setText(key.getDelay() + "");
         }
-
-        nameLabel = new Label(composite, SWT.NONE);
-        nameLabel.setText("FaultVariable: ");
-        faultVariableText = new Text(composite, SWT.NONE);
+        label = new Label(composite, SWT.NONE);
+        label.setText("Timer period: ");
+        periodText = new Text(composite, SWT.NONE);
         gridData = new GridData();
         gridData.grabExcessHorizontalSpace = true;
         gridData.horizontalAlignment = GridData.FILL;
-        faultVariableText.setLayoutData(gridData);
-        String faultVariable = getValue().getFaultVariable();
-        faultVariableText.setText(faultVariable == null ? "" : faultVariable);
-
-		Composite top = new Composite(composite, SWT.NONE);
+        periodText.setLayoutData(gridData);
+        if (key != null) {
+        	periodText.setText(key.getPeriod() + "");
+        }
+        
+        		Composite top = new Composite(composite, SWT.NONE);
 		GridData gd = new GridData();
 		gd.horizontalSpan = 2;
 		gd.grabExcessHorizontalSpace = true;
@@ -124,7 +123,7 @@ public class ExceptionHandlerDialog extends EditBeanDialog<ActionExceptionHandle
 		gridLayout.numColumns = 4;
 		top.setLayout(gridLayout);
 		
-		Label label = new Label(top, SWT.NONE);
+		label = new Label(top, SWT.NONE);
         label.setText("Dialect:");
         createDialectCombo(top);
 		
@@ -178,7 +177,7 @@ public class ExceptionHandlerDialog extends EditBeanDialog<ActionExceptionHandle
 		});
 		completionProcessor.setDialect(
             dialectCombo.getItem(dialectCombo.getSelectionIndex()));
-		DroolsAction action = getValue().getAction();
+		DroolsAction action = getValue();
 		String value = null;
 		if (action instanceof DroolsConsequenceAction) {
 			value = ((DroolsConsequenceAction) action).getConsequence();
@@ -209,7 +208,7 @@ public class ExceptionHandlerDialog extends EditBeanDialog<ActionExceptionHandle
 	private Control createDialectCombo(Composite parent) {
 	    dialectCombo = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
 	    dialectCombo.setItems(DIALECTS);
-	    DroolsAction action = getValue().getAction();
+	    DroolsAction action = getValue();
 	    int index = 0;
         if (action instanceof DroolsConsequenceAction) {
             String dialect = ((DroolsConsequenceAction) action).getDialect();
@@ -272,23 +271,41 @@ public class ExceptionHandlerDialog extends EditBeanDialog<ActionExceptionHandle
 		r.run();
 	}
 
-	protected ActionExceptionHandler updateValue(ActionExceptionHandler value) {
-        key = nameText.getText();
-        if (key.length() == 0) {
-        	throw new IllegalArgumentException("Name should not be empty.");
-        }
-        value.setFaultVariable(faultVariableText.getText());
-        if (tabFolder.getSelectionIndex() == 0) {
-            value.setAction(getAction());
+	protected DroolsAction updateValue(DroolsAction value) {
+		if (key == null) {
+			key = new Timer();
 		}
-        return value;
+		try {
+			String delayString = delayText.getText().trim();
+			long delay = 0;
+			if (delayString.length() > 0) {
+				delay = new Long(delayString);
+			}
+			key.setDelay(delay);
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException("Delay should be a long value");
+		}
+		try {
+			String periodString = periodText.getText().trim();
+			long period = 0;
+			if (periodString.length() > 0) {
+				period = new Long(periodString);
+			}
+			key.setPeriod(period);
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException("Period should be a long value");
+		}
+        if (tabFolder.getSelectionIndex() == 0) {
+            return getAction();
+		}
+        return null;
     }
     
-    public void setKey(String key) {
+    public void setKey(Timer key) {
     	this.key = key;
     }
 
-	public String getKey() {
+	public Timer getKey() {
 		return key;
 	}
     

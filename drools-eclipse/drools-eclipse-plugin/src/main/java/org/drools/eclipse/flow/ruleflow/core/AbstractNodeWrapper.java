@@ -28,7 +28,9 @@ import org.eclipse.draw2d.geometry.Rectangle;
  */
 public abstract class AbstractNodeWrapper extends DefaultElementWrapper implements NodeWrapper {
 	
-    public void setNode(Node node) {
+	private static final long serialVersionUID = 4L;
+
+	public void setNode(Node node) {
         setElement(node);
     }
     

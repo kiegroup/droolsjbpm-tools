@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.eclipse.flow.ruleflow.view.property.workitem.WorkItemParameterMappingPropertyDescriptor;
@@ -40,7 +39,7 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class WorkItemWrapper extends ExtendedNodeWrapper {
+public class WorkItemWrapper extends EventBasedNodeWrapper {
 
     public static final String WAIT_FOR_COMPLETION = "WaitForCompletion";
     public static final String RESULT_MAPPING = "ResultMapping";
@@ -49,7 +48,6 @@ public class WorkItemWrapper extends ExtendedNodeWrapper {
 	private static final long serialVersionUID = 400L;
 
 	private WorkDefinition workDefinition;
-	private IPropertyDescriptor[] descriptors;
 
     public WorkItemWrapper() {
         setNode(new WorkItemNode());
@@ -94,22 +92,15 @@ public class WorkItemWrapper extends ExtendedNodeWrapper {
         return false;
     }
     
-    private void setDescriptors() {
-        if (workDefinition != null) {
-            descriptors = createPropertyDescriptors();
-        }
-        if (descriptors == null) {
-            descriptors = DefaultElementWrapper.descriptors;
-        }
-    }
-    
-    protected IPropertyDescriptor[] createPropertyDescriptors() {
+	protected void initDescriptors() {
+    	super.initDescriptors();
         Set<ParameterDefinition> parameters = workDefinition.getParameters();
-            descriptors = new IPropertyDescriptor[DefaultElementWrapper.descriptors.length + parameters.size() + 5];
-        System.arraycopy(DefaultElementWrapper.descriptors, 0, descriptors, 0, DefaultElementWrapper.descriptors.length);
+    	IPropertyDescriptor[] oldDescriptors = descriptors; 
+        descriptors = new IPropertyDescriptor[oldDescriptors.length + parameters.size() + 5];
+        System.arraycopy(oldDescriptors, 0, descriptors, 0, oldDescriptors.length);
         int i = 0;
         for (ParameterDefinition def: parameters) {
-            descriptors[DefaultElementWrapper.descriptors.length + (i++)] = 
+            descriptors[oldDescriptors.length + (i++)] = 
                 new TextPropertyDescriptor(def.getName(), def.getName());
         }
         descriptors[descriptors.length - 5] = getOnEntryPropertyDescriptor();
@@ -120,16 +111,8 @@ public class WorkItemWrapper extends ExtendedNodeWrapper {
             new WorkItemParameterMappingPropertyDescriptor(PARAMETER_MAPPING, "Parameter Mapping", getWorkItemNode());
         descriptors[descriptors.length - 1] = 
             new WorkItemResultMappingPropertyDescriptor(RESULT_MAPPING, "Result Mapping", getWorkItemNode());
-        return descriptors;
     }
     
-    public IPropertyDescriptor[] getPropertyDescriptors() {
-        if (descriptors == null) {
-            setDescriptors();
-        }
-    	return descriptors;
-    }
-
     public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
         return super.acceptsIncomingConnection(connection, source)
         	&& getIncomingConnections().isEmpty();
@@ -175,7 +158,8 @@ public class WorkItemWrapper extends ExtendedNodeWrapper {
         }
     }
 
-    public void setPropertyValue(Object id, Object value) {
+    @SuppressWarnings("unchecked")
+	public void setPropertyValue(Object id, Object value) {
         if (WAIT_FOR_COMPLETION.equals(id)) {
             getWorkItemNode().setWaitForCompletion(((Integer) value).intValue() == 0);
         } else if (PARAMETER_MAPPING.equals(id)) {

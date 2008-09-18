@@ -15,7 +15,6 @@ package org.drools.eclipse.flow.ruleflow.core;
  * limitations under the License.
  */
 
-import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.eclipse.flow.ruleflow.view.property.constraint.MilestoneConstraintPropertyDescriptor;
@@ -28,36 +27,31 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class MilestoneWrapper extends AbstractNodeWrapper {
-
-	private static final long serialVersionUID = -5976489437109982927L;
-	private IPropertyDescriptor[] descriptors;
+public class MilestoneWrapper extends EventBasedNodeWrapper {
 
     public static final String CONSTRAINT = "Constraint";
+
+	private static final long serialVersionUID = 4L;
 
     public MilestoneWrapper() {
         setNode(new MilestoneNode());
         getMilestoneNode().setName("Event Wait");
     }
     
-    private void setDescriptors() {
-        descriptors = new IPropertyDescriptor[DefaultElementWrapper.descriptors.length + 1];
-        System.arraycopy(DefaultElementWrapper.descriptors, 0, descriptors, 0, DefaultElementWrapper.descriptors.length);
+    protected void initDescriptors() {
+    	super.initDescriptors();
+    	IPropertyDescriptor[] oldDescriptors = descriptors; 
+        descriptors = new IPropertyDescriptor[oldDescriptors.length + 1];
+        System.arraycopy(oldDescriptors, 0, descriptors, 0, oldDescriptors.length);
         descriptors[descriptors.length - 1] = 
-            new MilestoneConstraintPropertyDescriptor(CONSTRAINT, "Constraint", getMilestoneNode(), (WorkflowProcess) getParent().getProcessWrapper().getProcess());
+            new MilestoneConstraintPropertyDescriptor(CONSTRAINT, "Constraint",
+        		getMilestoneNode(), (WorkflowProcess) getParent().getProcessWrapper().getProcess());
     }
     
     public MilestoneNode getMilestoneNode() {
         return (MilestoneNode) getNode();
     }
     
-    public IPropertyDescriptor[] getPropertyDescriptors() {
-    	if (descriptors == null) {
-    		setDescriptors();
-    	}
-        return descriptors;
-    }
-
     public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
         return super.acceptsIncomingConnection(connection, source)
         	&& getIncomingConnections().isEmpty();

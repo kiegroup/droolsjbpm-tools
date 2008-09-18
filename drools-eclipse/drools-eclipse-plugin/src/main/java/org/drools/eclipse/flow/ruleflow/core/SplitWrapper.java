@@ -105,7 +105,8 @@ public class SplitWrapper extends AbstractNodeWrapper {
         }
     }
 
-    public void setPropertyValue(Object id, Object value) {
+    @SuppressWarnings("unchecked")
+	public void setPropertyValue(Object id, Object value) {
         if (TYPE.equals(id)) {
             getSplit().setType(((Integer) value).intValue());
         } else if (CONSTRAINTS.equals(id)) {

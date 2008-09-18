@@ -1,9 +1,9 @@
 package org.drools.eclipse.flow.common.view.property;
 
-public interface MapItemDialog {
+public interface MapItemDialog<S> {
 	
-	String getKey();
+	S getKey();
 	
-	void setKey(String key);
+	void setKey(S key);
 
 }

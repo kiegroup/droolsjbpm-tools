@@ -18,7 +18,6 @@ package org.drools.eclipse.flow.ruleflow.core;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.eclipse.flow.ruleflow.view.property.subprocess.SubProcessParameterInMappingPropertyDescriptor;
@@ -33,10 +32,9 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class SubProcessWrapper extends ExtendedNodeWrapper {
+public class SubProcessWrapper extends EventBasedNodeWrapper {
 
 	private static final long serialVersionUID = 3668348577732020324L;
-    private static IPropertyDescriptor[] descriptors;
     
     public static final String PROCESS_ID = "ProcessId";
     public static final String WAIT_FOR_COMPLETION = "WaitForCompletion";
@@ -44,9 +42,16 @@ public class SubProcessWrapper extends ExtendedNodeWrapper {
     public static final String PARAMETER_IN_MAPPING = "ParameterInMapping";
     public static final String PARAMETER_OUT_MAPPING = "ParameterOutMapping";
 
-    private void setDescriptors() {
-        descriptors = new IPropertyDescriptor[DefaultElementWrapper.descriptors.length + 7];
-        System.arraycopy(DefaultElementWrapper.descriptors, 0, descriptors, 0, DefaultElementWrapper.descriptors.length);
+    public SubProcessWrapper() {
+        setNode(new SubProcessNode());
+        getSubProcessNode().setName("SubProcess");
+    }
+    
+	protected void initDescriptors() {
+    	super.initDescriptors();
+    	IPropertyDescriptor[] oldDescriptors = descriptors; 
+        descriptors = new IPropertyDescriptor[oldDescriptors.length + 7];
+        System.arraycopy(oldDescriptors, 0, descriptors, 0, oldDescriptors.length);
         descriptors[descriptors.length - 7] = getOnEntryPropertyDescriptor();
         descriptors[descriptors.length - 6] = getOnExitPropertyDescriptor();
         descriptors[descriptors.length - 5] = 
@@ -61,22 +66,10 @@ public class SubProcessWrapper extends ExtendedNodeWrapper {
             new ComboBoxPropertyDescriptor(WAIT_FOR_COMPLETION, "Wait for completion", new String[] {"true", "false"});
     }
     
-    public SubProcessWrapper() {
-        setNode(new SubProcessNode());
-        getSubProcessNode().setName("SubProcess");
-    }
-    
     public SubProcessNode getSubProcessNode() {
         return (SubProcessNode) getNode();
     }
     
-    public IPropertyDescriptor[] getPropertyDescriptors() {
-        if (descriptors == null) {
-            setDescriptors();
-        }
-        return descriptors;
-    }
-
     public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
         return super.acceptsIncomingConnection(connection, source)
         	&& getIncomingConnections().isEmpty();
@@ -123,7 +116,8 @@ public class SubProcessWrapper extends ExtendedNodeWrapper {
         }
     }
 
-    public void setPropertyValue(Object id, Object value) {
+    @SuppressWarnings("unchecked")
+	public void setPropertyValue(Object id, Object value) {
         if (PROCESS_ID.equals(id)) {
         	getSubProcessNode().setProcessId((String) value);
         } else if (WAIT_FOR_COMPLETION.equals(id)) {

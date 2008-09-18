@@ -15,7 +15,6 @@ package org.drools.eclipse.flow.ruleflow.view.property.variable;
  * limitations under the License.
  */
 
-import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.datatype.DefaultDataTypeRegistry;
 import org.drools.eclipse.flow.common.view.datatype.editor.DataTypeEditor;
 import org.drools.eclipse.flow.common.view.datatype.editor.impl.DataTypeCombo;
@@ -24,9 +23,6 @@ import org.drools.eclipse.flow.common.view.datatype.editor.impl.EditorComposite;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.datatype.DataType;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
@@ -129,29 +125,12 @@ public class VariableDialog extends EditBeanDialog<Variable> {
         Variable variable = (Variable) getValue();
         String name = nameText.getText();
         if ("".equals(name)) {
-        	String message = "Name should not be empty";
-        	showError(message);
-        	throw new IllegalArgumentException(message);
+        	throw new IllegalArgumentException("Name should not be empty");
         }
         variable.setName(name);
-        try {
-            variable.setType(dataTypeEditorComposite.getDataType());
-        } catch (IllegalArgumentException e) {
-            showError(e.getMessage());
-            throw e;
-        }
-        try {
-            variable.setValue(editorComposite.getValue());
-        } catch (IllegalArgumentException e) {
-            showError(e.getMessage());
-            throw e;
-        }
+        variable.setType(dataTypeEditorComposite.getDataType());
+        variable.setValue(editorComposite.getValue());
         return variable;
     }
     
-    private void showError(String error) {
-        ErrorDialog.openError(getShell(), "Error", error, new Status(
-            IStatus.ERROR, DroolsEclipsePlugin.getDefault().getBundle().getSymbolicName(),
-            IStatus.ERROR, error, null));
-    }
 }

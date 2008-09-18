@@ -15,7 +15,11 @@ package org.drools.eclipse.flow.common.view.property;
  * limitations under the License.
  */
 
+import org.drools.eclipse.DroolsEclipsePlugin;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
@@ -54,6 +58,7 @@ public abstract class EditBeanDialog<T> extends Dialog {
             value = updateValue(value);
             super.okPressed();
         } catch (IllegalArgumentException e) {
+        	showError(e.getMessage());
             // value could not be set, ignoring ok
         }
     }
@@ -62,5 +67,11 @@ public abstract class EditBeanDialog<T> extends Dialog {
     
     public void setValue(T value) {
         this.value = value;
+    }
+    
+    protected void showError(String error) {
+        ErrorDialog.openError(getShell(), "Error", error, new Status(
+            IStatus.ERROR, DroolsEclipsePlugin.getDefault().getBundle().getSymbolicName(),
+            IStatus.ERROR, error, null));
     }
 }

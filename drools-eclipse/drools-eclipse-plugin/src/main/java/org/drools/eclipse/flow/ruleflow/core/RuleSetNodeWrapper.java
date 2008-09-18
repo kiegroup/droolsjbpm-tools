@@ -15,7 +15,6 @@ package org.drools.eclipse.flow.ruleflow.core;
  * limitations under the License.
  */
 
-import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.workflow.core.node.RuleSetNode;
@@ -27,15 +26,19 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class RuleSetNodeWrapper extends AbstractNodeWrapper {
+public class RuleSetNodeWrapper extends EventBasedNodeWrapper {
 
     private static final long serialVersionUID = 400L;
-    private static IPropertyDescriptor[] descriptors;
 
     public static final String RULE_FLOW_GROUP = "RuleFlowGroup";
-    static {
-        descriptors = new IPropertyDescriptor[DefaultElementWrapper.descriptors.length + 1];
-        System.arraycopy(DefaultElementWrapper.descriptors, 0, descriptors, 0, DefaultElementWrapper.descriptors.length);
+
+    protected void initDescriptors() {
+    	super.initDescriptors();
+    	IPropertyDescriptor[] oldDescriptors = descriptors; 
+        descriptors = new IPropertyDescriptor[oldDescriptors.length + 1];
+        System.arraycopy(oldDescriptors, 0, descriptors, 0, oldDescriptors.length);
+//        descriptors[descriptors.length - 3] = getOnEntryPropertyDescriptor();
+//        descriptors[descriptors.length - 2] = getOnExitPropertyDescriptor();
         descriptors[descriptors.length - 1] = 
             new TextPropertyDescriptor(RULE_FLOW_GROUP, "RuleFlowGroup");
     }
@@ -50,10 +53,6 @@ public class RuleSetNodeWrapper extends AbstractNodeWrapper {
         return (RuleSetNode) getNode();
     }
     
-    public IPropertyDescriptor[] getPropertyDescriptors() {
-        return descriptors;
-    }
-
     public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
         return super.acceptsIncomingConnection(connection, source)
         	&& getIncomingConnections().isEmpty();

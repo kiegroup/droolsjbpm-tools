@@ -59,13 +59,13 @@ public class HumanTaskNodeWrapper extends WorkItemWrapper {
         setWorkDefinition(WORK_DEFINITION);
     }
     
-    protected IPropertyDescriptor[] createPropertyDescriptors() {
-        IPropertyDescriptor[] parentDescriptors = super.createPropertyDescriptors();
+    protected void initDescriptors() {
+    	super.initDescriptors();
+        IPropertyDescriptor[] parentDescriptors = descriptors;
         IPropertyDescriptor[] descriptors = new IPropertyDescriptor[parentDescriptors.length + 1];
         System.arraycopy(parentDescriptors, 0, descriptors, 0, parentDescriptors.length);
         descriptors[descriptors.length - 1] = 
             new TextPropertyDescriptor(SWIMLANE, "Swimlane");
-        return descriptors;
     }
     
     public HumanTaskNode getHumanTaskNode() {

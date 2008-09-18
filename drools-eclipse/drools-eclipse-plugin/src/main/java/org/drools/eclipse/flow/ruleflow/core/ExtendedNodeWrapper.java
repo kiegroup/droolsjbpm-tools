@@ -52,7 +52,8 @@ public class ExtendedNodeWrapper extends AbstractNodeWrapper {
         }
     }
 
-    public void setPropertyValue(Object id, Object value) {
+    @SuppressWarnings("unchecked")
+	public void setPropertyValue(Object id, Object value) {
         if (ON_ENTRY_ACTIONS.equals(id)) {
         	getExtendedNode().setActions(ExtendedNodeImpl.EVENT_NODE_ENTER, (List<DroolsAction>) value);
         } else if (ON_EXIT_ACTIONS.equals(id)) {

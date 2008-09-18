@@ -1,4 +1,4 @@
-package org.drools.eclipse.flow.ruleflow.view.property.exceptionHandler;
+package org.drools.eclipse.flow.ruleflow.view.property.timers;
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -17,32 +17,31 @@ package org.drools.eclipse.flow.ruleflow.view.property.exceptionHandler;
 
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
 import org.drools.eclipse.flow.common.view.property.EditMapDialog;
-import org.drools.process.core.Process;
-import org.drools.process.core.context.exception.ActionExceptionHandler;
+import org.drools.process.core.timer.Timer;
+import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.WorkflowProcess;
+import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.eclipse.swt.widgets.Shell;
 
 /**
- * Dialog for editing exception handlers.
+ * Dialog for editing a list of timers.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class ExceptionHandlersDialog extends EditMapDialog<String, ActionExceptionHandler> {
-    
-	private Process process;
+public class TimersDialog extends EditMapDialog<Timer, DroolsAction> {
 	
-    protected ExceptionHandlersDialog(Shell parentShell, Process process) {
-        super(parentShell, "ExceptionHandlers", ExceptionHandlerDialog.class);
-        this.process = process;
+	private WorkflowProcess process;
+
+    protected TimersDialog(Shell parentShell, WorkflowProcess process) {
+		super(parentShell, "Edit Timers", TimerDialog.class);
+		this.process = process;
+	}
+
+    protected DroolsAction createItem() {
+        return new DroolsConsequenceAction();
     }
 
-    protected ActionExceptionHandler createItem() {
-        return new ActionExceptionHandler();
+    protected EditBeanDialog<DroolsAction> createEditItemDialog() {
+    	return new TimerDialog(getShell(), process);
     }
-
-    protected EditBeanDialog<ActionExceptionHandler> createEditItemDialog() {
-        return new ExceptionHandlerDialog(getShell(), (WorkflowProcess) process);
-    }
-    
 }
-
