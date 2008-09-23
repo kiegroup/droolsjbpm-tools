@@ -13,11 +13,8 @@ rule "Hello World"
 end
 
 rule "GoodBye"
-	no-loop true
 	when
-		m : Message( status == Message.GOODBYE, message : message )
+		Message( status == Message.GOODBYE, message : message )
 	then
-		System.out.println( message ); 
-		m.setMessage( message );
-		
+		System.out.println( message );
 end
