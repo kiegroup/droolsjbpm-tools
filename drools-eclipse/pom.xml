@@ -210,7 +210,8 @@
               <overWriteReleases>true</overWriteReleases>
               <overWriteSnapshots>true</overWriteSnapshots>
               <overWriteIfNewer>true</overWriteIfNewer>
-              <stripVersion>true</stripVersion>              
+              <stripVersion>true</stripVersion>
+              <includeScope>runtime</includeScope>              
             </configuration>
           </execution>
         </executions>
@@ -274,7 +275,7 @@
       <scope>runtime</scope>
     </dependency>
    
-    <dependency>
+    <!--dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-docs-introduction</artifactId>         
       <classifier>eclipse</classifier>
@@ -312,7 +313,7 @@
       <classifier>eclipse</classifier>
       <type>war</type>
       <version>${project.version}</version>
-   </dependency>    
+   </dependency-->    
 </dependencies>
 
 </project>
