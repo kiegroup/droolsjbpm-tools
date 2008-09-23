@@ -35,7 +35,7 @@
            </goals>
          </execution>    
          
-         <execution>
+         <!--execution>
            <id>unzip manual</id>
            <phase>process-resources</phase>
            <configuration>
@@ -57,7 +57,7 @@
            <goals>
              <goal>run</goal>
            </goals>           
-         </execution>
+         </execution-->
        
          <execution>
            <id>compile-plugin</id>
