@@ -10,9 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.antlr.runtime.RecognitionException;
-import org.drools.guvnor.client.modeldriven.brl.RuleModel;
-import org.drools.guvnor.server.util.BRDRLPersistence;
-import org.drools.guvnor.server.util.BRXMLPersistence;
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.DroolsError;
@@ -30,7 +27,11 @@ import org.drools.eclipse.DRLInfo;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.ProcessInfo;
 import org.drools.eclipse.preferences.IDroolsConstants;
+import org.drools.guvnor.client.modeldriven.brl.RuleModel;
+import org.drools.guvnor.server.util.BRDRLPersistence;
+import org.drools.guvnor.server.util.BRXMLPersistence;
 import org.drools.lang.ExpanderException;
+import org.drools.template.parser.DecisionTableParseException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -249,7 +250,11 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                 RecognitionException recogErr = (RecognitionException) cause;
                 markers.add(new DroolsBuildMarker(recogErr.getMessage(), recogErr.line)); //flick back the line number
             }
-        } catch (Exception t) {
+        } catch (DecisionTableParseException e) {
+        	if (!"No RuleTable's were found in spreadsheet.".equals(e.getMessage())) {
+        		throw e;
+        	}
+    	} catch (Exception t) {
         	String message = t.getMessage();
             if (message == null || message.trim().equals( "" )) {
                 message = "Error: " + t.getClass().getName();
