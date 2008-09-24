@@ -14,7 +14,6 @@ import org.drools.task.User;
 import org.drools.task.query.TaskSummary;
 import org.drools.task.service.MinaTaskClient;
 import org.drools.task.service.TaskClientHandler;
-import org.drools.task.service.TaskClientHandler.TaskSummaryResponseHandler;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -75,7 +74,7 @@ public class TaskView extends ViewPart {
 		STATUSSES.put(Status.Exited, "Exited");
 		STATUSSES.put(Status.Failed, "Failed");
 		STATUSSES.put(Status.InProgress, "InProgress");
-		STATUSSES.put(Status.Obselete, "Obsolete");
+		STATUSSES.put(Status.Obsolete, "Obsolete");
 		STATUSSES.put(Status.Ready, "Ready");
 		STATUSSES.put(Status.Reserved, "Reserved");
 		STATUSSES.put(Status.Suspended, "Suspended");
@@ -129,7 +128,7 @@ public class TaskView extends ViewPart {
 						if (user == null) {
 							return null;
 						}
-						return user.getDisplayName();
+						return user.getId();
 					case 3:
 						return taskSummary.getDescription();
 					default:
@@ -323,7 +322,7 @@ public class TaskView extends ViewPart {
 				suspendButton.setEnabled(selected && 
 					(Status.Ready.equals(task.getStatus()) || Status.Reserved.equals(task.getStatus()) || Status.InProgress.equals(task.getStatus())));
 				resumeButton.setEnabled(selected && Status.Suspended.equals(task.getStatus()));
-				skipButton.setEnabled(selected && !Status.Completed.equals(task.getStatus()) && !Status.Failed.equals(task.getStatus()));
+				skipButton.setEnabled(selected && !Status.Completed.equals(task.getStatus()) && !Status.Failed.equals(task.getStatus())&& !Status.Obsolete.equals(task.getStatus()));
 				completeButton.setEnabled(selected && Status.InProgress.equals(task.getStatus()));
 				failButton.setEnabled(selected && Status.InProgress.equals(task.getStatus()));
 			}
@@ -384,7 +383,7 @@ public class TaskView extends ViewPart {
 	}
 	
 	private void refresh() {
-		Long userId = getUserId();
+		String userId = getUserId();
 		if (userId == null) {
 			return;
 		}
@@ -410,7 +409,7 @@ public class TaskView extends ViewPart {
 			return;
 		}
 		
-		Long userId = getUserId();
+		String userId = getUserId();
 		if (userId == null) {
 			return;
 		}
@@ -420,7 +419,8 @@ public class TaskView extends ViewPart {
 			return;
 		}
 		
-		client.claim(taskSummary.getId(), userId);
+		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
+		client.claim(taskSummary.getId(), userId, responseHandler);
         client.disconnect();
         refresh();
 	}
@@ -431,7 +431,7 @@ public class TaskView extends ViewPart {
 			return;
 		}
 		
-		Long userId = getUserId();
+		String userId = getUserId();
 		if (userId == null) {
 			return;
 		}
@@ -441,7 +441,8 @@ public class TaskView extends ViewPart {
 			return;
 		}
 		
-		client.start(taskSummary.getId(), userId);
+		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
+		client.start(taskSummary.getId(), userId, responseHandler);
         client.disconnect();
         refresh();
 	}
@@ -452,7 +453,7 @@ public class TaskView extends ViewPart {
 			return;
 		}
 		
-		Long userId = getUserId();
+		String userId = getUserId();
 		if (userId == null) {
 			return;
 		}
@@ -462,7 +463,8 @@ public class TaskView extends ViewPart {
 			return;
 		}
 		
-		client.stop(taskSummary.getId(), userId);
+		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
+		client.stop(taskSummary.getId(), userId, responseHandler);
         client.disconnect();
         refresh();
 	}
@@ -473,7 +475,7 @@ public class TaskView extends ViewPart {
 			return;
 		}
 		
-		Long userId = getUserId();
+		String userId = getUserId();
 		if (userId == null) {
 			return;
 		}
@@ -483,7 +485,8 @@ public class TaskView extends ViewPart {
 			return;
 		}
 		
-		client.release(taskSummary.getId(), userId);
+		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
+		client.release(taskSummary.getId(), userId, responseHandler);
         client.disconnect();
         refresh();
 	}
@@ -494,7 +497,7 @@ public class TaskView extends ViewPart {
 			return;
 		}
 		
-		Long userId = getUserId();
+		String userId = getUserId();
 		if (userId == null) {
 			return;
 		}
@@ -504,7 +507,8 @@ public class TaskView extends ViewPart {
 			return;
 		}
 		
-		client.suspend(taskSummary.getId(), userId);
+		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
+		client.suspend(taskSummary.getId(), userId, responseHandler);
         client.disconnect();
         refresh();
 	}
@@ -515,7 +519,7 @@ public class TaskView extends ViewPart {
 			return;
 		}
 		
-		Long userId = getUserId();
+		String userId = getUserId();
 		if (userId == null) {
 			return;
 		}
@@ -525,7 +529,8 @@ public class TaskView extends ViewPart {
 			return;
 		}
 		
-		client.resume(taskSummary.getId(), userId);
+		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
+		client.resume(taskSummary.getId(), userId, responseHandler);
         client.disconnect();
         refresh();
 	}
@@ -536,7 +541,7 @@ public class TaskView extends ViewPart {
 			return;
 		}
 		
-		Long userId = getUserId();
+		String userId = getUserId();
 		if (userId == null) {
 			return;
 		}
@@ -546,7 +551,8 @@ public class TaskView extends ViewPart {
 			return;
 		}
 		
-		client.skip(taskSummary.getId(), userId);
+		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
+		client.skip(taskSummary.getId(), userId, responseHandler);
         client.disconnect();
         refresh();
 	}
@@ -557,7 +563,7 @@ public class TaskView extends ViewPart {
 			return;
 		}
 		
-		Long userId = getUserId();
+		String userId = getUserId();
 		if (userId == null) {
 			return;
 		}
@@ -567,7 +573,8 @@ public class TaskView extends ViewPart {
 			return;
 		}
 		
-		client.complete(taskSummary.getId(), userId);
+		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
+		client.complete(taskSummary.getId(), userId, responseHandler);
         client.disconnect();
         refresh();
 	}
@@ -578,7 +585,7 @@ public class TaskView extends ViewPart {
 			return;
 		}
 		
-		Long userId = getUserId();
+		String userId = getUserId();
 		if (userId == null) {
 			return;
 		}
@@ -588,7 +595,8 @@ public class TaskView extends ViewPart {
 			return;
 		}
 		
-		client.fail(taskSummary.getId(), userId);
+		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
+		client.fail(taskSummary.getId(), userId, responseHandler);
         client.disconnect();
         refresh();
 	}
@@ -606,15 +614,8 @@ public class TaskView extends ViewPart {
 		return client;
 	}
 	
-	private Long getUserId() {
-		Long userId = null;
-		try {
-			userId = new Long(userNameText.getText());
-		} catch (NumberFormatException e) {
-			showMessage("Could not convert user id, should be a long value.");
-			return null;
-		}
-		return userId;
+	private String getUserId() {
+		return userNameText.getText();
 	}
 	
 	private TaskSummary getSelectedTask() {
@@ -626,28 +627,6 @@ public class TaskView extends ViewPart {
 			}
 		}
 		return null;
-	}
-	
-	private class BlockingTaskSummaryResponseHandler implements TaskSummaryResponseHandler {
-        private volatile List<TaskSummary> results;
-		public void execute(List<TaskSummary> results) {
-            this.results = results;
-		}
-		public List<TaskSummary> getResults() {
-			int retryCounter = 0;
-			while (results == null && retryCounter < 5 ) {
-				try {
-					Thread.sleep(1000);
-				} catch (Throwable t) {
-					t.printStackTrace();
-				}
-				retryCounter++;
-			}
-			if (results == null) {
-				throw new RuntimeException("Timeout : unable to retrieve results");
-			}
-			return results;
-		}
 	}
 	
 }
