@@ -2,6 +2,7 @@ package org.drools.eclipse.task.views;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.text.DateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,12 +57,14 @@ public class TaskView extends ViewPart {
 	private static final String NAME_COLUMN = "Name";
 	private static final String STATUS_COLUMN = "Status";
 	private static final String OWNER_COLUMN = "Owner";
+	private static final String CREATED_COLUMN = "Created";
 	private static final String COMMENT_COLUMN = "Comment";
 
 	private static String[] columnNames = new String[] { 
 		NAME_COLUMN, 
 		STATUS_COLUMN,
 		OWNER_COLUMN,
+		CREATED_COLUMN,
 		COMMENT_COLUMN
 	};
 	
@@ -97,6 +100,8 @@ public class TaskView extends ViewPart {
 	private Button skipButton;
 	private Button completeButton;
 	private Button failButton;
+	
+	private MinaTaskClient client;
 
 	private class ViewContentProvider implements IStructuredContentProvider {
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
@@ -131,6 +136,9 @@ public class TaskView extends ViewPart {
 						return user.getId();
 					case 3:
 						return taskSummary.getDescription();
+					case 4:
+						return DateFormat.getDateTimeInstance().format(
+							taskSummary.getCreatedOn());
 					default:
 						throw new IllegalArgumentException(
 							"Unknown column index: " + index);
@@ -171,6 +179,7 @@ public class TaskView extends ViewPart {
 		userNameText = new Text(parent, SWT.NONE);
 		GridData layoutData = new GridData();
 		layoutData.horizontalSpan = 8;
+		layoutData.minimumWidth = 120;
 		layoutData.grabExcessHorizontalSpace = true;
 		layoutData.horizontalAlignment = GridData.FILL_HORIZONTAL;
 		userNameText.setLayoutData(layoutData);
@@ -219,7 +228,11 @@ public class TaskView extends ViewPart {
 		column.setWidth(100);
 		// 4th column = expiration time 
 		column = new TableColumn(table, SWT.CENTER, 3);
-		column.setText("Expiration");
+		column.setText("Comment");
+		column.setWidth(120);
+		// 5th column = created 
+		column = new TableColumn(table, SWT.CENTER, 3);
+		column.setText("Created On");
 		column.setWidth(120);
 	}
 
@@ -311,22 +324,40 @@ public class TaskView extends ViewPart {
 				System.out.println(e);
 			}
 			public void widgetSelected(SelectionEvent e) {
-				boolean selected = table.getSelectionCount() == 1;
-				TaskSummary task = getSelectedTask();
-				claimButton.setEnabled(selected && Status.Created.equals(task.getStatus()));
-				startButton.setEnabled(selected && 
-					(Status.Ready.equals(task.getStatus()) || Status.Reserved.equals(task.getStatus())));
-				stopButton.setEnabled(selected && Status.InProgress.equals(task.getStatus()));
-				releaseButton.setEnabled(selected && 
-					(Status.Reserved.equals(task.getStatus()) || Status.InProgress.equals(task.getStatus())));
-				suspendButton.setEnabled(selected && 
-					(Status.Ready.equals(task.getStatus()) || Status.Reserved.equals(task.getStatus()) || Status.InProgress.equals(task.getStatus())));
-				resumeButton.setEnabled(selected && Status.Suspended.equals(task.getStatus()));
-				skipButton.setEnabled(selected && !Status.Completed.equals(task.getStatus()) && !Status.Failed.equals(task.getStatus())&& !Status.Obsolete.equals(task.getStatus()));
-				completeButton.setEnabled(selected && Status.InProgress.equals(task.getStatus()));
-				failButton.setEnabled(selected && Status.InProgress.equals(task.getStatus()));
+				updateButtons();
 			}
 		});
+	}
+	
+	private void updateButtons() {
+		boolean selected = table.getSelectionCount() == 1;
+		TaskSummary task = getSelectedTask();
+		String userId = getUserId();
+		claimButton.setEnabled(selected && Status.Created.equals(task.getStatus()));
+		startButton.setEnabled(selected && 
+			(Status.Ready.equals(task.getStatus()) ||
+				(Status.Reserved.equals(task.getStatus())
+					&& userId.equals(task.getActualOwner().getId()))));
+		stopButton.setEnabled(selected && Status.InProgress.equals(task.getStatus())
+			&& userId.equals(task.getActualOwner().getId()));
+		releaseButton.setEnabled(selected && 
+			(Status.Reserved.equals(task.getStatus()) || Status.InProgress.equals(task.getStatus()))
+				&& userId.equals(task.getActualOwner().getId()));
+		suspendButton.setEnabled(selected && 
+			(Status.Ready.equals(task.getStatus()) || 
+				((Status.Reserved.equals(task.getStatus()) || Status.InProgress.equals(task.getStatus()))
+					&& userId.equals(task.getActualOwner().getId()))));
+		// TODO only actual owner if previousStatus = reserved or inProgress
+		resumeButton.setEnabled(selected && Status.Suspended.equals(task.getStatus()));
+		// TODO only initiator if state Created
+		skipButton.setEnabled(selected && task.isSkipable() &&
+			(Status.Created.equals(task.getStatus()) && Status.Ready.equals(task.getStatus()) || 
+				((Status.Reserved.equals(task.getStatus()) || Status.InProgress.equals(task.getStatus())) 
+					&& userId.equals(task.getActualOwner().getId()))));
+		completeButton.setEnabled(selected && Status.InProgress.equals(task.getStatus())
+			&& userId.equals(task.getActualOwner().getId()));
+		failButton.setEnabled(selected && Status.InProgress.equals(task.getStatus())
+			&& userId.equals(task.getActualOwner().getId()));
 	}
 
 	private void hookContextMenu() {
@@ -396,11 +427,11 @@ public class TaskView extends ViewPart {
 		BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
 		client.getTasksAssignedAsPotentialOwner(userId, language, responseHandler);
         List<TaskSummary> tasks = responseHandler.getResults();
-        client.disconnect();
         
         tableViewer.setInput(tasks);
         tableViewer.refresh();
         tableViewer.setSelection(null);
+        updateButtons();
 	}
 	
 	public void claim() {
@@ -421,7 +452,7 @@ public class TaskView extends ViewPart {
 		
 		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
 		client.claim(taskSummary.getId(), userId, responseHandler);
-        client.disconnect();
+		responseHandler.waitTillDone(3000);
         refresh();
 	}
 	
@@ -443,7 +474,7 @@ public class TaskView extends ViewPart {
 		
 		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
 		client.start(taskSummary.getId(), userId, responseHandler);
-        client.disconnect();
+		responseHandler.waitTillDone(3000);
         refresh();
 	}
 	
@@ -465,7 +496,7 @@ public class TaskView extends ViewPart {
 		
 		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
 		client.stop(taskSummary.getId(), userId, responseHandler);
-        client.disconnect();
+		responseHandler.waitTillDone(3000);
         refresh();
 	}
 	
@@ -487,7 +518,7 @@ public class TaskView extends ViewPart {
 		
 		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
 		client.release(taskSummary.getId(), userId, responseHandler);
-        client.disconnect();
+		responseHandler.waitTillDone(3000);
         refresh();
 	}
 	
@@ -509,7 +540,7 @@ public class TaskView extends ViewPart {
 		
 		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
 		client.suspend(taskSummary.getId(), userId, responseHandler);
-        client.disconnect();
+		responseHandler.waitTillDone(3000);
         refresh();
 	}
 	
@@ -531,7 +562,7 @@ public class TaskView extends ViewPart {
 		
 		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
 		client.resume(taskSummary.getId(), userId, responseHandler);
-        client.disconnect();
+		responseHandler.waitTillDone(3000);
         refresh();
 	}
 	
@@ -553,7 +584,7 @@ public class TaskView extends ViewPart {
 		
 		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
 		client.skip(taskSummary.getId(), userId, responseHandler);
-        client.disconnect();
+		responseHandler.waitTillDone(3000);
         refresh();
 	}
 	
@@ -575,7 +606,7 @@ public class TaskView extends ViewPart {
 		
 		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
 		client.complete(taskSummary.getId(), userId, responseHandler);
-        client.disconnect();
+		responseHandler.waitTillDone(3000);
         refresh();
 	}
 	
@@ -597,21 +628,30 @@ public class TaskView extends ViewPart {
 		
 		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
 		client.fail(taskSummary.getId(), userId, responseHandler);
-        client.disconnect();
+		responseHandler.waitTillDone(3000);
         refresh();
 	}
 	
 	private MinaTaskClient getTaskClient() {
-		MinaTaskClient client = new MinaTaskClient(
-			"org.drools.eclipse.task.views.TaskView", new TaskClientHandler());
-		NioSocketConnector connector = new NioSocketConnector();
-		SocketAddress address = new InetSocketAddress(ipAddress, port);
-		boolean connected = client.connect(connector, address);
-		if (!connected) {
-			showMessage("Could not connect to task server: " + ipAddress + " [port " + port + "]");
-			return null;
+		if (client == null) {
+			client = new MinaTaskClient(
+				"org.drools.eclipse.task.views.TaskView", new TaskClientHandler());
+			NioSocketConnector connector = new NioSocketConnector();
+			SocketAddress address = new InetSocketAddress(ipAddress, port);
+			boolean connected = client.connect(connector, address);
+			if (!connected) {
+				showMessage("Could not connect to task server: " + ipAddress + " [port " + port + "]");
+				client = null;
+			}
 		}
 		return client;
+	}
+	
+	public void dispose() {
+		if (client != null) {
+			client.disconnect();
+		}
+		super.dispose();
 	}
 	
 	private String getUserId() {
