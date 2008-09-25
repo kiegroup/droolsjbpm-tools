@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JBoss Rules Eclipse Test fragment
 Bundle-SymbolicName: org.drools.eclipse.test
-Bundle-Version: 5.0.0.MR2
+Bundle-Version: 5.0.0.SNAPSHOT
 Bundle-Vendor: krisv,mic
 Fragment-Host: org.drools.eclipse;bundle-version="4.1.0.SNAPSHOT"
 Bundle-Localization: plugin
