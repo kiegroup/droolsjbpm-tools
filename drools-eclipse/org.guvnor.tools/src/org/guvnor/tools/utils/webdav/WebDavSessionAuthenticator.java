@@ -43,7 +43,7 @@ public class WebDavSessionAuthenticator implements IAuthenticator {
 			                         String realm,
 			                         String scheme, 
 			                         Map info) {
-		ServerAuthenInfo authInfo = serverAuthMaps.get(serverUrl);
+		ServerAuthenInfo authInfo = serverAuthMaps.get(serverUrl.getHost().toLowerCase());
 		if (authInfo == null) {
 			authInfo = new ServerAuthenInfo(serverUrl.getHost());
 			serverAuthMaps.put(serverUrl.getHost().toLowerCase(), authInfo);

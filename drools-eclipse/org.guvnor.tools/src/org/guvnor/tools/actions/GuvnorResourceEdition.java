@@ -19,7 +19,6 @@ import org.guvnor.tools.Activator;
 public class GuvnorResourceEdition implements IStreamContentAccessor, ITypedElement {
 	
 	private String contents;
-	private Image image;
 	private String name;
 	private String type;
 	private String encoding;
@@ -44,7 +43,7 @@ public class GuvnorResourceEdition implements IStreamContentAccessor, ITypedElem
 	}
 
 	public Image getImage() {
-		return image;
+		return null;
 	}
 
 	public String getName() {

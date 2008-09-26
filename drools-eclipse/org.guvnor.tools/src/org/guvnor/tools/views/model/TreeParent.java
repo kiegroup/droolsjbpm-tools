@@ -153,7 +153,7 @@ public class TreeParent extends TreeObject implements IDeferredWorkbenchAdapter 
 		 * @see org.eclipse.ui.progress.IDeferredWorkbenchAdapter#isContainer()
 		 */
 		public boolean isContainer() {
-			return (this instanceof TreeParent);
+			return true;
 		}
 		/*
 		 * (non-Javadoc)

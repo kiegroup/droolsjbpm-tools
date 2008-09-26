@@ -87,15 +87,25 @@ public class GuvnorLocationManager {
 	private void commit() throws Exception {
 		File repFile = Activator.getDefault().getStateLocation().
 										append(REP_CACHE_NAME).toFile();
-		FileOutputStream fos = new FileOutputStream(repFile);
-		PrintWriter writer = new PrintWriter(fos);
-		for (int i = 0; i < repList.size(); i++) {
-			GuvnorRepository oneRep = repList.get(i);
-			writer.println(oneRep.getLocation());
+		FileOutputStream fos = null;
+		PrintWriter writer = null;
+		try {
+			fos = new FileOutputStream(repFile);
+			writer = new PrintWriter(fos);
+			for (int i = 0; i < repList.size(); i++) {
+				GuvnorRepository oneRep = repList.get(i);
+				writer.println(oneRep.getLocation());
+			}
+			writer.flush();
+			fos.flush();
+		} finally {
+			if (writer != null) {
+				writer.close();
+			}
+			if (fos != null) {
+				fos.close();	
+			}
 		}
-		writer.flush();
-		fos.flush();
-		fos.close();
 	}
 	
 	private void load() throws Exception {
@@ -105,15 +115,26 @@ public class GuvnorLocationManager {
 		if (!repFile.exists()) {
 			return;
 		}
-		FileInputStream fis = new FileInputStream(repFile);
-		BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
-		String oneRep = null;
-		do {
-			oneRep = reader.readLine();
-			if (oneRep != null && oneRep.trim().length() > 0) {
-				repList.add(new GuvnorRepository(oneRep));
+		FileInputStream fis = null;
+		BufferedReader reader = null;
+		try {
+			fis = new FileInputStream(repFile);
+			reader = new BufferedReader(new InputStreamReader(fis));
+			String oneRep = null;
+			do {
+				oneRep = reader.readLine();
+				if (oneRep != null && oneRep.trim().length() > 0) {
+					repList.add(new GuvnorRepository(oneRep));
+				}
+			} while (oneRep != null);
+		} finally {
+			if (fis != null) {
+				fis.close();
 			}
-		} while (oneRep != null);
+			if (reader != null) {
+				reader.close();
+			}
+		}
 	}
 	
 	public interface IRepositorySetListener {

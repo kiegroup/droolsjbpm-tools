@@ -217,16 +217,22 @@ public class GuvnorMetadataUtils {
 	
 	public static void writeGuvnorMetadataProps(File mdFile, 
 			                                 GuvnorMetadataProps mdProps) throws Exception {
-		FileOutputStream fos = new FileOutputStream(mdFile);
-		Properties props = new Properties();
-		props.put("repository", 	mdProps.getRepository()); //$NON-NLS-1$
-		props.put("fullpath", 		mdProps.getFullpath()); //$NON-NLS-1$
-		props.put("filename", 		mdProps.getFilename()); //$NON-NLS-1$
-		props.put("lastmodified", 	mdProps.getVersion()); //$NON-NLS-1$
-		props.put("revision",		mdProps.getRevision()); //$NON-NLS-1$
-		props.store(fos, null);
-		fos.flush();
-		fos.close();	
+		FileOutputStream fos = null;
+		try {
+			fos = new FileOutputStream(mdFile);
+			Properties props = new Properties();
+			props.put("repository", 	mdProps.getRepository()); //$NON-NLS-1$
+			props.put("fullpath", 		mdProps.getFullpath()); //$NON-NLS-1$
+			props.put("filename", 		mdProps.getFilename()); //$NON-NLS-1$
+			props.put("lastmodified", 	mdProps.getVersion()); //$NON-NLS-1$
+			props.put("revision",		mdProps.getRevision()); //$NON-NLS-1$
+			props.store(fos, null);
+			fos.flush();
+		} finally {
+			if (fos != null) {
+				fos.close();
+			}
+		}
 	}
 	
 	public static void setGuvnorMetadataProps(IPath controlledFile,
@@ -260,11 +266,16 @@ public class GuvnorMetadataUtils {
 		if (mdProps.getRevision() != null) {
 			props.put("revision", mdProps.getRevision()); //$NON-NLS-1$
 		}
-		OutputStream os = new FileOutputStream(
-							new File(mdFile.getLocation().toOSString()));
-		props.store(os, null);
-		os.flush();
-		os.close();
+		OutputStream os = null;
+		try {
+			os = new FileOutputStream(new File(mdFile.getLocation().toOSString()));
+			props.store(os, null);
+			os.flush();
+		} finally {
+			if (os != null) {
+				os.close();
+			}
+		}
 		mdFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
 	}
 	
