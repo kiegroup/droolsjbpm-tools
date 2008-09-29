@@ -2,7 +2,7 @@
 <feature
       id="org.drools.eclipse.feature"
       label="JBossRules Feature"
-      version="5.0.0.MR2"
+      version="5.0.0.SNAPSHOT"
       provider-name="JBoss, Inc.">
 
    <description url="http://www.example.com/description">
@@ -43,7 +43,7 @@
          id="org.drools.eclipse"
          download-size="0"
          install-size="0"
-         version="5.0.0.MR2"
+         version="5.0.0.SNAPSHOT"
          unpack="false"/>
 
 </feature>
