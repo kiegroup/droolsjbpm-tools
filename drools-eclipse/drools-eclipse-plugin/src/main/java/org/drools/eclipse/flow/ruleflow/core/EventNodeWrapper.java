@@ -24,6 +24,7 @@ import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.process.core.event.EventFilter;
 import org.drools.process.core.event.EventTypeFilter;
 import org.drools.workflow.core.node.EventNode;
+import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
@@ -39,9 +40,12 @@ public class EventNodeWrapper extends AbstractNodeWrapper {
 
     public static final String VARIABLE_NAME = "variableName";
     public static final String EVENT_TYPE = "eventType";
+    public static final String SCOPE = "scope";
     static {
-        descriptors = new IPropertyDescriptor[DefaultElementWrapper.descriptors.length + 2];
+        descriptors = new IPropertyDescriptor[DefaultElementWrapper.descriptors.length + 3];
         System.arraycopy(DefaultElementWrapper.descriptors, 0, descriptors, 0, DefaultElementWrapper.descriptors.length);
+        descriptors[descriptors.length - 3] = 
+            new ComboBoxPropertyDescriptor(SCOPE, "Scope", new String[] { "internal", "external" });
         descriptors[descriptors.length - 2] = 
             new TextPropertyDescriptor(VARIABLE_NAME, "VariableName");
         descriptors[descriptors.length - 1] = 
@@ -81,6 +85,9 @@ public class EventNodeWrapper extends AbstractNodeWrapper {
         	}
         	return ((EventTypeFilter) getEventNode().getEventFilters().get(0)).getType();
         }
+        if (SCOPE.equals(id)) {
+            return "external".equals(getEventNode().getScope()) ? 1 : 0;
+        }
         return super.getPropertyValue(id);
     }
 
@@ -89,6 +96,8 @@ public class EventNodeWrapper extends AbstractNodeWrapper {
             getEventNode().setVariableName(null);
         } else if (EVENT_TYPE.equals(id)) {
             getEventNode().setEventFilters(new ArrayList<EventFilter>());
+        } else if (SCOPE.equals(id)) {
+            getEventNode().setScope("internal");
         } else {
             super.resetPropertyValue(id);
         }
@@ -103,6 +112,8 @@ public class EventNodeWrapper extends AbstractNodeWrapper {
         	eventFilter.setType((String) value);
         	eventFilters.add(eventFilter);
             getEventNode().setEventFilters(eventFilters);
+        } else if (SCOPE.equals(id)) {
+            getEventNode().setScope((Integer) value == 1 ? "external" : "internal");
         } else {
             super.setPropertyValue(id, value);
         }
