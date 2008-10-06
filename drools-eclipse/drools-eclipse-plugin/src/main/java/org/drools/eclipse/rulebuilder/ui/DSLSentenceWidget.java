@@ -60,8 +60,8 @@ public abstract class DSLSentenceWidget extends Widget {
             public void linkActivated(HyperlinkEvent e) {
                 MessageBox dialog = new MessageBox( Display.getCurrent().getActiveShell(),
                                                     SWT.YES | SWT.NO | SWT.ICON_WARNING );
-                dialog.setMessage( "Remove this DSL sentense?" );
-                dialog.setText( "Remove this DSL sentense?" );
+                dialog.setMessage( "Remove this DSL sentence?" );
+                dialog.setText( "Remove this DSL sentence?" );
                 if ( dialog.open() == SWT.YES ) {
                     updateModel();
                 }
