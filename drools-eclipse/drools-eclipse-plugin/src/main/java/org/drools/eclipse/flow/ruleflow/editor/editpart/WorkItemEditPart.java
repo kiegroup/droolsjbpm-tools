@@ -23,8 +23,10 @@ import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
 import org.drools.eclipse.flow.common.editor.editpart.ElementEditPart;
 import org.drools.eclipse.flow.common.editor.editpart.figure.AbstractElementFigure;
-import org.drools.eclipse.flow.common.editor.editpart.figure.FixedConnectionAnchor;
 import org.drools.eclipse.flow.ruleflow.core.WorkItemWrapper;
+import org.drools.eclipse.flow.ruleflow.skin.SkinManager;
+import org.drools.eclipse.flow.ruleflow.skin.SkinProvider;
+import org.drools.eclipse.preferences.IDroolsConstants;
 import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.process.core.WorkDefinition;
 import org.drools.process.core.WorkDefinitionExtension;
@@ -53,9 +55,14 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class WorkItemEditPart extends ElementEditPart {
 
-    private static final Color color = new Color(Display.getCurrent(), 255, 250, 205);
+	private String SKIN =
+		DroolsEclipsePlugin.getDefault().getPreferenceStore().getString(IDroolsConstants.SKIN);
+
+	private static final Color color = new Color(Display.getCurrent(), 255, 250, 205);
 
     protected IFigure createFigure() {
+    	SkinProvider skinProvider = SkinManager.getInstance().getSkinProvider(SKIN);
+    	WorkItemFigureInterface figure = skinProvider.createWorkItemFigure();
         String icon = null;
         WorkDefinition workDefinition = getWorkDefinition();
         if (workDefinition instanceof WorkDefinitionExtension) {
@@ -65,7 +72,6 @@ public class WorkItemEditPart extends ElementEditPart {
             icon = "icons/action.gif";
         }
         Image image = DroolsPluginImages.getImage(icon);
-        WorkItemFigure figure = new WorkItemFigure();
         if (image == null) {
             IJavaProject javaProject = getProject();
             if (javaProject != null) {
@@ -114,7 +120,8 @@ public class WorkItemEditPart extends ElementEditPart {
         }
     }
     
-    private void openEditor(String editorClassName, WorkDefinition workDefinition) {
+    @SuppressWarnings("unchecked")
+	private void openEditor(String editorClassName, WorkDefinition workDefinition) {
         IJavaProject javaProject = getProject();
         if (javaProject != null) {
             try {
@@ -139,7 +146,11 @@ public class WorkItemEditPart extends ElementEditPart {
         }
     }
     
-    public static class WorkItemFigure extends AbstractElementFigure {
+    public static interface WorkItemFigureInterface extends IFigure {
+    	void setIcon(Image icon);
+    }
+    
+    public static class WorkItemFigure extends AbstractElementFigure implements WorkItemFigureInterface {
         
         private RoundedRectangle rectangle;
         private ConnectionAnchor defaultConnectionAnchor;

@@ -39,7 +39,9 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
  */
 public class SplitWrapper extends AbstractNodeWrapper {
 
-    public static final String TYPE = "type";
+	public static final int CHANGE_TYPE = 5;
+
+	public static final String TYPE = "type";
     public static final String CONSTRAINTS = "constraints";
     
     private static final long serialVersionUID = 400L;
@@ -96,6 +98,7 @@ public class SplitWrapper extends AbstractNodeWrapper {
     public void resetPropertyValue(Object id) {
         if (TYPE.equals(id)) {
             getSplit().setType(Split.TYPE_UNDEFINED);
+            notifyListeners(CHANGE_TYPE);
         } else if (CONSTRAINTS.equals(id)) {
         	for (Connection connection: getSplit().getDefaultOutgoingConnections()) {
         		getSplit().setConstraint(connection, null);
@@ -109,6 +112,7 @@ public class SplitWrapper extends AbstractNodeWrapper {
 	public void setPropertyValue(Object id, Object value) {
         if (TYPE.equals(id)) {
             getSplit().setType(((Integer) value).intValue());
+            notifyListeners(CHANGE_TYPE);
         } else if (CONSTRAINTS.equals(id)) {
         	Iterator<Map.Entry<Split.ConnectionRef, Constraint>> iterator = ((Map<Split.ConnectionRef, Constraint>) value).entrySet().iterator();
         	while (iterator.hasNext()) {

@@ -18,6 +18,9 @@ package org.drools.eclipse.flow.ruleflow.editor.editpart;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.editor.editpart.ElementEditPart;
 import org.drools.eclipse.flow.common.editor.editpart.figure.AbstractElementFigure;
+import org.drools.eclipse.flow.ruleflow.skin.SkinManager;
+import org.drools.eclipse.flow.ruleflow.skin.SkinProvider;
+import org.drools.eclipse.preferences.IDroolsConstants;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.RoundedRectangle;
 import org.eclipse.draw2d.geometry.Dimension;
@@ -34,10 +37,14 @@ import org.eclipse.swt.widgets.Display;
  */
 public class SubFlowEditPart extends ElementEditPart {
 
+	private String SKIN =
+		DroolsEclipsePlugin.getDefault().getPreferenceStore().getString(IDroolsConstants.SKIN);
+	
     private static final Color color = new Color(Display.getCurrent(), 255, 250, 205);
     
     protected IFigure createFigure() {
-        return new SubFlowNodeFigure();
+    	SkinProvider skinProvider = SkinManager.getInstance().getSkinProvider(SKIN);
+    	return skinProvider.createSubFlowFigure();
     }
     
     public static class SubFlowNodeFigure extends AbstractElementFigure {

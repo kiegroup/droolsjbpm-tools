@@ -16,12 +16,6 @@ package org.drools.eclipse.flow.ruleflow.editor.editpart;
  */
 
 import org.drools.eclipse.flow.common.editor.editpart.ElementContainerEditPart;
-import org.drools.eclipse.flow.common.editor.editpart.figure.FixedConnectionAnchor;
-import org.eclipse.draw2d.ConnectionAnchor;
-import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.gef.Request;
-import org.eclipse.gef.requests.DropRequest;
 
 /**
  * EditPart for a ForEach node.

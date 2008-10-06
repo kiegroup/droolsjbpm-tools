@@ -244,6 +244,8 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                           true );
         store.setDefault( IDroolsConstants.DSL_RULE_EDITOR_COMPLETION_FULL_SENTENCES,
                           true );
+        store.setDefault( IDroolsConstants.SKIN,
+                          "default" );
     }
 
     public DRLInfo parseResource(IResource resource,
@@ -345,7 +347,8 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
         return null;
     }
 
-    public DRLInfo generateParsedResource(String content,
+    @SuppressWarnings("unchecked")
+	public DRLInfo generateParsedResource(String content,
                                           IResource resource,
                                           boolean useCache,
                                           boolean compile) throws DroolsParserException {

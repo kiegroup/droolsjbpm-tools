@@ -29,7 +29,9 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
  */
 public class JoinWrapper extends AbstractNodeWrapper {
 
-    private static final long serialVersionUID = 400L;
+	public static final int CHANGE_TYPE = 5;
+
+	private static final long serialVersionUID = 400L;
     private static IPropertyDescriptor[] descriptors;
 
     public static final String TYPE = "type";
@@ -68,6 +70,7 @@ public class JoinWrapper extends AbstractNodeWrapper {
     public void resetPropertyValue(Object id) {
         if (TYPE.equals(id)) {
             getJoin().setType(Join.TYPE_UNDEFINED);
+            notifyListeners(CHANGE_TYPE);
         } else {
             super.resetPropertyValue(id);
         }
@@ -76,6 +79,7 @@ public class JoinWrapper extends AbstractNodeWrapper {
     public void setPropertyValue(Object id, Object value) {
         if (TYPE.equals(id)) {
             getJoin().setType(((Integer) value).intValue());
+            notifyListeners(CHANGE_TYPE);
         } else {
             super.setPropertyValue(id, value);
         }

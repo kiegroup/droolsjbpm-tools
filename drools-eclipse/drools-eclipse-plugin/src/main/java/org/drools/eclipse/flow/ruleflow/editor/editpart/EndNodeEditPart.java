@@ -18,6 +18,9 @@ package org.drools.eclipse.flow.ruleflow.editor.editpart;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.editor.editpart.ElementEditPart;
 import org.drools.eclipse.flow.common.editor.editpart.figure.AbstractElementFigure;
+import org.drools.eclipse.flow.ruleflow.skin.SkinManager;
+import org.drools.eclipse.flow.ruleflow.skin.SkinProvider;
+import org.drools.eclipse.preferences.IDroolsConstants;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -30,8 +33,12 @@ import org.eclipse.swt.graphics.Image;
  */
 public class EndNodeEditPart extends ElementEditPart {
 
+	private String SKIN =
+		DroolsEclipsePlugin.getDefault().getPreferenceStore().getString(IDroolsConstants.SKIN);
+	
     protected IFigure createFigure() {
-        return new EndNodeFigure();
+    	SkinProvider skinProvider = SkinManager.getInstance().getSkinProvider(SKIN);
+    	return skinProvider.createEndNodeFigure();
     }
 
     public static class EndNodeFigure extends AbstractElementFigure {
@@ -50,4 +57,5 @@ public class EndNodeEditPart extends ElementEditPart {
             repaint();
         }
     }
+
 }

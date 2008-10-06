@@ -18,6 +18,9 @@ package org.drools.eclipse.flow.ruleflow.editor.editpart;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.editor.editpart.ElementEditPart;
 import org.drools.eclipse.flow.common.editor.editpart.figure.AbstractElementFigure;
+import org.drools.eclipse.flow.ruleflow.skin.SkinManager;
+import org.drools.eclipse.flow.ruleflow.skin.SkinProvider;
+import org.drools.eclipse.preferences.IDroolsConstants;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.RoundedRectangle;
 import org.eclipse.draw2d.geometry.Dimension;
@@ -34,24 +37,28 @@ import org.eclipse.swt.widgets.Display;
  */
 public class ActionEditPart extends ElementEditPart {
 
+	private String SKIN =
+		DroolsEclipsePlugin.getDefault().getPreferenceStore().getString(IDroolsConstants.SKIN);
+	
     private static final Color color = new Color(Display.getCurrent(), 255, 250, 205);
     
     protected IFigure createFigure() {
-        return new RuleSetNodeFigure();
+    	SkinProvider skinProvider = SkinManager.getInstance().getSkinProvider(SKIN);
+    	return skinProvider.createActionNodeFigure();
     }
     
-    public static class RuleSetNodeFigure extends AbstractElementFigure {
+    public static class ActionNodeFigure extends AbstractElementFigure {
         
         private static final Image ICON = ImageDescriptor.createFromURL(
     		DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/action.gif")).createImage();
-            
+        
         private RoundedRectangle rectangle;
         
         protected void customizeFigure() {
             rectangle = new RoundedRectangle();
             rectangle.setCornerDimensions(new Dimension(25, 25));
             add(rectangle, 0);
-            rectangle.setBackgroundColor(color);
+        	rectangle.setBackgroundColor(color);
             rectangle.setBounds(getBounds());
             setSelected(false);
             setIcon(ICON);
@@ -68,4 +75,5 @@ public class ActionEditPart extends ElementEditPart {
             repaint();
         }
     }
+    
 }

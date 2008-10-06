@@ -15,8 +15,14 @@ package org.drools.eclipse.flow.ruleflow.editor.editpart;
  * limitations under the License.
  */
 
+import org.drools.eclipse.DroolsEclipsePlugin;
+import org.drools.eclipse.flow.common.editor.core.ModelEvent;
 import org.drools.eclipse.flow.common.editor.editpart.ElementEditPart;
 import org.drools.eclipse.flow.common.editor.editpart.figure.AbstractElementFigure;
+import org.drools.eclipse.flow.ruleflow.core.SplitWrapper;
+import org.drools.eclipse.flow.ruleflow.skin.SkinManager;
+import org.drools.eclipse.flow.ruleflow.skin.SkinProvider;
+import org.drools.eclipse.preferences.IDroolsConstants;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.Ellipse;
 import org.eclipse.draw2d.EllipseAnchor;
@@ -34,12 +40,28 @@ import org.eclipse.swt.widgets.Display;
  */
 public class SplitEditPart extends ElementEditPart {
 
-    private static final Color color = new Color(Display.getCurrent(), 70, 130, 180);
-    
+	private String SKIN =
+		DroolsEclipsePlugin.getDefault().getPreferenceStore().getString(IDroolsConstants.SKIN);
+	
     protected IFigure createFigure() {
-        return new SplitFigure();
+    	SkinProvider skinProvider = SkinManager.getInstance().getSkinProvider(SKIN);
+    	return skinProvider.createSplitFigure();
     }
 
+    public void modelChanged(ModelEvent event) {
+        if (event.getChange() == SplitWrapper.CHANGE_TYPE) {
+            refreshVisuals();
+        } else {
+        	super.modelChanged(event);
+        }
+    }
+    
+    protected void refreshVisuals() {
+    	super.refreshVisuals();
+    	int type = ((SplitWrapper) getModel()).getSplit().getType();
+		((SplitFigureInterface) getFigure()).setType(type);
+    }
+    
     public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connection) {
         return new EllipseAnchor(getFigure());
     }
@@ -55,8 +77,14 @@ public class SplitEditPart extends ElementEditPart {
     public ConnectionAnchor getTargetConnectionAnchor(Request request) {
         return new EllipseAnchor(getFigure());
     }
+    
+    public static interface SplitFigureInterface extends IFigure {
+    	void setType(int type);
+    }
 
-    public class SplitFigure extends AbstractElementFigure {
+    public static class SplitFigure extends AbstractElementFigure implements SplitFigureInterface {
+        
+        private static final Color color = new Color(Display.getCurrent(), 70, 130, 180);
         
         private Ellipse ellipse;
         
@@ -77,5 +105,10 @@ public class SplitEditPart extends ElementEditPart {
             ellipse.setLineWidth(b ? 3 : 1);
             repaint();
         }
+
+		public void setType(int type) {
+			// Do nothing
+		}
     }
+
 }
