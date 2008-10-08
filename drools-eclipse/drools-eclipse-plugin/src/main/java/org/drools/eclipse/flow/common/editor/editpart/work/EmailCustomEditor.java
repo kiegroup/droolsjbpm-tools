@@ -51,6 +51,7 @@ public class EmailCustomEditor extends EditBeanDialog implements WorkEditor {
 
     public EmailCustomEditor(Shell parentShell) {
         super(parentShell, "Custom Work Editor");
+        setBlockOnOpen(true);
     }
 
     protected Control createDialogArea(Composite parent) {
@@ -219,7 +220,7 @@ public class EmailCustomEditor extends EditBeanDialog implements WorkEditor {
     }
 
     protected Object updateValue(Object value) {
-        Work work = getWork();
+        Work work = new WorkImpl();
         work.setName(((Work) value).getName());
         work.setParameter("From", fromText.getText());
         String to = "";
@@ -232,6 +233,7 @@ public class EmailCustomEditor extends EditBeanDialog implements WorkEditor {
         work.setParameter("To", to);
         work.setParameter("Subject", subjectText.getText());
         work.setParameter("Text", bodyText.getText());
+        work.setParameterDefinitions(((Work) value).getParameterDefinitions());
         return work;
     }
 
@@ -250,8 +252,9 @@ public class EmailCustomEditor extends EditBeanDialog implements WorkEditor {
         }
     }
 
-    public void show() {
-        open();
+    public boolean show() {
+        int result = open();
+        return result == OK;
     }
 
     private class TypeLabelProvider extends ColumnLabelProvider {

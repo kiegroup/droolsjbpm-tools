@@ -32,6 +32,7 @@ public class SampleCustomEditor extends EditBeanDialog implements WorkEditor {
     
     public SampleCustomEditor(Shell parentShell) {
         super(parentShell, "Custom Work Editor");
+        setBlockOnOpen(true);
     }
     
     protected Control createDialogArea(Composite parent) {
@@ -77,6 +78,7 @@ public class SampleCustomEditor extends EditBeanDialog implements WorkEditor {
             String text = entry.getValue().getText();
             work.setParameter(entry.getKey(), "".equals(text) ? null : text);
         }
+        work.setParameterDefinitions(((Work) value).getParameterDefinitions());
         return work;
     }
         
@@ -92,8 +94,9 @@ public class SampleCustomEditor extends EditBeanDialog implements WorkEditor {
         this.workDefinition = workDefinition;
     }
 
-    public void show() {
-        open();
+    public boolean show() {
+        int result = open();
+        return result == OK;
     }
 
 }

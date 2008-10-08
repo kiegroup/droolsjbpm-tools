@@ -28,6 +28,7 @@ import org.drools.eclipse.flow.ruleflow.skin.SkinManager;
 import org.drools.eclipse.flow.ruleflow.skin.SkinProvider;
 import org.drools.eclipse.preferences.IDroolsConstants;
 import org.drools.eclipse.util.ProjectClassLoader;
+import org.drools.process.core.Work;
 import org.drools.process.core.WorkDefinition;
 import org.drools.process.core.WorkDefinitionExtension;
 import org.drools.process.core.WorkEditor;
@@ -40,6 +41,8 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.Request;
+import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.requests.DropRequest;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -47,6 +50,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.views.properties.IPropertySource;
 
 /**
  * EditPart for a Task node.
@@ -115,13 +119,19 @@ public class WorkItemEditPart extends ElementEditPart {
         if (workDefinition instanceof WorkDefinitionExtension) {
             String editor = ((WorkDefinitionExtension) workDefinition).getCustomEditor();
             if (editor != null) {
-                openEditor(editor, workDefinition);
+                Work work = openEditor(editor, workDefinition);
+                if (work != null) {
+	                SetWorkCommand setCommand = new SetWorkCommand();
+	        		setCommand.setPropertyValue(work);
+	                CommandStack stack = getViewer().getEditDomain().getCommandStack();
+	                stack.execute(setCommand);
+                }
             }
         }
     }
     
     @SuppressWarnings("unchecked")
-	private void openEditor(String editorClassName, WorkDefinition workDefinition) {
+	private Work openEditor(String editorClassName, WorkDefinition workDefinition) {
         IJavaProject javaProject = getProject();
         if (javaProject != null) {
             try {
@@ -135,8 +145,8 @@ public class WorkItemEditPart extends ElementEditPart {
                     editor.setWorkDefinition(workDefinition);
                     WorkItemNode workItemNode = getWorkItemWrapper().getWorkItemNode();
                     editor.setWork(workItemNode.getWork());
-                    editor.show();
-                    workItemNode.setWork(editor.getWork());
+                    boolean result = editor.show();
+                    return result ? editor.getWork() : null;
                 } finally {
                     Thread.currentThread().setContextClassLoader(oldLoader);
                 }
@@ -144,6 +154,7 @@ public class WorkItemEditPart extends ElementEditPart {
                 DroolsEclipsePlugin.log(e);
             }
         }
+        return null;
     }
     
     public static interface WorkItemFigureInterface extends IFigure {
@@ -216,4 +227,37 @@ public class WorkItemEditPart extends ElementEditPart {
         	super.validate();
         }
     }
+    
+    private class SetWorkCommand extends Command {
+
+		protected Work propertyValue;
+		protected Work undoValue;
+		protected IPropertySource target;
+
+		public SetWorkCommand() {
+			super("Set Work Value");
+		}
+
+		public boolean canExecute() {
+			return true;
+		}
+
+		public void execute() {
+			undoValue = getWorkItemWrapper().getWorkItemNode().getWork();
+			getWorkItemWrapper().getWorkItemNode().setWork(propertyValue);
+		}
+
+		public void redo() {
+			execute();
+		}
+
+		public void setPropertyValue(Work val) {
+			propertyValue = val;
+		}
+
+		public void undo() {
+			getWorkItemWrapper().getWorkItemNode().setWork(undoValue);
+		}
+		
+	}
 }
