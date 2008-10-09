@@ -8,6 +8,7 @@ import org.eclipse.draw2d.FreeformViewport;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.Layer;
+import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.StackLayout;
 import org.eclipse.swt.graphics.Image;
@@ -20,6 +21,7 @@ public class ElementContainerFigure extends Figure implements ElementFigure {
     
     public ElementContainerFigure() {
         setSize(200, 150);
+        setBorder(new LineBorder(1));
         ScrollPane scrollpane = new ScrollPane();
         pane = new FreeformLayer();
         pane.setLayoutManager(new FreeformLayout());
@@ -49,6 +51,7 @@ public class ElementContainerFigure extends Figure implements ElementFigure {
 
     public void setSelected(boolean b) {
         this.selected = b;
+        ((LineBorder) getBorder()).setWidth(b ? 3 : 1);
     }
 
     public void setText(String text) {
