@@ -55,10 +55,10 @@ public class ConnectionWrapper extends ElementConnection {
 	}
 	
 	public void connect(ElementWrapper source, ElementWrapper target) {
+		connection = new ConnectionImpl(
+			((NodeWrapper) source).getNode(), Node.CONNECTION_DEFAULT_TYPE,
+			((NodeWrapper) target).getNode(), Node.CONNECTION_DEFAULT_TYPE);		
 		super.connect(source, target);
-		Node from = ((NodeWrapper) getSource()).getNode();
-		Node to = ((NodeWrapper) getTarget()).getNode();
-		connection = new ConnectionImpl(from, Node.CONNECTION_DEFAULT_TYPE, to, Node.CONNECTION_DEFAULT_TYPE);		
 	}
 
     protected List<Point> internalGetBendpoints() {

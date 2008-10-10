@@ -27,8 +27,10 @@ import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.eclipse.flow.ruleflow.view.property.constraint.ConstraintsPropertyDescriptor;
 import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Constraint;
+import org.drools.workflow.core.Node;
 import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.node.Split;
+import org.drools.workflow.core.node.Split.ConnectionRef;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
@@ -51,6 +53,38 @@ public class SplitWrapper extends AbstractNodeWrapper {
         setNode(new Split());
         getSplit().setName("Split");
         setDescriptors();
+    }
+    
+    public void setNode(Node node) {
+    	super.setNode(node);
+    	for (Connection connection: getSplit().getDefaultOutgoingConnections()) {
+    		String label = null;
+    		Constraint constraint = getSplit().internalGetConstraint(
+				new ConnectionRef(connection.getTo().getId(), connection.getToType()));
+			if (constraint != null) {
+				label = constraint.getName();
+			}
+			connection.setMetaData("label", label);
+    	}
+    }
+    
+    private void updateConnectionLabels() {
+    	for (ElementConnection connection: getOutgoingConnections()) {
+    		updateConnectionLabel(connection);
+    	}
+    }
+    
+    private void updateConnectionLabel(ElementConnection connection) {
+    	ConnectionWrapper connectionWrapper = (ConnectionWrapper) connection;
+		String label = null;
+		Constraint constraint = getSplit().internalGetConstraint(
+			new ConnectionRef(connectionWrapper.getConnection().getTo().getId(),
+				connectionWrapper.getConnection().getToType()));
+		if (constraint != null) {
+			label = constraint.getName();
+		}
+		connectionWrapper.getConnection().setMetaData("label", label);
+		connectionWrapper.notifyListeners(ElementConnection.CHANGE_LABEL);
     }
      
     private void setDescriptors() {
@@ -99,10 +133,12 @@ public class SplitWrapper extends AbstractNodeWrapper {
         if (TYPE.equals(id)) {
             getSplit().setType(Split.TYPE_UNDEFINED);
             notifyListeners(CHANGE_TYPE);
+            updateConnectionLabels();
         } else if (CONSTRAINTS.equals(id)) {
         	for (Connection connection: getSplit().getDefaultOutgoingConnections()) {
         		getSplit().setConstraint(connection, null);
         	}
+            updateConnectionLabels();
         } else {
             super.resetPropertyValue(id);
         }
@@ -113,6 +149,7 @@ public class SplitWrapper extends AbstractNodeWrapper {
         if (TYPE.equals(id)) {
             getSplit().setType(((Integer) value).intValue());
             notifyListeners(CHANGE_TYPE);
+            updateConnectionLabels();
         } else if (CONSTRAINTS.equals(id)) {
         	Iterator<Map.Entry<Split.ConnectionRef, Constraint>> iterator = ((Map<Split.ConnectionRef, Constraint>) value).entrySet().iterator();
         	while (iterator.hasNext()) {
@@ -130,6 +167,7 @@ public class SplitWrapper extends AbstractNodeWrapper {
 				}
 				getSplit().setConstraint(outgoingConnection, (Constraint) element.getValue()); 
 			}
+        	updateConnectionLabels();
         } else {
             super.setPropertyValue(id, value);
         }

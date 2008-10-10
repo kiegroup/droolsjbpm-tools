@@ -71,6 +71,8 @@ public abstract class ElementConnectionEditPart extends AbstractConnectionEditPa
     public void modelChanged(ModelEvent event) {
         if (event.getChange() == ElementConnection.CHANGE_BENDPOINTS) {
             refreshBendpoints();
+        } else if (event.getChange() == ElementConnection.CHANGE_LABEL) {
+            refreshLabel();
         }
     }
 
@@ -83,7 +85,10 @@ public abstract class ElementConnectionEditPart extends AbstractConnectionEditPa
         ((ElementConnection) getModel()).removeListener(this);
         super.deactivate();
     }
-
+    
+    protected void refreshLabel() {
+    }
+    
     protected void refreshBendpoints() {
         List bendpoints = ((ElementConnection) getModel()).getBendpoints();
         List constraint = new ArrayList();
@@ -94,6 +99,7 @@ public abstract class ElementConnectionEditPart extends AbstractConnectionEditPa
     }
 
     protected void refreshVisuals() {
+    	refreshLabel();
         refreshBendpoints();
     }
 }

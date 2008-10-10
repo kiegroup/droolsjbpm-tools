@@ -34,6 +34,7 @@ public abstract class ElementConnection implements Serializable {
 	private static final long serialVersionUID = 400L;
 	
 	public static final int CHANGE_BENDPOINTS = 1;
+	public static final int CHANGE_LABEL = 2;
 	
 	private ElementWrapper source;
     private ElementWrapper target;
@@ -134,7 +135,7 @@ public abstract class ElementConnection implements Serializable {
         listeners.remove(listener);
     }
 
-    protected void notifyListeners(int change) {
+    public void notifyListeners(int change) {
         ModelEvent event = new ModelEvent(change);
         for (Iterator it = listeners.iterator(); it.hasNext(); ) {
         	ModelListener listener = (ModelListener) it.next();
