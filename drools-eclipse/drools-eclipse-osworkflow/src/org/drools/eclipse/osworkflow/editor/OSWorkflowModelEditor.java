@@ -1,0 +1,189 @@
+package org.drools.eclipse.osworkflow.editor;
+/*
+ * Copyright 2005 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.drools.eclipse.DroolsEclipsePlugin;
+import org.drools.eclipse.WorkItemDefinitions;
+import org.drools.eclipse.flow.common.editor.GenericModelEditor;
+import org.drools.eclipse.flow.common.editor.editpart.ProcessEditPartFactory;
+import org.drools.eclipse.flow.ruleflow.core.WorkItemWrapper;
+import org.drools.eclipse.flow.ruleflow.editor.RuleFlowPaletteFactory;
+import org.drools.eclipse.osworkflow.core.OSWorkflowProcessWrapper;
+import org.drools.eclipse.osworkflow.core.OSWorkflowWrapperBuilder;
+import org.drools.eclipse.osworkflow.editor.editpart.OSWorkflowEditPartFactory;
+import org.drools.eclipse.util.ProjectClassLoader;
+import org.drools.osworkflow.core.OSWorkflowProcess;
+import org.drools.osworkflow.xml.OSWorkflowSemanticModule;
+import org.drools.osworkflow.xml.XmlOSWorkflowProcessDumper;
+import org.drools.process.core.WorkDefinition;
+import org.drools.process.core.WorkDefinitionExtension;
+import org.drools.xml.SemanticModules;
+import org.drools.xml.XmlProcessReader;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.gef.EditPartFactory;
+import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
+import org.eclipse.gef.palette.PaletteDrawer;
+import org.eclipse.gef.palette.PaletteEntry;
+import org.eclipse.gef.palette.PaletteRoot;
+import org.eclipse.gef.requests.SimpleFactory;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IFileEditorInput;
+
+/**
+ * Graphical editor for a RuleFlow.
+ * 
+ * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
+ */
+public class OSWorkflowModelEditor extends GenericModelEditor {
+
+    public OSWorkflowModelEditor() {
+    }
+    
+    protected EditPartFactory createEditPartFactory() {
+        ProcessEditPartFactory factory = new OSWorkflowEditPartFactory();
+        factory.setProject(getJavaProject());
+        return factory;
+    }
+
+    protected PaletteRoot createPalette() {
+        return RuleFlowPaletteFactory.createPalette();
+    }
+
+    protected Object createModel() {
+        OSWorkflowProcessWrapper result = new OSWorkflowProcessWrapper();
+        IFile file = ((IFileEditorInput)getEditorInput()).getFile();
+        String name = file.getName();
+        result.setName(name.substring(0, name.length() - 3));
+        return result;
+    }
+    
+    public OSWorkflowProcessWrapper getOSWorkflowModel() {
+        return (OSWorkflowProcessWrapper) getModel();
+    }
+
+    protected void setInput(IEditorInput input) {
+        super.setInput(input);
+        refreshPalette(((IFileEditorInput) input).getFile());
+    }
+    
+    private void refreshPalette(IFile file) {
+        IJavaProject javaProject = getJavaProject();
+        if (javaProject != null) {
+            try {
+                ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+                ClassLoader newLoader = ProjectClassLoader.getProjectClassLoader(javaProject);
+                try {
+                    Thread.currentThread().setContextClassLoader(newLoader);
+                    PaletteDrawer drawer = (PaletteDrawer) getPaletteRoot().getChildren().get(2);
+                    List<PaletteEntry> entries = new ArrayList<PaletteEntry>();
+                    for (final WorkDefinition workDefinition: WorkItemDefinitions.getWorkDefinitions(file).values()) {
+                        final String label;
+                        String description = workDefinition.getName();
+                        String icon = null;
+                        if (workDefinition instanceof WorkDefinitionExtension) {
+                            WorkDefinitionExtension extension = (WorkDefinitionExtension) workDefinition;
+                            label = extension.getDisplayName();
+                            description = extension.getExplanationText();
+                            icon = extension.getIcon();
+                        } else {
+                            label = workDefinition.getName();
+                        }
+                        
+                        URL iconUrl = null;
+                        if (icon != null) {
+                            iconUrl = newLoader.getResource(icon);
+                        }
+                        if (iconUrl == null) {
+                            iconUrl = DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/action.gif");
+                        }
+                        CombinedTemplateCreationEntry combined = new CombinedTemplateCreationEntry(
+                            label,
+                            description,
+                            WorkItemWrapper.class,
+                            new SimpleFactory(WorkItemWrapper.class) {
+                                public Object getNewObject() {
+                                    WorkItemWrapper workItemWrapper = (WorkItemWrapper) super.getNewObject();
+                                    workItemWrapper.setName(label);
+                                    workItemWrapper.setWorkDefinition(workDefinition);
+                                    return workItemWrapper;
+                                }
+                            },
+                            ImageDescriptor.createFromURL(iconUrl), 
+                            ImageDescriptor.createFromURL(iconUrl)
+                        );
+                        entries.add(combined);
+                    }
+                    drawer.setChildren(entries);
+                } finally {
+                    Thread.currentThread().setContextClassLoader(oldLoader);
+                }
+            } catch (Exception e) {
+                DroolsEclipsePlugin.log(e);
+            }
+        }
+    }
+
+    protected void writeModel(OutputStream os) throws IOException {
+    	writeModel(os, true);
+    }
+    
+    protected void writeModel(OutputStream os, boolean includeGraphics) throws IOException {
+        OutputStreamWriter writer = new OutputStreamWriter(os);
+        try {
+            String out = XmlOSWorkflowProcessDumper.INSTANCE.dump(
+                getOSWorkflowModel().getOSWorkflowProcess(), includeGraphics);
+            writer.write(out);
+        } catch (Throwable t) {
+            DroolsEclipsePlugin.log(t);
+        }
+        writer.close();
+    }
+    
+    protected void createModel(InputStream is) {
+        try {
+            InputStreamReader reader = new InputStreamReader(is);
+            SemanticModules semanticModules = new SemanticModules();
+            semanticModules.addSemanticModule(new OSWorkflowSemanticModule());
+            XmlProcessReader xmlReader = new XmlProcessReader(semanticModules);
+            System.setProperty( "drools.schema.validating", "false" );
+            try {
+                OSWorkflowProcess process = (OSWorkflowProcess) xmlReader.read(reader);
+                if (process == null) {
+                    setModel(createModel());
+                } else {
+                    setModel(new OSWorkflowWrapperBuilder().getProcessWrapper(process, getJavaProject()));
+                }
+            } catch (Throwable t) {
+                DroolsEclipsePlugin.log(t);
+                setModel(createModel());
+            }
+            reader.close();
+        } catch (Throwable t) {
+            DroolsEclipsePlugin.log(t);
+        }
+    }
+}
