@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.drools.eclipse.editors.DRLRuleEditor;
 import org.drools.eclipse.editors.completion.RuleCompletionProcessor;
+import org.drools.lang.descr.GlobalDescr;
 import org.drools.workflow.core.WorkflowProcess;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -49,7 +50,7 @@ public class ActionCompletionProcessor extends RuleCompletionProcessor {
 
 	private WorkflowProcess process;
 	private List imports;
-	private List globals;
+	private List<GlobalDescr> globals;
 	private Map attributes;
 	private String dialect;
 	
@@ -80,7 +81,7 @@ public class ActionCompletionProcessor extends RuleCompletionProcessor {
     protected String readBackwards(int documentOffset, IDocument doc) throws BadLocationException {
         int startPart = doc.getPartition(documentOffset).getOffset();
         String prefix = doc.get(startPart, documentOffset - startPart);
-        return "package dummy.package \n rule dummy "
+        return "rule dummy "
             + (dialect == null ? "" : " dialect \"" + dialect + "\" ")
             + "\n when \n then \n org.drools.workflow.instance.NodeInstance nodeInstance; \n " + prefix;
     }
@@ -112,7 +113,7 @@ public class ActionCompletionProcessor extends RuleCompletionProcessor {
     	}
     }
     
-    public List getGlobals() {
+    public List<GlobalDescr> getGlobals() {
     	if (globals == null) {
     		loadGlobals();
     	}
@@ -120,7 +121,11 @@ public class ActionCompletionProcessor extends RuleCompletionProcessor {
     }
     
     private void loadGlobals() {
-    	this.globals = Arrays.asList(process.getGlobalNames());
+    	String[] globalNames = process.getGlobalNames();
+    	this.globals = new ArrayList<GlobalDescr>(globalNames.length);
+    	for (String globalName: globalNames) {
+    		this.globals.add(new GlobalDescr(globalName, "java.lang.Object"));
+    	}
     }
     
     private void loadAttributes() {

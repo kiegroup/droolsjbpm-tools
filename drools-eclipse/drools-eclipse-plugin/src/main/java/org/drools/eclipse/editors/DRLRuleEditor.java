@@ -41,7 +41,7 @@ public class DRLRuleEditor extends AbstractRuleEditor {
     protected List imports;
     protected List functions;
     protected Map templates;
-    protected List globals;
+    protected List<GlobalDescr> globals;
     protected String packageName;
     protected List classesInPackage;
 	protected Map attributes;
@@ -77,7 +77,6 @@ public class DRLRuleEditor extends AbstractRuleEditor {
 		return attributes;
 	}
 
-
 	public FactTemplateDescr getTemplate(String name) {
 		if (templates == null) {
 			loadImportsAndFunctions();
@@ -85,7 +84,7 @@ public class DRLRuleEditor extends AbstractRuleEditor {
 		return (FactTemplateDescr) templates.get(name);
 	}
 
-	public List getGlobals() {
+	public List<GlobalDescr> getGlobals() {
 		if (globals == null ) {
 			loadImportsAndFunctions();
 		}
@@ -220,7 +219,7 @@ public class DRLRuleEditor extends AbstractRuleEditor {
             }
             // globals
             List globalDescrs = descr.getGlobals();
-            globals = new ArrayList();
+            globals = new ArrayList<GlobalDescr>();
             iterator = globalDescrs.iterator();
             while (iterator.hasNext()) {
                 GlobalDescr global = (GlobalDescr) iterator.next();

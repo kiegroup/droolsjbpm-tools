@@ -419,7 +419,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
         return null;
     }
 
-    protected List getGlobals() {
+    protected List<GlobalDescr> getGlobals() {
         if ( getEditor() instanceof DRLRuleEditor ) {
             return ((DRLRuleEditor) getEditor()).getGlobals();
         }

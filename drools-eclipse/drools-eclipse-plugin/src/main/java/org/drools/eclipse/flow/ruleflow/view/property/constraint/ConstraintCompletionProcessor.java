@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.drools.eclipse.editors.DRLRuleEditor;
 import org.drools.eclipse.editors.completion.RuleCompletionProcessor;
+import org.drools.lang.descr.GlobalDescr;
 import org.drools.workflow.core.WorkflowProcess;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -45,8 +46,8 @@ import org.eclipse.ui.PlatformUI;
 public class ConstraintCompletionProcessor extends RuleCompletionProcessor {
 
 	private WorkflowProcess process;
-	private List imports;
-	private List globals;
+	private List<String> imports;
+	private List<GlobalDescr> globals;
 	
 	public ConstraintCompletionProcessor(WorkflowProcess process) {
 		super(null);
@@ -100,7 +101,7 @@ public class ConstraintCompletionProcessor extends RuleCompletionProcessor {
     	}
     }
     
-    public List getGlobals() {
+    public List<GlobalDescr> getGlobals() {
     	if (globals == null) {
     		loadGlobals();
     	}
@@ -108,7 +109,11 @@ public class ConstraintCompletionProcessor extends RuleCompletionProcessor {
     }
     
     private void loadGlobals() {
-    	this.globals = Arrays.asList(process.getGlobalNames());
+    	String[] globalNames = process.getGlobalNames();
+    	this.globals = new ArrayList<GlobalDescr>(globalNames.length);
+    	for (String globalName: globalNames) {
+    		this.globals.add(new GlobalDescr(globalName, "java.lang.Object"));
+    	}
     }
     
     private IJavaProject getJavaProject() {

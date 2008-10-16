@@ -49,6 +49,7 @@ public class HumanTaskNodeWrapper extends WorkItemWrapper {
         parameterDefinitions.add(new ParameterDefinitionImpl("ActorId", new StringDataType()));
         parameterDefinitions.add(new ParameterDefinitionImpl("Priority", new StringDataType()));
         parameterDefinitions.add(new ParameterDefinitionImpl("Comment", new StringDataType()));
+        parameterDefinitions.add(new ParameterDefinitionImpl("Skippable", new StringDataType()));
         ((WorkDefinitionExtensionImpl) WORK_DEFINITION).setParameters(parameterDefinitions);
         ((WorkDefinitionExtensionImpl) WORK_DEFINITION).setIcon("icons/human_task.gif");
     }
