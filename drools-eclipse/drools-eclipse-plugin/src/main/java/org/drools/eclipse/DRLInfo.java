@@ -109,6 +109,10 @@ public class DRLInfo {
 		}
 		return result;
 	}
+	
+	public DialectCompiletimeRegistry getDialectRegistry() {
+		return dialectRegistry;
+	}
 
 	public class RuleInfo {
 

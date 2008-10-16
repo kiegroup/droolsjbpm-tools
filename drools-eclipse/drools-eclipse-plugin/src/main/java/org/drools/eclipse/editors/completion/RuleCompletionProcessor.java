@@ -953,10 +953,10 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
         try {
             DRLInfo drlInfo = DroolsEclipsePlugin.getDefault().generateParsedResource(
-                ruleBackText,
+                "package dummy; \n" + ruleBackText,
                 ((IFileEditorInput) getEditor().getEditorInput()).getFile(),
                 false,
-                true );
+                false );
 
             String textWithoutPrefix = CompletionUtil.getTextWithoutPrefix( consequenceBackText,
                                                                             prefix );
@@ -1157,8 +1157,8 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         String name = context.getRuleName();
         RuleInfo currentRule = getCurrentRule( drlInfo,
                                                name );
-        String qName = drlInfo.getPackageName() + "." + currentRule.getRuleName();
-        MVELDialect dialect = (MVELDialect) currentRule.getDialect();
+        String qName = drlInfo.getPackageName() + "." + name;
+        MVELDialect dialect = (MVELDialect) drlInfo.getDialectRegistry().getDialect("mvel");
         ParserContext initialContext = createInitialContext( params,
                                                              qName,
                                                              dialect );
