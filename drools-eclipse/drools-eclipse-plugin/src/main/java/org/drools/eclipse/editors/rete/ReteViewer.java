@@ -20,16 +20,20 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.eclipse.DRLInfo;
 import org.drools.eclipse.DroolsEclipsePlugin;
+import org.drools.eclipse.builder.DroolsBuilder;
 import org.drools.eclipse.editors.DRLRuleEditor;
 import org.drools.eclipse.editors.rete.model.ReteGraph;
 import org.drools.eclipse.editors.rete.part.VertexEditPartFactory;
+import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.reteoo.BaseVertex;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooVisitor;
 import org.drools.rule.Package;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.ConnectionLayer;
@@ -50,6 +54,8 @@ import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.ui.parts.GraphicalEditor;
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.swt.SWT;
 
 /**
@@ -107,11 +113,19 @@ public class ReteViewer extends GraphicalEditor {
     }
 
     private RuleBase getRuleBase(String contents) {
-        try {
+    	try {
+    		IResource resource = drlEditor.getResource();
+	        ClassLoader newLoader = DroolsBuilder.class.getClassLoader();
+	        if ( resource.getProject().getNature( "org.eclipse.jdt.core.javanature" ) != null ) {
+	            IJavaProject project = JavaCore.create( resource.getProject() );
+	            newLoader = ProjectClassLoader.getProjectClassLoader( project );
+	        }
         	DRLInfo drlInfo = DroolsEclipsePlugin.getDefault().parseResource(drlEditor, true, true);
         	if (drlInfo != null) {
         		Package pkg = drlInfo.getPackage();
-        		ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase(RuleBase.RETEOO);
+        		RuleBaseConfiguration config = new RuleBaseConfiguration();
+        		config.setClassLoader(newLoader);
+        		ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase(RuleBase.RETEOO, config);
         		ruleBase.addPackage(pkg);
         		return ruleBase;
         	}
