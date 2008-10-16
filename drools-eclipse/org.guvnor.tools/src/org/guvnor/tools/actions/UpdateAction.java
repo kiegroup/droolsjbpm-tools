@@ -32,9 +32,6 @@ public class UpdateAction implements IObjectActionDelegate {
 	
 	private IStructuredSelection selectedItems;
 	
-	/**
-	 * Constructor for Action1.
-	 */
 	public UpdateAction() {
 		super();
 	}
@@ -45,8 +42,8 @@ public class UpdateAction implements IObjectActionDelegate {
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) { }
 
 	/*
-	 * @throws Exception 
-	 * @see IActionDelegate#run(IAction)
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
 	@SuppressWarnings("unchecked")
 	public void run(IAction action) {

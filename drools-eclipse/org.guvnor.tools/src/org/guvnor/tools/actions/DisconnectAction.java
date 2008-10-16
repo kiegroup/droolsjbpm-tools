@@ -26,21 +26,20 @@ public class DisconnectAction implements IObjectActionDelegate {
 	
 	private IStructuredSelection selectedItems;
 	
-	/**
-	 * Constructor for Action1.
-	 */
 	public DisconnectAction() {
 		super();
 	}
 
 	/*
-	 * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.action.IAction, org.eclipse.ui.IWorkbenchPart)
 	 */
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 	}
 
 	/*
-	 * @see IActionDelegate#run(IAction)
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
 	public void run(IAction action) {
 		if (selectedItems == null) {
@@ -73,7 +72,8 @@ public class DisconnectAction implements IObjectActionDelegate {
 	}
 	
 	/*
-	 * @see IActionDelegate#selectionChanged(IAction, ISelection)
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
 		boolean validResourceSet = ActionUtils.checkResourceSet(selection, true);

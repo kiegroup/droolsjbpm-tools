@@ -91,6 +91,12 @@
                 label="%action.popup.showhistory"
                 menubarPath="additions">
         </action>
+        <action class="org.guvnor.tools.actions.OpenGuvnorWebConsoleAction"
+                enablesFor="1"
+                id="org.guvnor.tools.actions.openguvnorwebconsoleaction"
+                label="%action.popup.openguvnorwebconsoleaction"
+                menubarPath="additions">
+        </action>
   	</objectContribution>
     <objectContribution id="org.guvnor.tools.contribution1"
                         objectClass="org.eclipse.core.resources.IFile">

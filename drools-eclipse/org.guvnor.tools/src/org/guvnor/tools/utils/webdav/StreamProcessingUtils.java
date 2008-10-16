@@ -2,6 +2,7 @@ package org.guvnor.tools.utils.webdav;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,7 +41,7 @@ public class StreamProcessingUtils {
 			Element oneElem = (Element)nl.item(i);
 			NodeList resName = oneElem.getElementsByTagNameNS(DAV_NS, "href"); //$NON-NLS-1$
 			assert(resName.getLength() == 1);
-			String bareName = extractOverlap(base, resName.item(0).getTextContent());
+			String bareName = extractOverlap(base, URLDecoder.decode(resName.item(0).getTextContent(), "UTF-8"));
 			if (bareName.trim().length() > 0) {
 				ResourceProperties props = new ResourceProperties();
 				NodeList propList = oneElem.getElementsByTagNameNS(DAV_NS, "resourcetype"); //$NON-NLS-1$
