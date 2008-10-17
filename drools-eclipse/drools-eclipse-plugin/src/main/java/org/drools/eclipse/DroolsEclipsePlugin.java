@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
@@ -470,14 +471,28 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
         try {
             ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
             ClassLoader newLoader = this.getClass().getClassLoader();
+            String level = null;
+            if ( resource.getProject().getNature( "org.eclipse.jdt.core.javanature" ) != null ) {
+                IJavaProject project = JavaCore.create( resource.getProject() );
+                newLoader = ProjectClassLoader.getProjectClassLoader( project );
+                level = project.getOption( JavaCore.COMPILER_COMPLIANCE,
+                                           true );
+            }
             try {
                 Thread.currentThread().setContextClassLoader( newLoader );
                 PackageBuilderConfiguration configuration = new PackageBuilderConfiguration();
+                if ( level != null ) {
+                    JavaDialectConfiguration javaConf = (JavaDialectConfiguration) configuration.getDialectConfiguration( "java" );
+                    javaConf.setJavaLanguageLevel( level );
+                }
+                configuration.setClassLoader( newLoader );
+                
                 XmlProcessReader xmlReader = new XmlProcessReader( configuration.getSemanticModules() );
                 Process process = xmlReader.read( new StringReader( input ) );
                 if ( process != null ) {
                     return parseProcess( process,
-                                         resource );
+                                         resource,
+                                         configuration );
                 } else {
                     throw new IllegalArgumentException( "Could not parse process " + resource );
                 }
@@ -495,8 +510,9 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
     }
 
     public ProcessInfo parseProcess(Process process,
-                                    IResource resource) {
-        PackageBuilder packageBuilder = new PackageBuilder();
+                                    IResource resource,
+                                    PackageBuilderConfiguration config) {
+        PackageBuilder packageBuilder = new PackageBuilder( config );
         ProcessBuilder processBuilder = new ProcessBuilder( packageBuilder );
         processBuilder.buildProcess( process );
         ProcessInfo processInfo = new ProcessInfo( process.getId(),
