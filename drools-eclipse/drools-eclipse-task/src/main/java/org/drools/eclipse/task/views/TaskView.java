@@ -135,10 +135,10 @@ public class TaskView extends ViewPart {
 						}
 						return user.getId();
 					case 3:
-						return taskSummary.getDescription();
-					case 4:
 						return DateFormat.getDateTimeInstance().format(
 							taskSummary.getCreatedOn());
+					case 4:
+						return taskSummary.getDescription();
 					default:
 						throw new IllegalArgumentException(
 							"Unknown column index: " + index);
