@@ -55,12 +55,15 @@ public class RuleFlowImportsDialog extends Dialog {
 
 	private static final Pattern IMPORT_PATTERN = Pattern.compile(
 		"\\n\\s*import\\s+([^\\s;#]+);?", Pattern.DOTALL);
+	private static final Pattern FUNCTION_IMPORT_PATTERN = Pattern.compile(
+			"\\n\\s*import\\s+function\\s+([^\\s;#]+);?", Pattern.DOTALL);
 	
 	private WorkflowProcess process;
 	private boolean success;
 	private TabFolder tabFolder;
 	private SourceViewer importsViewer;
 	private List<String> imports;
+	private List<String> functionImports;
 
 	public RuleFlowImportsDialog(Shell parentShell, WorkflowProcess process) {
 		super(parentShell);
@@ -120,6 +123,12 @@ public class RuleFlowImportsDialog extends Dialog {
 				result += "import " + importString + "\n";
 			}
 		}
+		imports = process.getFunctionImports();
+		if (imports != null) {
+			for (String importString: imports) {
+				result += "import function " + importString + "\n";
+			}
+		}
 		return result;
 	}
 	
@@ -154,11 +163,23 @@ public class RuleFlowImportsDialog extends Dialog {
 		return imports;
 	}
 	
+	public List<String> getFunctionImports() {
+		return functionImports;
+	}
+	
 	private void updateImports() {
 		this.imports = new ArrayList<String>();
 		Matcher matcher = IMPORT_PATTERN.matcher(importsViewer.getDocument().get());
 		while (matcher.find()) {
-			this.imports.add(matcher.group(1));
+			String importString = matcher.group(1);
+			if (!"function".equals(importString)) {
+				this.imports.add(importString);
+			}
+		}
+		this.functionImports = new ArrayList<String>();
+		matcher = FUNCTION_IMPORT_PATTERN.matcher(importsViewer.getDocument().get());
+		while (matcher.find()) {
+			this.functionImports.add(matcher.group(1));
 		}
 	}
 }

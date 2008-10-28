@@ -17,6 +17,7 @@ package org.drools.eclipse.flow.common.editor.editpart.figure;
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -35,5 +36,7 @@ public interface ElementFigure extends IFigure {
     boolean isSelected();
     
     Label getLabel();
+    
+    void setColor(Color color);
 
 }

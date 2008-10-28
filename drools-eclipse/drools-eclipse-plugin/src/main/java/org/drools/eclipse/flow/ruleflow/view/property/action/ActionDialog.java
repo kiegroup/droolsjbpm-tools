@@ -224,6 +224,8 @@ public class ActionDialog extends EditBeanDialog {
 				if (code != CANCEL) {
 					List imports = dialog.getImports();
 					process.setImports(imports);
+					List functionImports = dialog.getFunctionImports();
+					process.setFunctionImports(functionImports);
 					completionProcessor.reset();
 				}
 			}

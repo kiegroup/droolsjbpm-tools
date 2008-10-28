@@ -105,7 +105,8 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
                                                         functionText,
                                                         prefix,
                                                         params,
-                                                        false );
+                                                        false,
+                                                        false);
                     filterProposalsOnPrefix( prefix,
                                              props );
                 } else {
@@ -193,11 +194,11 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
         return result;
     }
 
-    protected List getPossibleProposals(ITextViewer viewer,
+    protected List<RuleCompletionProposal> getPossibleProposals(ITextViewer viewer,
                                         int documentOffset,
                                         String backText,
                                         final String prefix) {
-        List list = new ArrayList();
+        List<RuleCompletionProposal> list = new ArrayList<RuleCompletionProposal>();
         list.add( new RuleCompletionProposal( documentOffset - prefix.length(),
                                               prefix.length(),
                                               "rule",
@@ -246,25 +247,27 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
         return list;
     }
 
-    protected List getJavaCompletionProposals(final int documentOffset,
+    protected List<RuleCompletionProposal> getJavaCompletionProposals(final int documentOffset,
                                               final String javaText,
                                               final String prefix,
                                               Map params) {
-        return getJavaCompletionProposals(documentOffset, javaText, prefix, params, true);
+        return getJavaCompletionProposals(documentOffset, javaText, prefix, params, true, false);
     }
     
-    protected List getJavaCompletionProposals(final int documentOffset,
+    protected List<RuleCompletionProposal> getJavaCompletionProposals(final int documentOffset,
                                               final String javaText,
                                               final String prefix,
                                               Map params,
-                                              boolean useDrools) {
-        final List list = new ArrayList();
+                                              boolean useDrools,
+                                              boolean useContext) {
+        final List<RuleCompletionProposal> list = new ArrayList<RuleCompletionProposal>();
         requestJavaCompletionProposals( javaText,
                                         prefix,
                                         documentOffset,
                                         params,
                                         list,
-                                        useDrools );
+                                        useDrools,
+                                        useContext);
         return list;
     }
 
@@ -297,7 +300,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
                                                   final int documentOffset,
                                                   Map params,
                                                   Collection results) {
-        requestJavaCompletionProposals(javaText, prefix, documentOffset, params, results, true);
+        requestJavaCompletionProposals(javaText, prefix, documentOffset, params, results, true, false);
     }
 
     protected void requestJavaCompletionProposals(final String javaText,
@@ -305,7 +308,8 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
                                                   final int documentOffset,
                                                   Map params,
                                                   Collection results,
-                                                  boolean useDrools) {
+                                                  boolean useDrools,
+                                                  boolean useContext) {
 
 
         String javaTextWithoutPrefix = CompletionUtil.getTextWithoutPrefix( javaText,
@@ -339,6 +343,9 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
             }
             if (useDrools) {
                 javaTextWithParams.append( "org.drools.spi.KnowledgeHelper drools;" );
+            }
+            if (useContext) {
+                javaTextWithParams.append( "org.drools.spi.ProcessContext context;" );
             }
             javaTextWithParams.append( javaText );
             String jtext = javaTextWithParams.toString();
@@ -378,7 +385,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
         return "";
     }
 
-    protected List getImports() {
+    protected List<String> getImports() {
         if ( getEditor() instanceof DRLRuleEditor ) {
             return ((DRLRuleEditor) getEditor()).getImports();
         }
@@ -426,7 +433,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
         return Collections.EMPTY_LIST;
     }
 
-    protected List getClassesInPackage() {
+    protected List<String> getClassesInPackage() {
         if ( getEditor() instanceof DRLRuleEditor ) {
             return ((DRLRuleEditor) getEditor()).getClassesInPackage();
         }

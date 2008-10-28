@@ -18,6 +18,7 @@ package org.drools.eclipse.flow.ruleflow.editor.editpart;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.editor.editpart.ElementEditPart;
 import org.drools.eclipse.flow.common.editor.editpart.figure.AbstractElementFigure;
+import org.drools.eclipse.flow.ruleflow.core.AbstractNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.skin.SkinManager;
 import org.drools.eclipse.flow.ruleflow.skin.SkinProvider;
 import org.drools.eclipse.preferences.IDroolsConstants;
@@ -47,6 +48,12 @@ public class ActionEditPart extends ElementEditPart {
     	return skinProvider.createActionNodeFigure();
     }
     
+    public void refreshVisuals() {
+    	super.refreshVisuals();
+        ((AbstractElementFigure) getFigure()).setColor(
+    		((AbstractNodeWrapper) getElementWrapper()).getColor());
+    }
+    
     public static class ActionNodeFigure extends AbstractElementFigure {
         
         private static final Image ICON = ImageDescriptor.createFromURL(
@@ -74,6 +81,10 @@ public class ActionEditPart extends ElementEditPart {
             rectangle.setLineWidth(b ? 3 : 1);
             repaint();
         }
+        
+    	public void setColor(Color newColor) {
+    		rectangle.setBackgroundColor(newColor == null ? color : newColor );
+    	}
     }
     
 }

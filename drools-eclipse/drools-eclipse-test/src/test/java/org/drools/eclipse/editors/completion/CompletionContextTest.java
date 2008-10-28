@@ -1811,6 +1811,18 @@ public class CompletionContextTest extends TestCase {
         assertEquals("meth", location.getProperty(Location.LOCATION_RHS_CONTENT));
     }
 
+    public void testCheckRHSLocationDetermination4() {
+        String input =
+        	"rule MyRule \n" +
+        	"	when\n" +
+        	"		Class ( )\n" +
+        	"   then\n" +
+        	"       String s = ";
+        Location location = new CompletionContext(input).getLocation();
+        assertEquals(Location.LOCATION_RHS, location.getType());
+        assertEquals("String s =", location.getProperty(Location.LOCATION_RHS_CONTENT));
+    }
+
     public void testCheckRuleHeaderLocationDetermination() {
         String input =
         	"rule MyRule ";

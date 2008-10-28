@@ -38,39 +38,39 @@ import org.eclipse.ui.IFileEditorInput;
  */
 public class DRLRuleEditor extends AbstractRuleEditor {
 
-    protected List imports;
-    protected List functions;
-    protected Map templates;
+    protected List<String> imports;
+    protected List<String> functions;
+    protected Map<String, FactTemplateDescr> templates;
     protected List<GlobalDescr> globals;
     protected String packageName;
-    protected List classesInPackage;
-	protected Map attributes;
+    protected List<String> classesInPackage;
+	protected Map<String, String> attributes;
 
     public DRLRuleEditor() {
 	}
 
-	public List getImports() {
+	public List<String> getImports() {
 		if (imports == null || isDirty()) {
 			loadImportsAndFunctions();
 		}
 		return imports;
 	}
 
-	public List getFunctions() {
+	public List<String> getFunctions() {
 		if (functions == null) {
 			loadImportsAndFunctions();
 		}
 		return functions;
 	}
 
-	public Set getTemplates() {
+	public Set<String> getTemplates() {
 		if (templates == null) {
 			loadImportsAndFunctions();
 		}
 		return templates.keySet();
 	}
 
-	public Map getAttributes() {
+	public Map<String, String> getAttributes() {
 		if ( attributes == null ) {
 			loadImportsAndFunctions();
 		}
@@ -81,7 +81,7 @@ public class DRLRuleEditor extends AbstractRuleEditor {
 		if (templates == null) {
 			loadImportsAndFunctions();
 		}
-		return (FactTemplateDescr) templates.get(name);
+		return templates.get(name);
 	}
 
 	public List<GlobalDescr> getGlobals() {
@@ -98,15 +98,15 @@ public class DRLRuleEditor extends AbstractRuleEditor {
 		return packageName;
 	}
 
-	public List getClassesInPackage() {
+	public List<String> getClassesInPackage() {
 		if (classesInPackage == null) {
 			classesInPackage = getAllClassesInPackage(getPackage());
 		}
 		return classesInPackage;
 	}
 
-	protected List getAllClassesInPackage(String packageName) {
-		List list = new ArrayList();
+	protected List<String> getAllClassesInPackage(String packageName) {
+		List<String> list = new ArrayList<String>();
 		if (packageName != null) {
 			IEditorInput input = getEditorInput();
 			if (input instanceof IFileEditorInput) {
@@ -118,8 +118,8 @@ public class DRLRuleEditor extends AbstractRuleEditor {
 		return list;
 	}
 
-	public static List getAllClassesInPackage(String packageName, IJavaProject javaProject) {
-		final List list = new ArrayList();
+	public static List<String> getAllClassesInPackage(String packageName, IJavaProject javaProject) {
+		final List<String> list = new ArrayList<String>();
 		CompletionRequestor requestor = new CompletionRequestor() {
 			public void accept(org.eclipse.jdt.core.CompletionProposal proposal) {
 				String className = new String(proposal.getCompletion());
@@ -138,8 +138,8 @@ public class DRLRuleEditor extends AbstractRuleEditor {
 		return list;
 	}
 
-	protected List getAllStaticMethodsInClass(String className) {
-		final List list = new ArrayList();
+	protected List<String> getAllStaticMethodsInClass(String className) {
+		final List<String> list = new ArrayList<String>();
 		if (className != null) {
 			IEditorInput input = getEditorInput();
 			if (input instanceof IFileEditorInput) {
@@ -173,14 +173,14 @@ public class DRLRuleEditor extends AbstractRuleEditor {
             // package
             this.packageName = drlInfo.getPackageName();
             // imports
-            List allImports = descr.getImports();
-            this.imports = new ArrayList();
+            List<ImportDescr> allImports = descr.getImports();
+            this.imports = new ArrayList<String>();
             if (packageName != null) {
                 imports.addAll(getAllClassesInPackage(packageName));
             }
-            Iterator iterator = allImports.iterator();
+            Iterator<ImportDescr> iterator = allImports.iterator();
             while (iterator.hasNext()) {
-                String importName = ((ImportDescr) iterator.next()).getTarget();
+                String importName = iterator.next().getTarget();
                 if (importName.endsWith(".*")) {
                     String packageName = importName.substring(0, importName.length() - 2);
                     imports.addAll(getAllClassesInPackage(packageName));
@@ -189,16 +189,16 @@ public class DRLRuleEditor extends AbstractRuleEditor {
                 }
             }
             // functions
-            List functionDescrs = descr.getFunctions();
-            List functionImports = descr.getFunctionImports();
-            functions = new ArrayList(functionDescrs.size());
-            iterator = functionDescrs.iterator();
-            while (iterator.hasNext()) {
-                functions.add(((FunctionDescr) iterator.next()).getName());
+            List<FunctionDescr> functionDescrs = descr.getFunctions();
+            List<FunctionImportDescr> functionImports = descr.getFunctionImports();
+            functions = new ArrayList<String>(functionDescrs.size());
+            Iterator<FunctionDescr> iterator2 = functionDescrs.iterator();
+            while (iterator2.hasNext()) {
+                functions.add(iterator2.next().getName());
             }
-            iterator = functionImports.iterator();
-            while (iterator.hasNext()) {
-                String functionImport = ((FunctionImportDescr) iterator.next()).getTarget();
+            Iterator<FunctionImportDescr> iterator3 = functionImports.iterator();
+            while (iterator3.hasNext()) {
+                String functionImport = iterator3.next().getTarget();
                 if (functionImport.endsWith(".*")) {
                     String className = functionImport.substring(0, functionImport.length() - 2);
                     functions.addAll(getAllStaticMethodsInClass(className));
@@ -210,26 +210,25 @@ public class DRLRuleEditor extends AbstractRuleEditor {
                 }
             }
             // templates
-            List templateDescrs = descr.getFactTemplates();
-            templates = new HashMap(templateDescrs.size());
-            iterator = templateDescrs.iterator();
-            while (iterator.hasNext()) {
-                FactTemplateDescr template = (FactTemplateDescr) iterator.next();
+            List<FactTemplateDescr> templateDescrs = descr.getFactTemplates();
+            templates = new HashMap<String, FactTemplateDescr>(templateDescrs.size());
+            Iterator<FactTemplateDescr> iterator4 = templateDescrs.iterator();
+            while (iterator4.hasNext()) {
+                FactTemplateDescr template = iterator4.next();
                 templates.put(template.getName(), template);
             }
             // globals
-            List globalDescrs = descr.getGlobals();
+            List<GlobalDescr> globalDescrs = descr.getGlobals();
             globals = new ArrayList<GlobalDescr>();
-            iterator = globalDescrs.iterator();
-            while (iterator.hasNext()) {
-                GlobalDescr global = (GlobalDescr) iterator.next();
-                globals.add(global);
+            Iterator<GlobalDescr> iterator5 = globalDescrs.iterator();
+            while (iterator5.hasNext()) {
+                globals.add(iterator5.next());
             }
 
             //attributes
-            this.attributes = new HashMap();
-        	for (Iterator attrIter = descr.getAttributes().iterator(); attrIter.hasNext();) {
-        		AttributeDescr attribute = (AttributeDescr) attrIter.next();
+            this.attributes = new HashMap<String, String>();
+        	for (Iterator<AttributeDescr> attrIter = descr.getAttributes().iterator(); attrIter.hasNext();) {
+        		AttributeDescr attribute = attrIter.next();
         		if (attribute != null && attribute.getName() != null) {
         			attributes.put(attribute.getName(), attribute.getValue());
         		}

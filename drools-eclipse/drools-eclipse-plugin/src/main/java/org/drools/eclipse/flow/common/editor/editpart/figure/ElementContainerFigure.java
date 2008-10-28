@@ -11,6 +11,7 @@ import org.eclipse.draw2d.Layer;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.StackLayout;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 
 public class ElementContainerFigure extends Figure implements ElementFigure {
@@ -62,4 +63,7 @@ public class ElementContainerFigure extends Figure implements ElementFigure {
         return pane;
     }
 
+	public void setColor(Color newColor) {
+	}
+	
 }

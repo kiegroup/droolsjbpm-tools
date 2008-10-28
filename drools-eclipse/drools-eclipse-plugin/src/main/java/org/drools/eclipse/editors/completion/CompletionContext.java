@@ -300,10 +300,16 @@ public class CompletionContext {
 			case Location.LOCATION_RHS:
 				String rhs = "";
 				i = locationIndex + 1;
+				int endLocationOfLast = Integer.MAX_VALUE - 1;
 				while (i < parserList.size()) {
 					Object o = parserList.get(i++);
 					if (o instanceof DroolsToken) {
-						rhs += ((DroolsToken) o).getText(); 
+						DroolsToken token = (DroolsToken) o;
+						if (endLocationOfLast + 1 < token.getStartIndex()) {
+							rhs += " ";
+						}
+						rhs += token.getText();
+						endLocationOfLast = token.getStopIndex();
 					}
 				}
 				location.setProperty(Location.LOCATION_RHS_CONTENT, rhs);	

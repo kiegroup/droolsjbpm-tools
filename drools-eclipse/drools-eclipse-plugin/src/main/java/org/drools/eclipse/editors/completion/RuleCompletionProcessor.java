@@ -20,16 +20,9 @@ import org.drools.eclipse.DRLInfo.RuleInfo;
 import org.drools.eclipse.editors.AbstractRuleEditor;
 import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.lang.Location;
-import org.drools.lang.descr.AndDescr;
-import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FactTemplateDescr;
-import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldTemplateDescr;
 import org.drools.lang.descr.GlobalDescr;
-import org.drools.lang.descr.NotDescr;
-import org.drools.lang.descr.OrDescr;
-import org.drools.lang.descr.PatternDescr;
 import org.drools.rule.builder.dialect.mvel.MVELConsequenceBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.spi.KnowledgeHelper;
@@ -139,7 +132,8 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         }
 
         boolean startOfDialectExpression = CompletionUtil.isStartOfDialectExpression( consequenceWithoutPrefix );
-        if ( isJavaDialect() && startOfDialectExpression ) {
+        if ( //isJavaDialect() && 
+        		startOfDialectExpression ) {
             addRHSKeywordCompletionProposals( list,
                                               documentOffset,
                                               prefix );
@@ -196,7 +190,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         return false;
     }
 
-    protected void addLHSCompletionProposals(List list,
+    protected void addLHSCompletionProposals(List<RuleCompletionProposal> list,
                                              int documentOffset,
                                              Location location,
                                              String prefix,
@@ -261,9 +255,9 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
             case Location.LOCATION_LHS_FROM_COLLECT :
             case Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS :
                 // and add imported classes
-                Iterator iterator = getImports().iterator();
+                Iterator<String> iterator = getImports().iterator();
                 while ( iterator.hasNext() ) {
-                    String name = (String) iterator.next();
+                    String name = iterator.next();
                     int index = name.lastIndexOf( "." );
                     if ( index != -1 ) {
                         String className = name.substring( index + 1 );
@@ -279,7 +273,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                 }
                 iterator = getClassesInPackage().iterator();
                 while ( iterator.hasNext() ) {
-                    String name = (String) iterator.next();
+                    String name = iterator.next();
                     int index = name.lastIndexOf( "." );
                     if ( index != -1 ) {
                         String className = name.substring( index + 1 );
@@ -569,10 +563,9 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                     }
                 }
                 // add globals with possibly matching type
-                List globals = getGlobals();
+                List<GlobalDescr> globals = getGlobals();
                 if ( globals != null ) {
-                    for ( iterator = globals.iterator(); iterator.hasNext(); ) {
-                        GlobalDescr global = (GlobalDescr) iterator.next();
+                    for ( GlobalDescr global: globals ) {
                         if ( isSubtypeOf( global.getType(),
                                           type ) ) {
                             RuleCompletionProposal proposal = new RuleCompletionProposal( documentOffset - prefix.length(),

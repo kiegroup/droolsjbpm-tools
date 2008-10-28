@@ -18,6 +18,7 @@ package org.drools.eclipse.flow.common.editor.editpart.figure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.Panel;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -66,4 +67,8 @@ public abstract class AbstractElementFigure extends Panel implements ElementFigu
     public void setFocus(boolean b) {
         repaint();
     }
+
+	public void setColor(Color newColor) {
+	}
+	
 }

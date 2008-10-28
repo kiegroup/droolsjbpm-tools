@@ -247,6 +247,8 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                           true );
         store.setDefault( IDroolsConstants.SKIN,
                           "default" );
+        store.setDefault( IDroolsConstants.ALLOW_NODE_CUSTOMIZATION,
+        				  false );
     }
 
     public DRLInfo parseResource(IResource resource,

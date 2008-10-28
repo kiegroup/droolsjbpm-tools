@@ -208,9 +208,18 @@ public class RuleFlowConstraintDialog extends Dialog {
         l3.setText("Type:");
         typeCombo = new Combo(top, SWT.DROP_DOWN | SWT.READ_ONLY);
         typeCombo.setItems(TYPES);
-        typeCombo.select(0);
         gd = new GridData();
         typeCombo.setLayoutData(gd);
+        typeCombo.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
+			public void widgetSelected(SelectionEvent e) {
+				if (completionProcessor != null) {
+					completionProcessor.setType(typeCombo.getText());
+				}
+			}
+        });
+        typeCombo.select(0);
         
         Label l4 = new Label(top, SWT.NONE);
         gd = new GridData();
@@ -357,6 +366,7 @@ public class RuleFlowConstraintDialog extends Dialog {
                 index = found;
 	        }
 	        dialectCombo.select(index);
+            completionProcessor.setType(typeCombo.getText());
 			setConstraintText(constraint.getConstraint());
 		} else {
 			priorityText.setText("1");

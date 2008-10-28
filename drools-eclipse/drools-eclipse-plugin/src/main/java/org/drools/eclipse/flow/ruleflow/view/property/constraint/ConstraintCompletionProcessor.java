@@ -17,13 +17,16 @@ package org.drools.eclipse.flow.ruleflow.view.property.constraint;
  */
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
 import org.drools.eclipse.editors.DRLRuleEditor;
 import org.drools.eclipse.editors.completion.RuleCompletionProcessor;
 import org.drools.lang.descr.GlobalDescr;
+import org.drools.process.core.context.variable.Variable;
+import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.core.datatype.DataType;
+import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.workflow.core.WorkflowProcess;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -48,6 +51,7 @@ public class ConstraintCompletionProcessor extends RuleCompletionProcessor {
 	private WorkflowProcess process;
 	private List<String> imports;
 	private List<GlobalDescr> globals;
+	private String type;
 	
 	public ConstraintCompletionProcessor(WorkflowProcess process) {
 		super(null);
@@ -67,11 +71,30 @@ public class ConstraintCompletionProcessor extends RuleCompletionProcessor {
 		}
 		return null;
 	}
+	
+	public void setType(String type) {
+		this.type = type;
+	}
 
     protected String readBackwards(int documentOffset, IDocument doc) throws BadLocationException {
-        int startPart = doc.getPartition(documentOffset).getOffset();
+    	int startPart = doc.getPartition(documentOffset).getOffset();
         String prefix = doc.get(startPart, documentOffset - startPart);
-        return "rule dummy \n when \n" + prefix;
+        if ("code".equals(type)) {
+        	if (prefix.startsWith("return ")) {
+        		prefix = prefix.substring(7);
+        	}
+        	String result = "rule dummy when eval( ";
+        	VariableScope variableScope = (VariableScope) process.getDefaultContext(VariableScope.VARIABLE_SCOPE);
+        	if (variableScope != null) {
+        		for (Variable variable: variableScope.getVariables()) {
+        			DataType type = variable.getType();
+        			result +=  type.getStringType() + " " + variable.getName() + "; ";	
+        		}
+        	}
+    		return result + prefix;
+    	} else {
+	        return "rule dummy \n when \n" + prefix;
+    	}
     }
     
     public List getImports() {

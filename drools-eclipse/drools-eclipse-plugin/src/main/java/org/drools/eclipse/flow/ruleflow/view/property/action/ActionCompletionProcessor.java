@@ -17,7 +17,6 @@ package org.drools.eclipse.flow.ruleflow.view.property.action;
  */
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -49,9 +48,10 @@ import org.eclipse.ui.PlatformUI;
 public class ActionCompletionProcessor extends RuleCompletionProcessor {
 
 	private WorkflowProcess process;
-	private List imports;
+	private List<String> imports;
+	private List<String> functions;
 	private List<GlobalDescr> globals;
-	private Map attributes;
+	private Map<String, String> attributes;
 	private String dialect;
 	
 	public ActionCompletionProcessor(WorkflowProcess process) {
@@ -83,10 +83,10 @@ public class ActionCompletionProcessor extends RuleCompletionProcessor {
         String prefix = doc.get(startPart, documentOffset - startPart);
         return "rule dummy "
             + (dialect == null ? "" : " dialect \"" + dialect + "\" ")
-            + "\n when \n then \n org.drools.workflow.instance.NodeInstance nodeInstance; \n " + prefix;
+            + "\n when \n then \n org.drools.spi.ProcessContext context = null; \n " + prefix;
     }
     
-    public List getImports() {
+    public List<String> getImports() {
     	if (imports == null) {
     		loadImports();
     	}
@@ -94,12 +94,12 @@ public class ActionCompletionProcessor extends RuleCompletionProcessor {
     }
     
     private void loadImports() {
-    	this.imports = new ArrayList();
-    	List imports = process.getImports();
+    	this.imports = new ArrayList<String>();
+    	List<String> imports = process.getImports();
     	if (imports != null) {
-	    	Iterator iterator = imports.iterator();
+	    	Iterator<String> iterator = imports.iterator();
 	        while (iterator.hasNext()) {
-	            String importName = (String) iterator.next();
+	            String importName = iterator.next();
 	            if (importName.endsWith(".*")) {
 	            	IJavaProject javaProject = getJavaProject();
 	            	if (javaProject != null) {
@@ -128,17 +128,37 @@ public class ActionCompletionProcessor extends RuleCompletionProcessor {
     	}
     }
     
+    protected List<String> getFunctions() {
+    	if (functions == null) {
+    		loadFunctions();
+    	}
+    	return functions;
+    }
+    
+    private void loadFunctions() {
+    	this.functions = new ArrayList<String>();
+    	List<String> imports = process.getFunctionImports();
+    	if (imports != null) {
+	    	for (String functionImport: imports) {
+                int index = functionImport.lastIndexOf('.');
+                if (index != -1) {
+                    functions.add(functionImport.substring(index + 1));
+                }
+            }
+    	}
+    }
+    
     private void loadAttributes() {
         if (this.dialect == null) {
             attributes = Collections.EMPTY_MAP;
         } else {
-            Map result = new HashMap();
+            Map<String, String> result = new HashMap<String, String>();
             result.put("dialect", dialect);
             attributes = result;
         }
     }
     
-    protected Map getAttributes() {
+    protected Map<String, String> getAttributes() {
         if (attributes == null) {
             loadAttributes();
         }

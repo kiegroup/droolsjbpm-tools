@@ -20,6 +20,8 @@ import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.workflow.core.Node;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * Wrapper for a node.
@@ -52,6 +54,18 @@ public abstract class AbstractNodeWrapper extends DefaultElementWrapper implemen
         notifyListeners(CHANGE_NAME);
     }
     
+	public Color internalGetColor() {
+		Integer rgb = (Integer) getNode().getMetaData("color");
+		if (rgb != null) {
+			return new Color(Display.getCurrent(), integerToRGB(rgb));
+		}
+		return null;
+	}
+	
+	protected void internalSetColor(Integer color) {
+		getNode().setMetaData("color", color);
+	}
+	
     protected void internalSetConstraint(Rectangle constraint) {
         Node node = getNode();
         node.setMetaData("x", constraint.x);

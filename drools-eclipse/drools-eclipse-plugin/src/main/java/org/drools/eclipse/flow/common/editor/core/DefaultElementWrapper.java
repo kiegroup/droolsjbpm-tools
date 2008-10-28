@@ -22,8 +22,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.eclipse.DroolsEclipsePlugin;
+import org.drools.eclipse.flow.ruleflow.view.property.color.ColorPropertyDescriptor;
+import org.drools.eclipse.preferences.IDroolsConstants;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
@@ -36,19 +41,35 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  */
 public abstract class DefaultElementWrapper implements ElementWrapper, IPropertySource, Serializable {
 
-    protected static IPropertyDescriptor[] descriptors;
+	private static boolean allowNodeCustomization =
+		DroolsEclipsePlugin.getDefault().getPreferenceStore().getBoolean(IDroolsConstants.ALLOW_NODE_CUSTOMIZATION);
+
+	protected static IPropertyDescriptor[] descriptors;
 
     public static final String NAME = "Name";
     public static final String ID = "Id";
+    public static final String COLOR = "Color";
     static {
-        descriptors = new IPropertyDescriptor[] {
-            new TextPropertyDescriptor(NAME, "Name"),
-            new TextPropertyDescriptor(ID, "Id") {
-            	public CellEditor createPropertyEditor(Composite parent) {
-                    return null;
-                }
-            },
-        };
+    	if (allowNodeCustomization) {
+	        descriptors = new IPropertyDescriptor[] {
+	            new TextPropertyDescriptor(NAME, "Name"),
+	            new TextPropertyDescriptor(ID, "Id") {
+	            	public CellEditor createPropertyEditor(Composite parent) {
+	                    return null;
+	                }
+	            },
+	            new ColorPropertyDescriptor(COLOR, "Color"),
+	        };
+    	} else {
+    		descriptors = new IPropertyDescriptor[] {
+	            new TextPropertyDescriptor(NAME, "Name"),
+	            new TextPropertyDescriptor(ID, "Id") {
+	            	public CellEditor createPropertyEditor(Composite parent) {
+	                    return null;
+	                }
+	            },
+	        };
+    	}
     }
     
     private Object element;
@@ -57,6 +78,7 @@ public abstract class DefaultElementWrapper implements ElementWrapper, IProperty
     private List<ElementConnection> incomingConnections = new ArrayList<ElementConnection>();
     private List<ElementConnection> outgoingConnections = new ArrayList<ElementConnection>();
     private transient List<ModelListener> listeners = new ArrayList<ModelListener>();
+    protected Color color;
     
     protected void setElement(Object element) {
 		this.element = element;
@@ -150,7 +172,27 @@ public abstract class DefaultElementWrapper implements ElementWrapper, IProperty
 
 	protected void internalSetName(String name) {
 	}
+	
+	public Color getColor() {
+		if (color == null) {
+			color = internalGetColor();
+		}
+		return color;
+	}
+	
+	protected Color internalGetColor() {
+		return null;
+	}
+	
+	public void setColor(Color color) {
+		this.color = color;
+		internalSetColor(color == null ? null : RGBToInteger(color.getRGB()));
+		notifyListeners(CHANGE_NAME);
+	}
 
+	protected void internalSetColor(Integer color) {
+	}
+	
 	public void addListener(ModelListener listener) {
 		listeners.add(listener);
 	}
@@ -191,6 +233,9 @@ public abstract class DefaultElementWrapper implements ElementWrapper, IProperty
 		if (ID.equals(id)) {
 			return getId();
 		}
+		if (COLOR.equals(id)) {
+			return getColor();
+		}
 		return null;
 	}
 
@@ -198,11 +243,29 @@ public abstract class DefaultElementWrapper implements ElementWrapper, IProperty
 		if (NAME.equals(id)) {
 			setName("");
 		}
+		if (COLOR.equals(id)) {
+			setColor(null);
+		}
 	}
 
 	public void setPropertyValue(Object id, Object value) {
 		if (NAME.equals(id)) {
 			setName((String) value);
 		}
+		if (COLOR.equals(id)) {
+			setColor((Color) value);
+		}
+	}
+	
+	public static Integer RGBToInteger(RGB rgb) {
+		return new Integer((rgb.blue << 16) | (rgb.green << 8) | rgb.red);
+	}
+
+	public static RGB integerToRGB(Integer color) {
+		int n = color.intValue();
+		return new RGB(			
+			(n & 0x000000FF),
+			(n & 0x0000FF00) >> 8,
+			(n & 0x00FF0000) >> 16);
 	}
 }

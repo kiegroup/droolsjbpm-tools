@@ -20,6 +20,7 @@ public class DroolsPreferencePage extends PreferencePage implements IWorkbenchPr
 	private Button collapseEditorCheckBox;
 	private Button cacheParsedRulesCheckBox;
 	private Combo processSkinCombo;
+	private Button allowNodeCustomizationCheckBox;
 	
 	protected Control createContents(Composite parent) {
 		final Composite composite = new Composite(parent, SWT.NONE);
@@ -38,6 +39,8 @@ public class DroolsPreferencePage extends PreferencePage implements IWorkbenchPr
 		processSkinCombo = new Combo(composite, SWT.LEFT);
 		processSkinCombo.add("default");
 		processSkinCombo.add("BPMN");
+		allowNodeCustomizationCheckBox = createCheckBox(composite,
+			"Allow the customization of process nodes.");
 
 		initializeValues();
 
@@ -68,7 +71,8 @@ public class DroolsPreferencePage extends PreferencePage implements IWorkbenchPr
         	index = 1;
         }
         processSkinCombo.select(index);
-    }
+        allowNodeCustomizationCheckBox.setSelection(store.getDefaultBoolean(IDroolsConstants.ALLOW_NODE_CUSTOMIZATION));
+	}
 
 	private void initializeValues() {
         IPreferenceStore store = getPreferenceStore();
@@ -81,6 +85,7 @@ public class DroolsPreferencePage extends PreferencePage implements IWorkbenchPr
         	index = 1;
         }
         processSkinCombo.select(index);
+        allowNodeCustomizationCheckBox.setSelection(store.getBoolean(IDroolsConstants.ALLOW_NODE_CUSTOMIZATION));
     }
 
 	protected void performDefaults() {
@@ -101,6 +106,7 @@ public class DroolsPreferencePage extends PreferencePage implements IWorkbenchPr
         store.setValue(IDroolsConstants.CACHE_PARSED_RULES, cacheParsedRulesCheckBox.getSelection());
         store.setValue(IDroolsConstants.SKIN,
     		(String) processSkinCombo.getItem(processSkinCombo.getSelectionIndex()));
+        store.setValue(IDroolsConstants.ALLOW_NODE_CUSTOMIZATION, allowNodeCustomizationCheckBox.getSelection());
     }
 
 	public void init(IWorkbench workbench) {
