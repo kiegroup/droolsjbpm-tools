@@ -17,7 +17,7 @@ package org.drools.eclipse.flow.ruleflow.view.property.constraint;
 
 import org.drools.eclipse.flow.common.view.property.BeanDialogCellEditor;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.knowledge.definitions.process.WorkflowProcess;
+import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.node.MilestoneNode;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;

@@ -15,7 +15,7 @@ package org.drools.eclipse.flow.ruleflow.view.property.action;
  * limitations under the License.
  */
 
-import org.drools.knowledge.definitions.process.WorkflowProcess;
+import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.node.ActionNode;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Composite;

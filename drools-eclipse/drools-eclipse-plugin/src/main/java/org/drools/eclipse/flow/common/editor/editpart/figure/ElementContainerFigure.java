@@ -8,6 +8,7 @@ import org.eclipse.draw2d.FreeformViewport;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.Layer;
+import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.StackLayout;
 import org.eclipse.swt.graphics.Color;

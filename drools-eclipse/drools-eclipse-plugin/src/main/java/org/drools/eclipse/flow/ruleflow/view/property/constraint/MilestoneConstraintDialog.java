@@ -21,7 +21,7 @@ import java.util.Map;
 import org.drools.eclipse.editors.DRLSourceViewerConfig;
 import org.drools.eclipse.editors.scanners.DRLPartionScanner;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.knowledge.definitions.process.WorkflowProcess;
+import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.node.MilestoneNode;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;

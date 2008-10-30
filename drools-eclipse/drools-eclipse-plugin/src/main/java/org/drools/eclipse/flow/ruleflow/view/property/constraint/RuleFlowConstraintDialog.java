@@ -20,9 +20,9 @@ import java.util.Map;
 
 import org.drools.eclipse.editors.DRLSourceViewerConfig;
 import org.drools.eclipse.editors.scanners.DRLPartionScanner;
-import org.drools.knowledge.definitions.process.WorkflowProcess;
 import org.drools.util.ArrayUtils;
 import org.drools.workflow.core.Constraint;
+import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.impl.ConstraintImpl;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.resource.JFaceResources;

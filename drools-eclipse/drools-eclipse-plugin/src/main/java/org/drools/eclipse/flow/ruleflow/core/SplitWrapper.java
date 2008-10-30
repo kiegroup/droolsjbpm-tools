@@ -26,7 +26,6 @@ import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.eclipse.flow.ruleflow.view.property.constraint.ConstraintsPropertyDescriptor;
 import org.drools.knowledge.definitions.process.Connection;
-import org.drools.knowledge.definitions.process.WorkflowProcess;
 import org.drools.workflow.core.Constraint;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.WorkflowProcess;
@@ -65,7 +64,7 @@ public class SplitWrapper extends AbstractNodeWrapper {
 			if (constraint != null) {
 				label = constraint.getName();
 			}
-			connection.setMetaData("label", label);
+			((org.drools.workflow.core.Connection) connection).setMetaData("label", label);
     	}
     }
     

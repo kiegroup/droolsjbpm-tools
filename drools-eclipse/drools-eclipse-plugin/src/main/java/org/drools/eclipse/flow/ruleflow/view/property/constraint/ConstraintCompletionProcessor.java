@@ -17,6 +17,7 @@ package org.drools.eclipse.flow.ruleflow.view.property.constraint;
  */
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -26,9 +27,7 @@ import org.drools.lang.descr.GlobalDescr;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.core.datatype.DataType;
-import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.workflow.core.WorkflowProcess;
-import org.drools.knowledge.definitions.process.WorkflowProcess;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
@@ -134,7 +133,7 @@ public class ConstraintCompletionProcessor extends RuleCompletionProcessor {
     
     private void loadGlobals() {
     	String[] globalNames = process.getGlobalNames();
-    	this.globals = Arrays.asList(((org.drools.process.core.Process) process).getGlobalNames());
+    	this.globals = new ArrayList<GlobalDescr>(globalNames.length);
     	for (String globalName: globalNames) {
     		this.globals.add(new GlobalDescr(globalName, "java.lang.Object"));
     	}

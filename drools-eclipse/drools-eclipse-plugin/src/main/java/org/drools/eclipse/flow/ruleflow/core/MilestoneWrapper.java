@@ -18,7 +18,7 @@ package org.drools.eclipse.flow.ruleflow.core;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.eclipse.flow.ruleflow.view.property.constraint.MilestoneConstraintPropertyDescriptor;
-import org.drools.knowledge.definitions.process.WorkflowProcess;
+import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.node.MilestoneNode;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 

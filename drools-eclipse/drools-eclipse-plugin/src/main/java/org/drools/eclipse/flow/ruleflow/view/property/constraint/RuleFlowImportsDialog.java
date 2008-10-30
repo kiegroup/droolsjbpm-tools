@@ -22,8 +22,8 @@ import java.util.regex.Pattern;
 
 import org.drools.eclipse.editors.DRLSourceViewerConfig;
 import org.drools.eclipse.editors.scanners.DRLPartionScanner;
-import org.drools.knowledge.definitions.process.WorkflowProcess;
 import org.drools.process.core.Process;
+import org.drools.workflow.core.WorkflowProcess;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
