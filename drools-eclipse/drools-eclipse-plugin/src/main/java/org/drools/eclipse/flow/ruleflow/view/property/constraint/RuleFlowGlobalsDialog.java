@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 
 import org.drools.eclipse.editors.DRLSourceViewerConfig;
 import org.drools.eclipse.editors.scanners.DRLPartionScanner;
-import org.drools.workflow.core.WorkflowProcess;
+import org.drools.knowledge.definitions.process.WorkflowProcess;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
@@ -114,7 +114,7 @@ public class RuleFlowGlobalsDialog extends Dialog {
 	
 	private String getProcessImports() {
 		String result = "# define your globals here: e.g. global java.util.List myList\n";
-		Map<String, String> globals = process.getGlobals();
+		Map<String, String> globals = ((org.drools.process.core.Process) process).getGlobals();
 		if (globals != null) {
 			for (Map.Entry<String, String> entry: globals.entrySet()) {
 				result += "global " + entry.getValue() + " " + entry.getKey() + "\n";

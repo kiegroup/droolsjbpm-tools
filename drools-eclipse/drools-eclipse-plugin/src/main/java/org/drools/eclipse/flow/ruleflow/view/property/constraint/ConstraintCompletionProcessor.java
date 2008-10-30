@@ -28,6 +28,7 @@ import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.core.datatype.DataType;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.workflow.core.WorkflowProcess;
+import org.drools.knowledge.definitions.process.WorkflowProcess;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
@@ -106,7 +107,7 @@ public class ConstraintCompletionProcessor extends RuleCompletionProcessor {
     
     private void loadImports() {
     	this.imports = new ArrayList();
-    	List imports = process.getImports();
+    	List imports = ((org.drools.process.core.Process) process).getImports();
     	if (imports != null) {
 	    	Iterator iterator = imports.iterator();
 	        while (iterator.hasNext()) {
@@ -133,7 +134,7 @@ public class ConstraintCompletionProcessor extends RuleCompletionProcessor {
     
     private void loadGlobals() {
     	String[] globalNames = process.getGlobalNames();
-    	this.globals = new ArrayList<GlobalDescr>(globalNames.length);
+    	this.globals = Arrays.asList(((org.drools.process.core.Process) process).getGlobalNames());
     	for (String globalName: globalNames) {
     		this.globals.add(new GlobalDescr(globalName, "java.lang.Object"));
     	}

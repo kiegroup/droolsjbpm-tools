@@ -22,7 +22,8 @@ import java.util.regex.Pattern;
 
 import org.drools.eclipse.editors.DRLSourceViewerConfig;
 import org.drools.eclipse.editors.scanners.DRLPartionScanner;
-import org.drools.workflow.core.WorkflowProcess;
+import org.drools.knowledge.definitions.process.WorkflowProcess;
+import org.drools.process.core.Process;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
@@ -117,7 +118,7 @@ public class RuleFlowImportsDialog extends Dialog {
 	
 	private String getProcessImports() {
 		String result = "# define your imports here: e.g. import com.sample.MyClass\n";
-		List<String> imports = process.getImports();
+		List<String> imports = ((Process) process).getImports();
 		if (imports != null) {
 			for (String importString: imports) {
 				result += "import " + importString + "\n";

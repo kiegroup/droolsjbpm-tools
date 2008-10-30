@@ -28,7 +28,7 @@ import org.drools.eclipse.flow.common.view.property.ListPropertyDescriptor;
 import org.drools.eclipse.flow.ruleflow.view.property.exceptionHandler.ExceptionHandlersPropertyDescriptor;
 import org.drools.eclipse.flow.ruleflow.view.property.swimlane.SwimlanesCellEditor;
 import org.drools.eclipse.flow.ruleflow.view.property.variable.VariableListCellEditor;
-import org.drools.process.core.Process;
+import org.drools.knowledge.definitions.process.Process;
 import org.drools.process.core.context.exception.ExceptionHandler;
 import org.drools.process.core.context.exception.ExceptionScope;
 import org.drools.process.core.context.swimlane.Swimlane;
@@ -65,13 +65,13 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
     public static final String SWIMLANES = "swimlanes";
     public static final String EXCEPTION_HANDLERS = "exceptionHandlers";
      
-    private Process process;
+    private org.drools.process.core.Process process;
     private Map<String, ElementWrapper> elements = new HashMap<String, ElementWrapper>();
     private transient List<ModelListener> listeners = new ArrayList<ModelListener>();
     protected IPropertyDescriptor[] descriptors;
     
     public ProcessWrapper() {
-        process = createProcess();
+        process = (org.drools.process.core.Process) createProcess();
     }
     
     protected abstract Process createProcess();
@@ -81,7 +81,7 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
     }
     
     public void localSetProcess(Process process) {
-        this.process = process;
+        this.process = (org.drools.process.core.Process) process;
     }
     
     public String getName() {
@@ -227,13 +227,13 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
             return getRouterLayout();
         }
         if (VARIABLES.equals(id)) {
-            return ((VariableScope) getProcess().getDefaultContext(VariableScope.VARIABLE_SCOPE)).getVariables();
+            return ((VariableScope) process.getDefaultContext(VariableScope.VARIABLE_SCOPE)).getVariables();
         }
         if (SWIMLANES.equals(id)) {
-            return ((SwimlaneContext) getProcess().getDefaultContext(SwimlaneContext.SWIMLANE_SCOPE)).getSwimlanes();
+            return ((SwimlaneContext) process.getDefaultContext(SwimlaneContext.SWIMLANE_SCOPE)).getSwimlanes();
         }
         if (EXCEPTION_HANDLERS.equals(id)) {
-            return ((ExceptionScope) getProcess().getDefaultContext(ExceptionScope.EXCEPTION_SCOPE)).getExceptionHandlers();
+            return ((ExceptionScope) process.getDefaultContext(ExceptionScope.EXCEPTION_SCOPE)).getExceptionHandlers();
         }
         return null;
     }
@@ -259,15 +259,15 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
             setRouterLayout(null);
         }
         if (VARIABLES.equals(id)) {
-            ((VariableScope) getProcess().getDefaultContext(
+            ((VariableScope) process.getDefaultContext(
                 VariableScope.VARIABLE_SCOPE)).setVariables(new ArrayList<Variable>());
         }
         if (SWIMLANES.equals(id)) {
-            ((SwimlaneContext) getProcess().getDefaultContext(
+            ((SwimlaneContext) process.getDefaultContext(
                 SwimlaneContext.SWIMLANE_SCOPE)).setSwimlanes(new ArrayList<Swimlane>());
         }
         if (EXCEPTION_HANDLERS.equals(id)) {
-            ((ExceptionScope) getProcess().getDefaultContext(
+            ((ExceptionScope) process.getDefaultContext(
                 ExceptionScope.EXCEPTION_SCOPE)).setExceptionHandlers(new HashMap<String, ExceptionHandler>());
         }
     }
@@ -285,13 +285,13 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
         } else if (ROUTER_LAYOUT.equals(id)) {
             setRouterLayout((Integer) value);
         } else if (VARIABLES.equals(id)) {
-            ((VariableScope) getProcess().getDefaultContext(
+            ((VariableScope) process.getDefaultContext(
                 VariableScope.VARIABLE_SCOPE)).setVariables((List<Variable>) value);
         } else if (SWIMLANES.equals(id)) {
-            ((SwimlaneContext) getProcess().getDefaultContext(
+            ((SwimlaneContext) process.getDefaultContext(
                 SwimlaneContext.SWIMLANE_SCOPE)).setSwimlanes((List<Swimlane>) value);
         } else if (EXCEPTION_HANDLERS.equals(id)) {
-        	((ExceptionScope) getProcess().getDefaultContext(
+        	((ExceptionScope) process.getDefaultContext(
                 ExceptionScope.EXCEPTION_SCOPE)).setExceptionHandlers((Map<String, ExceptionHandler>) value);
         }
     }

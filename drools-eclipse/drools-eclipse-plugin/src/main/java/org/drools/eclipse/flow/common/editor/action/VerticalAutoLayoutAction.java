@@ -22,8 +22,8 @@ import java.util.Map;
 import org.drools.eclipse.flow.common.editor.GenericModelEditor;
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ProcessWrapper;
-import org.drools.workflow.core.Connection;
-import org.drools.workflow.core.WorkflowProcess;
+import org.drools.knowledge.definitions.process.Connection;
+import org.drools.knowledge.definitions.process.WorkflowProcess;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.graph.DirectedGraph;
@@ -71,7 +71,7 @@ public class VerticalAutoLayoutAction extends ActionDelegate implements IEditorA
     protected DirectedGraph createDirectedGraph(Map<Long, Node> mapping) {
         DirectedGraph graph = new DirectedGraph();
         WorkflowProcess process = (WorkflowProcess) ((ProcessWrapper) ((GenericModelEditor) editor).getModel()).getProcess();
-        for (org.drools.workflow.core.Node processNode: process.getNodes()) {
+        for (org.drools.knowledge.definitions.process.Node processNode: process.getNodes()) {
             Node node = new Node();
             Integer width = (Integer) processNode.getMetaData("width");
             Integer height = (Integer) processNode.getMetaData("height");
@@ -85,7 +85,7 @@ public class VerticalAutoLayoutAction extends ActionDelegate implements IEditorA
             graph.nodes.add(node);
             mapping.put(processNode.getId(), node);
         }
-        for (org.drools.workflow.core.Node processNode: process.getNodes()) {
+        for (org.drools.knowledge.definitions.process.Node processNode: process.getNodes()) {
             for (List<Connection> connections: processNode.getIncomingConnections().values()) {
                 for (Connection connection: connections) {
                     Node source = mapping.get(connection.getFrom().getId());

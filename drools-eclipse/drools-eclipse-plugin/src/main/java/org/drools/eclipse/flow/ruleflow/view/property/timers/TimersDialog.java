@@ -17,9 +17,9 @@ package org.drools.eclipse.flow.ruleflow.view.property.timers;
 
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
 import org.drools.eclipse.flow.common.view.property.EditMapDialog;
+import org.drools.knowledge.definitions.process.WorkflowProcess;
 import org.drools.process.core.timer.Timer;
 import org.drools.workflow.core.DroolsAction;
-import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.eclipse.swt.widgets.Shell;
 

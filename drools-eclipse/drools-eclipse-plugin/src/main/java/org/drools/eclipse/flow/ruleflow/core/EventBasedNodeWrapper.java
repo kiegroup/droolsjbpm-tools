@@ -4,9 +4,9 @@ import java.util.Map;
 
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.ruleflow.view.property.timers.TimersPropertyDescriptor;
+import org.drools.knowledge.definitions.process.WorkflowProcess;
 import org.drools.process.core.timer.Timer;
 import org.drools.workflow.core.DroolsAction;
-import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.node.EventBasedNode;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 

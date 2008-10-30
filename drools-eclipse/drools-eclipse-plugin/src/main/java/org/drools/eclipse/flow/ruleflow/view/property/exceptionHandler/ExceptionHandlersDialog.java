@@ -17,9 +17,9 @@ package org.drools.eclipse.flow.ruleflow.view.property.exceptionHandler;
 
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
 import org.drools.eclipse.flow.common.view.property.EditMapDialog;
-import org.drools.process.core.Process;
+import org.drools.knowledge.definitions.process.Process;
+import org.drools.knowledge.definitions.process.WorkflowProcess;
 import org.drools.process.core.context.exception.ActionExceptionHandler;
-import org.drools.workflow.core.WorkflowProcess;
 import org.eclipse.swt.widgets.Shell;
 
 /**

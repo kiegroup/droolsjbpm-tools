@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.workflow.core.Connection;
+import org.drools.knowledge.definitions.process.Connection;
+import org.drools.knowledge.definitions.process.WorkflowProcess;
 import org.drools.workflow.core.Constraint;
-import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.node.Split;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;

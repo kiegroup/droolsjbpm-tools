@@ -23,8 +23,9 @@ import org.drools.eclipse.editors.scanners.DRLPartionScanner;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
 import org.drools.eclipse.flow.ruleflow.view.property.constraint.RuleFlowGlobalsDialog;
 import org.drools.eclipse.flow.ruleflow.view.property.constraint.RuleFlowImportsDialog;
+import org.drools.knowledge.definitions.process.WorkflowProcess;
+import org.drools.process.core.Process;
 import org.drools.util.ArrayUtils;
-import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
@@ -223,7 +224,7 @@ public class ActionDialog extends EditBeanDialog {
 				int code = dialog.open();
 				if (code != CANCEL) {
 					List imports = dialog.getImports();
-					process.setImports(imports);
+					((Process) process).setImports(imports);
 					List functionImports = dialog.getFunctionImports();
 					process.setFunctionImports(functionImports);
 					completionProcessor.reset();
@@ -242,7 +243,7 @@ public class ActionDialog extends EditBeanDialog {
 				int code = dialog.open();
 				if (code != CANCEL) {
 					Map globals = dialog.getGlobals();
-					process.setGlobals(globals);
+					((Process) process).setGlobals(globals);
 					completionProcessor.reset();
 				}
 			}

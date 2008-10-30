@@ -17,8 +17,8 @@ package org.drools.eclipse.flow.ruleflow.view.property.action;
 
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
 import org.drools.eclipse.flow.common.view.property.EditListDialog;
+import org.drools.knowledge.definitions.process.WorkflowProcess;
 import org.drools.workflow.core.DroolsAction;
-import org.drools.workflow.core.WorkflowProcess;
 import org.eclipse.swt.widgets.Shell;
 
 /**

@@ -19,9 +19,9 @@ import java.util.Map;
 
 import org.drools.eclipse.flow.common.view.property.BeanDialogCellEditor;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
+import org.drools.knowledge.definitions.process.WorkflowProcess;
 import org.drools.process.core.timer.Timer;
 import org.drools.workflow.core.DroolsAction;
-import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.node.EventBasedNode;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;

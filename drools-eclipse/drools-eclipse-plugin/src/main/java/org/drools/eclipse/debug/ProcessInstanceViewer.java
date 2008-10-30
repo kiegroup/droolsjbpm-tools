@@ -104,7 +104,7 @@ public class ProcessInstanceViewer extends ViewPart implements ISelectionListene
                 try {
                     ProcessExtension processExtension = (ProcessExtension)
                         element.createExecutableExtension("className");
-                    Process process = processInfo.getProcess();
+                    Process process = (Process) processInfo.getProcess();
                     if (processExtension.acceptsProcess(process.getType())) {
                         ProcessEditPartFactory editPartFactory = processExtension.getProcessEditPartFactory();
                         editPartFactory.setProject(javaProject);

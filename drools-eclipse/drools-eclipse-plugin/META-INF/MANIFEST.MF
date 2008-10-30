@@ -30,8 +30,9 @@ Require-Bundle: org.eclipse.core.runtime,
 Eclipse-LazyStart: true
 Eclipse-BuddyPolicy: registered
 Bundle-ClassPath: .,
- lib/drools-compiler.jar,
+ lib/drools-api.jar,
  lib/drools-core.jar,
+ lib/drools-compiler.jar,
  lib/drools-decisiontables.jar,
  lib/drools-jsr94.jar,
  lib/jsr94.jar,

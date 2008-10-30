@@ -490,7 +490,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                 configuration.setClassLoader( newLoader );
                 
                 XmlProcessReader xmlReader = new XmlProcessReader( configuration.getSemanticModules() );
-                Process process = xmlReader.read( new StringReader( input ) );
+                Process process = (Process) xmlReader.read( new StringReader( input ) );
                 if ( process != null ) {
                     return parseProcess( process,
                                          resource,
@@ -516,7 +516,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                                     PackageBuilderConfiguration config) {
         PackageBuilder packageBuilder = new PackageBuilder( config );
         ProcessBuilder processBuilder = new ProcessBuilder( packageBuilder );
-        processBuilder.buildProcess( process );
+        processBuilder.buildProcess( process, resource.getLocation().toString() );
         ProcessInfo processInfo = new ProcessInfo( process.getId(),
                                                    process );
         processInfo.setErrors( processBuilder.getErrors() );

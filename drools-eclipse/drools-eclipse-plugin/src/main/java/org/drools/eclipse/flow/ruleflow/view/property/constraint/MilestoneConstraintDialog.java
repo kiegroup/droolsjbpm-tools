@@ -21,7 +21,7 @@ import java.util.Map;
 import org.drools.eclipse.editors.DRLSourceViewerConfig;
 import org.drools.eclipse.editors.scanners.DRLPartionScanner;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.workflow.core.WorkflowProcess;
+import org.drools.knowledge.definitions.process.WorkflowProcess;
 import org.drools.workflow.core.node.MilestoneNode;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
@@ -181,7 +181,7 @@ public class MilestoneConstraintDialog extends EditBeanDialog {
 				int code = dialog.open();
 				if (code != CANCEL) {
 					List imports = dialog.getImports();
-					process.setImports(imports);
+					((org.drools.process.core.Process) process).setImports(imports);
 					completionProcessor.reset();
 				}
 			}
@@ -198,7 +198,7 @@ public class MilestoneConstraintDialog extends EditBeanDialog {
 				int code = dialog.open();
 				if (code != CANCEL) {
 					Map globals = dialog.getGlobals();
-					process.setGlobals(globals);
+					((org.drools.process.core.Process) process).setGlobals(globals);
 					completionProcessor.reset();
 				}
 			}

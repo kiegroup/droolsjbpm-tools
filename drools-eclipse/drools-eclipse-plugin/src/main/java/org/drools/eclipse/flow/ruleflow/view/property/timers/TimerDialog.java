@@ -25,10 +25,11 @@ import org.drools.eclipse.flow.common.view.property.MapItemDialog;
 import org.drools.eclipse.flow.ruleflow.view.property.action.ActionCompletionProcessor;
 import org.drools.eclipse.flow.ruleflow.view.property.constraint.RuleFlowGlobalsDialog;
 import org.drools.eclipse.flow.ruleflow.view.property.constraint.RuleFlowImportsDialog;
+import org.drools.knowledge.definitions.process.WorkflowProcess;
+import org.drools.process.core.Process;
 import org.drools.process.core.timer.Timer;
 import org.drools.util.ArrayUtils;
 import org.drools.workflow.core.DroolsAction;
-import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
@@ -246,7 +247,7 @@ public class TimerDialog extends EditBeanDialog<DroolsAction> implements MapItem
 				int code = dialog.open();
 				if (code != CANCEL) {
 					List<String> imports = dialog.getImports();
-					process.setImports(imports);
+					((Process) process).setImports(imports);
 					completionProcessor.reset();
 				}
 			}
@@ -263,7 +264,7 @@ public class TimerDialog extends EditBeanDialog<DroolsAction> implements MapItem
 				int code = dialog.open();
 				if (code != CANCEL) {
 					Map<String, String> globals = dialog.getGlobals();
-					process.setGlobals(globals);
+					((Process) process).setGlobals(globals);
 					completionProcessor.reset();
 				}
 			}

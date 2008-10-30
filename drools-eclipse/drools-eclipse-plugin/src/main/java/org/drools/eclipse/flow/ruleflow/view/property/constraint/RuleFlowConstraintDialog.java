@@ -20,9 +20,9 @@ import java.util.Map;
 
 import org.drools.eclipse.editors.DRLSourceViewerConfig;
 import org.drools.eclipse.editors.scanners.DRLPartionScanner;
+import org.drools.knowledge.definitions.process.WorkflowProcess;
 import org.drools.util.ArrayUtils;
 import org.drools.workflow.core.Constraint;
-import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.impl.ConstraintImpl;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.resource.JFaceResources;
@@ -266,7 +266,7 @@ public class RuleFlowConstraintDialog extends Dialog {
 				int code = dialog.open();
 				if (code != CANCEL) {
 					List imports = dialog.getImports();
-					process.setImports(imports);
+					((org.drools.process.core.Process) process).setImports(imports);
 					completionProcessor.reset();
 				}
 			}
@@ -283,7 +283,7 @@ public class RuleFlowConstraintDialog extends Dialog {
 				int code = dialog.open();
 				if (code != CANCEL) {
 					Map globals = dialog.getGlobals();
-					process.setGlobals(globals);
+					((org.drools.process.core.Process) process).setGlobals(globals);
 					completionProcessor.reset();
 				}
 			}

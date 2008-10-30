@@ -11,13 +11,13 @@ import org.drools.eclipse.WorkItemDefinitions;
 import org.drools.eclipse.flow.common.editor.core.ElementContainer;
 import org.drools.eclipse.flow.common.editor.core.ProcessWrapper;
 import org.drools.eclipse.flow.common.editor.core.ProcessWrapperBuilder;
-import org.drools.process.core.Process;
+import org.drools.knowledge.definitions.process.Connection;
+import org.drools.knowledge.definitions.process.Node;
+import org.drools.knowledge.definitions.process.Process;
 import org.drools.process.core.Work;
 import org.drools.process.core.WorkDefinition;
 import org.drools.process.core.impl.WorkDefinitionImpl;
 import org.drools.ruleflow.core.RuleFlowProcess;
-import org.drools.workflow.core.Connection;
-import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.core.node.CompositeContextNode;
 import org.drools.workflow.core.node.CompositeNode;
@@ -56,7 +56,7 @@ public class RuleFlowWrapperBuilder implements ProcessWrapperBuilder {
         Map<Node, NodeWrapper> nodeWrappers = new HashMap<Node, NodeWrapper>();
         for (Node node: nodes) {
             NodeWrapper nodeWrapper = getNodeWrapper(node, project);
-            nodeWrapper.setNode(node);
+            nodeWrapper.setNode((org.drools.workflow.core.Node) node);
             nodeWrapper.setParent(container);
             container.localAddElement(nodeWrapper);
             nodeWrappers.put(node, nodeWrapper);
@@ -80,7 +80,7 @@ public class RuleFlowWrapperBuilder implements ProcessWrapperBuilder {
         }
         for (Connection connection: connections) {
             ConnectionWrapper connectionWrapper = new ConnectionWrapper();
-            connectionWrapper.localSetConnection(connection);
+            connectionWrapper.localSetConnection((org.drools.workflow.core.Connection) connection);
             connectionWrapper.localSetBendpoints(null);
             NodeWrapper from = nodeWrappers.get(connection.getFrom());
             NodeWrapper to = nodeWrappers.get(connection.getTo());
