@@ -38,10 +38,10 @@ Bundle-ClassPath: .,
  lib/jsr94.jar,
  lib/junit.jar,
  lib/jxl.jar,
- lib/mvel.jar,
  lib/xpp3.jar,
  lib/xstream.jar,
  lib/antlr-runtime.jar,
- lib/drools-templates.jar
+ lib/drools-templates.jar,
+ lib/mvel2.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.drools.eclipse.util

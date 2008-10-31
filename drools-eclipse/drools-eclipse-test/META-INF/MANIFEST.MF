@@ -4,7 +4,7 @@ Bundle-Name: JBoss Rules Eclipse Test fragment
 Bundle-SymbolicName: org.drools.eclipse.test
 Bundle-Version: 5.0.0.SNAPSHOT
 Bundle-Vendor: krisv,mic
-Fragment-Host: org.drools.eclipse;bundle-version="4.1.0.SNAPSHOT"
+Fragment-Host: org.drools.eclipse;bundle-version="5.0.0.SNAPSHOT"
 Bundle-Localization: plugin
 Require-Bundle: org.junit
 Bundle-ClassPath: .

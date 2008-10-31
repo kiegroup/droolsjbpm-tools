@@ -13,7 +13,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.base.MapGlobalResolver;
 import org.drools.compiler.PackageBuilder;
 import org.drools.reteoo.ReteooStatefulSession;
-import org.drools.spi.Activation;
+import org.drools.runtime.rule.Activation;
 import org.drools.spi.AgendaGroup;
 
 /**
@@ -83,7 +83,8 @@ public class DebugViewsTest extends TestCase {
     	
     	Activation activation = agendaGroups[0].getActivations()[0];
     	assertEquals("ActivationCreator", activation.getRule().getName());
-    	Entry[] parameters = session.getActivationParameters(activation.getActivationNumber());
+    	Entry[] parameters = session.getActivationParameters(
+			((org.drools.spi.Activation) activation).getActivationNumber());
     	assertEquals(1, parameters.length);
     	assertEquals("o", parameters[0].getKey());
     	assertEquals("String1", parameters[0].getValue());

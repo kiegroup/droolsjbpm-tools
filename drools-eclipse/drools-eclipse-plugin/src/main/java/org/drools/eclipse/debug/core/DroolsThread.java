@@ -16,7 +16,7 @@ import org.eclipse.jdt.internal.debug.core.model.JDIDebugModelMessages;
 import org.eclipse.jdt.internal.debug.core.model.JDIDebugTarget;
 import org.eclipse.jdt.internal.debug.core.model.JDIStackFrame;
 import org.eclipse.jdt.internal.debug.core.model.JDIThread;
-import org.mvel.debug.Debugger;
+import org.mvel2.debug.Debugger;
 
 import com.sun.jdi.ClassType;
 import com.sun.jdi.IncompatibleThreadStateException;
