@@ -122,7 +122,7 @@ public class RulesView extends ViewPart implements IDoubleClickListener, IResour
         				if (pkg == null) {
         					pkg = DroolsModelBuilder.addPackage(ruleSet, packageName, 0, 0);
         				}
-        				if (drlInfo.getBuilderErrors() != null && drlInfo.getBuilderErrors().length > 0) {
+        				if (drlInfo.getBuilderErrors().length > 0 || drlInfo.getPackageDescr() == null) {
         					return false;
         				}
         				// add rules
