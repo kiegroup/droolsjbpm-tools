@@ -19,7 +19,7 @@ import java.util.Map;
 
 import org.drools.eclipse.flow.common.view.property.BeanDialogCellEditor;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.knowledge.definitions.process.Process;
+import org.drools.definition.process.Process;
 import org.drools.process.core.context.exception.ActionExceptionHandler;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;

@@ -39,6 +39,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import java.util.Arrays;
 
 /**
  * Completion for ruleflow constraints. 
@@ -94,8 +95,9 @@ public class ActionCompletionProcessor extends RuleCompletionProcessor {
     }
     
     private void loadImports() {
-    	this.imports = new ArrayList<String>();
-    	List<String> imports = process.getImports();
+    	this.imports = new ArrayList();
+    	List<String> imports = ((org.drools.process.core.Process) process).getImports();
+    	
     	if (imports != null) {
 	    	Iterator<String> iterator = imports.iterator();
 	        while (iterator.hasNext()) {
@@ -122,7 +124,11 @@ public class ActionCompletionProcessor extends RuleCompletionProcessor {
     
     private void loadGlobals() {
     	String[] globalNames = process.getGlobalNames();
-    	this.globals = new ArrayList<GlobalDescr>(globalNames.length);
+    	
+    	if ( this.globals == null ) {
+    	    this.globals = new ArrayList<GlobalDescr>( globalNames.length );
+    	}
+    	
     	for (String globalName: globalNames) {
     		this.globals.add(new GlobalDescr(globalName, "java.lang.Object"));
     	}

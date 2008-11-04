@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.knowledge.definitions.process.Connection;
+import org.drools.definition.process.Connection;
 import org.drools.workflow.core.Constraint;
 import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.node.Split;
