@@ -33,7 +33,7 @@
    <extension point = "org.eclipse.ui.preferencePages">
       <page id="org.drools.eclipse.task.preferences.DroolsTaskPreferencePage"
          class="org.drools.eclipse.task.preferences.DroolsTaskPreferencePage"
-         name="Drools Task Preferences">
+         name="Drools Task">
       </page>
    </extension>
 

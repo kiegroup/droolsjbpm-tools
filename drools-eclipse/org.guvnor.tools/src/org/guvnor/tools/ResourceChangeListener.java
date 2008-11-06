@@ -28,28 +28,33 @@ public class ResourceChangeListener implements IResourceChangeListener {
 	public void resourceChanged(IResourceChangeEvent event) {
 		final List<IResource> toDelete = new ArrayList<IResource>();
 		try {
-			event.getDelta().accept(new IResourceDeltaVisitor() {
-				public boolean visit(IResourceDelta delta) throws CoreException {
-					try {
-						if (delta.getKind() == IResourceDelta.ADDED) {
-							handleResourceAdded(delta.getResource());
+			if (event.getDelta() != null) {
+				event.getDelta().accept(new IResourceDeltaVisitor() {
+					public boolean visit(IResourceDelta delta) throws CoreException {
+						try {
+							if (delta.getResource() == null || !delta.getResource().isAccessible()) {
+								return false;
+							}
+							if (delta.getKind() == IResourceDelta.ADDED) {
+								handleResourceAdded(delta.getResource());
+							}
+							if (delta.getKind() == IResourceDelta.CHANGED) {
+								handleResourceChanged(delta.getResource());
+							}
+							if (delta.getKind() == IResourceDelta.REMOVED) {
+								handleResourceDelete(delta.getResource(), toDelete);
+							}
+							if (delta.getMovedFromPath() != null) {
+								handleResourceMoved(delta.getResource(), delta.getMovedFromPath());
+							}
+						} catch (Exception e) {
+							Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
 						}
-						if (delta.getKind() == IResourceDelta.CHANGED) {
-							handleResourceChanged(delta.getResource());
-						}
-						if (delta.getKind() == IResourceDelta.REMOVED) {
-							handleResourceDelete(delta.getResource(), toDelete);
-						}
-						if (delta.getMovedFromPath() != null) {
-							handleResourceMoved(delta.getResource(), delta.getMovedFromPath());
-						}
-					} catch (Exception e) {
-						Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+						return true;
 					}
-					return true;
-				}
-			});
-			deleteResources(toDelete);
+				});
+				deleteResources(toDelete);
+			}
 		} catch (Exception e) {
 			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
 		}
