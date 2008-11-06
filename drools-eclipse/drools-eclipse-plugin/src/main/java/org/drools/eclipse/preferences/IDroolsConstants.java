@@ -10,5 +10,6 @@ public interface IDroolsConstants {
 	String DSL_RULE_EDITOR_COMPLETION_FULL_SENTENCES = "Drools.DSLRuleEditorCompletionFullSentences";
 	String SKIN = "Drools.Flow.Skin";
 	String ALLOW_NODE_CUSTOMIZATION = "Drools.Flow.AllowNodeCustomization";
+	String DROOLS_RUNTIMES = "Drools.Runtimes";
 	
 }

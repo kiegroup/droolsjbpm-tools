@@ -1,15 +1,16 @@
 package org.drools.eclipse.util;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
-import org.eclipse.core.runtime.FileLocator;
+import org.drools.eclipse.preferences.DroolsRuntimesBlock.DroolsRuntime;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
@@ -47,7 +48,7 @@ public class DroolsClasspathContainer implements IClasspathContainer {
     }
 
     private IClasspathEntry[] createDroolsLibraryEntries(IJavaProject project) {
-        List jarNames = getJarNames();
+        List jarNames = getJarNames(project);
         List list = new ArrayList();
         for (int i = 0; i < jarNames.size(); i++) {
             Path path = new Path((String) jarNames.get(i));
@@ -55,46 +56,58 @@ public class DroolsClasspathContainer implements IClasspathContainer {
                 path, path, null));
         }
         // also add jdt core jar from eclipse itself
-        String pluginRootString = Platform.getInstallLocation().getURL().getPath() + "plugins/";
-        File pluginRoot = new Path(pluginRootString).toFile();
-        File[] files = pluginRoot.listFiles();
-        for (int i = 0; i < files.length; i++) {
-	        if (files[i].getAbsolutePath().indexOf("org.eclipse.jdt.core_3.4") > -1) {
-	        	Path path = new Path(files[i].getAbsolutePath());
-	        	list.add(JavaCore.newLibraryEntry(path, path, null));
-	        	break;
-	        }
-        }
+//        String pluginRootString = Platform.getInstallLocation().getURL().getPath() + "plugins/";
+//        File pluginRoot = new Path(pluginRootString).toFile();
+//        File[] files = pluginRoot.listFiles();
+//        for (int i = 0; i < files.length; i++) {
+//	        if (files[i].getAbsolutePath().indexOf("org.eclipse.jdt.core_3.4") > -1) {
+//	        	Path path = new Path(files[i].getAbsolutePath());
+//	        	list.add(JavaCore.newLibraryEntry(path, path, null));
+//	        	break;
+//	        }
+//        }
         return (IClasspathEntry[]) list.toArray(new IClasspathEntry[list.size()]);
     }
 
-    private List getJarNames() {
-        String s = getDroolsLocation();
+    private List getJarNames(IJavaProject project) {
+        String s = getDroolsLocation(project);
         List list = new ArrayList();
-        File file = (new Path(s)).toFile();
-        addJarNames(file, list);
+        if (s != null) {
+	        File file = (new Path(s)).toFile();
+	        addJarNames(file, list);
+        }
         return list;
     }
 
     private void addJarNames(File file, List list) {
         File[] files = file.listFiles();
         for (int i = 0; i < files.length; i++) {
-	        if (files[i].isDirectory() && files[i].getName().equals("lib")) {
-	            File[] jarFiles = files[i].listFiles();
-	            for (int j = 0; j < jarFiles.length; j++) {
-	                if (jarFiles[j].getPath().endsWith(".jar")) {
-	                    list.add(jarFiles[j].getAbsolutePath());
-	                }
-	            }
+            if (files[i].getPath().endsWith(".jar")) {
+                list.add(files[i].getAbsolutePath());
             }
         }
     }
 
-    private String getDroolsLocation() {
+    private String getDroolsLocation(IJavaProject project) {
         try {
-            return FileLocator.toFileURL(Platform.getBundle("org.drools.eclipse")
-                .getEntry("/")).getFile().toString();
-        } catch (IOException e) {
+        	IFile file = project.getProject().getFile(".drools.runtime");
+        	if (file.exists()) {
+        		BufferedReader reader = new BufferedReader(new InputStreamReader(file.getContents()));
+        		String location = reader.readLine();
+        		if (location.startsWith("<runtime>") && location.endsWith("</runtime>")) {
+        			location = location.substring(9, location.length() - 10);
+        			DroolsRuntime runtime = DroolsRuntimeManager.getDroolsRuntime(location);
+        			if (runtime != null) {
+        				return runtime.getPath();
+        			}
+        		}
+        	} else {
+        		DroolsRuntime defaultRuntime = DroolsRuntimeManager.getDefaultDroolsRuntime();
+        		if (defaultRuntime != null) {
+        			return defaultRuntime.getPath();
+        		}
+        	}
+        } catch (Exception e) {
             DroolsEclipsePlugin.log(e);
         }
         return null;

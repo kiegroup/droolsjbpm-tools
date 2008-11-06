@@ -15,4 +15,5 @@ public class DroolsClasspathContainerInitializer extends ClasspathContainerIniti
         JavaCore.setClasspathContainer(ipath, new IJavaProject[] { project },
             new IClasspathContainer[] { container }, null);
     }
+    
 }

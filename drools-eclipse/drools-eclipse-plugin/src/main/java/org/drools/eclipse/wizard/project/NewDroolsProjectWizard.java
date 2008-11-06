@@ -1,5 +1,6 @@
 package org.drools.eclipse.wizard.project;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -9,6 +10,7 @@ import java.util.List;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.builder.DroolsBuilder;
+import org.drools.eclipse.preferences.DroolsRuntimesBlock.DroolsRuntime;
 import org.drools.eclipse.util.DroolsClasspathContainer;
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IContainer;
@@ -54,6 +56,7 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
     private IProject newProject;
     private WizardNewProjectCreationPage mainPage;
     private NewDroolsProjectWizardPage extraPage;
+    private NewDroolsProjectRuntimeWizardPage runtimePage;
     
     public void addPages() {
         super.addPages();
@@ -63,6 +66,8 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
         this.addPage(mainPage);
         extraPage = new NewDroolsProjectWizardPage();
         addPage(extraPage);
+        runtimePage = new NewDroolsProjectRuntimeWizardPage();
+        addPage(runtimePage);
         setNeedsProgressMonitor(true);
     }
 
@@ -82,6 +87,7 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
                     throws CoreException {
                 try {
                 	IJavaProject project = JavaCore.create(newProject);
+                	createDroolsRuntime(project, monitor);
                     createOutputLocation(project, monitor);
                     addJavaBuilder(project, monitor);
                     setClasspath(project, monitor);
@@ -177,6 +183,15 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
         }
     }
     
+    private void createDroolsRuntime(IJavaProject project, IProgressMonitor monitor) throws CoreException {
+		DroolsRuntime runtime = runtimePage.getDroolsRuntime();
+		if (runtime != null) {
+			IFile file = project.getProject().getFile(".drools.runtime");
+			file.create(new ByteArrayInputStream(
+				("<runtime>" + runtime.getName() + "</runtime>").getBytes()), true, monitor);
+		}
+	}
+
     private void createOutputLocation(IJavaProject project, IProgressMonitor monitor)
             throws JavaModelException, CoreException {
         IFolder folder = project.getProject().getFolder("bin");

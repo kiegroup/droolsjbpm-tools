@@ -206,7 +206,24 @@
    <extension point = "org.eclipse.ui.preferencePages">
       <page id="org.drools.eclipse.preferences.DroolsPreferencePage"
          class="org.drools.eclipse.preferences.DroolsPreferencePage"
-         name="Drools Preferences">
+         name="Drools">
+      </page>
+      <page name="Installed Drools Runtimes"
+            category="org.drools.eclipse.preferences.DroolsPreferencePage"
+            class="org.drools.eclipse.preferences.DroolsRuntimesPreferencePage"
+            id="org.drools.eclipse.preferences.DroolsRuntimesPreferencePage">
+      </page>
+   </extension>
+
+   <extension point="org.eclipse.ui.propertyPages">
+      <page name="Drools"
+            class="org.drools.eclipse.preferences.DroolsProjectPreferencePage"
+            id="org.drools.eclipse.preferences.DroolsProjectPreferencePage">
+         <enabledWhen>
+		     <adapt type="org.eclipse.core.resources.IProject">
+		          <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.jdt.core.javanature"/>
+		     </adapt>      
+         </enabledWhen>
       </page>
    </extension>
 
