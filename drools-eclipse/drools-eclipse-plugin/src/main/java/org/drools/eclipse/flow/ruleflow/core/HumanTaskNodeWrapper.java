@@ -18,6 +18,7 @@ package org.drools.eclipse.flow.ruleflow.core;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.drools.eclipse.flow.common.editor.editpart.work.HumanTaskCustomEditor;
 import org.drools.process.core.ParameterDefinition;
 import org.drools.process.core.WorkDefinition;
 import org.drools.process.core.datatype.impl.type.StringDataType;
@@ -53,6 +54,7 @@ public class HumanTaskNodeWrapper extends WorkItemWrapper {
         parameterDefinitions.add(new ParameterDefinitionImpl("Content", new StringDataType()));
         ((WorkDefinitionExtensionImpl) WORK_DEFINITION).setParameters(parameterDefinitions);
         ((WorkDefinitionExtensionImpl) WORK_DEFINITION).setIcon("icons/human_task.gif");
+        ((WorkDefinitionExtensionImpl) WORK_DEFINITION).setCustomEditor(HumanTaskCustomEditor.class.getName());
     }
 
     public HumanTaskNodeWrapper() {

@@ -605,7 +605,7 @@ public class TaskView extends ViewPart {
 		}
 		
 		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
-		client.complete(taskSummary.getId(), userId, responseHandler);
+		client.complete(taskSummary.getId(), userId, null, responseHandler);
 		responseHandler.waitTillDone(3000);
         refresh();
 	}
@@ -627,7 +627,7 @@ public class TaskView extends ViewPart {
 		}
 		
 		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
-		client.fail(taskSummary.getId(), userId, responseHandler);
+		client.fail(taskSummary.getId(), userId, null, responseHandler);
 		responseHandler.waitTillDone(3000);
         refresh();
 	}
