@@ -5,15 +5,15 @@
       version="1.0.0"
       provider-name="JBoss, a division of Red Hat">
 
-   <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+   <description url="http://www.jboss.org/community/docs/DOC-9834">
+      Eclipse support for the JBoss Guvnor repository.
    </description>
 
-   <copyright url="http://www.example.com/copyright">
-      [Enter Copyright Description here.]
+   <copyright>
+      (c) 2008 JBoss, a division of Red Hat
    </copyright>
 
-   <license url="http://www.example.com/license">
+   <license>
       [Enter License Description here.]
    </license>
 
