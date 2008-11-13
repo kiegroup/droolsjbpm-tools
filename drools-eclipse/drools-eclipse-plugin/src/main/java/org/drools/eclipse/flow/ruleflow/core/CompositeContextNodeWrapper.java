@@ -135,9 +135,19 @@ public class CompositeContextNodeWrapper extends CompositeNodeWrapper {
             ((VariableScope) getCompositeContextNode().getDefaultContext(
                 VariableScope.VARIABLE_SCOPE)).setVariables((List<Variable>) value);
         } else if (START_NODE.equals(id)) {
-            getCompositeNode().linkIncomingConnections(Node.CONNECTION_DEFAULT_TYPE, new Long((String) value), Node.CONNECTION_DEFAULT_TYPE);
+        	try {
+        		getCompositeNode().linkIncomingConnections(
+    				Node.CONNECTION_DEFAULT_TYPE, new Long((String) value), Node.CONNECTION_DEFAULT_TYPE);
+        	} catch (IllegalArgumentException e) {
+        		// could not link
+        	}
         } else if (END_NODE.equals(id)) {
-            getCompositeNode().linkOutgoingConnections(new Long((String) value), Node.CONNECTION_DEFAULT_TYPE, Node.CONNECTION_DEFAULT_TYPE);
+        	try {
+            	getCompositeNode().linkOutgoingConnections(
+        			new Long((String) value), Node.CONNECTION_DEFAULT_TYPE, Node.CONNECTION_DEFAULT_TYPE);
+        	} catch (IllegalArgumentException e) {
+        		// could not link
+        	}
         } else if (EXCEPTION_HANDLERS.equals(id)) {
         	ExceptionScope exceptionScope = (ExceptionScope)
     			getCompositeContextNode().getDefaultContext(ExceptionScope.EXCEPTION_SCOPE);
