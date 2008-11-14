@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <parent>
+    <artifactId>drools-eclipse</artifactId>
+    <groupId>org.drools</groupId>
+    <version>5.0.0.SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>org.drools.eclipse.core</artifactId>
+  <packaging>pom</packaging>
+
+  <name>Drools :: Eclipse :: Core</name>
+  <build>
+    <plugins>    
+    
+     <plugin>
+       <artifactId>maven-antrun-plugin</artifactId>
+       <inherited>false</inherited>
+       <executions>
+         <execution>
+           <id>clean lib</id>
+           <phase>clean</phase>
+           <configuration>
+             <tasks>                              
+                <delete>
+                  <fileset dir="lib" includes="**/*.jar" excludes="**/.svn" />                 
+                </delete>
+                <delete dir="drools-eclipse-plugin/help/shared" />     
+                <delete dir="drools-eclipse-plugin/help/eclipse" />     
+             </tasks>
+           </configuration>
+           <goals>
+             <goal>run</goal>
+           </goals>
+         </execution>    
+         
+         <!--execution>
+           <id>unzip manual</id>
+           <phase>process-resources</phase>
+           <configuration>
+             <tasks>     
+               <unzip src="drools-eclipse-plugin/lib/drools-docs-introduction-eclipse.war" dest="drools-eclipse-plugin/help/introduction" />
+               <unzip src="drools-eclipse-plugin/lib/drools-docs-expert-eclipse.war" dest="drools-eclipse-plugin/help/expert" />
+               <unzip src="drools-eclipse-plugin/lib/drools-docs-fusion-eclipse.war" dest="drools-eclipse-plugin/help/fusion" />
+               <unzip src="drools-eclipse-plugin/lib/drools-docs-flow-eclipse.war" dest="drools-eclipse-plugin/help/flow" />
+               <unzip src="drools-eclipse-plugin/lib/drools-docs-guvnor-eclipse.war" dest="drools-eclipse-plugin/help/guvnor" />
+               
+               
+               <delete dir="drools-eclipse-plugin/lib/drools-docs-introduction-eclipse.war" />     
+               <delete dir="drools-eclipse-plugin/lib/drools-docs-expert-eclipse.war" />     
+               <delete dir="drools-eclipse-plugin/lib/drools-docs-fusion-eclipse.war" />     
+               <delete dir="drools-eclipse-plugin/lib/drools-docs-flow-eclipse.war" />     
+               <delete dir="drools-eclipse-plugin/lib/drools-docs-guvnor-eclipse.war" />     
+             </tasks>
+           </configuration>
+           <goals>
+             <goal>run</goal>
+           </goals>           
+         </execution-->        
+       </executions>
+     </plugin>    
+    
+     <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>drools-eclipse-plugin/lib</outputDirectory>
+              <overWriteReleases>true</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+              <overWriteIfNewer>true</overWriteIfNewer>
+              <stripVersion>true</stripVersion>
+              <includeScope>runtime</includeScope>              
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>     
+    </plugins>
+  </build>
+
+  <dependencies>
+
+    <!-- this should include core and compiler -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-jsr94</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.eclipse.jdt</groupId>
+          <artifactId>core</artifactId>
+        </exclusion>
+
+        <exclusion>
+          <groupId>janino</groupId>
+          <artifactId>janino</artifactId>
+        </exclusion>
+
+        <exclusion>
+          <groupId>jsr94</groupId>
+          <artifactId>jsr94-sigtest</artifactId>
+        </exclusion>
+
+        <exclusion>
+          <groupId>jsr94</groupId>
+          <artifactId>jsr94-tck</artifactId>
+        </exclusion>
+
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-decisiontables</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.eclipse.jdt</groupId>
+          <artifactId>core</artifactId>
+        </exclusion>
+
+        <exclusion>
+          <groupId>janino</groupId>
+          <artifactId>janino</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+    </dependency>
+    <dependency>
+      <!-- TODO remove this dependency and change MANIFEST.MF to use xpp3_min.jar (non-optional dep of xstream) -->
+      <groupId>xpp3</groupId>
+      <artifactId>xpp3</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    
+</dependencies>
+
+</project>
