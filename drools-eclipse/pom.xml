@@ -14,7 +14,7 @@
   <name>Drools :: Eclipse-Plugin</name>
   
   <modules>
-      <module>drools-eclipse-plugin</module>
+      <module>org.drools.eclipse.core</module>
       <module>drools-eclipse-build</module>
   </modules>
 
