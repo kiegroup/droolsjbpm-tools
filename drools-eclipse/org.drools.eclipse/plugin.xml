@@ -200,8 +200,13 @@
    </extension>
 
    <extension point="org.eclipse.help.toc">
-      <toc file="help/eclipse/toc.xml" primary="true" />
+      <toc file="help/expert/toc.xml" primary="true" />
    </extension>
+   
+   <extension point="org.eclipse.help.toc">
+      <toc file="help/fusion/toc.xml" primary="true" />
+   </extension>
+   
 
    <extension point = "org.eclipse.ui.preferencePages">
       <page id="org.drools.eclipse.preferences.DroolsPreferencePage"

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <parent>
+    <artifactId>drools-eclipse</artifactId>
+    <groupId>org.drools</groupId>
+    <version>5.0.0.SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>drools-eclipse-build</artifactId>
+  <packaging>pom</packaging>
+
+  <name>Drools :: Eclipse :: Build</name>
+  <build>
+    <plugins>    
+     <plugin>
+       <artifactId>maven-antrun-plugin</artifactId>
+       <inherited>false</inherited>
+       <executions>
+         <execution>
+           <id>compile-plugin</id>
+           <phase>compile</phase>
+           <configuration>
+             <tasks>                              
+                <property name="eclipse.home" value="target/eclipse" />             
+                
+                <property name="localEclipseDrop" value="${basedir}/local-eclipse-drop-mirror" />   
+
+                <delete failonerror="false" dir="target/eclipse.build"/>     
+
+                <delete failonerror="false" includeemptydirs="true">
+                  <fileset dir="target" includes="*.zip"/>
+                </delete>                 
+                
+                <ant target="setupLocalEclipse" antfile="setupEclipse.xml">
+                  <property name="localEclipseDrop" value="${localEclipseDrop}" />
+                </ant>                
+                 
+                <java jar="${eclipse.home}/plugins/org.eclipse.equinox.launcher_1.0.100.v20080509-1800.jar"
+                      fork="true"
+                      failonerror="true"
+                      maxmemory="128m">
+                     <arg line="-application org.eclipse.ant.core.antRunner -consoleLog -data '${basedir}/target/workspace' -DmavenCompilePhase=true"/>
+                </java>                 
+             </tasks>
+           </configuration>
+           <goals>
+             <goal>run</goal>
+           </goals>
+         </execution>
+         
+         <execution>
+           <id>test-plugin</id>
+           <phase>test</phase>
+           <configuration>
+             <tasks>            
+               <!-- Determine OS -->
+               <condition property="baseos" value="win32">
+                   <contains string="${os.name}" substring="Windows" />
+               </condition>
+             
+               <condition property="baseos" value="linux">
+                   <contains string="${os.name}" substring="Linux" />
+               </condition>
+               
+               <condition property="baseos" value="macosx">
+                   <contains string="${os.name}" substring="Mac OS X" />
+               </condition>
+               
+               <condition property="baseos" value="win32">
+                   <contains string="${os.name}" substring="Windows" />
+               </condition>        
+             
+               <condition property="baseos" value="aix">
+                   <contains string="${os.name}" substring="AIX" />
+               </condition>    
+               
+               <condition property="baseos" value="hpux">
+                   <contains string="${os.name}" substring="HP-UX" />
+               </condition> 
+               
+               <condition property="baseos" value="solaris">
+                   <contains string="${os.name}" substring="Solaris" />
+               </condition>  
+               
+               <condition property="baseos" value="qnx">
+                   <contains string="${os.name}" substring="QNX" />
+               </condition>                        
+               
+               <!-- Determine WS -->
+               <condition property="basews" value="win32">
+                   <contains string="${os.name}" substring="Windows" />
+               </condition>    
+               
+               <condition property="basews" value="gtk">
+                   <contains string="${os.name}" substring="Linux" />
+               </condition>    
+               
+               <condition property="basews" value="carbon">
+                   <contains string="${os.name}" substring="Mac OS X" />
+               </condition>        
+                   
+               <!-- Determine ARCH -->
+               <condition property="basearch" value="x86">
+                 <or>
+                   <contains string="${os.arch}" substring="i386" />
+                   <contains string="${os.arch}" substring="i686" />
+                   <contains string="${os.arch}" substring="x86" />
+                   <contains string="${os.arch}" substring="Pentium" />
+                 </or>
+               </condition>
+             
+               <condition property="basearch" value="linux">
+                   <contains string="${os.name}" substring="Linux" />
+               </condition>
+               
+               <condition property="basearch" value="ppc">
+                   <contains string="${os.name}" substring="ppc" />
+               </condition>                     
+               
+               <condition property="basearch" value="sparc">
+                   <contains string="${os.name}" substring="sparc" />
+               </condition>                   
+               
+               <condition property="mavenTestPhase" value="" else="-DmavenTestPhase=true">
+                   <isset property="maven.test.skip" />
+               </condition>                
+              
+                <property name="eclipse.home" value="target/eclipse" />                             
+                
+                <echo>-application org.eclipse.ant.core.antRunner -Dbaseos=${baseos} -Dbasews=${basews} -Dbasearch=${basearch} ${mavenTestPhase}</echo>
+                 
+                <java jar="${eclipse.home}/plugins/org.eclipse.equinox.launcher_1.0.100.v20080509-1800.jar"
+                      fork="true"
+                      failonerror="true"
+                      maxmemory="128m">
+                     <arg line="-application org.eclipse.ant.core.antRunner -consoleLog -data '${basedir}/target/workspace' -Dbaseos=${baseos} -Dbasews=${basews} -Dbasearch=${basearch} ${mavenTestPhase}"/>
+                </java>                 
+             </tasks>
+           </configuration>
+           <goals>
+             <goal>run</goal>
+           </goals>
+         </execution>    
+
+         <execution>
+           <id>unzip</id>
+           <phase>package</phase>
+           <configuration>
+             <tasks>                
+                <unzip src="target/org.drools.eclipse-${project.version}.zip" dest="../../target/eclipse"/>                         
+                <unzip src="target/org.drools.eclipse.task-${project.version}.zip" dest="../../target/eclipse"/>                         
+                <unzip src="target/org.guvnor.tools-${project.version}.zip" dest="../../target/eclipse"/>    
+                <copy todir="../../target">
+                    <fileset dir="target/">
+                      <include name="*.zip"/>
+                    </fileset>                    
+		        </copy>
+             </tasks>
+           </configuration>
+           <goals>
+             <goal>run</goal>
+           </goals>
+         </execution> 
+                 
+       </executions>
+     </plugin>
+       
+    </plugins>
+  </build>
+
+  <dependencies>
+    <!-- this should include core and compiler -->
+    <!--dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-eclipse-plugin</artifactId>
+    </dependency-->
+</dependencies>
+
+</project>
