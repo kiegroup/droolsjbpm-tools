@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <project name="testsuite" default="run" basedir="."> 
-  <property name="eclipse-home" value="${baseLocation}"/>
+  <property name="eclipse-home" value="${base}/eclipse"/>
   <property name="plugin-name" value="org.drools.eclipse"/>
   <property name="library-file" location="${eclipse-home}/plugins/org.eclipse.test_3.2.0/library.xml"/>
   
@@ -16,7 +16,7 @@
   
   <!-- This target defines the tests that need to be run. -->
   <target name="suite">
-    <property name="test-workspace" location="${eclipse-home}/test-workspace"/>
+    <property name="test-workspace" location="${base}/test-workspace"/>
     
     <delete dir="${test-workspace}" quiet="true"/>
     

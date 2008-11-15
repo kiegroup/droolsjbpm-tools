@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.drools.eclipse.core.test.feature"
+      id="org.drools.eclipse.test.feature"
       label="JBossRules Feature"
       version="5.0.0.SNAPSHOT"
       provider-name="JBoss, Inc.">
@@ -18,7 +18,7 @@
    </license>
 
    <plugin
-         id="org.drools.eclipse.core.test"
+         id="org.drools.eclipse.test"
          download-size="0"
          install-size="0"
          version="5.0.0.SNAPSHOT"/>

@@ -8,10 +8,10 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>org.drools.eclipse.core</artifactId>
+  <artifactId>org.drools.eclipse</artifactId>
   <packaging>pom</packaging>
 
-  <name>Drools :: Eclipse :: Core</name>
+  <name>Drools :: Eclipse :: Base</name>
   <build>
     <plugins>    
     

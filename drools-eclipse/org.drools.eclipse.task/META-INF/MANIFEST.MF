@@ -9,7 +9,7 @@ Require-Bundle: org.eclipse.ui,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: .,
- lib/drools-process-task-5.0.0.SNAPSHOT.jar,
- lib/mina-core-2.0.0-M3.jar,
- lib/slf4j-api-1.5.2.jar,
- lib/slf4j-jdk14-1.5.2.jar
+ lib/drools-process-task.jar,
+ lib/mina-core.jar,
+ lib/slf4j-api.jar,
+ lib/slf4j-jdk14.jar

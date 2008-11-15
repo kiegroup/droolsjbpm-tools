@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.drools.eclipse.core.feature"
+      id="org.drools.eclipse.feature"
       label="JBossRules Feature"
       version="5.0.0.SNAPSHOT"
       provider-name="JBoss, Inc.">
@@ -40,7 +40,7 @@
    </requires>
 
    <plugin
-         id="org.drools.eclipse.core"
+         id="org.drools.eclipse"
          download-size="0"
          install-size="0"
          version="5.0.0.SNAPSHOT"
