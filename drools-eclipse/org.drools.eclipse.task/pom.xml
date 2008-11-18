@@ -97,6 +97,7 @@
           <groupId>org.drools</groupId>
           <artifactId>drools-api</artifactId>
         </exclusion>      
+
         <exclusion>
           <groupId>org.drools</groupId>
           <artifactId>drools-core</artifactId>
@@ -106,6 +107,11 @@
           <groupId>org.drools</groupId>
           <artifactId>drools-workitems</artifactId>
         </exclusion>        
+
+        <exclusion>
+          <groupId>org.mvel</groupId>
+          <artifactId>mvel2</artifactId>
+        </exclusion>      
         
     	<exclusion>
     		<groupId>org.hibernate</groupId>
@@ -118,9 +124,9 @@
     	</exclusion>  
     	
     	<exclusion>
-			<groupId>org.jboss.seam</groupId>
-			<artifactId>jboss-seam</artifactId>
-		</exclusion>
+		<groupId>org.jboss.seam</groupId>
+		<artifactId>jboss-seam</artifactId>
+	</exclusion>
       </exclusions>
     </dependency>
 
