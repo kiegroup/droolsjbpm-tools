@@ -9,7 +9,7 @@
        should be done within the body of the suite target. -->
   <target name="init">
     <tstamp/>
-    <delete>
+    <delete failonerror="false">
       <fileset dir="${eclipse-home}" includes="org*.xml"/>
     </delete>
   </target>
@@ -18,7 +18,7 @@
   <target name="suite">
     <property name="test-workspace" location="${base}/test-workspace"/>
     
-    <delete dir="${test-workspace}" quiet="true"/>
+    <delete failonerror="false" dir="${test-workspace}" quiet="true"/>
     
     <ant target="ui-test" antfile="${library-file}" dir="${eclipse-home}">
       <property name="data-dir" value="${test-workspace}"/>
@@ -37,10 +37,10 @@
   <!-- This target runs the test suite. Any actions that need to happen
        after all the tests have been run should go here. -->
   <target name="run" depends="init,suite,cleanup">
-    <copy todir="${base}/surefire-reports">
+    <copy failonerror="false" todir="${base}/surefire-reports">
       <fileset dir="${eclipse-home}" includes="org*.xml"/>
     </copy>    
     
-    <rename src="${base}/surefire-reports/org.drools.eclipse.AllTests.xml" dest="${base}/surefire-reports/TEST-org.drools.eclipse.AllTests.xml"/>
+    <move failonerror="false" file="${base}/surefire-reports/org.drools.eclipse.AllTests.xml" tofile="${base}/surefire-reports/TEST-org.drools.eclipse.AllTests.xml"/>
   </target>
 </project>
