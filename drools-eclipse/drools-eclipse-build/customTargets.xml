@@ -1,6 +1,6 @@
 <project name="Build specific targets and properties" default="noDefault">
 	<!-- ===================================================================== -->
-	<!-- Run a given ${target} on all elements being built -->
+	<!-- Run a given ${base} on all elements being built -->
 	<!-- Add on <ant> task for each top level element being built. -->
 	<!-- ===================================================================== -->
 	<property name="allElementsFile" value="${builder}/allElements.xml"/>
@@ -51,21 +51,15 @@
 	<!-- Steps to do before setup -->
 	<!-- ===================================================================== -->
 	<target name="preSetup">
-	  <echo>preSetup</echo>	  
-    <!--cleanup -->
-    <delete failonerror="false" file="${baseLocation}/org.drools.eclipse*.xml" />
-    <delete failonerror="false" dir="${base}/workspace"/>
-    <delete failonerror="false" dir="${base}/test-workspace"/>
-    
-    <delete failonerror="false" includeemptydirs="true">
-      <fileset dir="${base}/eclipse/features/" includes="org.drools.*"/>
-      <fileset dir="${base}/eclipse/features/" includes="org.guvnor.*"/>
-      <fileset dir="${base}/eclipse/features/" includes="org.eclipse.webdav.*"/>
-      
-      <fileset dir="${base}/eclipse/plugins/" includes="org.drools.*"/>
-      <fileset dir="${base}/eclipse/plugins/" includes="org.guvnor.*"/>
-      <fileset dir="${base}/eclipse/plugins/" includes="org.eclipse.webdav.*"/>
-    </delete>           
+	    <echo>preSetup</echo>	  
+        <!--cleanup -->
+        <delete failonerror="false" file="${baseLocation}/org.drools.eclipse*.xml" />
+        <delete failonerror="false" dir="${base}/test-workspace"/>
+        
+        <delete failonerror="false" dir="${baseLocation}/features/org.drools.eclipse.feature_${droolsVersion}" />
+        <delete failonerror="false" dir="${baseLocation}/features/org.drools.eclipse.test.feature_${droolsVersion}" />
+        <delete failonerror="false" dir="${baseLocation}/plugins/org.drools.eclipse.test_${droolsVersion}" />
+        <delete failonerror="false" file="${baseLocation}/plugins/org.drools.eclipse_${droolsVersion}.jar"/>      
 	</target>
 	
 	<!-- ===================================================================== -->
@@ -110,8 +104,7 @@
 		</copy>          
 	</target>
 
-	<target name="testPostSetup" if="mavenTestPhase">
-		
+	<target name="testPostSetup" if="mavenTestPhase">		
 		<copy todir="${buildDirectory}/features/org.drools.eclipse.test.feature">
 			<fileset dir="${builder}/../org.drools.eclipse.test.feature"/>
 		</copy>           
@@ -199,13 +192,12 @@
 	<!-- Steps to do to test the build results -->
 	<!-- ===================================================================== -->
   <target name="test" if="mavenTestPhase">  
-    <unzip src="${buildDirectory}/${buildLabel}/${org.drools.eclipse.zipFile}"
-           dest="${base}/eclipse"/>
-    <unzip src="${buildDirectory}/${buildLabel}/${org.drools.eclipse.test.ZipFile}" 
-           dest="${base}/eclipse"/>    
-
-
-    <ant antfile="${base}/eclipse/plugins/org.drools.eclipse.test_${droolsVersion}/test.xml">        
+      <unzip src="${buildDirectory}/${buildLabel}/${org.drools.eclipse.zipFile}" 
+             dest="${baseLocation}"/> 
+      <unzip src="${buildDirectory}/${buildLabel}/${org.drools.eclipse.test.zipFile}" 
+           dest="${baseLocation}"/>             
+           
+    <ant antfile="${baseLocation}/plugins/org.drools.eclipse.test_${droolsVersion}/test.xml">        
       <property name="os" value="${baseos}" />
       <property name="ws" value="${basews}" />
       <property name="arch" value="${basearch}" />
