@@ -6,7 +6,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -41,8 +40,8 @@ public class ProjectClassLoader {
 	}
 
     public static URLClassLoader getProjectClassLoader(IJavaProject project) {
-        List pathElements = getProjectClassPathURLs(project);
-        URL urlPaths[] = (URL[]) pathElements.toArray(new URL[pathElements.size()]);
+        List<URL> pathElements = getProjectClassPathURLs(project, new ArrayList<String>());
+        URL urlPaths[] = pathElements.toArray(new URL[pathElements.size()]);
         return new URLClassLoader(urlPaths, Thread.currentThread().getContextClassLoader());
     }
 
@@ -64,11 +63,11 @@ public class ProjectClassLoader {
         return file;
     }
 
-    public static List getProjectClassPathURLs(IJavaProject project) {
-        List pathElements = new ArrayList();
+    public static List<URL> getProjectClassPathURLs(IJavaProject project, List<String> alreadyLoadedProjects) {
+        List<URL> pathElements = new ArrayList<URL>();
         try {
             IClasspathEntry[] paths = project.getResolvedClasspath(true);
-            Set outputPaths = new HashSet();
+            Set<IPath> outputPaths = new HashSet<IPath>();
             if (paths != null) {
                 for ( int i = 0; i < paths.length; i++ ) {
                     IClasspathEntry path = paths[i];
@@ -86,27 +85,29 @@ public class ProjectClassLoader {
             IPath location = getProjectLocation(project.getProject());
             IPath outputPath = location.append(project.getOutputLocation().removeFirstSegments(1));
             pathElements.add(0, outputPath.toFile().toURI().toURL());
-            for (Iterator iterator = outputPaths.iterator(); iterator.hasNext(); ) {
-            	IPath path = (IPath) iterator.next();
+            for (IPath path: outputPaths) {
             	outputPath = location.append(path.removeFirstSegments(1));
                 pathElements.add(0, outputPath.toFile().toURI().toURL());
             }
             
             // also add classpath of required projects
-            String[] names = project.getRequiredProjectNames();
-            for ( int i = 0; i < names.length; i++ ) {
-                String projectName = names[i];
-                IProject reqProject = project.getProject().getWorkspace()
-                    .getRoot().getProject(projectName);
-                if (reqProject != null) {
-                    IJavaProject reqJavaProject = JavaCore.create(reqProject);
-                    pathElements.addAll(getProjectClassPathURLs(reqJavaProject));
-                }
+            for (String projectName: project.getRequiredProjectNames()) {
+            	if (!alreadyLoadedProjects.contains(projectName)) {
+            		alreadyLoadedProjects.add(projectName);
+		            IProject reqProject = project.getProject().getWorkspace()
+		                .getRoot().getProject(projectName);
+		            if (reqProject != null) {
+		                IJavaProject reqJavaProject = JavaCore.create(reqProject);
+		                pathElements.addAll(getProjectClassPathURLs(reqJavaProject, alreadyLoadedProjects));
+		            }
+            	}
             }
         } catch (JavaModelException e) {
             DroolsEclipsePlugin.log(e);
         } catch (MalformedURLException e) {
             DroolsEclipsePlugin.log(e);
+        } catch (Throwable t) {
+        	DroolsEclipsePlugin.log(t);
         }
         return pathElements;
     }
