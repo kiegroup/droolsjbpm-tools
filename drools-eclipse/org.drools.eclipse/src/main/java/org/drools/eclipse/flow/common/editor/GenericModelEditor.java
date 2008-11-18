@@ -17,8 +17,6 @@ package org.drools.eclipse.flow.common.editor;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -27,6 +25,7 @@ import java.util.EventObject;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -66,6 +65,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
@@ -275,20 +275,38 @@ public abstract class GenericModelEditor extends GraphicalEditorWithPalette { //
 	protected void setInput(IEditorInput input) {
 		super.setInput(input);
 
-		IFile file = getFile();
-		setPartName(file.getName());
-		try {
-			InputStream is = file.getContents(false);
-			createModel(is);
-		} catch (Throwable t) {
-			DroolsEclipsePlugin.log(t);
+		if (input instanceof IFileEditorInput) {
+			IFile file = getFile();
+			if (file != null) {
+				setPartName(file.getName());
+			}
+			try {
+				InputStream is = file.getContents(false);
+				createModel(is);
+			} catch (Throwable t) {
+				DroolsEclipsePlugin.log(t);
+			}
+		} else if (input instanceof IStorageEditorInput) {
+			try {
+				IStorage storage = ((IStorageEditorInput) input).getStorage();
+				setPartName(storage.getName());
+				InputStream is = storage.getContents();
+				createModel(is);
+			} catch (Throwable t) {
+				DroolsEclipsePlugin.log(t);
+			}
 		}
+		
 		if (getGraphicalViewer() != null) {
 			initializeGraphicalViewer();
 		}
 	}
 	
 	public IFile getFile() {
+		IEditorInput input = getEditorInput();
+		if (!(input instanceof IFileEditorInput)) {
+			return null;
+		}
 	    return ((IFileEditorInput) getEditorInput()).getFile();
 	}
 	

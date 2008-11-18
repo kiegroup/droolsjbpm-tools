@@ -85,7 +85,9 @@ public class RuleFlowModelEditor extends GenericModelEditor {
 
     protected void setInput(IEditorInput input) {
         super.setInput(input);
-        refreshPalette(((IFileEditorInput) input).getFile());
+        if (input instanceof IFileEditorInput) {
+        	refreshPalette(((IFileEditorInput) input).getFile());
+        }
     }
     
     private void refreshPalette(IFile file) {

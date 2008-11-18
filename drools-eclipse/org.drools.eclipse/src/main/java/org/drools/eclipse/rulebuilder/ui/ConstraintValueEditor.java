@@ -40,7 +40,7 @@ public class ConstraintValueEditor {
 		this.toolkit = toolkit;
 		this.modeller = modeller;
 		
-		if (numericType.equals( SuggestionCompletionEngine.TYPE_NUMERIC )) {
+		if (SuggestionCompletionEngine.TYPE_NUMERIC.equals( numericType )) {
             this.numericValue = true;
         }
 		create();

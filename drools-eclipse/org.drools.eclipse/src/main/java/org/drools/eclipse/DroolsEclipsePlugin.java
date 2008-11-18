@@ -363,7 +363,8 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
             ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
             ClassLoader newLoader = DroolsBuilder.class.getClassLoader();
             String level = null;
-            if ( resource.getProject().getNature( "org.eclipse.jdt.core.javanature" ) != null ) {
+            // resource could be null when opening a read-only remote file 
+            if ( resource != null && resource.getProject().getNature( "org.eclipse.jdt.core.javanature" ) != null ) {
                 IJavaProject project = JavaCore.create( resource.getProject() );
                 newLoader = ProjectClassLoader.getProjectClassLoader( project );
                 level = project.getOption( JavaCore.COMPILER_COMPLIANCE,
@@ -381,7 +382,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                 // first parse the source
                 PackageDescr packageDescr = null;
                 List<DroolsError> parserErrors = null;
-                if ( useCache ) {
+                if ( useCache && resource != null) {
                     DRLInfo cachedDrlInfo = (DRLInfo) parsedRules.get( resource );
                     if ( cachedDrlInfo != null ) {
                         packageDescr = cachedDrlInfo.getPackageDescr();
@@ -400,9 +401,9 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                 PackageBuilder builder = new PackageBuilder( builder_configuration );
                 DRLInfo result = null;
                 // compile parsed rules if necessary
-                if ( compile && !parser.hasErrors() ) {
+                if ( compile && !parser.hasErrors()) {
                     // check whether a .package file exists and add it
-                    if ( resource.getParent() != null ) {
+                    if ( resource != null && resource.getParent() != null ) {
                         MyResourceVisitor visitor = new MyResourceVisitor();
                         resource.getParent().accept( visitor,
                                                      IResource.DEPTH_ONE,
@@ -416,23 +417,23 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 
                     builder.addPackage( packageDescr );
                                         
-                    result = new DRLInfo( resource.getProjectRelativePath().toString(),
+                    result = new DRLInfo( resource == null ? "" : resource.getProjectRelativePath().toString(),
                                           packageDescr,
                                           parserErrors,
                                           builder.getPackage(),
                                           builder.getErrors().getErrors(),
                                           builder.getPackageRegistry( builder.getDefaultNamespace() ).getDialectCompiletimeRegistry() );
                 } else {
-                    result = new DRLInfo( resource.getProjectRelativePath().toString(),
+                    result = new DRLInfo( resource == null ? "" : resource.getProjectRelativePath().toString(),
                                           packageDescr,
                                           parserErrors,
                                           new PackageRegistry(builder, new Package("")).getDialectCompiletimeRegistry() );
                 }
 
                 // cache result
-                if ( useCache ) {
+                if ( useCache && resource != null) {
                     if ( compile && !parser.hasErrors() ) {
-                        parsedRules.remove( resource );
+                    	parsedRules.remove( resource );
                         compiledRules.put( resource,
                                            result );
                         RuleInfo[] ruleInfos = result.getRuleInfos();

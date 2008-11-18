@@ -89,17 +89,19 @@ public class AbstractRuleEditor extends TextEditor {
 	}
 	
 	public void updateFoldingStructure(List positions) {
-		Annotation[] annotations = new Annotation[positions.size()];
-		// this will hold the new annotations along
-		// with their corresponding positions
-		HashMap newAnnotations = new HashMap();
-		for (int i = 0; i < positions.size(); i++) {
-			ProjectionAnnotation annotation = new ProjectionAnnotation();
-			newAnnotations.put(annotation, positions.get(i));
-			annotations[i] = annotation;
+		if (annotationModel != null) {
+			Annotation[] annotations = new Annotation[positions.size()];
+			// this will hold the new annotations along
+			// with their corresponding positions
+			HashMap newAnnotations = new HashMap();
+			for (int i = 0; i < positions.size(); i++) {
+				ProjectionAnnotation annotation = new ProjectionAnnotation();
+				newAnnotations.put(annotation, positions.get(i));
+				annotations[i] = annotation;
+			}
+			annotationModel.modifyAnnotations(oldAnnotations, newAnnotations, null);
+			oldAnnotations = annotations;
 		}
-		annotationModel.modifyAnnotations(oldAnnotations, newAnnotations, null);
-		oldAnnotations = annotations;
 	}
 
 	/** For user triggered content assistance */

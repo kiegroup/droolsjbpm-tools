@@ -31,7 +31,7 @@ public class DRLInfo {
 	private DialectCompiletimeRegistry dialectRegistry;
 
 	public DRLInfo(String sourcePathName, PackageDescr packageDescr, List<DroolsError> parserErrors, DialectCompiletimeRegistry dialectRegistry) {
-		if (sourcePathName == null || "".equals(sourcePathName)) {
+		if (sourcePathName == null) {
 			throw new IllegalArgumentException("Invalid sourcePathName " + sourcePathName);
 		}
 		this.sourcePathName = sourcePathName;

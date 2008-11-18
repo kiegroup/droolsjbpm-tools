@@ -10,16 +10,16 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.server.rules.SuggestionCompletionLoader;
-import org.drools.guvnor.server.util.BRDRLPersistence;
-import org.drools.guvnor.server.util.BRXMLPersistence;
 import org.drools.compiler.DrlParser;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.dsl.editor.DSLAdapter;
 import org.drools.eclipse.editors.DRLDocumentProvider;
 import org.drools.eclipse.editors.DRLRuleEditor;
 import org.drools.eclipse.util.ProjectClassLoader;
+import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.guvnor.server.rules.SuggestionCompletionLoader;
+import org.drools.guvnor.server.util.BRDRLPersistence;
+import org.drools.guvnor.server.util.BRXMLPersistence;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.eclipse.core.internal.resources.Container;
 import org.eclipse.core.resources.IFile;
@@ -121,34 +121,29 @@ public class RuleEditor extends FormEditor
 
             addPage( drlEditor,
                      xmlEditor.getEditorInput() );
-
-            IPath packagePath = getCurrentDirectoryPath( getEditorInput() ).append( "rule.package" );
-
-            IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile( packagePath );
-
-            IJavaProject javaProject = JavaCore.create( file.getProject() );
-
-            ClassLoader classLoader = ProjectClassLoader.getProjectClassLoader( javaProject );
-
-            loader = new SuggestionCompletionLoader( classLoader );
-
-            if ( !file.exists() ) {
-                String defaultHeader = "//This is a package configuration file";
-                defaultHeader += "\n//Add imports, globals etc here which will be used by all the rule assets in this folder.";
-                InputStream is = new ByteArrayInputStream( defaultHeader.getBytes() );
-                try {
-                    file.create( is,
-                                 true,
-                                 null );
-                } catch ( CoreException e ) {
-                    DroolsEclipsePlugin.log( e );
-                }
+            IPath packagePath = getCurrentDirectoryPath( getEditorInput() );
+            if (packagePath != null) {
+            	packagePath = packagePath.append( "rule.package" );
+	            IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile( packagePath );
+	            IJavaProject javaProject = JavaCore.create( file.getProject() );
+	            ClassLoader classLoader = ProjectClassLoader.getProjectClassLoader( javaProject );
+	            loader = new SuggestionCompletionLoader( classLoader );
+	            if ( !file.exists() ) {
+	                String defaultHeader = "//This is a package configuration file";
+	                defaultHeader += "\n//Add imports, globals etc here which will be used by all the rule assets in this folder.";
+	                InputStream is = new ByteArrayInputStream( defaultHeader.getBytes() );
+	                try {
+	                    file.create( is,
+	                                 true,
+	                                 null );
+	                } catch ( CoreException e ) {
+	                    DroolsEclipsePlugin.log( e );
+	                }
+	            }
+	            packageEditorInput = new FileEditorInput( file );
             }
-
-            packageEditorInput = new FileEditorInput( file );
-
             reloadCompletionEngine();
-
+	
             setPageText( 1,
                          "BRL Source" );
 
@@ -178,10 +173,21 @@ public class RuleEditor extends FormEditor
     }
 
     private IPath getCurrentDirectoryPath(IEditorInput editorInput) {
-        return ((FileEditorInput) editorInput).getFile().getFullPath().removeLastSegments( 1 ).addTrailingSeparator();
+    	if (editorInput instanceof FileEditorInput) {
+    		return ((FileEditorInput) editorInput).getFile().getFullPath().removeLastSegments( 1 ).addTrailingSeparator();
+    	}
+    	return null;
     }
 
     private void reloadCompletionEngine() {
+    	
+    	if (packageEditorInput == null) {
+    		completion = new SuggestionCompletionLoader( null ).getSuggestionEngine( "",
+                new ArrayList(),
+                new ArrayList() );
+    		return;
+    	}
+    	
         try {
 
             // Load all .dsl files from current dir

@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
@@ -158,14 +159,21 @@ public class DSLEditor extends EditorPart {
 
     public void init(IEditorSite site,
                      IEditorInput editorInput) throws PartInitException {
-        FileEditorInput input = (FileEditorInput) editorInput;
         setSite( site );
         setInput( editorInput );
-        setVisibleName( input );
+		setVisibleName( editorInput );
 
         try {
-            InputStream stream = input.getFile().getContents();
-            model = new NLGrammarModel();
+            InputStream stream = null;
+        	if (editorInput instanceof FileEditorInput) {
+        		FileEditorInput input = (FileEditorInput) editorInput;
+        		stream = input.getFile().getContents();
+        	} else if (editorInput instanceof IStorageEditorInput) {
+        		IStorageEditorInput input = (IStorageEditorInput) editorInput;
+        		stream = input.getStorage().getContents();
+        	}
+
+        	model = new NLGrammarModel();
             DSLMappingFile file = new DSLMappingFile();
             file.parseAndLoad( new InputStreamReader( stream ) );
             model.addEntries( file.getMapping().getEntries() );
@@ -179,9 +187,9 @@ public class DSLEditor extends EditorPart {
 
     }
 
-    private void setVisibleName(FileEditorInput input) {
-        setPartName( input.getFile().getName() );
-        setContentDescription( "Editing Domain specific language: [" + input.getFile().getFullPath().toString() + "]" );
+    private void setVisibleName(IEditorInput input) {
+        setPartName( input.getName() );
+        setContentDescription( "Editing Domain specific language: [" + input.getName() + "]" );
     }
 
     public boolean isDirty() {
