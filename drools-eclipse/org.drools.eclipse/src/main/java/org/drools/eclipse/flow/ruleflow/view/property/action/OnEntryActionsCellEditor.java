@@ -15,8 +15,11 @@ package org.drools.eclipse.flow.ruleflow.view.property.action;
  * limitations under the License.
  */
 
+import java.util.List;
+
 import org.drools.eclipse.flow.common.view.property.BeanDialogCellEditor;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
+import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.impl.ExtendedNodeImpl;
 import org.eclipse.swt.widgets.Composite;
@@ -27,7 +30,7 @@ import org.eclipse.swt.widgets.Shell;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class OnEntryActionsCellEditor extends BeanDialogCellEditor {
+public class OnEntryActionsCellEditor extends BeanDialogCellEditor<List<DroolsAction>> {
 
     private WorkflowProcess process;
     private ExtendedNodeImpl extendedNode;
@@ -38,7 +41,7 @@ public class OnEntryActionsCellEditor extends BeanDialogCellEditor {
         this.extendedNode = extendedNode;
     }
 
-    protected EditBeanDialog createDialog(Shell shell) {
+    protected EditBeanDialog<List<DroolsAction>> createDialog(Shell shell) {
         ActionsDialog dialog = new ActionsDialog(shell, process);
         dialog.setValue(extendedNode.getActions(ExtendedNodeImpl.EVENT_NODE_ENTER));
         return dialog;

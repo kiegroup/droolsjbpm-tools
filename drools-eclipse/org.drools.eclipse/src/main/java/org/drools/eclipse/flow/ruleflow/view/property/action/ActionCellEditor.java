@@ -17,9 +17,12 @@ package org.drools.eclipse.flow.ruleflow.view.property.action;
 
 import org.drools.eclipse.flow.common.view.property.BeanDialogCellEditor;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
+import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.node.ActionNode;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -27,7 +30,7 @@ import org.eclipse.swt.widgets.Shell;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class ActionCellEditor extends BeanDialogCellEditor {
+public class ActionCellEditor extends BeanDialogCellEditor<DroolsAction> {
 
     private WorkflowProcess process;
     private ActionNode actionNode;
@@ -38,16 +41,27 @@ public class ActionCellEditor extends BeanDialogCellEditor {
         this.actionNode = actionNode;
     }
 
-    protected EditBeanDialog createDialog(Shell shell) {
+	protected Object openDialogBox(Control cellEditorWindow) {
+        ActionDialog dialog = (ActionDialog) createDialog(cellEditorWindow.getShell());
+        dialog.setValue(actionNode.getAction());
+        int result = dialog.open();
+        if (result == Window.CANCEL) {
+            return null;
+        }
+        return dialog.getValue();
+    }
+	
+    protected EditBeanDialog<DroolsAction> createDialog(Shell shell) {
         ActionDialog dialog = new ActionDialog(shell, process);
         dialog.setValue(actionNode.getAction());
         return dialog;
     }
     
-    protected String getLabelText(Object value) {
+	protected String getLabelText(Object value) {
     	if (actionNode == null || actionNode.getAction() == null) {
     		return "";
     	}
         return actionNode.getAction().toString();
     }
+
 }

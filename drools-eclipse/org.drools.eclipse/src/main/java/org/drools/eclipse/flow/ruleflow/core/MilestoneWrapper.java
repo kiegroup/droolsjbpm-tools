@@ -41,8 +41,10 @@ public class MilestoneWrapper extends EventBasedNodeWrapper {
     protected void initDescriptors() {
     	super.initDescriptors();
     	IPropertyDescriptor[] oldDescriptors = descriptors; 
-        descriptors = new IPropertyDescriptor[oldDescriptors.length + 1];
+        descriptors = new IPropertyDescriptor[oldDescriptors.length + 3];
         System.arraycopy(oldDescriptors, 0, descriptors, 0, oldDescriptors.length);
+        descriptors[descriptors.length - 3] = getOnEntryPropertyDescriptor();
+        descriptors[descriptors.length - 2] = getOnExitPropertyDescriptor();
         descriptors[descriptors.length - 1] = 
             new MilestoneConstraintPropertyDescriptor(CONSTRAINT, "Constraint",
         		getMilestoneNode(), (WorkflowProcess) getParent().getProcessWrapper().getProcess());

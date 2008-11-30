@@ -1,91 +1,69 @@
 package com.sample;
 
-/*
- * Copyright 2005 JBoss Inc
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.DecisionTableConfiguration;
+import org.drools.builder.DecisionTableInputType;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeType;
+import org.drools.io.impl.ClassPathResource;
+import org.drools.runtime.StatefulKnowledgeSession;
+
+/**
+ * This is a sample class to launch a decision table.
  */
-
-import java.io.StringReader;
-
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
-import org.drools.compiler.PackageBuilder;
-import org.drools.decisiontable.InputType;
-import org.drools.decisiontable.SpreadsheetCompiler;
-import org.drools.rule.Package;
-
 public class DecisionTableTest {
 
-    public static final void main(String[] args) {
-        try {
-        	
-        	//load up the rulebase
-            RuleBase ruleBase = readDecisionTable();
-            WorkingMemory workingMemory = ruleBase.newStatefulSession();
-            
-            //go !
-            Message message = new Message();
-            message.setMessage(  "Hello World" );
-            message.setStatus( Message.HELLO );
-            workingMemory.insert( message );
-            workingMemory.fireAllRules();   
-            
-            
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
-    }
+	public static final void main(String[] args) {
+		try {
+			// load up the knowledge base
+			KnowledgeBase kbase = readKnowledgeBase();
+			StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+			// go !
+			Message message = new Message();
+			message.setMessage("Hello World");
+			message.setStatus(Message.HELLO);
+			ksession.insert(message);
+			ksession.fireAllRules();
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+	}
 
-    /**
-     * Please note that this is the "low level" rule assembly API.
-     */
-	private static RuleBase readDecisionTable() throws Exception {
-		//read in the source
-        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
-        final String drl = converter.compile( "/Sample.xls", InputType.XLS );
-		PackageBuilder builder = new PackageBuilder();
-		builder.addPackageFromDrl( new StringReader( drl ) );
-		Package pkg = builder.getPackage();
-		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-		ruleBase.addPackage( pkg );
-		return ruleBase;
+	private static KnowledgeBase readKnowledgeBase() throws Exception {
+		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+		DecisionTableConfiguration config = KnowledgeBuilderFactory.newDecisionTableConfiguration();
+		config.setInputType(DecisionTableInputType.XLS);
+		kbuilder.add(new ClassPathResource("Sample.xls"), KnowledgeType.DTABLE, config);
+		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+		return kbase;
 	}
 
 	public static class Message {
 		public static final int HELLO = 0;
 		public static final int GOODBYE = 1;
-		
+
 		private String message;
-		
+
 		private int status;
-		
+
 		public String getMessage() {
 			return this.message;
 		}
-		
+
 		public void setMessage(String message) {
 			this.message = message;
 		}
-		
+
 		public int getStatus() {
 			return this.status;
 		}
-		
-		public void setStatus( int status ) {
+
+		public void setStatus(int status) {
 			this.status = status;
 		}
 	}
-    
+
 }

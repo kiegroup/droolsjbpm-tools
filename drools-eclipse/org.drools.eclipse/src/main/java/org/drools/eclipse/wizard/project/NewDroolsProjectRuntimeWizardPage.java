@@ -133,6 +133,9 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
 	        droolsRuntimeCombo.select(0);
 			selectedRuntime = droolsRuntimeCombo.getText();
         }
+        DroolsRuntime defaultRuntime = DroolsRuntimeManager.getDefaultDroolsRuntime();
+		projectSpecificRuntime.setText("Use default Drools Runtime (currently "
+			+ (defaultRuntime == null ? "undefined)" : defaultRuntime.getName() + ")"));
 	}
 	
 	public DroolsRuntime getDroolsRuntime() {

@@ -14,6 +14,7 @@ import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.debug.ui.contexts.DebugContextEvent;
 import org.eclipse.debug.ui.contexts.IDebugContextListener;
 import org.eclipse.debug.ui.contexts.IDebugContextService;
+import org.eclipse.jdt.debug.core.IJavaFieldVariable;
 import org.eclipse.jdt.debug.core.IJavaObject;
 import org.eclipse.jdt.debug.core.IJavaStackFrame;
 import org.eclipse.jdt.debug.core.IJavaThread;
@@ -70,10 +71,15 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
         	IVariable variable = (IVariable) context;
             try {
                 IValue value = ((IVariable) context).getValue();
-                if (value != null && value instanceof IJavaObject
-                        && "org.drools.reteoo.ReteooStatefulSession".equals(
-                            variable.getValue().getReferenceTypeName())) {
-                    input = value;
+                if (value != null && value instanceof IJavaObject) {
+                    if ("org.drools.reteoo.ReteooStatefulSession".equals(variable.getValue().getReferenceTypeName())) {
+                    	input = value;
+                    } else if ("org.drools.impl.StatefulKnowledgeSessionImpl".equals(variable.getValue().getReferenceTypeName())) {
+                    	IJavaFieldVariable sessionVar = ((IJavaObject) value).getField("session", false);
+                    	if (sessionVar != null) {
+                            input = sessionVar.getValue();
+                    	}
+                    }
                 }
             } catch (Throwable t) {
                 DroolsEclipsePlugin.log(t);
@@ -95,8 +101,8 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
 	                            IJavaObject stackObj = ((IJavaStackFrame) frames[i]).getThis();
 	                            if ((stackObj != null)
 	                                    && (stackObj.getJavaType() != null)
-	                                    && ("org.drools.reteoo.ReteooStatefulSession".equals(
-	                                        stackObj.getJavaType().getName()))) {
+	                                    && ("org.drools.reteoo.ReteooStatefulSession".equals(stackObj.getJavaType().getName())
+	                                    		|| "org.drools.impl.StatefulKnowledgeSessionImpl".equals(stackObj.getJavaType().getName()))) {
 	                                input = stackObj;
 	                                break;
 	                            }

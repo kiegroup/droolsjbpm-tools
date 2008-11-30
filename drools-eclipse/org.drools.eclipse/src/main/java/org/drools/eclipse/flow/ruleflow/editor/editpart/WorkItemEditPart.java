@@ -107,10 +107,10 @@ public class WorkItemEditPart extends ElementEditPart {
         return getWorkItemWrapper().getWorkDefinition();
     }
     
-    public ConnectionAnchor getSourceConnectionAnchor(Request request) {
-    	Point p = ((DropRequest) request).getLocation();
-    	return ((WorkItemFigure) getFigure()).getOutgoingConnectionAnchorAt(p);
-    }
+//    public ConnectionAnchor getSourceConnectionAnchor(Request request) {
+//    	Point p = ((DropRequest) request).getLocation();
+//    	return ((WorkItemFigure) getFigure()).getOutgoingConnectionAnchorAt(p);
+//    }
     
     protected void doubleClicked() {
         super.doubleClicked();

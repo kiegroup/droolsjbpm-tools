@@ -1,47 +1,36 @@
 package com.sample;
 
-import java.io.InputStreamReader;
-import java.io.Reader;
-
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
-import org.drools.compiler.PackageBuilder;
-import org.drools.rule.Package;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeType;
+import org.drools.io.impl.ClassPathResource;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 /**
- * This is a sample file to launch a ruleflow.
+ * This is a sample file to launch a process.
  */
 public class RuleFlowTest {
 
 	public static final void main(String[] args) {
 		try {
-			//load the process
-			RuleBase ruleBase = createKnowledgeBase();
-			// create a new session
-			StatefulSession session = ruleBase.newStatefulSession();
+			// load up the knowledge base
+			KnowledgeBase kbase = readKnowledgeBase();
+			StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 			// start a new process instance
-			session.startProcess("com.sample.ruleflow");
+			ksession.startProcess("com.sample.ruleflow");
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
 	}
 
-	/**
-	 * Creates the knowledge base by loading the process definition.
-	 */
-	private static RuleBase createKnowledgeBase() throws Exception {
-		// create a builder
-		PackageBuilder builder = new PackageBuilder();
-		// load the process
-		Reader source = new InputStreamReader(
-			RuleFlowTest.class.getResourceAsStream("/ruleflow.rf"));
-		builder.addProcessFromXml(source);
-		// create the knowledge base 
-		Package pkg = builder.getPackage();
-		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-		ruleBase.addPackage(pkg);
-		return ruleBase;
+	private static KnowledgeBase readKnowledgeBase() throws Exception {
+		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+		kbuilder.add(new ClassPathResource("ruleflow.rf"), KnowledgeType.DRF);
+		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+		return kbase;
 	}
 
 }

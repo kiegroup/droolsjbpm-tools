@@ -17,7 +17,6 @@ package org.drools.eclipse.flow.ruleflow.view.property.action;
  */
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -39,7 +38,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import java.util.Arrays;
 
 /**
  * Completion for ruleflow constraints. 
@@ -95,7 +93,7 @@ public class ActionCompletionProcessor extends RuleCompletionProcessor {
     }
     
     private void loadImports() {
-    	this.imports = new ArrayList();
+    	this.imports = new ArrayList<String>();
     	List<String> imports = ((org.drools.process.core.Process) process).getImports();
     	
     	if (imports != null) {
@@ -155,12 +153,9 @@ public class ActionCompletionProcessor extends RuleCompletionProcessor {
     }
     
     private void loadAttributes() {
-        if (this.dialect == null) {
-            attributes = Collections.EMPTY_MAP;
-        } else {
-            Map<String, String> result = new HashMap<String, String>();
-            result.put("dialect", dialect);
-            attributes = result;
+        attributes = new HashMap<String, String>();
+        if (this.dialect != null) {
+            attributes.put("dialect", dialect);
         }
     }
     

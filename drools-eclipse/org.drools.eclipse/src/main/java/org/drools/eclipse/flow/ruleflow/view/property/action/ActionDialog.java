@@ -25,6 +25,7 @@ import org.drools.eclipse.flow.ruleflow.view.property.constraint.RuleFlowGlobals
 import org.drools.eclipse.flow.ruleflow.view.property.constraint.RuleFlowImportsDialog;
 import org.drools.process.core.Process;
 import org.drools.util.ArrayUtils;
+import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.eclipse.jface.resource.JFaceResources;
@@ -60,7 +61,7 @@ import org.eclipse.swt.widgets.TabItem;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class ActionDialog extends EditBeanDialog {
+public class ActionDialog extends EditBeanDialog<DroolsAction> {
 
     private static final String[] DIALECTS = new String[] { "mvel", "java" };
     
@@ -75,9 +76,14 @@ public class ActionDialog extends EditBeanDialog {
 		this.process = process;
 	}
 	
-	protected Object updateValue(Object value) {
+	protected DroolsAction updateValue(DroolsAction action) {
 		if (tabFolder.getSelectionIndex() == 0) {
-			return getAction();
+			if (action == null) {
+				action = new DroolsConsequenceAction();
+			}
+			((DroolsConsequenceAction) action).setDialect(dialectCombo.getItem(dialectCombo.getSelectionIndex()));
+			((DroolsConsequenceAction) action).setConsequence(actionViewer.getDocument().get());
+			return action;
 		}
 		return null;
 	}
@@ -157,12 +163,6 @@ public class ActionDialog extends EditBeanDialog {
         return dialectCombo;
 	}
 	
-	private Object getAction() {
-		return new DroolsConsequenceAction(
-	        dialectCombo.getItem(dialectCombo.getSelectionIndex()),
-	        actionViewer.getDocument().get());
-	}
-	
 	public Control createDialogArea(Composite parent) {
 		GridLayout layout = new GridLayout();
 		parent.setLayout(layout);
@@ -223,9 +223,9 @@ public class ActionDialog extends EditBeanDialog {
 				dialog.create();
 				int code = dialog.open();
 				if (code != CANCEL) {
-					List imports = dialog.getImports();
+					List<String> imports = dialog.getImports();
 					((Process) process).setImports(imports);
-					List functionImports = dialog.getFunctionImports();
+					List<String> functionImports = dialog.getFunctionImports();
 					process.setFunctionImports(functionImports);
 					completionProcessor.reset();
 				}
@@ -242,7 +242,7 @@ public class ActionDialog extends EditBeanDialog {
 				dialog.create();
 				int code = dialog.open();
 				if (code != CANCEL) {
-					Map globals = dialog.getGlobals();
+					Map<String, String> globals = dialog.getGlobals();
 					((Process) process).setGlobals(globals);
 					completionProcessor.reset();
 				}

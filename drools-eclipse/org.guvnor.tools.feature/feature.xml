@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.guvnor.tools.feature"
-      label="Drools Guvnor Feature"
-      version="1.0.0"
+      label="JBoss Drools Guvnor Feature"
+      version="5.0.0.SNAPSHOT"
       provider-name="JBoss, a division of Red Hat">
 
-   <description url="http://www.jboss.org/community/docs/DOC-9834">
-      Eclipse support for the JBoss Guvnor repository.
+   <description url="http://www.jboss.org/drools/">
+      Eclipse support for JBoss Drools Guvnor synchronization.
    </description>
 
    <copyright>
@@ -14,7 +14,17 @@
    </copyright>
 
    <license>
-      [Enter License Description here.]
+      Licensed under the Apache License, Version 2.0(the &quot;License&quot;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions
+and limitations under the License.
    </license>
 
    <requires>
@@ -30,14 +40,14 @@
          id="org.eclipse.webdav"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="3.0.101"
          unpack="false"/>
 
    <plugin
          id="org.guvnor.tools"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="5.0.0.SNAPSHOT"
          unpack="false"/>
 
 </feature>

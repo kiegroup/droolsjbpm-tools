@@ -21,6 +21,7 @@ import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.workflow.core.node.Join;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
+import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 /**
  * Wrapper for a join node.
@@ -32,19 +33,15 @@ public class JoinWrapper extends AbstractNodeWrapper {
 	public static final int CHANGE_TYPE = 5;
 
 	private static final long serialVersionUID = 400L;
-    private static IPropertyDescriptor[] descriptors;
+    private transient IPropertyDescriptor[] descriptors;
 
     public static final String TYPE = "type";
-    static {
-        descriptors = new IPropertyDescriptor[DefaultElementWrapper.descriptors.length + 1];
-        System.arraycopy(DefaultElementWrapper.descriptors, 0, descriptors, 0, DefaultElementWrapper.descriptors.length);
-        descriptors[descriptors.length - 1] = 
-            new ComboBoxPropertyDescriptor(TYPE, "Type", new String[] { "", "AND", "XOR", "Discriminator" });
-    }
+    public static final String N = "N";
     
     public JoinWrapper() {
         setNode(new Join());
         getJoin().setName("Join");
+        setDescriptors();
     }
     
     public Join getJoin() {
@@ -56,13 +53,29 @@ public class JoinWrapper extends AbstractNodeWrapper {
         	&& getOutgoingConnections().isEmpty();
     }
 
+    private void setDescriptors() {
+        descriptors = new IPropertyDescriptor[DefaultElementWrapper.descriptors.length + 1];
+        System.arraycopy(DefaultElementWrapper.descriptors, 0, descriptors, 0, DefaultElementWrapper.descriptors.length);
+        descriptors[descriptors.length - 1] = 
+            new ComboBoxPropertyDescriptor(TYPE, "Type", new String[] { "", "AND", "XOR", "Discriminator", "n-of-m" });
+    }
+
     public IPropertyDescriptor[] getPropertyDescriptors() {
+        if (getParent() != null && (getJoin().getType() == Join.TYPE_N_OF_M)) {
+            IPropertyDescriptor[] result = new IPropertyDescriptor[descriptors.length + 1];
+            System.arraycopy(descriptors, 0, result, 0, descriptors.length);
+            result[descriptors.length] = new TextPropertyDescriptor(N, "n");
+            return result;
+        }
         return descriptors;
     }
 
     public Object getPropertyValue(Object id) {
         if (TYPE.equals(id)) {
             return new Integer(getJoin().getType());
+        }
+        if (N.equals(id)) {
+            return getJoin().getN() == null ? "" : getJoin().getN();
         }
         return super.getPropertyValue(id);
     }
@@ -71,6 +84,8 @@ public class JoinWrapper extends AbstractNodeWrapper {
         if (TYPE.equals(id)) {
             getJoin().setType(Join.TYPE_UNDEFINED);
             notifyListeners(CHANGE_TYPE);
+        } else if (N.equals(id)) {
+            getJoin().setN(null);
         } else {
             super.resetPropertyValue(id);
         }
@@ -80,6 +95,8 @@ public class JoinWrapper extends AbstractNodeWrapper {
         if (TYPE.equals(id)) {
             getJoin().setType(((Integer) value).intValue());
             notifyListeners(CHANGE_TYPE);
+        }  else if (N.equals(id)) {
+            getJoin().setN((String) value);
         } else {
             super.setPropertyValue(id, value);
         }

@@ -65,7 +65,8 @@ public class RuleSetNodeWrapper extends EventBasedNodeWrapper {
     
     public Object getPropertyValue(Object id) {
         if (RULE_FLOW_GROUP.equals(id)) {
-            return getRuleSetNode().getRuleFlowGroup();
+            String ruleflowGroup = getRuleSetNode().getRuleFlowGroup();
+            return ruleflowGroup == null ? "" : ruleflowGroup;
         }
         return super.getPropertyValue(id);
     }

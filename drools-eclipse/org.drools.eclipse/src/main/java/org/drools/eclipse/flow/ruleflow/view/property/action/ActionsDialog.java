@@ -19,6 +19,7 @@ import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
 import org.drools.eclipse.flow.common.view.property.EditListDialog;
 import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.WorkflowProcess;
+import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -26,7 +27,7 @@ import org.eclipse.swt.widgets.Shell;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class ActionsDialog extends EditListDialog {
+public class ActionsDialog extends EditListDialog<DroolsAction> {
     
 	private WorkflowProcess process;
 
@@ -35,11 +36,11 @@ public class ActionsDialog extends EditListDialog {
 		this.process = process;
 	}
 
-    protected Object createItem() {
-        return new DroolsAction();
+    protected DroolsAction createItem() {
+        return new DroolsConsequenceAction();
     }
 
-    protected EditBeanDialog createEditItemDialog() {
+    protected EditBeanDialog<DroolsAction> createEditItemDialog() {
     	return new ActionDialog(getShell(), process);
     }
 }
