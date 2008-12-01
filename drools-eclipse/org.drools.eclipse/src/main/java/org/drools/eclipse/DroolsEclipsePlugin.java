@@ -18,13 +18,14 @@ package org.drools.eclipse;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
@@ -520,7 +521,10 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
         processBuilder.buildProcess( process, resource.getLocation().toString() );
         ProcessInfo processInfo = new ProcessInfo( process.getId(),
                                                    process );
-        processInfo.setErrors( processBuilder.getErrors() );
+        List<DroolsError> errors = new ArrayList<DroolsError>();
+        errors.addAll( processBuilder.getErrors() );
+        errors.addAll( Arrays.asList( packageBuilder.getErrors().getErrors() ) );
+        processInfo.setErrors( errors );
         if ( useCachePreference ) {
             processInfos.put( resource,
                               processInfo );
