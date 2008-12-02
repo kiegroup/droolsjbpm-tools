@@ -250,6 +250,10 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                           "default" );
         store.setDefault( IDroolsConstants.ALLOW_NODE_CUSTOMIZATION,
         				  false );
+        store.setDefault( IDroolsConstants.INTERNAL_API,
+        				  2 );
+        store.setDefault( IDroolsConstants.FLOW_NODES, 
+        		          "1111111111111" );
     }
 
     public DRLInfo parseResource(IResource resource,

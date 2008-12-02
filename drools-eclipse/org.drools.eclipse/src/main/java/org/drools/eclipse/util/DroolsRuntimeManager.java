@@ -143,7 +143,7 @@ public class DroolsRuntimeManager {
 	
     public static String getDroolsRuntime(IProject project) {
         try {
-        	IFile file = project.getFile(".drools.runtime");
+        	IFile file = project.getFile(".settings/.drools.runtime");
         	if (file.exists()) {
         		BufferedReader reader = new BufferedReader(new InputStreamReader(file.getContents()));
         		String location = reader.readLine();

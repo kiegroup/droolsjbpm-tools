@@ -37,6 +37,7 @@ import org.drools.eclipse.flow.ruleflow.editor.editpart.WorkItemEditPart;
 import org.drools.eclipse.flow.ruleflow.editor.editpart.JoinEditPart.JoinFigureInterface;
 import org.drools.eclipse.flow.ruleflow.editor.editpart.SplitEditPart.SplitFigureInterface;
 import org.drools.eclipse.flow.ruleflow.editor.editpart.WorkItemEditPart.WorkItemFigureInterface;
+import org.drools.eclipse.preferences.IDroolsConstants;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.ConnectionCreationToolEntry;
@@ -50,6 +51,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 public class DefaultSkinProvider implements SkinProvider {
 	
     public PaletteContainer createComponentsDrawer() {
+    	
+    	String flowNodes = DroolsEclipsePlugin.getDefault().getPluginPreferences().getString(IDroolsConstants.FLOW_NODES);
 
         PaletteDrawer drawer = new PaletteDrawer("Components", null);
 
@@ -75,125 +78,149 @@ public class DefaultSkinProvider implements SkinProvider {
         );
         entries.add(combined);
                 
-        combined = new CombinedTemplateCreationEntry(
-            "RuleFlowGroup",
-            "Create a new RuleFlowGroup",
-            RuleSetNodeWrapper.class,
-            new SimpleFactory(RuleSetNodeWrapper.class),
-            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/activity.gif")), 
-            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/activity.gif"))
-        );
-        entries.add(combined);
+        if (flowNodes.charAt(0) == '1') {
+	        combined = new CombinedTemplateCreationEntry(
+	            "RuleFlowGroup",
+	            "Create a new RuleFlowGroup",
+	            RuleSetNodeWrapper.class,
+	            new SimpleFactory(RuleSetNodeWrapper.class),
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/activity.gif")), 
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/activity.gif"))
+	        );
+	        entries.add(combined);
+        }
             
-        combined = new CombinedTemplateCreationEntry(
-            "Split",
-            "Create a new Split",
-            SplitWrapper.class,
-            new SimpleFactory(SplitWrapper.class),
-            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/split.gif")), 
-            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/split.gif"))
-        );
-        entries.add(combined);
+        if (flowNodes.charAt(1) == '1') {
+        	combined = new CombinedTemplateCreationEntry(
+	            "Split",
+	            "Create a new Split",
+	            SplitWrapper.class,
+	            new SimpleFactory(SplitWrapper.class),
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/split.gif")), 
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/split.gif"))
+	        );
+	        entries.add(combined);
+        }
                     
-        combined = new CombinedTemplateCreationEntry(
-            "Join",
-            "Create a new Join",
-            JoinWrapper.class,
-            new SimpleFactory(JoinWrapper.class),
-            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/join.gif")), 
-            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/join.gif"))
-        );
-        entries.add(combined);
+        if (flowNodes.charAt(2) == '1') {
+	        combined = new CombinedTemplateCreationEntry(
+	            "Join",
+	            "Create a new Join",
+	            JoinWrapper.class,
+	            new SimpleFactory(JoinWrapper.class),
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/join.gif")), 
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/join.gif"))
+	        );
+	        entries.add(combined);
+        }
                         
-        combined = new CombinedTemplateCreationEntry(
-            "Event Wait",
-            "Create a new Event Wait",
-            MilestoneWrapper.class,
-            new SimpleFactory(MilestoneWrapper.class),
-            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/question.gif")), 
-            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/question.gif"))
-        );
-        entries.add(combined);
+        if (flowNodes.charAt(3) == '1') {
+	        combined = new CombinedTemplateCreationEntry(
+	            "Event Wait",
+	            "Create a new Event Wait",
+	            MilestoneWrapper.class,
+	            new SimpleFactory(MilestoneWrapper.class),
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/question.gif")), 
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/question.gif"))
+	        );
+	        entries.add(combined);
+        }
                             
-        combined = new CombinedTemplateCreationEntry(
-            "SubFlow",
-            "Create a new SubFlow",
-            SubProcessWrapper.class,
-            new SimpleFactory(SubProcessWrapper.class),
-            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/process.gif")), 
-            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/process.gif"))
-        );
-        entries.add(combined);
+        if (flowNodes.charAt(4) == '1') {
+	        combined = new CombinedTemplateCreationEntry(
+	            "SubFlow",
+	            "Create a new SubFlow",
+	            SubProcessWrapper.class,
+	            new SimpleFactory(SubProcessWrapper.class),
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/process.gif")), 
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/process.gif"))
+	        );
+	        entries.add(combined);
+        }
                                 
-        combined = new CombinedTemplateCreationEntry(
-            "Action",
-            "Create a new Action",
-            ActionWrapper.class,
-            new SimpleFactory(ActionWrapper.class),
-            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/action.gif")), 
-            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/action.gif"))
-        );
-        entries.add(combined);
+        if (flowNodes.charAt(5) == '1') {
+        	combined = new CombinedTemplateCreationEntry(
+	            "Action",
+	            "Create a new Action",
+	            ActionWrapper.class,
+	            new SimpleFactory(ActionWrapper.class),
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/action.gif")), 
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/action.gif"))
+	        );
+	        entries.add(combined);
+        }
                       
-        combined = new CombinedTemplateCreationEntry(
-            "Timer",
-            "Create a new Timer",
-            TimerWrapper.class,
-            new SimpleFactory(TimerWrapper.class),
-            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/timer.gif")), 
-            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/timer.gif"))
-        );
-        entries.add(combined);
+        if (flowNodes.charAt(6) == '1') {
+	        combined = new CombinedTemplateCreationEntry(
+	            "Timer",
+	            "Create a new Timer",
+	            TimerWrapper.class,
+	            new SimpleFactory(TimerWrapper.class),
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/timer.gif")), 
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/timer.gif"))
+	        );
+	        entries.add(combined);
+        }
                       
-        combined = new CombinedTemplateCreationEntry(
-            "Fault",
-            "Create a new Fault",
-            FaultNodeWrapper.class,
-            new SimpleFactory(FaultNodeWrapper.class),
-            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/fault.gif")), 
-            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/fault.gif"))
-        );
-        entries.add(combined);
+        if (flowNodes.charAt(7) == '1') {
+	        combined = new CombinedTemplateCreationEntry(
+	            "Fault",
+	            "Create a new Fault",
+	            FaultNodeWrapper.class,
+	            new SimpleFactory(FaultNodeWrapper.class),
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/fault.gif")), 
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/fault.gif"))
+	        );
+	        entries.add(combined);
+        }
                           
-        combined = new CombinedTemplateCreationEntry(
-		    "Event",
-		    "Create a new Event Node",
-		    EventNodeWrapper.class,
-		    new SimpleFactory(EventNodeWrapper.class),
-		    ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/event.gif")), 
-		    ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/event.gif"))
-		);
-		entries.add(combined);
+        if (flowNodes.charAt(8) == '1') {
+        	combined = new CombinedTemplateCreationEntry(
+			    "Event",
+			    "Create a new Event Node",
+			    EventNodeWrapper.class,
+			    new SimpleFactory(EventNodeWrapper.class),
+			    ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/event.gif")), 
+			    ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/event.gif"))
+			);
+			entries.add(combined);
+        }
 	                    
-        combined = new CombinedTemplateCreationEntry(
-            "Human Task",
-            "Create a new Human Task",
-            HumanTaskNodeWrapper.class,
-            new SimpleFactory(HumanTaskNodeWrapper.class),
-            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/human_task.gif")), 
-            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/human_task.gif"))
-        );
-        entries.add(combined);
+        if (flowNodes.charAt(9) == '1') {
+        	combined = new CombinedTemplateCreationEntry(
+	            "Human Task",
+	            "Create a new Human Task",
+	            HumanTaskNodeWrapper.class,
+	            new SimpleFactory(HumanTaskNodeWrapper.class),
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/human_task.gif")), 
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/human_task.gif"))
+	        );
+	        entries.add(combined);
+        }
                               
-        combined = new CombinedTemplateCreationEntry(
-            "Composite",
-            "Create a new Composite Node",
-            CompositeContextNodeWrapper.class,
-            new SimpleFactory(CompositeContextNodeWrapper.class),
-            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/composite.gif")), 
-            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/composite.gif"))
-        );
-        entries.add(combined);
+        if (flowNodes.charAt(10) == '1') {
+	        combined = new CombinedTemplateCreationEntry(
+	            "Composite",
+	            "Create a new Composite Node",
+	            CompositeContextNodeWrapper.class,
+	            new SimpleFactory(CompositeContextNodeWrapper.class),
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/composite.gif")), 
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/composite.gif"))
+	        );
+	        entries.add(combined);
+        }
                           
-	    combined = new CombinedTemplateCreationEntry(
-		    "For Each",
-		    "Create a new ForEach Node",
-		    ForEachNodeWrapper.class,
-		    new SimpleFactory(ForEachNodeWrapper.class),
-		    ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/composite.gif")), 
-		    ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/composite.gif"))
-		);
-		entries.add(combined);
+        if (flowNodes.charAt(11) == '1') {
+		    combined = new CombinedTemplateCreationEntry(
+			    "For Each",
+			    "Create a new ForEach Node",
+			    ForEachNodeWrapper.class,
+			    new SimpleFactory(ForEachNodeWrapper.class),
+			    ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/composite.gif")), 
+			    ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/composite.gif"))
+			);
+			entries.add(combined);
+        }
                     
         drawer.addAll(entries);
         return drawer;

@@ -50,7 +50,10 @@ public class RuleFlowPaletteFactory {
         String skin = DroolsEclipsePlugin.getDefault().getPreferenceStore().getString(IDroolsConstants.SKIN);
         SkinProvider skinProvider = SkinManager.getInstance().getSkinProvider(skin);
         categories.add(skinProvider.createComponentsDrawer());
-        categories.add(createWorkNodesDrawer());
+        String flowNodes = DroolsEclipsePlugin.getDefault().getPluginPreferences().getString(IDroolsConstants.FLOW_NODES);
+        if (flowNodes.charAt(12) == '1') {
+            categories.add(createWorkNodesDrawer());
+        }
         return categories;
     }
     

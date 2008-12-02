@@ -11,5 +11,7 @@ public interface IDroolsConstants {
 	String SKIN = "Drools.Flow.Skin";
 	String ALLOW_NODE_CUSTOMIZATION = "Drools.Flow.AllowNodeCustomization";
 	String DROOLS_RUNTIMES = "Drools.Runtimes";
+	String INTERNAL_API = "Drools.InternalAPI";
+	String FLOW_NODES = "Drools.FlowNodes";
 	
 }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
+import org.drools.eclipse.preferences.IDroolsConstants;
 import org.drools.eclipse.preferences.DroolsRuntimesBlock.DroolsRuntime;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
@@ -51,20 +52,23 @@ public class DroolsClasspathContainer implements IClasspathContainer {
     }
 
     private IClasspathEntry[] createDroolsLibraryEntries(IJavaProject project) {
+    	int internalAPI = DroolsEclipsePlugin.getDefault()
+    		.getPluginPreferences().getInt(IDroolsConstants.INTERNAL_API);
         List jarNames = getJarNames(project);
         List list = new ArrayList();
         for (int i = 0; i < jarNames.size(); i++) {
         	String jarName = (String) jarNames.get(i);
         	Path path = new Path(jarName);
-//            if (jarName.contains("drools-api")) {
-            	list.add(JavaCore.newLibraryEntry(path, path, null));
-//            } else {
-//                IAccessRule[] accessRules = new IAccessRule[1];
-//                accessRules[0] = new ClasspathAccessRule(new Path("**"), IAccessRule.K_DISCOURAGED);
-//                list.add(JavaCore.newLibraryEntry(
-//                    path, path, null, accessRules, ClasspathEntry.NO_EXTRA_ATTRIBUTES, false));
-//            }
-            
+        	if (internalAPI != 0) {
+		        if (jarName.contains("drools-api")) {
+		        	list.add(JavaCore.newLibraryEntry(path, path, null));
+		        } else {
+		        	IAccessRule[] accessRules = new IAccessRule[1];
+		            accessRules[0] = new ClasspathAccessRule(new Path("**"), internalAPI);
+		            list.add(JavaCore.newLibraryEntry(
+		                path, path, null, accessRules, ClasspathEntry.NO_EXTRA_ATTRIBUTES, false));
+		        }
+        	}
         }
         // also add jdt core jar from eclipse itself
 //        String pluginRootString = Platform.getInstallLocation().getURL().getPath() + "plugins/";

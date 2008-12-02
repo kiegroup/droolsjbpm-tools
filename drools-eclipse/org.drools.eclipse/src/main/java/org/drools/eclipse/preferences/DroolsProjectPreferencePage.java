@@ -6,10 +6,8 @@ import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.preferences.DroolsRuntimesBlock.DroolsRuntime;
 import org.drools.eclipse.util.DroolsRuntimeManager;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jdt.core.IClasspathContainer;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.internal.ui.preferences.PropertyAndPreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -67,17 +65,21 @@ public class DroolsProjectPreferencePage extends PropertyAndPreferencePage {
 	}
 
 	protected boolean hasProjectSpecificOptions(IProject project) {
-		return project.getFile(".drools.runtime").exists();
+		return project.getFile(".settings/.drools.runtime").exists();
 	}
 
 	public boolean performOk() {
 		try {
-			IFile file = getProject().getFile(".drools.runtime");
+			IFile file = getProject().getFile(".settings/.drools.runtime");
 			if (useProjectSettings()) {
 				String runtime = "<runtime>"
 					+ droolsRuntimeCombo.getItem(droolsRuntimeCombo.getSelectionIndex())
 					+ "</runtime>";
 				if (!file.exists()) {
+					IFolder folder = getProject().getFolder(".settings");
+					if (!folder.exists()) {
+						folder.create(true, true, null);
+					}
 					file.create(new ByteArrayInputStream(runtime.getBytes()), true, null);
 				} else {
 					file.setContents(new ByteArrayInputStream(runtime.getBytes()), true, false, null);

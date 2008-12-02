@@ -1,9 +1,5 @@
 package org.drools.eclipse.preferences;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.preferences.DroolsRuntimesBlock.DroolsRuntime;
 import org.drools.eclipse.util.DroolsRuntimeManager;
 import org.eclipse.jface.dialogs.MessageDialog;

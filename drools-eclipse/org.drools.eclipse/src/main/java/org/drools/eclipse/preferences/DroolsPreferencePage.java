@@ -21,6 +21,7 @@ public class DroolsPreferencePage extends PreferencePage implements IWorkbenchPr
 	private Button cacheParsedRulesCheckBox;
 	private Combo processSkinCombo;
 	private Button allowNodeCustomizationCheckBox;
+	private Combo internalAPICombo;
 	
 	protected Control createContents(Composite parent) {
 		final Composite composite = new Composite(parent, SWT.NONE);
@@ -41,7 +42,12 @@ public class DroolsPreferencePage extends PreferencePage implements IWorkbenchPr
 		processSkinCombo.add("BPMN");
 		allowNodeCustomizationCheckBox = createCheckBox(composite,
 			"Allow the customization of process nodes.");
-
+		label = new Label(composite, SWT.NONE);
+		label.setText("Internal Drools classes are: ");
+		internalAPICombo = new Combo(composite, SWT.LEFT);
+		internalAPICombo.add("Accessible");
+		internalAPICombo.add("Not accessible");
+		internalAPICombo.add("Discouraged");
 		initializeValues();
 
 		return composite;
@@ -72,6 +78,7 @@ public class DroolsPreferencePage extends PreferencePage implements IWorkbenchPr
         }
         processSkinCombo.select(index);
         allowNodeCustomizationCheckBox.setSelection(store.getDefaultBoolean(IDroolsConstants.ALLOW_NODE_CUSTOMIZATION));
+        internalAPICombo.select(store.getDefaultInt(IDroolsConstants.ALLOW_NODE_CUSTOMIZATION));
 	}
 
 	private void initializeValues() {
@@ -86,6 +93,7 @@ public class DroolsPreferencePage extends PreferencePage implements IWorkbenchPr
         }
         processSkinCombo.select(index);
         allowNodeCustomizationCheckBox.setSelection(store.getBoolean(IDroolsConstants.ALLOW_NODE_CUSTOMIZATION));
+        internalAPICombo.select(store.getInt(IDroolsConstants.INTERNAL_API));
     }
 
 	protected void performDefaults() {
@@ -107,6 +115,7 @@ public class DroolsPreferencePage extends PreferencePage implements IWorkbenchPr
         store.setValue(IDroolsConstants.SKIN,
     		(String) processSkinCombo.getItem(processSkinCombo.getSelectionIndex()));
         store.setValue(IDroolsConstants.ALLOW_NODE_CUSTOMIZATION, allowNodeCustomizationCheckBox.getSelection());
+        store.setValue(IDroolsConstants.INTERNAL_API, internalAPICombo.getSelectionIndex());
     }
 
 	public void init(IWorkbench workbench) {

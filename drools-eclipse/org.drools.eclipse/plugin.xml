@@ -218,6 +218,11 @@
             class="org.drools.eclipse.preferences.DroolsRuntimesPreferencePage"
             id="org.drools.eclipse.preferences.DroolsRuntimesPreferencePage">
       </page>
+      <page name="Drools Flow nodes"
+            category="org.drools.eclipse.preferences.DroolsPreferencePage"
+            class="org.drools.eclipse.preferences.DroolsFlowNodesPreferencePage"
+            id="org.drools.eclipse.preferences.DroolsFlowNodesPreferencePage">
+      </page>
    </extension>
 
    <extension point="org.eclipse.ui.propertyPages">
