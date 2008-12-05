@@ -7,49 +7,49 @@
          id="org.drools.eclipse.views">
       </category>
       <view
-         name="Working Memory View"
+         name="Working Memory"
          icon="icons/drools.gif"
          category="org.drools.eclipse.views"
          class="org.drools.eclipse.debug.WorkingMemoryView"
          id="org.drools.eclipse.debug.WorkingMemoryView">
       </view>
       <view
-         name="Agenda View"
+         name="Agenda"
          icon="icons/drools.gif"
          category="org.drools.eclipse.views"
          class="org.drools.eclipse.debug.AgendaView"
          id="org.drools.eclipse.debug.AgendaView">
       </view>
       <view
-         name="Global Data View"
+         name="Global Data"
          icon="icons/drools.gif"
          category="org.drools.eclipse.views"
          class="org.drools.eclipse.debug.ApplicationDataView"
          id="org.drools.eclipse.debug.ApplicationDataView">
       </view>
       <view
-         name="Process Instances View"
+         name="Process Instances"
          icon="icons/drools.gif"
          category="org.drools.eclipse.views"
          class="org.drools.eclipse.debug.ProcessInstancesView"
          id="org.drools.eclipse.debug.ProcessInstancesView">
       </view>
       <view
-            name="Process Instance View"
+            name="Process Instance"
             icon="icons/drools.gif"
             category="org.drools.eclipse.views"
             class="org.drools.eclipse.debug.ProcessInstanceViewer"
             id="org.drools.eclipse.debug.ProcessInstanceViewer">
       </view>
       <view
-         name="Audit View"
+         name="Audit"
          icon="icons/drools.gif"
          category="org.drools.eclipse.views"
          class="org.drools.eclipse.debug.AuditView"
          id="org.drools.eclipse.debug.AuditView">
       </view>
       <view
-         name="Rules View"
+         name="Rules"
          icon="icons/drools.gif"
          category="org.drools.eclipse.views"
          class="org.drools.eclipse.view.rules.RulesView"
