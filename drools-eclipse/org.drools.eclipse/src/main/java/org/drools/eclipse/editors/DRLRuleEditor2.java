@@ -260,7 +260,21 @@ public class DRLRuleEditor2 extends FormEditor {
                 reteViewer.drawGraph( graph );
 
             } catch ( InvocationTargetException e ) {
-                handleError( e );
+            	System.out.println(e.getTargetException().getMessage());
+            	if (e.getTargetException() != null
+            			&& ReteViewer.MSG_PARSE_ERROR.equals(e.getTargetException().getMessage())) {
+            		IStatus status = new Status( IStatus.ERROR,
+                        DroolsEclipsePlugin.getUniqueIdentifier(),
+                        -1,
+                        "Unable to show Rete Tree when rules cannot be parsed correctly.",
+                        null);
+            		ErrorDialog.openError( getSite().getShell(),
+                        "Rete Tree Build Error",
+                        "Unable to parse rules, please correct rules first.",
+                        status);
+            	} else {
+            		handleError( e );
+            	}
                 reteFailed = true;
             } catch ( InterruptedException e ) {
                 MessageDialog.openError( getSite().getShell(),
