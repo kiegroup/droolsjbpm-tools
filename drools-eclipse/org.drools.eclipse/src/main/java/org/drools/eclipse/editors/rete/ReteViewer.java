@@ -66,7 +66,7 @@ import org.eclipse.swt.SWT;
  */
 public class ReteViewer extends GraphicalEditor {
 
-    private static final String  MSG_PARSE_ERROR         = "Unable to parse rules to show RETE view!";
+    public static final String  MSG_PARSE_ERROR         = "Unable to parse rules to show RETE view!";
 
     private static final int     SIMPLE_ROUTER_MIN_NODES = 100;
 
