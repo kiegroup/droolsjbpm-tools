@@ -88,7 +88,7 @@ public class RuleHelperActionDelegate
 
     private void addProjectWizard(Menu menu, final Shell shell) {
 		MenuItem rule = new MenuItem(menu, SWT.NONE);
-		rule.setText("New Rule Project");
+		rule.setText("New Drools Project");
 
 		rule.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent e) {
@@ -105,7 +105,7 @@ public class RuleHelperActionDelegate
                                final Shell shell) {
         MenuItem rule = new MenuItem( menu,
                                       SWT.NONE );
-        rule.setText( "New Rule resource" );
+        rule.setText( "New Rule" );
 
         rule.addSelectionListener( new SelectionListener() {
             public void widgetSelected(SelectionEvent e) {
@@ -136,7 +136,7 @@ public class RuleHelperActionDelegate
                                        final Shell shell) {
         MenuItem dsl = new MenuItem( menu,
                                      SWT.NONE );
-        dsl.setText( "New Business rule (guided editor)" );
+        dsl.setText( "New Business Rule (using the guided editor)" );
         dsl.addSelectionListener( new SelectionListener() {
 
             public void widgetSelected(SelectionEvent e) {
