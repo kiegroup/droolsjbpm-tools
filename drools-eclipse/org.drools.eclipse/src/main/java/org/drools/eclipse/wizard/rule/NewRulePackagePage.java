@@ -10,6 +10,8 @@ import java.io.InputStream;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -51,13 +53,6 @@ public class NewRulePackagePage extends WizardNewFileCreationPage {
         this.workbench = workbench;
     }
 
-    public void createControl(Composite parent) {
-        super.createControl(parent);
-        setPageComplete(true);
-        super.setMessage( "Hint: Press CTRL+SPACE when editing rules to get content sensitive assistance/popups.");
-    }
-    
-    
     protected void createAdvancedControls(Composite parent) {
         Composite container = new Composite(parent, SWT.NONE);
         final GridLayout layout = new GridLayout();
@@ -73,6 +68,10 @@ public class NewRulePackagePage extends WizardNewFileCreationPage {
         
         super.createAdvancedControls( parent );
     }
+    
+    protected boolean validatePage() {
+    	return super.validatePage() && validate();
+    }
 
     private void createPackageName(Composite container) {
         //package name
@@ -84,6 +83,11 @@ public class NewRulePackagePage extends WizardNewFileCreationPage {
         packageName.setLayoutData(  new GridData(GridData.FILL_HORIZONTAL) );
         packageName.setToolTipText( "Rules require a namespace." );
         packageName.setFont( this.getFont() );
+        packageName.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				setPageComplete(validatePage());
+			}
+        });
     }
 
     private void createFunctions(Composite container) {
@@ -160,9 +164,7 @@ public class NewRulePackagePage extends WizardNewFileCreationPage {
     }
     
     protected InputStream getInitialContents() {
-        
         try {
-        	
             DRLGenerator gen = new DRLGenerator();
             if (this.ruleFileType.getSelectionIndex() == TYPE_RULE) {
                 InputStream template = getTemplate("org/drools/eclipse/wizard/rule/new_rule.drl.template");                
@@ -186,9 +188,4 @@ public class NewRulePackagePage extends WizardNewFileCreationPage {
         return DroolsEclipsePlugin.getDefault().getBundle().getResource(templatePath).openStream();
     }
     
-
-    
-    
-    
-
 }
