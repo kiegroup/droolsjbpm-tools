@@ -58,7 +58,7 @@ public class EmailCustomEditor extends EditBeanDialog implements WorkEditor {
         Work work = (Work) getValue();
         String from = (String) work.getParameter("From");
         String to = (String)work.getParameter("To");
-        String body = (String)work.getParameter("Text");
+        String body = (String)work.getParameter("Body");
         String subject = (String)work.getParameter("Subject");
         if (to != null) {
             for (String email: to.split(";")) {
@@ -232,7 +232,7 @@ public class EmailCustomEditor extends EditBeanDialog implements WorkEditor {
         }
         work.setParameter("To", to);
         work.setParameter("Subject", subjectText.getText());
-        work.setParameter("Text", bodyText.getText());
+        work.setParameter("Body", bodyText.getText());
         work.setParameterDefinitions(((Work) value).getParameterDefinitions());
         return work;
     }
