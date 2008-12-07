@@ -149,6 +149,10 @@ public class DroolsCompilerAntTask extends MatchingTask {
 				// compile rule file and add to the builder
 				compileAndAddFile(builder, fileNames[i]);
 			}
+			
+			if ( builder.hasErrors() ) {
+			    System.err.println( builder.getErrors().toString() );
+			}
 
 			// gets the package
 			org.drools.rule.Package pkg = builder.getPackage();
