@@ -41,6 +41,7 @@ import org.drools.eclipse.dsl.editor.DSLAdapter;
 import org.drools.eclipse.editors.AbstractRuleEditor;
 import org.drools.eclipse.preferences.IDroolsConstants;
 import org.drools.eclipse.util.ProjectClassLoader;
+import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.process.core.Process;
 import org.drools.rule.Package;
@@ -522,7 +523,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                                     PackageBuilderConfiguration config) {
         PackageBuilder packageBuilder = new PackageBuilder( config );
         ProcessBuilder processBuilder = new ProcessBuilder( packageBuilder );
-        processBuilder.buildProcess( process, resource.getLocation().toString() );
+        processBuilder.buildProcess( process, ResourceFactory.newUrlResource( resource.getLocation().toString() ) );
         ProcessInfo processInfo = new ProcessInfo( process.getId(),
                                                    process );
         List<DroolsError> errors = new ArrayList<DroolsError>();
