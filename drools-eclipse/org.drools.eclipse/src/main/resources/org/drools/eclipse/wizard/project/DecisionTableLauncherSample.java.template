@@ -8,7 +8,7 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.logger.KnowledgeRuntimeLogger;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
@@ -41,7 +41,7 @@ public class DecisionTableTest {
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 		DecisionTableConfiguration config = KnowledgeBuilderFactory.newDecisionTableConfiguration();
 		config.setInputType(DecisionTableInputType.XLS);
-		kbuilder.add(ResourceFactory.newClassPathResource("Sample.xls"), KnowledgeType.DTABLE, config);
+		kbuilder.add(ResourceFactory.newClassPathResource("Sample.xls"), ResourceType.DTABLE, config);
 		KnowledgeBuilderErrors errors = kbuilder.getErrors();
 		if (errors.size() > 0) {
 			for (KnowledgeBuilderError error: errors) {

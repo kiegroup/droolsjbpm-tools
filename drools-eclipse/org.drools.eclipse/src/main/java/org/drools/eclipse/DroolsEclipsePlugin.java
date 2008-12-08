@@ -523,7 +523,8 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                                     PackageBuilderConfiguration config) {
         PackageBuilder packageBuilder = new PackageBuilder( config );
         ProcessBuilder processBuilder = new ProcessBuilder( packageBuilder );
-        processBuilder.buildProcess( process, ResourceFactory.newUrlResource( resource.getLocation().toString() ) );
+        processBuilder.buildProcess( process, ResourceFactory.newUrlResource(
+    		"file://" + resource.getLocation().toString() ) );
         ProcessInfo processInfo = new ProcessInfo( process.getId(),
                                                    process );
         List<DroolsError> errors = new ArrayList<DroolsError>();
