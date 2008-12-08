@@ -119,6 +119,10 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
     protected boolean parseResource(IResource res, boolean clean) {
         try {
             IJavaProject project = JavaCore.create(res.getProject());
+            // exclude .guvnorinfo files
+            if (".guvnorinfo".equals(res.getName())) {
+            	return false;
+            }
             // exclude files that are located in the output directory,
             // unless the ouput directory is the same as the project location
             if (!project.getOutputLocation().equals(project.getPath())
