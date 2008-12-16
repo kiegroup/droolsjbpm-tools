@@ -82,7 +82,7 @@ public class ActionCompletionProcessor extends RuleCompletionProcessor {
         String prefix = doc.get(startPart, documentOffset - startPart);
         return "rule dummy "
             + (dialect == null ? "" : " dialect \"" + dialect + "\" ")
-            + "\n when \n then \n org.drools.spi.ProcessContext context = null; \n " + prefix;
+            + "\n when \n then \n org.drools.spi.ProcessContext context = null; \n org.drools.runtime.process.ProcessContext kcontext = null; \n " + prefix;
     }
     
     public List<String> getImports() {

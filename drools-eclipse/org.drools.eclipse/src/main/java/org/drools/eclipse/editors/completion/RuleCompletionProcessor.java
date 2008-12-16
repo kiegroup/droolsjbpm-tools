@@ -25,6 +25,7 @@ import org.drools.lang.descr.FieldTemplateDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.rule.builder.dialect.mvel.MVELConsequenceBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
+import org.drools.runtime.rule.RuleContext;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.util.asm.ClassFieldInspector;
 import org.eclipse.jdt.core.CompletionProposal;
@@ -1210,6 +1211,8 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         context.setInputs( params );
         context.addInput( "drools",
                           KnowledgeHelper.class );
+        context.addInput( "kcontext",
+                          RuleContext.class );
         context.setCompiled( true );
         return context;
     }

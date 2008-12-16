@@ -343,9 +343,11 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
             }
             if (useDrools) {
                 javaTextWithParams.append( "org.drools.spi.KnowledgeHelper drools;" );
+                javaTextWithParams.append( "org.drools.runtime.rule.RuleContext kcontext;" );
             }
             if (useContext) {
                 javaTextWithParams.append( "org.drools.spi.ProcessContext context;" );
+                javaTextWithParams.append( "org.drools.runtime.process.ProcessContext kcontext;" );
             }
             javaTextWithParams.append( javaText );
             String jtext = javaTextWithParams.toString();
