@@ -10,6 +10,7 @@ import java.util.Map;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.drools.eclipse.task.Activator;
 import org.drools.eclipse.task.preferences.DroolsTaskConstants;
+import org.drools.process.workitem.wsht.BlockingAddTaskResponseHandler;
 import org.drools.task.Status;
 import org.drools.task.User;
 import org.drools.task.query.TaskSummary;
@@ -21,6 +22,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -50,6 +52,8 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.dialogs.ViewContentProvider;
+import org.eclipse.ui.internal.dialogs.ViewLabelProvider;
 import org.eclipse.ui.part.ViewPart;
 
 public class TaskView extends ViewPart {
@@ -173,7 +177,7 @@ public class TaskView extends ViewPart {
 	}
 	
 	public void createPartControl(Composite parent) {
-		parent.setLayout(new GridLayout(10, false));
+		parent.setLayout(new GridLayout(11, false));
 		Label userNameLabel = new Label(parent, SWT.NONE);
 		userNameLabel.setText("UserId");
 		userNameText = new Text(parent, SWT.NONE);
@@ -188,6 +192,13 @@ public class TaskView extends ViewPart {
 		refresh.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				refresh();
+			}
+		});
+		Button create = new Button(parent, SWT.PUSH | SWT.CENTER);
+		create.setText("Create");
+		create.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				createTask();
 			}
 		});
 		createTable(parent);
@@ -210,7 +221,7 @@ public class TaskView extends ViewPart {
 		table = new Table(parent, style);
 		GridData gridData = new GridData(GridData.FILL_BOTH);
 		gridData.grabExcessVerticalSpace = true;
-		gridData.horizontalSpan = 10;
+		gridData.horizontalSpan = 11;
 		table.setLayoutData(gridData);		
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
@@ -432,6 +443,21 @@ public class TaskView extends ViewPart {
         tableViewer.refresh();
         tableViewer.setSelection(null);
         updateButtons();
+	}
+	
+	private void createTask() {
+		NewTaskDialog dialog = new NewTaskDialog(getSite().getShell());
+		int result = dialog.open();
+		if (result == Dialog.OK) {
+			MinaTaskClient client = getTaskClient();
+			if (client == null) {
+				return;
+			}
+			BlockingAddTaskResponseHandler responseHandler = new BlockingAddTaskResponseHandler();
+			client.addTask(dialog.getTask(), dialog.getContent(), responseHandler);
+			responseHandler.waitTillDone(5000);
+			refresh();
+		}
 	}
 	
 	public void claim() {

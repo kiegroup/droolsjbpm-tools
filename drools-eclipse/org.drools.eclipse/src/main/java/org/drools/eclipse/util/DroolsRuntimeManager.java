@@ -19,6 +19,8 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 
+import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
+
 public class DroolsRuntimeManager {
 	
 	public static void createDefaultRuntime(String location) {
@@ -155,6 +157,16 @@ public class DroolsRuntimeManager {
             DroolsEclipsePlugin.log(e);
         }
         return null;
+    }
+    
+    public static String getDroolsRuntimePath(IProject project) {
+        String runtimeName = getDroolsRuntime(project);
+        if (runtimeName == null) {
+        	DroolsRuntime runtime = getDefaultDroolsRuntime();
+        	return runtime == null ? null : runtime.getPath();
+        }
+        DroolsRuntime runtime = getDroolsRuntime(runtimeName);
+        return runtime == null ? null : runtime.getPath();
     }
 
 }

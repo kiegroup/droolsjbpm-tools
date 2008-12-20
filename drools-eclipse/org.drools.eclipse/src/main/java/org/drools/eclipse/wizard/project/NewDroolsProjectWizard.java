@@ -186,9 +186,17 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
     private void createDroolsRuntime(IJavaProject project, IProgressMonitor monitor) throws CoreException {
 		DroolsRuntime runtime = runtimePage.getDroolsRuntime();
 		if (runtime != null) {
-			IFile file = project.getProject().getFile(".drools.runtime");
-			file.create(new ByteArrayInputStream(
-				("<runtime>" + runtime.getName() + "</runtime>").getBytes()), true, monitor);
+			IFile file = project.getProject().getFile(".settings/.drools.runtime");
+			String runtimeString = "<runtime>" + runtime.getName() + "</runtime>";
+			if (!file.exists()) {
+				IFolder folder = project.getProject().getFolder(".settings");
+				if (!folder.exists()) {
+					folder.create(true, true, null);
+				}
+				file.create(new ByteArrayInputStream(runtimeString.getBytes()), true, null);
+			} else {
+				file.setContents(new ByteArrayInputStream(runtimeString.getBytes()), true, false, null);
+			}
 		}
 	}
 

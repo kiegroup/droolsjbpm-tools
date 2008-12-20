@@ -85,7 +85,7 @@ public class DroolsClasspathContainer implements IClasspathContainer {
     }
 
     private List getJarNames(IJavaProject project) {
-        String s = getDroolsLocation(project);
+        String s = DroolsRuntimeManager.getDroolsRuntimePath(project.getProject());
         List list = new ArrayList();
         if (s != null) {
 	        File file = (new Path(s)).toFile();
@@ -103,28 +103,4 @@ public class DroolsClasspathContainer implements IClasspathContainer {
         }
     }
 
-    private String getDroolsLocation(IJavaProject project) {
-        try {
-        	IFile file = project.getProject().getFile(".drools.runtime");
-        	if (file.exists()) {
-        		BufferedReader reader = new BufferedReader(new InputStreamReader(file.getContents()));
-        		String location = reader.readLine();
-        		if (location.startsWith("<runtime>") && location.endsWith("</runtime>")) {
-        			location = location.substring(9, location.length() - 10);
-        			DroolsRuntime runtime = DroolsRuntimeManager.getDroolsRuntime(location);
-        			if (runtime != null) {
-        				return runtime.getPath();
-        			}
-        		}
-        	} else {
-        		DroolsRuntime defaultRuntime = DroolsRuntimeManager.getDefaultDroolsRuntime();
-        		if (defaultRuntime != null) {
-        			return defaultRuntime.getPath();
-        		}
-        	}
-        } catch (Exception e) {
-            DroolsEclipsePlugin.log(e);
-        }
-        return null;
-    }
 }
