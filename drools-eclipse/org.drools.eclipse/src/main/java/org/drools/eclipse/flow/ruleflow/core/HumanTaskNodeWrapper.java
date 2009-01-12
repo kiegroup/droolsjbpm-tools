@@ -66,7 +66,7 @@ public class HumanTaskNodeWrapper extends WorkItemWrapper {
     protected void initDescriptors() {
     	super.initDescriptors();
         IPropertyDescriptor[] parentDescriptors = descriptors;
-        IPropertyDescriptor[] descriptors = new IPropertyDescriptor[parentDescriptors.length + 1];
+        descriptors = new IPropertyDescriptor[parentDescriptors.length + 1];
         System.arraycopy(parentDescriptors, 0, descriptors, 0, parentDescriptors.length);
         descriptors[descriptors.length - 1] = 
             new TextPropertyDescriptor(SWIMLANE, "Swimlane");

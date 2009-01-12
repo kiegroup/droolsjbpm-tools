@@ -47,6 +47,7 @@ import org.eclipse.gef.palette.PaletteDrawer;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.requests.SimpleFactory;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
@@ -100,42 +101,47 @@ public class RuleFlowModelEditor extends GenericModelEditor {
                     Thread.currentThread().setContextClassLoader(newLoader);
                     PaletteDrawer drawer = (PaletteDrawer) getPaletteRoot().getChildren().get(2);
                     List entries = new ArrayList();
-                    for (final WorkDefinition workDefinition: WorkItemDefinitions.getWorkDefinitions(file).values()) {
-                        final String label;
-                        String description = workDefinition.getName();
-                        String icon = null;
-                        if (workDefinition instanceof WorkDefinitionExtension) {
-                            WorkDefinitionExtension extension = (WorkDefinitionExtension) workDefinition;
-                            label = extension.getDisplayName();
-                            description = extension.getExplanationText();
-                            icon = extension.getIcon();
-                        } else {
-                            label = workDefinition.getName();
-                        }
-                        
-                        URL iconUrl = null;
-                        if (icon != null) {
-                            iconUrl = newLoader.getResource(icon);
-                        }
-                        if (iconUrl == null) {
-                            iconUrl = DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/action.gif");
-                        }
-                        CombinedTemplateCreationEntry combined = new CombinedTemplateCreationEntry(
-                            label,
-                            description,
-                            WorkItemWrapper.class,
-                            new SimpleFactory(WorkItemWrapper.class) {
-                                public Object getNewObject() {
-                                    WorkItemWrapper workItemWrapper = (WorkItemWrapper) super.getNewObject();
-                                    workItemWrapper.setName(label);
-                                    workItemWrapper.setWorkDefinition(workDefinition);
-                                    return workItemWrapper;
-                                }
-                            },
-                            ImageDescriptor.createFromURL(iconUrl), 
-                            ImageDescriptor.createFromURL(iconUrl)
-                        );
-                        entries.add(combined);
+                    try {
+	                    for (final WorkDefinition workDefinition: WorkItemDefinitions.getWorkDefinitions(file).values()) {
+	                        final String label;
+	                        String description = workDefinition.getName();
+	                        String icon = null;
+	                        if (workDefinition instanceof WorkDefinitionExtension) {
+	                            WorkDefinitionExtension extension = (WorkDefinitionExtension) workDefinition;
+	                            label = extension.getDisplayName();
+	                            description = extension.getExplanationText();
+	                            icon = extension.getIcon();
+	                        } else {
+	                            label = workDefinition.getName();
+	                        }
+	                        
+	                        URL iconUrl = null;
+	                        if (icon != null) {
+	                            iconUrl = newLoader.getResource(icon);
+	                        }
+	                        if (iconUrl == null) {
+	                            iconUrl = DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/action.gif");
+	                        }
+	                        CombinedTemplateCreationEntry combined = new CombinedTemplateCreationEntry(
+	                            label,
+	                            description,
+	                            WorkItemWrapper.class,
+	                            new SimpleFactory(WorkItemWrapper.class) {
+	                                public Object getNewObject() {
+	                                    WorkItemWrapper workItemWrapper = (WorkItemWrapper) super.getNewObject();
+	                                    workItemWrapper.setName(label);
+	                                    workItemWrapper.setWorkDefinition(workDefinition);
+	                                    return workItemWrapper;
+	                                }
+	                            },
+	                            ImageDescriptor.createFromURL(iconUrl), 
+	                            ImageDescriptor.createFromURL(iconUrl)
+	                        );
+	                        entries.add(combined);
+	                    }
+                    } catch (Throwable t) {
+                		MessageDialog.openError(
+                			getSite().getShell(), "Parsing work item definitions", t.getMessage());
                     }
                     drawer.setChildren(entries);
                 } finally {

@@ -35,6 +35,7 @@ import org.drools.workflow.core.node.SubProcessNode;
 import org.drools.workflow.core.node.TimerNode;
 import org.drools.workflow.core.node.WorkItemNode;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jface.dialogs.MessageDialog;
 
 public class RuleFlowWrapperBuilder implements ProcessWrapperBuilder {
     
@@ -124,16 +125,21 @@ public class RuleFlowWrapperBuilder implements ProcessWrapperBuilder {
             WorkItemWrapper workItemWrapper = new WorkItemWrapper();
             Work work = ((WorkItemNode) node).getWork();
             if (work != null && work.getName() != null) {
-                WorkDefinition workDefinition = 
-                    WorkItemDefinitions.getWorkDefinitions(project)
-                        .get(work.getName());
-                if (workDefinition == null) {
-//                	DroolsEclipsePlugin.log(
-//                        new IllegalArgumentException("Could not find work definition for work " + work.getName()));
-                    workDefinition = new WorkDefinitionImpl();
-                    ((WorkDefinitionImpl) workDefinition).setName(work.getName());
+                try {
+                	WorkDefinition workDefinition = 
+	                    WorkItemDefinitions.getWorkDefinitions(project)
+	                        .get(work.getName());
+	                if (workDefinition == null) {
+	//                	DroolsEclipsePlugin.log(
+	//                        new IllegalArgumentException("Could not find work definition for work " + work.getName()));
+	                    workDefinition = new WorkDefinitionImpl();
+	                    ((WorkDefinitionImpl) workDefinition).setName(work.getName());
+	                }
+	                workItemWrapper.setWorkDefinition(workDefinition);
+                } catch (Throwable t) {
+            		// an error might be thrown when parsing the work definitions,
+                	// but this should already be displayed to the user
                 }
-                workItemWrapper.setWorkDefinition(workDefinition);
             }
             return workItemWrapper;
         } else if (node instanceof EventNode) {

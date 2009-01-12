@@ -4,7 +4,6 @@
 package org.drools.eclipse.task.views;
 
 import org.drools.task.service.BaseMinaHandler.ResponseHandler;
-import org.drools.task.service.TaskClientHandler.AddCommentResponseHandler;
 
 public abstract class AbstractBlockingResponseHandler
     implements

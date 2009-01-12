@@ -109,13 +109,13 @@ public class AuditView extends AbstractDebugView {
         ((TreeViewer) getViewer()).expandAll();
     }
     
-    protected List createEventList(List logEvents) {
-		Iterator iterator = logEvents.iterator();
-		List events = new ArrayList();
-		Stack beforeEvents = new Stack();
-		List newActivations = new ArrayList();
-		Map activationMap = new HashMap();
-		Map objectMap = new HashMap();
+    protected List<Event> createEventList(List<LogEvent> logEvents) {
+		Iterator<LogEvent> iterator = logEvents.iterator();
+		List<Event> events = new ArrayList<Event>();
+		Stack<Event> beforeEvents = new Stack<Event>();
+		List<Event> newActivations = new ArrayList<Event>();
+		Map<String, Event> activationMap = new HashMap<String, Event>();
+		Map<Long, Event> objectMap = new HashMap<Long, Event>();
 		while (iterator.hasNext()) {
 			LogEvent inEvent = (LogEvent) iterator.next();
 			Event event = new Event(inEvent.getType());
@@ -309,6 +309,9 @@ public class AuditView extends AbstractDebugView {
     					newActivations.clear();
                     }
 					break;
+			    default:
+			    	// do nothing
+			    	break;
 			}
 		}
 		return events;
@@ -397,7 +400,7 @@ public class AuditView extends AbstractDebugView {
 		
 		private String toString;
 		private int type;
-		private List subEvents = new ArrayList();
+		private List<Event> subEvents = new ArrayList<Event>();
 		private Event causeEvent;
 		
 		public Event(int type) {
@@ -420,7 +423,7 @@ public class AuditView extends AbstractDebugView {
 			subEvents.add(subEvent);
 		}
 		
-		public void addSubEvents(Collection subEvents) {
+		public void addSubEvents(Collection<Event> subEvents) {
 			this.subEvents.addAll(subEvents);
 		}
 		

@@ -33,7 +33,7 @@ public class BlockingTaskSummaryResponseHandler extends AbstractBlockingResponse
             isDone = this.done;
         }        
         if ( !isDone ) {
-            throw new RuntimeException("Timeout : unable to retrieve results" );
+            throw new TimeoutException();
         }
         
         return results;

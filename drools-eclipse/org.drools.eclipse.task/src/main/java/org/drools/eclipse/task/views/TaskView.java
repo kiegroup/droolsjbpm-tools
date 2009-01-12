@@ -3,6 +3,7 @@ package org.drools.eclipse.task.views;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,8 +53,6 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.dialogs.ViewContentProvider;
-import org.eclipse.ui.internal.dialogs.ViewLabelProvider;
 import org.eclipse.ui.part.ViewPart;
 
 public class TaskView extends ViewPart {
@@ -112,7 +111,7 @@ public class TaskView extends ViewPart {
 		}
 		public void dispose() {
 		}
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings({ "unchecked" })
 		public Object[] getElements(Object parent) {
 			if (parent instanceof List) {
 				List<TaskSummary> tasks = (List<TaskSummary>) parent;
@@ -435,14 +434,22 @@ public class TaskView extends ViewPart {
 			return;
 		}
 		
-		BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
-		client.getTasksAssignedAsPotentialOwner(userId, language, responseHandler);
-        List<TaskSummary> tasks = responseHandler.getResults();
-        
-        tableViewer.setInput(tasks);
-        tableViewer.refresh();
-        tableViewer.setSelection(null);
-        updateButtons();
+		try {
+			BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
+			client.getTasksAssignedAsPotentialOwner(userId, language, responseHandler);
+	        List<TaskSummary> tasks = responseHandler.getResults();
+	        tableViewer.setInput(tasks);
+	        tableViewer.refresh();
+	        tableViewer.setSelection(null);
+	        updateButtons();
+		} catch (TimeoutException e) {
+			showMessage("Could not connect to task server, refresh first.");
+			client.disconnect();
+			this.client = null;
+	        tableViewer.setInput(new ArrayList<TaskSummary>());
+	        tableViewer.refresh();
+	        tableViewer.setSelection(null);
+		}
 	}
 	
 	private void createTask() {
