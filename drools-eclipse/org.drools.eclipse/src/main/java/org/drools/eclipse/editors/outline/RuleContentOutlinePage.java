@@ -1,7 +1,6 @@
 package org.drools.eclipse.editors.outline;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,7 +40,7 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
 
     private AbstractRuleEditor editor;
     private RuleSet ruleSet = DroolsModelBuilder.createRuleSet();
-    private Map rules;
+    private Map<String, RuleDescr> rules;
 
     ///////////////////////////////////
     // Patterns that the parser uses
@@ -214,12 +213,11 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
     	return ruleSet;
     }
     
-    private Map extractAttributes(RuleDescr ruleDescr) {
-        Map attributes = null;
+    private Map<String, String> extractAttributes(RuleDescr ruleDescr) {
+        Map<String, String> attributes = null;
         if (ruleDescr != null) {
-        	attributes = new HashMap();
-        	for (Iterator iterator = ruleDescr.getAttributes().iterator(); iterator.hasNext();) {
-        		AttributeDescr attribute = (AttributeDescr) iterator.next();
+        	attributes = new HashMap<String, String>();
+        	for (AttributeDescr attribute: ruleDescr.getAttributes().values()) {
         		if (attribute != null && attribute.getName() != null) {
         			attributes.put(attribute.getName(), attribute.getValue());
         		}
@@ -229,14 +227,13 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
     }
 
     public void initRules() {
-    	rules = new HashMap();
+    	rules = new HashMap<String, RuleDescr>();
     	try {
     		DRLInfo drlInfo = DroolsEclipsePlugin.getDefault().parseResource(editor, true, false);
     		if (drlInfo != null) {
 		    	PackageDescr packageDescr = drlInfo.getPackageDescr();
 		    	if (packageDescr != null) {
-		    		for (Iterator iterator = packageDescr.getRules().iterator(); iterator.hasNext(); ) {
-		    			RuleDescr ruleDescr = (RuleDescr) iterator.next();
+		    		for (RuleDescr ruleDescr: packageDescr.getRules()) {
 		    			rules.put(ruleDescr.getName(), ruleDescr);
 		    		}	
 		    	}

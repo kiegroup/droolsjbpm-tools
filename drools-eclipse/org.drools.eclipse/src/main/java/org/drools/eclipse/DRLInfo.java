@@ -130,12 +130,7 @@ public class DRLInfo {
 
         public String getDialectName() {
             String dialectName = null;
-            for (AttributeDescr attribute: ruleDescr.getAttributes()) {
-                if ("dialect".equals(attribute.getName())) {
-                    dialectName = (String) attribute.getValue();
-                    break;
-                }
-            }
+            dialectName = ruleDescr.getAttributes().get("dialect").getValue();
             if (dialectName == null && packageDescr != null) {
                 for (AttributeDescr attribute: DRLInfo.this.packageDescr.getAttributes()) {
                     if ("dialect".equals(attribute.getName())) {
