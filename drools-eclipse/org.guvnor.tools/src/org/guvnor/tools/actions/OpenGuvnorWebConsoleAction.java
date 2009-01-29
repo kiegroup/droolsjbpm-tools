@@ -56,12 +56,12 @@ public class OpenGuvnorWebConsoleAction implements IObjectActionDelegate {
 	}
 	
 	private String extractGuvnorConsoleUrl(String guvnorLoc) {
-		String id = "/drools-guvnor/"; //$NON-NLS-1$
+		String id = "/webdav"; //$NON-NLS-1$
 		int pos = guvnorLoc.indexOf(id);
 		if (pos == -1) {
-			 return guvnorLoc;
+			 return guvnorLoc + "/Guvnor.html"; //$NON-NLS-1$;
 		}
-		return guvnorLoc.substring(0, pos + id.length());
+		return guvnorLoc.substring(0, pos) + "/Guvnor.html"; //$NON-NLS-1$
 	}
 	
 	/*

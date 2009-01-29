@@ -11,7 +11,7 @@ public interface IGuvnorPreferenceConstants {
 	// Value is a string, specified in GUVNOR_LOC_TEMPLATE_DEFAULT 
 	public String GUVNOR_LOC_TEMPLATE_PREF = "guvnor_loc_template"; //$NON-NLS-1$
 	
-	public String GUVNOR_LOC_TEMPLATE_DEFAULT = "http://localhost:8080/drools-guvnor/org.drools.guvnor.Guvnor/webdav"; //$NON-NLS-1$
+	public String GUVNOR_LOC_TEMPLATE_DEFAULT = "http://localhost:8080/jboss-brms/org.drools.guvnor.Guvnor/webdav"; //$NON-NLS-1$
 	
 	public String SAVE_PASSWORDS_PREF = "save_passwords"; //$NON-NLS-1$
 	
