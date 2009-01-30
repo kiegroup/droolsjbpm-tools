@@ -159,7 +159,11 @@
   <extension point = "org.eclipse.ui.propertyPages">
         <page id="org.guvnor.tools.proppage.ifile"
               name="%category.name"
-	          class="org.guvnor.tools.properties.GuvnorWorkspaceFilePage"/>
+	          class="org.guvnor.tools.properties.GuvnorWorkspaceFilePage">
+	          <enabledWhen>
+              	<instanceof value="org.eclipse.core.resources.IFile"/>
+          	  </enabledWhen>
+	    </page>
   </extension>
   <extension point="org.eclipse.ui.preferencePages">
 		<page name="%preferences.guvnor.page"  
