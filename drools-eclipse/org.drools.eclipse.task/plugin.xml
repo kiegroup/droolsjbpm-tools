@@ -17,19 +17,6 @@
       </view>
    </extension>
    
-   <extension
-         point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension
-            targetID="org.eclipse.jdt.ui.JavaPerspective">
-         <view
-               ratio="0.5"
-               relative="org.eclipse.ui.views.TaskList"
-               relationship="right"
-               id="org.drools.eclipse.task.views.TaskView">
-         </view>
-      </perspectiveExtension>
-   </extension>
-
    <extension point = "org.eclipse.ui.preferencePages">
       <page id="org.drools.eclipse.task.preferences.DroolsTaskPreferencePage"
          class="org.drools.eclipse.task.preferences.DroolsTaskPreferencePage"
