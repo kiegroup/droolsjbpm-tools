@@ -9,7 +9,7 @@
             id="org.drools.eclipse.task">
       </category>
       <view
-            name="Task View"
+            name="Human Task View"
             icon="icons/human_task.gif"
             category="org.drools.eclipse.task"
             class="org.drools.eclipse.task.views.TaskView"
