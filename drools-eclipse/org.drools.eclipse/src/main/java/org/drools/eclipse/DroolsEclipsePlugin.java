@@ -320,6 +320,14 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                                        true );
     }
 
+    public DRLInfo parseGDSTResource(String content, IResource resource) throws DroolsParserException {
+		DRLInfo result = (DRLInfo) compiledRules.get(resource);
+		if (result != null) {
+			return result;
+		}
+		return generateParsedResource(content, resource, false, true);
+	}
+
     public void invalidateResource(IResource resource) {
         DRLInfo cached = (DRLInfo) compiledRules.remove( resource );
         if ( cached != null ) {
@@ -416,8 +424,11 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                                                      IResource.NONE );
                         IResource packageDef = visitor.getPackageDef();
                         if ( packageDef != null ) {
-                            builder.addPackage( parseResource( packageDef,
-                                                               false ).getPackageDescr() );
+                            PackageDescr desc = parseResource( packageDef,
+                                                               false ).getPackageDescr();
+                            if (desc != null){
+                                builder.addPackage( desc);
+                            }
                         }
                     }
 
