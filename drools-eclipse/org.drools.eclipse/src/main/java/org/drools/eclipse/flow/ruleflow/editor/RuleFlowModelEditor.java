@@ -20,6 +20,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +41,7 @@ import org.drools.process.core.WorkDefinitionExtension;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.xml.XmlProcessReader;
 import org.drools.xml.XmlRuleFlowProcessDumper;
+import org.drools.xml.processes.RuleFlowMigrator;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPartFactory;
@@ -169,25 +172,49 @@ public class RuleFlowModelEditor extends GenericModelEditor {
         writer.close();
     }
     
+    
     protected void createModel(InputStream is) {
-        try {
-            InputStreamReader reader = new InputStreamReader(is);
-            PackageBuilderConfiguration configuration = new PackageBuilderConfiguration();
-            XmlProcessReader xmlReader = new XmlProcessReader( configuration.getSemanticModules() );
-            try {
-                RuleFlowProcess process = (RuleFlowProcess) xmlReader.read(reader);
-                if (process == null) {
-                    setModel(createModel());
-                } else {
-                    setModel(new RuleFlowWrapperBuilder().getProcessWrapper(process, getJavaProject()));
-                }
-            } catch (Throwable t) {
-                DroolsEclipsePlugin.log(t);
-                setModel(createModel());
-            }
-            reader.close();
-        } catch (Throwable t) {
-            DroolsEclipsePlugin.log(t);
-        }
+    	try 
+    	{
+    		InputStreamReader isr = new InputStreamReader(is);
+    		PackageBuilderConfiguration configuration = new PackageBuilderConfiguration();
+    		XmlProcessReader xmlReader = new XmlProcessReader( configuration.getSemanticModules() );
+    		
+    		//Migrate v4 ruleflows to v5
+    		Reader reader = null;
+    		try 
+    		{
+    			String xml = RuleFlowMigrator.convertReaderToString(isr);
+    			if (RuleFlowMigrator.needToMigrateRFM(xml))
+    			{
+    				xml = RuleFlowMigrator.portRFToCurrentVersion(xml);
+    				MessageDialog.openInformation(this.getSite().getShell(),
+    			            "Incompatible RuleFlow Version", 
+    			            "WARNING! The selected RuleFlow is Drools version 4 format.\n\n" +
+    			            "Any changes made to this RuleFlow will be saved in Drools 5 format, which is " +
+    			            "not compatible with Drools 4. To convert this RuleFlow " +
+    			            "to Drools 5 format, select Save As from the File menu and overwrite this " +
+    			            "file - the new RuleFlow file will be saved in Drools 5 format.");
+    			}
+    			
+    			reader =  new StringReader(xml);
+
+    			RuleFlowProcess process = (RuleFlowProcess) xmlReader.read(reader);
+    			if (process == null) {
+    				setModel(createModel());
+    			} else {
+    				setModel(new RuleFlowWrapperBuilder().getProcessWrapper(process, getJavaProject()));
+    			}
+    		} catch (Throwable t) {
+    			DroolsEclipsePlugin.log(t);
+    			setModel(createModel());
+    		}
+
+    		if (reader != null){
+    			reader.close();
+    		}
+    	} catch (Throwable t) {
+    		DroolsEclipsePlugin.log(t);
+    	}
     }
 }
