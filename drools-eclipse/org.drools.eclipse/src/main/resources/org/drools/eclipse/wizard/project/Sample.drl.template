@@ -4,9 +4,9 @@ import com.sample.DroolsTest.Message;
  
 rule "Hello World"
 	when
-		m : Message( status == Message.HELLO, message : message )
+		m : Message( status == Message.HELLO, myMessage : message )
 	then
-		System.out.println( message ); 
+		System.out.println( myMessage ); 
 		m.setMessage( "Goodbye cruel world" );
 		m.setStatus( Message.GOODBYE );
 		update( m );
@@ -14,7 +14,7 @@ end
 
 rule "GoodBye"
 	when
-		Message( status == Message.GOODBYE, message : message )
+		Message( status == Message.GOODBYE, myMessage : message )
 	then
-		System.out.println( message );
+		System.out.println( myMessage );
 end
