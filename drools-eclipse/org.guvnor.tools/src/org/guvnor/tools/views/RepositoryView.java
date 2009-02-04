@@ -328,12 +328,25 @@ public class RepositoryView extends ViewPart {
 		manager.add(new Separator());
 		manager.add(refreshAction);
 	}
-
+	
+	private boolean shouldAddDeleteAction() {
+		ISelection selection = viewer.getSelection();
+		if (selection == null) {
+			return false;
+		}
+		Object obj = ((IStructuredSelection)selection).getFirstElement();
+		if (obj instanceof TreeParent) {
+			return ((TreeParent)obj).getNodeType() == TreeObject.Type.REPOSITORY;
+		} else {
+			return false;
+		}
+	}
+	
 	private void fillContextMenu(IMenuManager manager) {
-		manager.add(deleteRepositoryLocAction);
-		manager.add(addRepositoryLocAction);
+		if (shouldAddDeleteAction()) {
+			manager.add(deleteRepositoryLocAction);
+		}
 		manager.add(refreshAction);
-		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 		// Other plug-ins can contribute there actions here
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
