@@ -1,5 +1,6 @@
 package org.guvnor.tools.views.model;
 
+import java.net.ConnectException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -134,10 +135,19 @@ public class TreeParent extends TreeObject implements IDeferredWorkbenchAdapter 
 				if (e.getErrorCode() == IResponse.SC_UNAUTHORIZED) {
 					PlatformUtils.reportAuthenticationFailure();
 				} else {
-					Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e);
+					if (e.getErrorCode() == IResponse.SC_NOT_IMPLEMENTED) {
+						Activator.getDefault().displayMessage(IStatus.ERROR, 
+								                           Messages.getString("rep.connect.fail")); //$NON-NLS-1$
+					} else {
+						Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e, true);
+					}
 				}
+			} catch (ConnectException ce) {
+				Activator.getDefault().
+					displayMessage(IStatus.ERROR, 
+                        		  Messages.getString("rep.connect.fail")); //$NON-NLS-1$
 			} catch (Exception e) {
-				Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e);
+				Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e, true);
 			}
 		}
 		

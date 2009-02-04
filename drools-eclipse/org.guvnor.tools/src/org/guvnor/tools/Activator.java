@@ -8,6 +8,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Display;
@@ -72,8 +73,15 @@ public class Activator extends AbstractUIPlugin {
 		return ResourcesPlugin.getWorkspace();
 	}
 	
+	private IStatus createStatus(int severity, String msg, Throwable t) {
+		return new Status(severity, PLUGIN_ID, msg, t);
+	}
+	
 	public void writeLog(int severity, String msg, Throwable t) {
-		IStatus status = new Status(severity, PLUGIN_ID, msg, t);
+		super.getLog().log(createStatus(severity, msg, t));
+	}
+	
+	public void writeLog(IStatus status) {
 		super.getLog().log(status);
 	}
 	
@@ -83,19 +91,32 @@ public class Activator extends AbstractUIPlugin {
 			public void run() {
 				switch (severity) {
 					case IStatus.ERROR:
-						MessageDialog.openError(display.getActiveShell(), Messages.getString("error"), msg); //$NON-NLS-1$
+						MessageDialog.openError(display.getActiveShell(), 
+											Messages.getString("error"), msg); //$NON-NLS-1$
 					break;
 					case IStatus.WARNING:
-						MessageDialog.openWarning(display.getActiveShell(), Messages.getString("warning"), msg); //$NON-NLS-1$
+						MessageDialog.openWarning(display.getActiveShell(), 
+											Messages.getString("warning"), msg); //$NON-NLS-1$
 					break;
 				}
 			}
 		});
 	}
 	
-	public void displayError(int severity, String msg, Throwable t) {
-		writeLog(severity, msg, t);
-		displayMessage(severity, msg);
+	public void displayError(int severity, final String msg, 
+			                 Throwable t, boolean shouldLog) {
+		final IStatus status = createStatus(severity, msg, t);
+		if (shouldLog) {
+			writeLog(status);
+		}
+		final Display display = PlatformUI.getWorkbench().getDisplay();
+		display.syncExec(new Runnable() {
+			public void run() {
+				ErrorDialog.openError(display.getActiveShell(),
+						           null,
+						           Messages.getString("error"), status); //$NON-NLS-1$
+			}
+		});
 	}
 	
 	/**

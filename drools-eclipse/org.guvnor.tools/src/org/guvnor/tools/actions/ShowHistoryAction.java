@@ -97,7 +97,7 @@ public class ShowHistoryAction implements IObjectActionDelegate {
 				}
 			}
 		} catch (Exception e) {
-			Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e);
+			Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e, true);
 		} finally {
 			if (response != null) {
 				try {

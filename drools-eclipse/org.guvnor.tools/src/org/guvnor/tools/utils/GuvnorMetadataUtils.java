@@ -113,7 +113,7 @@ public class GuvnorMetadataUtils {
 				GuvnorMetadataUtils.setGuvnorMetadataProps(selectedFile.getFullPath(), mdProps);
 			}
 		} catch (Exception e) {
-			Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e);
+			Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e, true);
 		}
 		return res;
 	}
@@ -170,7 +170,7 @@ public class GuvnorMetadataUtils {
 				GuvnorMetadataUtils.setGuvnorMetadataProps(selectedFile.getFullPath(), mdProps);
 			}
 		} catch (Exception e) {
-			Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e);
+			Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e, true);
 		}
 	}
 	

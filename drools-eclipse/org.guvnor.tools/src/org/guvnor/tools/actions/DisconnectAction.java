@@ -67,7 +67,7 @@ public class DisconnectAction implements IObjectActionDelegate {
 			IWorkspace ws = Activator.getDefault().getWorkspace();
 			ws.delete(mdFiles, true, null);
 		} catch (CoreException e) {
-			Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e);
+			Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e, true);
 		}
 	}
 	

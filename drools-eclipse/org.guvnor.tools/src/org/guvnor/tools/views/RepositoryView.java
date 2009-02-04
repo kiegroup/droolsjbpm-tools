@@ -137,7 +137,7 @@ public class RepositoryView extends ViewPart {
 					// for the server, currently we do not have a situation requiring authentication
 					// for specific files. This might be different in the future if the Guvnor security
 					// model changes, or users can directly connect to specific files.
-					Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e);
+					Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e, true);
 				}
 			}
 			
@@ -179,7 +179,7 @@ public class RepositoryView extends ViewPart {
 						msg.append("\r\n"); //$NON-NLS-1$
 					}
 					Activator.getDefault().
-						displayMessage(IStatus.ERROR, msg.toString());
+						displayError(IStatus.ERROR, msg.toString(), new Exception(), true);
 				}
 				if (items.length != errors.length) {
 					// At least one item did not have an error,
@@ -451,7 +451,7 @@ public class RepositoryView extends ViewPart {
 				// for the server, currently we do not have a situation requiring authentication
 				// for specific files. This might be different in the future if the Guvnor security
 				// model changes, or users can directly connect to specific files.
-				Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e);
+				Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e, true);
 			}
 		}
 	}

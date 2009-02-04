@@ -92,7 +92,7 @@ public class UpdateAction implements IObjectActionDelegate {
 				GuvnorMetadataUtils.setGuvnorMetadataProps(selectedFile.getFullPath(), mdProps);
 			}
 		} catch (Exception e) {
-			Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e);
+			Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e, true);
 		} finally {
 			if (response != null) {
 				try {

@@ -47,7 +47,7 @@ public class GuvnorLocationManager {
 		try {
 			commit();
 		} catch (Exception e) {
-			Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e);
+			Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e, true);
 		}
 	}
 	
@@ -68,7 +68,7 @@ public class GuvnorLocationManager {
 			notifyListeners(IRepositorySetListener.REP_ADDED);
 			commit();
 		} catch (Exception e) {
-			Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e);
+			Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e, true);
 		}
 		return res;
 	}

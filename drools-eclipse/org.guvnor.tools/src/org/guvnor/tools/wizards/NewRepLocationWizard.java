@@ -41,7 +41,7 @@ public class NewRepLocationWizard extends Wizard implements INewWizard, IGuvnorW
 		try {
 			WizardUtils.createGuvnorRepository(model);
 		} catch (Exception e) {
-			Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e);
+			Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e, true);
 		}
 		return true;
 	}
