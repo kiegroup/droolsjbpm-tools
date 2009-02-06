@@ -324,7 +324,11 @@ public class RuleFlowConstraintDialog extends Dialog {
 		if (!alwaysTrue.getSelection()) {
 			constraint.setConstraint(getConstraintText());
 		} else {
-			constraint.setConstraint("eval(true)");
+			if (typeCombo.getSelectionIndex() == 0) {
+				constraint.setConstraint("eval(true)");
+			} else {
+				constraint.setConstraint("return true;");
+			}
 		}
 		constraint.setName(nameText.getText());
 		try {
@@ -343,7 +347,7 @@ public class RuleFlowConstraintDialog extends Dialog {
 	public void setConstraint(Constraint constraint) {
 		this.constraint = constraint;
 		if (constraint != null) {
-			if ("eval(true)".equals(constraint.getConstraint())) {
+			if ("eval(true)".equals(constraint.getConstraint()) || "return true;".equals(constraint.getConstraint())) {
 				alwaysTrue.setSelection(true);
 			} else {
 				setConstraintText(constraint.getConstraint() == null ? "" : constraint.getConstraint());
