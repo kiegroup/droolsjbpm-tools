@@ -42,6 +42,7 @@ Bundle-ClassPath: .,
  lib/xstream.jar,
  lib/antlr-runtime.jar,
  lib/drools-templates.jar,
- lib/mvel2.jar
+ lib/mvel2.jar,
+ lib/joda-time.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.drools.eclipse.util

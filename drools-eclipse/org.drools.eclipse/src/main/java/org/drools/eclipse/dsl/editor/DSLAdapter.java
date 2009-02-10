@@ -43,7 +43,7 @@ public class DSLAdapter {
 	private DSLTree dslTree = new DSLTree();
     
     //to dig out the expander, without using the parser.
-    private static final Pattern EXPANDER_PATTERN = Pattern.compile( "\\n\\s*expander\\s*(.*)\\.dsl\\s", 
+    private static final Pattern EXPANDER_PATTERN = Pattern.compile( "\\n\\s*expander\\s*(.*)\\.dsl", 
                                                              Pattern.DOTALL | Pattern.MULTILINE );
     /**
      * This will sniff out the DSL config file name from the content.

@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/main/resources"/>
+	<classpathentry exported="true" kind="lib" path="lib/joda-time.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/drools-api.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/drools-core.jar" sourcepath="/drools-core"/>
 	<classpathentry exported="true" kind="lib" path="lib/drools-compiler.jar" sourcepath="/drools-compiler"/>

@@ -21,6 +21,7 @@ import org.drools.guvnor.server.rules.SuggestionCompletionLoader;
 import org.drools.guvnor.server.util.BRDRLPersistence;
 import org.drools.guvnor.server.util.BRXMLPersistence;
 import org.drools.lang.dsl.DSLMappingFile;
+import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.eclipse.core.internal.resources.Container;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -203,7 +204,7 @@ public class RuleEditor extends FormEditor
             for ( int i = 0; i < files.length; i++ ) {
                 if ( files[i].getName().endsWith( ".dsl" ) ) {
                     String contents = getFileContents( (IFile) files[i] );
-                    DSLMappingFile dsl = new DSLMappingFile();
+                    DSLTokenizedMappingFile dsl = new DSLTokenizedMappingFile();
 
                     if ( dsl.parseAndLoad( new StringReader( contents ) ) ) {
                         dslList.add( dsl );
