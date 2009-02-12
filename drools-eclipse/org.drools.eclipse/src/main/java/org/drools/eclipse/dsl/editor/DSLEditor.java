@@ -11,9 +11,10 @@ import java.util.List;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.builder.IDroolsModelMarker;
+import org.drools.lang.dsl.AntlrDSLMappingEntry;
 import org.drools.lang.dsl.DSLMappingEntry;
 import org.drools.lang.dsl.DSLMappingFile;
-import org.drools.lang.dsl.DefaultDSLMappingEntry;
+import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.MappingError;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -174,7 +175,7 @@ public class DSLEditor extends EditorPart {
         	}
 
         	model = new NLGrammarModel();
-            DSLMappingFile file = new DSLMappingFile();
+            DSLMappingFile file = new DSLTokenizedMappingFile();
             file.parseAndLoad( new InputStreamReader( stream ) );
             model.addEntries( file.getMapping().getEntries() );
             stream.close();
@@ -516,7 +517,7 @@ public class DSLEditor extends EditorPart {
             // Add an item, should pop up the editor
             public void widgetSelected(SelectionEvent e) {
 
-                DSLMappingEntry newItem = new DefaultDSLMappingEntry();
+                DSLMappingEntry newItem = new AntlrDSLMappingEntry();
 
                 MappingEditor editor = new MappingEditor( getSite().getShell() );//shell);
                 editor.create();
@@ -554,10 +555,12 @@ public class DSLEditor extends EditorPart {
 
                 DSLMappingEntry curr = getCurrentSelected();
                 if (curr != null) {
-	                DSLMappingEntry newItem = new DefaultDSLMappingEntry( curr.getSection(),
+	                DSLMappingEntry newItem = new AntlrDSLMappingEntry( curr.getSection(),
 	                                                                      curr.getMetaData(),
 	                                                                      curr.getMappingKey(),
-	                                                                      curr.getMappingValue() );
+	                                                                      curr.getMappingValue(),
+	                                                                      null,
+	                                                                      null);
 	
 	                MappingEditor editor = new MappingEditor( getSite().getShell() );//shell);
 	                editor.create();

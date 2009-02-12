@@ -4,6 +4,7 @@ import java.io.Reader;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.lang.dsl.DSLMappingFile;
+import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -78,7 +79,7 @@ public class DSLRuleEditor2 extends FormEditor {
 	        	if (reader == null) {
 	        		throw new IllegalArgumentException("Could not find dsl definition.");
 	        	}
-	            DSLMappingFile mapping = new DSLMappingFile();
+	            DSLMappingFile mapping = new DSLTokenizedMappingFile();
 	            mapping.parseAndLoad(reader);
 	            reader.close();
 	            expander.addDSLMapping(mapping.getMapping());

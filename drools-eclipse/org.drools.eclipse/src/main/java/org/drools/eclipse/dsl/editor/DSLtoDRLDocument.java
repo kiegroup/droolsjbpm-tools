@@ -3,6 +3,7 @@ package org.drools.eclipse.dsl.editor;
 import java.io.Reader;
 
 import org.drools.lang.dsl.DSLMappingFile;
+import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
 import org.eclipse.jface.text.IDocument;
 
@@ -19,7 +20,7 @@ public class DSLtoDRLDocument extends TransformedDocument {
         DefaultExpander expander = new DefaultExpander();
         try {
         	Reader reader = DSLAdapter.getDSLContent(content, viewer.getResource());
-            DSLMappingFile mapping = new DSLMappingFile();
+            DSLMappingFile mapping = new DSLTokenizedMappingFile();
             mapping.parseAndLoad(reader);
             reader.close();
             expander.addDSLMapping(mapping.getMapping());

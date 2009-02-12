@@ -15,7 +15,7 @@ import org.drools.eclipse.builder.Util;
 import org.drools.eclipse.editors.completion.DSLTree;
 import org.drools.lang.dsl.DSLMapping;
 import org.drools.lang.dsl.DSLMappingEntry;
-import org.drools.lang.dsl.DSLMappingFile;
+import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
@@ -109,7 +109,7 @@ public class DSLAdapter {
     
     /** This will load in the DSL config file, using the DSLMapping from drools-compiler */
     void readConfig(InputStream stream) throws IOException, CoreException {
-        DSLMappingFile file = new DSLMappingFile();
+    	DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
         file.parseAndLoad(new InputStreamReader(stream));
 
         DSLMapping grammar = file.getMapping();
