@@ -36,6 +36,7 @@ import org.drools.decisiontable.InputType;
 import org.drools.decisiontable.SpreadsheetCompiler;
 import org.drools.lang.Expander;
 import org.drools.lang.dsl.DSLMappingFile;
+import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
 import org.drools.lang.dsl.DefaultExpanderResolver;
 import org.drools.rule.Package;
@@ -265,7 +266,7 @@ public class DroolsCompilerAntTask extends MatchingTask {
 
 		DefaultExpanderResolver resolver = new DefaultExpanderResolver();
 		final File dir = new File(this.srcdir.getAbsolutePath());
-		DSLMappingFile file = new DSLMappingFile();
+		DSLMappingFile file = new DSLTokenizedMappingFile();
 
 		FilenameFilter filter = new FilenameFilter() {
 			public boolean accept(File dir, String name) {
