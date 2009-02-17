@@ -1,9 +1,9 @@
 <project default="rules">
 	
 	<!-- Uncomment this for Maven Runner -->
-	<property name="eclipsepath"  value=""/>
+	<property name="eclipsepath"  value=""/> 
 	<!-- Uncomment this for Eclipse Runner  -->
-	<!-- <property name="eclipsepath"  value="../../../"/> -->   
+	<!--<property name="eclipsepath"  value="../../../"/> -->   
 	
 	<path id="cheese.classpath">
 		<pathelement location="${eclipsepath}lib/cheese.jar"/>
@@ -37,11 +37,35 @@
 		</compiler>
 	</target>
 
+	<target name="dslRulesKnowledge" >
+		<compiler 
+			srcdir="${eclipsepath}src/test/resources/rules" 		
+			tofile="${eclipsepath}target/cheese.rules.dpkg"
+			classpathref="cheese.classpath" 
+			binformat="package"
+			bintype="knowledge" > 
+			<include name="*.dslr" />
+		</compiler>
+	</target>
+
 	<target name="rules" >
 		<compiler 
 			srcdir="${eclipsepath}src/test/resources/rules" 		
 			tofile="${eclipsepath}target/cheese.rules"
 			classpathref="cheese.classpath" > 
+			<include name="*.drl" />
+			<include name="*.brl" />
+			<include name="*.xml" />
+			<include name="*.dslr" />			
+		</compiler>
+	</target>
+	
+	<target name="rulesKnowledge" >
+		<compiler 
+			srcdir="${eclipsepath}src/test/resources/rules" 		
+			tofile="${eclipsepath}target/cheese.rules"
+			classpathref="cheese.classpath"
+			bintype="knowledge" > 
 			<include name="*.drl" />
 			<include name="*.brl" />
 			<include name="*.xml" />

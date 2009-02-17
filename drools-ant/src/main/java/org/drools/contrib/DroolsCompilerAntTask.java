@@ -16,32 +16,54 @@
 
 package org.drools.contrib;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.taskdefs.MatchingTask;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.RuntimeDroolsException;
-import org.drools.guvnor.client.modeldriven.brl.RuleModel;
-import org.drools.guvnor.server.util.BRDRLPersistence;
-import org.drools.guvnor.server.util.BRXMLPersistence;
+import org.drools.builder.DecisionTableConfiguration;
+import org.drools.builder.DecisionTableInputType;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.decisiontable.InputType;
 import org.drools.decisiontable.SpreadsheetCompiler;
+import org.drools.definition.KnowledgePackage;
+import org.drools.guvnor.client.modeldriven.brl.RuleModel;
+import org.drools.guvnor.server.util.BRDRLPersistence;
+import org.drools.guvnor.server.util.BRXMLPersistence;
+import org.drools.io.ResourceFactory;
 import org.drools.lang.Expander;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
 import org.drools.lang.dsl.DefaultExpanderResolver;
-import org.drools.rule.Package;
-
-import java.io.*;
+import org.drools.util.DroolsStreamUtils;
 
 /**
  * An ant task to allow rulebase compilation and serialization during a build.
@@ -50,338 +72,481 @@ import java.io.*;
  */
 public class DroolsCompilerAntTask extends MatchingTask {
 
-	public static String BRLFILEEXTENSION = ".brl";
-	public static String XMLFILEEXTENSION = ".xml";
-	public static String RULEFLOWFILEEXTENSION = ".rfm";
-	public static String DSLFILEEXTENSION = ".dslr";
-    public static String XLSFILEEXTENSION = ".xls";
-    
-    public static String PACKAGEBINFORMAT = "package";
+    public static String BRLFILEEXTENSION      = ".brl";
+    public static String XMLFILEEXTENSION      = ".xml";
+    public static String RULEFLOWFILEEXTENSION = ".rfm";
+    public static String DSLFILEEXTENSION      = ".dsl";
+    public static String DSLRFILEEXTENSION     = ".dslr";
+    public static String XLSFILEEXTENSION      = ".xls";
 
-    private File srcdir;
-	private File toFile;
-	private Path classpath;
-	
-	private String binformat;
+    public static String PACKAGEBINFORMAT      = "package";
+    public static String PACKAGEBINTYPE        = "knowledge";
 
-	
-	/**
-	 * Source directory to read DRL files from
-	 * 
-	 * @param directory
-	 */
-	public void setSrcDir(File directory) {
-		this.srcdir = directory;
-	}
+    private File         srcdir;
+    private File         toFile;
+    private Path         classpath;
 
-	/**
-	 * File to serialize the rulebase to
-	 * 
-	 * @param toFile
-	 */
-	public void setToFile(File toFile) {
-		this.toFile = toFile;
-	}
+    private String       binformat;
+    private String       bintype;
 
-	/**
-	 * The classpath to use when compiling the rulebase
-	 * 
-	 * @param classpath
-	 */
-	public void setClasspath(Path classpath) {
-		createClasspath().append(classpath);
-	}
+    /**
+     * Source directory to read DRL files from
+     * 
+     * @param directory
+     */
+    public void setSrcDir(File directory) {
+        this.srcdir = directory;
+    }
 
-	/**
-	 * Classpath to use, by reference, when compiling the rulebase
-	 * 
-	 * @param a reference to an existing classpath
-	 */
-	public void setClasspathref(Reference r) {
-		createClasspath().setRefid(r);
-	}
+    /**
+     * File to serialize the rulebase to
+     * 
+     * @param toFile
+     */
+    public void setToFile(File toFile) {
+        this.toFile = toFile;
+    }
 
-	/**
-	 * Adds a path to the classpath.
-	 * 
-	 * @return created classpath
-	 */
-	public Path createClasspath() {
-		if (this.classpath == null) {
-			this.classpath = new Path(getProject());
-		}
-		return this.classpath.createPath();
-	}
+    /**
+     * The classpath to use when compiling the rulebase
+     * 
+     * @param classpath
+     */
+    public void setClasspath(Path classpath) {
+        createClasspath().append( classpath );
+    }
 
-	/**
-	 * Task's main method
-	 */
-	public void execute() throws BuildException {
-		super.execute();
+    /**
+     * Classpath to use, by reference, when compiling the rulebase
+     * 
+     * @param a
+     *            reference to an existing classpath
+     */
+    public void setClasspathref(Reference r) {
+        createClasspath().setRefid( r );
+    }
 
-		// checking parameters are set
-		if (toFile == null) {
-			throw new BuildException(
-					"Destination rulebase file does not specified.");
-		}
+    /**
+     * Adds a path to the classpath.
+     * 
+     * @return created classpath
+     */
+    public Path createClasspath() {
+        if ( this.classpath == null ) {
+            this.classpath = new Path( getProject() );
+        }
+        return this.classpath.createPath();
+    }
 
-		// checking parameters are set
-		if (srcdir == null) {
-			throw new BuildException("Source directory not specified.");
-		}
+    /**
+     * Task's main method
+     */
+    public void execute() throws BuildException {
+        super.execute();
 
-		if (!srcdir.exists()) {
-			throw new BuildException("Source directory does not exists."
-					+ srcdir.getAbsolutePath());
-		}
+        // checking parameters are set
+        if ( toFile == null ) {
+            throw new BuildException( "Destination rulebase file does not specified." );
+        }
 
-		AntClassLoader loader = null;
-		try {
-			// create a specialized classloader
-			loader = getClassLoader();
+        // checking parameters are set
+        if ( srcdir == null ) {
+            throw new BuildException( "Source directory not specified." );
+        }
 
-			// create a package builder configured to use the given classloader
-			PackageBuilder builder = getPackageBuilder(loader);
+        if ( !srcdir.exists() ) {
+            throw new BuildException( "Source directory does not exists." + srcdir.getAbsolutePath() );
+        }
 
-			// get the list of files to be added to the rulebase
-			String[] fileNames = getFileList();
+        AntClassLoader loader = null;
+        try {
+            // create a specialized classloader
+            loader = getClassLoader();
 
-			for (int i = 0; i < fileNames.length; i++) {
-				// compile rule file and add to the builder
-				compileAndAddFile(builder, fileNames[i]);
-			}
-			
-			if ( builder.hasErrors() ) {
-			    System.err.println( builder.getErrors().toString() );
-			}
+            if ( PACKAGEBINTYPE.equals( bintype ) ) {
+                createWithKnowledgeBuilder( loader );
+            } else {
+                createWithPackageBuilder( loader );
+            }
+        } catch ( Exception e ) {
+            throw new BuildException( "RuleBaseTask failed: " + e.getMessage(),
+                                      e );
+        } finally {
+            if ( loader != null ) {
+                loader.resetThreadContextLoader();
+            }
+        }
+    }
 
-			// gets the package
-			org.drools.rule.Package pkg = builder.getPackage();
-			
-            // creates the rulebase
-            RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+    private void createWithKnowledgeBuilder(AntClassLoader loader) throws FileNotFoundException,
+                                                                  DroolsParserException,
+                                                                  IOException {
+        // create a package builder configured to use the given classloader
+        KnowledgeBuilder kbuilder = getKnowledgeBuilder( loader );
 
-            // adds the package
-            ruleBase.addPackage(pkg);
-			
-			
-			if (PACKAGEBINFORMAT.equals( binformat )  ) {
-			    serializeObject( pkg );
-			} else {
-	            // serialize the rule base to the destination file
-	            serializeObject(ruleBase);
-			}
-		} catch (Exception e) {
-			throw new BuildException("RuleBaseTask failed: " + e.getMessage(),
-					e);
-		} finally {
-			if (loader != null) {
-				loader.resetThreadContextLoader();
-			}
-		}
-	}
-	
-	/**
-	 * @param ruleBase
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 */
-	private void serializeObject(Object object)
-			throws FileNotFoundException, IOException {
-		ObjectOutputStream outstream = null;
-		try {
-			FileOutputStream fout = new FileOutputStream(toFile);
-			outstream = new ObjectOutputStream(fout);
-			outstream.writeObject(object);
-		} finally {
-			if (outstream != null) {
-				outstream.close();
-			}
-		}
-	}
+        // get the list of files to be added to the rulebase
+        String[] fileNames = getFileList();
 
-	/**
-	 * @param builder
-	 * @param fileName
-	 * @return
-	 * @throws FileNotFoundException
-	 * @throws DroolsParserException
-	 * @throws IOException
-	 */
-	private void compileAndAddFile(PackageBuilder builder, String fileName)
-			throws FileNotFoundException, DroolsParserException, IOException {
-		InputStreamReader instream = null;
-        File file = new File(this.srcdir, fileName);
+        for ( int i = 0; i < fileNames.length; i++ ) {
+            // compile rule file and add to the builder
+            compileAndAddFile( kbuilder,
+                               fileNames[i] );
+        }
+
+        if ( kbuilder.hasErrors() ) {
+            System.err.println( kbuilder.getErrors().toString() );
+        }
+
+        // gets the packages
+        Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
+
+        // creates the knowledge base
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        // adds the packages
+        kbase.addKnowledgePackages( pkgs );
+
+        if ( PACKAGEBINFORMAT.equals( binformat ) ) {
+            serializeObject( pkgs.iterator().next() );
+        } else {
+            // serialize the knowledge base to the destination file
+            serializeObject( kbase );
+        }
+    }
+
+    private void createWithPackageBuilder(AntClassLoader loader) throws FileNotFoundException,
+                                                                DroolsParserException,
+                                                                IOException {
+        // create a package builder configured to use the given classloader
+        PackageBuilder builder = getPackageBuilder( loader );
+
+        // get the list of files to be added to the rulebase
+        String[] fileNames = getFileList();
+
+        for ( int i = 0; i < fileNames.length; i++ ) {
+            // compile rule file and add to the builder
+            compileAndAddFile( builder,
+                               fileNames[i] );
+        }
+
+        if ( builder.hasErrors() ) {
+            System.err.println( builder.getErrors().toString() );
+        }
+
+        // gets the package
+        org.drools.rule.Package pkg = builder.getPackage();
+
+        // creates the rulebase
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+
+        // adds the package
+        ruleBase.addPackage( pkg );
+
+        if ( PACKAGEBINFORMAT.equals( binformat ) ) {
+            serializeObject( pkg );
+        } else {
+            // serialize the rule base to the destination file
+            serializeObject( ruleBase );
+        }
+    }
+
+    /**
+     * @param ruleBase
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
+    private void serializeObject(Object object) throws FileNotFoundException,
+                                               IOException {
+        FileOutputStream fout = null;
+        try {
+            fout = new FileOutputStream( toFile );
+            DroolsStreamUtils.streamOut( fout,
+                                         object );
+        } finally {
+            if ( fout != null ) {
+                fout.close();
+            }
+        }
+    }
+
+    /**
+     * @param builder
+     * @param fileName
+     * @return
+     * @throws FileNotFoundException
+     * @throws DroolsParserException
+     * @throws IOException
+     */
+    private void compileAndAddFile(KnowledgeBuilder kbuilder,
+                                   String fileName) throws FileNotFoundException,
+                                                   DroolsParserException,
+                                                   IOException {
+
+        FileReader fileReader = new FileReader( new File( this.srcdir,
+                                                          fileName ) );
+
+        if ( fileName.endsWith( DroolsCompilerAntTask.BRLFILEEXTENSION ) ) {
+
+            // TODO: Right now I have to first change this to String. Change to
+            // use KnowledgeBuilder directly when the support for that is done.
+            // -Toni Rikkola-
+
+            RuleModel model = BRXMLPersistence.getInstance().unmarshal( loadResource( fileName ) );
+            String packagefile = loadResource( resolvePackageFile( this.srcdir.getAbsolutePath() ) );
+            model.name = fileName.replace( DroolsCompilerAntTask.BRLFILEEXTENSION,
+                                           "" );
+            ByteArrayInputStream istream = new ByteArrayInputStream( (packagefile + BRDRLPersistence.getInstance().marshal( model )).getBytes() );
+
+            Reader instream = new InputStreamReader( istream );
+
+            kbuilder.add( ResourceFactory.newReaderResource( instream ),
+                          ResourceType.DRL );
+
+        } else if ( fileName.endsWith( DroolsCompilerAntTask.RULEFLOWFILEEXTENSION ) ) {
+
+            kbuilder.add( ResourceFactory.newReaderResource( fileReader ),
+                          ResourceType.DRF );
+
+        } else if ( fileName.endsWith( DroolsCompilerAntTask.XMLFILEEXTENSION ) ) {
+            kbuilder.add( ResourceFactory.newReaderResource( fileReader ),
+                          ResourceType.XDRL );
+        } else if ( fileName.endsWith( DroolsCompilerAntTask.XLSFILEEXTENSION ) ) {
+
+            DecisionTableConfiguration dtableconfiguration = KnowledgeBuilderFactory.newDecisionTableConfiguration();
+            dtableconfiguration.setInputType( DecisionTableInputType.XLS );
+
+            kbuilder.add( ResourceFactory.newReaderResource( fileReader ),
+                          ResourceType.DTABLE,
+                          dtableconfiguration );
+
+            // } else if
+            // (fileName.endsWith(DroolsCompilerAntTask.DSLFILEEXTENSION)) {
+            //
+            // kbuilder.add(ResourceFactory.newReaderResource(fileReader),
+            // ResourceType.DSL);
+
+        } else if ( fileName.endsWith( DroolsCompilerAntTask.DSLRFILEEXTENSION ) ) {
+
+            // Get the DSL too.
+            String[] dsls = resolveDSLFilesToArray();
+            for ( int i = 0; i < dsls.length; i++ ) {
+                kbuilder.add( ResourceFactory.newFileResource( new File( this.srcdir,
+                                                                         dsls[i] ) ),
+                              ResourceType.DSL );
+            }
+
+            kbuilder.add( ResourceFactory.newReaderResource( fileReader ),
+                          ResourceType.DSLR );
+
+        } else {
+            kbuilder.add( ResourceFactory.newReaderResource( fileReader ),
+                          ResourceType.DRL );
+        }
+    }
+
+    /**
+     * @param builder
+     * @param fileName
+     * @return
+     * @throws FileNotFoundException
+     * @throws DroolsParserException
+     * @throws IOException
+     */
+    private void compileAndAddFile(PackageBuilder builder,
+                                   String fileName) throws FileNotFoundException,
+                                                   DroolsParserException,
+                                                   IOException {
+        InputStreamReader instream = null;
+        File file = new File( this.srcdir,
+                              fileName );
 
         try {
 
-			if (fileName.endsWith(DroolsCompilerAntTask.BRLFILEEXTENSION)) {
+            if ( fileName.endsWith( DroolsCompilerAntTask.BRLFILEEXTENSION ) ) {
 
-				RuleModel model = BRXMLPersistence.getInstance().unmarshal(
-						loadResource(fileName));
-				String packagefile = loadResource(resolvePackageFile(this.srcdir
-						.getAbsolutePath()));
-				model.name = fileName.replace(DroolsCompilerAntTask.BRLFILEEXTENSION,
-						"");
-				ByteArrayInputStream istream = new ByteArrayInputStream(
-						(packagefile + BRDRLPersistence.getInstance().marshal(
-								model)).getBytes());
-				instream = new InputStreamReader(istream);
+                RuleModel model = BRXMLPersistence.getInstance().unmarshal( loadResource( fileName ) );
+                String packagefile = loadResource( resolvePackageFile( this.srcdir.getAbsolutePath() ) );
+                model.name = fileName.replace( DroolsCompilerAntTask.BRLFILEEXTENSION,
+                                               "" );
+                ByteArrayInputStream istream = new ByteArrayInputStream( (packagefile + BRDRLPersistence.getInstance().marshal( model )).getBytes() );
+                instream = new InputStreamReader( istream );
 
-			} else {
-				instream = new InputStreamReader(new FileInputStream(file));
-			}
-            
-            if (fileName.endsWith(DroolsCompilerAntTask.RULEFLOWFILEEXTENSION)) {
-				builder.addRuleFlow(instream);
-			} else if (fileName.endsWith(DroolsCompilerAntTask.XMLFILEEXTENSION)) {
-				builder.addPackageFromXml(instream);
-            } else if (fileName.endsWith(DroolsCompilerAntTask.XLSFILEEXTENSION)) {
+            } else {
+                instream = new InputStreamReader( new FileInputStream( file ) );
+            }
+
+            if ( fileName.endsWith( DroolsCompilerAntTask.RULEFLOWFILEEXTENSION ) ) {
+                builder.addRuleFlow( instream );
+            } else if ( fileName.endsWith( DroolsCompilerAntTask.XMLFILEEXTENSION ) ) {
+                builder.addPackageFromXml( instream );
+            } else if ( fileName.endsWith( DroolsCompilerAntTask.XLSFILEEXTENSION ) ) {
 
                 final SpreadsheetCompiler converter = new SpreadsheetCompiler();
-                final String drl = converter.compile( new FileInputStream(file),
+                final String drl = converter.compile( new FileInputStream( file ),
                                                       InputType.XLS );
 
+                System.out.println( drl );
 
-                System.out.println(drl);
+                builder.addPackageFromDrl( new StringReader( drl ) );
 
-                builder.addPackageFromDrl(new StringReader(drl));
+            } else if ( fileName.endsWith( DroolsCompilerAntTask.DSLRFILEEXTENSION ) ) {
+                DrlParser parser = new DrlParser();
+                String expandedDRL = parser.getExpandedDRL( loadResource( fileName ),
+                                                            resolveDSLFiles() );
+                builder.addPackageFromDrl( new StringReader( expandedDRL ) );
+            } else {
+                builder.addPackageFromDrl( instream );
+            }
+        } finally {
+            if ( instream != null ) {
+                instream.close();
+            }
+        }
+    }
 
-            } else if (fileName.endsWith(DroolsCompilerAntTask.DSLFILEEXTENSION)) {
-				DrlParser parser = new DrlParser();
-				String expandedDRL = parser.getExpandedDRL(
-						loadResource(fileName), resolveDSLFiles());
-				builder.addPackageFromDrl(new StringReader(expandedDRL));
-			} else {
-				builder.addPackageFromDrl(instream);
-			}
-		} finally {
-			if (instream != null) {
-				instream.close();
-			}
-		}
-	}
+    private String[] resolveDSLFilesToArray() {
 
-	private DefaultExpanderResolver resolveDSLFiles() throws IOException {
+        Collection<String> list = new ArrayList<String>();
 
-		DefaultExpanderResolver resolver = new DefaultExpanderResolver();
-		final File dir = new File(this.srcdir.getAbsolutePath());
-		DSLMappingFile file = new DSLTokenizedMappingFile();
+        final File dir = new File( this.srcdir.getAbsolutePath() );
 
-		FilenameFilter filter = new FilenameFilter() {
-			public boolean accept(File dir, String name) {
-				return name.endsWith(".dsl");
-			}
-		};
+        FilenameFilter filter = new FilenameFilter() {
+            public boolean accept(File dir,
+                                  String name) {
+                return name.endsWith( ".dsl" );
+            }
+        };
 
-		String[] children = dir.list(filter);
-		if (children.length == 0) {
-			throw new BuildException(
-					"There are no DSL files for this directory:"
-							+ this.srcdir.getAbsolutePath());
-		}
+        return dir.list( filter );
+    }
 
-		for (int index = 0; index < children.length; index++) {
-			if (file.parseAndLoad(new StringReader(loadResource(children[index])))) {
-				final Expander expander = new DefaultExpander();
-				expander.addDSLMapping(file.getMapping());
-				resolver.addExpander("*", expander);
-			} else {
-				throw new RuntimeDroolsException(
-						"Error parsing and loading DSL file."
-								+ file.getErrors());
-			}
-		}
+    private DefaultExpanderResolver resolveDSLFiles() throws IOException {
 
-		return resolver;
-	}
+        DefaultExpanderResolver resolver = new DefaultExpanderResolver();
+        final File dir = new File( this.srcdir.getAbsolutePath() );
+        DSLMappingFile file = new DSLTokenizedMappingFile();
 
-	private String resolvePackageFile(String dirname) {
+        FilenameFilter filter = new FilenameFilter() {
+            public boolean accept(File dir,
+                                  String name) {
+                return name.endsWith( ".dsl" );
+            }
+        };
 
-		File dir = new File(dirname);
-		FilenameFilter filter = new FilenameFilter() {
-			public boolean accept(File dir, String name) {
-				return name.endsWith(".package");
-			}
-		};
+        String[] children = dir.list( filter );
+        if ( children.length == 0 ) {
+            throw new BuildException( "There are no DSL files for this directory:" + this.srcdir.getAbsolutePath() );
+        }
 
-		String[] children = dir.list(filter);
-		if (children.length > 1) {
-			throw new BuildException(
-					"There are more than one package configuration file for this directory :"
-							+ dirname);
-		}
+        for ( int index = 0; index < children.length; index++ ) {
+            if ( file.parseAndLoad( new StringReader( loadResource( children[index] ) ) ) ) {
+                final Expander expander = new DefaultExpander();
+                expander.addDSLMapping( file.getMapping() );
+                resolver.addExpander( "*",
+                                      expander );
+            } else {
+                throw new RuntimeDroolsException( "Error parsing and loading DSL file." + file.getErrors() );
+            }
+        }
 
-		if (children.length == 0) {
-			throw new BuildException(
-					"There is no package configuration file for this directory:"
-							+ dirname);
-		}
+        return resolver;
+    }
 
-		return children[0];
-	}
+    private String resolvePackageFile(String dirname) {
 
-	private String loadResource(final String name) throws IOException {
+        File dir = new File( dirname );
+        FilenameFilter filter = new FilenameFilter() {
+            public boolean accept(File dir,
+                                  String name) {
+                return name.endsWith( ".package" );
+            }
+        };
 
-		final InputStream in = new FileInputStream(this.srcdir + "/" + name);
-		final Reader reader = new InputStreamReader(in);
-		final StringBuffer text = new StringBuffer();
-		final char[] buf = new char[1024];
-		int len = 0;
+        String[] children = dir.list( filter );
+        if ( children.length > 1 ) {
+            throw new BuildException( "There are more than one package configuration file for this directory :" + dirname );
+        }
 
-		while ((len = reader.read(buf)) >= 0) {
-			text.append(buf, 0, len);
-		}
+        if ( children.length == 0 ) {
+            throw new BuildException( "There is no package configuration file for this directory:" + dirname );
+        }
 
-		return text.toString();
-	}
+        return children[0];
+    }
 
-	/**
-	 * @return
-	 */
-	private AntClassLoader getClassLoader() {
-		// defining a new specialized classloader and setting it as the thread
-		// context classloader
-		AntClassLoader loader = null;
-		if (classpath != null) {
-			loader = new AntClassLoader(PackageBuilder.class.getClassLoader(),
-					getProject(), classpath, false);
-		} else {
-			loader = new AntClassLoader(PackageBuilder.class.getClassLoader(),
-					false);
-		}
-		loader.setThreadContextLoader();
-		return loader;
-	}
+    private String loadResource(final String name) throws IOException {
 
-	/**
-	 * @param loader
-	 * @return
-	 */
-	private PackageBuilder getPackageBuilder(AntClassLoader loader) {
-		// creating package builder configured with the give classloader
-		PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
-		conf.setClassLoader(loader);
-		PackageBuilder builder = new PackageBuilder(conf);
-		return builder;
-	}
+        final InputStream in = new FileInputStream( this.srcdir + "/" + name );
+        final Reader reader = new InputStreamReader( in );
+        final StringBuffer text = new StringBuffer();
+        final char[] buf = new char[1024];
+        int len = 0;
 
-	/**
-	 * Returns the list of files to be added into the rulebase
-	 * 
-	 * @return
-	 */
-	private String[] getFileList() {
-		// scan source directory for rule files
-		DirectoryScanner directoryScanner = getDirectoryScanner(srcdir);
-		String[] fileNames = directoryScanner.getIncludedFiles();
+        while ( (len = reader.read( buf )) >= 0 ) {
+            text.append( buf,
+                         0,
+                         len );
+        }
 
-		if (fileNames == null || fileNames.length <= 0) {
-			throw new BuildException(
-					"No rule files found in include directory.");
-		}
-		return fileNames;
-	}
+        return text.toString();
+    }
+
+    /**
+     * @return
+     */
+    private AntClassLoader getClassLoader() {
+        // defining a new specialized classloader and setting it as the thread
+        // context classloader
+        AntClassLoader loader = null;
+        if ( classpath != null ) {
+            loader = new AntClassLoader( PackageBuilder.class.getClassLoader(),
+                                         getProject(),
+                                         classpath,
+                                         false );
+        } else {
+            loader = new AntClassLoader( PackageBuilder.class.getClassLoader(),
+                                         false );
+        }
+        loader.setThreadContextLoader();
+        return loader;
+    }
+
+    /**
+     * @param loader
+     * @return
+     */
+    private PackageBuilder getPackageBuilder(AntClassLoader loader) {
+        // creating package builder configured with the give classloader
+        PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
+        conf.setClassLoader( loader );
+        PackageBuilder builder = new PackageBuilder( conf );
+        return builder;
+    }
+
+    /**
+     * Returns the list of files to be added into the rulebase
+     * 
+     * @return
+     */
+    private String[] getFileList() {
+        // scan source directory for rule files
+        DirectoryScanner directoryScanner = getDirectoryScanner( srcdir );
+        String[] fileNames = directoryScanner.getIncludedFiles();
+
+        if ( fileNames == null || fileNames.length <= 0 ) {
+            throw new BuildException( "No rule files found in include directory." );
+        }
+        return fileNames;
+    }
+
+    private KnowledgeBuilder getKnowledgeBuilder(AntClassLoader loader) {
+        // creating package builder configured with the give classloader
+        PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
+        conf.setClassLoader( loader );
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( conf );
+        return kbuilder;
+    }
 
     public void setBinformat(String binformat) {
         this.binformat = binformat;
@@ -389,6 +554,14 @@ public class DroolsCompilerAntTask extends MatchingTask {
 
     public String getBinformat() {
         return binformat;
+    }
+
+    public String getBintype() {
+        return bintype;
+    }
+
+    public void setBintype(String bintype) {
+        this.bintype = bintype;
     }
 
 }
