@@ -2,7 +2,7 @@ package org.drools.eclipse.preferences;
 
 import java.io.File;
 
-import org.drools.eclipse.preferences.DroolsRuntimesBlock.DroolsRuntime;
+import org.drools.eclipse.util.DroolsRuntime;
 import org.drools.eclipse.util.DroolsRuntimeManager;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;

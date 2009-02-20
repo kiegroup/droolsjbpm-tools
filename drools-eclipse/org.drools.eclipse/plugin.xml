@@ -531,6 +531,7 @@
    </extension>
 
    <extension-point id="processExtension" name="Process Extension" schema="schema/processExtension.exsd"/>
+   <extension-point id="runtimeRecognizer" name="Drools Runtime Recognizer" schema="schema/runtimeRecognizer.exsd"/>
 
    <extension
          point="org.drools.eclipse.processExtension">
@@ -560,6 +561,12 @@
             icon="icons/drools.gif"
             id="org.drools.eclipse.rulebuilder.wizards.NewGuidedRuleFileWizard"
             name="Guided Rule"/>
+   </extension>
+   <extension
+         point="org.drools.eclipse.runtimeRecognizer">
+      <recognizer
+            class="org.drools.eclipse.util.SOAPlatform4RuntimeRecognizer">
+      </recognizer>
    </extension>
    
    <!-- tabbed properties

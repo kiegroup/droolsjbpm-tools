@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.eclipse.util.DefaultDroolsRuntimeRecognizer;
+import org.drools.eclipse.util.DroolsRuntime;
+import org.drools.eclipse.util.DroolsRuntimeManager;
+import org.drools.eclipse.util.DroolsRuntimeRecognizer;
+import org.drools.eclipse.util.SOAPlatform4RuntimeRecognizer;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jdt.internal.debug.ui.SWTFactory;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
@@ -242,13 +247,14 @@ public class DroolsRuntimesBlock implements ISelectionProvider {
 		if (dialog.open() == Window.OK) {
 			DroolsRuntime result = dialog.getResult();
 			if (result != null) {
+				DroolsRuntimeManager.recognizeJars(result);
 				droolsRuntimes.add(result);
 				droolsRuntimesList.refresh();
 				droolsRuntimesList.setSelection(new StructuredSelection(result));
 			}
 		}
 	}
-
+	
 	private void editDroolsRuntime() {
 		IStructuredSelection selection= (IStructuredSelection) droolsRuntimesList.getSelection();
 		DroolsRuntime runtime = (DroolsRuntime) selection.getFirstElement();
@@ -260,6 +266,7 @@ public class DroolsRuntimesBlock implements ISelectionProvider {
 		if (dialog.open() == Window.OK) {
 			DroolsRuntime result = dialog.getResult();
 			if (result != null) {
+				DroolsRuntimeManager.recognizeJars(result);
 				// replace with the edited VM
 				int index = droolsRuntimes.indexOf(runtime);
 				droolsRuntimes.remove(index);
@@ -319,28 +326,4 @@ public class DroolsRuntimesBlock implements ISelectionProvider {
 		return (DroolsRuntime) objects[0];
 	}
 
-	public static class DroolsRuntime {
-		private String name;
-		private String path;
-		private boolean isDefault;
-		
-		public String getName() {
-			return name;
-		}
-		public void setName(String name) {
-			this.name = name;
-		}
-		public String getPath() {
-			return path;
-		}
-		public void setPath(String path) {
-			this.path = path;
-		}
-		public boolean isDefault() {
-			return isDefault;
-		}
-		public void setDefault(boolean isDefault) {
-			this.isDefault = isDefault;
-		}
-	}
 }

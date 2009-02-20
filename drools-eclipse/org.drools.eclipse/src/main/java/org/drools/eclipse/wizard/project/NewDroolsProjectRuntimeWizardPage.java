@@ -3,7 +3,7 @@ package org.drools.eclipse.wizard.project;
 import java.util.HashMap;
 
 import org.drools.eclipse.preferences.DroolsProjectPreferencePage;
-import org.drools.eclipse.preferences.DroolsRuntimesBlock.DroolsRuntime;
+import org.drools.eclipse.util.DroolsRuntime;
 import org.drools.eclipse.util.DroolsRuntimeManager;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;

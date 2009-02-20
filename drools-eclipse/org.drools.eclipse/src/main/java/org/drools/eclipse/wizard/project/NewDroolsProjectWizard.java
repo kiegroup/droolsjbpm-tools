@@ -10,8 +10,8 @@ import java.util.List;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.builder.DroolsBuilder;
-import org.drools.eclipse.preferences.DroolsRuntimesBlock.DroolsRuntime;
 import org.drools.eclipse.util.DroolsClasspathContainer;
+import org.drools.eclipse.util.DroolsRuntime;
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;

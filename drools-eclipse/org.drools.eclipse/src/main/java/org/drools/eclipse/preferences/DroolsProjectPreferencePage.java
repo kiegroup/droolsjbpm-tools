@@ -3,7 +3,7 @@ package org.drools.eclipse.preferences;
 import java.io.ByteArrayInputStream;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
-import org.drools.eclipse.preferences.DroolsRuntimesBlock.DroolsRuntime;
+import org.drools.eclipse.util.DroolsRuntime;
 import org.drools.eclipse.util.DroolsRuntimeManager;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;

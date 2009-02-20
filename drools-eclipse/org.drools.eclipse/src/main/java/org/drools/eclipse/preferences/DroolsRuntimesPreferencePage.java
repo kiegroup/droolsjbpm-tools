@@ -1,6 +1,6 @@
 package org.drools.eclipse.preferences;
 
-import org.drools.eclipse.preferences.DroolsRuntimesBlock.DroolsRuntime;
+import org.drools.eclipse.util.DroolsRuntime;
 import org.drools.eclipse.util.DroolsRuntimeManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferencePage;
