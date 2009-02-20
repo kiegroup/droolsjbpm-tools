@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.drools.eclipse.task.feature"
-      label="JBoss Drools Task Feature"
+      label="JBoss Drools Task"
       version="5.0.0.SNAPSHOT"
       provider-name="JBoss, Inc">
 
