@@ -15,8 +15,35 @@
   
   <modules>
       <module>org.drools.eclipse</module>
-      <module>org.drools.eclipse.task</module>
+      <!--module>org.drools.eclipse.task</module-->
       <module>drools-eclipse-build</module>
   </modules>
 
+
+
+    <profiles>
+        <profile>
+            <id>soa</id>
+            <activation>
+                <property>
+                    <name>soa</name>
+                </property>
+            </activation>
+            <modules>
+                <module>org.drools.eclipse</module>
+                <module>drools-eclipse-build</module>
+            </modules>
+        </profile>             
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault> 
+            </activation>            
+            <modules>
+                <module>org.drools.eclipse</module>
+                <module>org.drools.eclipse.task</module>
+                <module>drools-eclipse-build</module>
+            </modules>
+       </profile>        
+    </profiles>
 </project>
