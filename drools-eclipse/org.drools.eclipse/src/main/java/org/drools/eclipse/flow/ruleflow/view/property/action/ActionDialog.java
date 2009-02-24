@@ -78,12 +78,10 @@ public class ActionDialog extends EditBeanDialog<DroolsAction> {
 	
 	protected DroolsAction updateValue(DroolsAction action) {
 		if (tabFolder.getSelectionIndex() == 0) {
-			if (action == null) {
-				action = new DroolsConsequenceAction();
-			}
-			((DroolsConsequenceAction) action).setDialect(dialectCombo.getItem(dialectCombo.getSelectionIndex()));
-			((DroolsConsequenceAction) action).setConsequence(actionViewer.getDocument().get());
-			return action;
+			DroolsConsequenceAction result = new DroolsConsequenceAction();
+			result.setDialect(dialectCombo.getItem(dialectCombo.getSelectionIndex()));
+			result.setConsequence(actionViewer.getDocument().get());
+			return result;
 		}
 		return null;
 	}
