@@ -300,7 +300,7 @@ public class RuleModeller {
                                   comp,
                                   pattern,
                                   this,
-                                  idx );
+                                  idx);
     }
 
     private void addLHSDSLSentenceWidget(int idx,

@@ -1,5 +1,6 @@
 package org.drools.eclipse.rulebuilder.ui;
 
+import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -15,7 +16,7 @@ public class RHSDSLSentenceWidget extends DSLSentenceWidget {
                parent,
                sentence,
                modeller,
-               index );
+               index);
     }
 
     protected void updateModel() {

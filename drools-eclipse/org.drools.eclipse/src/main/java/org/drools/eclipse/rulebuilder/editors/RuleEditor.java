@@ -8,6 +8,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.drools.compiler.DrlParser;
@@ -194,15 +195,16 @@ public class RuleEditor extends FormEditor
             // Load all .dsl files from current dir
             IPath p = (packageEditorInput).getFile().getFullPath().removeLastSegments( 1 );
 
-            Container folder = (Container) ResourcesPlugin.getWorkspace().getRoot().findMember( p,
-                                                                                                false );
+            Container folder = (Container) ResourcesPlugin.getWorkspace().getRoot().findMember( p,                                                                                                false );
 
             IResource[] files = folder.members( false );
 
             List dslList = new ArrayList();
+            List enumList = new ArrayList();
 
             for ( int i = 0; i < files.length; i++ ) {
-                if ( files[i].getName().endsWith( ".dsl" ) ) {
+                String fn = files[i].getName();
+                if ( fn.endsWith( ".dsl" ) ) {
                     String contents = getFileContents( (IFile) files[i] );
                     DSLTokenizedMappingFile dsl = new DSLTokenizedMappingFile();
 
@@ -211,15 +213,20 @@ public class RuleEditor extends FormEditor
                     } else {
                         //TODO report dsl parse error
                     }
+                } else if ( fn.endsWith( ".enum" ) ) {
+                    String contents = getFileContents( (IFile) files[i] );
+                    enumList.add(contents);
                 }
+                
             }
 
             // Load suggestion engine
             String str = getFileContents( packageEditorInput.getFile() );
 
             completion = loader.getSuggestionEngine( str,
+                                                     Collections.EMPTY_LIST,
                                                      dslList,
-                                                     dslList );
+                                                     enumList);
 
         } catch ( Exception e ) {
             DroolsEclipsePlugin.log( e );
