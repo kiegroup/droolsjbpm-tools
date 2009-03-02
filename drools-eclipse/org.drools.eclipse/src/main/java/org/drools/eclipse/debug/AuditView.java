@@ -79,7 +79,8 @@ public class AuditView extends AbstractDebugView {
         refreshAction.setEnabled(logFileName != null);
     }
     
-    public void refresh() {
+    @SuppressWarnings("unchecked")
+	public void refresh() {
     	if (logFileName == null) {
     		getViewer().setInput(null);
     		return;
@@ -91,12 +92,21 @@ public class AuditView extends AbstractDebugView {
 				new FileReader(logFileName));
 			try {
                 while (true) {
-                    eventList.add((LogEvent) in.readObject());
+                	Object object = in.readObject();
+                	if (object instanceof LogEvent) {
+                		eventList.add((LogEvent) object);
+                	} else if (object instanceof List) {
+                		eventList.addAll((List<LogEvent>) object);
+                	} else {
+                		throw new IllegalArgumentException("Unexpected element in log: " + object);
+                	}
                 }
             } catch (StreamException e) {
                 if (!(e.getCause() instanceof EOFException)) {
                     throw e;
                 }
+            } catch (EOFException e) {
+            	// do nothing
             }
 		} catch (FileNotFoundException e) {
 			setLogFile(null);
