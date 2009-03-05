@@ -20,10 +20,15 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 
 public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
 
+	public static final String DROOLS4 = "Drools 4.x";
+	public static final String DROOLS5 = "Drools 5.x";
+	
 	private boolean isDefaultRuntime = true;
 	private String selectedRuntime;
+	private String generationType = DROOLS5;
 	private Button projectSpecificRuntime;
 	private Combo droolsRuntimeCombo;
+	private Combo droolsGenerateCombo;
 	
 	public NewDroolsProjectRuntimeWizardPage() {
 		super("extendedNewProjectRuntimePage");
@@ -59,7 +64,7 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
         
         Label nameLabel = new Label(composite, SWT.NONE);
         nameLabel.setText("Drools Runtime: ");
-        droolsRuntimeCombo = new Combo(composite, SWT.LEFT);
+        droolsRuntimeCombo = new Combo(composite, SWT.READ_ONLY);
         droolsRuntimeCombo.setEnabled(false);
         droolsRuntimeCombo.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) {
@@ -85,8 +90,37 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
         gridData.horizontalAlignment = GridData.FILL;
         droolsRuntimeCombo.setLayoutData(gridData);
         Link changeWorkspaceSettingsLink = createLink(composite, "Configure Workspace Settings...");
-        changeWorkspaceSettingsLink.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
+        changeWorkspaceSettingsLink.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
 
+		Composite subPanel = new Composite(composite, SWT.NONE);
+		gridLayout = new GridLayout();
+        gridLayout.numColumns = 2;
+        subPanel.setLayout(gridLayout);
+        gridData = new GridData();
+        gridData.grabExcessHorizontalSpace = true;
+        gridData.horizontalAlignment = GridData.FILL;
+        gridData.horizontalSpan = 2;
+        subPanel.setLayoutData(gridData);
+
+        Label generateLabel = new Label(subPanel, SWT.NONE);
+        generateLabel.setText("Generate code compatible with: ");
+        droolsGenerateCombo = new Combo(subPanel, SWT.READ_ONLY);
+        droolsGenerateCombo.add("Drools 4.x");
+        droolsGenerateCombo.add("Drools 5.x");
+        droolsGenerateCombo.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent e) {
+				generationType = droolsGenerateCombo.getText();
+			}
+			public void widgetSelected(SelectionEvent e) {
+				generationType = droolsGenerateCombo.getText();
+			}
+        });
+        droolsGenerateCombo.select(1);
+        gridData = new GridData();
+        gridData.grabExcessHorizontalSpace = true;
+        gridData.horizontalAlignment = GridData.FILL;
+        droolsGenerateCombo.setLayoutData(gridData);
+        
         setMessage(null);
         setPageComplete(runtimes.length > 0);
         setControl(composite);
@@ -143,6 +177,10 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
 			return null;
 		}
 		return DroolsRuntimeManager.getDroolsRuntime(selectedRuntime);
+	}
+	
+	public String getGenerationType() {
+		return generationType;
 	}
 	
 }

@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.builder.DroolsBuilder;
+import org.drools.eclipse.preferences.DroolsRuntimesPreferencePage;
 import org.drools.eclipse.util.DroolsClasspathContainer;
 import org.drools.eclipse.util.DroolsRuntime;
 import org.eclipse.core.resources.ICommand;
@@ -304,7 +305,12 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
     private void createRuleSampleLauncher(IJavaProject project)
             throws JavaModelException, IOException {
         
-        String s = "org/drools/eclipse/wizard/project/RuleLauncherSample.java.template";
+    	String s;
+    	if (runtimePage.getGenerationType() == NewDroolsProjectRuntimeWizardPage.DROOLS4) {
+    		s = "org/drools/eclipse/wizard/project/RuleLauncherSample_4.java.template";
+    	} else {
+    		s = "org/drools/eclipse/wizard/project/RuleLauncherSample.java.template";
+    	}
         IFolder folder = project.getProject().getFolder("src/main/java");
         IPackageFragmentRoot packageFragmentRoot = project
                 .getPackageFragmentRoot(folder);
@@ -322,7 +328,12 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
     private void createDecisionTableSampleLauncher(IJavaProject project)
             throws JavaModelException, IOException {
         
-        String s = "org/drools/eclipse/wizard/project/DecisionTableLauncherSample.java.template";
+        String s;
+        if (runtimePage.getGenerationType() == NewDroolsProjectRuntimeWizardPage.DROOLS4) {
+    		s = "org/drools/eclipse/wizard/project/DecisionTableLauncherSample_4.java.template";
+        } else {
+        	s = "org/drools/eclipse/wizard/project/DecisionTableLauncherSample.java.template";
+        }
         IFolder folder = project.getProject().getFolder("src/main/java");
         IPackageFragmentRoot packageFragmentRoot = project
                 .getPackageFragmentRoot(folder);
@@ -371,15 +382,46 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
      */
     private void createRuleFlow(IJavaProject project, IProgressMonitor monitor)
             throws CoreException {
-        String fileName = "org/drools/eclipse/wizard/project/ruleflow.rf.template";
-        IFolder folder = project.getProject().getFolder("src/main/rules");
-        IFile file = folder.getFile("ruleflow.rf");
-        InputStream inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
-        if (!file.exists()) {
-        	file.create(inputstream, true, monitor);
-        } else {
-        	file.setContents(inputstream, true, false, monitor);
-        }
+
+    	if (runtimePage.getGenerationType() == NewDroolsProjectRuntimeWizardPage.DROOLS4) {
+    		String fileName = "org/drools/eclipse/wizard/project/ruleflow_4.rf.template";
+	        IFolder folder = project.getProject().getFolder("src/main/rules");
+	        IFile file = folder.getFile("ruleflow.rf");
+	        InputStream inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
+	        if (!file.exists()) {
+	        	file.create(inputstream, true, monitor);
+	        } else {
+	        	file.setContents(inputstream, true, false, monitor);
+	        }
+	        
+	        fileName = "org/drools/eclipse/wizard/project/ruleflow_4.rfm.template";
+	        file = folder.getFile("ruleflow.rfm");
+	        inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
+	        if (!file.exists()) {
+	        	file.create(inputstream, true, monitor);
+	        } else {
+	        	file.setContents(inputstream, true, false, monitor);
+	        }
+	        
+	        fileName = "org/drools/eclipse/wizard/project/ruleflow_4.drl.template";
+	        file = folder.getFile("ruleflow.drl");
+	        inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
+	        if (!file.exists()) {
+	        	file.create(inputstream, true, monitor);
+	        } else {
+	        	file.setContents(inputstream, true, false, monitor);
+	        }
+    	} else {
+	        String fileName = "org/drools/eclipse/wizard/project/ruleflow.rf.template";
+	        IFolder folder = project.getProject().getFolder("src/main/rules");
+	        IFile file = folder.getFile("ruleflow.rf");
+	        InputStream inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
+	        if (!file.exists()) {
+	        	file.create(inputstream, true, monitor);
+	        } else {
+	        	file.setContents(inputstream, true, false, monitor);
+	        }
+    	}
     }
 
     /**
@@ -388,7 +430,12 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
     private void createRuleFlowSampleLauncher(IJavaProject project)
             throws JavaModelException, IOException {
         
-        String s = "org/drools/eclipse/wizard/project/RuleFlowLauncherSample.java.template";
+        String s;
+        if (runtimePage.getGenerationType() == NewDroolsProjectRuntimeWizardPage.DROOLS4) {
+    		s = "org/drools/eclipse/wizard/project/RuleFlowLauncherSample_4.java.template";
+        } else {
+        	s = "org/drools/eclipse/wizard/project/RuleFlowLauncherSample.java.template";
+        }
         IFolder folder = project.getProject().getFolder("src/main/java");
         IPackageFragmentRoot packageFragmentRoot = project
                 .getPackageFragmentRoot(folder);
