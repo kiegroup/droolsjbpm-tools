@@ -3,7 +3,7 @@
       id="org.drools.eclipse.feature"
       label="JBoss Drools Core"
       version="5.0.0.SNAPSHOT"
-      provider-name="JBoss, Inc.">
+      provider-name="JBoss, a division of Red Hat">
 
    <description url="http://www.jboss.org/drools/">
       Eclipse support for JBoss Drools Core.

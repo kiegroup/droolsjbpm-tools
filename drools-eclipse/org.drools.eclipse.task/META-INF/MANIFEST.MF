@@ -13,3 +13,4 @@ Bundle-ClassPath: .,
  lib/mina-core.jar,
  lib/slf4j-api.jar,
  lib/slf4j-jdk14.jar
+Bundle-Vendor: JBoss, a division of Red Hat
