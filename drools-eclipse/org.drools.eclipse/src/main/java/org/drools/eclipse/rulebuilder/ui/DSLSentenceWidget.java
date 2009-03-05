@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.guided.ConstraintValueEditorHelper;
+import org.drools.guvnor.client.modeldriven.ui.ConstraintValueEditorHelper;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
 import org.drools.util.DateUtils;
