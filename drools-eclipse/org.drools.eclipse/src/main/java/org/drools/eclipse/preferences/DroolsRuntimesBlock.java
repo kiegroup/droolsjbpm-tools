@@ -4,11 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.eclipse.util.DefaultDroolsRuntimeRecognizer;
 import org.drools.eclipse.util.DroolsRuntime;
 import org.drools.eclipse.util.DroolsRuntimeManager;
-import org.drools.eclipse.util.DroolsRuntimeRecognizer;
-import org.drools.eclipse.util.SOAPlatform4RuntimeRecognizer;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jdt.internal.debug.ui.SWTFactory;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;

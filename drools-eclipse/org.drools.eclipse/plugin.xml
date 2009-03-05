@@ -565,6 +565,12 @@
    <extension
          point="org.drools.eclipse.runtimeRecognizer">
       <recognizer
+            class="org.drools.eclipse.util.SOAPlatformStandalone4RuntimeRecognizer">
+      </recognizer>
+   </extension>
+   <extension
+         point="org.drools.eclipse.runtimeRecognizer">
+      <recognizer
             class="org.drools.eclipse.util.SOAPlatform4RuntimeRecognizer">
       </recognizer>
    </extension>

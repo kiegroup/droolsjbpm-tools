@@ -9,10 +9,10 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 
-public class SOAPlatform4RuntimeRecognizer implements DroolsRuntimeRecognizer {
+public class SOAPlatformStandalone4RuntimeRecognizer implements DroolsRuntimeRecognizer {
 
 	public String[] recognizeJars(String path) {
-        IPath jbossrulesesbPath = new Path(path).append("jboss-as/server/default/deploy/jbrules.esb");
+        IPath jbossrulesesbPath = new Path(path).append("jboss-esb/server/default/deploy/jbrules.esb");
         File jbossrulesesb = jbossrulesesbPath.toFile();
         if (jbossrulesesb.isDirectory()) {
         	List<String> list = new ArrayList<String>();
@@ -33,7 +33,7 @@ public class SOAPlatform4RuntimeRecognizer implements DroolsRuntimeRecognizer {
         	for (int i = 0; i < files.length; i++) {
 				list.add(files[i].getAbsolutePath());
 			}
-        	IPath jbossesbsarPath = new Path(path).append("jboss-as/server/default/deploy/jbossesb.sar/lib");
+        	IPath jbossesbsarPath = new Path(path).append("jboss-esb/server/default/deploy/jbossesb.sar/lib");
 	        File jbossesbsar=jbossesbsarPath.toFile();
 	        if (jbossesbsar.isDirectory()) {
 	        	files = jbossesbsar.listFiles(new FilenameFilter() {

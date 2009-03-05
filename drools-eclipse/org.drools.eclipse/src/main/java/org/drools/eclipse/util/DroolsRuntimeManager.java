@@ -210,12 +210,6 @@ public class DroolsRuntimeManager {
 				System.out.println(ex.getMessage());
 			}
 
-			DroolsRuntimeRecognizer recognizer = new SOAPlatform4RuntimeRecognizer();
-			String[] jars = recognizer.recognizeJars(path);
-			if (jars != null && jars.length > 0) {
-				runtime.setJars(jars);
-				return;
-			}
 			runtime.setJars(new DefaultDroolsRuntimeRecognizer().recognizeJars(path));
 		}
 	}
