@@ -39,7 +39,7 @@ public class DRLGenerator {
         String temp = readTemplate( template );
         temp = doHeader(packageName, temp );
         if (functions) {
-            temp = functionsDec.matcher( temp ).replaceFirst( "function myFunction( ... ) " + System.getProperty("line.separator") + "    #function content (can have multiple functions) " + System.getProperty("line.separator") + "end" + System.getProperty("line.separator"));
+            temp = functionsDec.matcher( temp ).replaceFirst( "function myFunction( ... ) {" + System.getProperty("line.separator") + "    #function content (can have multiple functions) " + System.getProperty("line.separator") + "}" + System.getProperty("line.separator"));
         } else {
             temp = functionsDec.matcher( temp ).replaceFirst( "");
         }
