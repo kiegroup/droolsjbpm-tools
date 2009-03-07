@@ -15,7 +15,7 @@
   
   <modules>
       <module>org.drools.eclipse</module>
-      <!--module>org.drools.eclipse.task</module-->
+      <module>org.drools.eclipse.task</module>
       <module>drools-eclipse-build</module>
   </modules>
 
