@@ -112,6 +112,38 @@ public class DroolsAntTaskTest extends BuildFileTest {
                       kbase.getKnowledgePackages().size() );
     }
 
+    public void testRuleFlow() throws IOException,
+                              ClassNotFoundException {
+        try {
+            executeTarget( "ruleFlow" );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            Assert.fail( "Should not throw any exception: " + e.getMessage() );
+        }
+
+        RuleBase r1 = (RuleBase) DroolsStreamUtils.streamIn( new FileInputStream( "target/ruleFlow.rules" ) );
+
+        assertNotNull( r1 );
+        assertEquals( 1,
+                      r1.getPackages().length );
+    }
+
+    public void testRuleFlowKnowledge() throws IOException,
+                                       ClassNotFoundException {
+        try {
+            executeTarget( "ruleFlowKnowledge" );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            Assert.fail( "Should not throw any exception: " + e.getMessage() );
+        }
+
+        KnowledgeBase kbase = (KnowledgeBase) DroolsStreamUtils.streamIn( new FileInputStream( "target/ruleFlow.rules" ) );
+
+        assertNotNull( kbase );
+        assertEquals( 1,
+                      kbase.getKnowledgePackages().size() );
+    }
+
     public void testNoPackageFile() {
         try {
             executeTarget( "rulesnopackagefile" );

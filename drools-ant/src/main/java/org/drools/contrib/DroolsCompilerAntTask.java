@@ -72,15 +72,16 @@ import org.drools.util.DroolsStreamUtils;
  */
 public class DroolsCompilerAntTask extends MatchingTask {
 
-    public static String BRLFILEEXTENSION      = ".brl";
-    public static String XMLFILEEXTENSION      = ".xml";
-    public static String RULEFLOWFILEEXTENSION = ".rfm";
-    public static String DSLFILEEXTENSION      = ".dsl";
-    public static String DSLRFILEEXTENSION     = ".dslr";
-    public static String XLSFILEEXTENSION      = ".xls";
+    public static String BRLFILEEXTENSION           = ".brl";
+    public static String XMLFILEEXTENSION           = ".xml";
+    public static String RULEFLOWMODELFILEEXTENSION = ".rfm";
+    public static String RULEFLOWFILEEXTENSION      = ".rf";
+    public static String DSLFILEEXTENSION           = ".dsl";
+    public static String DSLRFILEEXTENSION          = ".dslr";
+    public static String XLSFILEEXTENSION           = ".xls";
 
-    public static String PACKAGEBINFORMAT      = "package";
-    public static String PACKAGEBINTYPE        = "knowledge";
+    public static String PACKAGEBINFORMAT           = "package";
+    public static String PACKAGEBINTYPE             = "knowledge";
 
     private File         srcdir;
     private File         toFile;
@@ -302,7 +303,7 @@ public class DroolsCompilerAntTask extends MatchingTask {
             kbuilder.add( ResourceFactory.newReaderResource( instream ),
                           ResourceType.DRL );
 
-        } else if ( fileName.endsWith( DroolsCompilerAntTask.RULEFLOWFILEEXTENSION ) ) {
+        } else if ( fileName.endsWith( DroolsCompilerAntTask.RULEFLOWMODELFILEEXTENSION ) || fileName.endsWith( DroolsCompilerAntTask.RULEFLOWFILEEXTENSION ) ) {
 
             kbuilder.add( ResourceFactory.newReaderResource( fileReader ),
                           ResourceType.DRF );
@@ -375,7 +376,7 @@ public class DroolsCompilerAntTask extends MatchingTask {
                 instream = new InputStreamReader( new FileInputStream( file ) );
             }
 
-            if ( fileName.endsWith( DroolsCompilerAntTask.RULEFLOWFILEEXTENSION ) ) {
+            if ( fileName.endsWith( DroolsCompilerAntTask.RULEFLOWMODELFILEEXTENSION ) || fileName.endsWith( DroolsCompilerAntTask.RULEFLOWFILEEXTENSION ) ) {
                 builder.addRuleFlow( instream );
             } else if ( fileName.endsWith( DroolsCompilerAntTask.XMLFILEEXTENSION ) ) {
                 builder.addPackageFromXml( instream );

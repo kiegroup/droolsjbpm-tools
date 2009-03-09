@@ -1,9 +1,9 @@
 <project default="rules">
 	
 	<!-- Uncomment this for Maven Runner -->
-	<property name="eclipsepath"  value=""/> 
+	<property name="eclipsepath"  value=""/>
 	<!-- Uncomment this for Eclipse Runner  -->
-	<!--<property name="eclipsepath"  value="../../../"/> -->   
+	<!--<property name="eclipsepath"  value="../../../"/>  -->   
 	
 	<path id="cheese.classpath">
 		<pathelement location="${eclipsepath}lib/cheese.jar"/>
@@ -70,6 +70,25 @@
 			<include name="*.brl" />
 			<include name="*.xml" />
 			<include name="*.dslr" />			
+		</compiler>
+	</target>
+
+	<target name="ruleFlow" >
+		<compiler 
+			srcdir="${eclipsepath}src/test/resources/ruleFlow" 		
+			tofile="${eclipsepath}target/ruleFlow.rules" > 
+			<include name="*.drl" />
+			<include name="*.rf" />			
+		</compiler>
+	</target>
+	
+	<target name="ruleFlowKnowledge" >
+		<compiler 
+			srcdir="${eclipsepath}src/test/resources/ruleFlow" 		
+			tofile="${eclipsepath}target/ruleFlow.rules"
+			bintype="knowledge" > 
+			<include name="*.drl" />
+			<include name="*.rf" />			
 		</compiler>
 	</target>
 	
