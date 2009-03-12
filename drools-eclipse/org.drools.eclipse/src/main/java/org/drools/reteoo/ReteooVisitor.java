@@ -1,5 +1,6 @@
 package org.drools.reteoo;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -73,7 +74,7 @@ public class ReteooVisitor extends ReflectiveVisitor {
         this.graph.addChild( this.rootVertex );
         this.parentVertex = this.rootVertex;
 
-        for( ObjectTypeNode node : rete.getObjectTypeNodes() ) {
+        for( EntryPointNode node : rete.getEntryPointNodes().values() ) {
             visit( node );
         }
     }
@@ -101,7 +102,9 @@ public class ReteooVisitor extends ReflectiveVisitor {
             this.parentVertex = vertex;
 
             List list = null;
-            if ( node instanceof ObjectSource ) {
+            if ( node instanceof EntryPointNode ) {
+            	list = new ArrayList( ((EntryPointNode) node).getObjectTypeNodes().values() );
+            } else if ( node instanceof ObjectSource ) {
                 list = Arrays.asList( ((ObjectSource) node).getSinkPropagator().getSinks() );
             } else if ( node instanceof LeftTupleSource ) {
                 list = Arrays.asList( ((LeftTupleSource) node).getSinkPropagator().getSinks() );

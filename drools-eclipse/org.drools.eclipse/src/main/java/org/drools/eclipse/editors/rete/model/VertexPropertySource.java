@@ -9,6 +9,7 @@ import org.drools.reteoo.AccumulateNodeVertex;
 import org.drools.reteoo.AlphaNodeVertex;
 import org.drools.reteoo.BaseVertex;
 import org.drools.reteoo.CollectNodeVertex;
+import org.drools.reteoo.EntryPointNodeVertex;
 import org.drools.reteoo.EvalConditionNodeVertex;
 import org.drools.reteoo.ExistsNodeVertex;
 import org.drools.reteoo.FromNodeVertex;
@@ -16,6 +17,7 @@ import org.drools.reteoo.JoinNodeVertex;
 import org.drools.reteoo.LeftInputAdapterNodeVertex;
 import org.drools.reteoo.NotNodeVertex;
 import org.drools.reteoo.ObjectTypeNodeVertex;
+import org.drools.reteoo.PropagationQueuingNodeVertex;
 import org.drools.reteoo.QueryTerminalNodeVertex;
 import org.drools.reteoo.ReteVertex;
 import org.drools.reteoo.RightInputAdapterNodeVertex;
@@ -62,6 +64,10 @@ public class VertexPropertySource
 
     private static final String       VERTEX_RETE                = "Rete BaseVertex";
 
+    private static final String       VERTEX_ENTRY_POINT         = "Entry Point BaseVertex";
+
+    private static final String       VERTEX_PROPAGATION_QUEUING = "Propagation Queuing BaseVertex";
+
     private static final String       CONSTRAINT_CAP             = "Constraint";
 
     private static final String       CONSTRAINT                 = "constraint";
@@ -93,6 +99,10 @@ public class VertexPropertySource
     // ObjectType specific
     private final IPropertyDescriptor PROP_OBJ_TYPE              = new PropertyDescriptor( "objectType",
                                                                                            "Object Type" );
+    
+    // EntryPoint specific
+    private final IPropertyDescriptor PROP_ENTRY_POINT_NAME      = new PropertyDescriptor( "entryPointName",
+    																					   "Entry Point Name" );
 
     private final static String       CAT_GENERAL                = "General";
     private final static String       CAT_OTHER                  = "Other";
@@ -172,6 +182,14 @@ public class VertexPropertySource
             initReteNodeProperties( (ReteVertex) vertex,
                                     descriptorList,
                                     values );
+        } else if ( vertex instanceof PropagationQueuingNodeVertex ) {
+            initPropagationQueuingNodeProperties( (PropagationQueuingNodeVertex) vertex,
+                                                  descriptorList,
+                                                  values );
+        } else if ( vertex instanceof EntryPointNodeVertex ) {
+            initEntryPointNodeProperties( (EntryPointNodeVertex) vertex,
+                                          descriptorList,
+                                          values );
         }
 
         descriptors = (IPropertyDescriptor[]) descriptorList.toArray( new IPropertyDescriptor[0] );
@@ -402,6 +420,41 @@ public class VertexPropertySource
 		             valueMap );
 		
 	}
+
+    private void initPropagationQueuingNodeProperties(PropagationQueuingNodeVertex vertex,
+                                                      List descriptorList,
+                                                      Map valueMap) {
+    	addProperty( PROP_NAME,
+    			     VERTEX_PROPAGATION_QUEUING,
+                     descriptorList,
+                     valueMap );
+
+    	addProperty( PROP_ID,
+                     Integer.toString( vertex.getId() ),
+                     descriptorList,
+    	             valueMap );
+
+    }
+
+    private void initEntryPointNodeProperties(EntryPointNodeVertex vertex,
+                                              List descriptorList,
+                                              Map valueMap) {
+    	addProperty( PROP_NAME,
+                     VERTEX_ENTRY_POINT,
+                     descriptorList,
+                     valueMap );
+
+    	addProperty( PROP_ENTRY_POINT_NAME,
+                     vertex.getEntryPointName(),
+                     descriptorList,
+                     valueMap );
+
+    	addProperty( PROP_ID,
+                     Integer.toString( vertex.getId() ),
+                     descriptorList,
+                     valueMap );
+
+    }
 
     private void addProperty(IPropertyDescriptor field,
                              String value,
