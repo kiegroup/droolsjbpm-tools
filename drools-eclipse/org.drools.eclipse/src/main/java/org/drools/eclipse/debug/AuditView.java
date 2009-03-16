@@ -58,6 +58,7 @@ public class AuditView extends AbstractDebugView {
 	private String logFileName;
 	private IAction deleteAction;
 	private IAction refreshAction;
+	private boolean drools4 = false;
 	
     protected Viewer createViewer(Composite parent) {
 		final TreeViewer variablesViewer = new TreeViewer(parent);
@@ -81,12 +82,13 @@ public class AuditView extends AbstractDebugView {
     
     @SuppressWarnings("unchecked")
 	public void refresh() {
+    	drools4 = false;
     	if (logFileName == null) {
     		getViewer().setInput(null);
     		return;
     	}
         List<LogEvent> eventList = new ArrayList<LogEvent>();
-		try {
+        try {
 			XStream xstream = new XStream();
 			ObjectInputStream in = xstream.createObjectInputStream(
 				new FileReader(logFileName));
@@ -96,6 +98,7 @@ public class AuditView extends AbstractDebugView {
                 	if (object instanceof LogEvent) {
                 		eventList.add((LogEvent) object);
                 	} else if (object instanceof List) {
+                		drools4 = true;
                 		eventList.addAll((List<LogEvent>) object);
                 	} else {
                 		throw new IllegalArgumentException("Unexpected element in log: " + object);
@@ -113,7 +116,11 @@ public class AuditView extends AbstractDebugView {
 		} catch (Throwable t) {
 			DroolsEclipsePlugin.log(t);
 		}
-        getViewer().setInput(createEventList(eventList));
+		if (drools4) {
+			getViewer().setInput(createDrools4EventList(eventList));
+		} else {
+			getViewer().setInput(createEventList(eventList));
+		}
         // TODO: this is necessary because otherwise, the show cause action
         // cannot find the cause event if it hasn't been shown yet
         ((TreeViewer) getViewer()).expandAll();
@@ -327,6 +334,175 @@ public class AuditView extends AbstractDebugView {
 		return events;
     }
     
+    protected List createDrools4EventList(List logEvents) {
+		Iterator iterator = logEvents.iterator();
+		List events = new ArrayList();
+		Event currentBeforeActivationEvent = null;
+		Event currentBeforePackageEvent = null;
+		List newActivations = new ArrayList();
+		Map activationMap = new HashMap();
+		Map objectMap = new HashMap();
+		while (iterator.hasNext()) {
+			LogEvent inEvent = (LogEvent) iterator.next();
+			Event event = new Event(inEvent.getType());
+			switch (inEvent.getType()) {
+				case LogEvent.INSERTED:
+					ObjectLogEvent inObjectEvent = (ObjectLogEvent) inEvent;
+					event.setString("Object inserted (" + inObjectEvent.getFactId() + "): " + inObjectEvent.getObjectToString());
+					if (currentBeforeActivationEvent != null) {
+						currentBeforeActivationEvent.addSubEvent(event);
+					} else {
+						events.add(event);
+					}
+					event.addSubEvents(newActivations);
+					newActivations.clear();
+					objectMap.put(new Long(((ObjectLogEvent) inEvent).getFactId()), event);
+					break;
+				case LogEvent.UPDATED:
+					inObjectEvent = (ObjectLogEvent) inEvent;
+					event.setString("Object updated (" + inObjectEvent.getFactId() + "): " + inObjectEvent.getObjectToString());
+					if (currentBeforeActivationEvent != null) {
+						currentBeforeActivationEvent.addSubEvent(event);
+					} else {
+						events.add(event);
+					}
+					event.addSubEvents(newActivations);
+					newActivations.clear();
+					Event assertEvent = (Event) objectMap.get(new Long(((ObjectLogEvent) inEvent).getFactId()));
+					if (assertEvent != null) {
+						event.setCauseEvent(assertEvent);
+					}
+					break;
+				case LogEvent.RETRACTED:
+					inObjectEvent = (ObjectLogEvent) inEvent;
+					event.setString("Object removed (" + inObjectEvent.getFactId() + "): " + inObjectEvent.getObjectToString());
+					if (currentBeforeActivationEvent != null) {
+						currentBeforeActivationEvent.addSubEvent(event);
+					} else {
+						events.add(event);
+					}
+					event.addSubEvents(newActivations);
+					newActivations.clear();
+					assertEvent = (Event) objectMap.get(new Long(((ObjectLogEvent) inEvent).getFactId()));
+					if (assertEvent != null) {
+						event.setCauseEvent(assertEvent);
+					}
+					break;
+				case LogEvent.ACTIVATION_CREATED:
+					ActivationLogEvent inActivationEvent = (ActivationLogEvent) inEvent;
+					event.setString("Activation created: Rule " + inActivationEvent.getRule() + " " + inActivationEvent.getDeclarations());
+					newActivations.add(event);
+					activationMap.put(((ActivationLogEvent) inEvent).getActivationId(), event);
+					break;
+				case LogEvent.ACTIVATION_CANCELLED:
+					inActivationEvent = (ActivationLogEvent) inEvent;
+					event.setString("Activation cancelled: Rule " + inActivationEvent.getRule() + " " + inActivationEvent.getDeclarations());
+					newActivations.add(event);
+					event.setCauseEvent((Event) activationMap.get(((ActivationLogEvent) inEvent).getActivationId()));
+					break;
+				case LogEvent.BEFORE_ACTIVATION_FIRE:
+					inActivationEvent = (ActivationLogEvent) inEvent;
+					event.setString("Activation executed: Rule " + inActivationEvent.getRule() + " " + inActivationEvent.getDeclarations());
+					events.add(event);
+					currentBeforeActivationEvent = event;
+					event.setCauseEvent((Event) activationMap.get(((ActivationLogEvent) inEvent).getActivationId()));
+					break;
+				case LogEvent.AFTER_ACTIVATION_FIRE:
+					currentBeforeActivationEvent = null;
+					break;
+				case 8:
+					RuleFlowLogEvent inRuleFlowEvent = (RuleFlowLogEvent) inEvent;
+					event.setString("RuleFlow started: " + inRuleFlowEvent.getProcessName() + "[" + inRuleFlowEvent.getProcessId() + "]");
+					if (currentBeforeActivationEvent != null) {
+						currentBeforeActivationEvent.addSubEvent(event);
+					} else {
+						events.add(event);
+					}
+					break;
+				case 9:
+					inRuleFlowEvent = (RuleFlowLogEvent) inEvent;
+					event.setString("RuleFlow completed: " + inRuleFlowEvent.getProcessName() + "[" + inRuleFlowEvent.getProcessId() + "]");
+					if (currentBeforeActivationEvent != null) {
+						currentBeforeActivationEvent.addSubEvent(event);
+					} else {
+						events.add(event);
+					}
+					break;
+				case 10:
+					RuleFlowGroupLogEvent inRuleFlowGroupEvent = (RuleFlowGroupLogEvent) inEvent;
+					event.setString("RuleFlowGroup activated: " + inRuleFlowGroupEvent.getGroupName() + "[size=" + inRuleFlowGroupEvent.getSize() + "]");
+					if (currentBeforeActivationEvent != null) {
+						currentBeforeActivationEvent.addSubEvent(event);
+					} else {
+						events.add(event);
+					}
+					break;
+				case 11:
+					inRuleFlowGroupEvent = (RuleFlowGroupLogEvent) inEvent;
+					event.setString("RuleFlowGroup deactivated: " + inRuleFlowGroupEvent.getGroupName() + "[size=" + inRuleFlowGroupEvent.getSize() + "]");
+					if (currentBeforeActivationEvent != null) {
+						currentBeforeActivationEvent.addSubEvent(event);
+					} else {
+						events.add(event);
+					}
+					break;
+				case 12:
+					RuleBaseLogEvent ruleBaseEvent = (RuleBaseLogEvent) inEvent;
+					event.setString("Package added: " + ruleBaseEvent.getPackageName());
+					if (currentBeforeActivationEvent != null) {
+						currentBeforeActivationEvent.addSubEvent(event);
+					} else {
+						events.add(event);
+					}
+					currentBeforePackageEvent = event;
+					break;
+				case 13:
+					currentBeforePackageEvent = null;
+					break;
+				case 14:
+					ruleBaseEvent = (RuleBaseLogEvent) inEvent;
+					event.setString("Package removed: " + ruleBaseEvent.getPackageName());
+					if (currentBeforeActivationEvent != null) {
+						currentBeforeActivationEvent.addSubEvent(event);
+					} else {
+						events.add(event);
+					}
+					currentBeforePackageEvent = event;
+					break;
+				case 15:
+					currentBeforePackageEvent = null;
+					break;
+				case 17:
+					ruleBaseEvent = (RuleBaseLogEvent) inEvent;
+					event.setString("Rule added: " + ruleBaseEvent.getRuleName());
+					if (currentBeforePackageEvent != null) {
+						currentBeforePackageEvent.addSubEvent(event);
+					} else if (currentBeforeActivationEvent != null) {
+						currentBeforeActivationEvent.addSubEvent(event);
+					} else {
+						events.add(event);
+					}
+					event.addSubEvents(newActivations);
+					newActivations.clear();
+					break;
+				case 19:
+					ruleBaseEvent = (RuleBaseLogEvent) inEvent;
+					event.setString("Rule removed: " + ruleBaseEvent.getRuleName());
+					if (currentBeforePackageEvent != null) {
+						currentBeforePackageEvent.addSubEvent(event);
+					} else if (currentBeforeActivationEvent != null) {
+						currentBeforeActivationEvent.addSubEvent(event);
+					} else {
+						events.add(event);
+					}
+					event.addSubEvents(newActivations);
+					newActivations.clear();
+					break;
+			}
+		}
+		return events;
+    }
+
     public void deleteLog() {
     	if (logFileName != null) {
     		File file = new File(logFileName);
@@ -478,6 +654,25 @@ public class AuditView extends AbstractDebugView {
 	    public Image getImage(Object element) {
 	    	if (element instanceof Event) {
 	    		int type = ((Event) element).getType();
+	    		if (drools4) {
+		    		switch (type) {
+		    			case LogEvent.INSERTED: return DroolsPluginImages.getImage(DroolsPluginImages.INSERT);
+		    			case LogEvent.UPDATED: return DroolsPluginImages.getImage(DroolsPluginImages.UPDATE);
+		    			case LogEvent.RETRACTED: return DroolsPluginImages.getImage(DroolsPluginImages.RETRACT);
+		    			case LogEvent.ACTIVATION_CREATED: return DroolsPluginImages.getImage(DroolsPluginImages.CREATE_ACTIVATION);
+		    			case LogEvent.ACTIVATION_CANCELLED: return DroolsPluginImages.getImage(DroolsPluginImages.CANCEL_ACTIVATION);
+		    			case LogEvent.BEFORE_ACTIVATION_FIRE: return DroolsPluginImages.getImage(DroolsPluginImages.EXECUTE_ACTIVATION);
+		    			case 8: return DroolsPluginImages.getImage(DroolsPluginImages.RULEFLOW);
+		    			case 9: return DroolsPluginImages.getImage(DroolsPluginImages.RULEFLOW);
+		                case LogEvent.BEFORE_RULEFLOW_NODE_TRIGGERED: return DroolsPluginImages.getImage(DroolsPluginImages.RULEFLOW_NODE_TRIGGERED);
+		    			case 10: return DroolsPluginImages.getImage(DroolsPluginImages.RULEFLOW_GROUP);
+		    			case 11: return DroolsPluginImages.getImage(DroolsPluginImages.RULEFLOW_GROUP);
+		    			case 12: return DroolsPluginImages.getImage(DroolsPluginImages.DROOLS);
+		    			case 14: return DroolsPluginImages.getImage(DroolsPluginImages.DROOLS);
+		    			case 17: return DroolsPluginImages.getImage(DroolsPluginImages.DROOLS);
+		    			case 19: return DroolsPluginImages.getImage(DroolsPluginImages.DROOLS);
+		    		}
+	    		}
 	    		switch (type) {
 	    			case LogEvent.INSERTED: return DroolsPluginImages.getImage(DroolsPluginImages.INSERT);
 	    			case LogEvent.UPDATED: return DroolsPluginImages.getImage(DroolsPluginImages.UPDATE);
