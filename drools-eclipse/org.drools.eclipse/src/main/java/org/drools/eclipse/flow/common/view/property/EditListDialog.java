@@ -145,11 +145,15 @@ public abstract class EditListDialog<T> extends EditBeanDialog<List<T>> {
         EditBeanDialog<T> dialog = createEditItemDialog();
         Iterator<T> iterator = ((StructuredSelection) listViewer.getSelection()).iterator();
         if (iterator.hasNext()) {
-            dialog.setValue(iterator.next());
+        	T value = iterator.next();
+            int index = newList.lastIndexOf(value);
+            dialog.setValue(value);
             int code = dialog.open();
-            Object result = dialog.getValue();
             if (code != CANCEL) {
-                listViewer.update(result, null);
+                T result = dialog.getValue();
+            	newList.set(index, result);
+                listViewer.remove(value);
+                listViewer.add(result);
             }
         }
     }
