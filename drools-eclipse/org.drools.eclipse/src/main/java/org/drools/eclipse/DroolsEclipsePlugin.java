@@ -46,6 +46,7 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.process.core.Process;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.util.StringUtils;
 import org.drools.xml.XmlProcessReader;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -434,12 +435,17 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 
                     builder.addPackage( packageDescr );
                                         
+                    // make sure the namespace is set, use default if necessary, as this is used to build the DRLInfo
+                    if ( StringUtils.isEmpty( packageDescr.getNamespace() ) ) {
+                        packageDescr.setNamespace( builder.getPackageBuilderConfiguration().getDefaultPackageName() );
+                    }
+                    
                     result = new DRLInfo( resource == null ? "" : resource.getProjectRelativePath().toString(),
                                           packageDescr,
                                           parserErrors,
                                           builder.getPackage(),
-                                          builder.getErrors().getErrors(),
-                                          builder.getPackageRegistry( builder.getDefaultNamespace() ).getDialectCompiletimeRegistry() );
+                                          builder.getErrors().getErrors(),                                          
+                                          builder.getPackageRegistry( packageDescr.getNamespace() ).getDialectCompiletimeRegistry() );
                 } else {
                     result = new DRLInfo( resource == null ? "" : resource.getProjectRelativePath().toString(),
                                           packageDescr,
