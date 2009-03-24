@@ -20,6 +20,7 @@ import org.drools.eclipse.editors.rete.model.ReteGraph;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.reteoo.AlphaNodeVertex;
 import org.drools.reteoo.BaseVertex;
+import org.drools.reteoo.EntryPointNodeVertex;
 import org.drools.reteoo.LeftInputAdapterNodeVertex;
 import org.drools.reteoo.ObjectTypeNodeVertex;
 import org.drools.reteoo.ReteVertex;
@@ -70,11 +71,11 @@ public class ReteooLayoutFactoryTest extends TestCase {
 
         int rownum = rows.getDepth();
 
-        assertEquals( 5,
+        assertEquals( 6,
                       rownum );
 
-        int[] expectedDepths = new int[]{-1, 0, 1, 2, 3};
-        int[] expectedSizes = new int[]{1, 1, 2, 2, 2};
+        int[] expectedDepths = new int[]{-1, 0, 1, 2, 3, 4};
+        int[] expectedSizes = new int[]{1, 1, 1, 2, 2, 2};
 
         for ( int j = 0; j < rownum; j++ ) {
             final Row row = rows.get( j );
@@ -122,8 +123,10 @@ public class ReteooLayoutFactoryTest extends TestCase {
 
                      } );
 
-        Class[] expectedTypes = new Class[]{ReteVertex.class, ObjectTypeNodeVertex.class, AlphaNodeVertex.class, AlphaNodeVertex.class, LeftInputAdapterNodeVertex.class, LeftInputAdapterNodeVertex.class, RuleTerminalNodeVertex.class,
-                RuleTerminalNodeVertex.class};
+        Class[] expectedTypes = new Class[]{ReteVertex.class, EntryPointNodeVertex.class,
+    		ObjectTypeNodeVertex.class, AlphaNodeVertex.class, AlphaNodeVertex.class,
+    		LeftInputAdapterNodeVertex.class, LeftInputAdapterNodeVertex.class,
+    		RuleTerminalNodeVertex.class, RuleTerminalNodeVertex.class};
 
         for ( int i = 0; i < yOrder.length; i++ ) {
             assertEquals( expectedTypes[i],
