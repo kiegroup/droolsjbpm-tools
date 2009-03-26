@@ -7,6 +7,7 @@ import org.drools.guvnor.client.modeldriven.brl.ActionSetField;
 import org.drools.guvnor.client.modeldriven.brl.CompositeFactPattern;
 import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
+import org.drools.guvnor.client.modeldriven.brl.FreeFormLine;
 import org.drools.guvnor.client.modeldriven.brl.IAction;
 import org.drools.guvnor.client.modeldriven.brl.IPattern;
 import org.drools.guvnor.client.modeldriven.brl.RuleModel;
@@ -78,7 +79,7 @@ public class RuleModeller {
         this.model = model;
         this.editor = editor;
 
-        setTitleAndFont(form);
+        setTitleAndFont( form );
 
         ColumnLayout colLayout = new ColumnLayout();
         colLayout.minNumColumns = 1;
@@ -128,20 +129,20 @@ public class RuleModeller {
 
     }
 
-	private void setTitleAndFont(ScrolledForm form) {
-		form.setText( "Guided rule editor" );
-        
-		Font systemFont = form.getDisplay().getSystemFont();
-		FontData[] exfds = systemFont.getFontData();
+    private void setTitleAndFont(ScrolledForm form) {
+        form.setText( "Guided rule editor" );
+
+        Font systemFont = form.getDisplay().getSystemFont();
+        FontData[] exfds = systemFont.getFontData();
         if ( exfds.length > 0 ) {
             FontData fd = exfds[0];
             fd.setHeight( fd.getHeight() + 2 );
-            fd.setStyle(SWT.BOLD);
+            fd.setStyle( SWT.BOLD );
             Font f = new Font( systemFont.getDevice(),
                                fd );
-            form.setFont(f);
+            form.setFont( f );
         }
-	}
+    }
 
     public SuggestionCompletionEngine getSuggestionCompletionEngine() {
         return editor.getCompletionEngine();
@@ -219,9 +220,22 @@ public class RuleModeller {
             } else if ( action instanceof DSLSentence ) {
                 addRHSDSLSentenceWidget( i,
                                          (DSLSentence) action );
+            } else if ( action instanceof FreeFormLine ) {
+                addRHSDSLFreeFormLine( (FreeFormLine) action,
+                                       i );
             }
 
         }
+    }
+
+    private void addRHSDSLFreeFormLine(FreeFormLine action,
+                                       int i) {
+        Composite comp = toolkit.createComposite( thenComposite );
+        new ActionInsertFreeFormLineWidget( toolkit,
+                                            comp,
+                                            this,
+                                            (FreeFormLine) action,
+                                            i );
     }
 
     private void addActionInsertFactWidget(IAction action,
@@ -300,7 +314,7 @@ public class RuleModeller {
                                   comp,
                                   pattern,
                                   this,
-                                  idx);
+                                  idx );
     }
 
     private void addLHSDSLSentenceWidget(int idx,

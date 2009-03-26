@@ -10,7 +10,12 @@ import org.drools.guvnor.client.modeldriven.brl.ActionRetractFact;
 import org.drools.guvnor.client.modeldriven.brl.ActionSetField;
 import org.drools.guvnor.client.modeldriven.brl.ActionUpdateField;
 import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
+import org.drools.guvnor.client.modeldriven.brl.FreeFormLine;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -26,7 +31,7 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class AddNewActionDialog extends RuleDialog {
 
-    private RuleModeller      modeller;
+    private RuleModeller modeller;
 
     public AddNewActionDialog(Shell parent,
                               RuleModeller modeller) {
@@ -38,16 +43,19 @@ public class AddNewActionDialog extends RuleDialog {
 
     protected Control createDialogArea(final Composite parent) {
         Composite composite = (Composite) super.createDialogArea( parent );
+        GridLayout layout = new GridLayout( 2,
+                                            false );
+        composite.setLayout( layout );
         String heading = "Choose...";
 
         createValuesOfFieldPart( composite,
-                                   heading );
-
-        createModifyFieldPart( composite,
                                  heading );
 
-        createRetractFieldPart(composite, heading);
+        createModifyFieldPart( composite,
+                               heading );
 
+        createRetractFieldPart( composite,
+                                heading );
 
         String[] facts = getCompletion().getFactTypes();
 
@@ -59,49 +67,42 @@ public class AddNewActionDialog extends RuleDialog {
                                         heading,
                                         facts );
 
-        createDslSentences( composite,
-                            heading );
+        createDrlSentences( composite );
+
+        //        createAddFreeFromDSL(composite,heading);
 
         return composite;
     }
 
-    private void createRetractFieldPart(Composite composite, String heading) {
-    	createLabel( composite, "Retract the fact" );
-
-    	final Combo factsCombo = new Combo( composite, SWT.READ_ONLY );
-
-    	factsCombo.add( heading );
-
-    	List boundFacts = modeller.getModel().getBoundFacts();
-
-        for ( int i = 0; i < boundFacts.size(); i++ ) {
-            factsCombo.add( (String) boundFacts.get( i ) );
-        }
-        factsCombo.select( 0 );
-
-        factsCombo.addListener( SWT.Selection,
-                new Listener() {
-                    public void handleEvent(Event event) {
-                        if ( factsCombo.getSelectionIndex() == 0 ) {
-                            return;
-                        }
-
-                        modeller.getModel().addRhsItem( new ActionRetractFact(factsCombo.getText()) );
-
-                        modeller.setDirty( true );
-                        modeller.reloadRhs();
-                        close();
-                    }
-                } );
-
-	}
-
-	private void createModifyFieldPart(Composite composite,
-                                       String heading) {
+    private void createDrlSentences(Composite composite) {
         createLabel( composite,
-                     "Modify a field on a fact" );
+                     "Free form action" );
+
+        Button b = new Button( composite,
+                               SWT.NONE );
+        b.setText( "Add free form drl" );
+        b.addSelectionListener( new SelectionListener() {
+
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+                modeller.getModel().addRhsItem( new FreeFormLine() );
+                modeller.setDirty( true );
+                modeller.reloadRhs();
+                close();
+            }
+        } );
+    }
+
+    private void createRetractFieldPart(Composite composite,
+                                        String heading) {
+        createLabel( composite,
+                     "Retract the fact" );
+
         final Combo factsCombo = new Combo( composite,
-                                                 SWT.READ_ONLY );
+                                            SWT.READ_ONLY );
+
         factsCombo.add( heading );
 
         List boundFacts = modeller.getModel().getBoundFacts();
@@ -112,19 +113,51 @@ public class AddNewActionDialog extends RuleDialog {
         factsCombo.select( 0 );
 
         factsCombo.addListener( SWT.Selection,
-                                     new Listener() {
-                                         public void handleEvent(Event event) {
-                                             if ( factsCombo.getSelectionIndex() == 0 ) {
-                                                 return;
-                                             }
+                                new Listener() {
+                                    public void handleEvent(Event event) {
+                                        if ( factsCombo.getSelectionIndex() == 0 ) {
+                                            return;
+                                        }
 
-                                             modeller.getModel().addRhsItem(new ActionUpdateField(factsCombo.getText()));
+                                        modeller.getModel().addRhsItem( new ActionRetractFact( factsCombo.getText() ) );
 
-                                             modeller.setDirty( true );
-                                             modeller.reloadRhs();
-                                             close();
-                                         }
-                                     } );
+                                        modeller.setDirty( true );
+                                        modeller.reloadRhs();
+                                        close();
+                                    }
+                                } );
+
+    }
+
+    private void createModifyFieldPart(Composite composite,
+                                       String heading) {
+        createLabel( composite,
+                     "Modify a field on a fact" );
+        final Combo factsCombo = new Combo( composite,
+                                            SWT.READ_ONLY );
+        factsCombo.add( heading );
+
+        List boundFacts = modeller.getModel().getBoundFacts();
+
+        for ( int i = 0; i < boundFacts.size(); i++ ) {
+            factsCombo.add( (String) boundFacts.get( i ) );
+        }
+        factsCombo.select( 0 );
+
+        factsCombo.addListener( SWT.Selection,
+                                new Listener() {
+                                    public void handleEvent(Event event) {
+                                        if ( factsCombo.getSelectionIndex() == 0 ) {
+                                            return;
+                                        }
+
+                                        modeller.getModel().addRhsItem( new ActionUpdateField( factsCombo.getText() ) );
+
+                                        modeller.setDirty( true );
+                                        modeller.reloadRhs();
+                                        close();
+                                    }
+                                } );
 
     }
 
@@ -152,7 +185,7 @@ public class AddNewActionDialog extends RuleDialog {
                                           }
 
                                           DSLSentence sentence = getCompletion().getDSLActions()[dslCombo.getSelectionIndex() - 1];
-										  modeller.getModel().addRhsItem( sentence.copy() );
+                                          modeller.getModel().addRhsItem( sentence.copy() );
                                           modeller.setDirty( true );
                                           modeller.reloadRhs();
                                           close();
@@ -223,7 +256,7 @@ public class AddNewActionDialog extends RuleDialog {
     }
 
     private void createValuesOfFieldPart(Composite composite,
-                                           String heading) {
+                                         String heading) {
         createLabel( composite,
                      "Set the values of a field on" );
         final Combo globalVarsCombo = new Combo( composite,
@@ -234,7 +267,7 @@ public class AddNewActionDialog extends RuleDialog {
 
         //adding globals
         String[] globals = modeller.getSuggestionCompletionEngine().getGlobalVariables();
-        boundFacts.addAll(Arrays.asList(globals));
+        boundFacts.addAll( Arrays.asList( globals ) );
 
         for ( int i = 0; i < boundFacts.size(); i++ ) {
             globalVarsCombo.add( (String) boundFacts.get( i ) );

@@ -6,6 +6,7 @@ import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
 import org.drools.guvnor.client.modeldriven.brl.IPattern;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -21,9 +22,9 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class AddNewConditionDialog extends RuleDialog {
 
-    private IPattern          pattern;
+    private IPattern     pattern;
 
-    private RuleModeller      modeller;
+    private RuleModeller modeller;
 
     public AddNewConditionDialog(Shell parent,
                                  RuleModeller modeller) {
@@ -39,6 +40,9 @@ public class AddNewConditionDialog extends RuleDialog {
         Control dialog = super.createDialogArea( parent );
 
         Composite composite = (Composite) dialog;
+        GridLayout layout = new GridLayout( 2,
+                                            false );
+        composite.setLayout( layout );
 
         addFacts( composite );
 
@@ -131,7 +135,8 @@ public class AddNewConditionDialog extends RuleDialog {
                                           }
 
                                           DSLSentence sentence = getCompletion().getDSLConditions()[dslCombo.getSelectionIndex() - 1];
-										//TODO Handle this kind of situations with care - add* can throw runtime exceptions
+                                          // TODO Handle this kind of situations with care - add* can
+                                          // throw runtime exceptions
                                           modeller.getModel().addLhsItem( sentence.copy() );
 
                                           modeller.reloadLhs();

@@ -1,15 +1,17 @@
 package org.drools.eclipse.rulebuilder.ui;
 
-import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.client.modeldriven.brl.ActionInsertFact;
-import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
-import org.drools.guvnor.client.modeldriven.brl.ActionInsertLogicalFact;
 import org.drools.eclipse.rulebuilder.modeldriven.HumanReadable;
+import org.drools.guvnor.client.modeldriven.DropDownData;
+import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
+import org.drools.guvnor.client.modeldriven.brl.ActionInsertFact;
+import org.drools.guvnor.client.modeldriven.brl.ActionInsertLogicalFact;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
@@ -139,30 +141,63 @@ public class ActionInsertFactWidget extends Widget {
 
     private void valueEditor(Composite parent,
                              final ActionFieldValue val) {
-        final Text box = toolkit.createText( parent,
-                                             "" );
+        String fieldName = val.field;
+        DropDownData enums = modeller.getSuggestionCompletionEngine().getEnums( fact.factType,
+                                                                                fact.fieldValues,
+                                                                                val.field );
+        boolean found = false;
+        if ( enums != null && enums.fixedList.length > 0 ) {
+            String[] list = enums.fixedList;
+            final Combo combo = new Combo( parent,
+                                           SWT.DROP_DOWN | SWT.READ_ONLY );
+            for ( int i = 0; i < list.length; i++ ) {
+                String e = list[i];
+                combo.add( e );
+                if ( e.equals( val.value ) ) {
+                    combo.select( i );
+                    found = true;
+                }
+            }
+            if ( !found && val.value != null ) {
+                combo.add( val.value );
+                combo.select( combo.getItemCount() - 1 );
+            }
 
-        if ( val.value != null ) {
-            box.setText( val.value );
+            combo.addModifyListener( new ModifyListener() {
+
+                public void modifyText(ModifyEvent e) {
+                    val.value = combo.getItem( combo.getSelectionIndex() );
+                    modeller.reloadRhs();
+                    modeller.setDirty( true );
+                }
+            } );
+
+        } else {
+
+            final Text box = toolkit.createText( parent,
+                                                 "" );
+
+            if ( val.value != null ) {
+                box.setText( val.value );
+            }
+
+            GridData gd = new GridData( GridData.FILL_HORIZONTAL );
+            gd.grabExcessHorizontalSpace = true;
+            gd.minimumWidth = 100;
+            box.setLayoutData( gd );
+
+            box.addModifyListener( new ModifyListener() {
+                public void modifyText(ModifyEvent e) {
+                    getModeller().setDirty( true );
+                    val.value = box.getText();
+                }
+            } );
+
+            if ( val.type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
+                new NumericKeyFilter( box );
+            }
         }
 
-        GridData gd = new GridData( GridData.FILL_HORIZONTAL );
-        gd.grabExcessHorizontalSpace = true;
-        gd.minimumWidth = 100;
-        box.setLayoutData( gd );
-
-        box.addModifyListener( new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                getModeller().setDirty( true );
-                val.value = box.getText();
-            }
-        } );
-
-        if (val.type.equals( SuggestionCompletionEngine.TYPE_NUMERIC )) {
-        	new NumericKeyFilter(box);
-        } 
-        
-        
     }
 
     public SuggestionCompletionEngine getCompletion() {
