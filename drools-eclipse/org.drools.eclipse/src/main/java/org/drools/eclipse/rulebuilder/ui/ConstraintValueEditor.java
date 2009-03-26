@@ -148,7 +148,7 @@ public class ConstraintValueEditor {
 
                 public void modifyText(ModifyEvent e) {
                     c.value = combo.getItem( combo.getSelectionIndex() );
-                    modeller.reloadRhs();
+                    modeller.reloadLhs();
                     modeller.setDirty( true );
                 }
             } );
