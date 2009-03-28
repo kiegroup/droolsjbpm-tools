@@ -77,6 +77,7 @@ public class RuleFlowModelEditor extends GenericModelEditor {
         StartNodeWrapper start = new StartNodeWrapper();
         start.setConstraint(new Rectangle(100, 100, -1, -1));
         result.addElement(start);
+        start.setParent(result);
         IFile file = ((IFileEditorInput)getEditorInput()).getFile();
         String name = file.getName();
         result.setName(name.substring(0, name.length() - 3));
@@ -207,6 +208,10 @@ public class RuleFlowModelEditor extends GenericModelEditor {
     			}
     		} catch (Throwable t) {
     			DroolsEclipsePlugin.log(t);
+    			MessageDialog.openError( getSite().getShell(),
+                    "Could not read RuleFlow file",
+                    "An exception occurred while reading in the RuleFlow XML: "
+                    	+ t.getMessage() + " See the error log for more details.");
     			setModel(createModel());
     		}
 
