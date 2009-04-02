@@ -10,6 +10,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: .,
  lib/drools-process-task.jar,
+ lib/drools-api.jar,
  lib/mina-core.jar,
  lib/slf4j-api.jar,
  lib/slf4j-jdk14.jar
