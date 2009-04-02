@@ -124,17 +124,34 @@ public class ConstraintValueEditor {
                                     GridData gd) {
 
         String fieldName = ((SingleFieldConstraint) c).fieldName;
-        DropDownData enums = modeller.getSuggestionCompletionEngine().getEnums( pattern,
-                                                                                fieldName );
+        DropDownData enums = null;
         boolean found = false;
+        if ( ((SingleFieldConstraint) c).fieldType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN )) {
+            enums = DropDownData.create(new String[]{"true", "false"});
+        }else
+        {
+            enums = modeller.getSuggestionCompletionEngine().getEnums( pattern,
+                                                                       fieldName );
+        }
         if ( enums != null && enums.fixedList.length > 0 ) {
             String[] list = enums.fixedList;
             final Combo combo = new Combo( parent,
                                            SWT.DROP_DOWN | SWT.READ_ONLY );
             for ( int i = 0; i < list.length; i++ ) {
                 String e = list[i];
-                combo.add( e );
-                if ( e.equals( c.value ) ) {
+                String[] split = null;
+                boolean s = false;
+                if ( e.indexOf( '=' ) > 0 ) {
+                    split = e.split( "=" );
+                    e = split[1];
+                    combo.add( e.trim() );
+                    combo.setData( e.trim(),
+                                   split[0].trim() );
+                    s = true;
+                } else {
+                    combo.add( e );
+                }
+                if ( e.equals( c.value ) || (s && split[0].trim().equals( c.value )) ) {
                     combo.select( i );
                     found = true;
                 }
@@ -147,7 +164,11 @@ public class ConstraintValueEditor {
             combo.addModifyListener( new ModifyListener() {
 
                 public void modifyText(ModifyEvent e) {
-                    c.value = combo.getItem( combo.getSelectionIndex() );
+                    String item = combo.getItem( combo.getSelectionIndex() );
+                    if ( combo.getData( item ) != null ) {
+                        item = (String) combo.getData( item );
+                    }
+                    c.value = item;
                     modeller.reloadLhs();
                     modeller.setDirty( true );
                 }

@@ -1,10 +1,15 @@
 package org.drools.eclipse.rulebuilder.ui;
 
+import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.guvnor.client.modeldriven.brl.FactPattern;
 import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
@@ -21,10 +26,13 @@ public class AssignFieldVariableDialog extends RuleDialog {
 
     private SingleFieldConstraint con;
 
+    private final FactPattern     pattern;
+
     public AssignFieldVariableDialog(Shell parent,
                                      FormToolkit toolkit,
                                      RuleModeller modeller,
-                                     SingleFieldConstraint con) {
+                                     SingleFieldConstraint con,
+                                     FactPattern pattern) {
         super( parent,
                "Bind the field called [" + con.fieldName + "] to a variable.",
                "Type the variable name and hit the button." );
@@ -32,6 +40,7 @@ public class AssignFieldVariableDialog extends RuleDialog {
         this.toolkit = toolkit;
         this.modeller = modeller;
         this.con = con;
+        this.pattern = pattern;
     }
 
     protected Control createDialogArea(final Composite parent) {
@@ -48,8 +57,47 @@ public class AssignFieldVariableDialog extends RuleDialog {
         composite.setLayout( l );
 
         createVariableBindingRow( composite );
+        createSubfieldConstraintRow( composite );
         toolkit.paintBordersFor( composite );
         return composite;
+    }
+
+    private void createSubfieldConstraintRow(final Composite composite) {
+        SuggestionCompletionEngine engine = modeller.getSuggestionCompletionEngine();
+        String[] fields = engine.getFieldCompletions( con.fieldType );
+        if ( fields == null || fields.length <= 0 ) {
+            return;
+        }
+        createLabel( composite,
+                     "Add a restriction on a subfield" );
+        final Combo combo = new Combo( composite,
+                                       SWT.DROP_DOWN | SWT.READ_ONLY );
+        combo.add( "..." );
+        for ( int i = 0; i < fields.length; i++ ) {
+            String field = fields[i];
+            combo.add( field );
+            combo.setData( field,
+                           engine.fieldTypes.get( con.fieldType + "." + field ) );
+        }
+        combo.select( 0 );
+
+        combo.addModifyListener( new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                String fName = combo.getText();
+
+                if ( combo.getSelectionIndex() == 0 ) {
+                    return;
+                }
+
+                pattern.addConstraint( new SingleFieldConstraint( fName,
+                                                                  ((String) combo.getData( fName )),
+                                                                  con ) );
+                modeller.setDirty( true );
+                modeller.reloadLhs();
+                close();
+            }
+        } );
     }
 
     private void createVariableBindingRow(Composite composite) {

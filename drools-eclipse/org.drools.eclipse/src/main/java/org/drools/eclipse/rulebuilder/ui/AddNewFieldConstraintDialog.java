@@ -120,13 +120,17 @@ public class AddNewFieldConstraintDialog extends RuleDialog {
         createLabel( composite,
                      "Add a restriction on a field" );
 
-        String[] fieldCompletitions = getCompletion().getFieldCompletions( pattern.factType );
+        SuggestionCompletionEngine engine = getCompletion();
+        String[] fieldCompletitions = engine.getFieldCompletions( pattern.factType );
         final Combo fieldsCombo = new Combo( composite,
                                              SWT.READ_ONLY );
         fieldsCombo.setLayoutData( gd );
         fieldsCombo.add( "..." );
         for ( int i = 0; i < fieldCompletitions.length; i++ ) {
-            fieldsCombo.add( fieldCompletitions[i] );
+            String field = fieldCompletitions[i];
+            fieldsCombo.add( field );
+            fieldsCombo.setData( field,
+                                 engine.fieldTypes.get( pattern.factType + "." + field ) );
         }
         fieldsCombo.select( 0 );
 
@@ -139,6 +143,7 @@ public class AddNewFieldConstraintDialog extends RuleDialog {
 
                                          SingleFieldConstraint constraint = new SingleFieldConstraint();
                                          constraint.fieldName = fieldsCombo.getText();
+                                         constraint.fieldType = (String) fieldsCombo.getData( fieldsCombo.getText() );
                                          pattern.addConstraint( constraint );
                                          modeller.setDirty( true );
                                          modeller.reloadLhs();
