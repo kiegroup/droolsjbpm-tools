@@ -20,18 +20,21 @@ import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
 public class ActionInsertFreeFormLineWidget extends Widget {
 
-    private FreeFormLine action;
+    private FreeFormLine  action;
+    private final boolean rhs;
 
     public ActionInsertFreeFormLineWidget(FormToolkit toolkit,
                                           Composite comp,
                                           RuleModeller ruleModeller,
                                           final FreeFormLine action,
-                                          int i) {
+                                          int i,
+                                          boolean rhs) {
 
         super( comp,
                toolkit,
                ruleModeller,
                i );
+        this.rhs = rhs;
 
         GridLayout l = new GridLayout();
         l.numColumns = 2;
@@ -76,9 +79,15 @@ public class ActionInsertFreeFormLineWidget extends Widget {
                 dialog.setMessage( "Remove this item?" );
                 dialog.setText( "Remove this item?" );
                 if ( dialog.open() == SWT.YES ) {
-                    getModeller().getModel().removeRhsItem( row );
-                    getModeller().setDirty( true );
-                    getModeller().reloadRhs();
+                    if ( rhs ) {
+                        getModeller().getModel().removeRhsItem( row );
+                        getModeller().setDirty( true );
+                        getModeller().reloadRhs();
+                    } else {
+                        getModeller().getModel().removeLhsItem( row );
+                        getModeller().setDirty( true );
+                        getModeller().reloadLhs();
+                    }
                 }
             }
 

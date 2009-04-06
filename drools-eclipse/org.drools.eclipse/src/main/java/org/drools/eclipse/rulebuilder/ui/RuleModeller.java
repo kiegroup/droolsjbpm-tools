@@ -221,21 +221,29 @@ public class RuleModeller {
                 addRHSDSLSentenceWidget( i,
                                          (DSLSentence) action );
             } else if ( action instanceof FreeFormLine ) {
-                addRHSDSLFreeFormLine( (FreeFormLine) action,
-                                       i );
+                addFreeFormLine( (FreeFormLine) action,
+                                 i,
+                                 true );
             }
 
         }
     }
 
-    private void addRHSDSLFreeFormLine(FreeFormLine action,
-                                       int i) {
-        Composite comp = toolkit.createComposite( thenComposite );
+    private void addFreeFormLine(FreeFormLine action,
+                                 int i,
+                                 boolean rhs) {
+        Composite comp = null;
+        if ( rhs ) {
+            comp = toolkit.createComposite( thenComposite );
+        } else {
+            comp = toolkit.createComposite( ifComposite );
+        }
         new ActionInsertFreeFormLineWidget( toolkit,
                                             comp,
                                             this,
                                             (FreeFormLine) action,
-                                            i );
+                                            i,
+                                            rhs );
     }
 
     private void addActionInsertFactWidget(IAction action,
@@ -261,8 +269,10 @@ public class RuleModeller {
                                                (CompositeFactPattern) pattern );
             } else if ( pattern instanceof DSLSentence ) {
                 // skip for now
-            } else {
-                // dont' care
+            } else if ( pattern instanceof FreeFormLine ) {
+                addFreeFormLine( (FreeFormLine) pattern,
+                                 i,
+                                 false );
             }
         }
 

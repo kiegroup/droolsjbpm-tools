@@ -4,9 +4,13 @@ import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.CompositeFactPattern;
 import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
+import org.drools.guvnor.client.modeldriven.brl.FreeFormLine;
 import org.drools.guvnor.client.modeldriven.brl.IPattern;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -50,7 +54,30 @@ public class AddNewConditionDialog extends RuleDialog {
 
         addDSLSentences( composite );
 
+        addFreeFormLine( composite );
+
         return composite;
+    }
+
+    private void addFreeFormLine(Composite composite) {
+        createLabel( composite,
+                     "Free form action" );
+
+        Button b = new Button( composite,
+                               SWT.NONE );
+        b.setText( "Add free form drl" );
+        b.addSelectionListener( new SelectionListener() {
+
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+                modeller.getModel().addLhsItem( new FreeFormLine() );
+                modeller.setDirty( true );
+                modeller.reloadLhs();
+                close();
+            }
+        } );
     }
 
     private void addFacts(Composite composite) {

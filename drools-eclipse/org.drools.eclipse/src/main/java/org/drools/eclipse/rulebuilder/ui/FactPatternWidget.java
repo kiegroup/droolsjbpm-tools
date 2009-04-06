@@ -554,7 +554,6 @@ public class FactPatternWidget extends Widget {
 
     private boolean hasChildren(int row) {
         SingleFieldConstraint con = (SingleFieldConstraint) pattern.getFieldConstraints()[row];
-        System.out.println(con.fieldName);
         FieldConstraint[] fc = pattern.getFieldConstraints();
         for ( int i = row; i < fc.length; i++ ) {
             SingleFieldConstraint f = (SingleFieldConstraint) fc[i];
