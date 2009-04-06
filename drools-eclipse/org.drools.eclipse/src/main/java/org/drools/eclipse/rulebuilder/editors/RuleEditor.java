@@ -125,7 +125,7 @@ public class RuleEditor extends FormEditor
                      xmlEditor.getEditorInput() );
             IPath packagePath = getCurrentDirectoryPath( getEditorInput() );
             if (packagePath != null) {
-            	packagePath = packagePath.append( "rule.package" );
+            	packagePath = packagePath.append( "drools.package" );
 	            IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile( packagePath );
 	            IJavaProject javaProject = JavaCore.create( file.getProject() );
 	            ClassLoader classLoader = ProjectClassLoader.getProjectClassLoader( javaProject );
@@ -213,7 +213,7 @@ public class RuleEditor extends FormEditor
                     } else {
                         //TODO report dsl parse error
                     }
-                } else if ( fn.endsWith( ".enum" ) ) {
+                } else if ( fn.endsWith( ".enumeration" ) ) {
                     String contents = getFileContents( (IFile) files[i] );
                     enumList.add(contents);
                 }
