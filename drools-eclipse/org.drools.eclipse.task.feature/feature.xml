@@ -2,7 +2,7 @@
 <feature
       id="org.drools.eclipse.task.feature"
       label="JBoss Drools Task"
-      version="5.0.0.SNAPSHOT"
+      version="5.0.0"
       provider-name="JBoss, a division of Red Hat">
 
    <description url="http://www.jboss.org/drools/">
@@ -36,7 +36,7 @@ and limitations under the License.
          id="org.drools.eclipse.task"
          download-size="0"
          install-size="0"
-         version="5.0.0.SNAPSHOT"
+         version="5.0.0"
          unpack="false"/>
 
 </feature>
