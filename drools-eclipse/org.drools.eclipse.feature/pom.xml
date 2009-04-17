@@ -3,7 +3,7 @@ OM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <artifactId>drools-eclipse</artifactId>
     <groupId>org.drools</groupId>
-    <version>5.0.0</version>
+    <version>5.0.1.SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>

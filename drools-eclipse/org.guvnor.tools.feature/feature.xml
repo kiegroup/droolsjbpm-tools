@@ -2,7 +2,7 @@
 <feature
       id="org.guvnor.tools.feature"
       label="JBoss Drools Guvnor"
-      version="5.0.0"
+      version="5.0.1.SNAPSHOT"
       provider-name="JBoss, a division of Red Hat">
 
    <description url="http://www.jboss.org/drools/">
@@ -47,7 +47,7 @@ and limitations under the License.
          id="org.guvnor.tools"
          download-size="0"
          install-size="0"
-         version="5.0.0"
+         version="5.0.1.SNAPSHOT"
          unpack="false"/>
 
 </feature>
