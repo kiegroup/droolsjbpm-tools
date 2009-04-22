@@ -117,4 +117,8 @@ public class ObjectWrapper implements IJavaObject {
 	public long getUniqueId() throws DebugException {
 		return object.getUniqueId();
 	}
+
+	public boolean isNull() {
+		return false;
+	}
 }
