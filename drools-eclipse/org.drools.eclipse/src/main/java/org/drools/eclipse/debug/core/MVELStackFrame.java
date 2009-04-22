@@ -365,6 +365,8 @@ public class MVELStackFrame extends DroolsStackFrame {
 
         evaluating = true;
         try {
+        	
+        	// Drools 4
             try {
                 Object o = getRemoteVar( "lineNumber" );
                 if ( o == null ) {
@@ -374,9 +376,35 @@ public class MVELStackFrame extends DroolsStackFrame {
                 int realval = val.value();
                 cacheBreakpointLineNumber = realval;
                 return realval;
-            } catch ( Throwable e ) {
-                DroolsEclipsePlugin.log( e );
+            } catch ( NullPointerException e ) {
+                // Drools 5+
+            } catch (Throwable e) {
+            	DroolsEclipsePlugin.log( e );
             }
+            
+        	// Drools 5
+            try {
+                Object o = getRemoteVar( "label" );
+                if ( o == null ) {
+                    return -1;
+                }
+                ObjectReference obj = (ObjectReference) o;
+                ClassType frameType = (ClassType) obj.type();
+                Field field = frameType.fieldByName( "lineNumber" );
+                o = obj.getValue( field );
+                if ( o == null ) {
+                    return -1;
+                }
+                IntegerValue val = (IntegerValue) o;
+                int realval = val.value();
+                cacheBreakpointLineNumber = realval;
+                return realval;
+            } catch ( NullPointerException e ) {
+                // Drools 5+
+            } catch (Throwable e) {
+            	DroolsEclipsePlugin.log( e );
+            }
+            
             return -1;
         } finally {
             evaluating = false;
@@ -396,8 +424,33 @@ public class MVELStackFrame extends DroolsStackFrame {
 
         evaluating = true;
         try {
+        	
+        	// Drools 4
             try {
                 Object rem = getRemoteVar( "sourceName" );
+                if ( rem == null ) {
+                    return null;
+                }
+                StringReference res = (StringReference) rem;
+                String realres = res.value();
+                cacheMVELName = realres;
+                return realres;
+            } catch ( NullPointerException e) {
+            	// Drools 5
+            } catch ( Throwable e ) {
+                DroolsEclipsePlugin.log( e );
+            }
+            
+        	// Drools 5
+            try {
+                Object rem = getRemoteVar( "label" );
+                if ( rem == null ) {
+                    return null;
+                }
+                ObjectReference obj = (ObjectReference) rem;
+                ClassType frameType = (ClassType) obj.type();
+                Field field = frameType.fieldByName( "sourceFile" );
+                rem = obj.getValue( field );
                 if ( rem == null ) {
                     return null;
                 }
