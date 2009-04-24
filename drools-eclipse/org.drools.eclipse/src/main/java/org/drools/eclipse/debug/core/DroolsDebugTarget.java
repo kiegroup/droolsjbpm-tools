@@ -35,6 +35,7 @@ import com.sun.jdi.VMDisconnectedException;
 import com.sun.jdi.VirtualMachine;
 import com.sun.jdi.event.ClassPrepareEvent;
 import com.sun.jdi.event.Event;
+import com.sun.jdi.event.EventSet;
 import com.sun.jdi.event.MethodEntryEvent;
 import com.sun.jdi.event.ThreadDeathEvent;
 import com.sun.jdi.event.ThreadStartEvent;
@@ -94,11 +95,11 @@ public class DroolsDebugTarget extends JDIDebugTarget {
 							public void wonSuspendVote(Event event, JDIDebugTarget target) {
 							}
 
-							public void eventSetComplete(Event event, JDIDebugTarget target, boolean suspend) {
+							public void eventSetComplete(Event event, JDIDebugTarget target, boolean suspend, EventSet eventSet) {
 								wonSuspendVote(event, target);
 							}
 
-							public boolean handleEvent(Event event,	JDIDebugTarget target, boolean suspendVote) {
+							public boolean handleEvent(Event event,	JDIDebugTarget target, boolean suspendVote, EventSet eventSet) {
 								return handleEvent(event, target);
 							}
 
@@ -285,11 +286,11 @@ public class DroolsDebugTarget extends JDIDebugTarget {
             // do nothing
         }
 
-		public void eventSetComplete(Event event, JDIDebugTarget target, boolean suspend) {
+		public void eventSetComplete(Event event, JDIDebugTarget target, boolean suspend, EventSet eventSet) {
 			wonSuspendVote(event, target);
 		}
 
-		public boolean handleEvent(Event event, JDIDebugTarget target, boolean suspendVote) {
+		public boolean handleEvent(Event event, JDIDebugTarget target, boolean suspendVote, EventSet eventSet) {
 			return handleEvent(event, target);
 		}
 
@@ -391,12 +392,12 @@ public class DroolsDebugTarget extends JDIDebugTarget {
             fRequest = request;
         }
 
-		public void eventSetComplete(Event event, JDIDebugTarget target, boolean suspend) {
+		public void eventSetComplete(Event event, JDIDebugTarget target, boolean suspend, EventSet eventSet) {
 			wonSuspendVote(event, target);
 			
 		}
 
-		public boolean handleEvent(Event event, JDIDebugTarget target, boolean suspendVote) {
+		public boolean handleEvent(Event event, JDIDebugTarget target, boolean suspendVote, EventSet eventSet) {
 			return handleEvent(event, target);
 		}
     }
@@ -732,11 +733,11 @@ public class DroolsDebugTarget extends JDIDebugTarget {
 					// do nothing
 				}
 
-				public void eventSetComplete(Event event, JDIDebugTarget target, boolean suspend) {
+				public void eventSetComplete(Event event, JDIDebugTarget target, boolean suspend, EventSet eventSet) {
 					wonSuspendVote(event, target);
 				}
 
-				public boolean handleEvent(Event event, JDIDebugTarget target, boolean suspendVote) {
+				public boolean handleEvent(Event event, JDIDebugTarget target, boolean suspendVote, EventSet eventSet) {
 					return handleEvent(event, target);
 				}
 
@@ -755,11 +756,11 @@ public class DroolsDebugTarget extends JDIDebugTarget {
             // do nothing
         }
 
-		public void eventSetComplete(Event event, JDIDebugTarget target, boolean suspend) {
+		public void eventSetComplete(Event event, JDIDebugTarget target, boolean suspend, EventSet eventSet) {
 			wonSuspendVote(event, target);
 		}
 
-		public boolean handleEvent(Event event, JDIDebugTarget target, boolean suspendVote) {
+		public boolean handleEvent(Event event, JDIDebugTarget target, boolean suspendVote, EventSet eventSet) {
 			return handleEvent(event, target);
 		}
 
