@@ -179,7 +179,7 @@ public class DroolsVMDebugger extends StandardVMDebugger {
 				}				
 				
 				IProcess process= newProcess(launch, p, renderProcessLabel(cmdLine), getDefaultProcessMap());
-				process.setAttribute(IProcess.ATTR_CMDLINE, StandardVMRunner.renderCommandLine(cmdLine));
+				process.setAttribute(IProcess.ATTR_CMDLINE, renderCommandLine(cmdLine));
 				subMonitor.worked(1);
 				subMonitor.subTask(LaunchingMessages.StandardVMDebugger_Establishing_debug_connection____5); 
 				boolean retry= false;
