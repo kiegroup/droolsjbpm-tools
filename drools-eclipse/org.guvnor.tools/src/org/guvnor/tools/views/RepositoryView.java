@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.net.URL;
-import java.rmi.server.UID;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -261,7 +260,8 @@ public class RepositoryView extends ViewPart {
 		for (int i = 0; i < nodes.length; i++) {
 			String contents = getResourceContents(nodes[i]);
 			IPath path = new Path(Activator.getDefault().getStateLocation().toOSString() + 
-								  File.separator + new UID().toString());
+								  File.separator + "t" + //$NON-NLS-1$
+								  String.valueOf(System.currentTimeMillis()));
 			if (!path.toFile().mkdir()) {
 				throw new Exception("Could not create directory " + path.toOSString()); //$NON-NLS-1$
 			}
@@ -283,6 +283,8 @@ public class RepositoryView extends ViewPart {
 			metaFile.deleteOnExit();
 			GuvnorMetadataUtils.writeGuvnorMetadataProps(metaFile, getGuvnorMetadataProps(nodes[i]));
 			res.add(metaFile.getAbsolutePath());
+			// Put at least a 1ms gap in generated dir names above
+			Thread.sleep(1, 0);
 		}
 		return res;
 	}

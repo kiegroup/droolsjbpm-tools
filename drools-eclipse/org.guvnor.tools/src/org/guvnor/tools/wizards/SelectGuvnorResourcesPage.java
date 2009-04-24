@@ -115,10 +115,23 @@ public class SelectGuvnorResourcesPage extends WizardPage {
 			List<String> resources = new ArrayList<String>();
 			List<TreeObject> nodes = selection.toList();
 			for (TreeObject o:nodes) {
-				resources.add(o.getFullPath());
+				if (o.getNodeType() == TreeObject.Type.RESOURCE) {
+					resources.add(o.getFullPath());
+				}
 			}
 			GuvWizardModel model = ((IGuvnorWizard)super.getWizard()).getModel();
-			model.setResources(resources);
+			if (resources.size() > 0) {
+				model.setResources(resources);
+			} else {
+				model.setResources(null);
+			}
 		}
+		super.getWizard().getContainer().updateButtons();
+	}
+
+	@Override
+	public boolean canFlipToNextPage() {
+		GuvWizardModel model = ((IGuvnorWizard)super.getWizard()).getModel();
+		return model.getResources() != null && model.getResources().size() > 0;
 	}
 }
