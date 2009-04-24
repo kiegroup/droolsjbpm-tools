@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -31,6 +35,8 @@ public class SelectGuvnorResourcesPage extends WizardPage {
 	private TreeViewer viewer;
 	private String previousSelection;
 	
+	private Action doubleClickAction;
+	
 	public SelectGuvnorResourcesPage(String pageName) {
 		super(pageName);
 	}
@@ -51,9 +57,38 @@ public class SelectGuvnorResourcesPage extends WizardPage {
 				updateModel();	
 			}
 		});
+		hookDoubleClickAction();
 		super.setControl(composite);
 	}
 	
+	private void hookDoubleClickAction() {
+		doubleClickAction = new Action() {
+			public void run() {
+				ISelection selection = viewer.getSelection();
+				Object obj = ((IStructuredSelection)selection).getFirstElement();
+				if (obj instanceof TreeObject) {
+					doubleClick((TreeObject)obj);
+				}
+			}
+		};
+		
+		viewer.addDoubleClickListener(new IDoubleClickListener() {
+			public void doubleClick(DoubleClickEvent event) {
+				doubleClickAction.run();
+			}
+		});
+	}
+	
+	private void doubleClick(TreeObject node) {
+		if (node.getNodeType() == TreeObject.Type.PACKAGE
+			|| node.getNodeType() == TreeObject.Type.REPOSITORY) {
+			if (viewer.getExpandedState(node)) {
+				viewer.collapseToLevel(node, 1);
+			} else {
+				viewer.expandToLevel(node, 1);
+			}
+		}
+	}
 	private void handleRepositoryCreation() {
 		// First we'll see if the repository already exists
 		GuvWizardModel model = ((IGuvnorWizard)super.getWizard()).getModel();
