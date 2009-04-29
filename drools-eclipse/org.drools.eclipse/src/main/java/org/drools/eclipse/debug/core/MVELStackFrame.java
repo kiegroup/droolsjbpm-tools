@@ -149,7 +149,7 @@ public class MVELStackFrame extends DroolsStackFrame {
     public IVariable[] getVariables() throws DebugException {
 
         if ( !isSuspended() ) {
-            return null;
+            return new IVariable[0];
         }
 
         if ( cacheVariables != null ) {
@@ -173,12 +173,6 @@ public class MVELStackFrame extends DroolsStackFrame {
                 IValue knownVars = DebugUtil.getValueByExpression( "return getFactory().getKnownVariables().toArray(new String[0]);",
                                                                    frameLocal.getValue() );
 
-                IValue factory = DebugUtil.getValueByExpression( "return getFactory();",
-                                                                 frameLocal.getValue() );
-
-                IValue vars2 = DebugUtil.getValueByExpression( "return getFactory().getKnownVariables();",
-                                                               frameLocal.getValue() );
-
                 JDIObjectValue vvv = (JDIObjectValue) knownVars;
 
                 if ( vvv != null && ((ArrayReference) vvv.getUnderlyingObject()).length() > 0 ) {
@@ -189,8 +183,8 @@ public class MVELStackFrame extends DroolsStackFrame {
                     while ( varIter.hasNext() ) {
                         final String varName = ((StringReference) varIter.next()).value();
 
-                        IJavaValue val = (IJavaValue) DebugUtil.getValueByExpression( "return getVariableResolver(\"" + varName + "\").getValue();",
-                                                                                      factory );
+                        IJavaValue val = (IJavaValue) DebugUtil.getValueByExpression( "return getFactory().getVariableResolver(\"" + varName + "\").getValue();",
+                        															  frameLocal.getValue() );
                         if ( val != null ) {
                             final ObjectReference valRef = ((JDIObjectValue) val).getUnderlyingObject();
                             VariableWrapper local = new VariableWrapper( varName,
