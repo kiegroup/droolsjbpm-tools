@@ -108,7 +108,7 @@ public class DroolsThread extends JDIThread {
         return fStackFrames;
     }
 
-    public final static DroolsStackFrame createCustomFrame(DroolsThread thread,
+    public final static synchronized DroolsStackFrame createCustomFrame(DroolsThread thread,
                                                            int depth,
                                                            StackFrame currentFrame) {
         DroolsStackFrame customFrame;
