@@ -338,6 +338,9 @@ public class MVELStackFrame extends DroolsStackFrame {
                 
             int res = line + fragmentLine;
 
+            if (fragmentLine==-1) {
+                System.err.println("Unable to retrieve fragment line!");
+            }
             cacheLineNumber = res;
             //System.out.println("Returning RES="+res+" line:"+line+"; fragmentLine="+fragmentLine);
             return res;
