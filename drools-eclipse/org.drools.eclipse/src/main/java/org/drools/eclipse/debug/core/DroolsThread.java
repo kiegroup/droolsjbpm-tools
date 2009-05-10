@@ -264,10 +264,12 @@ public class DroolsThread extends JDIThread {
             return;
         }
 
-        preserveStackFrames();
-
         setRunning( true );
 
+        preserveStackFrames();
+
+        fireEvent(new DebugEvent(this, DebugEvent.RESUME, DebugEvent.STEP_OVER));
+        
         try {
             getUnderlyingThread().resume();
         } catch ( RuntimeException e ) {
