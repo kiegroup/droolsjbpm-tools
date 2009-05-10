@@ -325,9 +325,21 @@ public class MVELStackFrame extends DroolsStackFrame {
 
             int fragmentLine = getBreakpointLineNumber(); // 4->5 for step over
 
+            int retryCount=0;
+            while (fragmentLine==-1 && retryCount<10) {
+                try {
+                    Thread.currentThread().sleep( 100 );
+                } catch ( InterruptedException e ) {
+                    break;
+                }
+                fragmentLine = getBreakpointLineNumber();
+                retryCount++;
+            }
+                
             int res = line + fragmentLine;
 
             cacheLineNumber = res;
+            //System.out.println("Returning RES="+res+" line:"+line+"; fragmentLine="+fragmentLine);
             return res;
         } finally {
             evaluating = false;
@@ -368,6 +380,10 @@ public class MVELStackFrame extends DroolsStackFrame {
                 }
                 IntegerValue val = (IntegerValue) o;
                 int realval = val.value();
+/*                if (realval==-1) {
+                    System.out.println("-1!!");
+                }
+*/
                 cacheBreakpointLineNumber = realval;
                 return realval;
             } catch ( NullPointerException e ) {
