@@ -148,7 +148,7 @@ public class DebugUtil {
         private IJavaReferenceType fEvaluationType;
         private IJavaThread fThread;
         private IAstEvaluationEngine fEvaluationEngine;
-        private IEvaluationResult fResult;
+        private volatile IEvaluationResult fResult;
 
         public EvaluationBlock(IJavaObject value, IJavaReferenceType type,
                 IJavaThread thread, IAstEvaluationEngine evaluationEngine) {
