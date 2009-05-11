@@ -725,7 +725,7 @@ public class DroolsDebugTarget extends JDIDebugTarget {
 				public boolean handleEvent(Event event, JDIDebugTarget target) {
 					BreakpointEvent entryEvent = (BreakpointEvent) event;
 					
-					System.out.println( entryEvent + ":" + entryEvent.location() );
+					//System.out.println( entryEvent + ":" + entryEvent.location() );
 
 					try {
 						IThread[] tharr = getThreads();
