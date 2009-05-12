@@ -344,7 +344,7 @@ public class TaskView extends ViewPart {
 		boolean selected = table.getSelectionCount() == 1;
 		TaskSummary task = getSelectedTask();
 		String userId = getUserId();
-		claimButton.setEnabled(selected && Status.Created.equals(task.getStatus()));
+		claimButton.setEnabled(selected && Status.Ready.equals(task.getStatus()));
 		startButton.setEnabled(selected &&
 			(Status.Ready.equals(task.getStatus()) ||
 				(Status.Reserved.equals(task.getStatus())

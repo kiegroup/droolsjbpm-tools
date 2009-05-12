@@ -93,11 +93,6 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-process-task</artifactId>
       <exclusions>            
-        <exclusion>
-          <groupId>org.drools</groupId>
-          <artifactId>drools-core</artifactId>
-        </exclusion>
-
         <exclusion>                     
           <groupId>org.drools</groupId>
           <artifactId>drools-workitems</artifactId>
