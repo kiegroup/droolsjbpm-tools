@@ -111,82 +111,82 @@ public class DroolsThread extends JDIThread {
     }
 
 // I don't see the need for any of this custom stepOver stuff, why is it here?
-//    public synchronized void stepOver() throws DebugException {
-//
-//        // Detection for active stackframe
-//        if ( !(getTopStackFrame() instanceof MVELStackFrame) ) {
-//            super.stepOver();
-//            return;
-//        }
-//
-//        //MVEL step over
-//        MVELStackFrame mvelStack = (MVELStackFrame) getTopStackFrame();
-//
-//        if ( !canStepOver() || !mvelStack.canStepOver() ) {
-//            return;
-//        }
-//
-//        if ( !setRemoteOnBreakReturn( Debugger.STEP ) ) {
-//            return;
-//        }
-//
-//        setRunning( true );
-//
-//        preserveStackFrames();
-//
-//        fireEvent( new DebugEvent( this,
-//                                   DebugEvent.RESUME,
-//                                   DebugEvent.STEP_OVER ) );
-//
-//        try {
-//            getUnderlyingThread().resume();
-//        } catch ( RuntimeException e ) {
-//            //stepEnd();
-//            targetRequestFailed( MessageFormat.format( JDIDebugModelMessages.JDIThread_exception_stepping,
-//                                                       new String[]{e.toString()} ),
-//                                 e );
-//        }
-//
-//    }
-//
-//    private boolean setRemoteOnBreakReturn(int step_over) throws DebugException {
-//
-//        JDIStackFrame top = (JDIStackFrame) getTopStackFrame();
-//        if ( top == null || (!(top instanceof MVELStackFrame)) ) {
-//            return false;
-//        }
-//
-//        Iterator handleriter = getVM().classesByName( "org.drools.base.mvel.MVELDebugHandler" ).iterator();
-//        Object debugHandlerClass = handleriter.next();
-//
-//        int line = step_over;
-//
-//        ReferenceType refType = (ReferenceType) debugHandlerClass;
-//        Method m = (Method) refType.methodsByName( "setOnBreakReturn" ).iterator().next();
-//        List args = new ArrayList();
-//        IntegerValue lineVal = getVM().mirrorOf( line );
-//        //ObjectReference realVal = val.getUnderlyingObject();
-//        args.add( lineVal );
-//
-//        try {
-//            ClassType tt = (ClassType) debugHandlerClass;
-//            tt.invokeMethod( getUnderlyingThread(),
-//                             m,
-//                             args,
-//                             ObjectReference.INVOKE_SINGLE_THREADED );
-//
-//        } catch ( Exception e ) {
-//            DroolsEclipsePlugin.log( e );
-//            return false;
-//        }
-//        return true;
-//    }
-//
-//    public synchronized void resume() throws DebugException {
-//        // clear up the step over flag. step over button never calls this method.
-//        setRemoteOnBreakReturn( Debugger.CONTINUE );
-//        super.resume();
-//    }
+    public synchronized void stepOver() throws DebugException {
+
+        // Detection for active stackframe
+        if ( !(getTopStackFrame() instanceof MVELStackFrame) ) {
+            super.stepOver();
+            return;
+        }
+
+        //MVEL step over
+        MVELStackFrame mvelStack = (MVELStackFrame) getTopStackFrame();
+
+        if ( !canStepOver() || !mvelStack.canStepOver() ) {
+            return;
+        }
+
+        if ( !setRemoteOnBreakReturn( Debugger.STEP ) ) {
+            return;
+        }
+
+        setRunning( true );
+
+        preserveStackFrames();
+
+        fireEvent( new DebugEvent( this,
+                                   DebugEvent.RESUME,
+                                   DebugEvent.STEP_OVER ) );
+
+        try {
+            getUnderlyingThread().resume();
+        } catch ( RuntimeException e ) {
+            //stepEnd();
+            targetRequestFailed( MessageFormat.format( JDIDebugModelMessages.JDIThread_exception_stepping,
+                                                       new String[]{e.toString()} ),
+                                 e );
+        }
+
+    }
+
+    private boolean setRemoteOnBreakReturn(int step_over) throws DebugException {
+
+        JDIStackFrame top = (JDIStackFrame) getTopStackFrame();
+        if ( top == null || (!(top instanceof MVELStackFrame)) ) {
+            return false;
+        }
+
+        Iterator handleriter = getVM().classesByName( "org.drools.base.mvel.MVELDebugHandler" ).iterator();
+        Object debugHandlerClass = handleriter.next();
+
+        int line = step_over;
+
+        ReferenceType refType = (ReferenceType) debugHandlerClass;
+        Method m = (Method) refType.methodsByName( "setOnBreakReturn" ).iterator().next();
+        List args = new ArrayList();
+        IntegerValue lineVal = getVM().mirrorOf( line );
+        //ObjectReference realVal = val.getUnderlyingObject();
+        args.add( lineVal );
+
+        try {
+            ClassType tt = (ClassType) debugHandlerClass;
+            tt.invokeMethod( getUnderlyingThread(),
+                             m,
+                             args,
+                             ObjectReference.INVOKE_SINGLE_THREADED );
+
+        } catch ( Exception e ) {
+            DroolsEclipsePlugin.log( e );
+            return false;
+        }
+        return true;
+    }
+
+    public synchronized void resume() throws DebugException {
+        // clear up the step over flag. step over button never calls this method.
+        setRemoteOnBreakReturn( Debugger.CONTINUE );
+        super.resume();
+    }
 
     protected synchronized void disposeStackFrames() {
         super.disposeStackFrames();

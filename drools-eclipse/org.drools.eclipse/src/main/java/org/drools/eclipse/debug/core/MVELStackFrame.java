@@ -51,7 +51,7 @@ import com.sun.jdi.Value;
  */
 public class MVELStackFrame extends DroolsStackFrame {
 
-    private final MVELStackFrameContext ctxCache = new MVELStackFrameContext();
+    //private final MVELStackFrameContext ctxCache = new MVELStackFrameContext();
 
     public MVELStackFrame(DroolsThread thread,
                           StackFrame frame,
@@ -82,10 +82,10 @@ public class MVELStackFrame extends DroolsStackFrame {
                 return new IVariable[0];
             }
 
-            IVariable[] cache = ctxCache.getCacheVariables();
-            if ( cache != null ) {
-                return cache;
-            }
+//            IVariable[] cache = ctxCache.getCacheVariables();
+//            if ( cache != null ) {
+//                return cache;
+//            }
 
             List<IVariable> result = new ArrayList<IVariable>( 0 );
 
@@ -139,7 +139,7 @@ public class MVELStackFrame extends DroolsStackFrame {
                                      }
                                  }
                              } );
-                ctxCache.setCacheVariables( vararr );
+//                ctxCache.setCacheVariables( vararr );
                 return vararr;
 
             } catch ( Throwable t ) {
@@ -152,10 +152,10 @@ public class MVELStackFrame extends DroolsStackFrame {
     @Override
     public int getLineNumber() throws DebugException {
         synchronized ( getThread() ) {
-            int cache = ctxCache.getCacheLineNumber();
-            if ( cache != -1 ) {
-                return cache;
-            }
+//            int cache = ctxCache.getCacheLineNumber();
+//            if ( cache != -1 ) {
+//                return cache;
+//            }
 
             DroolsDebugTarget t = (DroolsDebugTarget) getDebugTarget();
             String sourceName = getMVELName();
@@ -181,15 +181,15 @@ public class MVELStackFrame extends DroolsStackFrame {
                 System.err.println( "Unable to retrieve fragment line!" );
                 return -1;
             }
-            ctxCache.setCacheLineNumber( res );
+//            ctxCache.setCacheLineNumber( res );
             return res;
         }
     }
 
     private int getBreakpointLineNumber() {
-        if ( ctxCache.getCacheBreakpointLineNumber() != -1 ) {
-            return ctxCache.getCacheBreakpointLineNumber();
-        }
+//        if ( ctxCache.getCacheBreakpointLineNumber() != -1 ) {
+//            return ctxCache.getCacheBreakpointLineNumber();
+//        }
 
         // Drools 4
         try {
@@ -199,7 +199,7 @@ public class MVELStackFrame extends DroolsStackFrame {
             }
             IntegerValue val = (IntegerValue) o;
             int realval = val.value();
-            ctxCache.setCacheBreakpointLineNumber( realval );
+//            ctxCache.setCacheBreakpointLineNumber( realval );
             return realval;
         } catch ( NullPointerException e ) {
             // Drools 5+
@@ -222,7 +222,7 @@ public class MVELStackFrame extends DroolsStackFrame {
             }
             IntegerValue val = (IntegerValue) o;
             int realval = val.value();
-            ctxCache.setCacheBreakpointLineNumber( realval );
+//            ctxCache.setCacheBreakpointLineNumber( realval );
             return realval;
         } catch ( NullPointerException e ) {
             // Drools 5+
@@ -239,10 +239,10 @@ public class MVELStackFrame extends DroolsStackFrame {
                 return null;
             }
 
-            String cache = ctxCache.getCacheMVELName();
-            if ( cache != null ) {
-                return cache;
-            }
+//            String cache = ctxCache.getCacheMVELName();
+//            if ( cache != null ) {
+//                return cache;
+//            }
 
             // Drools 4
             try {
@@ -252,7 +252,7 @@ public class MVELStackFrame extends DroolsStackFrame {
                 }
                 StringReference res = (StringReference) rem;
                 String realres = res.value();
-                ctxCache.setCacheMVELName( realres );
+//                ctxCache.setCacheMVELName( realres );
                 return realres;
             } catch ( NullPointerException e ) {
                 // Drools 5
@@ -275,7 +275,7 @@ public class MVELStackFrame extends DroolsStackFrame {
                 }
                 StringReference res = (StringReference) rem;
                 String realres = res.value();
-                ctxCache.setCacheMVELName( realres );
+//                ctxCache.setCacheMVELName( realres );
                 return realres;
             } catch ( Throwable e ) {
                 DroolsEclipsePlugin.log( e );
@@ -357,17 +357,6 @@ public class MVELStackFrame extends DroolsStackFrame {
 
     public IJavaReferenceType getReferenceType() throws DebugException {
         return REF_TYPE;
-    }
-
-//    protected JDIStackFrame bind(StackFrame frame,
-//                                 int depth) {
-//        clearCachedData();
-//        return super.bind( frame,
-//                           depth );
-//    }
-
-    protected void clearCachedData() {
-        ctxCache.clear();
     }
 
     public static class MVELStackFrameContext {
