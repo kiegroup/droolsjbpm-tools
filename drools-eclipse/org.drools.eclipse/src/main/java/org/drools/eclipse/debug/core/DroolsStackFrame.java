@@ -15,8 +15,8 @@ import org.eclipse.jdt.internal.debug.core.model.JDIThread;
 import com.sun.jdi.StackFrame;
 
 public class DroolsStackFrame  extends JDIStackFrame {
-    private static final String HANDLE_SUFIX = "__Handle__";
-    private static final String DROOLS_VAR_NAME = "drools";
+    protected static final String HANDLE_SUFIX = "__Handle__";
+    protected static final String DROOLS_VAR_NAME = "drools";
     private static final String CONSEQUENCE_SIGNATURE = "(Lorg/drools/spi/KnowledgeHelper";
     
     public DroolsStackFrame(JDIThread thread, StackFrame frame, int depth) {

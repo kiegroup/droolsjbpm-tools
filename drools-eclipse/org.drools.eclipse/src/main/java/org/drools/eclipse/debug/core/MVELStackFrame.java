@@ -139,6 +139,15 @@ public class MVELStackFrame extends DroolsStackFrame {
                                      }
                                  }
                              } );
+                result = new ArrayList( (vararr.length - 1) / 2 );
+                for ( int i = 0; i < vararr.length; i++ ) {
+                    String name = vararr[i].getName();
+                    if ( !(name.equals( DROOLS_VAR_NAME )) && !(name.endsWith( HANDLE_SUFIX )) ) {
+                        result.add( vararr[i] );
+                    }
+                }
+                vararr = (IVariable[]) result.toArray( new IVariable[result.size()] );
+                
                 ctxCache.setCacheVariables( vararr );
                 return vararr;
 
@@ -338,11 +347,6 @@ public class MVELStackFrame extends DroolsStackFrame {
 
     public boolean canStepInto() {
         return false;
-    }
-
-    public boolean canStepOver() {
-        // while not synchronised, this is thread safe due to the atomic evaluating.
-        return exists() && !isObsolete();
     }
 
     public boolean canDropToFrame() {
