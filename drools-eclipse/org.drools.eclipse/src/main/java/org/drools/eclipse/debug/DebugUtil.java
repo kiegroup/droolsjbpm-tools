@@ -183,16 +183,16 @@ public class DebugUtil {
             fEvaluationEngine.evaluateExpression(compiledExpression,
                     fEvaluationValue, fThread, this,
                     DebugEvent.EVALUATION_IMPLICIT, false);
+            
             synchronized ( fThread ) {
                 while ( fResult == null ) {
                         try {
-                            this.wait( 100 );
+                            fThread.wait( 100 );
                         } catch ( InterruptedException e ) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
                         }
                 }
-            }
+            }            
+            
             if (fResult == null) {
                 return null;
             }
