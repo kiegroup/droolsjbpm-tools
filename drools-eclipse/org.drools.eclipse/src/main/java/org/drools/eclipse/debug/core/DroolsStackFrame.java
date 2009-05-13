@@ -1,57 +1,22 @@
 package org.drools.eclipse.debug.core;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DRLInfo.FunctionInfo;
 import org.drools.eclipse.DRLInfo.RuleInfo;
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
-import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.model.IDebugElement;
-import org.eclipse.debug.core.model.IDebugTarget;
-import org.eclipse.debug.core.model.IDisconnect;
-import org.eclipse.debug.core.model.IRegisterGroup;
-import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.core.model.IVariable;
-import org.eclipse.jdt.debug.core.IJavaClassType;
-import org.eclipse.jdt.debug.core.IJavaObject;
-import org.eclipse.jdt.debug.core.IJavaReferenceType;
-import org.eclipse.jdt.debug.core.IJavaStackFrame;
-import org.eclipse.jdt.debug.core.IJavaThread;
-import org.eclipse.jdt.debug.core.IJavaValue;
 import org.eclipse.jdt.debug.core.IJavaVariable;
-import org.eclipse.jdt.internal.debug.core.IJDIEventListener;
-import org.eclipse.jdt.internal.debug.core.JDIDebugPlugin;
-import org.eclipse.jdt.internal.debug.core.model.JDIDebugModelMessages;
-import org.eclipse.jdt.internal.debug.core.model.JDIDebugTarget;
-import org.eclipse.jdt.internal.debug.core.model.JDIFieldVariable;
-import org.eclipse.jdt.internal.debug.core.model.JDILocalVariable;
-import org.eclipse.jdt.internal.debug.core.model.JDIReferenceType;
 import org.eclipse.jdt.internal.debug.core.model.JDIStackFrame;
 import org.eclipse.jdt.internal.debug.core.model.JDIThread;
 
-import com.ibm.icu.text.MessageFormat;
-import com.sun.jdi.AbsentInformationException;
-import com.sun.jdi.Field;
-import com.sun.jdi.LocalVariable;
-import com.sun.jdi.Location;
-import com.sun.jdi.Method;
-import com.sun.jdi.NativeMethodException;
-import com.sun.jdi.ObjectReference;
-import com.sun.jdi.ReferenceType;
 import com.sun.jdi.StackFrame;
-import com.sun.jdi.request.EventRequest;
-import com.sun.jdi.request.EventRequestManager;
 
 public class DroolsStackFrame  extends JDIStackFrame {
+    private static final String HANDLE_SUFIX = "__Handle__";
+    private static final String DROOLS_VAR_NAME = "drools";
     private static final String CONSEQUENCE_SIGNATURE = "(Lorg/drools/spi/KnowledgeHelper";
     
     public DroolsStackFrame(JDIThread thread, StackFrame frame, int depth) {
@@ -112,7 +77,7 @@ public class DroolsStackFrame  extends JDIStackFrame {
         List result = new ArrayList( (variables.length - 1) / 2 );
         for ( int i = 0; i < variables.length; i++ ) {
             String name = variables[i].getName();
-            if ( !(name.equals( "drools" )) && !(name.endsWith( "__Handle__" )) ) {
+            if ( !(name.equals( DROOLS_VAR_NAME )) && !(name.endsWith( HANDLE_SUFIX )) ) {
                 result.add( variables[i] );
             }
         }
