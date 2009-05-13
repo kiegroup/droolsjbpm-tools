@@ -150,13 +150,6 @@ public class MVELStackFrame extends DroolsStackFrame {
     }
     public int getLineNumber() throws DebugException {
         synchronized ( getThread() ) {
-        int i = x();
-        System.out.println( i );
-        return i;
-        }
-    }
-
-    private int x() throws DebugException {
             int cache = ctxCache.getCacheLineNumber();
             if ( cache != -1 ) {
                 return cache;
@@ -166,7 +159,6 @@ public class MVELStackFrame extends DroolsStackFrame {
             String sourceName = getMVELName();
             DroolsLineBreakpoint bpoint = (DroolsLineBreakpoint) t.getDroolsBreakpoint( sourceName );
             if ( bpoint == null ) {
-                System.out.println( "1Unable to retrieve fragment line!" );
                 return -1;
             }
 
@@ -175,22 +167,18 @@ public class MVELStackFrame extends DroolsStackFrame {
                 line = Integer.parseInt( bpoint.getFileRuleMappings().get( sourceName ).toString() );
             } catch ( Throwable t2 ) {
                 DroolsEclipsePlugin.log( t2 );
-                System.out.println( "2Unable to retrieve fragment line!" );
                 return -1;
             }
 
             int fragmentLine = getBreakpointLineNumber(); // 4->5 for step over
             int res = line + fragmentLine;
 
-            // System.out.println("Resolved line to line:"+line+"; fragment:"+fragmentLine);
-
             if ( fragmentLine == -1 ) {
-                System.out.println( "3Unable to retrieve fragment line!" );
                 return -1;
             }
             ctxCache.setCacheLineNumber( res );
             return res;
-        //}
+        }
     }
 
     private int getBreakpointLineNumber() {
@@ -242,13 +230,13 @@ public class MVELStackFrame extends DroolsStackFrame {
 
     public String getMVELName() {
         synchronized ( getThread() ) {
-            if ( !isSuspended() ) {
-                return null;
-            }
-
             String cache = ctxCache.getCacheMVELName();
             if ( cache != null ) {
                 return cache;
+            }
+            
+            if ( !isSuspended() ) {
+                return null;
             }
 
             // Drools 4

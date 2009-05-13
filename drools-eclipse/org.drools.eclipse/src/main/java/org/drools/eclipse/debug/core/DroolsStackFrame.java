@@ -82,21 +82,21 @@ public class DroolsStackFrame  extends JDIStackFrame {
             }
         }
         variables = (IVariable[]) result.toArray( new IVariable[result.size()] );
-        System.out.print( "vars" );
-        for ( IVariable var : variables ) {
-            System.out.print( var.getName()  + " " );
-        }
-        System.out.println( );        
+//        System.out.print( "vars" );
+//        for ( IVariable var : variables ) {
+//            System.out.print( var.getName()  + " " );
+//        }
+//        System.out.println( );        
         return variables;
     }
     
     public IJavaVariable[] getLocalVariables() throws DebugException {
         IJavaVariable[] localVars = super.getLocalVariables();
-        System.out.print( "local vars" );
-        for ( IJavaVariable var : localVars ) {
-            System.out.print( var.getName() + " " );
-        }
-        System.out.println( );
+//        System.out.print( "local vars" );
+//        for ( IJavaVariable var : localVars ) {
+//            System.out.print( var.getName() + " " );
+//        }
+//        System.out.println( );
         
         return localVars;
     }
@@ -127,9 +127,6 @@ public class DroolsStackFrame  extends JDIStackFrame {
     
     @Override
     public void stepOver() throws DebugException {
-        List frames = ((JDIThread) getThread()).computeStackFrames();
-        int index = frames.indexOf(this);
-        System.out.println( "frames " + frames.size() + " : " + index );
         super.stepOver();
     }
 
