@@ -24,6 +24,8 @@ public class DSLRuleEditor2 extends FormEditor {
 
 	private DSLRuleEditor dslRuleEditor;
 	private DSLtoDRLRuleViewer drlRuleViewer;
+	// cached view region of drl viewer so it can be restored after switching tabs
+	private int selection;
 
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		super.init(site, input);
@@ -86,11 +88,15 @@ public class DSLRuleEditor2 extends FormEditor {
 	            expander.expand(content);
 	            // if translation succeeds, change to drl viewer
 				drlRuleViewer.setInput(getEditorInput());
+				drlRuleViewer.setSelectedRange(selection);
 	        } catch (Throwable t) {
+	        	t.printStackTrace();
 	        	// if translation fails, show error and go to first page
 	        	handleError(t);
 	        	setActivePage(0);
 	        }
+		} else if (getActivePage() == 0) {
+			selection = drlRuleViewer.getSelectedRange();
 		}
 		super.setFocus();
 	}

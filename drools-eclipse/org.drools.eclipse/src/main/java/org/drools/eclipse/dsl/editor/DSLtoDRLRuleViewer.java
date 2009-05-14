@@ -38,6 +38,14 @@ public class DSLtoDRLRuleViewer extends AbstractRuleEditor {
 		ErrorDialog.openError(getSite().getShell(),
 				"DSL Rule Translation Error!", "DSL Rule Translation Error!",
 				status);
-
 	}
+	
+	public int getSelectedRange() {
+		return getSourceViewer().getTopIndex();
+	}
+	
+	public void setSelectedRange(int index) {
+		getSourceViewer().setTopIndex(index);
+	}
+
 }
