@@ -59,6 +59,7 @@ public class DSLRuleCompletionProcessor extends RuleCompletionProcessor {
 				last = "";
 				lastobj = "*";
 			}
+			last = last.trim();
 			// pass the last string in the backText to getProposals
 			List dslConditions = this.getProposals(adapter, lastobj, last, firstLine);
 			// if we couldn't find any matches, we add the list from
@@ -66,7 +67,7 @@ public class DSLRuleCompletionProcessor extends RuleCompletionProcessor {
 //			if (dslConditions.size() == 0) {
 //				dslConditions.addAll(adapter.listConditionItems());
 //			}
-			addDSLProposals(list, documentOffset, prefix, dslConditions);
+			addDSLProposals(list, documentOffset, last, dslConditions);
 		}
 	}
 	

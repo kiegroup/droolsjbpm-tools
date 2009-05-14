@@ -414,8 +414,8 @@ public class DSLTree {
 	    		}
 	    	}
     	}
-    	if (text.trim().length() == 0) {
-	    	// in the event the line is zero length after it is trimmed, we also add
+    	if (text.trim().length() == 0 || this.suggestions.isEmpty()) {
+	    	// in the event the list is empty, we also add
 	    	// the top level nodes
     		Iterator top = this.rootCond.getChildren().iterator();
         	while (top.hasNext()) {
