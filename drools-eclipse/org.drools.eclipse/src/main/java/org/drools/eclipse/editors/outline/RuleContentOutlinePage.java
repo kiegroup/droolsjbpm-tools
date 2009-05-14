@@ -44,6 +44,8 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
 
     ///////////////////////////////////
     // Patterns that the parser uses
+    // TODO: this should just reuse the existing parser to avoid inconsistencies
+    //       with for example comments
     ///////////////////////////////////
     private static final Pattern RULE_PATTERN1 = Pattern.compile(
 			"\\n\\s*rule\\s+\"([^\"]+)\"", Pattern.DOTALL);
@@ -152,16 +154,22 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
         matcher = RULE_PATTERN1.matcher(ruleFileContents);
         while (matcher.find()) {
             String ruleName = matcher.group(1);
-            DroolsModelBuilder.addRule(pkg, ruleName, null,
-        		matcher.start(1), matcher.end(1) - matcher.start(1),
-        		extractAttributes((RuleDescr) rules.get(ruleName)));
+            RuleDescr descr = (RuleDescr) rules.get(ruleName);
+            if (descr != null) {
+	            DroolsModelBuilder.addRule(pkg, ruleName, null,
+	        		matcher.start(1), matcher.end(1) - matcher.start(1),
+	        		extractAttributes(descr));
+            }
         }
         matcher = RULE_PATTERN2.matcher(ruleFileContents);
         while (matcher.find()) {
             String ruleName = matcher.group(1);
-            DroolsModelBuilder.addRule(pkg, ruleName, null,
-        		matcher.start(1), matcher.end(1) - matcher.start(1),
-        		extractAttributes((RuleDescr) rules.get(ruleName)));
+            RuleDescr descr = (RuleDescr) rules.get(ruleName);
+            if (descr != null) {
+    	        DroolsModelBuilder.addRule(pkg, ruleName, null,
+	        		matcher.start(1), matcher.end(1) - matcher.start(1),
+	        		extractAttributes(descr));
+            }
          } 
         matcher = FUNCTION_PATTERN.matcher(ruleFileContents);
 		while (matcher.find()) {
