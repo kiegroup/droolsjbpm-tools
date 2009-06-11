@@ -222,7 +222,7 @@ public class ActionDialog extends EditBeanDialog<DroolsAction> {
 				int code = dialog.open();
 				if (code != CANCEL) {
 					List<String> imports = dialog.getImports();
-					((Process) process).setImports(imports);
+					process.setImports(imports);
 					List<String> functionImports = dialog.getFunctionImports();
 					process.setFunctionImports(functionImports);
 					completionProcessor.reset();
@@ -241,7 +241,7 @@ public class ActionDialog extends EditBeanDialog<DroolsAction> {
 				int code = dialog.open();
 				if (code != CANCEL) {
 					Map<String, String> globals = dialog.getGlobals();
-					((Process) process).setGlobals(globals);
+					process.setGlobals(globals);
 					completionProcessor.reset();
 				}
 			}

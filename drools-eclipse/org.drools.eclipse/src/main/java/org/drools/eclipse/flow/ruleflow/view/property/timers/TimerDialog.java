@@ -276,25 +276,17 @@ public class TimerDialog extends EditBeanDialog<DroolsAction> implements MapItem
 		if (key == null) {
 			key = new Timer();
 		}
-		try {
-			String delayString = delayText.getText().trim();
-			long delay = 0;
-			if (delayString.length() > 0) {
-				delay = new Long(delayString);
-			}
+		String delay = delayText.getText().trim();
+		if (delay.length() == 0) {
+			key.setDelay(null);
+		} else {
 			key.setDelay(delay);
-		} catch (NumberFormatException e) {
-			throw new IllegalArgumentException("Delay should be a long value");
 		}
-		try {
-			String periodString = periodText.getText().trim();
-			long period = 0;
-			if (periodString.length() > 0) {
-				period = new Long(periodString);
-			}
+		String period = periodText.getText().trim();
+		if (period.length() == 0) {
+			key.setPeriod(null);
+		} else {
 			key.setPeriod(period);
-		} catch (NumberFormatException e) {
-			throw new IllegalArgumentException("Period should be a long value");
 		}
         if (tabFolder.getSelectionIndex() == 0) {
             return getAction();

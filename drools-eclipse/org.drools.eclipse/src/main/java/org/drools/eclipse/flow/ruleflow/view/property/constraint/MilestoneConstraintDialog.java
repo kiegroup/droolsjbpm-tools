@@ -53,7 +53,7 @@ import org.eclipse.swt.widgets.TabItem;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class MilestoneConstraintDialog extends EditBeanDialog {
+public class MilestoneConstraintDialog extends EditBeanDialog<String> {
 
 	private WorkflowProcess process;
 	private TabFolder tabFolder;
@@ -66,7 +66,7 @@ public class MilestoneConstraintDialog extends EditBeanDialog {
 		setValue(milestone.getConstraint());
 	}
 
-	protected Object updateValue(Object value) {
+	protected String updateValue(String value) {
 		if (tabFolder.getSelectionIndex() == 0) {
 			return getConstraintText();
 		}
@@ -180,8 +180,10 @@ public class MilestoneConstraintDialog extends EditBeanDialog {
 				dialog.create();
 				int code = dialog.open();
 				if (code != CANCEL) {
-					List imports = dialog.getImports();
-					((org.drools.process.core.Process) process).setImports(imports);
+					List<String> imports = dialog.getImports();
+					process.setImports(imports);
+					List<String> functionImports = dialog.getFunctionImports();
+					process.setFunctionImports(functionImports);
 					completionProcessor.reset();
 				}
 			}
@@ -197,8 +199,8 @@ public class MilestoneConstraintDialog extends EditBeanDialog {
 				dialog.create();
 				int code = dialog.open();
 				if (code != CANCEL) {
-					Map globals = dialog.getGlobals();
-					((org.drools.process.core.Process) process).setGlobals(globals);
+					Map<String, String> globals = dialog.getGlobals();
+					process.setGlobals(globals);
 					completionProcessor.reset();
 				}
 			}
