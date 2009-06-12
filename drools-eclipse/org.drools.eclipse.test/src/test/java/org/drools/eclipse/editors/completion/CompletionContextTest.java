@@ -4,6 +4,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.lang.Location;
 
 /**
@@ -14,6 +15,10 @@ import org.drools.lang.Location;
  *
  */
 public class CompletionContextTest extends TestCase {
+	
+	public void setUp() {
+		new EvaluatorRegistry();
+	}
 
     public void testCheckLHSLocationDetermination_RULE_NAME_1() {
         String input =
