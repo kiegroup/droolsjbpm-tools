@@ -184,10 +184,13 @@ public class DroolsRuntimeManager {
         } else {
         	runtime = getDroolsRuntime(runtimeName);
         }
+        if (runtime == null) {
+        	return null;
+        }
         if (runtime.getJars() == null || runtime.getJars().length == 0) {
     		recognizeJars(runtime);
     	}
-        return runtime == null ? null : runtime.getJars();
+        return runtime.getJars();
     }
     
     public static void recognizeJars(DroolsRuntime runtime) {
