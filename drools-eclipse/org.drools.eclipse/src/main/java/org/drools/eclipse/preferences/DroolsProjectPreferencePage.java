@@ -48,6 +48,8 @@ public class DroolsProjectPreferencePage extends PropertyAndPreferencePage {
         }
         if (selection != -1) {
         	droolsRuntimeCombo.select(selection);
+        } else if (runtimes.length > 0) {
+            droolsRuntimeCombo.select(0);
         }
         GridData gridData = new GridData();
         gridData.grabExcessHorizontalSpace = true;

@@ -416,7 +416,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                 PackageBuilder builder = new PackageBuilder( builder_configuration );
                 DRLInfo result = null;
                 // compile parsed rules if necessary
-                if ( compile && !parser.hasErrors()) {
+                if ( packageDescr != null && compile && !parser.hasErrors()) {
                     // check whether a .package file exists and add it
                     if ( resource != null && resource.getParent() != null ) {
                         MyResourceVisitor visitor = new MyResourceVisitor();

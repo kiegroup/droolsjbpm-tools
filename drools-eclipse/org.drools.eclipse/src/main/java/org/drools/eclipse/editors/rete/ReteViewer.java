@@ -112,29 +112,6 @@ public class ReteViewer extends GraphicalEditor {
         return super.getAdapter( type );
     }
 
-    private RuleBase getRuleBase(String contents) {
-    	try {
-    		IResource resource = drlEditor.getResource();
-	        ClassLoader newLoader = DroolsBuilder.class.getClassLoader();
-	        if ( resource.getProject().getNature( "org.eclipse.jdt.core.javanature" ) != null ) {
-	            IJavaProject project = JavaCore.create( resource.getProject() );
-	            newLoader = ProjectClassLoader.getProjectClassLoader( project );
-	        }
-        	DRLInfo drlInfo = DroolsEclipsePlugin.getDefault().parseResource(drlEditor, true, true);
-        	if (drlInfo != null) {
-        		Package pkg = drlInfo.getPackage();
-        		RuleBaseConfiguration config = new RuleBaseConfiguration();
-        		config.setClassLoader(newLoader);
-        		ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase(RuleBase.RETEOO, config);
-        		ruleBase.addPackage(pkg);
-        		return ruleBase;
-        	}
-        } catch ( Throwable t ) {
-            DroolsEclipsePlugin.log( t );
-        }
-        return null;
-    }
-
     /**
      * Loads model from rule base,
      * calculates rete view and initializes diagram model.
@@ -156,11 +133,37 @@ public class ReteViewer extends GraphicalEditor {
                                100 );
 
             monitor.subTask( "Loading Rule Base" );
-            RuleBase ruleBase = getRuleBase( contents );
-            if ( ruleBase == null ) {
-                final Exception error = new Exception( MSG_PARSE_ERROR );
-                throw error;
+            ReteooRuleBase ruleBase = null;
+            try {
+                IResource resource = drlEditor.getResource();
+                ClassLoader newLoader = DroolsBuilder.class.getClassLoader();
+                if ( resource.getProject().getNature( "org.eclipse.jdt.core.javanature" ) != null ) {
+                    IJavaProject project = JavaCore.create( resource.getProject() );
+                    newLoader = ProjectClassLoader.getProjectClassLoader( project );
+                }
+                DRLInfo drlInfo = DroolsEclipsePlugin.getDefault().parseResource(drlEditor, true, true);
+                if (drlInfo == null) {
+                    throw new Exception( "Could not find DRL info" );
+                }
+                if (drlInfo.getBuilderErrors().length > 0) {
+                    throw new Exception( drlInfo.getBuilderErrors().length + " build errors" );
+                }
+                if (drlInfo.getParserErrors().size() > 0) {
+                    throw new Exception( drlInfo.getParserErrors().size() + " parser errors" );
+                }
+
+                Package pkg = drlInfo.getPackage();
+                RuleBaseConfiguration config = new RuleBaseConfiguration();
+                config.setClassLoader(newLoader);
+                ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase(RuleBase.RETEOO, config);
+                if (pkg != null) {
+                    ruleBase.addPackage(pkg);
+                }
+            } catch ( Throwable t ) {
+                DroolsEclipsePlugin.log( t );
+                throw new Exception( MSG_PARSE_ERROR + " " + t.getMessage());
             }
+
             monitor.worked( 50 );
             if ( monitor.isCanceled() ) {
                 throw new InterruptedException();
