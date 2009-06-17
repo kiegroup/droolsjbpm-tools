@@ -24,7 +24,8 @@ import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
 import org.drools.workflow.core.Constraint;
 import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.impl.ConnectionRef;
-import org.drools.workflow.core.node.Split;
+import org.drools.workflow.core.impl.NodeImpl;
+import org.drools.workflow.core.node.StateNode;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -42,18 +43,18 @@ import org.eclipse.swt.widgets.Shell;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class ConstraintListDialog extends EditBeanDialog<Map<ConnectionRef, Constraint>> {
+public class StateConstraintListDialog extends EditBeanDialog<Map<ConnectionRef, Constraint>> {
 
 	private WorkflowProcess process;
-	private Split split;
+	private StateNode stateNode;
 	private Map<ConnectionRef, Constraint> newMap;
 	private Map<Connection, Label> labels = new HashMap<Connection, Label>();
 
-	protected ConstraintListDialog(Shell parentShell, WorkflowProcess process,
-			Split split) {
+	protected StateConstraintListDialog(Shell parentShell, WorkflowProcess process,
+			StateNode stateNode) {
 		super(parentShell, "Edit Constraints");
 		this.process = process;
-		this.split = split;
+		this.stateNode = stateNode;
 	}
 
 	protected Control createDialogArea(Composite parent) {
@@ -62,7 +63,7 @@ public class ConstraintListDialog extends EditBeanDialog<Map<ConnectionRef, Cons
 		gridLayout.numColumns = 3;
 		composite.setLayout(gridLayout);
 
-		List<Connection> outgoingConnections = split.getDefaultOutgoingConnections();
+		List<Connection> outgoingConnections = stateNode.getOutgoingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE);
 		labels.clear();
 		for (Connection outgoingConnection: outgoingConnections) {
 			Label label1 = new Label(composite, SWT.NONE);
@@ -90,7 +91,7 @@ public class ConstraintListDialog extends EditBeanDialog<Map<ConnectionRef, Cons
 
 	public void setValue(Map<ConnectionRef, Constraint> value) {
 		super.setValue(value);
-		this.newMap = new HashMap<ConnectionRef, Constraint>(value);
+		this.newMap = new HashMap<ConnectionRef, Constraint>((Map<ConnectionRef, Constraint>) value);
 	}
 
 	protected Map<ConnectionRef, Constraint> updateValue(Map<ConnectionRef, Constraint> value) {
@@ -107,6 +108,8 @@ public class ConstraintListDialog extends EditBeanDialog<Map<ConnectionRef, Cons
 				ConnectionRef connectionRef = new ConnectionRef(connection.getTo().getId(), connection.getToType());
 				Constraint constraint = newMap.get(connectionRef);
 				dialog.setConstraint(constraint);
+				dialog.fixType(0);
+				dialog.fixDialect(0);
 				int code = dialog.open();
 				if (code != CANCEL) {
 					constraint = dialog.getConstraint();

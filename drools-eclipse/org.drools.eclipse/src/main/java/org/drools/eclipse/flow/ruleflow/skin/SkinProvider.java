@@ -35,6 +35,8 @@ public interface SkinProvider {
 
 	IFigure createSubFlowFigure();
 
+	IFigure createStateFigure();
+
 	WorkItemFigureInterface createWorkItemFigure();
 
 	IFigure createCompositeNodeFigure();

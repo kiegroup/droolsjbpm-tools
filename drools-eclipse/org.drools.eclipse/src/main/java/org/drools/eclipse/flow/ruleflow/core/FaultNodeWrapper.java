@@ -35,8 +35,8 @@ public class FaultNodeWrapper extends AbstractNodeWrapper {
 	private static final long serialVersionUID = 4L;
 	private static IPropertyDescriptor[] descriptors;
 	static {
-		descriptors = new IPropertyDescriptor[DefaultElementWrapper.descriptors.length + 2];
-        System.arraycopy(DefaultElementWrapper.descriptors, 0, descriptors, 0, DefaultElementWrapper.descriptors.length);
+		descriptors = new IPropertyDescriptor[DefaultElementWrapper.DESCRIPTORS.length + 2];
+        System.arraycopy(DefaultElementWrapper.DESCRIPTORS, 0, descriptors, 0, DefaultElementWrapper.DESCRIPTORS.length);
         descriptors[descriptors.length - 2] = 
             new TextPropertyDescriptor(FAULT_NAME, "FaultName");
         descriptors[descriptors.length - 1] = 

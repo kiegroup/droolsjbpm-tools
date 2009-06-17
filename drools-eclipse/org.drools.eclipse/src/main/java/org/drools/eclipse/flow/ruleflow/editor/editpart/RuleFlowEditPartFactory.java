@@ -31,6 +31,7 @@ import org.drools.eclipse.flow.ruleflow.core.RuleFlowProcessWrapper;
 import org.drools.eclipse.flow.ruleflow.core.RuleSetNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.SplitWrapper;
 import org.drools.eclipse.flow.ruleflow.core.StartNodeWrapper;
+import org.drools.eclipse.flow.ruleflow.core.StateNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.SubProcessWrapper;
 import org.drools.eclipse.flow.ruleflow.core.TimerWrapper;
 import org.drools.eclipse.flow.ruleflow.core.WorkItemWrapper;
@@ -85,6 +86,8 @@ public class RuleFlowEditPartFactory implements ProcessEditPartFactory {
             result = new ElementContainerEditPart();
         } else if (model instanceof EventNodeWrapper) {
             result = new EventNodeEditPart();
+        } else if (model instanceof StateNodeWrapper) {
+            result = new StateNodeEditPart();
         } else {
             throw new IllegalArgumentException(
                 "Unknown model object " + model);

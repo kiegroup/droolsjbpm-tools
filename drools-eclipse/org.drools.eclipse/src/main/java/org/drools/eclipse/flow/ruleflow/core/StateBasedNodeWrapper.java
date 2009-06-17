@@ -7,26 +7,26 @@ import org.drools.eclipse.flow.ruleflow.view.property.timers.TimersPropertyDescr
 import org.drools.process.core.timer.Timer;
 import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.WorkflowProcess;
-import org.drools.workflow.core.node.EventBasedNode;
+import org.drools.workflow.core.node.StateBasedNode;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
-public class EventBasedNodeWrapper extends ExtendedNodeWrapper {
+public class StateBasedNodeWrapper extends ExtendedNodeWrapper {
 
     public static final String TIMERS = "Timers";
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 4L;
 	
     protected IPropertyDescriptor[] descriptors;
     
-    public EventBasedNode getEventBasedNode() {
-    	return (EventBasedNode) getNode();
+    public StateBasedNode getStateBasedNode() {
+    	return (StateBasedNode) getNode();
     }
 
     protected void initDescriptors() {
-    	descriptors = new IPropertyDescriptor[DefaultElementWrapper.descriptors.length + 1];
-        System.arraycopy(DefaultElementWrapper.descriptors, 0, descriptors, 0, DefaultElementWrapper.descriptors.length);
+    	descriptors = new IPropertyDescriptor[DefaultElementWrapper.DESCRIPTORS.length + 1];
+        System.arraycopy(DefaultElementWrapper.DESCRIPTORS, 0, descriptors, 0, DefaultElementWrapper.DESCRIPTORS.length);
         descriptors[descriptors.length - 1] = 
-            new TimersPropertyDescriptor(TIMERS, "Timers", getEventBasedNode(),
+            new TimersPropertyDescriptor(TIMERS, "Timers", getStateBasedNode(),
         		(WorkflowProcess) getParent().getProcessWrapper().getProcess());
     }
 
@@ -39,14 +39,14 @@ public class EventBasedNodeWrapper extends ExtendedNodeWrapper {
 
     public Object getPropertyValue(Object id) {
         if (TIMERS.equals(id)) {
-            return getEventBasedNode().getTimers();
+            return getStateBasedNode().getTimers();
         }
         return super.getPropertyValue(id);
     }
 
     public void resetPropertyValue(Object id) {
         if (TIMERS.equals(id)) {
-        	getEventBasedNode().internalSetTimers(null);
+        	getStateBasedNode().removeAllTimers();
         } else {
             super.resetPropertyValue(id);
         }
@@ -55,7 +55,11 @@ public class EventBasedNodeWrapper extends ExtendedNodeWrapper {
 	@SuppressWarnings("unchecked")
 	public void setPropertyValue(Object id, Object value) {
         if (TIMERS.equals(id)) {
-        	getEventBasedNode().internalSetTimers((Map<Timer, DroolsAction>) value);
+        	getStateBasedNode().removeAllTimers();
+        	// adding one by one so the ids are set correctly
+        	for (Map.Entry<Timer, DroolsAction> entry: ((Map<Timer, DroolsAction>) value).entrySet()) {
+        		getStateBasedNode().addTimer(entry.getKey(), entry.getValue());
+        	}
         } else {
             super.setPropertyValue(id, value);
         }

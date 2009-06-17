@@ -48,8 +48,8 @@ public class CompositeContextNodeWrapper extends CompositeNodeWrapper {
 	}
 
     private void initPropertyDescriptors() {
-        descriptors = new IPropertyDescriptor[DefaultElementWrapper.descriptors.length + 4];
-        System.arraycopy(DefaultElementWrapper.descriptors, 0, descriptors, 0, DefaultElementWrapper.descriptors.length);
+        descriptors = new IPropertyDescriptor[DefaultElementWrapper.DESCRIPTORS.length + 4];
+        System.arraycopy(DefaultElementWrapper.DESCRIPTORS, 0, descriptors, 0, DefaultElementWrapper.DESCRIPTORS.length);
         descriptors[descriptors.length - 4] = 
             new TextPropertyDescriptor(START_NODE, "StartNodeId");
         descriptors[descriptors.length - 3] = 

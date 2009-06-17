@@ -27,7 +27,7 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class MilestoneWrapper extends EventBasedNodeWrapper {
+public class MilestoneWrapper extends StateBasedNodeWrapper {
 
     public static final String CONSTRAINT = "Constraint";
 

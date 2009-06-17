@@ -32,7 +32,7 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class SubProcessWrapper extends EventBasedNodeWrapper {
+public class SubProcessWrapper extends StateBasedNodeWrapper {
 
 	private static final long serialVersionUID = 3668348577732020324L;
     

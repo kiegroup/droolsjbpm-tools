@@ -69,7 +69,7 @@ public class TimerDialog extends EditBeanDialog<DroolsAction> implements MapItem
     
     private static final String[] DIALECTS = new String[] { "mvel", "java" };
     
-    private Timer key;
+    private Timer timer;
     private Text delayText;
     private Text periodText;
 	private WorkflowProcess process;
@@ -100,8 +100,8 @@ public class TimerDialog extends EditBeanDialog<DroolsAction> implements MapItem
         gridData.grabExcessHorizontalSpace = true;
         gridData.horizontalAlignment = GridData.FILL;
         delayText.setLayoutData(gridData);
-        if (key != null) {
-        	delayText.setText(key.getDelay() + "");
+        if (timer != null && timer.getDelay() != null) {
+        	delayText.setText(timer.getDelay());
         }
         label = new Label(composite, SWT.NONE);
         label.setText("Timer period: ");
@@ -110,11 +110,11 @@ public class TimerDialog extends EditBeanDialog<DroolsAction> implements MapItem
         gridData.grabExcessHorizontalSpace = true;
         gridData.horizontalAlignment = GridData.FILL;
         periodText.setLayoutData(gridData);
-        if (key != null) {
-        	periodText.setText(key.getPeriod() + "");
+        if (timer != null && timer.getPeriod() != null) {
+        	periodText.setText(timer.getPeriod());
         }
         
-        		Composite top = new Composite(composite, SWT.NONE);
+        Composite top = new Composite(composite, SWT.NONE);
 		GridData gd = new GridData();
 		gd.horizontalSpan = 2;
 		gd.grabExcessHorizontalSpace = true;
@@ -273,20 +273,20 @@ public class TimerDialog extends EditBeanDialog<DroolsAction> implements MapItem
 	}
 
 	protected DroolsAction updateValue(DroolsAction value) {
-		if (key == null) {
-			key = new Timer();
+		if (timer == null) {
+			timer = new Timer();
 		}
 		String delay = delayText.getText().trim();
 		if (delay.length() == 0) {
-			key.setDelay(null);
+			timer.setDelay(null);
 		} else {
-			key.setDelay(delay);
+			timer.setDelay(delay);
 		}
 		String period = periodText.getText().trim();
 		if (period.length() == 0) {
-			key.setPeriod(null);
+			timer.setPeriod(null);
 		} else {
-			key.setPeriod(period);
+			timer.setPeriod(period);
 		}
         if (tabFolder.getSelectionIndex() == 0) {
             return getAction();
@@ -295,11 +295,11 @@ public class TimerDialog extends EditBeanDialog<DroolsAction> implements MapItem
     }
     
     public void setKey(Timer key) {
-    	this.key = key;
+    	this.timer = key;
     }
 
 	public Timer getKey() {
-		return key;
+		return timer;
 	}
     
 }

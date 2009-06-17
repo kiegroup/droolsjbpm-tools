@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.definition.process.Connection;
+import org.drools.definition.process.Node;
+import org.drools.definition.process.Process;
 import org.drools.eclipse.WorkItemDefinitions;
 import org.drools.eclipse.flow.common.editor.core.ElementContainer;
 import org.drools.eclipse.flow.common.editor.core.ProcessWrapper;
 import org.drools.eclipse.flow.common.editor.core.ProcessWrapperBuilder;
-import org.drools.definition.process.Connection;
-import org.drools.definition.process.Node;
-import org.drools.definition.process.Process;
 import org.drools.process.core.Work;
 import org.drools.process.core.WorkDefinition;
 import org.drools.process.core.impl.WorkDefinitionImpl;
@@ -31,11 +31,11 @@ import org.drools.workflow.core.node.MilestoneNode;
 import org.drools.workflow.core.node.RuleSetNode;
 import org.drools.workflow.core.node.Split;
 import org.drools.workflow.core.node.StartNode;
+import org.drools.workflow.core.node.StateNode;
 import org.drools.workflow.core.node.SubProcessNode;
 import org.drools.workflow.core.node.TimerNode;
 import org.drools.workflow.core.node.WorkItemNode;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jface.dialogs.MessageDialog;
 
 public class RuleFlowWrapperBuilder implements ProcessWrapperBuilder {
     
@@ -76,7 +76,9 @@ public class RuleFlowWrapperBuilder implements ProcessWrapperBuilder {
             	for (Node subNode: ((CompositeNode) node).getNodes()) {
             		subNodes.add(subNode);
             	}
-            	processNodes(subNodes, new HashSet<Connection>(), (CompositeNodeWrapper) nodeWrapper, project);
+            	if (subNodes.size() > 0) {
+            		processNodes(subNodes, new HashSet<Connection>(), (CompositeNodeWrapper) nodeWrapper, project);
+            	}
             }
         }
         for (Connection connection: connections) {
@@ -107,6 +109,8 @@ public class RuleFlowWrapperBuilder implements ProcessWrapperBuilder {
             return new SubProcessWrapper();
         } else if (node instanceof ForEachNode) {
             return new ForEachNodeWrapper();
+        } else if (node instanceof StateNode) {
+        	return new StateNodeWrapper();
         } else if (node instanceof CompositeContextNode) {
             return new CompositeContextNodeWrapper();
         } else if (node instanceof Join) {

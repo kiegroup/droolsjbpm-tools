@@ -41,17 +41,20 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  */
 public abstract class DefaultElementWrapper implements ElementWrapper, IPropertySource, Serializable {
 
-	private static boolean allowNodeCustomization =
-		DroolsEclipsePlugin.getDefault().getPreferenceStore().getBoolean(IDroolsConstants.ALLOW_NODE_CUSTOMIZATION);
+	private static final long serialVersionUID = 4L;
 
-	protected static IPropertyDescriptor[] descriptors;
+	private static boolean allowNodeCustomization =
+		DroolsEclipsePlugin.getDefault().getPreferenceStore().getBoolean(
+			IDroolsConstants.ALLOW_NODE_CUSTOMIZATION);
+
+	protected static IPropertyDescriptor[] DESCRIPTORS;
 
     public static final String NAME = "Name";
     public static final String ID = "Id";
     public static final String COLOR = "Color";
     static {
     	if (allowNodeCustomization) {
-	        descriptors = new IPropertyDescriptor[] {
+	        DESCRIPTORS = new IPropertyDescriptor[] {
 	            new TextPropertyDescriptor(NAME, "Name"),
 	            new TextPropertyDescriptor(ID, "Id") {
 	            	public CellEditor createPropertyEditor(Composite parent) {
@@ -61,7 +64,7 @@ public abstract class DefaultElementWrapper implements ElementWrapper, IProperty
 	            new ColorPropertyDescriptor(COLOR, "Color"),
 	        };
     	} else {
-    		descriptors = new IPropertyDescriptor[] {
+    		DESCRIPTORS = new IPropertyDescriptor[] {
 	            new TextPropertyDescriptor(NAME, "Name"),
 	            new TextPropertyDescriptor(ID, "Id") {
 	            	public CellEditor createPropertyEditor(Composite parent) {
@@ -215,7 +218,7 @@ public abstract class DefaultElementWrapper implements ElementWrapper, IProperty
 	}
 
 	public IPropertyDescriptor[] getPropertyDescriptors() {
-		return descriptors;
+		return DESCRIPTORS;
 	}
 
 	public Object getEditableValue() {

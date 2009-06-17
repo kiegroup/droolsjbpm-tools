@@ -39,7 +39,7 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class WorkItemWrapper extends EventBasedNodeWrapper {
+public class WorkItemWrapper extends StateBasedNodeWrapper {
 
     public static final String WAIT_FOR_COMPLETION = "WaitForCompletion";
     public static final String RESULT_MAPPING = "ResultMapping";

@@ -43,8 +43,8 @@ public class ActionWrapper extends AbstractNodeWrapper {
     }
     
     private void setDescriptors() {
-        descriptors = new IPropertyDescriptor[DefaultElementWrapper.descriptors.length + 1];
-        System.arraycopy(DefaultElementWrapper.descriptors, 0, descriptors, 0, DefaultElementWrapper.descriptors.length);
+        descriptors = new IPropertyDescriptor[DefaultElementWrapper.DESCRIPTORS.length + 1];
+        System.arraycopy(DefaultElementWrapper.DESCRIPTORS, 0, descriptors, 0, DefaultElementWrapper.DESCRIPTORS.length);
         descriptors[descriptors.length - 1] = 
             new ActionPropertyDescriptor(ACTION, "Action", getActionNode(), (WorkflowProcess) getParent().getProcessWrapper().getProcess());
     }

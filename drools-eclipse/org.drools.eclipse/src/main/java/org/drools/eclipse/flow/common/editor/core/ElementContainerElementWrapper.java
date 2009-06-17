@@ -5,8 +5,10 @@ import java.util.List;
 
 public abstract class ElementContainerElementWrapper extends DefaultElementWrapper implements ElementContainer {
 
-    public static final int ADD_ELEMENT = 5;
+	public static final int ADD_ELEMENT = 5;
     public static final int REMOVE_ELEMENT = 6;
+    
+    private static final long serialVersionUID = 4L;
     
     List<ElementWrapper> elements = new ArrayList<ElementWrapper>();
     

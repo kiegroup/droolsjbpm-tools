@@ -290,6 +290,16 @@ public class RuleFlowConstraintDialog extends Dialog {
 		};
 		r.run();
 	}
+	
+	public void fixType(int index) {
+		typeCombo.select(index);
+		typeCombo.setEnabled(false);
+	}
+
+	public void fixDialect(int index) {
+		typeCombo.select(index);
+		typeCombo.setEnabled(false);
+	}
 
 	protected void okPressed() {
 		int selectionIndex = tabFolder.getSelectionIndex();

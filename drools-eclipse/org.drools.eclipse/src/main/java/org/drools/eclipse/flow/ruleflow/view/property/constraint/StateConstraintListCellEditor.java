@@ -1,4 +1,4 @@
-package org.drools.eclipse.flow.ruleflow.view.property.timers;
+package org.drools.eclipse.flow.ruleflow.view.property.constraint;
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -19,37 +19,34 @@ import java.util.Map;
 
 import org.drools.eclipse.flow.common.view.property.BeanDialogCellEditor;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.process.core.timer.Timer;
-import org.drools.workflow.core.DroolsAction;
+import org.drools.workflow.core.Constraint;
 import org.drools.workflow.core.WorkflowProcess;
-import org.drools.workflow.core.node.StateBasedNode;
+import org.drools.workflow.core.impl.ConnectionRef;
+import org.drools.workflow.core.node.StateNode;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
 /**
- * Cell editor for timers.
+ * Cell editor for state constraints.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class TimersCellEditor extends BeanDialogCellEditor<Map<Timer, DroolsAction>> {
+public class StateConstraintListCellEditor extends BeanDialogCellEditor<Map<ConnectionRef, Constraint>> {
 
     private WorkflowProcess process;
-    private StateBasedNode stateBasedNode;
+    private StateNode stateNode;
     
-    public TimersCellEditor(Composite parent, WorkflowProcess process, StateBasedNode stateBasedNode) {
+    public StateConstraintListCellEditor(Composite parent, WorkflowProcess process, StateNode stateNode) {
         super(parent);
         this.process = process;
-        this.stateBasedNode = stateBasedNode;
+        this.stateNode = stateNode;
     }
 
-    protected EditBeanDialog<Map<Timer, DroolsAction>> createDialog(Shell shell) {
-        TimersDialog dialog = new TimersDialog(shell, process);
-        dialog.setValue(stateBasedNode.getTimers());
-        return dialog;
+    protected EditBeanDialog<Map<ConnectionRef, Constraint>> createDialog(Shell shell) {
+        return new StateConstraintListDialog(shell, process, stateNode);
     }
     
     protected String getLabelText(Object value) {
-    	return "";
+        return "";
     }
-
 }
