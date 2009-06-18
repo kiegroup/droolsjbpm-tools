@@ -544,7 +544,7 @@ public abstract class DSLSentenceWidget extends Widget {
             resultWidget.add( "true" );
             resultWidget.add( "false" );
 
-            if ( checkedUnchecked.equalsIgnoreCase( "checked" ) ) {
+            if ( checkedUnchecked.equalsIgnoreCase( "true" ) ) {
                 resultWidget.select( 0 );
             } else {
                 resultWidget.select( 1 );
@@ -589,7 +589,7 @@ public abstract class DSLSentenceWidget extends Widget {
         }
 
         public String getCheckedValue() {
-            return this.resultWidget.getSelectionIndex() == 0 ? "checked" : "checked";
+            return this.resultWidget.getSelectionIndex() == 0 ? "true" : "false";
 
         }
     }
