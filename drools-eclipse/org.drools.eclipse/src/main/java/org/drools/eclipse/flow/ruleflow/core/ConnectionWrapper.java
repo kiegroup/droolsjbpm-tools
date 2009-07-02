@@ -90,8 +90,20 @@ public class ConnectionWrapper extends ElementConnection {
         s = s.substring(1, s.length() - 1);
         String[] bendpoints = s.split(";");
         for (String bendpoint: bendpoints) {
-            String[] xy = bendpoint.split(",");
-            result.add(new Point(new Integer(xy[0]), new Integer(xy[1])));
+        	bendpoint = bendpoint.trim();
+        	if (bendpoint.length() != 0) { 
+        		String[] xy = bendpoint.split(",");
+        		if (xy.length != 2) {
+        			throw new IllegalArgumentException(
+    					"Unexpected bendpoint: " + bendpoint + " for bendpoints " + bendpoints +
+    					" - nb points = " + xy.length);
+        		}
+        		try {
+        			result.add(new Point(new Integer(xy[0]), new Integer(xy[1])));
+        		} catch (NumberFormatException e) {
+        			throw new IllegalArgumentException("Could not parse bendpoint " + bendpoint, e);
+        		}
+        	}
         }
         return result;
     }
