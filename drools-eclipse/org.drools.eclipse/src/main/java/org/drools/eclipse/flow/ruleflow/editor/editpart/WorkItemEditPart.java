@@ -40,10 +40,8 @@ import org.eclipse.draw2d.RoundedRectangle;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
-import org.eclipse.gef.requests.DropRequest;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Color;
@@ -67,6 +65,10 @@ public class WorkItemEditPart extends ElementEditPart {
     protected IFigure createFigure() {
     	SkinProvider skinProvider = SkinManager.getInstance().getSkinProvider(SKIN);
     	WorkItemFigureInterface figure = skinProvider.createWorkItemFigure();
+    	Rectangle constraint = getElementWrapper().getConstraint();
+    	constraint.width = figure.getSize().width;
+    	constraint.height = figure.getSize().height;
+    	getElementWrapper().setConstraint(constraint);
         String icon = null;
         WorkDefinition workDefinition = getWorkDefinition();
         if (workDefinition instanceof WorkDefinitionExtension) {

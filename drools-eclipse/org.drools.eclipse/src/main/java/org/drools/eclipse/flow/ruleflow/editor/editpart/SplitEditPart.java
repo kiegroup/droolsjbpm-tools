@@ -45,7 +45,12 @@ public class SplitEditPart extends ElementEditPart {
 	
     protected IFigure createFigure() {
     	SkinProvider skinProvider = SkinManager.getInstance().getSkinProvider(SKIN);
-    	return skinProvider.createSplitFigure();
+    	IFigure result = skinProvider.createSplitFigure();
+    	Rectangle constraint = getElementWrapper().getConstraint();
+    	constraint.width = result.getSize().width;
+    	constraint.height = result.getSize().height;
+    	getElementWrapper().setConstraint(constraint);
+    	return result;
     }
 
     public void modelChanged(ModelEvent event) {

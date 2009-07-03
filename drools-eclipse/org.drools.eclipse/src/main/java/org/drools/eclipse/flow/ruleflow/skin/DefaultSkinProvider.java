@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.editor.core.ElementConnectionFactory;
+import org.drools.eclipse.flow.common.editor.editpart.figure.ElementContainerFigure;
 import org.drools.eclipse.flow.ruleflow.core.ActionWrapper;
 import org.drools.eclipse.flow.ruleflow.core.CompositeContextNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper;
@@ -15,7 +16,6 @@ import org.drools.eclipse.flow.ruleflow.core.FaultNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.ForEachNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.HumanTaskNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.JoinWrapper;
-import org.drools.eclipse.flow.ruleflow.core.MilestoneWrapper;
 import org.drools.eclipse.flow.ruleflow.core.RuleSetNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.SplitWrapper;
 import org.drools.eclipse.flow.ruleflow.core.StartNodeWrapper;
@@ -301,6 +301,10 @@ public class DefaultSkinProvider implements SkinProvider {
 
 	public IFigure createCompositeNodeFigure() {
 		return new CompositeNodeEditPart.CompositeNodeFigure();
+	}
+
+	public IFigure createForEachNodeFigure() {
+		return new ElementContainerFigure();
 	}
 
 }

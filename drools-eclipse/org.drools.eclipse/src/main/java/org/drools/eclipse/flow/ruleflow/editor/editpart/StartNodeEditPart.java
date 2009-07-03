@@ -23,6 +23,7 @@ import org.drools.eclipse.flow.ruleflow.skin.SkinProvider;
 import org.drools.eclipse.preferences.IDroolsConstants;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LineBorder;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 
@@ -38,7 +39,12 @@ public class StartNodeEditPart extends ElementEditPart {
 	
     protected IFigure createFigure() {
     	SkinProvider skinProvider = SkinManager.getInstance().getSkinProvider(SKIN);
-    	return skinProvider.createStartNodeFigure();
+    	IFigure result = skinProvider.createStartNodeFigure();
+    	Rectangle constraint = getElementWrapper().getConstraint();
+    	constraint.width = result.getSize().width;
+    	constraint.height = result.getSize().height;
+    	getElementWrapper().setConstraint(constraint);
+    	return result;
     }
 
     public static class StartNodeFigure extends AbstractElementFigure {

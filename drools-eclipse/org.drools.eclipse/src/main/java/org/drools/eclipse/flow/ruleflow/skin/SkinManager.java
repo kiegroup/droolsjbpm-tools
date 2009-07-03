@@ -20,6 +20,7 @@ public final class SkinManager {
 	private void registerSkinProviders() {
 		skinProviders.put("default", new DefaultSkinProvider());
 		skinProviders.put("BPMN", new BPMNSkinProvider());
+		skinProviders.put("BPMN2", new BPMN2SkinProvider());
 	}
 	
 	public SkinProvider getSkinProvider(String type) {

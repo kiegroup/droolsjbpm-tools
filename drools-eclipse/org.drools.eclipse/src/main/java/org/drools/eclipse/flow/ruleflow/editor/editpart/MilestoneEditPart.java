@@ -44,7 +44,12 @@ public class MilestoneEditPart extends ElementEditPart {
     
     protected IFigure createFigure() {
     	SkinProvider skinProvider = SkinManager.getInstance().getSkinProvider(SKIN);
-    	return skinProvider.createMilestoneFigure();
+    	IFigure result = skinProvider.createMilestoneFigure();
+    	Rectangle constraint = getElementWrapper().getConstraint();
+    	constraint.width = result.getSize().width;
+    	constraint.height = result.getSize().height;
+    	getElementWrapper().setConstraint(constraint);
+    	return result;
     }
     
     public static class MilestoneFigure extends AbstractElementFigure {

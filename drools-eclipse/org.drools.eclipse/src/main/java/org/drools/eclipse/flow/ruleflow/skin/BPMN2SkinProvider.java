@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.editor.core.ElementConnectionFactory;
+import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.eclipse.flow.common.editor.editpart.figure.ElementContainerFigure;
 import org.drools.eclipse.flow.ruleflow.core.ActionWrapper;
 import org.drools.eclipse.flow.ruleflow.core.CompositeContextNodeWrapper;
@@ -25,20 +26,20 @@ import org.drools.eclipse.flow.ruleflow.core.TimerWrapper;
 import org.drools.eclipse.flow.ruleflow.editor.editpart.JoinEditPart.JoinFigureInterface;
 import org.drools.eclipse.flow.ruleflow.editor.editpart.SplitEditPart.SplitFigureInterface;
 import org.drools.eclipse.flow.ruleflow.editor.editpart.WorkItemEditPart.WorkItemFigureInterface;
-import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn.BPMNActionNodeFigure;
-import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn.BPMNCompositeNodeFigure;
-import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn.BPMNEndNodeFigure;
-import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn.BPMNEventNodeFigure;
-import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn.BPMNFaultNodeFigure;
-import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn.BPMNJoinFigure;
-import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn.BPMNMilestoneFigure;
-import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn.BPMNRuleSetNodeFigure;
-import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn.BPMNSplitFigure;
-import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn.BPMNStartNodeFigure;
-import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn.BPMNStateFigure;
-import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn.BPMNSubFlowFigure;
-import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn.BPMNTimerNodeFigure;
-import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn.BPMNWorkItemNodeFigure;
+import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn2.BPMNActionNodeFigure;
+import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn2.BPMNCompositeNodeFigure;
+import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn2.BPMNEndNodeFigure;
+import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn2.BPMNEventNodeFigure;
+import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn2.BPMNFaultNodeFigure;
+import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn2.BPMNJoinFigure;
+import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn2.BPMNMilestoneFigure;
+import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn2.BPMNRuleSetNodeFigure;
+import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn2.BPMNSplitFigure;
+import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn2.BPMNStartNodeFigure;
+import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn2.BPMNStateFigure;
+import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn2.BPMNSubFlowFigure;
+import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn2.BPMNTimerNodeFigure;
+import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn2.BPMNWorkItemNodeFigure;
 import org.drools.eclipse.preferences.IDroolsConstants;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
@@ -50,7 +51,7 @@ import org.eclipse.gef.requests.CreationFactory;
 import org.eclipse.gef.requests.SimpleFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 
-public class BPMNSkinProvider implements SkinProvider {
+public class BPMN2SkinProvider implements SkinProvider {
 
     public PaletteContainer createComponentsDrawer() {
 
@@ -64,9 +65,9 @@ public class BPMNSkinProvider implements SkinProvider {
             "Start Event",
             "Create a new Start Event",
             StartNodeWrapper.class,
-            new SimpleFactory(StartNodeWrapper.class),
-            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/start_empty.png")),
-            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/start_empty.png"))
+            new SimpleWrapperFactory(StartNodeWrapper.class, "Start"),
+            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/start_empty.png")),
+            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/start_empty.png"))
         );
         entries.add(combined);
         
@@ -74,9 +75,9 @@ public class BPMNSkinProvider implements SkinProvider {
             "End Event",
             "Create a new End Event",
             EndNodeWrapper.class,
-            new SimpleFactory(EndNodeWrapper.class),
-            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/end_terminate.png")), 
-            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/end_terminate.png"))
+            new SimpleWrapperFactory(EndNodeWrapper.class, "End"),
+            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/end_terminate.png")), 
+            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/end_terminate.png"))
         );
         entries.add(combined);
                 
@@ -85,7 +86,7 @@ public class BPMNSkinProvider implements SkinProvider {
 	            "Rule Task",
 	            "Create a new Rule Task",
 	            RuleSetNodeWrapper.class,
-	            new SimpleFactory(RuleSetNodeWrapper.class),
+	            new SimpleWrapperFactory(RuleSetNodeWrapper.class, "Rule"),
 	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/Activity.gif")), 
 	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/Activity.gif"))
 	        );
@@ -97,9 +98,9 @@ public class BPMNSkinProvider implements SkinProvider {
 	            "Gateway [diverge]",
 	            "Create a new Gateway [diverge]",
 	            SplitWrapper.class,
-	            new SimpleFactory(SplitWrapper.class),
-	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/gateway_complex.png")), 
-	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/gateway_complex.png"))
+	            new SimpleWrapperFactory(SplitWrapper.class, "Gateway"),
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/gateway_exclusive.png")), 
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/gateway_exclusive.png"))
 	        );
 	        entries.add(combined);
         }
@@ -109,9 +110,9 @@ public class BPMNSkinProvider implements SkinProvider {
 	            "Gateway [converge]",
 	            "Create a new Gateway [converge]",
 	            JoinWrapper.class,
-	            new SimpleFactory(JoinWrapper.class),
-	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/gateway_complex.png")), 
-	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/gateway_complex.png"))
+	            new SimpleWrapperFactory(JoinWrapper.class, "Gateway"),
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/gateway_exclusive.png")), 
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/gateway_exclusive.png"))
 	        );
 	        entries.add(combined);
         }
@@ -121,7 +122,7 @@ public class BPMNSkinProvider implements SkinProvider {
 	            "Wait Task",
 	            "Create a new Wait Task",
 	            StateNodeWrapper.class,
-	            new SimpleFactory(StateNodeWrapper.class),
+	            new SimpleWrapperFactory(StateNodeWrapper.class, "Wait"),
 	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/Activity.gif")), 
 	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/Activity.gif"))
 	        );
@@ -133,7 +134,7 @@ public class BPMNSkinProvider implements SkinProvider {
 	            "Reusable Sub-Process",
 	            "Create a new Reusable Sub-Process",
 	            SubProcessWrapper.class,
-	            new SimpleFactory(SubProcessWrapper.class),
+	            new SimpleWrapperFactory(SubProcessWrapper.class, "Sub-Process"),
 	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/sub_process.png")), 
 	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/sub_process.png"))
 	        );
@@ -145,7 +146,7 @@ public class BPMNSkinProvider implements SkinProvider {
 	            "Script Task",
 	            "Create a new Script Task",
 	            ActionWrapper.class,
-	            new SimpleFactory(ActionWrapper.class),
+	            new SimpleWrapperFactory(ActionWrapper.class, "Script"),
 	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/Activity.gif")), 
 	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/Activity.gif"))
 	        );
@@ -157,7 +158,7 @@ public class BPMNSkinProvider implements SkinProvider {
 	            "Timer Event",
 	            "Create a new Timer Event",
 	            TimerWrapper.class,
-	            new SimpleFactory(TimerWrapper.class),
+	            new SimpleWrapperFactory(TimerWrapper.class, "Timer"),
 	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/intermediate_timer.png")), 
 	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/intermediate_timer.png"))
 	        );
@@ -169,7 +170,7 @@ public class BPMNSkinProvider implements SkinProvider {
 	            "Error Event",
 	            "Create a new Error Event",
 	            FaultNodeWrapper.class,
-	            new SimpleFactory(FaultNodeWrapper.class),
+	            new SimpleWrapperFactory(FaultNodeWrapper.class, "Error"),
 	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/intermediate_error_10.png")), 
 	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/intermediate_error_10.png"))
 	        );
@@ -181,7 +182,7 @@ public class BPMNSkinProvider implements SkinProvider {
 			    "Message Event",
 			    "Create a new Message Event",
 			    EventNodeWrapper.class,
-			    new SimpleFactory(EventNodeWrapper.class),
+			    new SimpleWrapperFactory(EventNodeWrapper.class, "Message"),
 			    ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/intermediate_message.png")), 
 			    ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/intermediate_empty.png"))
 			);
@@ -193,7 +194,7 @@ public class BPMNSkinProvider implements SkinProvider {
 	            "User Task",
 	            "Create a new User Task",
 	            HumanTaskNodeWrapper.class,
-	            new SimpleFactory(HumanTaskNodeWrapper.class),
+	            new SimpleWrapperFactory(HumanTaskNodeWrapper.class, "User Task"),
 	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/task.png")), 
 	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/task.png"))
 	        );
@@ -205,7 +206,7 @@ public class BPMNSkinProvider implements SkinProvider {
 	            "Embedded Sub-Process",
 	            "Create a new Embedded Sub-Process",
 	            CompositeContextNodeWrapper.class,
-	            new SimpleFactory(CompositeContextNodeWrapper.class),
+	            new SimpleWrapperFactory(CompositeContextNodeWrapper.class, "Sub-Process"),
 	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/sub_process_expanded.png")), 
 	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/sub_process_expanded.png"))
 	        );
@@ -217,7 +218,7 @@ public class BPMNSkinProvider implements SkinProvider {
 			    "Multiple Instances",
 			    "Create a new Multiple Instances",
 			    ForEachNodeWrapper.class,
-			    new SimpleFactory(ForEachNodeWrapper.class),
+			    new SimpleWrapperFactory(ForEachNodeWrapper.class, "Multiple Instances"),
 			    ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/sub_process_expanded.png")), 
 			    ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/sub_process_expanded.png"))
 			);
@@ -305,6 +306,23 @@ public class BPMNSkinProvider implements SkinProvider {
 
 	public IFigure createForEachNodeFigure() {
 		return new ElementContainerFigure();
+	}
+	
+	private static class SimpleWrapperFactory extends SimpleFactory {
+
+		private String name;
+		
+		public SimpleWrapperFactory(Class<?> clazz, String name) {
+			super(clazz);
+			this.name = name;
+		}
+		
+		public Object getNewObject() {
+			ElementWrapper wrapper = (ElementWrapper) super.getNewObject();
+			wrapper.setName(name);
+			return wrapper;
+		}
+		
 	}
 
 }

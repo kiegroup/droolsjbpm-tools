@@ -42,7 +42,12 @@ public class TimerEditPart extends ElementEditPart {
 
 	protected IFigure createFigure() {
     	SkinProvider skinProvider = SkinManager.getInstance().getSkinProvider(SKIN);
-    	return skinProvider.createTimerNodeFigure();
+    	IFigure result = skinProvider.createTimerNodeFigure();
+    	Rectangle constraint = getElementWrapper().getConstraint();
+    	constraint.width = result.getSize().width;
+    	constraint.height = result.getSize().height;
+    	getElementWrapper().setConstraint(constraint);
+    	return result;
     }
     
     public static class TimerNodeFigure extends AbstractElementFigure {

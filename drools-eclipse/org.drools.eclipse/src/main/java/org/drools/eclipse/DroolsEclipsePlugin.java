@@ -249,7 +249,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
         store.setDefault( IDroolsConstants.DSL_RULE_EDITOR_COMPLETION_FULL_SENTENCES,
                           true );
         store.setDefault( IDroolsConstants.SKIN,
-                          "default" );
+                          "BPMN2" );
         store.setDefault( IDroolsConstants.ALLOW_NODE_CUSTOMIZATION,
         				  false );
         store.setDefault( IDroolsConstants.INTERNAL_API,

@@ -8,7 +8,7 @@
   </header>
 
   <nodes>
-    <start id="1" name="Start" x="100" y="100" />
+    <start id="1" name="Start" x="100" y="100" width="48" height="48" />
   </nodes>
 
   <connections>

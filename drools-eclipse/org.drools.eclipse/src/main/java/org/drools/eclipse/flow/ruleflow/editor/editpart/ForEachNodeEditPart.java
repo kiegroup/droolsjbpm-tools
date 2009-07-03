@@ -15,7 +15,13 @@ package org.drools.eclipse.flow.ruleflow.editor.editpart;
  * limitations under the License.
  */
 
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.editor.editpart.ElementContainerEditPart;
+import org.drools.eclipse.flow.ruleflow.skin.SkinManager;
+import org.drools.eclipse.flow.ruleflow.skin.SkinProvider;
+import org.drools.eclipse.preferences.IDroolsConstants;
+import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.geometry.Rectangle;
 
 /**
  * EditPart for a ForEach node.
@@ -24,6 +30,19 @@ import org.drools.eclipse.flow.common.editor.editpart.ElementContainerEditPart;
  */
 public class ForEachNodeEditPart extends ElementContainerEditPart {
 
+	private String SKIN =
+		DroolsEclipsePlugin.getDefault().getPreferenceStore().getString(IDroolsConstants.SKIN);
+
+    protected IFigure createFigure() {
+    	SkinProvider skinProvider = SkinManager.getInstance().getSkinProvider(SKIN);
+    	IFigure result = skinProvider.createForEachNodeFigure();
+    	Rectangle constraint = getElementWrapper().getConstraint();
+    	constraint.width = result.getSize().width;
+    	constraint.height = result.getSize().height;
+    	getElementWrapper().setConstraint(constraint);
+    	return result;
+    }
+	
 //    public ConnectionAnchor getSourceConnectionAnchor(Request request) {
 //    	Point p = ((DropRequest) request).getLocation();
 //    	Rectangle figureBounds = getFigure().getBounds();

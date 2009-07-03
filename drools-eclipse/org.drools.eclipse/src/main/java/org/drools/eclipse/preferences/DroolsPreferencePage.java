@@ -37,9 +37,10 @@ public class DroolsPreferencePage extends PreferencePage implements IWorkbenchPr
 			"When parsing rules, always cache the result for future use. Warning: when disabled, debugging of rules will not work.");
 		Label label = new Label(composite, SWT.NONE);
 		label.setText("Preferred process skin: ");
-		processSkinCombo = new Combo(composite, SWT.LEFT);
+		processSkinCombo = new Combo(composite, SWT.LEFT | SWT.READ_ONLY );
 		processSkinCombo.add("default");
 		processSkinCombo.add("BPMN");
+		processSkinCombo.add("BPMN2");
 		allowNodeCustomizationCheckBox = createCheckBox(composite,
 			"Allow the customization of process nodes.");
 		label = new Label(composite, SWT.NONE);
@@ -90,6 +91,9 @@ public class DroolsPreferencePage extends PreferencePage implements IWorkbenchPr
         int index = 0;
         if ("BPMN".equals(skin)) {
         	index = 1;
+        }
+        if ("BPMN2".equals(skin)) {
+        	index = 2;
         }
         processSkinCombo.select(index);
         allowNodeCustomizationCheckBox.setSelection(store.getBoolean(IDroolsConstants.ALLOW_NODE_CUSTOMIZATION));
