@@ -10,7 +10,7 @@ import org.eclipse.swt.graphics.Image;
 public class BPMNFaultNodeFigure extends AbstractElementFigure {
     
     private static final Image icon = ImageDescriptor.createFromURL(
-    	DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/large/intermediate_error_10.png")).createImage();
+    	DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/large/intermediate_error.png")).createImage();
         
     public BPMNFaultNodeFigure() {
     	setSize(48, 48);

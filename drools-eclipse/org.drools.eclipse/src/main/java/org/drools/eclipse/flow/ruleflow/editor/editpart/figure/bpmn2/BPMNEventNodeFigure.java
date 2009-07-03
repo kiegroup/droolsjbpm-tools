@@ -9,7 +9,7 @@ import org.eclipse.swt.graphics.Image;
 public class BPMNEventNodeFigure  extends AbstractElementFigure {
     
     private static final Image icon = ImageDescriptor.createFromURL(
-		DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/large/intermediate_message.png")).createImage();
+		DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/large/intermediate_message.png")).createImage();
 
     public BPMNEventNodeFigure() {
     	setSize(48, 48);

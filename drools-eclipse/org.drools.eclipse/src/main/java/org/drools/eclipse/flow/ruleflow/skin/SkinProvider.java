@@ -42,5 +42,7 @@ public interface SkinProvider {
 	IFigure createCompositeNodeFigure();
 
 	IFigure createForEachNodeFigure();
+	
+	String getWorkItemsName();
 
 }

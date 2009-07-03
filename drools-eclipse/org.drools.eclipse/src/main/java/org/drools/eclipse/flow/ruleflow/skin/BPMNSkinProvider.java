@@ -307,4 +307,8 @@ public class BPMNSkinProvider implements SkinProvider {
 		return new ElementContainerFigure();
 	}
 
+    public String getWorkItemsName() {
+        return "Service Tasks";
+    }
+    
 }

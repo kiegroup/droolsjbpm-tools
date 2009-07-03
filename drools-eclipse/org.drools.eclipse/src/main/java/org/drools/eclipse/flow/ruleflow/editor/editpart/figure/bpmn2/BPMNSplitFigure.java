@@ -11,13 +11,13 @@ import org.eclipse.swt.graphics.Image;
 public class BPMNSplitFigure extends AbstractElementFigure implements SplitFigureInterface {
     
     private static final Image ICON_COMPLEX = ImageDescriptor.createFromURL(
-		DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/large/gateway_complex.png")).createImage();
+		DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/large/gateway_complex.png")).createImage();
     private static final Image ICON_AND = ImageDescriptor.createFromURL(
 		DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/large/gateway_parallel.png")).createImage();
     private static final Image ICON_XOR = ImageDescriptor.createFromURL(
 		DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/large/gateway_exclusive.png")).createImage();
     private static final Image ICON_OR = ImageDescriptor.createFromURL(
-		DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/large/gateway_databased_inclusive.png")).createImage();
+		DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/large/gateway_complex.png")).createImage();
             
 	public BPMNSplitFigure() {
 		super.setSize(49, 49);

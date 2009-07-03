@@ -52,14 +52,14 @@ public class RuleFlowPaletteFactory {
         categories.add(skinProvider.createComponentsDrawer());
         String flowNodes = DroolsEclipsePlugin.getDefault().getPluginPreferences().getString(IDroolsConstants.FLOW_NODES);
         if (flowNodes.charAt(12) == '1') {
-            categories.add(createWorkNodesDrawer());
+            categories.add(createWorkNodesDrawer(skinProvider.getWorkItemsName()));
         }
         return categories;
     }
     
-    private static PaletteContainer createWorkNodesDrawer() {
+    private static PaletteContainer createWorkNodesDrawer(String name) {
 
-        PaletteDrawer drawer = new PaletteDrawer("Work Items", null);
+        PaletteDrawer drawer = new PaletteDrawer(name, null);
 
 //        List entries = new ArrayList();
 //

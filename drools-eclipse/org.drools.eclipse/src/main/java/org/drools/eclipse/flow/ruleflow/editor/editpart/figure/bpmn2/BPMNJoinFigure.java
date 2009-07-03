@@ -11,7 +11,7 @@ import org.eclipse.swt.graphics.Image;
 public class BPMNJoinFigure extends AbstractElementFigure implements JoinFigureInterface {
     
     private static final Image ICON_COMPLEX = ImageDescriptor.createFromURL(
-		DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/large/gateway_complex.png")).createImage();
+		DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/large/gateway_complex.png")).createImage();
     private static final Image ICON_AND = ImageDescriptor.createFromURL(
 		DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/large/gateway_parallel.png")).createImage();
     private static final Image ICON_XOR = ImageDescriptor.createFromURL(

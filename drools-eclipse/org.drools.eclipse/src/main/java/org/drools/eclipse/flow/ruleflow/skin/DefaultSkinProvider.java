@@ -307,4 +307,8 @@ public class DefaultSkinProvider implements SkinProvider {
 		return new ElementContainerFigure();
 	}
 
+    public String getWorkItemsName() {
+        return "Work Items";
+    }
+    
 }
