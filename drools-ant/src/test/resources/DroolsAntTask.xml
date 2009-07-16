@@ -30,7 +30,7 @@
 	<target name="dslRules" >
 		<compiler 
 			srcdir="${eclipsepath}src/test/resources/rules" 		
-			tofile="${eclipsepath}target/cheese.rules.dpkg"
+			tofile="${eclipsepath}target/cheese.rules.pkg"
 			classpathref="cheese.classpath" 
 			binformat="package" > 
 			<include name="*.dslr" />
@@ -40,7 +40,7 @@
 	<target name="dslRulesKnowledge" >
 		<compiler 
 			srcdir="${eclipsepath}src/test/resources/rules" 		
-			tofile="${eclipsepath}target/cheese.rules.dpkg"
+			tofile="${eclipsepath}target/cheese.rules.pkg"
 			classpathref="cheese.classpath" 
 			binformat="package"
 			bintype="knowledge" > 
