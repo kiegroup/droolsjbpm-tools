@@ -19,8 +19,12 @@ public class CompositeNodeEditPart extends ElementContainerEditPart {
     	SkinProvider skinProvider = SkinManager.getInstance().getSkinProvider(SKIN);
     	IFigure result = skinProvider.createCompositeNodeFigure();
     	Rectangle constraint = getElementWrapper().getConstraint();
-    	constraint.width = result.getSize().width;
-    	constraint.height = result.getSize().height;
+    	if (constraint.width == -1) {
+    		constraint.width = result.getSize().width;
+    	}
+    	if (constraint.height == -1) {
+    		constraint.height = result.getSize().height;
+    	}
     	getElementWrapper().setConstraint(constraint);
     	return result;
     }

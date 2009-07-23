@@ -66,8 +66,12 @@ public class WorkItemEditPart extends ElementEditPart {
     	SkinProvider skinProvider = SkinManager.getInstance().getSkinProvider(SKIN);
     	WorkItemFigureInterface figure = skinProvider.createWorkItemFigure();
     	Rectangle constraint = getElementWrapper().getConstraint();
-    	constraint.width = figure.getSize().width;
-    	constraint.height = figure.getSize().height;
+    	if (constraint.width == -1) {
+    		constraint.width = figure.getSize().width;
+    	}
+    	if (constraint.height == -1) {
+    		constraint.height = figure.getSize().height;
+    	}
     	getElementWrapper().setConstraint(constraint);
         String icon = null;
         WorkDefinition workDefinition = getWorkDefinition();
