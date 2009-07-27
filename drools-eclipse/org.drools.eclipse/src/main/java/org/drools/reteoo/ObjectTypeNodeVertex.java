@@ -56,4 +56,8 @@ public class ObjectTypeNodeVertex extends BaseVertex {
     public String getObjectType() {
         return node.getObjectType().toString();
     }
+    
+    public String getExpirationOffset() {
+        return String.valueOf( node.getExpirationOffset() );
+    }
 }
