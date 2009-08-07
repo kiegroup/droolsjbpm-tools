@@ -73,9 +73,23 @@ public class WorkingMemoryViewContentProvider extends DroolsDebugViewContentProv
                 result.add(new MyJavaVariable("[" + i + "]", vals[i]));
             }
             
+//            objects = DebugUtil.getValueByExpression("return iterateNonDefaultEntryPointObjectsToList().toArray();", stackObj);
+//
+//            if (objects instanceof IJavaArray) {
+//                IJavaArray array = (IJavaArray) objects;
+//	            vals = array.getValues();
+//	            for ( int i = 0; i < vals.length; i++ ) {
+//	            	vals = array.getValues();
+//	            	name = name.replace(' ', '_');
+//	            	result.add(new MyVariableWrapper(name, 
+//	            		new ObjectWrapper((IJavaObject) agendaGroup,
+//	        				(IJavaVariable[]) activationsResult.toArray(new IJavaVariable[activationsResult.size()]))));
+//	            }
+//            }
             
             return (IVariable[]) result.toArray(new IVariable[0]);
         }
+        
         return null;
     }
     

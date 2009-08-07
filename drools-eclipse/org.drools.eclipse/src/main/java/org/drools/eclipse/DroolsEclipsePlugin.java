@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.drools.bpmn2.xml.BPMNSemanticModule;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
@@ -47,6 +48,7 @@ import org.drools.process.core.Process;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.util.StringUtils;
+import org.drools.xml.SemanticModules;
 import org.drools.xml.XmlProcessReader;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -513,7 +515,10 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                 }
                 configuration.setClassLoader( newLoader );
                 
-                XmlProcessReader xmlReader = new XmlProcessReader( configuration.getSemanticModules() );
+                SemanticModules modules = configuration.getSemanticModules();
+                modules.addSemanticModule( new BPMNSemanticModule() );
+                
+                XmlProcessReader xmlReader = new XmlProcessReader( modules );
                 Process process = (Process) xmlReader.read( new StringReader( input ) );
                 if ( process != null ) {
                     return parseProcess( process,

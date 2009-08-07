@@ -27,9 +27,15 @@ import org.drools.eclipse.DRLInfo;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.ProcessInfo;
 import org.drools.eclipse.preferences.IDroolsConstants;
+import org.drools.eclipse.util.DroolsRuntime;
+import org.drools.eclipse.util.DroolsRuntimeManager;
+import org.drools.eclipse.wizard.project.NewDroolsProjectWizard;
 import org.drools.guvnor.client.modeldriven.brl.RuleModel;
+import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.guvnor.server.util.BRDRLPersistence;
 import org.drools.guvnor.server.util.BRXMLPersistence;
+import org.drools.guvnor.server.util.GuidedDTDRLPersistence;
+import org.drools.guvnor.server.util.GuidedDTXMLPersistence;
 import org.drools.lang.ExpanderException;
 import org.drools.template.parser.DecisionTableParseException;
 import org.eclipse.core.resources.IFile;
@@ -90,6 +96,25 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
     
     protected void fullBuild(IProgressMonitor monitor)
             throws CoreException {
+    	removeProblemsFor(getProject());
+    	IJavaProject project = JavaCore.create(getProject());
+    	IClasspathEntry[] classpathEntries = project.getRawClasspath();
+    	for (int i = 0; i < classpathEntries.length; i++) {
+    		if (NewDroolsProjectWizard.DROOLS_CLASSPATH_CONTAINER_PATH.equals(classpathEntries[i].getPath().toString())) {
+    			String[] jars = DroolsRuntimeManager.getDroolsRuntimeJars(getProject());
+    			if (jars == null || jars.length == 0) {
+    				String runtime = DroolsRuntimeManager.getDroolsRuntime(getProject());
+    				IMarker marker = getProject().createMarker(IDroolsModelMarker.DROOLS_MODEL_PROBLEM_MARKER);
+    				if (runtime == null) {
+    					marker.setAttribute(IMarker.MESSAGE, "Could not find default Drools runtime");
+    				} else {
+    					marker.setAttribute(IMarker.MESSAGE, "Could not find Drools runtime " + runtime);
+    				}
+    	            marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+    	            return;
+    			}
+			}
+    	}
         getProject().accept(new DroolsBuildVisitor());
     }
     
@@ -118,11 +143,11 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
     
     protected boolean parseResource(IResource res, boolean clean) {
         try {
-            IJavaProject project = JavaCore.create(res.getProject());
             // exclude .guvnorinfo files
             if (".guvnorinfo".equals(res.getName())) {
             	return false;
             }
+            IJavaProject project = JavaCore.create(res.getProject());
             // exclude files that are located in the output directory,
             // unless the ouput directory is the same as the project location
             if (!project.getOutputLocation().equals(project.getPath())
@@ -194,6 +219,20 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             }
             return false;
         } else if (res instanceof IFile && "rf".equals(res.getFileExtension())) {
+            removeProblemsFor(res);
+            try {
+            	if (clean) {
+            		DroolsEclipsePlugin.getDefault().invalidateResource(res);
+            	}
+            	DroolsBuildMarker[] markers = parseRuleFlowFile((IFile) res);
+		        for (int i = 0; i < markers.length; i++) {
+		        	createMarker(res, markers[i].getText(), markers[i].getLine());
+		        }
+            } catch (Throwable t) {
+            	createMarker(res, t.getMessage(), -1);
+            }
+            return false;
+        } else if (res instanceof IFile && "bpmn".equals(res.getFileExtension())) {
             removeProblemsFor(res);
             try {
             	if (clean) {
@@ -306,6 +345,37 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
 			
 	        DRLInfo drlInfo =
             	DroolsEclipsePlugin.getDefault().parseBRLResource(drl, file);
+            // parser errors
+            markParseErrors(markers, drlInfo.getParserErrors());  
+            markOtherErrors(markers, drlInfo.getBuilderErrors());
+        } catch (DroolsParserException e) {
+            // we have an error thrown from DrlParser
+            Throwable cause = e.getCause();
+            if (cause instanceof RecognitionException ) {
+                RecognitionException recogErr = (RecognitionException) cause;
+                markers.add(new DroolsBuildMarker(recogErr.getMessage(), recogErr.line)); //flick back the line number
+            }
+        } catch (Exception t) {
+        	String message = t.getMessage();
+            if (message == null || message.trim().equals( "" )) {
+                message = "Error: " + t.getClass().getName();
+            }
+            markers.add(new DroolsBuildMarker(message));
+        }
+        return (DroolsBuildMarker[]) markers.toArray(new DroolsBuildMarker[markers.size()]);
+    }
+    
+    private DroolsBuildMarker[] parseGDSTFile(IFile file) {
+    	List markers = new ArrayList();
+		try {
+			String gdst = convertToString(file.getContents());
+			GuidedDecisionTable dt = GuidedDTXMLPersistence.getInstance().unmarshal(gdst);
+			String drl = GuidedDTDRLPersistence.getInstance().marshal(dt);
+			
+			// TODO pass this through DSL converter in case brl is based on dsl
+			
+	        DRLInfo drlInfo =
+            	DroolsEclipsePlugin.getDefault().parseGDSTResource(drl, file);
             // parser errors
             markParseErrors(markers, drlInfo.getParserErrors());  
             markOtherErrors(markers, drlInfo.getBuilderErrors());

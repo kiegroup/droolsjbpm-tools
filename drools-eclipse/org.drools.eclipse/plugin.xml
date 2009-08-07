@@ -462,6 +462,18 @@
    </extension>
 
    <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="BPMN2 Editor"
+            extensions="bpmn, bpmn2"
+            icon="icons/process.gif"
+            contributorClass="org.drools.eclipse.flow.common.editor.GenericActionBarContributor"
+            class="org.drools.eclipse.flow.bpmn2.editor.BPMNModelEditor"
+            id="org.drools.eclipse.flow.bpmn2.editor.BPMNModelEditor">
+      </editor>
+   </extension>
+   
+   <extension
          point = "org.eclipse.ui.editorActions">
       <editorContribution
             id="org.drools.eclipse.flow.ruleflow.editor.action.CheckRuleFlowAction"
@@ -511,6 +523,42 @@
             class="org.drools.eclipse.flow.common.editor.action.ExportImageAction"
          />
       </editorContribution>
+      <editorContribution
+            id="org.drools.eclipse.flow.common.editor.action.VerticalAutoLayoutAction"
+            targetID="org.drools.eclipse.flow.bpmn2.editor.BPMNModelEditor">
+	     <action
+	        id="org.drools.eclipse.flow.common.editor.action.VerticalAutoLayoutAction"
+            label="Auto Layout (Vertical)"
+	        toolbarPath="Drools"
+            icon="icons/processV.gif"
+            tooltip="Auto layout the workflow (vertical)"
+            class="org.drools.eclipse.flow.common.editor.action.VerticalAutoLayoutAction"
+         />
+      </editorContribution>
+      <editorContribution
+            id="org.drools.eclipse.flow.common.editor.action.HorizontalAutoLayoutAction"
+            targetID="org.drools.eclipse.flow.bpmn2.editor.BPMNModelEditor">
+	     <action
+	        id="org.drools.eclipse.flow.common.editor.action.HorizontalAutoLayoutAction"
+            label="Auto Layout (Horizontal)"
+	        toolbarPath="Drools"
+            icon="icons/process.gif"
+            tooltip="Auto layout the workflow (horizontal)"
+            class="org.drools.eclipse.flow.common.editor.action.HorizontalAutoLayoutAction"
+         />
+      </editorContribution>
+      <editorContribution
+            id="org.drools.eclipse.flow.common.editor.action.ExportImageAction"
+            targetID="org.drools.eclipse.flow.bpmn2.editor.BPMNModelEditor">
+	     <action
+	        id="org.drools.eclipse.flow.common.editor.action.ExportImageAction"
+            label="Export Image"
+	        toolbarPath="Drools"
+            icon="icons/export.gif"
+            tooltip="Export image (PNG)"
+            class="org.drools.eclipse.flow.common.editor.action.ExportImageAction"
+         />
+      </editorContribution>
    </extension>
 
    <extension
@@ -523,6 +571,19 @@
 	      id = "org.drools.eclipse.flow.ruleflow.NewRuleFlowFileWizard"
       	  name = "RuleFlow File"
 	      class="org.drools.eclipse.flow.ruleflow.NewRuleFlowFileWizard"
+          category="org.drools.eclipse.new"
+	      icon="icons/process.gif">
+    	<description>A wizard that creates a new ruleflow file</description>
+	    <selection class="org.eclipse.core.resources.IResource"/>
+	  </wizard>
+   </extension>
+
+   <extension
+         point = "org.eclipse.ui.newWizards">
+ 	  <wizard
+	      id = "org.drools.eclipse.flow.bpmn2.NewBPMNProcessFileWizard"
+      	  name = "BPMN2 Process"
+	      class="org.drools.eclipse.flow.bpmn2.NewBPMNProcessFileWizard"
           category="org.drools.eclipse.new"
 	      icon="icons/process.gif">
     	<description>A wizard that creates a new ruleflow file</description>
