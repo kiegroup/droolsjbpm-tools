@@ -12,7 +12,7 @@ import org.drools.rule.Package;
 /**
  * This is a sample file to launch a rule package from a rule source file.
  */
-public class DroolsTest {
+public class ProcessTest {
 
     public static final void main(String[] args) {
         try {

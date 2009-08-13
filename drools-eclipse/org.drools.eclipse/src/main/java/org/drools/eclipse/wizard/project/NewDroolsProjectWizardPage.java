@@ -89,7 +89,7 @@ public class NewDroolsProjectWizardPage extends WizardPage {
 			}
 		});
 		addSampleRuleFlowButton = createCheckBox(parent,
-			"Add a sample RuleFlow file to this project.");
+			"Add a sample HelloWorld process file to this project.");
 		addSampleRuleFlowButton.setSelection(addSampleRuleFlow);
 		addSampleRuleFlowButton.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) {
@@ -100,7 +100,7 @@ public class NewDroolsProjectWizardPage extends WizardPage {
 			}
 		});
 		addSampleJavaRuleFlowCodeButton = createCheckBox(parent,
-			"Add a sample Java class for loading and executing the RuleFlow.");
+			"Add a sample Java class for loading and executing the HelloWorld process.");
 		addSampleJavaRuleFlowCodeButton.setSelection(addSampleJavaRuleFlowCode);
 		addSampleJavaRuleFlowCodeButton.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) {

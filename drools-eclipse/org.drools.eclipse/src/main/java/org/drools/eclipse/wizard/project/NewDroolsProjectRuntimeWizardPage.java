@@ -21,11 +21,12 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
 
 	public static final String DROOLS4 = "Drools 4.x";
-	public static final String DROOLS5 = "Drools 5.x";
+	public static final String DROOLS5 = "Drools 5.0.x";
+    public static final String DROOLS5_1 = "Drools 5.1.x";
 	
 	private boolean isDefaultRuntime = true;
 	private String selectedRuntime;
-	private String generationType = DROOLS5;
+	private String generationType = DROOLS5_1;
 	private Button projectSpecificRuntime;
 	private Combo droolsRuntimeCombo;
 	private Combo droolsGenerateCombo;
@@ -106,7 +107,8 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
         generateLabel.setText("Generate code compatible with: ");
         droolsGenerateCombo = new Combo(subPanel, SWT.READ_ONLY);
         droolsGenerateCombo.add("Drools 4.x");
-        droolsGenerateCombo.add("Drools 5.x");
+        droolsGenerateCombo.add("Drools 5.0.x");
+        droolsGenerateCombo.add("Drools 5.1.x");
         droolsGenerateCombo.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) {
 				generationType = droolsGenerateCombo.getText();

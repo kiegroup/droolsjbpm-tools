@@ -411,7 +411,7 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
 	        } else {
 	        	file.setContents(inputstream, true, false, monitor);
 	        }
-    	} else {
+    	} else if (runtimePage.getGenerationType() == NewDroolsProjectRuntimeWizardPage.DROOLS5) {
 	        String fileName = "org/drools/eclipse/wizard/project/ruleflow.rf.template";
 	        IFolder folder = project.getProject().getFolder("src/main/rules");
 	        IFile file = folder.getFile("ruleflow.rf");
@@ -421,6 +421,16 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
 	        } else {
 	        	file.setContents(inputstream, true, false, monitor);
 	        }
+    	} else {
+    	    String fileName = "org/drools/eclipse/wizard/project/sample.bpmn.template";
+            IFolder folder = project.getProject().getFolder("src/main/rules");
+            IFile file = folder.getFile("sample.bpmn");
+            InputStream inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
+            if (!file.exists()) {
+                file.create(inputstream, true, monitor);
+            } else {
+                file.setContents(inputstream, true, false, monitor);
+            }
     	}
     }
 
@@ -433,8 +443,10 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
         String s;
         if (runtimePage.getGenerationType() == NewDroolsProjectRuntimeWizardPage.DROOLS4) {
     		s = "org/drools/eclipse/wizard/project/RuleFlowLauncherSample_4.java.template";
-        } else {
+        } else if (runtimePage.getGenerationType() == NewDroolsProjectRuntimeWizardPage.DROOLS5) {
         	s = "org/drools/eclipse/wizard/project/RuleFlowLauncherSample.java.template";
+        } else {
+            s = "org/drools/eclipse/wizard/project/ProcessLauncherSample_bpmn.java.template";
         }
         IFolder folder = project.getProject().getFolder("src/main/java");
         IPackageFragmentRoot packageFragmentRoot = project
@@ -443,7 +455,7 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
                 .createPackageFragment("com.sample", true, null);
         InputStream inputstream = getClass().getClassLoader()
                 .getResourceAsStream(s);
-        packageFragment.createCompilationUnit("RuleFlowTest.java", new String(
+        packageFragment.createCompilationUnit("ProcessTest.java", new String(
                 readStream(inputstream)), true, null);
     }
 
