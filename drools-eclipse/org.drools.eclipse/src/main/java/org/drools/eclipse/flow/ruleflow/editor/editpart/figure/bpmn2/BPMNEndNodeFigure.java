@@ -2,15 +2,18 @@ package org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn2;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.editor.editpart.figure.AbstractElementFigure;
+import org.drools.eclipse.flow.ruleflow.editor.editpart.EndNodeEditPart.EndNodeFigureInterface;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 
-public class BPMNEndNodeFigure extends AbstractElementFigure {
+public class BPMNEndNodeFigure extends AbstractElementFigure implements EndNodeFigureInterface {
     
-    private static final Image icon = ImageDescriptor.createFromURL(
+    private static final Image ICON_TERMINATE = ImageDescriptor.createFromURL(
     	DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/large/end_terminate.png")).createImage();
+    private static final Image ICON_EMPTY = ImageDescriptor.createFromURL(
+        	DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/large/end_empty.png")).createImage();
         
     public BPMNEndNodeFigure() {
     	setSize(48, 48);
@@ -25,7 +28,7 @@ public class BPMNEndNodeFigure extends AbstractElementFigure {
     }
     
     protected void customizeFigure() {
-        setIcon(icon);
+        setIcon(ICON_TERMINATE);
     }
     
     public void setSelected(boolean b) {
@@ -34,4 +37,8 @@ public class BPMNEndNodeFigure extends AbstractElementFigure {
         repaint();
     }
     
+	public void setTerminate(boolean terminate) {
+    	setIcon(terminate ? ICON_TERMINATE : ICON_EMPTY);
+	}
+
 }

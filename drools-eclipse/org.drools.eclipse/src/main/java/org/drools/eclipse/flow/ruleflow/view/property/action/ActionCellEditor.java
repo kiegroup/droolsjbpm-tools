@@ -58,7 +58,7 @@ public class ActionCellEditor extends BeanDialogCellEditor<DroolsAction> {
     }
     
 	protected String getLabelText(Object value) {
-    	if (actionNode == null || actionNode.getAction() == null) {
+    	if (actionNode == null || actionNode.getAction() == null || actionNode.getAction().toString() == null) {
     		return "";
     	}
         return actionNode.getAction().toString();

@@ -2,12 +2,13 @@ package org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.editor.editpart.figure.AbstractElementFigure;
+import org.drools.eclipse.flow.ruleflow.editor.editpart.EndNodeEditPart.EndNodeFigureInterface;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 
-public class BPMNEndNodeFigure extends AbstractElementFigure {
+public class BPMNEndNodeFigure extends AbstractElementFigure implements EndNodeFigureInterface {
     
     private static final Image icon = ImageDescriptor.createFromURL(
     	DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/large/end_terminate.png")).createImage();
@@ -34,4 +35,8 @@ public class BPMNEndNodeFigure extends AbstractElementFigure {
         repaint();
     }
     
+	public void setTerminate(boolean terminate) {
+		// Do nothing
+	}
+
 }

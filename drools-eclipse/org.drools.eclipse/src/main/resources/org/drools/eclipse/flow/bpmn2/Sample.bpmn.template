@@ -16,7 +16,7 @@
     <!-- process variables -->
 
     <!-- nodes -->
-    <startEvent id="StartProcess" g:x="16" g:y="16" g:width="48" g:height="48" />
+    <startEvent id="_1" name="StartProcess" g:x="16" g:y="16" g:width="48" g:height="48" />
 
     <!-- connections -->
 
