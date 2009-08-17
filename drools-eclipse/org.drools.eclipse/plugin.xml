@@ -635,6 +635,37 @@
             class="org.drools.eclipse.util.SOAPlatform4RuntimeRecognizer">
       </recognizer>
    </extension>
+   <extension
+         point="org.eclipse.ltk.core.refactoring.moveParticipants">
+      <moveParticipant
+            class="org.drools.eclipse.refactoring.RuleIFileMoveParticipant"
+            id="org.drools.eclipse.refactoring.moveParticipant"
+            name="RuleMoveParticipant">
+         <enablement></enablement>
+      </moveParticipant>
+   </extension>
+   <extension
+         point="org.eclipse.ltk.core.refactoring.renameParticipants">
+      <renameParticipant
+            class="org.drools.eclipse.refactoring.RuleIFileRenameParticipant"
+            id="org.drools.eclipse.refactoring.renameIFileParticipant"
+            name="RuleIFileRenameParticipant">
+            <enablement>
+               <instanceof
+                     value="org.eclipse.core.resources.IFile">
+               </instanceof>
+      		</enablement>
+      </renameParticipant>
+      <renameParticipant
+            class="org.drools.eclipse.refactoring.RuleSourceFieldRenameParticipant"
+            id="org.drools.eclipse.refactoring.renameSourceFieldParticipant"
+            name="RuleSourceFieldRenameParticipant">
+         <enablement>
+            <instanceof
+                  value="org.eclipse.jdt.internal.core.SourceField">
+            </instanceof></enablement>
+      </renameParticipant>
+   </extension>
    
    <!-- tabbed properties
    <extension point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
