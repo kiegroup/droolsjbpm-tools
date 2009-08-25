@@ -383,7 +383,8 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
     private void createRuleFlow(IJavaProject project, IProgressMonitor monitor)
             throws CoreException {
 
-    	if (runtimePage.getGenerationType() == NewDroolsProjectRuntimeWizardPage.DROOLS4) {
+        String generationType = runtimePage.getGenerationType();
+    	if (NewDroolsProjectRuntimeWizardPage.DROOLS4.equals(generationType)) {
     		String fileName = "org/drools/eclipse/wizard/project/ruleflow_4.rf.template";
 	        IFolder folder = project.getProject().getFolder("src/main/rules");
 	        IFile file = folder.getFile("ruleflow.rf");
@@ -411,7 +412,7 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
 	        } else {
 	        	file.setContents(inputstream, true, false, monitor);
 	        }
-    	} else if (runtimePage.getGenerationType() == NewDroolsProjectRuntimeWizardPage.DROOLS5) {
+    	} else if (NewDroolsProjectRuntimeWizardPage.DROOLS5.equals(generationType)) {
 	        String fileName = "org/drools/eclipse/wizard/project/ruleflow.rf.template";
 	        IFolder folder = project.getProject().getFolder("src/main/rules");
 	        IFile file = folder.getFile("ruleflow.rf");
@@ -441,9 +442,10 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
             throws JavaModelException, IOException {
         
         String s;
-        if (runtimePage.getGenerationType() == NewDroolsProjectRuntimeWizardPage.DROOLS4) {
+        String generationType = runtimePage.getGenerationType();
+        if (NewDroolsProjectRuntimeWizardPage.DROOLS4.equals(generationType)) {
     		s = "org/drools/eclipse/wizard/project/RuleFlowLauncherSample_4.java.template";
-        } else if (runtimePage.getGenerationType() == NewDroolsProjectRuntimeWizardPage.DROOLS5) {
+        } else if (NewDroolsProjectRuntimeWizardPage.DROOLS5.equals(generationType)) {
         	s = "org/drools/eclipse/wizard/project/RuleFlowLauncherSample.java.template";
         } else {
             s = "org/drools/eclipse/wizard/project/ProcessLauncherSample_bpmn.java.template";

@@ -118,6 +118,7 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
 			}
         });
         droolsGenerateCombo.select(1);
+        generationType = DROOLS5;
         gridData = new GridData();
         gridData.grabExcessHorizontalSpace = true;
         gridData.horizontalAlignment = GridData.FILL;
