@@ -263,6 +263,35 @@ public class DroolsVMDebugger extends StandardVMDebugger {
 		}
 	}
 	
+	protected static String renderCommandLine(String[] commandLine) {
+        if (commandLine.length < 1)
+            return ""; //$NON-NLS-1$
+        StringBuffer buf= new StringBuffer();
+        for (int i= 0; i < commandLine.length; i++) {
+            buf.append(' ');
+            char[] characters= commandLine[i].toCharArray();
+            StringBuffer command= new StringBuffer();
+            boolean containsSpace= false;
+            for (int j = 0; j < characters.length; j++) {
+                char character= characters[j];
+                if (character == '\"') {
+                    command.append('\\');
+                } else if (character == ' ') {
+                    containsSpace = true;
+                }
+                command.append(character);
+            }
+            if (containsSpace) {
+                buf.append('\"');
+                buf.append(command.toString());
+                buf.append('\"');
+            } else {
+                buf.append(command.toString());
+            }
+        }   
+        return buf.toString();
+    }
+	
 	private double getJavaVersion() {
 		LibraryInfo libInfo = LaunchingPlugin.getLibraryInfo(fVMInstance.getInstallLocation().getAbsolutePath());
 		if (libInfo == null) {
