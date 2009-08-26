@@ -8,6 +8,7 @@ import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.debug.internal.ui.VariablesViewModelPresentation;
 import org.eclipse.debug.internal.ui.contexts.DebugContextManager;
+import org.eclipse.debug.internal.ui.views.variables.VariablesView;
 import org.eclipse.debug.ui.AbstractDebugView;
 import org.eclipse.debug.ui.IDebugModelPresentation;
 import org.eclipse.debug.ui.IDebugUIConstants;
@@ -198,8 +199,14 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
 	}
 	
     public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-        if (!isAvailable()) {
+    	if (!isAvailable()) {
             return;
+        }
+    	// In Eclipse 3.5.x, an additional selection changed event with selection null is
+    	// generated when clicking on a process instance in the process instance view
+    	// replacing this null by the actual selected element in those cases
+        if (part instanceof VariablesView) {
+        	selection = ((VariablesView) part).getCurrentSelection();
         }
         if (selection == null) {
             setViewerInput(null);
