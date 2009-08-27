@@ -179,7 +179,7 @@ public class DroolsVMDebugger extends StandardVMDebugger {
 				}				
 				
 				IProcess process= newProcess(launch, p, renderProcessLabel(cmdLine), getDefaultProcessMap());
-				process.setAttribute(IProcess.ATTR_CMDLINE, renderCommandLine(cmdLine));
+				process.setAttribute(IProcess.ATTR_CMDLINE, renderCommandLineInternal(cmdLine));
 				subMonitor.worked(1);
 				subMonitor.subTask(LaunchingMessages.StandardVMDebugger_Establishing_debug_connection____5); 
 				boolean retry= false;
@@ -263,7 +263,7 @@ public class DroolsVMDebugger extends StandardVMDebugger {
 		}
 	}
 	
-	protected static String renderCommandLine(String[] commandLine) {
+	private String renderCommandLineInternal(String[] commandLine) {
         if (commandLine.length < 1)
             return ""; //$NON-NLS-1$
         StringBuffer buf= new StringBuffer();
