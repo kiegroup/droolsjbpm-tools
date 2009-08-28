@@ -211,11 +211,7 @@ public class DroolsRuntimesBlock implements ISelectionProvider {
 		IStructuredSelection selection = (IStructuredSelection) droolsRuntimesList.getSelection();
 		int selectionCount= selection.size();
 		fEditButton.setEnabled(selectionCount == 1);
-		if (selectionCount > 0 && selectionCount < droolsRuntimesList.getTable().getItemCount()) {
-			fRemoveButton.setEnabled(true);
-		} else {
-			fRemoveButton.setEnabled(false);
-		}
+		fRemoveButton.setEnabled(selectionCount > 0);
 	}
 	
 	public Control getControl() {

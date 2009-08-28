@@ -59,7 +59,6 @@ public class DroolsRuntimesPreferencePage extends PreferencePage implements IWor
 			}
 		}
 		if (droolsRuntimesBlock.getDefaultDroolsRuntime() == null) {
-			setValid(false);
 			setErrorMessage("Select a default Drools Runtime");
 		}
 		Control control = droolsRuntimesBlock.getControl();
@@ -72,10 +71,8 @@ public class DroolsRuntimesPreferencePage extends PreferencePage implements IWor
 			public void selectionChanged(SelectionChangedEvent event) {
 				DroolsRuntime runtime = droolsRuntimesBlock.getDefaultDroolsRuntime();
 				if (runtime == null) {
-					setValid(false);
 					setErrorMessage("Select a default Drools Runtime"); 
 				} else {
-					setValid(true);
 					setErrorMessage(null);
 				}
 			}
