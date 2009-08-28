@@ -240,7 +240,7 @@ public class DroolsRuntimesBlock implements ISelectionProvider {
 	}
 	
 	private void addDroolsRuntime() {
-		DroolsRuntimeDialog dialog = new DroolsRuntimeDialog(getShell());
+		DroolsRuntimeDialog dialog = new DroolsRuntimeDialog(getShell(), droolsRuntimes);
 		if (dialog.open() == Window.OK) {
 			DroolsRuntime result = dialog.getResult();
 			if (result != null) {
@@ -258,7 +258,7 @@ public class DroolsRuntimesBlock implements ISelectionProvider {
 		if (runtime == null) {
 			return;
 		}
-		DroolsRuntimeDialog dialog = new DroolsRuntimeDialog(getShell());
+		DroolsRuntimeDialog dialog = new DroolsRuntimeDialog(getShell(), droolsRuntimes);
 		dialog.setDroolsRuntime(runtime);
 		if (dialog.open() == Window.OK) {
 			DroolsRuntime result = dialog.getResult();
