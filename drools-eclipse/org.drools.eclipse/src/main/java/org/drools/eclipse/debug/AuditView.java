@@ -23,6 +23,7 @@ import org.drools.audit.event.RuleFlowNodeLogEvent;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
 import org.drools.eclipse.debug.actions.DeleteLogAction;
+import org.drools.eclipse.debug.actions.FileAuditDropAdapter;
 import org.drools.eclipse.debug.actions.OpenLogAction;
 import org.drools.eclipse.debug.actions.RefreshLogAction;
 import org.drools.eclipse.debug.actions.ShowEventCauseAction;
@@ -39,6 +40,9 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.FileTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -70,6 +74,11 @@ public class AuditView extends AbstractDebugView {
 				getViewer().refresh();
 			}
         });
+        
+        int ops = DND.DROP_COPY | DND.DROP_MOVE;
+        Transfer[] transfers = new Transfer[] { FileTransfer.getInstance()};
+        variablesViewer.addDropSupport(ops, transfers, new FileAuditDropAdapter(variablesViewer,this));
+        
         return variablesViewer;
     }
     
