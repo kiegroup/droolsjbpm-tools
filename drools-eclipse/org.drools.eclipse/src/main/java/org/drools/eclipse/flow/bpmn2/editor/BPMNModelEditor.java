@@ -20,15 +20,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.bpmn2.xml.BPMNDISemanticModule;
 import org.drools.bpmn2.xml.BPMNSemanticModule;
+import org.drools.bpmn2.xml.BPMN2SemanticModule;
 import org.drools.bpmn2.xml.XmlBPMNProcessDumper;
-import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.WorkItemDefinitions;
 import org.drools.eclipse.flow.common.editor.GenericModelEditor;
@@ -44,8 +43,6 @@ import org.drools.process.core.WorkDefinitionExtension;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.xml.SemanticModules;
 import org.drools.xml.XmlProcessReader;
-import org.drools.xml.XmlRuleFlowProcessDumper;
-import org.drools.xml.processes.RuleFlowMigrator;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPartFactory;
@@ -184,6 +181,8 @@ public class BPMNModelEditor extends GenericModelEditor {
     		InputStreamReader isr = new InputStreamReader(is);
     		SemanticModules semanticModules = new SemanticModules();
     		semanticModules.addSemanticModule(new BPMNSemanticModule());
+            semanticModules.addSemanticModule(new BPMN2SemanticModule());
+            semanticModules.addSemanticModule(new BPMNDISemanticModule());
     		XmlProcessReader xmlReader = new XmlProcessReader(semanticModules);
     		
     		try 

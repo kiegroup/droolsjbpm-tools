@@ -14,13 +14,11 @@ import org.drools.eclipse.flow.ruleflow.core.ConnectionWrapperFactory;
 import org.drools.eclipse.flow.ruleflow.core.EndNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.EventNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.FaultNodeWrapper;
-import org.drools.eclipse.flow.ruleflow.core.ForEachNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.HumanTaskNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.JoinWrapper;
 import org.drools.eclipse.flow.ruleflow.core.RuleSetNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.SplitWrapper;
 import org.drools.eclipse.flow.ruleflow.core.StartNodeWrapper;
-import org.drools.eclipse.flow.ruleflow.core.StateNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.SubProcessWrapper;
 import org.drools.eclipse.flow.ruleflow.core.TimerWrapper;
 import org.drools.eclipse.flow.ruleflow.editor.editpart.JoinEditPart.JoinFigureInterface;
@@ -153,29 +151,29 @@ public class BPMN2SkinProvider implements SkinProvider {
 	        entries.add(combined);
         }
                       
-//        if (flowNodes.charAt(6) == '1') {
-//	        combined = new CombinedTemplateCreationEntry(
-//	            "Timer Event",
-//	            "Create a new Timer Event",
-//	            TimerWrapper.class,
-//	            new SimpleWrapperFactory(TimerWrapper.class, "Timer"),
-//	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/intermediate_event_empty.png")), 
-//	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/intermediate_event_empty.png"))
-//	        );
-//	        entries.add(combined);
-//        }
+        if (flowNodes.charAt(6) == '1') {
+	        combined = new CombinedTemplateCreationEntry(
+	            "Timer Event",
+	            "Create a new Timer Event",
+	            TimerWrapper.class,
+	            new SimpleWrapperFactory(TimerWrapper.class, "Timer"),
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/intermediate_event_empty.png")), 
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/intermediate_event_empty.png"))
+	        );
+	        entries.add(combined);
+        }
                       
-//        if (flowNodes.charAt(7) == '1') {
-//	    	combined = new CombinedTemplateCreationEntry(
-//	            "Error Event",
-//	            "Create a new Error Event",
-//	            FaultNodeWrapper.class,
-//	            new SimpleWrapperFactory(FaultNodeWrapper.class, "Error"),
-//	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/intermediate_event_error.png")), 
-//	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/intermediate_event_error.png"))
-//	        );
-//	        entries.add(combined);
-//        }
+        if (flowNodes.charAt(7) == '1') {
+	    	combined = new CombinedTemplateCreationEntry(
+	            "Error Event",
+	            "Create a new Error Event",
+	            FaultNodeWrapper.class,
+	            new SimpleWrapperFactory(FaultNodeWrapper.class, "Error"),
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/intermediate_event_error.png")), 
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/intermediate_event_error.png"))
+	        );
+	        entries.add(combined);
+        }
                           
         if (flowNodes.charAt(8) == '1') {
 	        combined = new CombinedTemplateCreationEntry(
@@ -201,17 +199,17 @@ public class BPMN2SkinProvider implements SkinProvider {
 	        entries.add(combined);
         }
                               
-//        if (flowNodes.charAt(10) == '1') {
-//	        combined = new CombinedTemplateCreationEntry(
-//	            "Embedded Sub-Process",
-//	            "Create a new Embedded Sub-Process",
-//	            CompositeContextNodeWrapper.class,
-//	            new SimpleWrapperFactory(CompositeContextNodeWrapper.class, "Sub-Process"),
-//	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/sub_process.png")), 
-//	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/sub_process.png"))
-//	        );
-//	        entries.add(combined);
-//        }
+        if (flowNodes.charAt(10) == '1') {
+	        combined = new CombinedTemplateCreationEntry(
+	            "Embedded Sub-Process",
+	            "Create a new Embedded Sub-Process",
+	            CompositeContextNodeWrapper.class,
+	            new SimpleWrapperFactory(CompositeContextNodeWrapper.class, "Sub-Process"),
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/sub_process.png")), 
+	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/sub_process.png"))
+	        );
+	        entries.add(combined);
+        }
                           
 //        if (flowNodes.charAt(11) == '1') {
 //		    combined = new CombinedTemplateCreationEntry(
