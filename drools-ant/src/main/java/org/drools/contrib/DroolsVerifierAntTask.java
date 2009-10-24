@@ -1,17 +1,22 @@
 package org.drools.contrib;
 
 import java.io.File;
-import java.io.InputStreamReader;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.taskdefs.MatchingTask;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
-import org.drools.verifier.Verifier;
-import org.drools.compiler.DrlParser;
+import org.drools.builder.ResourceType;
 import org.drools.compiler.DroolsParserException;
-import org.drools.lang.descr.PackageDescr;
+import org.drools.io.ResourceFactory;
+import org.drools.verifier.Verifier;
+import org.drools.verifier.builder.VerifierBuilderFactory;
+import org.drools.verifier.data.VerifierReport;
+import org.drools.verifier.report.VerifierReportWriter;
+import org.drools.verifier.report.VerifierReportWriterFactory;
 
 public class DroolsVerifierAntTask extends MatchingTask {
 
@@ -93,10 +98,11 @@ public class DroolsVerifierAntTask extends MatchingTask {
 		}
 
 		try {
-			
+
 			// create a specialized classloader
 
-			Verifier droolsanalyzer = new Verifier();
+			Verifier droolsanalyzer = VerifierBuilderFactory
+					.newVerifierBuilder().newVerifier();
 
 			// get the list of files to be added to the rulebase
 			String[] fileNames = getFileList();
@@ -104,29 +110,40 @@ public class DroolsVerifierAntTask extends MatchingTask {
 			for (int i = 0; i < fileNames.length; i++) {
 				compileAndAnalyzeFile(droolsanalyzer, fileNames[i]);
 			}
-			
+
 			droolsanalyzer.fireAnalysis();
-			droolsanalyzer.writeComponentsHTML(toFile.getAbsolutePath() + "/");
-			
-			System.out.println("Writing verifier report to " + toFile.getAbsolutePath() + "/report");
-			
+
+			VerifierReport result = droolsanalyzer.getResult();
+
+			VerifierReportWriter vReportWriter = VerifierReportWriterFactory
+					.newHTMLReportWriter();
+
+			String path = toFile.getAbsolutePath() + File.separatorChar
+					+ "report.zip";
+
+			OutputStream out = new FileOutputStream(path);
+
+			vReportWriter.writeReport(out, result);
+
+			System.out.println("Writing verifier report to " + path);
+
 		} catch (Exception e) {
 			throw new BuildException("RuleBaseTask failed: " + e.getMessage(),
 					e);
 		}
 	}
-	private void compileAndAnalyzeFile(Verifier droolsanalyzer, String filename) throws DroolsParserException {
-		
-		// Verifier just works with drl files 
-		if ( !filename.endsWith(DroolsVerifierAntTask.DRLFILEEXTENSION) ) {
+
+	private void compileAndAnalyzeFile(Verifier droolsVerifier, String filename)
+			throws DroolsParserException {
+
+		// Verifier just works with drl files
+		if (!filename.endsWith(DroolsVerifierAntTask.DRLFILEEXTENSION)) {
 			throw new UnsupportedOperationException();
 		}
-		
-		PackageDescr descr = new DrlParser()
-				.parse(new InputStreamReader(Verifier.class
-						.getResourceAsStream(filename)));
-		
-		droolsanalyzer.addPackageDescr(descr);
+
+		droolsVerifier.addResourcesToVerify(ResourceFactory
+				.newClassPathResource(filename, Verifier.class),
+				ResourceType.DRL);
 	}
 
 	/**
