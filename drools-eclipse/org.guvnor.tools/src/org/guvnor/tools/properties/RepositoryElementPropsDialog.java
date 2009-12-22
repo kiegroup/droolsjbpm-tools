@@ -126,4 +126,12 @@ public class RepositoryElementPropsDialog extends TitleAreaDialog {
 		// Try to set a reasonable default size.
 		return new Point(INITIAL_WIDTH, INITIAL_HEIGHT);
 	}
+
+	@Override
+	protected void configureShell(Shell newShell) {
+		super.configureShell(newShell);
+		newShell.setText(Messages
+				.getString("guvnor.resource.properties.title")); //$NON-NLS-1$
+	}
+
 }
