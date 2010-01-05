@@ -452,7 +452,7 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            name="RuleFlow Editor"
+            name="Flow Editor"
             extensions="rf, ruleflow, rflow"
             icon="icons/process.gif"
             contributorClass="org.drools.eclipse.flow.common.editor.GenericActionBarContributor"
@@ -464,7 +464,7 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            name="BPMN2 Editor"
+            name="Flow Editor"
             extensions="bpmn, bpmn2"
             icon="icons/process.gif"
             contributorClass="org.drools.eclipse.flow.common.editor.GenericActionBarContributor"
@@ -480,10 +480,10 @@
             targetID="org.drools.eclipse.flow.ruleflow.editor.RuleFlowModelEditor">
 	     <action
 	        id="org.drools.eclipse.flow.ruleflow.editor.action.CheckRuleFlowAction"
-            label="Check RuleFlow"
+            label="Check Flow"
 	        toolbarPath="Drools"
             icon="icons/check.gif"
-            tooltip="Check the ruleflow model"
+            tooltip="Check the Flow model"
             class="org.drools.eclipse.flow.ruleflow.editor.action.CheckRuleFlowAction"
          />
       </editorContribution>
@@ -565,28 +565,15 @@
          point = "org.eclipse.ui.newWizards">
 	  <category
 	    id = "org.drools.eclipse.flow.new"
-	    name="RuleFlow">
+	    name="Flow">
 	  </category>
  	  <wizard
 	      id = "org.drools.eclipse.flow.ruleflow.NewRuleFlowFileWizard"
-      	  name = "RuleFlow File"
+      	  name = "Flow File"
 	      class="org.drools.eclipse.flow.ruleflow.NewRuleFlowFileWizard"
           category="org.drools.eclipse.new"
 	      icon="icons/process.gif">
-    	<description>A wizard that creates a new ruleflow file</description>
-	    <selection class="org.eclipse.core.resources.IResource"/>
-	  </wizard>
-   </extension>
-
-   <extension
-         point = "org.eclipse.ui.newWizards">
- 	  <wizard
-	      id = "org.drools.eclipse.flow.bpmn2.NewBPMNProcessFileWizard"
-      	  name = "BPMN2 Process"
-	      class="org.drools.eclipse.flow.bpmn2.NewBPMNProcessFileWizard"
-          category="org.drools.eclipse.new"
-	      icon="icons/process.gif">
-    	<description>A wizard that creates a new ruleflow file</description>
+    	<description>A wizard that creates a new Flow file</description>
 	    <selection class="org.eclipse.core.resources.IResource"/>
 	  </wizard>
    </extension>

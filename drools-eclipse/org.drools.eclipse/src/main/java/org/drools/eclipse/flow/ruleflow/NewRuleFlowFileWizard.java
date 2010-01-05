@@ -30,19 +30,23 @@ public class NewRuleFlowFileWizard extends Wizard implements INewWizard {
     private IWorkbench workbench;
     private IStructuredSelection selection;
     private NewRuleFlowFilePage mainPage;
+    private NewRuleFlowFileRuntimePage runtimePage;
     
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         this.workbench = workbench;
         this.selection = selection;
-        setWindowTitle("New RuleFlow File");
+        setWindowTitle("New Flow File");
     }
     
     public void addPages() {
         mainPage = new NewRuleFlowFilePage(workbench, selection);
         addPage(mainPage);
+        runtimePage = new NewRuleFlowFileRuntimePage();
+        addPage(runtimePage);
      }
 
     public boolean performFinish() {
+    	mainPage.setTargetRuntime(runtimePage.getGenerationType());
         return mainPage.finish();
     }
 

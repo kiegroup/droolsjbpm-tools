@@ -33,11 +33,12 @@ import org.eclipse.ui.ide.IDE;
 public class NewRuleFlowFilePage extends WizardNewFileCreationPage {
 
     private IWorkbench workbench;
+    private String targetRuntime;
 
     public NewRuleFlowFilePage(IWorkbench workbench, IStructuredSelection selection) {
         super("createRuleFlowPage", selection);
-        setTitle("Create RuleFlow File");
-        setDescription("Create a new RuleFlow file");
+        setTitle("Create Flow File");
+        setDescription("Create a new Flow file");
         this.workbench = workbench;
     }
 
@@ -45,11 +46,21 @@ public class NewRuleFlowFilePage extends WizardNewFileCreationPage {
         super.createControl(parent);
         setPageComplete(true);
     }
+    
+    public void setTargetRuntime(String targetRuntime) {
+    	this.targetRuntime = targetRuntime;
+    }
 
     public boolean finish() {
         String fileName = getFileName();
-        if (!fileName.endsWith(".rf")) {
-            setFileName(fileName + ".rf");
+        if (NewRuleFlowFileRuntimePage.DROOLS5.equals(targetRuntime)) {
+	        if (!fileName.endsWith(".rf")) {
+	            setFileName(fileName + ".rf");
+	        }
+        } else if (NewRuleFlowFileRuntimePage.DROOLS5_1.equals(targetRuntime)) {
+	        if (!fileName.endsWith(".bpmn")) {
+	            setFileName(fileName + ".bpmn");
+	        }
         }
         org.eclipse.core.resources.IFile newFile = createNewFile();
         if (newFile == null)
@@ -67,7 +78,14 @@ public class NewRuleFlowFilePage extends WizardNewFileCreationPage {
     }
     
     protected InputStream getInitialContents() {
-        String s = "org/drools/eclipse/flow/ruleflow/SampleRuleFlow.rf.template";
-        return getClass().getClassLoader().getResourceAsStream(s);
+        if (NewRuleFlowFileRuntimePage.DROOLS5.equals(targetRuntime)) {
+	        String s = "org/drools/eclipse/flow/ruleflow/SampleRuleFlow.rf.template";
+	        return getClass().getClassLoader().getResourceAsStream(s);
+        } else if (NewRuleFlowFileRuntimePage.DROOLS5_1.equals(targetRuntime)) {
+            String s = "org/drools/eclipse/flow/bpmn2/Sample.bpmn.template";
+	        return getClass().getClassLoader().getResourceAsStream(s);
+        } else {
+        	throw new IllegalArgumentException("Unknown target runtime " + targetRuntime);
+        }
     }
 }
