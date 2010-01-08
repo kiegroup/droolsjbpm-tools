@@ -1,6 +1,6 @@
 package com.sample
  
-import com.sample.RuleFlowTest.Message;
+import com.sample.ProcessTest.Message;
  
 rule "Hello World" ruleflow-group "hello"
 	when

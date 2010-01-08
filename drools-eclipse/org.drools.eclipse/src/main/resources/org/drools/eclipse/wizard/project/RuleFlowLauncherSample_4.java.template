@@ -12,7 +12,7 @@ import org.drools.rule.Package;
 /**
  * This is a sample file to launch a ruleflow.
  */
-public class RuleFlowTest {
+public class ProcessTest {
 
     public static final void main(String[] args) {
         try {
@@ -40,10 +40,10 @@ public class RuleFlowTest {
      */
 	private static RuleBase readRule() throws Exception {
 		//read in the source
-		Reader source = new InputStreamReader( RuleFlowTest.class.getResourceAsStream( "/ruleflow.drl" ) );
+		Reader source = new InputStreamReader( ProcessTest.class.getResourceAsStream( "/ruleflow.drl" ) );
 		
 		//optionally read in the DSL (if you are using it).
-		//Reader dsl = new InputStreamReader( DroolsTest.class.getResourceAsStream( "/mylang.dsl" ) );
+		//Reader dsl = new InputStreamReader( ProcessTest.class.getResourceAsStream( "/mylang.dsl" ) );
 
 		//Use package builder to build up a rule package.
 		//An alternative lower level class called "DrlParser" can also be used...
@@ -58,7 +58,7 @@ public class RuleFlowTest {
 		//builder.addPackageFromDrl( source, dsl );
 		
 		//add ruleflow
-		source = new InputStreamReader( RuleFlowTest.class.getResourceAsStream( "/ruleflow.rfm" ) );
+		source = new InputStreamReader( ProcessTest.class.getResourceAsStream( "/ruleflow.rfm" ) );
 		builder.addRuleFlow(source);
 		
 		//get the compiled package (which is serializable)
