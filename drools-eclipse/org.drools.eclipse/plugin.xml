@@ -623,6 +623,18 @@
       </recognizer>
    </extension>
    <extension
+         point="org.drools.eclipse.runtimeRecognizer">
+      <recognizer
+            class="org.drools.eclipse.util.SOAPlatformStandalone5RuntimeRecognizer">
+      </recognizer>
+   </extension>
+   <extension
+         point="org.drools.eclipse.runtimeRecognizer">
+      <recognizer
+            class="org.drools.eclipse.util.SOAPlatform5RuntimeRecognizer">
+      </recognizer>
+   </extension>
+   <extension
          point="org.eclipse.ltk.core.refactoring.moveParticipants">
       <moveParticipant
             class="org.drools.eclipse.refactoring.RuleIFileMoveParticipant"

@@ -8,10 +8,10 @@ import java.util.List;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
-public class SOAPlatformStandalone4RuntimeRecognizer implements DroolsRuntimeRecognizer {
+public class SOAPlatform5RuntimeRecognizer implements DroolsRuntimeRecognizer {
 
 	public String[] recognizeJars(String path) {
-        IPath jbossrulesesbPath = new Path(path).append("jboss-esb/server/default/deploy/jbrules.esb");
+        IPath jbossrulesesbPath = new Path(path).append("jboss-as/server/default/deploy/jbrules.esb");
         File jbossrulesesb = jbossrulesesbPath.toFile();
         if (jbossrulesesb.isDirectory()) {
         	List<String> list = new ArrayList<String>();
@@ -32,7 +32,7 @@ public class SOAPlatformStandalone4RuntimeRecognizer implements DroolsRuntimeRec
         	for (int i = 0; i < files.length; i++) {
 				list.add(files[i].getAbsolutePath());
 			}
-        	IPath jbossesbsarPath = new Path(path).append("jboss-esb/server/default/deploy/jbossesb.sar/lib");
+        	IPath jbossesbsarPath = new Path(path).append("jboss-as/server/default/deployers/esb.deployer/lib");
 	        File jbossesbsar=jbossesbsarPath.toFile();
 	        if (jbossesbsar.isDirectory()) {
 	        	files = jbossesbsar.listFiles(new FilenameFilter() {
@@ -52,8 +52,8 @@ public class SOAPlatformStandalone4RuntimeRecognizer implements DroolsRuntimeRec
 	        		
 	        	});
 	        	if (files == null || files.length == 0) {
-	        		// could not find MVEL, this is probably not a SOA-P v4 runtime
-	        		// but possibly a SOA-P v5 one
+	        		// could not find MVEL, this is probably not a SOA-P v5 runtime
+	        		// but possibly a SOA-P v4 one
 	        		return null;
 	        	}
 	        	for (int i = 0; i < files.length; i++) {

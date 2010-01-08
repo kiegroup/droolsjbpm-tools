@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 
 public class SOAPlatform4RuntimeRecognizer implements DroolsRuntimeRecognizer {
 
@@ -52,6 +51,11 @@ public class SOAPlatform4RuntimeRecognizer implements DroolsRuntimeRecognizer {
 					}
 	        		
 	        	});
+	        	if (files == null || files.length == 0) {
+	        		// could not find MVEL, this is probably not a SOA-P v4 runtime
+	        		// but possibly a SOA-P v5 one
+	        		return null;
+	        	}
 	        	for (int i = 0; i < files.length; i++) {
 					list.add(files[i].getAbsolutePath());
 				}
