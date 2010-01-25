@@ -1,55 +1,44 @@
 <project>
-  <parent>
-    <artifactId>drools</artifactId>
-    <groupId>org.drools</groupId>
-    <version>5.1.0.SNAPSHOT</version>
-  </parent>
-
-  <modelVersion>4.0.0</modelVersion>
-
-  <artifactId>drools-ant</artifactId>
-  <name>Drools :: Ant Task</name>
-
-  <dependencies>   
-    <dependency>
+   <parent>
+      <artifactId>drools</artifactId>
       <groupId>org.drools</groupId>
-      <artifactId>drools-core</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-verifier</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-compiler</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-decisiontables</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>ant</groupId>
-      <artifactId>ant</artifactId>
-      <version>1.6.5</version>
-    </dependency>
-
-    <dependency>
-      <groupId>ant</groupId>
-      <artifactId>ant-nodeps</artifactId>
-      <version>1.6.5</version>
-    </dependency>
-    <dependency>
-        <groupId>com.thoughtworks.xstream</groupId>  
-        <artifactId>com.springsource.com.thoughtworks.xstream</artifactId> 
-      <scope>runtime</scope>
-    </dependency>
-           
-  </dependencies>
-
-  <build/>
-
+      <version>5.1.0.SNAPSHOT</version>
+   </parent>
+   <modelVersion>4.0.0</modelVersion>
+   <artifactId>drools-ant</artifactId>
+   <name>Drools :: Ant Task</name>
+   <dependencies>
+      <dependency>
+         <groupId>org.drools</groupId>
+         <artifactId>drools-core</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.drools</groupId>
+         <artifactId>drools-verifier</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.drools</groupId>
+         <artifactId>drools-compiler</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.drools</groupId>
+         <artifactId>drools-decisiontables</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>ant</groupId>
+         <artifactId>ant</artifactId>
+         <version>1.6.5</version>
+      </dependency>
+      <dependency>
+         <groupId>ant</groupId>
+         <artifactId>ant-nodeps</artifactId>
+         <version>1.6.5</version>
+      </dependency>
+      <dependency>
+         <groupId>com.thoughtworks.xstream</groupId>
+         <artifactId>xstream</artifactId>
+         <scope>runtime</scope>
+      </dependency>
+   </dependencies>
+   <build />
 </project>
