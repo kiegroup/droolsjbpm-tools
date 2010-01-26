@@ -170,13 +170,7 @@
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
     </dependency>
-    <dependency>
-      <!-- TODO remove this dependency and change MANIFEST.MF to use xpp3_min.jar (non-optional dep of xstream) -->
-      <groupId>xpp3</groupId>
-      <artifactId>xpp3</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    
+
 </dependencies>
 
 </project>

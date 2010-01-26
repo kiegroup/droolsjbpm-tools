@@ -39,13 +39,12 @@ Bundle-ClassPath: .,
  lib/drools-jsr94.jar,
  lib/jsr94.jar,
  lib/junit.jar,
- lib/jxl.jar,
- lib/xpp3.jar,
- lib/xstream.jar,
- lib/antlr-runtime.jar,
  lib/drools-templates.jar,
  lib/mvel2.jar,
- lib/joda-time.jar,
- lib/drools-bpmn2.jar
+ lib/drools-bpmn2.jar,
+ lib/antlr-runtime.jar,
+ lib/jxl.jar,
+ lib/xpp3_min.jar,
+ lib/xstream.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.drools.eclipse.util
