@@ -8,11 +8,13 @@ import java.util.regex.Pattern;
 import org.drools.compiler.DroolsParserException;
 import org.drools.eclipse.DRLInfo;
 import org.drools.eclipse.DroolsEclipsePlugin;
+import org.drools.eclipse.DroolsPluginImages;
 import org.drools.eclipse.core.DroolsElement;
 import org.drools.eclipse.core.DroolsModelBuilder;
 import org.drools.eclipse.core.Package;
 import org.drools.eclipse.core.RuleSet;
 import org.drools.eclipse.core.ui.DroolsContentProvider;
+import org.drools.eclipse.core.ui.DroolsGroupByRuleGroupContentProvider;
 import org.drools.eclipse.core.ui.DroolsLabelProvider;
 import org.drools.eclipse.core.ui.DroolsTreeSorter;
 import org.drools.eclipse.core.ui.FilterActionGroup;
@@ -20,7 +22,13 @@ import org.drools.eclipse.editors.AbstractRuleEditor;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IStatusLineManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -41,7 +49,9 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
     private AbstractRuleEditor editor;
     private RuleSet ruleSet = DroolsModelBuilder.createRuleSet();
     private Map<String, RuleDescr> rules;
-
+    
+    private boolean groupByRulegroup = false;
+    private TreeViewer viewer = null;
     ///////////////////////////////////
     // Patterns that the parser uses
     // TODO: this should just reuse the existing parser to avoid inconsistencies
@@ -81,10 +91,28 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
         this.editor = editor;
     }
 
+    DroolsContentProvider contentProvider = null;
+    DroolsGroupByRuleGroupContentProvider groupByRuleGroupContentProvider = null;
+    
+    private void setContentProvider() {
+		IPreferenceStore preferenceStore= DroolsEclipsePlugin.getDefault().getPreferenceStore();
+		groupByRulegroup = preferenceStore.getBoolean("GroupByRuleGroupAction.isChecked");
+
+		contentProvider = new DroolsContentProvider();
+		groupByRuleGroupContentProvider = new DroolsGroupByRuleGroupContentProvider();
+
+		if (groupByRulegroup) {
+			viewer.setContentProvider(groupByRuleGroupContentProvider);
+		} else {
+			viewer.setContentProvider(contentProvider);
+		}
+	}
+    
     public void createControl(Composite parent) {
-        super.createControl(parent);
-        TreeViewer viewer = getTreeViewer();
-        viewer.setContentProvider(new DroolsContentProvider());
+		super.createControl(parent);
+		
+        viewer = getTreeViewer();
+        setContentProvider();		
         viewer.setLabelProvider(new DroolsLabelProvider());
         viewer.setSorter(new DroolsTreeSorter());
         viewer.setInput(ruleSet);
@@ -251,4 +279,41 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
     	}
     }
     
+	class GroupByRuleGroupAction extends Action {
+	
+		public GroupByRuleGroupAction() {
+			super();
+			setText("Group by Rule Group");
+			setToolTipText("Group by Rule Group");
+			setDescription("Group by agenda-group, activation-group or ruleflow-group");
+			setChecked(groupByRulegroup);
+		}
+		
+		@Override
+		public void run() {
+			setGroupByRuleGroup(!groupByRulegroup);
+		}
+
+		private void setGroupByRuleGroup(boolean groupBy) {
+			groupByRulegroup = groupBy;
+			setChecked(groupBy);
+			
+			IPreferenceStore preferenceStore= DroolsEclipsePlugin.getDefault().getPreferenceStore();
+			preferenceStore.setValue("GroupByRuleGroupAction.isChecked", groupBy);
+			
+			setContentProvider();
+			viewer.refresh(true);
+
+		}
+
+	}
+
+	@Override
+	public void makeContributions(IMenuManager menuManager,
+			IToolBarManager toolBarManager, IStatusLineManager statusLineManager) {
+		// TODO Auto-generated method stub
+		GroupByRuleGroupAction groupByAction = new GroupByRuleGroupAction ();
+		menuManager.add(groupByAction);
+		super.makeContributions(menuManager, toolBarManager, statusLineManager);
+	}
 }

@@ -1,5 +1,8 @@
 package org.drools.eclipse.core.ui;
 
+import org.drools.eclipse.core.ActivationGroup;
+import org.drools.eclipse.core.AgendaGroup;
+import org.drools.eclipse.core.DefaultRuleGroup;
 import org.drools.eclipse.core.DroolsElement;
 import org.drools.eclipse.core.Expander;
 import org.drools.eclipse.core.Function;
@@ -9,6 +12,8 @@ import org.drools.eclipse.core.Package;
 import org.drools.eclipse.core.Query;
 import org.drools.eclipse.core.Rule;
 import org.drools.eclipse.core.RuleAttribute;
+import org.drools.eclipse.core.RuleFlowGroup;
+import org.drools.eclipse.core.RuleGroup;
 import org.drools.eclipse.core.RuleSet;
 import org.drools.eclipse.core.Template;
 import org.eclipse.jface.viewers.Viewer;
@@ -30,6 +35,11 @@ public class DroolsTreeSorter extends ViewerSorter {
 	private static final int EXPANDER = 6;
 	private static final int GLOBAL = 7;
 	private static final int IMPORT = 8;
+	
+	private static final int DEFAULT_RULE_GROUP = 11;
+	private static final int ACTIVATION_GROUP = 12;
+	private static final int AGENDA_GROUP = 13;
+	private static final int RULEFLOW_GROUP = 14;
 
 	// level 3
 	private static final int RULE_ATTRIBUTE = 9;
@@ -75,6 +85,14 @@ public class DroolsTreeSorter extends ViewerSorter {
 			return IMPORT;
 		} else if (o instanceof RuleAttribute) {
 			return RULE_ATTRIBUTE;
+		} else if (o instanceof RuleFlowGroup) {
+			return RULEFLOW_GROUP;
+		} else if (o instanceof AgendaGroup) {
+			return AGENDA_GROUP;
+		} else if (o instanceof ActivationGroup) {
+			return ACTIVATION_GROUP;
+		} else if (o instanceof DefaultRuleGroup) {
+			return DEFAULT_RULE_GROUP;
 		}
 		return UNKNOWN;
 	}

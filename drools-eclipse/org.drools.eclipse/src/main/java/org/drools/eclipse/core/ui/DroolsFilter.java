@@ -14,6 +14,7 @@ public class DroolsFilter extends ViewerFilter {
 	public static final int FILTER_FUNCTIONS = 4;
 	public static final int FILTER_TEMPLATES = 8;
 	public static final int FILTER_GLOBALS = 16;
+	public static final int FILTER_GROUPS = 32;
 	
 	private int filterProperties;
 
@@ -50,6 +51,9 @@ public class DroolsFilter extends ViewerFilter {
 				return false;
 			}
 			if (hasFilter(FILTER_GLOBALS) && type == DroolsElement.GLOBAL) {
+				return false;
+			}
+			if (hasFilter(FILTER_GROUPS) && ((type == DroolsElement.AGENDA_GROUP)||(type == DroolsElement.RULEFLOW_GROUP)||(type == DroolsElement.ACTIVATION_GROUP)||(type == DroolsElement.DEFAULT_RULE_GROUP))) {
 				return false;
 			}
 		}			

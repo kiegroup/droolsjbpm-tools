@@ -6,50 +6,94 @@ import java.util.Map;
 import org.eclipse.core.resources.IFile;
 
 public class DroolsModelBuilder {
-	
+
 	public static RuleSet createRuleSet() {
 		return new RuleSet();
 	}
 
-	public static Package createPackage(String packageName, int offset, int length) {
+	public static Package createPackage(String packageName, int offset,
+			int length) {
 		Package pkg = new Package(null, packageName);
 		pkg.setFile(null, offset, length);
 		return pkg;
 	}
-	
-	public static Package addPackage(RuleSet ruleSet, String packageName, int offset, int length) {
+
+	public static Package addPackage(RuleSet ruleSet, String packageName,
+			int offset, int length) {
 		Package pkg = new Package(ruleSet, packageName);
 		pkg.setFile(null, offset, length);
 		ruleSet.addPackage(pkg);
 		return pkg;
 	}
-	
+
 	public static void removePackage(Package pkg) {
 		RuleSet ruleSet = pkg.getParentRuleSet();
 		if (ruleSet != null) {
 			ruleSet.removePackage(pkg.getPackageName());
 		}
 	}
-	
+
 	public static void clearRuleSet(RuleSet ruleSet) {
 		ruleSet.clear();
 	}
-	
-	public static Rule addRule(Package pkg, String ruleName, IFile file, int offset, int length, Map attributes) {
+
+	public static Rule addRule(Package pkg, String ruleName, IFile file,
+			int offset, int length, Map attributes) {
 		Rule rule = new Rule(pkg, ruleName);
 		rule.setFile(file, offset, length);
 		if (attributes != null) {
-			for (Iterator iterator = attributes.entrySet().iterator(); iterator.hasNext();) {
+			for (Iterator iterator = attributes.entrySet().iterator(); iterator
+					.hasNext();) {
 				Map.Entry entry = (Map.Entry) iterator.next();
-				RuleAttribute attribute = new RuleAttribute(rule, (String) entry.getKey(), entry.getValue());
+				String attributeKey = (String) entry.getKey();
+				String attributeValue = (String) entry.getValue();
+				RuleAttribute attribute = new RuleAttribute(rule, attributeKey,
+						attributeValue);
 				attribute.setFile(file, offset, length);
 				rule.addAttribute(attribute);
+				// TODO Create constant for Attribute ??
+				RuleGroup group = null;
+				if (attributeKey.equals("agenda-group")) {
+					group = pkg.getGroup(attributeValue,
+							DroolsElement.AGENDA_GROUP);
+					if (group != null) {
+						group.addRule(rule);
+					} else {
+						group = new AgendaGroup(pkg, rule, attributeValue);
+					}
+				}
+				if (attributeKey.equals("ruleflow-group")) {
+					group = pkg.getGroup(attributeValue,
+							DroolsElement.RULEFLOW_GROUP);
+					if (group != null) {
+						group.addRule(rule);
+					} else {
+						group = new RuleFlowGroup(pkg, rule, attributeValue);
+					}
+				}
+				if (attributeKey.equals("activation-group")) {
+					group = pkg.getGroup(attributeValue,
+							DroolsElement.ACTIVATION_GROUP);
+					if (group != null) {
+						group.addRule(rule);
+					} else {
+						group = new ActivationGroup(pkg, rule, attributeValue);
+					}
+				}
+				if (group != null) {
+					rule.setGroup(group);
+					group.setFile(file, offset, length);
+				}
+
+			}
+			if (rule.getGroup() == null) {
+				pkg.getDefaultGroup().addRule(rule);
 			}
 		}
 		pkg.addRule(rule);
 		return rule;
 	}
-	
+
 	public static void removeRule(Rule rule) {
 		Package pkg = rule.getParentPackage();
 		if (pkg != null) {
@@ -60,7 +104,8 @@ public class DroolsModelBuilder {
 		}
 	}
 
-	public static Function addFunction(Package pkg, String functionName, IFile file, int offset, int length) {
+	public static Function addFunction(Package pkg, String functionName,
+			IFile file, int offset, int length) {
 		Function function = new Function(pkg, functionName);
 		function.setFile(file, offset, length);
 		pkg.addFunction(function);
@@ -74,7 +119,8 @@ public class DroolsModelBuilder {
 		}
 	}
 
-	public static void addExpander(Package pkg, String expanderName, IFile file, int offset, int length) {
+	public static void addExpander(Package pkg, String expanderName,
+			IFile file, int offset, int length) {
 		Expander expander = new Expander(pkg, expanderName);
 		expander.setFile(file, offset, length);
 		pkg.addExpander(expander);
@@ -87,7 +133,8 @@ public class DroolsModelBuilder {
 		}
 	}
 
-	public static void addImport(Package pkg, String importClass, IFile file, int offset, int length) {
+	public static void addImport(Package pkg, String importClass, IFile file,
+			int offset, int length) {
 		Import imp = new Import(pkg, importClass);
 		imp.setFile(file, offset, length);
 		pkg.addImport(imp);
@@ -100,7 +147,8 @@ public class DroolsModelBuilder {
 		}
 	}
 
-	public static Global addGlobal(Package pkg, String globalName, IFile file, int offset, int length) {
+	public static Global addGlobal(Package pkg, String globalName, IFile file,
+			int offset, int length) {
 		Global global = new Global(pkg, globalName);
 		global.setFile(file, offset, length);
 		pkg.addGlobal(global);
@@ -114,7 +162,8 @@ public class DroolsModelBuilder {
 		}
 	}
 
-	public static Query addQuery(Package pkg, String queryName, IFile file, int offset, int length) {
+	public static Query addQuery(Package pkg, String queryName, IFile file,
+			int offset, int length) {
 		Query query = new Query(pkg, queryName);
 		query.setFile(file, offset, length);
 		pkg.addQuery(query);
@@ -128,7 +177,8 @@ public class DroolsModelBuilder {
 		}
 	}
 
-	public static Template addTemplate(Package pkg, String templateName, IFile file, int offset, int length) {
+	public static Template addTemplate(Package pkg, String templateName,
+			IFile file, int offset, int length) {
 		Template template = new Template(pkg, templateName);
 		template.setFile(file, offset, length);
 		pkg.addTemplate(template);
@@ -141,64 +191,64 @@ public class DroolsModelBuilder {
 			pkg.removeTemplate(template);
 		}
 	}
-	
-    public static Process addProcess(Package pkg, String processId, IFile file) {
-        Process process = new Process(pkg, processId);
-        process.setFile(file, -1, -1);
-        pkg.addProcess(process);
-        return process;
-    }
 
-    public static void removeProcess(Process process) {
-        Package pkg = process.getParentPackage();
-        if (pkg != null) {
-            pkg.removeProcess(process);
-        }
-    }
+	public static Process addProcess(Package pkg, String processId, IFile file) {
+		Process process = new Process(pkg, processId);
+		process.setFile(file, -1, -1);
+		pkg.addProcess(process);
+		return process;
+	}
+
+	public static void removeProcess(Process process) {
+		Package pkg = process.getParentPackage();
+		if (pkg != null) {
+			pkg.removeProcess(process);
+		}
+	}
 
 	public static void removeElement(DroolsElement element) {
 		switch (element.getType()) {
-			case DroolsElement.RULESET:
-				clearRuleSet((RuleSet) element);
-				break;
-			case DroolsElement.PACKAGE:
-				removePackage((Package) element);
-				break;
-			case DroolsElement.RULE:
-				removeRule((Rule) element);
-				removePackageIfEmpty(((Rule) element).getParentPackage());
-				break;
-			case DroolsElement.QUERY:
-				removeQuery((Query) element);
-                removePackageIfEmpty(((Query) element).getParentPackage());
-				break;
-			case DroolsElement.FUNCTION:
-				removeFunction((Function) element);
-                removePackageIfEmpty(((Function) element).getParentPackage());
-				break;
-			case DroolsElement.TEMPLATE:
-				removeTemplate((Template) element);
-                removePackageIfEmpty(((Template) element).getParentPackage());
-				break;
-			case DroolsElement.EXPANDER:
-				removeExpander((Expander) element);
-                removePackageIfEmpty(((Expander) element).getParentPackage());
-				break;
-			case DroolsElement.GLOBAL:
-				removeGlobal((Global) element);
-                removePackageIfEmpty(((Global) element).getParentPackage());
-				break;
-            case DroolsElement.PROCESS:
-                removeProcess((Process) element);
-                removePackageIfEmpty(((Process) element).getParentPackage());
-                break;
+		case DroolsElement.RULESET:
+			clearRuleSet((RuleSet) element);
+			break;
+		case DroolsElement.PACKAGE:
+			removePackage((Package) element);
+			break;
+		case DroolsElement.RULE:
+			removeRule((Rule) element);
+			removePackageIfEmpty(((Rule) element).getParentPackage());
+			break;
+		case DroolsElement.QUERY:
+			removeQuery((Query) element);
+			removePackageIfEmpty(((Query) element).getParentPackage());
+			break;
+		case DroolsElement.FUNCTION:
+			removeFunction((Function) element);
+			removePackageIfEmpty(((Function) element).getParentPackage());
+			break;
+		case DroolsElement.TEMPLATE:
+			removeTemplate((Template) element);
+			removePackageIfEmpty(((Template) element).getParentPackage());
+			break;
+		case DroolsElement.EXPANDER:
+			removeExpander((Expander) element);
+			removePackageIfEmpty(((Expander) element).getParentPackage());
+			break;
+		case DroolsElement.GLOBAL:
+			removeGlobal((Global) element);
+			removePackageIfEmpty(((Global) element).getParentPackage());
+			break;
+		case DroolsElement.PROCESS:
+			removeProcess((Process) element);
+			removePackageIfEmpty(((Process) element).getParentPackage());
+			break;
 		}
 	}
-	
+
 	private static void removePackageIfEmpty(Package pkg) {
-	    if (pkg.getChildren().length == 0) {
-	        removePackage(pkg);
-	    }
+		if (pkg.getChildren().length == 0) {
+			removePackage(pkg);
+		}
 	}
 
 }

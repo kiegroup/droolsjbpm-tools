@@ -23,6 +23,11 @@ public abstract class DroolsElement {
 	public static final int IMPORT = 8;
 	public static final int RULE_ATTRIBUTE = 9;
     public static final int PROCESS = 10;
+    
+    public static final int DEFAULT_RULE_GROUP = 11;
+    public static final int ACTIVATION_GROUP = 12;
+    public static final int AGENDA_GROUP = 13;
+    public static final int RULEFLOW_GROUP = 14;
 	
 	protected static final DroolsElement[] NO_ELEMENTS = new DroolsElement[0];
 	

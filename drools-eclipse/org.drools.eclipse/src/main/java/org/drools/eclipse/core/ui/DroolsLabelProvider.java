@@ -19,6 +19,10 @@ public class DroolsLabelProvider extends LabelProvider {
 		DroolsPluginImages.IMPORT, 	 // import
 		DroolsPluginImages.DROOLS, 	 // rule attribute
         DroolsPluginImages.RULEFLOW, // process
+        DroolsPluginImages.DEFAULTRULEGROUP,   // Default Rule Group
+        DroolsPluginImages.RULEGROUP,   // Activation Group
+        DroolsPluginImages.RULEGROUP,   // Agenda Group
+        DroolsPluginImages.RULEGROUP,   // RuleFlow Group
 	};
 	
     public Image getImage(Object element) {

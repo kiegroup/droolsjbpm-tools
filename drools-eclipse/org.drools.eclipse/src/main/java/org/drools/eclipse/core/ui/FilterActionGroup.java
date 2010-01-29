@@ -34,6 +34,7 @@ public class FilterActionGroup extends ActionGroup {
 			addFilterForType(DroolsFilter.FILTER_FUNCTIONS, "Hide Functions", DroolsPluginImages.METHOD),
 			addFilterForType(DroolsFilter.FILTER_GLOBALS, "Hide Globals", DroolsPluginImages.GLOBAL),
 			addFilterForType(DroolsFilter.FILTER_TEMPLATES, "Hide Templates", DroolsPluginImages.CLASS),
+			addFilterForType(DroolsFilter.FILTER_GROUPS, "Hide Agenda/RuleFlow Groups", DroolsPluginImages.GROUPS),
 		};
 		viewer.addFilter(filter);
 	}

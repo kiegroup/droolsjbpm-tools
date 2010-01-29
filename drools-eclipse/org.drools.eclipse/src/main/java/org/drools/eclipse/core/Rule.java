@@ -3,6 +3,8 @@ package org.drools.eclipse.core;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.ui.internal.views.markers.GroupsContribution;
+
 /**
  * This represents a rule. 
  * 
@@ -12,7 +14,8 @@ public class Rule extends DroolsElement {
 
     private final String ruleName;
     private Map attributes = new HashMap();
-
+    private RuleGroup group = null;
+    
     Rule(Package parent, String ruleName) {
     	super(parent);
         this.ruleName = ruleName;
@@ -26,6 +29,18 @@ public class Rule extends DroolsElement {
 		return ruleName;
 	}
 	
+	public RuleGroup getGroup() {
+		Package pkg = (Package)getParent();
+		if (pkg.getDefaultGroup().equals(group)) {
+			return null;
+		}
+		return group;
+	}
+
+	public void setGroup(RuleGroup group) {
+		this.group = group;
+	}
+
 	public RuleAttribute getAttribute(String attributeName) {
 		return (RuleAttribute) attributes.get(attributeName);
 	}
@@ -35,7 +50,7 @@ public class Rule extends DroolsElement {
 	}
 	
 	public DroolsElement[] getChildren() {
-		return NO_ELEMENTS;
+		return NO_ELEMENTS;			
 	}
 
 	public String toString() {
