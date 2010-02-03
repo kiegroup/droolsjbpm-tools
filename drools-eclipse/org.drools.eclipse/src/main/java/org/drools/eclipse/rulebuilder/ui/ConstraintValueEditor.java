@@ -5,6 +5,7 @@ import java.util.List;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.guvnor.client.modeldriven.DropDownData;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
 import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
@@ -123,10 +124,21 @@ public class ConstraintValueEditor {
                                     final ISingleFieldConstraint c,
                                     GridData gd) {
 
-        String fieldName = ((SingleFieldConstraint) c).fieldName;
+        String fieldName = null;
+        if (c instanceof SingleFieldConstraint)  {
+        	fieldName = ((SingleFieldConstraint) c).fieldName;
+        } else if (c instanceof ConnectiveConstraint) {
+        	fieldName = ((ConnectiveConstraint) c).fieldName;
+        }
+        String fieldType = null;
+        if (c instanceof SingleFieldConstraint)  {
+        	fieldType = ((SingleFieldConstraint) c).fieldType;
+        } else if (c instanceof ConnectiveConstraint) {
+        	fieldType = ((ConnectiveConstraint) c).fieldType;
+        }
         DropDownData enums = null;
         boolean found = false;
-        if ( ((SingleFieldConstraint) c).fieldType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN )) {
+        if ( fieldType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN )) {
             enums = DropDownData.create(new String[]{"true", "false"});
         }else
         {
