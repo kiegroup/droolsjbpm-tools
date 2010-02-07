@@ -46,8 +46,7 @@ public class ActionSetFieldWidget extends Widget {
 		if (getCompletion().isGlobalVariable(set.variable)) {
 			this.fieldCompletions = getCompletion()
 					.getFieldCompletionsForGlobalVariable(set.variable);
-			this.variableClass = (String) getCompletion().globalTypes
-					.get(set.variable);
+			this.variableClass = (String) getCompletion().getGlobalVariable(set.variable);
 		} else {
 			FactPattern pattern = rule.getBoundFact(set.variable);
 			this.fieldCompletions = getCompletion().getFieldCompletions(

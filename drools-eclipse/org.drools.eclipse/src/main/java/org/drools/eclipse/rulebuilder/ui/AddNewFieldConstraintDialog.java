@@ -130,7 +130,7 @@ public class AddNewFieldConstraintDialog extends RuleDialog {
             String field = fieldCompletitions[i];
             fieldsCombo.add( field );
             fieldsCombo.setData( field,
-                                 engine.fieldTypes.get( pattern.factType + "." + field ) );
+                                 engine.getFieldType( pattern.factType + "." + field ) );
         }
         fieldsCombo.select( 0 );
 

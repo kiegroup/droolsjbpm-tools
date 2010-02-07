@@ -77,7 +77,7 @@ public class AssignFieldVariableDialog extends RuleDialog {
             String field = fields[i];
             combo.add( field );
             combo.setData( field,
-                           engine.fieldTypes.get( con.fieldType + "." + field ) );
+                           engine.getFieldType( con.fieldType + "." + field ) );
         }
         combo.select( 0 );
 
