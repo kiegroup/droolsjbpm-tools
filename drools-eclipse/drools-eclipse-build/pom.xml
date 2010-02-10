@@ -14,6 +14,27 @@
   <name>Drools :: Eclipse :: Build</name>
   <build>
     <plugins>    
+	
+      <!--plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>maven-properties-plugin</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <phase>initialize</phase>
+            <goals>
+              <goal>read-project-properties</goal>
+            </goals>
+            <configuration>
+              <files>
+                <file>build.properties</file>
+              </files>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin-->
+	
+	
      <plugin>
        <artifactId>maven-antrun-plugin</artifactId>
        <inherited>false</inherited>
@@ -37,7 +58,7 @@
                   <property name="localEclipseDrop" value="${localEclipseDrop}" />
                 </ant>                
                  
-                <java jar="${eclipse.home}/plugins/org.eclipse.equinox.launcher_1.0.100.v20080509-1800.jar"
+                <java jar="${eclipse.home}/plugins/org.eclipse.equinox.launcher_1.0.201.R35x_v20090715.jar"
                       fork="true"
                       failonerror="true"
                       maxmemory="128m">
@@ -131,7 +152,7 @@
                 
                 <echo>-application org.eclipse.ant.core.antRunner -Dbaseos=${baseos} -Dbasews=${basews} -Dbasearch=${basearch} ${mavenTestPhase}</echo>
                  
-                <java jar="${eclipse.home}/plugins/org.eclipse.equinox.launcher_1.0.100.v20080509-1800.jar"
+                <java jar="${eclipse.home}/plugins/org.eclipse.equinox.launcher_1.0.201.R35x_v20090715.jar"
                       fork="true"
                       failonerror="true"
                       maxmemory="128m">
