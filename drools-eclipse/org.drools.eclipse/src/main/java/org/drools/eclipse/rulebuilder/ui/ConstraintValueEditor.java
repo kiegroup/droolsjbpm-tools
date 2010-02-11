@@ -128,13 +128,13 @@ public class ConstraintValueEditor {
         if (c instanceof SingleFieldConstraint)  {
         	fieldName = ((SingleFieldConstraint) c).fieldName;
         } else if (c instanceof ConnectiveConstraint) {
-        	// TODO fieldName = ((ConnectiveConstraint) c).fieldName;
+        	fieldName = ((ConnectiveConstraint) c).fieldName;
         }
         String fieldType = null;
         if (c instanceof SingleFieldConstraint)  {
         	fieldType = ((SingleFieldConstraint) c).fieldType;
         } else if (c instanceof ConnectiveConstraint) {
-        	// TODO fieldType = ((ConnectiveConstraint) c).fieldType;
+        	fieldType = ((ConnectiveConstraint) c).fieldType;
         }
         DropDownData enums = null;
         boolean found = false;
