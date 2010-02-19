@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 
 import org.drools.base.ClassTypeResolver;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.core.util.asm.ClassFieldInspector;
 import org.drools.eclipse.DRLInfo;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
@@ -27,7 +28,6 @@ import org.drools.rule.builder.dialect.mvel.MVELConsequenceBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.runtime.rule.RuleContext;
 import org.drools.spi.KnowledgeHelper;
-import org.drools.util.asm.ClassFieldInspector;
 import org.eclipse.jdt.core.CompletionProposal;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.internal.ui.text.java.JavaCompletionProposal;

@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.common.BaseNode;
+import org.drools.core.util.ObjectHashMap;
+import org.drools.core.util.ReflectiveVisitor;
 import org.drools.eclipse.editors.rete.model.Connection;
 import org.drools.eclipse.editors.rete.model.ReteGraph;
-import org.drools.util.ObjectHashMap;
-import org.drools.util.ReflectiveVisitor;
 
 /**
  * Produces a graph in GraphViz DOT format.

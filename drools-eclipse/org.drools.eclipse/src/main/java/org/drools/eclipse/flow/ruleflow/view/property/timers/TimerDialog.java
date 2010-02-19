@@ -18,6 +18,7 @@ package org.drools.eclipse.flow.ruleflow.view.property.timers;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.core.util.ArrayUtils;
 import org.drools.eclipse.editors.DRLSourceViewerConfig;
 import org.drools.eclipse.editors.scanners.DRLPartionScanner;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
@@ -27,7 +28,6 @@ import org.drools.eclipse.flow.ruleflow.view.property.constraint.RuleFlowGlobals
 import org.drools.eclipse.flow.ruleflow.view.property.constraint.RuleFlowImportsDialog;
 import org.drools.process.core.Process;
 import org.drools.process.core.timer.Timer;
-import org.drools.util.ArrayUtils;
 import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;

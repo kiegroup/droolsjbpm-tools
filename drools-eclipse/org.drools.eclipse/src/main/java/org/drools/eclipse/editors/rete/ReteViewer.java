@@ -171,7 +171,7 @@ public class ReteViewer extends GraphicalEditor {
 
             monitor.subTask( "Building RETE Tree" );
             final ReteooVisitor visitor = new ReteooVisitor( newDiagram );
-            visitor.visit( ruleBase );
+            visitor.visitReteooRuleBase( ruleBase );
             monitor.worked( 30 );
             if ( monitor.isCanceled() ) {
                 throw new InterruptedException();

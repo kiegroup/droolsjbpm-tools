@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.drools.core.util.StringUtils;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
 import org.drools.eclipse.editors.AbstractRuleEditor;
@@ -19,7 +20,6 @@ import org.drools.eclipse.editors.DRLRuleEditor;
 import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.rule.builder.dialect.java.KnowledgeHelperFixer;
-import org.drools.util.StringUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.CompletionContext;
 import org.eclipse.jdt.core.CompletionProposal;

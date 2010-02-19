@@ -18,9 +18,9 @@ package org.drools.eclipse.flow.ruleflow.view.property.constraint;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.core.util.ArrayUtils;
 import org.drools.eclipse.editors.DRLSourceViewerConfig;
 import org.drools.eclipse.editors.scanners.DRLPartionScanner;
-import org.drools.util.ArrayUtils;
 import org.drools.workflow.core.Constraint;
 import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.impl.ConstraintImpl;

@@ -7,10 +7,10 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.core.util.DateUtils;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
 import org.drools.guvnor.client.modeldriven.ui.ConstraintValueEditorHelper;
-import org.drools.util.DateUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
