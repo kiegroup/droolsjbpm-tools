@@ -63,7 +63,7 @@ import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
 import org.drools.lang.dsl.DefaultExpanderResolver;
-import org.drools.util.DroolsStreamUtils;
+import org.drools.core.util.DroolsStreamUtils;
 
 /**
  * An ant task to allow rulebase compilation and serialization during a build.

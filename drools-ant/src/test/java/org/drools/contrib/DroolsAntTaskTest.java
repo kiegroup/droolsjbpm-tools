@@ -25,7 +25,7 @@ import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.definition.KnowledgePackage;
 import org.drools.rule.Package;
-import org.drools.util.DroolsStreamUtils;
+import org.drools.core.util.DroolsStreamUtils;
 
 /**
  * DroolsAntTask test case
