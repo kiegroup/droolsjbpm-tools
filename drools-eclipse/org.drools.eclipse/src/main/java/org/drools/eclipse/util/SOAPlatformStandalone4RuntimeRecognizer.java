@@ -59,6 +59,10 @@ public class SOAPlatformStandalone4RuntimeRecognizer implements DroolsRuntimeRec
 	        	for (int i = 0; i < files.length; i++) {
 					list.add(files[i].getAbsolutePath());
 				}
+	        } else {
+	        	// could not find MVEL, this is probably not a SOA-P v4 runtime
+        		// but possibly a SOA-P v5 one
+        		return null;
 	        }
 	        return list.toArray(new String[list.size()]);
         }
