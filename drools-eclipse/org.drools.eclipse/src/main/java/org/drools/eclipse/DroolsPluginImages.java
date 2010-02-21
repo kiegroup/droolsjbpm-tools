@@ -95,8 +95,8 @@ public class DroolsPluginImages {
         declareRegistryImage(RULEFLOW, "process.gif");
         declareRegistryImage(RULEFLOW_GROUP, "activity.gif");
         declareRegistryImage(RULEFLOW_NODE_TRIGGERED, "node-triggered.gif");
-        declareRegistryImage(RULEGROUP, "rulegroup.gif");
-        declareRegistryImage(DEFAULTRULEGROUP, "defaultrulegroup.gif");
+        declareRegistryImage(RULEGROUP, "package_obj.gif");
+        declareRegistryImage(DEFAULTRULEGROUP, "package_obj.gif");
     }
 
     /**
