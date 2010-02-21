@@ -28,6 +28,10 @@ public class AddElementCommand extends Command {
 
     private ElementWrapper child;
     private ElementContainer parent;
+    
+    public boolean canExecute() {
+    	return parent.canAddElement(child);
+    }
 
     public void execute() {
         parent.addElement(child);

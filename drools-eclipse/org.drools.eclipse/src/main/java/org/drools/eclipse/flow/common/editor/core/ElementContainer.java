@@ -13,5 +13,7 @@ public interface ElementContainer {
     List<ElementWrapper> getElements();
     
     ProcessWrapper getProcessWrapper();
+    
+    boolean canAddElement(ElementWrapper element);
 
 }

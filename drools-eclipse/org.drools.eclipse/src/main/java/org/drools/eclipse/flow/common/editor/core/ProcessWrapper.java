@@ -295,4 +295,8 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
                 ExceptionScope.EXCEPTION_SCOPE)).setExceptionHandlers((Map<String, ExceptionHandler>) value);
         }
     }
+
+    public boolean canAddElement(ElementWrapper element) {
+    	return true;
+    }
 }

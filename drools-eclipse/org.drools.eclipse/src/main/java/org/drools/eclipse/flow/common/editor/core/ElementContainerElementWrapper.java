@@ -40,5 +40,9 @@ public abstract class ElementContainerElementWrapper extends DefaultElementWrapp
     public ProcessWrapper getProcessWrapper() {
         return getParent().getProcessWrapper();
     }
+    
+    public boolean canAddElement(ElementWrapper element) {
+    	return true;
+    }
 
 }
