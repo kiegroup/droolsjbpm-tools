@@ -96,6 +96,10 @@ public class RuleFlowModelEditor extends GenericModelEditor {
     }
     
     private void refreshPalette(IFile file) {
+        if (getPaletteRoot().getChildren().size() < 2) {
+        	// work items category not visible
+        	return;
+        }
         IJavaProject javaProject = getJavaProject();
         if (javaProject != null) {
             try {
