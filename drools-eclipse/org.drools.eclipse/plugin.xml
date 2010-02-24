@@ -199,13 +199,13 @@
       <type super="org.eclipse.ui.workbench.texteditor.error" markerSeverity="2" markerType="org.eclipse.core.resources.problemmarker" name="org.drools.eclipse.editors.error_annotation"/>
    </extension>
 
-   <extension point="org.eclipse.help.toc">
+   <!--extension point="org.eclipse.help.toc">
       <toc file="help/expert/toc.xml" primary="true" />
    </extension>
    
    <extension point="org.eclipse.help.toc">
       <toc file="help/fusion/toc.xml" primary="true" />
-   </extension>
+   </extension-->
    
 
    <extension point = "org.eclipse.ui.preferencePages">
