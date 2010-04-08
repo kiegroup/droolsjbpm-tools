@@ -75,10 +75,9 @@ public class AuthenticationPromptDialog extends TitleAreaDialog {
 			}
 		});
 		
-		new Label(composite, SWT.NONE).setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		new Label(composite, SWT.NONE);
 		
-		Composite pwgroup = PlatformUtils.createComposite(composite, 2);
-		cbSavePassword = new Button(pwgroup, SWT.CHECK);
+		cbSavePassword = new Button(composite, SWT.CHECK);
 		cbSavePassword.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) { }
 
@@ -93,11 +92,12 @@ public class AuthenticationPromptDialog extends TitleAreaDialog {
 		boolean shouldSavePasswords = GuvnorPreferencePage.shouldSavePasswords();
 		saveInfo = shouldSavePasswords;
 		cbSavePassword.setSelection(shouldSavePasswords);
+		cbSavePassword.setText(Messages.getString("save.password"));
 		
-		new Label(pwgroup, SWT.NONE).setText(Messages.getString("save.password")); //$NON-NLS-1$
 		
-		new Label(composite, SWT.NONE).setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		new Label(composite, SWT.NONE);
 		warningLabel = new Label(composite, SWT.WRAP);
+		warningLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		warningLabel.setText(Messages.getString("password.warning")); //$NON-NLS-1$
 		warningLabel.setEnabled(shouldSavePasswords);
 		
