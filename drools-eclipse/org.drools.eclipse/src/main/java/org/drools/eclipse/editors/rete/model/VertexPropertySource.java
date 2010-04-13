@@ -8,7 +8,6 @@ import java.util.Map;
 import org.drools.reteoo.AccumulateNodeVertex;
 import org.drools.reteoo.AlphaNodeVertex;
 import org.drools.reteoo.BaseVertex;
-import org.drools.reteoo.CollectNodeVertex;
 import org.drools.reteoo.EntryPointNodeVertex;
 import org.drools.reteoo.EvalConditionNodeVertex;
 import org.drools.reteoo.ExistsNodeVertex;
@@ -141,11 +140,7 @@ public class VertexPropertySource
             initAccumulateNodeProperties( (AccumulateNodeVertex) vertex,
                                           descriptorList,
                                           values );
-        } else if ( vertex instanceof CollectNodeVertex ) {
-            initCollectNodeProperties( (CollectNodeVertex) vertex,
-                                       descriptorList,
-                                       values );
-        } else if ( vertex instanceof RuleTerminalNodeVertex ) {
+        }else if ( vertex instanceof RuleTerminalNodeVertex ) {
             initTerminalNodeProperties( (RuleTerminalNodeVertex) vertex,
                     descriptorList,
                     values );
@@ -202,20 +197,6 @@ public class VertexPropertySource
                                           Map valueMap) {
         addProperty( PROP_NAME,
                      VERTEX_EXISTS,
-                     descriptorList,
-                     valueMap );
-        addProperty( PROP_ID,
-                     Integer.toString( vertex.getId() ),
-                     descriptorList,
-                     valueMap );
-
-    }
-
-    private void initCollectNodeProperties(CollectNodeVertex vertex,
-                                           List descriptorList,
-                                           Map valueMap) {
-        addProperty( PROP_NAME,
-                     VERTEX_COLLECT,
                      descriptorList,
                      valueMap );
         addProperty( PROP_ID,
