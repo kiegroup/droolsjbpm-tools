@@ -44,13 +44,23 @@ public class DroolsRuntimeManager {
 	    File pluginRoot = new Path(pluginRootString).toFile();
 	    files = pluginRoot.listFiles();
 	    boolean found = false;
-	    // search for eclipse jdt 3.5.x jar
+	    // search for eclipse jdt 3.6.x jar
 	    for (int i = 0; i < files.length; i++) {
-	        if (files[i].getAbsolutePath().indexOf("org.eclipse.jdt.core_3.5") > -1) {
+	        if (files[i].getAbsolutePath().indexOf("org.eclipse.jdt.core_3.6") > -1) {
 	        	jars.add(files[i].getAbsolutePath());
 	        	found = true;
 	        	break;
 	        }
+	    }
+	    // if not found, search for eclipse jdt 3.5.x jar
+	    if (!found) {
+	    	for (int i = 0; i < files.length; i++) {
+		        if (files[i].getAbsolutePath().indexOf("org.eclipse.jdt.core_3.5") > -1) {
+		        	jars.add(files[i].getAbsolutePath());
+		        	found = true;
+		        	break;
+		        }
+	    	}
 	    }
 	    // if not found, search for eclipse jdt 3.4.x jar
 	    if (!found) {
