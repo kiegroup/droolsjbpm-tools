@@ -7,7 +7,7 @@ import java.util.List;
 import org.drools.eclipse.util.DroolsRuntime;
 import org.drools.eclipse.util.DroolsRuntimeManager;
 import org.eclipse.core.runtime.ListenerList;
-import org.eclipse.jdt.internal.debug.ui.SWTFactory;
+import org.eclipse.debug.internal.ui.SWTFactory;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
