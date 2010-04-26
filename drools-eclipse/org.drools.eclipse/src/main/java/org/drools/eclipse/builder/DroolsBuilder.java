@@ -157,6 +157,12 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         } catch (JavaModelException e) {
             // do nothing
         }
+        
+        if (!res.exists()) {
+        	removeProblemsFor(res);
+        	DroolsEclipsePlugin.getDefault().invalidateResource(res);
+        	return false;
+        }
 
         if (res instanceof IFile
         		&& ("drl".equals(res.getFileExtension())
