@@ -167,6 +167,11 @@
       </exclusions>
     </dependency>
 
+	<dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-ide-common</artifactId>
+	</dependency>
+	
     <!--dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-docs-expert</artifactId>
