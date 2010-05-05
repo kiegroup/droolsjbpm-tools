@@ -1,6 +1,6 @@
 package org.drools.eclipse.rulebuilder.ui;
 
-import org.drools.guvnor.client.modeldriven.brl.FreeFormLine;
+import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
