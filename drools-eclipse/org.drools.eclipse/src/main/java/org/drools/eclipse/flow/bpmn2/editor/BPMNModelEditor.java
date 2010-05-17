@@ -24,7 +24,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.bpmn2.xml.BPMN2SemanticModule;
 import org.drools.bpmn2.xml.BPMNDISemanticModule;
 import org.drools.bpmn2.xml.BPMNSemanticModule;
 import org.drools.bpmn2.xml.XmlBPMNProcessDumper;
@@ -181,7 +180,6 @@ public class BPMNModelEditor extends GenericModelEditor {
     		InputStreamReader isr = new InputStreamReader(is);
     		SemanticModules semanticModules = new SemanticModules();
     		semanticModules.addSemanticModule(new BPMNSemanticModule());
-            semanticModules.addSemanticModule(new BPMN2SemanticModule());
             semanticModules.addSemanticModule(new BPMNDISemanticModule());
     		XmlProcessReader xmlReader = new XmlProcessReader(semanticModules);
     		
