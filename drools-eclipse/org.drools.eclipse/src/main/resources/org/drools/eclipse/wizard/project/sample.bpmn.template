@@ -9,22 +9,18 @@
              xmlns:g="http://www.jboss.org/drools/flow/gpd"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <resource id="Actor" name="Human Actor" />
-
-  <process id="com.sample.bpmn.hello" name="Hello World" >
-
-    <!-- process variables -->
+  <process processType="Private" isExecutable="true" id="com.sample.bpmn.hello" name="Hello World" >
 
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" g:x="16" g:y="16" g:width="48" g:height="48" />
-    <scriptTask id="_2" name="Hello" g:x="96" g:y="16" g:width="80" g:height="48" scriptLanguage="java" >
+    <scriptTask id="_2" name="Hello" g:x="96" g:y="16" g:width="80" g:height="48" >
       <script>System.out.println("Hello World");</script>
     </scriptTask>
     <endEvent id="_3" name="EndProcess" g:x="208" g:y="16" g:width="48" g:height="48" />
 
     <!-- connections -->
-    <sequenceFlow sourceRef="_1" targetRef="_2" />
-    <sequenceFlow sourceRef="_2" targetRef="_3" />
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
 
   </process>
 
