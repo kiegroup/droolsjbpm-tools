@@ -445,7 +445,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                     result = new DRLInfo( resource == null ? "" : resource.getProjectRelativePath().toString(),
                                           packageDescr,
                                           parserErrors,
-                                          builder.getPackage(),
+                                          builder.getPackageRegistry(packageDescr.getNamespace()).getPackage(),
                                           builder.getErrors().getErrors(),                                          
                                           builder.getPackageRegistry( packageDescr.getNamespace() ).getDialectCompiletimeRegistry() );
                 } else {
