@@ -28,15 +28,17 @@ public class DRLProjectDetector {
 	}
 
 	private void detect(IResource[] members) throws CoreException {
+		if (members == null) {
+			return;
+		}
 		for (int i = 0; i < members.length; i++) {
 			if (members[i] instanceof IFolder) {
-				IFolder folder = (IFolder)members[i];
+				IFolder folder = (IFolder) members[i];
 				if (!folder.isDerived())
-					detect(((IFolder)members[i]).members());
-			}
-			if (members[i] instanceof IFile) {
-				IFile file = (IFile)members[i];
-				if (file.getFileExtension().equalsIgnoreCase("drl"))
+					detect(folder.members());
+			} else if (members[i] instanceof IFile) {
+				IFile file = (IFile) members[i];
+				if (file.getFileExtension() != null && file.getFileExtension().equalsIgnoreCase("drl"))
 					if (file.isAccessible() && !file.isReadOnly() && !file.isDerived())
 						resources.add(file);
 			}
