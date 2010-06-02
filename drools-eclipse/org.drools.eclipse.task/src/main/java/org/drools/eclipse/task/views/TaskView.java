@@ -446,7 +446,11 @@ public class TaskView extends ViewPart {
 	        updateButtons();
 		} catch (TimeoutException e) {
 			showMessage("Could not connect to task server, refresh first.");
-			client.disconnect();
+			try {
+				client.disconnect();
+			} catch (Exception exc) {
+				exc.printStackTrace();
+			}
 			this.client = null;
 	        tableViewer.setInput(new ArrayList<TaskSummary>());
 	        tableViewer.refresh();
@@ -682,7 +686,11 @@ public class TaskView extends ViewPart {
 
 	public void dispose() {
 		if (client != null) {
-			client.disconnect();
+			try {
+				client.disconnect();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		super.dispose();
 	}
