@@ -270,7 +270,9 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
 		    	PackageDescr packageDescr = drlInfo.getPackageDescr();
 		    	if (packageDescr != null) {
 		    		for (RuleDescr ruleDescr: packageDescr.getRules()) {
-		    			rules.put(ruleDescr.getName(), ruleDescr);
+		    			if (ruleDescr != null && ruleDescr.getName() != null) {
+		    				rules.put(ruleDescr.getName(), ruleDescr);
+		    			}
 		    		}	
 		    	}
     		}
