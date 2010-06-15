@@ -1,6 +1,6 @@
 package org.drools.eclipse.rulebuilder.ui;
 
-import org.drools.ide.common.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -16,12 +16,12 @@ public class ValueEditorTypeSelectionDialog extends RuleDialog {
 
     private RuleModeller           modeller;
 
-    private ISingleFieldConstraint constraint;
+    private BaseSingleFieldConstraint constraint;
 
     public ValueEditorTypeSelectionDialog(Shell parent,
                                           FormToolkit toolkit,
                                           RuleModeller modeller,
-                                          ISingleFieldConstraint constraint) {
+                                          BaseSingleFieldConstraint constraint) {
         super( parent,
                "Select value editor type",
                "Select value editor type" );
@@ -49,13 +49,13 @@ public class ValueEditorTypeSelectionDialog extends RuleDialog {
 
                 switch ( valueTypeCombo.getSelectionIndex() ) {
                     case 0 :
-                        constraint.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+                        constraint.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
                         break;
                     case 1 :
-                        constraint.constraintValueType = ISingleFieldConstraint.TYPE_RET_VALUE;
+                        constraint.setConstraintValueType(BaseSingleFieldConstraint.TYPE_RET_VALUE);
                         break;
                     case 2 :
-                        constraint.constraintValueType = ISingleFieldConstraint.TYPE_VARIABLE;
+                        constraint.setConstraintValueType(BaseSingleFieldConstraint.TYPE_VARIABLE);
                         break;
                 }
 

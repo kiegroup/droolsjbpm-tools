@@ -34,7 +34,7 @@ public class AssignFieldVariableDialog extends RuleDialog {
                                      SingleFieldConstraint con,
                                      FactPattern pattern) {
         super( parent,
-               "Bind the field called [" + con.fieldName + "] to a variable.",
+               "Bind the field called [" + con.getFieldName() + "] to a variable.",
                "Type the variable name and hit the button." );
 
         this.toolkit = toolkit;
@@ -64,7 +64,7 @@ public class AssignFieldVariableDialog extends RuleDialog {
 
     private void createSubfieldConstraintRow(final Composite composite) {
         SuggestionCompletionEngine engine = modeller.getSuggestionCompletionEngine();
-        String[] fields = engine.getFieldCompletions( con.fieldType );
+        String[] fields = engine.getFieldCompletions( con.getFieldType() );
         if ( fields == null || fields.length <= 0 ) {
             return;
         }
@@ -77,7 +77,7 @@ public class AssignFieldVariableDialog extends RuleDialog {
             String field = fields[i];
             combo.add( field );
             combo.setData( field,
-                           engine.getFieldType( con.fieldType + "." + field ) );
+                           engine.getFieldType( con.getFieldType() + "." + field ) );
         }
         combo.select( 0 );
 
@@ -106,8 +106,8 @@ public class AssignFieldVariableDialog extends RuleDialog {
         final Text variableText = toolkit.createText( composite,
                                                       "" );
 
-        if ( con.fieldBinding != null ) {
-            variableText.setText( con.fieldBinding );
+        if ( con.getFieldBinding() != null ) {
+            variableText.setText( con.getFieldBinding() );
         }
 
         GridData gd = new GridData( GridData.FILL_HORIZONTAL );
@@ -121,7 +121,7 @@ public class AssignFieldVariableDialog extends RuleDialog {
         varButton.addListener( SWT.Selection,
                                new Listener() {
                                    public void handleEvent(Event event) {
-                                       con.fieldBinding = variableText.getText();
+                                       con.setFieldBinding(variableText.getText());
                                        modeller.reloadLhs();
                                        modeller.setDirty( true );
                                        close();

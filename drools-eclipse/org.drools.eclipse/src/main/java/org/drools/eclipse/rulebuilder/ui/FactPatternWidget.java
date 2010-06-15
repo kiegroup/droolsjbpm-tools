@@ -10,7 +10,7 @@ import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
-import org.drools.ide.common.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.eclipse.rulebuilder.modeldriven.HumanReadable;
 import org.eclipse.swt.SWT;
@@ -109,7 +109,7 @@ public class FactPatternWidget extends Widget {
             FieldConstraint constraint = pattern.getFieldConstraints()[row];
             boolean nested = false;
             if ( constraint instanceof SingleFieldConstraint ) {
-                nested = ((SingleFieldConstraint) constraint).parent != null;
+                nested = ((SingleFieldConstraint) constraint).getParent() != null;
             }
             renderFieldConstraints( constraintComposite,
                                     constraint,
@@ -291,7 +291,7 @@ public class FactPatternWidget extends Widget {
                                              boolean showBinding,
                                              boolean nested) {
         final SingleFieldConstraint c = (SingleFieldConstraint) constraint;
-        if ( c.constraintValueType != ISingleFieldConstraint.TYPE_PREDICATE ) {
+        if ( c.getConstraintValueType() != BaseSingleFieldConstraint.TYPE_PREDICATE ) {
             createConstraintRow( constraintComposite,
                                  parentConstraint,
                                  row,
@@ -329,7 +329,7 @@ public class FactPatternWidget extends Widget {
                          showBinding,
                          data );
         toolkit.createLabel( pad,
-                             c.fieldName );
+                             c.getFieldName() );
         if (!hasChildren( row ) &&(c.connectives == null || c.connectives.length == 0 )) {
             addRemoveButton( constraintComposite,
                              parentConstraint,
@@ -345,7 +345,7 @@ public class FactPatternWidget extends Widget {
 
         constraintValueEditor( constraintComposite,
                                c,
-                               c.fieldName );
+                               c.getFieldName() );
 
         createConnectives( constraintComposite,
                            c );
@@ -354,11 +354,11 @@ public class FactPatternWidget extends Widget {
     }
 
     private int getNests(final SingleFieldConstraint c) {
-        SingleFieldConstraint s = (SingleFieldConstraint) c.parent;
+        SingleFieldConstraint s = (SingleFieldConstraint) c.getParent();
         int nests = 0;
         while ( s != null ) {
             nests++;
-            s = (SingleFieldConstraint) s.parent;
+            s = (SingleFieldConstraint) s.getParent();
         }
         return nests;
     }
@@ -388,7 +388,7 @@ public class FactPatternWidget extends Widget {
                     }
                 } );
 
-                link.setToolTipText( "Bind the field called [" + c.fieldName + "] to a variable." );
+                link.setToolTipText( "Bind the field called [" + c.getFieldName() + "] to a variable." );
                 link.setLayoutData( data );
             } else {
                 toolkit.createLabel( constraintComposite,
@@ -396,7 +396,7 @@ public class FactPatternWidget extends Widget {
             }
         } else {
             toolkit.createLabel( constraintComposite,
-                                 "[" + c.fieldBinding + "]" );
+                                 "[" + c.getFieldBinding() + "]" );
         }
 
     }
@@ -434,17 +434,17 @@ public class FactPatternWidget extends Widget {
                                            con );
                 connectiveOperatorDropDown( parent,
                                             con,
-                                            c.fieldName );
+                                            c.getFieldName() );
                 constraintValueEditor( parent,
                                        con,
-                                       c.fieldName );
+                                       c.getFieldName() );
 
             }
         }
     }
 
     private void constraintValueEditor(Composite parent,
-                                       ISingleFieldConstraint c,
+                                       BaseSingleFieldConstraint c,
                                        String name) {
         String type = this.modeller.getSuggestionCompletionEngine().getFieldType( pattern.factType,
                                                                                   name );
@@ -557,7 +557,7 @@ public class FactPatternWidget extends Widget {
         FieldConstraint[] fc = pattern.getFieldConstraints();
         for ( int i = row; i < fc.length; i++ ) {
             SingleFieldConstraint f = (SingleFieldConstraint) fc[i];
-            if (con.equals( f.parent)){
+            if (con.equals( f.getParent())){
                 return true;
             }
         }
@@ -613,13 +613,13 @@ public class FactPatternWidget extends Widget {
     private void operatorDropDown(Composite parent,
                                   final SingleFieldConstraint c) {
         String[] ops = getCompletions().getOperatorCompletions( pattern.factType,
-                                                                c.fieldName );
+                                                                c.getFieldName() );
         final Combo box = new Combo( parent,
                                      SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY );
         for ( int i = 0; i < ops.length; i++ ) {
             String op = ops[i];
             box.add( HumanReadable.getOperatorDisplayName( op ) );
-            if ( op.equals( c.operator ) ) {
+            if ( op.equals( c.getOperator() ) ) {
                 box.select( i );
             }
         }
@@ -629,7 +629,7 @@ public class FactPatternWidget extends Widget {
         box.addListener( SWT.Selection,
                          new Listener() {
                              public void handleEvent(Event event) {
-                                 c.operator = HumanReadable.getOperatorName( box.getText() );
+                                 c.setOperator(HumanReadable.getOperatorName( box.getText() ));
                                  getModeller().setDirty( true );
                              }
                          } );
@@ -662,14 +662,14 @@ public class FactPatternWidget extends Widget {
     }
 
     private void formulaValueEditor(Composite parent,
-                                    final ISingleFieldConstraint c,
+                                    final BaseSingleFieldConstraint c,
                                     GridData gd) {
 
         final Text box = toolkit.createText( parent,
                                              "" );
 
-        if ( c.value != null ) {
-            box.setText( c.value );
+        if ( c.getValue() != null ) {
+            box.setText( c.getValue() );
         }
 
         gd.grabExcessHorizontalSpace = true;
@@ -678,7 +678,7 @@ public class FactPatternWidget extends Widget {
 
         box.addModifyListener( new ModifyListener() {
             public void modifyText(ModifyEvent e) {
-                c.value = box.getText();
+                c.setValue(box.getText());
                 getModeller().setDirty( true );
             }
         } );

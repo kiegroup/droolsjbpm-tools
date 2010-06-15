@@ -7,7 +7,7 @@ import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
-import org.drools.ide.common.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
@@ -28,7 +28,7 @@ public class ConstraintValueEditor {
 
     private Composite              composite;
 
-    private ISingleFieldConstraint constraint;
+    private BaseSingleFieldConstraint constraint;
 
     private FormToolkit            toolkit;
 
@@ -39,7 +39,7 @@ public class ConstraintValueEditor {
     private FactPattern            pattern;
 
     public ConstraintValueEditor(Composite composite,
-                                 ISingleFieldConstraint constraint,
+                                 BaseSingleFieldConstraint constraint,
                                  FormToolkit toolkit,
                                  RuleModeller modeller,
                                  String numericType /* e.g. is "Numeric" */) {
@@ -52,7 +52,7 @@ public class ConstraintValueEditor {
     }
 
     public ConstraintValueEditor(Composite parent,
-                                 ISingleFieldConstraint c,
+                                 BaseSingleFieldConstraint c,
                                  FormToolkit toolkit,
                                  RuleModeller modeller,
                                  String type,
@@ -70,7 +70,7 @@ public class ConstraintValueEditor {
     }
 
     private void create() {
-        if ( constraint.constraintValueType == ISingleFieldConstraint.TYPE_UNDEFINED ) {
+        if ( constraint.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_UNDEFINED ) {
             ImageHyperlink link = addImage( composite,
                                             "icons/edit.gif" );
             link.setToolTipText( "Choose value editor type" );
@@ -95,20 +95,20 @@ public class ConstraintValueEditor {
 
             link.setLayoutData( gd );
         } else {
-            switch ( constraint.constraintValueType ) {
-                case ISingleFieldConstraint.TYPE_LITERAL :
+            switch ( constraint.getConstraintValueType() ) {
+                case BaseSingleFieldConstraint.TYPE_LITERAL :
                     literalValueEditor( composite,
                                         constraint,
                                         new GridData( GridData.FILL_HORIZONTAL ) );
                     break;
-                case ISingleFieldConstraint.TYPE_RET_VALUE :
+                case BaseSingleFieldConstraint.TYPE_RET_VALUE :
                     addImage( composite,
                               "icons/function_assets.gif" );
                     formulaValueEditor( composite,
                                         constraint,
                                         new GridData( GridData.FILL_HORIZONTAL ) );
                     break;
-                case ISingleFieldConstraint.TYPE_VARIABLE :
+                case BaseSingleFieldConstraint.TYPE_VARIABLE :
                     variableEditor( composite,
                                     constraint,
                                     new GridData( GridData.FILL_HORIZONTAL ) );
@@ -121,18 +121,18 @@ public class ConstraintValueEditor {
     }
 
     private void literalValueEditor(Composite parent,
-                                    final ISingleFieldConstraint c,
+                                    final BaseSingleFieldConstraint c,
                                     GridData gd) {
 
         String fieldName = null;
         if (c instanceof SingleFieldConstraint)  {
-        	fieldName = ((SingleFieldConstraint) c).fieldName;
+        	fieldName = ((SingleFieldConstraint) c).getFieldName();
         } else if (c instanceof ConnectiveConstraint) {
         	fieldName = ((ConnectiveConstraint) c).fieldName;
         }
         String fieldType = null;
         if (c instanceof SingleFieldConstraint)  {
-        	fieldType = ((SingleFieldConstraint) c).fieldType;
+        	fieldType = ((SingleFieldConstraint) c).getFieldType();
         } else if (c instanceof ConnectiveConstraint) {
         	fieldType = ((ConnectiveConstraint) c).fieldType;
         }
@@ -163,13 +163,13 @@ public class ConstraintValueEditor {
                 } else {
                     combo.add( e );
                 }
-                if ( e.equals( c.value ) || (s && split[0].trim().equals( c.value )) ) {
+                if ( e.equals( c.getValue() ) || (s && split[0].trim().equals( c.getValue() )) ) {
                     combo.select( i );
                     found = true;
                 }
             }
-            if ( !found && c.value != null ) {
-                combo.add( c.value );
+            if ( !found && c.getValue() != null ) {
+                combo.add( c.getValue() );
                 combo.select( combo.getItemCount() - 1 );
             }
 
@@ -180,7 +180,7 @@ public class ConstraintValueEditor {
                     if ( combo.getData( item ) != null ) {
                         item = (String) combo.getData( item );
                     }
-                    c.value = item;
+                    c.setValue(item);
                     modeller.reloadLhs();
                     modeller.setDirty( true );
                 }
@@ -196,8 +196,8 @@ public class ConstraintValueEditor {
             final Text box = toolkit.createText( parent,
                                                  "" );
 
-            if ( c.value != null ) {
-                box.setText( c.value );
+            if ( c.getValue() != null ) {
+                box.setText( c.getValue() );
             }
 
             gd.horizontalSpan = 2;
@@ -207,7 +207,7 @@ public class ConstraintValueEditor {
 
             box.addModifyListener( new ModifyListener() {
                 public void modifyText(ModifyEvent e) {
-                    c.value = box.getText();
+                    c.setValue(box.getText());
                     modeller.setDirty( true );
                 }
             } );
@@ -231,14 +231,14 @@ public class ConstraintValueEditor {
     }
 
     private void formulaValueEditor(Composite parent,
-                                    final ISingleFieldConstraint c,
+                                    final BaseSingleFieldConstraint c,
                                     GridData gd) {
 
         final Text box = toolkit.createText( parent,
                                              "" );
 
-        if ( c.value != null ) {
-            box.setText( c.value );
+        if ( c.getValue() != null ) {
+            box.setText( c.getValue() );
         }
 
         gd.grabExcessHorizontalSpace = true;
@@ -247,14 +247,14 @@ public class ConstraintValueEditor {
 
         box.addModifyListener( new ModifyListener() {
             public void modifyText(ModifyEvent e) {
-                c.value = box.getText();
+                c.setValue(box.getText());
                 modeller.setDirty( true );
             }
         } );
     }
 
     private void variableEditor(Composite composite,
-                                final ISingleFieldConstraint c,
+                                final BaseSingleFieldConstraint c,
                                 GridData gd) {
         List vars = modeller.getModel().getBoundVariablesInScope( c );
 
@@ -263,7 +263,7 @@ public class ConstraintValueEditor {
 
         gd.horizontalSpan = 2;
         combo.setLayoutData( gd );
-        if ( c.value == null ) {
+        if ( c.getValue() == null ) {
             combo.add( "Choose ..." );
         }
 
@@ -272,7 +272,7 @@ public class ConstraintValueEditor {
         for ( int i = 0; i < vars.size(); i++ ) {
             String var = (String) vars.get( i );
 
-            if ( c.value != null && c.value.equals( var ) ) {
+            if ( c.getValue() != null && c.getValue().equals( var ) ) {
                 idx = i;
             }
             combo.add( var );
@@ -282,7 +282,7 @@ public class ConstraintValueEditor {
 
         combo.addModifyListener( new ModifyListener() {
             public void modifyText(ModifyEvent e) {
-                c.value = combo.getText();
+                c.setValue(combo.getText());
             }
         } );
 
