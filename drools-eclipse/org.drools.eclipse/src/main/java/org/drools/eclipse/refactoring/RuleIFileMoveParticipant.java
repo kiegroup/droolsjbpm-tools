@@ -178,7 +178,9 @@ public class RuleIFileMoveParticipant extends MoveParticipant {
 		for (int i = 0; i < names.length; i++)
 			newPackageName = newPackageName.concat(names[i]+".");
 
-		newName = newPackageName.substring(0, newPackageName.length()-1);
+		if (newPackageName.length() > 0) {
+			newName = newPackageName.substring(0, newPackageName.length()-1);
+		}
 		return moveModifications;
 	}
 
