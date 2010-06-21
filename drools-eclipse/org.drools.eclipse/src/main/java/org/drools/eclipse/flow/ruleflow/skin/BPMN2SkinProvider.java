@@ -14,6 +14,7 @@ import org.drools.eclipse.flow.ruleflow.core.ConnectionWrapperFactory;
 import org.drools.eclipse.flow.ruleflow.core.EndNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.EventNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.FaultNodeWrapper;
+import org.drools.eclipse.flow.ruleflow.core.ForEachNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.HumanTaskNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.JoinWrapper;
 import org.drools.eclipse.flow.ruleflow.core.RuleSetNodeWrapper;
@@ -211,17 +212,17 @@ public class BPMN2SkinProvider implements SkinProvider {
 	        entries.add(combined);
         }
                           
-//        if (flowNodes.charAt(11) == '1') {
-//		    combined = new CombinedTemplateCreationEntry(
-//			    "Multiple Instances",
-//			    "Create a new Multiple Instances",
-//			    ForEachNodeWrapper.class,
-//			    new SimpleWrapperFactory(ForEachNodeWrapper.class, "Multiple Instances"),
-//			    ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/multiple_instances.png")), 
-//			    ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/multiple_instances.png"))
-//			);
-//			entries.add(combined);
-//        }
+        if (flowNodes.charAt(11) == '1') {
+		    combined = new CombinedTemplateCreationEntry(
+			    "Multiple Instances",
+			    "Create a new Multiple Instances",
+			    ForEachNodeWrapper.class,
+			    new SimpleWrapperFactory(ForEachNodeWrapper.class, "Multiple Instances"),
+			    ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/multiple_instances.png")), 
+			    ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/multiple_instances.png"))
+			);
+			entries.add(combined);
+        }
                     
         drawer.addAll(entries);
         return drawer;

@@ -25,7 +25,8 @@ public class DroolsStackFrame  extends JDIStackFrame {
     
     public boolean isExecutingRule() {
         try {
-            if ( "consequence".equals( getMethodName() ) && getSignature().startsWith( CONSEQUENCE_SIGNATURE ) ) {
+            if ( ("defaultConsequence".equals( getMethodName() ) || "consequence".equals( getMethodName() ) ) 
+            		&& getSignature().startsWith( CONSEQUENCE_SIGNATURE ) ) {
                 return true;
             }
         } catch ( DebugException exc ) {
@@ -39,7 +40,8 @@ public class DroolsStackFrame  extends JDIStackFrame {
             String methodName = getMethodName();
             String signature = getSignature();
             String type = getDeclaringTypeName();
-            if ( "consequence".equals( methodName ) && signature.startsWith( CONSEQUENCE_SIGNATURE ) ) {
+            if ( ("defaultConsequence".equals( methodName ) || "consequence".equals( methodName ) )
+            		&& signature.startsWith( CONSEQUENCE_SIGNATURE ) ) {
                 return DroolsEclipsePlugin.getDefault().getRuleInfoByClass( type );
             }
 

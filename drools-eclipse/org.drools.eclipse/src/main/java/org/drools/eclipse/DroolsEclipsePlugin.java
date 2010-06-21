@@ -517,6 +517,9 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                 
                 SemanticModules modules = configuration.getSemanticModules();
                 modules.addSemanticModule( new BPMNSemanticModule() );
+                modules.addSemanticModule( new org.drools.bpmn2.legacy.beta1.BPMNSemanticModule() );
+                modules.addSemanticModule( new org.drools.bpmn2.legacy.beta1.BPMN2SemanticModule() );
+                modules.addSemanticModule( new org.drools.bpmn2.legacy.beta1.BPMNDISemanticModule() );
                 
                 XmlProcessReader xmlReader = new XmlProcessReader( modules );
                 Process process = (Process) xmlReader.read( new StringReader( input ) );
