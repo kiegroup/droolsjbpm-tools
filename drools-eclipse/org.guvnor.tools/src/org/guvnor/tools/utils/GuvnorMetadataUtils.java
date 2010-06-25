@@ -3,6 +3,7 @@ package org.guvnor.tools.utils;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.text.MessageFormat;
@@ -199,12 +200,19 @@ public class GuvnorMetadataUtils {
 	
 	public static GuvnorMetadataProps loadGuvnorMetadata(IFile mdFile) throws Exception {
 		Properties props = new Properties();
-		props.load(mdFile.getContents());
-		return new GuvnorMetadataProps(props.getProperty("filename"), //$NON-NLS-1$
+		InputStream contents = mdFile.getContents();
+		
+		try{
+			props.load(contents);
+			return new GuvnorMetadataProps(props.getProperty("filename"), //$NON-NLS-1$
 				                       props.getProperty("repository"), //$NON-NLS-1$
 				                       props.getProperty("fullpath"), //$NON-NLS-1$
 				                       props.getProperty("lastmodified"), //$NON-NLS-1$
 				                       props.getProperty("revision")); //$NON-NLS-1$
+		}
+		finally{
+			contents.close();
+		}
 	}
 	
 	public static GuvnorMetadataProps getGuvnorMetadata(IResource resource) throws Exception {

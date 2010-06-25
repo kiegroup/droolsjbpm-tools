@@ -30,6 +30,11 @@ public class GuvnorDecorator implements ILightweightLabelDecorator {
 	private void decorateResource(IResource resource, IDecoration decoration) {
 		try {	
 			if (resource instanceof IFile) {
+				
+				if(!((IFile)resource).exists()){
+					return ;
+				}
+				
 				addGuvnorOverlay(decoration);
 				addChangeIndicator(resource, decoration);
 				addResourceDetails(resource, decoration);
