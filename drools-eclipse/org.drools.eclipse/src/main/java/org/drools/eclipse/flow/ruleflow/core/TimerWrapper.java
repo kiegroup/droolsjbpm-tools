@@ -44,8 +44,8 @@ public class TimerWrapper extends AbstractNodeWrapper {
     }
     
     private void setDescriptors() {
-        descriptors = new IPropertyDescriptor[DefaultElementWrapper.DESCRIPTORS.length + 2];
-        System.arraycopy(DefaultElementWrapper.DESCRIPTORS, 0, descriptors, 0, DefaultElementWrapper.DESCRIPTORS.length);
+        descriptors = new IPropertyDescriptor[AbstractNodeWrapper.DESCRIPTORS.length + 2];
+        System.arraycopy(AbstractNodeWrapper.DESCRIPTORS, 0, descriptors, 0, AbstractNodeWrapper.DESCRIPTORS.length);
         descriptors[descriptors.length - 2] = 
             new TextPropertyDescriptor(TIMER_DELAY, "Timer Delay");
         descriptors[descriptors.length - 1] = 

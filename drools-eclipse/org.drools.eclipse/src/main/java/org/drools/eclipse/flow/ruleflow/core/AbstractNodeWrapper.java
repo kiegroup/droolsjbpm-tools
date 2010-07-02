@@ -15,13 +15,19 @@ package org.drools.eclipse.flow.ruleflow.core;
  * limitations under the License.
  */
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
+import org.drools.eclipse.flow.ruleflow.view.property.metadata.MetaDataPropertyDescriptor;
 import org.drools.workflow.core.Node;
+import org.drools.workflow.core.impl.NodeImpl;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
 /**
  * Wrapper for a node.
@@ -31,6 +37,16 @@ import org.eclipse.swt.widgets.Display;
 public abstract class AbstractNodeWrapper extends DefaultElementWrapper implements NodeWrapper {
 	
 	private static final long serialVersionUID = 4L;
+
+    public static IPropertyDescriptor[] DESCRIPTORS;
+
+    public static final String METADATA = "MetaData";
+    static {
+    	DESCRIPTORS = new IPropertyDescriptor[DefaultElementWrapper.DESCRIPTORS.length + 1];
+        System.arraycopy(DefaultElementWrapper.DESCRIPTORS, 0, DESCRIPTORS, 0, DefaultElementWrapper.DESCRIPTORS.length);
+        DESCRIPTORS[DESCRIPTORS.length - 1] = 
+            new MetaDataPropertyDescriptor(METADATA, "MetaData");
+    }
 
 	public void setNode(Node node) {
         setElement(node);
@@ -99,4 +115,31 @@ public abstract class AbstractNodeWrapper extends DefaultElementWrapper implemen
     		|| ((NodeWrapper) target).getNode() == getNode().getNodeContainer();
     }
     
+    public IPropertyDescriptor[] getPropertyDescriptors() {
+        return DESCRIPTORS;
+    }
+
+	public Object getPropertyValue(Object id) {
+		if (METADATA.equals(id)) {
+			return ((NodeImpl) getNode()).getMetaData();
+		}
+		return super.getPropertyValue(id);
+	}
+
+	public void resetPropertyValue(Object id) {
+		if (METADATA.equals(id)) {
+			((NodeImpl) getNode()).setMetaData(new HashMap<String, Object>());
+		} else {
+			super.resetPropertyValue(id);
+		}
+	}
+
+	public void setPropertyValue(Object id, Object value) {
+		if (METADATA.equals(id)) {
+			((NodeImpl) getNode()).setMetaData((Map<String, Object>) value);
+		} else {
+			super.setPropertyValue(id, value);
+		}
+	}
+	
 }

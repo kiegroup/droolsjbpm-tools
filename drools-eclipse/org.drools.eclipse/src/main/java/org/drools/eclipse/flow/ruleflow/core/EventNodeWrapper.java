@@ -42,8 +42,8 @@ public class EventNodeWrapper extends AbstractNodeWrapper {
     public static final String EVENT_TYPE = "eventType";
     public static final String SCOPE = "scope";
     static {
-        descriptors = new IPropertyDescriptor[DefaultElementWrapper.DESCRIPTORS.length + 3];
-        System.arraycopy(DefaultElementWrapper.DESCRIPTORS, 0, descriptors, 0, DefaultElementWrapper.DESCRIPTORS.length);
+        descriptors = new IPropertyDescriptor[AbstractNodeWrapper.DESCRIPTORS.length + 3];
+        System.arraycopy(AbstractNodeWrapper.DESCRIPTORS, 0, descriptors, 0, AbstractNodeWrapper.DESCRIPTORS.length);
         descriptors[descriptors.length - 3] = 
             new ComboBoxPropertyDescriptor(SCOPE, "Scope", new String[] { "internal", "external" });
         descriptors[descriptors.length - 2] = 

@@ -23,8 +23,8 @@ public class StateBasedNodeWrapper extends ExtendedNodeWrapper {
     }
 
     protected void initDescriptors() {
-    	descriptors = new IPropertyDescriptor[DefaultElementWrapper.DESCRIPTORS.length + 1];
-        System.arraycopy(DefaultElementWrapper.DESCRIPTORS, 0, descriptors, 0, DefaultElementWrapper.DESCRIPTORS.length);
+    	descriptors = new IPropertyDescriptor[AbstractNodeWrapper.DESCRIPTORS.length + 1];
+        System.arraycopy(AbstractNodeWrapper.DESCRIPTORS, 0, descriptors, 0, AbstractNodeWrapper.DESCRIPTORS.length);
         descriptors[descriptors.length - 1] = 
             new TimersPropertyDescriptor(TIMERS, "Timers", getStateBasedNode(),
         		(WorkflowProcess) getParent().getProcessWrapper().getProcess());
