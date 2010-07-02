@@ -30,8 +30,9 @@ public class BPMNStartNodeFigure  extends AbstractElementFigure {
     
     public void setSelected(boolean b) {
         super.setSelected(b);
-        ((LineBorder) getBorder()).setWidth(b ? 3 : 1);
-        repaint();
+        // TODO: how can we set this to selected (or is this never necessary?)
+//        ((LineBorder) getBorder()).setWidth(b ? 3 : 1);
+//        repaint();
     }
     
 }

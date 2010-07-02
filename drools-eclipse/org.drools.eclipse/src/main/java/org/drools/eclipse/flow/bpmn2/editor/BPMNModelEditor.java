@@ -164,9 +164,17 @@ public class BPMNModelEditor extends GenericModelEditor {
     protected void writeModel(OutputStream os, boolean includeGraphics) throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(os);
         try {
-            XmlBPMNProcessDumper dumper = XmlBPMNProcessDumper.INSTANCE;
-            String out = dumper.dump(getRuleFlowModel().getRuleFlowProcess(), includeGraphics);
-            writer.write(out);
+        	RuleFlowProcess process = getRuleFlowModel().getRuleFlowProcess();
+        	String targetNamespace = (String) process.getMetaData("TargetNamespace");
+        	if ("http://www.omg.org/bpmn20".equals(targetNamespace)) {
+        		org.drools.bpmn2.legacy.beta1.XmlBPMNProcessDumper dumper = org.drools.bpmn2.legacy.beta1.XmlBPMNProcessDumper.INSTANCE;
+                String out = dumper.dump(process, includeGraphics);
+                writer.write(out);
+        	} else {
+	            XmlBPMNProcessDumper dumper = XmlBPMNProcessDumper.INSTANCE;
+	            String out = dumper.dump(process, includeGraphics);
+	            writer.write(out);
+        	}
         } catch (Throwable t) {
             DroolsEclipsePlugin.log(t);
         }
@@ -180,7 +188,9 @@ public class BPMNModelEditor extends GenericModelEditor {
     		InputStreamReader isr = new InputStreamReader(is);
     		SemanticModules semanticModules = new SemanticModules();
     		semanticModules.addSemanticModule(new BPMNSemanticModule());
-            semanticModules.addSemanticModule(new BPMNDISemanticModule());
+    		semanticModules.addSemanticModule(new org.drools.bpmn2.legacy.beta1.BPMNSemanticModule());
+    		semanticModules.addSemanticModule(new org.drools.bpmn2.legacy.beta1.BPMN2SemanticModule());
+            semanticModules.addSemanticModule(new org.drools.bpmn2.legacy.beta1.BPMNDISemanticModule());
     		XmlProcessReader xmlReader = new XmlProcessReader(semanticModules);
     		
     		try 
