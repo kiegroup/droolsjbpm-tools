@@ -97,9 +97,18 @@
                 label="%action.popup.openguvnorwebconsoleaction"
                 menubarPath="additions">
         </action>
+        <action
+              class="org.guvnor.tools.actions.EditConnectionAction"
+              enablesFor="1"
+              id="org.guvnor.tools.actions.edticonnectionaction"
+              label="Edit Connection"
+              menubarPath="additions">
+        </action>
   	</objectContribution>
-    <objectContribution id="org.guvnor.tools.contribution1"
-                        objectClass="org.eclipse.core.resources.IFile">
+    <objectContribution
+          adaptable="true"
+          id="org.guvnor.tools.contribution1"
+          objectClass="org.eclipse.core.resources.IFile">
       <menu id="org.guvnor.tools.popupmenu"
             label="%category.name"
             path="additions">

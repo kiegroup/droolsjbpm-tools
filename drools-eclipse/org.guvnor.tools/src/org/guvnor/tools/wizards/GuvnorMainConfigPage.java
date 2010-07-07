@@ -2,8 +2,10 @@ package org.guvnor.tools.wizards;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardContainer;
 import org.eclipse.jface.wizard.WizardPage;
@@ -119,7 +121,7 @@ public class GuvnorMainConfigPage extends WizardPage {
 			
 		});
 		
-		boolean shouldSavePasswords = GuvnorPreferencePage.shouldSavePasswords();
+		boolean shouldSavePasswords = shouldSavePasswords();
 		// WTF? setSelection(true) is not picked up by the control, so we have to set 
 		// this initial value explicitly. After that toggle seems to work...
 		saveAuthInfo = shouldSavePasswords;
@@ -263,12 +265,42 @@ public class GuvnorMainConfigPage extends WizardPage {
 	public void setVisible(boolean visible) {
 		if (visible && !initialized) {
 			// See if there is a preference setting for the default values and, if so, use it
-			String guvnorLocTemplate = GuvnorPreferencePage.getGuvnorTemplatePref();
+			String guvnorLocTemplate = getGuvnorLocation();
 			if (guvnorLocTemplate != null && guvnorLocTemplate.trim().length() > 0) {
 				parseCandidateUrl(guvnorLocTemplate);
 			}
 			initialized = true;
+			
+			initializeUserInfo(getSecurityInfo());
 		}
 		super.setVisible(visible);
 	}
+	
+	protected String getGuvnorLocation(){
+		return GuvnorPreferencePage.getGuvnorTemplatePref();
+	}
+	
+	protected Map getSecurityInfo(){
+		return null;
+	}
+	
+	protected boolean shouldSavePasswords(){
+		return GuvnorPreferencePage.shouldSavePasswords();
+	}
+	
+	private void initializeUserInfo(Map info) {
+
+		if (info == null) {
+			return;
+		}
+		String un = (String) info.get("username"); //$NON-NLS-1$
+		if (un != null) {
+			unField.setText(un);
+		}
+		String pw = (String) info.get("password"); //$NON-NLS-1$
+		if (pw != null) {
+			pwField.setText(pw);
+		}
+	}
+	
 }
