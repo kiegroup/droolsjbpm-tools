@@ -64,63 +64,6 @@ public class EditConnectionAction implements IObjectActionDelegate {
 	    dialog.create();
 	    dialog.open();
 	    
-//		String repositoryLoc = null;
-//		String fullPath = null;
-		
-//		if (selectedNode != null) {
-//			repositoryLoc = selectedNode.getGuvnorRepository().getLocation();
-//			fullPath = selectedNode.getFullPath();
-//		} else {
-//			if (selectedFile == null
-//		       || props == null) {
-//				return;
-//			}
-//			repositoryLoc = props.getRepository();
-//			fullPath = props.getFullpath();
-//		}
-//		
-//		IResponse response = null;
-//		try {
-//			IWebDavClient client = WebDavServerCache.getWebDavClient(repositoryLoc);
-//			if (client == null) {
-//				client = WebDavClientFactory.createClient(new URL(repositoryLoc));
-//				WebDavServerCache.cacheWebDavClient(repositoryLoc, client);
-//			}
-//			InputStream ins = null;
-//			try {
-//				response = client.getResourceVersions(fullPath);
-//				ins = response.getInputStream();
-//			} catch (WebDavException wde) {
-//				if (wde.getErrorCode() != IResponse.SC_UNAUTHORIZED) {
-//					// If not an authentication failure, we don't know what to do with it
-//					throw wde;
-//				}
-//				boolean retry = PlatformUtils.getInstance().
-//									authenticateForServer(repositoryLoc, client); 
-//				if (retry) {
-//					response = client.getResourceVersions(fullPath);
-//					ins = response.getInputStream();
-//				}
-//			}
-//			if (ins != null) {
-//				Properties verProps = new Properties();
-//				verProps.load(ins);
-//				ResourceHistoryView view = PlatformUtils.getResourceHistoryView();
-//				if (view != null) {
-//					view.setEntries(repositoryLoc, fullPath, verProps);
-//				}
-//			}
-//		} catch (Exception e) {
-//			Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e, true);
-//		} finally {
-//			if (response != null) {
-//				try {
-//					response.close();
-//				} catch (IOException ioe) {
-//					Activator.getDefault().writeLog(IStatus.ERROR, ioe.getMessage(), ioe);
-//				}
-//			}
-//		}
 	}
 
 	/*
@@ -140,9 +83,12 @@ public class EditConnectionAction implements IObjectActionDelegate {
 			return;
 		}
 		
-		if (sel.getFirstElement() instanceof TreeParent) {
-				rep = ((TreeParent)sel.getFirstElement()).getGuvnorRepository();
+		if (sel.getFirstElement() instanceof TreeObject) {
+			if (((TreeObject)sel.getFirstElement()).getNodeType() == TreeObject.Type.REPOSITORY) {
+				rep = ((TreeObject)sel.getFirstElement()).getGuvnorRepository();
 				action.setEnabled(true);
+			}
 		}
+		
 	}
 }
