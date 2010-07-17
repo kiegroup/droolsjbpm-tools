@@ -27,12 +27,10 @@
       <dependency>
          <groupId>ant</groupId>
          <artifactId>ant</artifactId>
-         <version>1.6.5</version>
       </dependency>
       <dependency>
          <groupId>ant</groupId>
          <artifactId>ant-nodeps</artifactId>
-         <version>1.6.5</version>
       </dependency>
       <dependency>
          <groupId>com.thoughtworks.xstream</groupId>
