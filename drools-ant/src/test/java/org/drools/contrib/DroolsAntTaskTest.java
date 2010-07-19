@@ -45,6 +45,7 @@ public class DroolsAntTaskTest extends BuildFileTest {
             executeTarget( "verifierreport" );
         } catch ( Exception e ) {
             e.printStackTrace();
+            fail();
         }
     }
 

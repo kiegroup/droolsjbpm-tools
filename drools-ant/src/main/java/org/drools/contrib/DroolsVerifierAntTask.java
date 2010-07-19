@@ -118,8 +118,7 @@ public class DroolsVerifierAntTask extends MatchingTask {
 			VerifierReportWriter vReportWriter = VerifierReportWriterFactory
 					.newHTMLReportWriter();
 
-			String path = toFile.getAbsolutePath() + File.separatorChar
-					+ "report.zip";
+			File path = new File(toFile, "report.zip");
 
 			OutputStream out = new FileOutputStream(path);
 
@@ -142,7 +141,7 @@ public class DroolsVerifierAntTask extends MatchingTask {
 		}
 
 		droolsVerifier.addResourcesToVerify(ResourceFactory
-				.newClassPathResource(filename, Verifier.class),
+				.newFileResource(new File(srcdir.getAbsolutePath(), filename)),
 				ResourceType.DRL);
 	}
 
