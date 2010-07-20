@@ -20,145 +20,146 @@ import org.drools.verifier.report.VerifierReportWriterFactory;
 
 public class DroolsVerifierAntTask extends MatchingTask {
 
-	public static final String DRLFILEEXTENSION = ".drl";
+    public static final String DRLFILEEXTENSION = ".drl";
 
-	private File srcdir;
-	private File toFile;
-	private Path classpath;
+    private File               srcdir;
+    private File               toFile;
+    private Path               classpath;
 
-	/**
-	 * Source directory to read DRL files from
-	 * 
-	 * @param directory
-	 */
-	public void setSrcDir(File directory) {
-		this.srcdir = directory;
-	}
+    /**
+     * Source directory to read DRL files from
+     * 
+     * @param directory
+     */
+    public void setSrcDir(File directory) {
+        this.srcdir = directory;
+    }
 
-	/**
-	 * File to serialize the rulebase to
-	 * 
-	 * @param toFile
-	 */
-	public void setToFile(File toFile) {
-		this.toFile = toFile;
-	}
+    /**
+     * File to serialize the rulebase to
+     * 
+     * @param toFile
+     */
+    public void setToFile(File toFile) {
+        this.toFile = toFile;
+    }
 
-	/**
-	 * The classpath to use when compiling the rulebase
-	 * 
-	 * @param classpath
-	 */
-	public void setClasspath(Path classpath) {
-		createClasspath().append(classpath);
-	}
+    /**
+     * The classpath to use when compiling the rulebase
+     * 
+     * @param classpath
+     */
+    public void setClasspath(Path classpath) {
+        createClasspath().append( classpath );
+    }
 
-	/**
-	 * Classpath to use, by reference, when compiling the rulebase
-	 * 
-	 * @param r
-	 *            a reference to an existing classpath
-	 */
-	public void setClasspathref(Reference r) {
-		createClasspath().setRefid(r);
-	}
+    /**
+     * Classpath to use, by reference, when compiling the rulebase
+     * 
+     * @param r
+     *            a reference to an existing classpath
+     */
+    public void setClasspathref(Reference r) {
+        createClasspath().setRefid( r );
+    }
 
-	/**
-	 * Adds a path to the classpath.
-	 * 
-	 * @return created classpath
-	 */
-	public Path createClasspath() {
-		if (this.classpath == null) {
-			this.classpath = new Path(getProject());
-		}
-		return this.classpath.createPath();
-	}
+    /**
+     * Adds a path to the classpath.
+     * 
+     * @return created classpath
+     */
+    public Path createClasspath() {
+        if ( this.classpath == null ) {
+            this.classpath = new Path( getProject() );
+        }
+        return this.classpath.createPath();
+    }
 
-	/**
-	 * Task's main method
-	 */
-	public void execute() throws BuildException {
-		super.execute();
+    /**
+     * Task's main method
+     */
+    public void execute() throws BuildException {
+        super.execute();
 
-		// checking parameters are set
-		if (toFile == null) {
-			throw new BuildException(
-					"Destination rulebase file does not specified.");
-		}
+        // checking parameters are set
+        if ( toFile == null ) {
+            throw new BuildException( "Destination rulebase file does not specified." );
+        }
 
-		// checking parameters are set
-		if (srcdir == null) {
-			throw new BuildException("Source directory not specified.");
-		}
+        // checking parameters are set
+        if ( srcdir == null ) {
+            throw new BuildException( "Source directory not specified." );
+        }
 
-		if (!srcdir.exists()) {
-			throw new BuildException("Source directory does not exists."
-					+ srcdir.getAbsolutePath());
-		}
+        if ( !srcdir.exists() ) {
+            throw new BuildException( "Source directory does not exists." + srcdir.getAbsolutePath() );
+        }
 
-		try {
+        try {
 
-			// create a specialized classloader
+            // create a specialized classloader
 
-			Verifier droolsanalyzer = VerifierBuilderFactory
-					.newVerifierBuilder().newVerifier();
+            Verifier droolsanalyzer = VerifierBuilderFactory.newVerifierBuilder().newVerifier();
 
-			// get the list of files to be added to the rulebase
-			String[] fileNames = getFileList();
+            // get the list of files to be added to the rulebase
+            String[] fileNames = getFileList();
 
-			for (int i = 0; i < fileNames.length; i++) {
-				compileAndAnalyzeFile(droolsanalyzer, fileNames[i]);
-			}
+            for ( int i = 0; i < fileNames.length; i++ ) {
+                compileAndAnalyzeFile( droolsanalyzer,
+                                       fileNames[i] );
+            }
 
-			droolsanalyzer.fireAnalysis();
+            droolsanalyzer.fireAnalysis();
 
-			VerifierReport result = droolsanalyzer.getResult();
+            VerifierReport result = droolsanalyzer.getResult();
 
-			VerifierReportWriter vReportWriter = VerifierReportWriterFactory
-					.newHTMLReportWriter();
+            VerifierReportWriter vReportWriter = VerifierReportWriterFactory.newHTMLReportWriter();
 
-			File path = new File(toFile, "report.zip");
+            File path = new File( toFile,
+                                  "report.zip" );
 
-			OutputStream out = new FileOutputStream(path);
+            OutputStream out = new FileOutputStream( path );
 
-			vReportWriter.writeReport(out, result);
+            vReportWriter.writeReport( out,
+                                       result );
 
-			System.out.println("Writing verifier report to " + path);
+            System.out.println( "Writing verifier report to " + path );
 
-		} catch (Exception e) {
-			throw new BuildException("RuleBaseTask failed: " + e.getMessage(),
-					e);
-		}
-	}
+        } catch ( Exception e ) {
 
-	private void compileAndAnalyzeFile(Verifier droolsVerifier, String filename)
-			throws DroolsParserException {
+            System.out.println( e.getMessage() );
 
-		// Verifier just works with drl files
-		if (!filename.endsWith(DroolsVerifierAntTask.DRLFILEEXTENSION)) {
-			throw new UnsupportedOperationException();
-		}
+            throw new BuildException( "RuleBaseTask failed: " + e.getMessage(),
+                                      e );
+        }
+    }
 
-		droolsVerifier.addResourcesToVerify(ResourceFactory
-				.newFileResource(new File(srcdir.getAbsolutePath(), filename)),
-				ResourceType.DRL);
-	}
+    private void compileAndAnalyzeFile(Verifier droolsVerifier,
+                                       String filename) throws DroolsParserException {
 
-	/**
-	 * Returns the list of files to be added into the rulebase
-	 * 
-	 * @return
-	 */
-	private String[] getFileList() {
-		// scan source directory for rule files
-		DirectoryScanner directoryScanner = getDirectoryScanner(srcdir);
-		String[] fileNames = directoryScanner.getIncludedFiles();
+        // Verifier just works with drl files
+        if ( !filename.endsWith( DroolsVerifierAntTask.DRLFILEEXTENSION ) ) {
+            throw new UnsupportedOperationException();
+        }
 
-		if (fileNames == null || fileNames.length <= 0) {
-			throw new BuildException(
-					"No rule files found in include directory.");
-		}
-		return fileNames;
-	}
+        droolsVerifier.addResourcesToVerify( ResourceFactory.newFileResource( new File( srcdir.getAbsolutePath(),
+                                                                                        filename ) ),
+                                             ResourceType.DRL );
+    }
+
+    /**
+     * Returns the list of files to be added into the rulebase
+     * 
+     * @return
+     */
+    private String[] getFileList() {
+        // scan source directory for rule files
+        DirectoryScanner directoryScanner = getDirectoryScanner( srcdir );
+        String[] fileNames = directoryScanner.getIncludedFiles();
+
+        if ( fileNames == null || fileNames.length <= 0 ) {
+            throw new BuildException( "No rule files found in include directory." );
+        }
+        return fileNames;
+    }
 }

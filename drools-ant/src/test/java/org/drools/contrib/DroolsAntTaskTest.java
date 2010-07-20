@@ -23,10 +23,9 @@ import junit.framework.Assert;
 
 import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
+import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definition.KnowledgePackage;
 import org.drools.rule.Package;
-import org.drools.core.util.DroolsStreamUtils;
-import org.junit.Ignore;
 
 /**
  * DroolsAntTask test case
@@ -50,11 +49,11 @@ public class DroolsAntTaskTest extends BuildFileTest {
         configureProject( "src/test/resources/DroolsAntTask.xml" );
     }
 
-    public void FIXME_testVerifierReport() {
+    public void testVerifierReport() {
         try {
             executeTarget( "verifierreport" );
         } catch ( Exception e ) {
-            fail();
+            fail( e.getMessage() );
         }
     }
 
