@@ -1,10 +1,5 @@
 <project default="rules">
 	
-	<!-- Uncomment this for Maven Runner -->
-	<property name="eclipsepath"  value=""/>
-	<!-- Uncomment this for Eclipse Runner  -->
-	<!--<property name="eclipsepath"  value="../../../"/>  -->   
-	
 	<path id="cheese.classpath">
 		<pathelement location="${eclipsepath}lib/cheese.jar"/>
 	</path>	

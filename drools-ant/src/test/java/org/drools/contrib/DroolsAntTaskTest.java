@@ -26,6 +26,7 @@ import org.drools.RuleBase;
 import org.drools.definition.KnowledgePackage;
 import org.drools.rule.Package;
 import org.drools.core.util.DroolsStreamUtils;
+import org.junit.Ignore;
 
 /**
  * DroolsAntTask test case
@@ -37,6 +38,15 @@ public class DroolsAntTaskTest extends BuildFileTest {
     }
 
     public void setUp() {
+
+        // Maven and eclipse need different paths
+        // When running in Maven the property is set.
+        String path = System.getProperty( "eclipsepath" );
+        if ( path == null ) {
+            System.setProperty( "eclipsepath",
+                                "../../../" );
+        }
+
         configureProject( "src/test/resources/DroolsAntTask.xml" );
     }
 
