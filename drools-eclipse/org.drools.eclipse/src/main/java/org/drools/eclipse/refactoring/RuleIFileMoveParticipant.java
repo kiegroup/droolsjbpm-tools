@@ -100,7 +100,7 @@ public class RuleIFileMoveParticipant extends MoveParticipant {
 		if (element instanceof IFile) {
 			IFile file = (IFile)element;
 			if (file.getType()==IFile.FILE) {
-				if (file.getFileExtension().equalsIgnoreCase("java")) {
+				if (file.getFileExtension() != null && file.getFileExtension().equalsIgnoreCase("java")) {
 					this.processor = getProcessor();
 					this.file = file;
 					this.className = file.getName().replace("."+file.getFileExtension(), "");

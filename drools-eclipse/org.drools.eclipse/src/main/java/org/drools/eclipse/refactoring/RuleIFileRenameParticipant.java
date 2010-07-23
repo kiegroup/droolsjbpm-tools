@@ -91,7 +91,7 @@ public class RuleIFileRenameParticipant extends RenameParticipant {
 		if (element instanceof IFile) {
 			IFile file = (IFile)element;
 			if (file.getType()==IFile.FILE) {
-				if (file.getFileExtension().equalsIgnoreCase("java")) {
+				if (file.getFileExtension() != null && file.getFileExtension().equalsIgnoreCase("java")) {
 					this.processor = getProcessor();
 					this.file = file;
 					if (this.processor instanceof JavaRenameProcessor) {
