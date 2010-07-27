@@ -96,30 +96,17 @@
       <artifactId>drools-jsr94</artifactId>
       <exclusions>
         <exclusion>
-         <groupId>org.apache.jasper.springsource</groupId>
-         <artifactId>com.springsource.org.apache.jasper.org.eclipse.jdt.springsource</artifactId>
+          <groupId>org.eclipse.jdt.core.compiler</groupId>
+          <artifactId>ecj</artifactId>
         </exclusion>
-
-        <exclusion>
-          <groupId>janino</groupId>
-          <artifactId>janino</artifactId>
-        </exclusion>
-
         <exclusion>
           <groupId>jsr94</groupId>
           <artifactId>jsr94-sigtest</artifactId>
         </exclusion>
-
         <exclusion>
           <groupId>jsr94</groupId>
           <artifactId>jsr94-tck</artifactId>
         </exclusion>
-
-        <exclusion>
-         <groupId>org.antlr</groupId>
-         <artifactId>gunit</artifactId>
-        </exclusion>
-
       </exclusions>
     </dependency>
 
@@ -128,20 +115,9 @@
       <artifactId>drools-decisiontables</artifactId>
       <exclusions>
         <exclusion>
-         <groupId>org.apache.jasper.springsource</groupId>
-         <artifactId>com.springsource.org.apache.jasper.org.eclipse.jdt.springsource</artifactId>
+          <groupId>org.eclipse.jdt.core.compiler</groupId>
+          <artifactId>ecj</artifactId>
         </exclusion>
-
-        <exclusion>
-          <groupId>janino</groupId>
-          <artifactId>janino</artifactId>
-        </exclusion>
-
-        <exclusion>
-         <groupId>org.antlr</groupId>
-         <artifactId>gunit</artifactId>
-        </exclusion>
-
       </exclusions>
     </dependency>
     
@@ -150,27 +126,16 @@
       <artifactId>drools-bpmn2</artifactId>
       <exclusions>
         <exclusion>
-         <groupId>org.apache.jasper.springsource</groupId>
-         <artifactId>com.springsource.org.apache.jasper.org.eclipse.jdt.springsource</artifactId>
+          <groupId>org.eclipse.jdt.core.compiler</groupId>
+          <artifactId>ecj</artifactId>
         </exclusion>
-
-        <exclusion>
-          <groupId>janino</groupId>
-          <artifactId>janino</artifactId>
-        </exclusion>
-
-        <exclusion>
-         <groupId>org.antlr</groupId>
-         <artifactId>gunit</artifactId>
-        </exclusion>
-
       </exclusions>
     </dependency>
 
-	<dependency>
+    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-ide-common</artifactId>
-	</dependency>
+    </dependency>
 	
     <!--dependency>
       <groupId>org.drools</groupId>
