@@ -44,7 +44,7 @@ public class CompositeContextNodeWrapper extends CompositeNodeWrapper {
     public static final String END_NODE = "endNodeId";
     public static final String EXCEPTION_HANDLERS = "exceptionHandlers";
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     private IPropertyDescriptor[] descriptors;
 

@@ -26,7 +26,7 @@ public class ParserException extends Exception {
 	/**
 	 * Comment for <code>serialVersionUID</code>
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 510l;
 
 	/**
 	 * Creates a new <code>ParserException</code>.

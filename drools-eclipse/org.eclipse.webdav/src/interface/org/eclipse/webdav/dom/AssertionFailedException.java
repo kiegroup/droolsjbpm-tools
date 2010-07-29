@@ -35,7 +35,7 @@ package org.eclipse.webdav.dom;
 	/**
 	 * Comment for <code>serialVersionUID</code>
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 510l;
 
 	/** Constructs a new exception.
 	 */

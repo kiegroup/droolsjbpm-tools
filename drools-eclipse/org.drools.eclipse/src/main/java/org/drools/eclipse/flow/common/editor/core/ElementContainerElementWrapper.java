@@ -24,7 +24,7 @@ public abstract class ElementContainerElementWrapper extends DefaultElementWrapp
 	public static final int ADD_ELEMENT = 5;
     public static final int REMOVE_ELEMENT = 6;
     
-    private static final long serialVersionUID = 4L;
+    private static final long serialVersionUID = 510l;
     
     List<ElementWrapper> elements = new ArrayList<ElementWrapper>();
     

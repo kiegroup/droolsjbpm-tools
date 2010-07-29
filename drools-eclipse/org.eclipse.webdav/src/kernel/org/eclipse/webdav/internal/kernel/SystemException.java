@@ -21,7 +21,7 @@ public class SystemException extends DAVException {
 	/**
 	 * Comment for <code>serialVersionUID</code>
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 510l;
 	protected Exception wrappedException;
 
 	/**

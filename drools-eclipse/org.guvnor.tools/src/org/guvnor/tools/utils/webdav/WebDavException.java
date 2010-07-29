@@ -25,7 +25,7 @@ import org.eclipse.webdav.IResponse;
  */
 public class WebDavException extends Exception {
 	
-	private static final long serialVersionUID = -2421203349714311291L;
+	private static final long serialVersionUID = 510l;
 	
 	private int errCode;
 	

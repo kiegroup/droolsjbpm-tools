@@ -30,7 +30,7 @@ public class ExtendedNodeWrapper extends AbstractNodeWrapper {
 	public static final String ON_ENTRY_ACTIONS = "OnEntryActions";
 	public static final String ON_EXIT_ACTIONS = "OnExitActions";
 	
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 510l;
 
     protected IPropertyDescriptor getOnEntryPropertyDescriptor() {
     	return new OnEntryActionsPropertyDescriptor(

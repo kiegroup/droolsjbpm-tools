@@ -21,7 +21,7 @@ public class DAV4JRuntimeException extends RuntimeException {
 	/**
 	 * Comment for <code>serialVersionUID</code>
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 510l;
 
 	// The wrapped exception, if one exists
 	private Throwable fWrappedException = null;

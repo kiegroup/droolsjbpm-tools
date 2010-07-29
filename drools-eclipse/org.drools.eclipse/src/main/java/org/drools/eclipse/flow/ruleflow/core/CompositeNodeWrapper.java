@@ -43,7 +43,7 @@ public abstract class CompositeNodeWrapper extends ElementContainerElementWrappe
 	
     protected IPropertyDescriptor[] descriptors;
     
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 510l;
 
 	public void setNode(Node node) {
         setElement(node);

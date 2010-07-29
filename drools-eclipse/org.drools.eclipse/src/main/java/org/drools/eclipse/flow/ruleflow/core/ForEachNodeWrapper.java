@@ -33,7 +33,7 @@ public class ForEachNodeWrapper extends CompositeNodeWrapper {
     public static final String START_NODE = "startNodeId";
     public static final String END_NODE = "endNodeId";
 
-    private static final long serialVersionUID = 4L;
+    private static final long serialVersionUID = 510l;
     private static IPropertyDescriptor[] descriptors;
 
     static {

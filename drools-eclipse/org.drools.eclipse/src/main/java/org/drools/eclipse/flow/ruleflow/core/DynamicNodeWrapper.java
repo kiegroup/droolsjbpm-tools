@@ -40,7 +40,7 @@ public class DynamicNodeWrapper extends CompositeNodeWrapper {
 
     public static final String AUTO_COMPLETE = "autoComplete";
 
-    private static final long serialVersionUID = 4L;
+    private static final long serialVersionUID = 510l;
     
     public DynamicNodeWrapper() {
         setNode(new DynamicNode());

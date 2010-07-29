@@ -30,7 +30,7 @@ public class StateBasedNodeWrapper extends ExtendedNodeWrapper {
 
     public static final String TIMERS = "Timers";
 
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 510l;
 	
     protected IPropertyDescriptor[] descriptors;
     

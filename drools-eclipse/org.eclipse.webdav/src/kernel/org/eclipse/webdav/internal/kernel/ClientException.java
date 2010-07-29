@@ -48,7 +48,7 @@ public class ClientException extends WebDAVException {
 	/**
 	 * Comment for <code>serialVersionUID</code>
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 510l;
 
 	/** 
 	 * Construct a ClientException with a status code and simple message.

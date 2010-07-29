@@ -24,7 +24,7 @@ import org.drools.workflow.core.NodeExtension;
 
 public class DefaultNodeWrapper extends AbstractNodeWrapper {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     
     public DefaultNodeWrapper(String nodeClassName) {
         try {
