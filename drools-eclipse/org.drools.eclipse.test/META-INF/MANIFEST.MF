@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Drools Eclipse Test Plugin
 Bundle-SymbolicName: org.drools.eclipse.test
-Bundle-Version: 5.1.0
+Bundle-Version: 5.2.0.M1
 Bundle-Vendor: JBoss, a division of Red Hat
-Fragment-Host: org.drools.eclipse;bundle-version="5.1.0"
+Fragment-Host: org.drools.eclipse;bundle-version="5.2.0.M1"
 Bundle-Localization: plugin
 Require-Bundle: org.junit;bundle-version="[3.8.2,4.0.0)
 Bundle-ClassPath: .
