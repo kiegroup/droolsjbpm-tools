@@ -45,10 +45,12 @@ public class Activator extends AbstractUIPlugin {
 	
 	private static GuvnorLocationManager locManager;
 	
+	private ResourceChangeListener rcListner;
 	/**
 	 * The constructor
 	 */
 	public Activator() {
+		rcListner = new ResourceChangeListener(); 
 	}
 	
 	public static GuvnorLocationManager getLocationManager() {
@@ -64,7 +66,7 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		getWorkspace().addResourceChangeListener(new ResourceChangeListener());
+		getWorkspace().addResourceChangeListener(rcListner);
 	}
 
 	/*
@@ -74,6 +76,8 @@ public class Activator extends AbstractUIPlugin {
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		super.stop(context);
+		getWorkspace().removeResourceChangeListener(rcListner);
+
 	}
 
 	/**
