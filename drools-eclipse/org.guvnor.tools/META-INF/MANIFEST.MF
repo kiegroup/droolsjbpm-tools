@@ -12,7 +12,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.compare,
  org.eclipse.webdav
-Eclipse-LazyStart: true
 Export-Package: org.guvnor.tools,
  org.guvnor.tools.actions,
  org.guvnor.tools.perspectives,
@@ -24,3 +23,4 @@ Export-Package: org.guvnor.tools,
  org.guvnor.tools.views.model,
  org.guvnor.tools.wizards
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ActivationPolicy: lazy
