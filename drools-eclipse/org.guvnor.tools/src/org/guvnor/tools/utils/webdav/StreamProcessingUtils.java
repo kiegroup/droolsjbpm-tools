@@ -16,6 +16,7 @@
 
 package org.guvnor.tools.utils.webdav;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
@@ -36,12 +37,14 @@ import org.w3c.dom.NodeList;
 public class StreamProcessingUtils {
 	
 	public static String getStreamContents(InputStream is) throws IOException {
-		StringBuilder sb = new StringBuilder();
-		int c;
-  		while ((c = is.read()) != -1) {
-  			sb.append((char)c);
+		byte[] buffer = new byte[1000];
+  		int c = 0;
+  		ByteArrayOutputStream bout = new ByteArrayOutputStream();
+		while ((c = is.read(buffer)) != -1) {
+  			bout.write(buffer, 0, c);
   		}
-  		return sb.toString();
+		
+  		return new String(bout.toByteArray());
 	}
 	
 	private static String DAV_NS = "DAV:"; //$NON-NLS-1$
