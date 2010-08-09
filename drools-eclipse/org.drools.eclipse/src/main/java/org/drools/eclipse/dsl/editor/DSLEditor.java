@@ -481,7 +481,9 @@ public class DSLEditor extends EditorPart {
         add.addSelectionListener( new SelectionAdapter() {
             // Add a task to the ExampleTaskList and refresh the view
             public void widgetSelected(SelectionEvent e) {
-                model.removeEntry( getCurrentSelected() );
+            	for (DSLMappingEntry entry: getAllSelected()) {
+            		model.removeEntry( entry );
+            	}
                 refreshModel();
                 makeDirty();
                 exprText.setText( "" );
@@ -516,6 +518,14 @@ public class DSLEditor extends EditorPart {
      */
     private DSLMappingEntry getCurrentSelected() {
         return (DSLMappingEntry) ((IStructuredSelection) tableViewer.getSelection()).getFirstElement();
+    }
+
+    private List<DSLMappingEntry> getAllSelected() {
+    	List<DSLMappingEntry> result = new ArrayList<DSLMappingEntry>();
+    	for (Object e: ((IStructuredSelection) tableViewer.getSelection()).toList()) {
+    		result.add((DSLMappingEntry) e); 
+    	}
+        return result;
     }
 
     private void createAddButton(Composite parent) {
@@ -610,7 +620,7 @@ public class DSLEditor extends EditorPart {
      * Create the Table
      */
     private void createTable(Composite parent) {
-        int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.HIDE_SELECTION;
+        int style = SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.HIDE_SELECTION;
 
         table = new Table( parent,
                            style );

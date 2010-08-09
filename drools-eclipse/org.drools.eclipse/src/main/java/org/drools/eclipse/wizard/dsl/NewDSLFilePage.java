@@ -43,6 +43,7 @@ import org.eclipse.ui.ide.IDE;
 public class NewDSLFilePage extends WizardNewFileCreationPage {
 
     private IWorkbench workbench;
+    private boolean exampleContent;
 
     public NewDSLFilePage(IWorkbench workbench, IStructuredSelection selection) {
         super("createDSLFilePage", selection);
@@ -56,7 +57,8 @@ public class NewDSLFilePage extends WizardNewFileCreationPage {
         setPageComplete(true);
     }
 
-    public boolean finish() {
+    public boolean finish(boolean exampleContent) {
+    	this.exampleContent = exampleContent;
         String fileName = getFileName();
         if (!fileName.endsWith(".dsl")) {
             setFileName(fileName + ".dsl");
@@ -78,8 +80,12 @@ public class NewDSLFilePage extends WizardNewFileCreationPage {
     
     protected InputStream getInitialContents() {
         try {
-            return DroolsEclipsePlugin.getDefault().getBundle().getResource(
-                "org/drools/eclipse/wizard/dsl/template.dsl").openStream();
+        	if (exampleContent) {
+        		return DroolsEclipsePlugin.getDefault().getBundle().getResource(
+                	"org/drools/eclipse/wizard/dsl/template.dsl").openStream();
+        	} else {
+        		return null;
+        	}
         } catch (IOException e) {
             return null;
         } catch (NullPointerException e) {

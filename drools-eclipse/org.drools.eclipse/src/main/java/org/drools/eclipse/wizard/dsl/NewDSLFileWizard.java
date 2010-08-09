@@ -34,6 +34,7 @@ public class NewDSLFileWizard extends Wizard implements INewWizard {
     private IWorkbench workbench;
     private IStructuredSelection selection;
     private NewDSLFilePage mainPage;
+    private NewDSLFilePage2 extraPage;
     
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         this.workbench = workbench;
@@ -46,10 +47,12 @@ public class NewDSLFileWizard extends Wizard implements INewWizard {
     public void addPages() {
         mainPage = new NewDSLFilePage(workbench, selection);
         addPage(mainPage);
+        extraPage = new NewDSLFilePage2();
+        addPage(extraPage);
      }
 
     public boolean performFinish() {
-        return mainPage.finish();
+        return mainPage.finish(extraPage.isExampleContent());
     }
     
 
