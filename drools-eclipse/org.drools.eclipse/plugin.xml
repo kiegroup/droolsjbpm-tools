@@ -429,7 +429,7 @@
 	    <action id="org.drools.eclipse.action.ConvertToDroolsProjectAction1"
 	       label="Convert to Drools Project"
 	       icon="icons/drools.gif"
-	       menubarPath="additions"
+	       menubarPath="org.eclipse.ui.projectConfigure/additions"
 	       class="org.drools.eclipse.action.ConvertToDroolsProjectAction"
            definitionId="org.drools.eclipse.action.ConvertToDroolsProjectAction1"
 	       enablesFor="1">
@@ -441,7 +441,7 @@
 	    <action id="org.drools.eclipse.action.ConvertToDroolsProjectAction2"
 	       label="Convert to Drools Project"
 	       icon="icons/drools.gif"
-	       menubarPath="additions"
+	       menubarPath="org.eclipse.ui.projectConfigure/additions"
 	       class="org.drools.eclipse.action.ConvertToDroolsProjectAction"
            definitionId="org.drools.eclipse.action.ConvertToDroolsProjectAction2"
 	       enablesFor="1">
