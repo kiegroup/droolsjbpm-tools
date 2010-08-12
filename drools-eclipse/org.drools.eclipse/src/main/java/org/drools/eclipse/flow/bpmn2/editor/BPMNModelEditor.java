@@ -188,7 +188,7 @@ public class BPMNModelEditor extends GenericModelEditor {
                 writer.write(out);
         	} else {
 	            XmlBPMNProcessDumper dumper = XmlBPMNProcessDumper.INSTANCE;
-	            String out = dumper.dump(process, includeGraphics);
+	            String out = dumper.dump(process, XmlBPMNProcessDumper.META_DATA_USING_DI);
 	            writer.write(out);
         	}
         } catch (Throwable t) {
@@ -204,6 +204,7 @@ public class BPMNModelEditor extends GenericModelEditor {
     		InputStreamReader isr = new InputStreamReader(is);
     		SemanticModules semanticModules = new SemanticModules();
     		semanticModules.addSemanticModule(new BPMNSemanticModule());
+    		semanticModules.addSemanticModule(new BPMNDISemanticModule());
     		semanticModules.addSemanticModule(new org.drools.bpmn2.legacy.beta1.BPMNSemanticModule());
     		semanticModules.addSemanticModule(new org.drools.bpmn2.legacy.beta1.BPMN2SemanticModule());
             semanticModules.addSemanticModule(new org.drools.bpmn2.legacy.beta1.BPMNDISemanticModule());
