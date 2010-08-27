@@ -46,6 +46,7 @@ Bundle-ClassPath: .,
  lib/antlr-runtime.jar,
  lib/jxl.jar,
  lib/xpp3_min.jar,
- lib/xstream.jar
+ lib/xstream.jar,
+ lib/drools-flow-core.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.drools.eclipse.util
