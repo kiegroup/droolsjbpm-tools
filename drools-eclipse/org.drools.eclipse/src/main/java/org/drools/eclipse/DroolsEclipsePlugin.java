@@ -50,6 +50,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.PackageRegistry;
 import org.drools.compiler.ProcessBuilder;
+import org.drools.compiler.ProcessBuilderImpl;
 import org.drools.compiler.xml.XmlProcessReader;
 import org.drools.core.util.StringUtils;
 import org.drools.eclipse.DRLInfo.FunctionInfo;
@@ -558,12 +559,24 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
     public ProcessInfo getProcessInfo(String processId) {
         return processInfosById.get( processId );
     }
+    
+    public IResource findProcessResource(String processId) {
+    	if (processId == null) {
+    		return null;
+    	}
+    	for (Map.Entry<IResource, ProcessInfo> entry: processInfos.entrySet()) {
+    		if (processId.equals(entry.getValue().getProcessId())) {
+    			return entry.getKey();
+    		}
+    	}
+    	return null;
+    }
 
     public ProcessInfo parseProcess(Process process,
                                     IResource resource,
                                     PackageBuilderConfiguration config) {
         PackageBuilder packageBuilder = new PackageBuilder( config );
-        ProcessBuilder processBuilder = new ProcessBuilder( packageBuilder );
+        ProcessBuilderImpl processBuilder = new ProcessBuilderImpl( packageBuilder );
         processBuilder.buildProcess( process, ResourceFactory.newUrlResource(
     		"file://" + resource.getLocation().toString() ) );
         ProcessInfo processInfo = new ProcessInfo( process.getId(),

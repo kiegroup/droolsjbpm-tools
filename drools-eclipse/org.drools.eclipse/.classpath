@@ -19,5 +19,6 @@
 	<classpathentry kind="lib" path="lib/drools-ide-common.jar"/>
 	<classpathentry kind="lib" path="lib/drools-core.jar"/>
 	<classpathentry kind="lib" path="lib/drools-flow-core.jar"/>
+	<classpathentry kind="lib" path="lib/drools-flow-compiler.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
