@@ -20,12 +20,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
-import java.text.DateFormatSymbols;
-import java.text.ParseException;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,7 +50,6 @@ public class StreamProcessingUtils {
 	private static String DAV_NS = "DAV:"; //$NON-NLS-1$
 	
 	public static Map<String, ResourceProperties> parseListing(String base, InputStream is) throws Exception {
-		
 		Map<String, ResourceProperties> res = new HashMap<String, ResourceProperties>();
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
@@ -79,8 +72,7 @@ public class StreamProcessingUtils {
 				}
 				propList = oneElem.getElementsByTagNameNS(DAV_NS, "creationdate"); //$NON-NLS-1$
 				if (propList.getLength() > 0) {
-					String dateStr = propList.item(0).getTextContent();
-					props.setCreationDate(formatDateTimeString(dateStr));
+					props.setCreationDate(propList.item(0).getTextContent());
 				}
 				propList = oneElem.getElementsByTagNameNS(DAV_NS, "getlastmodified"); //$NON-NLS-1$
 				if (propList.getLength() > 0) {
@@ -92,39 +84,6 @@ public class StreamProcessingUtils {
 			}
 		}
 		return res;
-	}
-	
-	
-	//the method is Temporary workaround for the issue JBIDE-3746 which is a server side issue.
-	private static String formatDateTimeString(String dateStr) {
-
-		if (dateStr == null)
-			return null;
-		String val = dateStr;
-
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		if (!("".equals(val))) {
-			try {
-				Date date = formatter.parse(val);
-				val = formatter.format(date);
-			} catch (Exception e) {
-				if (val.indexOf("T") >= 0) {
-					val = val.replace("T", " ");
-				}
-				if (val.indexOf("Z") >= 0) {
-					val = val.replace("Z", "");
-				}
-				Date date;
-				try {
-					date = formatter.parse(val);
-				} catch (ParseException e1) {
-					return dateStr;
-				}
-				val = formatter.format(date);
-			}
-		}
-
-		return val;
 	}
 	
 	private static String extractOverlap(String base, String extension) {
