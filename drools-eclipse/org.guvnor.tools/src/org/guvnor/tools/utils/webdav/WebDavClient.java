@@ -133,10 +133,14 @@ public class WebDavClient implements IWebDavClient {
 				if (val != null) {
 					ResourceProperties resProps = props.get(oneKey);
 					StringTokenizer tokens = new StringTokenizer(val, ","); //$NON-NLS-1$
-					String dateStamp = tokens.nextToken();
-					String revision = tokens.nextToken();
-					resProps.setLastModifiedDate(dateStamp);
-					resProps.setRevision(revision);
+//					String dateStamp = tokens.nextToken();
+//					String revision = tokens.nextToken();
+					if(tokens.hasMoreElements()){
+						resProps.setLastModifiedDate(tokens.nextToken());
+					}
+					if(tokens.hasMoreElements()){
+						resProps.setRevision(tokens.nextToken());
+					}
 				} 
 			}
 		} finally {
