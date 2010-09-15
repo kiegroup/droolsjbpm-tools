@@ -41,6 +41,10 @@ public class ActionUtils {
 			for (Iterator<Object> it = sel.iterator(); it.hasNext();) {
 				Object oneSelection = it.next();
 				if (oneSelection instanceof IFile) {
+					if(!(((IFile)oneSelection).getName().indexOf(".") > 0)){
+						res = false;
+						break;
+					}
 					GuvnorMetadataProps props = 
 						GuvnorMetadataUtils.getGuvnorMetadata((IFile)oneSelection);
 					if ((guvnorControlled && props == null)

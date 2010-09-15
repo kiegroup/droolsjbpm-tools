@@ -186,6 +186,11 @@ public class RepositoryView extends ViewPart {
 					return false;
 				}
 				String[] items = (String[])data;
+				
+				boolean isvalid = validateInputResource(items);
+				
+				if(!isvalid) return false;
+				
 				String[] errors = processDrop(targetNode, items);
 				if (errors.length != 0) {
 					StringBuilder msg = new StringBuilder();
@@ -222,6 +227,27 @@ public class RepositoryView extends ViewPart {
 		});
 	}
 	
+	private boolean validateInputResource(String[] filenames){
+		
+		for(String filename : filenames){
+			File file = new File(filename);
+			String msg = "";
+			if(!file.isFile()){
+				msg = MessageFormat.format(Messages.getString("error.message.isfolder"), filename);
+				MessageDialog.openError(null, "Problem Occurred", msg);
+				return false;
+			}
+			
+			String name = file.getName();
+			if(!(name.indexOf(".") > 0)){
+				msg = MessageFormat.format(Messages.getString("error.message.invalid.filename"), filename);
+				MessageDialog.openError(null, "Problem Occurred", msg);
+				return false;
+			}
+		}
+		
+		return true;
+	}
 	private String[] processDrop(TreeParent target, String[] items) {
 		List<String> errors = new ArrayList<String>();
 		
