@@ -204,10 +204,14 @@ public class WebDavClient implements IWebDavClient {
 			String val = guvProps.getProperty(filename);
 			if (val != null) {
 				StringTokenizer tokens = new StringTokenizer(val, ","); //$NON-NLS-1$
-				String dateStamp = tokens.nextToken();
-				String revision = tokens.nextToken();
-				props.setLastModifiedDate(dateStamp);
-				props.setRevision(revision);
+//				String dateStamp = tokens.nextToken();
+//				String revision = tokens.nextToken();
+				if(tokens.hasMoreElements()){
+					props.setLastModifiedDate(tokens.nextToken());
+				}
+				if(tokens.hasMoreElements()){
+					props.setRevision(tokens.nextToken());
+				}
 			} else {
 				Exception nfe = new Exception("Failed to get Guvnor properties for " + filename); //$NON-NLS-1$
 				Activator.getDefault().writeLog(IStatus.WARNING, nfe.getMessage(), nfe);
