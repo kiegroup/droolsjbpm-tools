@@ -266,15 +266,26 @@ public class GuvnorMetadataUtils {
 							controlledFile.removeLastSegments(1).append(".guvnorinfo")); //$NON-NLS-1$
 		if (!mdFolder.exists()) {
 			mdFolder.create(true, true, null);
+			
+			mdFolder.setTeamPrivateMember(true);
+			mdFolder.setDerived(true, null);
 		}
+		
 		IFile mdFile = root.getFile(
 						mdFolder.getFullPath().append("." + controlledFile.lastSegment())); //$NON-NLS-1$
+		
 		Properties props = new Properties();
 		if (!mdFile.exists()) {
 			mdFile.create(new ByteArrayInputStream(new byte[] {}), true, null);
+			
+			mdFolder.setTeamPrivateMember(true);
+			mdFolder.setDerived(true, null);
 		} else {
 			props.load(mdFile.getContents());
 		}
+		
+		
+		
 		if (mdProps.getRepository() != null) {
 			props.put("repository", mdProps.getRepository()); //$NON-NLS-1$
 		}
