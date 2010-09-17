@@ -266,7 +266,9 @@ public class GuvnorMetadataUtils {
 							controlledFile.removeLastSegments(1).append(".guvnorinfo")); //$NON-NLS-1$
 		if (!mdFolder.exists()) {
 			mdFolder.create(true, true, null);
-			
+		}
+		
+		if(!mdFolder.isTeamPrivateMember() || !mdFolder.isDerived()){
 			mdFolder.setTeamPrivateMember(true);
 			mdFolder.setDerived(true, null);
 		}
@@ -277,11 +279,13 @@ public class GuvnorMetadataUtils {
 		Properties props = new Properties();
 		if (!mdFile.exists()) {
 			mdFile.create(new ByteArrayInputStream(new byte[] {}), true, null);
-			
-			mdFolder.setTeamPrivateMember(true);
-			mdFolder.setDerived(true, null);
 		} else {
 			props.load(mdFile.getContents());
+		}
+		
+		if(!mdFile.isTeamPrivateMember() || !mdFile.isDerived()){
+			mdFile.setTeamPrivateMember(true);
+			mdFile.setDerived(true, null);
 		}
 		
 		
