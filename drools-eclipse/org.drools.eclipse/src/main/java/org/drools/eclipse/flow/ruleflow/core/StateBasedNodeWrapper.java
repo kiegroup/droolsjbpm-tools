@@ -73,8 +73,10 @@ public class StateBasedNodeWrapper extends ExtendedNodeWrapper {
         if (TIMERS.equals(id)) {
         	getStateBasedNode().removeAllTimers();
         	// adding one by one so the ids are set correctly
-        	for (Map.Entry<Timer, DroolsAction> entry: ((Map<Timer, DroolsAction>) value).entrySet()) {
-        		getStateBasedNode().addTimer(entry.getKey(), entry.getValue());
+        	if (value != null) {
+	        	for (Map.Entry<Timer, DroolsAction> entry: ((Map<Timer, DroolsAction>) value).entrySet()) {
+	        		getStateBasedNode().addTimer(entry.getKey(), entry.getValue());
+	        	}
         	}
         } else {
             super.setPropertyValue(id, value);
