@@ -20,7 +20,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -35,6 +39,14 @@ import org.w3c.dom.NodeList;
  * @author jgraham
  */
 public class StreamProcessingUtils {
+	
+    private static final SimpleDateFormat CREATION_DATE_FORMAT = new SimpleDateFormat(
+    "yyyy-MM-dd'T'HH:mm:ss'Z'");
+    
+    private static final SimpleDateFormat LAST_MODIFIED_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    
+    protected static final SimpleDateFormat GUNVOR_TOOLS_DATE_FORMAT = new SimpleDateFormat(
+            "EEE, dd MMM yyyy HH:mm:ss z", Locale.getDefault());
 	
 	public static String getStreamContents(InputStream is) throws IOException {
 		byte[] buffer = new byte[1000];
@@ -110,5 +122,31 @@ public class StreamProcessingUtils {
 		}
 //System.out.println("Returning " + res + " from " + base + ", " + extension);
 		return res;
+	}
+	
+	
+	public static String parseISODateFormat(String dateStr) {
+
+		if (dateStr == null)
+			return null;
+		
+		String val = dateStr;
+
+		try {
+			if (dateStr.indexOf('T') == 10 && dateStr.endsWith("Z")) {
+				Date date = CREATION_DATE_FORMAT.parse(dateStr);
+				val = GUNVOR_TOOLS_DATE_FORMAT.format(date);
+				
+			} else if (dateStr.indexOf('T') == 10) {
+				Date date = LAST_MODIFIED_DATE_FORMAT.parse(dateStr);
+				val = GUNVOR_TOOLS_DATE_FORMAT.format(date);
+			}
+			
+		} 
+		catch (ParseException e) {
+			
+		}
+
+		return val;
 	}
 }

@@ -43,13 +43,13 @@ public class ResourceProperties {
 		return creationDate != null?creationDate:""; //$NON-NLS-1$
 	}
 	public void setCreationDate(String creationDate) {
-		this.creationDate = creationDate;
+		this.creationDate = StreamProcessingUtils.parseISODateFormat(creationDate);
 	}
 	public String getLastModifiedDate() {
 		return lastModifiedDate != null?lastModifiedDate:""; //$NON-NLS-1$
 	}
 	public void setLastModifiedDate(String lastModifiedDate) {
-		this.lastModifiedDate = lastModifiedDate;
+		this.lastModifiedDate = StreamProcessingUtils.parseISODateFormat(lastModifiedDate);
 	}
 	public String getRevision() {
 		return revision != null?revision:""; //$NON-NLS-1$
