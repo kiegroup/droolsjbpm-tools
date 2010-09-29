@@ -195,7 +195,7 @@ public class GuvnorPreferencePage extends PreferencePage implements IWorkbenchPr
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		String res = null;
 		if (!store.contains(IGuvnorPreferenceConstants.GUVNOR_LOC_TEMPLATE_PREF)) {
-			res = IGuvnorPreferenceConstants.GUVNOR_LOC_TEMPLATE_DEFAULT;
+			res = IGuvnorPreferenceConstants.GUVNOR_LOC_TEMPLATE_DEFAULT_ORG;
 			store.putValue(IGuvnorPreferenceConstants.GUVNOR_LOC_TEMPLATE_PREF, res);
 		} else {
 			res = store.getString(IGuvnorPreferenceConstants.GUVNOR_LOC_TEMPLATE_PREF);
