@@ -137,9 +137,12 @@ public class GuvnorPreferencePage extends PreferencePage implements IWorkbenchPr
 	protected void performDefaults() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		
-		store.putValue(IGuvnorPreferenceConstants.GUVNOR_LOC_TEMPLATE_PREF, 
-				      IGuvnorPreferenceConstants.GUVNOR_LOC_TEMPLATE_DEFAULT);
-		guvnorURLTemplate.setText(IGuvnorPreferenceConstants.GUVNOR_LOC_TEMPLATE_DEFAULT);
+		String defaultLoc = store.getDefaultString(IGuvnorPreferenceConstants.GUVNOR_LOC_TEMPLATE_PREF);
+		if(defaultLoc == null || "".equals(defaultLoc)){
+			defaultLoc = IGuvnorPreferenceConstants.GUVNOR_LOC_TEMPLATE_DEFAULT;
+		}
+		store.putValue(IGuvnorPreferenceConstants.GUVNOR_LOC_TEMPLATE_PREF, defaultLoc);
+		guvnorURLTemplate.setText(defaultLoc);
 		
 		store.putValue(IGuvnorPreferenceConstants.SAVE_PASSWORDS_PREF, 
 				      String.valueOf(true));
@@ -195,7 +198,7 @@ public class GuvnorPreferencePage extends PreferencePage implements IWorkbenchPr
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		String res = null;
 		if (!store.contains(IGuvnorPreferenceConstants.GUVNOR_LOC_TEMPLATE_PREF)) {
-			res = IGuvnorPreferenceConstants.GUVNOR_LOC_TEMPLATE_DEFAULT_ORG;
+			res = IGuvnorPreferenceConstants.GUVNOR_LOC_TEMPLATE_DEFAULT;
 			store.putValue(IGuvnorPreferenceConstants.GUVNOR_LOC_TEMPLATE_PREF, res);
 		} else {
 			res = store.getString(IGuvnorPreferenceConstants.GUVNOR_LOC_TEMPLATE_PREF);
