@@ -14,7 +14,7 @@
   <name>Drools :: Eclipse :: Build</name>
   <build>
     <plugins>    
-	
+
       <!--plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>maven-properties-plugin</artifactId>
@@ -33,8 +33,8 @@
           </execution>
         </executions>
       </plugin-->
-	
-	
+
+
      <plugin>
        <artifactId>maven-antrun-plugin</artifactId>
        <inherited>false</inherited>
@@ -177,7 +177,7 @@
                     <fileset dir="target/">
                       <include name="*.zip"/>
                     </fileset>                    
-		        </copy>
+            </copy>
              </tasks>
            </configuration>
            <goals>

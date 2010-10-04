@@ -88,7 +88,7 @@
 
   <dependencies>
 
-	<dependency>
+  <dependency>
        <groupId>org.slf4j</groupId>
        <artifactId>slf4j-jdk14</artifactId>
     </dependency>
@@ -109,46 +109,46 @@
           <artifactId>mvel2</artifactId>
         </exclusion>      
         
-    	<exclusion>
-    		<groupId>org.hibernate</groupId>
-    		<artifactId>hibernate-entitymanager</artifactId>
-    	</exclusion>
+      <exclusion>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-entitymanager</artifactId>
+      </exclusion>
         
         <exclusion>
-    		<groupId>com.h2database</groupId>
-    		<artifactId>h2</artifactId>
-    	</exclusion>  
-    	
-    	<exclusion>
-			<groupId>org.jboss.seam</groupId>
-			<artifactId>jboss-seam</artifactId>
-		</exclusion>
-		
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+      </exclusion>
+
+      <exclusion>
+      <groupId>org.jboss.seam</groupId>
+      <artifactId>jboss-seam</artifactId>
+    </exclusion>
+
         <exclusion>
-    		<groupId>antlr</groupId>
-    		<artifactId>antlr</artifactId>
-    	</exclusion>  
-    	
+        <groupId>antlr</groupId>
+        <artifactId>antlr</artifactId>
+      </exclusion>
+
         <exclusion>
-			<groupId>commons-collections</groupId>
-			<artifactId>commons-collections</artifactId>
-    	</exclusion>  
-    	
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      </exclusion>
+
         <exclusion>
-    		<groupId>org.hornetq</groupId>
-    		<artifactId>hornetq-core</artifactId>
-    	</exclusion>  
-    	
+        <groupId>org.hornetq</groupId>
+        <artifactId>hornetq-core</artifactId>
+      </exclusion>
+
         <exclusion>
-    		<groupId>org.hornetq</groupId>
-    		<artifactId>hornetq-transports</artifactId>
-    	</exclusion>  
-    	
+        <groupId>org.hornetq</groupId>
+        <artifactId>hornetq-transports</artifactId>
+      </exclusion>
+
         <exclusion>
-    		<groupId>org.jboss.netty</groupId>
-    		<artifactId>netty</artifactId>
-    	</exclusion>  
-    	
+        <groupId>org.jboss.netty</groupId>
+        <artifactId>netty</artifactId>
+      </exclusion>
+
       </exclusions>
     </dependency>
 
