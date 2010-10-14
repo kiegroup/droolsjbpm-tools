@@ -217,10 +217,10 @@ public class GuvnorMetadataUtils {
 	public static GuvnorMetadataProps loadGuvnorMetadata(IFile mdFile) throws Exception {
 		if(!mdFile.isTeamPrivateMember()){
 			mdFile.setTeamPrivateMember(true);
-			mdFile.setDerived(true, null);
+			mdFile.setDerived(true);
 			if(mdFile.getParent().getName().endsWith(".guvnorinfo")){
 				mdFile.getParent().setTeamPrivateMember(true);
-				mdFile.getParent().setDerived(true, null);
+				mdFile.getParent().setDerived(true);
 			}
 		}
 		
@@ -276,7 +276,7 @@ public class GuvnorMetadataUtils {
 		if (!mdFolder.exists()) {
 			mdFolder.create(true, true, null);
 			mdFolder.setTeamPrivateMember(true);
-			mdFolder.setDerived(true, null);
+			mdFolder.setDerived(true);
 		}
 		
 		IFile mdFile = root.getFile(
@@ -286,7 +286,7 @@ public class GuvnorMetadataUtils {
 		if (!mdFile.exists()) {
 			mdFile.create(new ByteArrayInputStream(new byte[] {}), true, null);
 			mdFile.setTeamPrivateMember(true);
-			mdFile.setDerived(true, null);
+			mdFile.setDerived(true);
 		} else {
 			props.load(mdFile.getContents());
 		}
