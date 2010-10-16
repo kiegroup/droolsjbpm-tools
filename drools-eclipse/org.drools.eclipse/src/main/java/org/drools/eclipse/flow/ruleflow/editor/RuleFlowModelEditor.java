@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.xml.ProcessSemanticModule;
 import org.drools.compiler.xml.XmlProcessReader;
 import org.drools.compiler.xml.XmlRuleFlowProcessDumper;
 import org.drools.compiler.xml.processes.RuleFlowMigrator;
@@ -58,6 +59,7 @@ import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.process.core.WorkDefinition;
 import org.drools.process.core.WorkDefinitionExtension;
 import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.xml.SemanticModules;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPartFactory;
@@ -199,7 +201,9 @@ public class RuleFlowModelEditor extends GenericModelEditor {
     	{
     		InputStreamReader isr = new InputStreamReader(is);
     		PackageBuilderConfiguration configuration = new PackageBuilderConfiguration();
-    		XmlProcessReader xmlReader = new XmlProcessReader( configuration.getSemanticModules() );
+    		SemanticModules modules = configuration.getSemanticModules();
+    		modules.addSemanticModule(new ProcessSemanticModule());
+    		XmlProcessReader xmlReader = new XmlProcessReader( modules );
     		
     		//Migrate v4 ruleflows to v5
     		Reader reader = null;
