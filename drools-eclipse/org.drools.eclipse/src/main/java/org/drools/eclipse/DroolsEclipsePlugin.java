@@ -35,6 +35,7 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.PackageRegistry;
 import org.drools.compiler.ProcessBuilder;
 import org.drools.compiler.ProcessBuilderImpl;
+import org.drools.compiler.xml.ProcessSemanticModule;
 import org.drools.compiler.xml.XmlProcessReader;
 import org.drools.core.util.StringUtils;
 import org.drools.eclipse.DRLInfo.FunctionInfo;
@@ -518,6 +519,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                 
                 SemanticModules modules = configuration.getSemanticModules();
                 modules.addSemanticModule( new BPMNSemanticModule() );
+                modules.addSemanticModule( new ProcessSemanticModule() );
                 modules.addSemanticModule( new org.drools.bpmn2.legacy.beta1.BPMNSemanticModule() );
                 modules.addSemanticModule( new org.drools.bpmn2.legacy.beta1.BPMN2SemanticModule() );
                 modules.addSemanticModule( new org.drools.bpmn2.legacy.beta1.BPMNDISemanticModule() );
