@@ -447,12 +447,24 @@
 	       enablesFor="1">
 	    </action>
       </objectContribution>
+	  <objectContribution
+           objectClass="org.eclipse.core.resources.IFile" nameFilter="*.rf"
+           id="org.drools.eclipse.action.ConvertToBPMN2Process">
+	    <action id="ConvertToBPMN2ProcessAction"
+	       label="Convert to BPMN2 process"
+	       icon="icons/drools.gif"
+	       menubarPath="additions"
+	       class="org.drools.eclipse.action.ConvertToBPMN2ProcessAction"
+           definitionId="org.drools.eclipse.action.ConvertToBPMN2ProcessAction"
+	       enablesFor="1">
+	    </action>
+      </objectContribution>
    </extension>
 
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            name="Flow Editor"
+            name="RuleFlow Editor"
             extensions="rf, ruleflow, rflow"
             icon="icons/process.gif"
             contributorClass="org.drools.eclipse.flow.common.editor.GenericActionBarContributor"
@@ -464,7 +476,7 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            name="Flow Editor"
+            name="BPMN2 Process Editor"
             extensions="bpmn, bpmn2"
             icon="icons/process.gif"
             contributorClass="org.drools.eclipse.flow.common.editor.GenericActionBarContributor"
