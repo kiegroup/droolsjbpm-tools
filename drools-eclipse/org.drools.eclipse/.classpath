@@ -13,12 +13,12 @@
 	<classpathentry exported="true" kind="lib" path="lib/mvel2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xstream.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/antlr-runtime.jar"/>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="lib" path="lib/drools-bpmn2.jar"/>
-	<classpathentry kind="lib" path="lib/drools-ide-common.jar"/>
-	<classpathentry kind="lib" path="lib/drools-core.jar"/>
-	<classpathentry kind="lib" path="lib/drools-flow-core.jar"/>
-	<classpathentry kind="lib" path="lib/drools-flow-compiler.jar"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry exported="true" kind="lib" path="lib/drools-bpmn2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/drools-ide-common.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/drools-core.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/drools-flow-core.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/drools-flow-compiler.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
