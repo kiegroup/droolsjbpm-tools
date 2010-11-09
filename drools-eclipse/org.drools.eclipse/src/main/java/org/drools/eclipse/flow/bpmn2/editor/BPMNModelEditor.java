@@ -44,6 +44,8 @@ import org.drools.process.core.WorkDefinitionExtension;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.xml.SemanticModules;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPartFactory;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
@@ -51,6 +53,7 @@ import org.eclipse.gef.palette.PaletteDrawer;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.requests.SimpleFactory;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
@@ -178,6 +181,17 @@ public class BPMNModelEditor extends GenericModelEditor {
         	}
         } catch (Throwable t) {
             DroolsEclipsePlugin.log(t);
+            IStatus status = new Status(
+        		IStatus.ERROR,
+                DroolsEclipsePlugin.getUniqueIdentifier(),
+                -1,
+                "Could not save BPMN process, see error log for more details and contact the developers: " + t.getMessage(),
+                t);
+    		ErrorDialog.openError( getSite().getShell(),
+                "Process Save Error",
+                "Unable to save process.",
+                status);
+            throw new IOException(t.getMessage());
         }
         writer.close();
     }
