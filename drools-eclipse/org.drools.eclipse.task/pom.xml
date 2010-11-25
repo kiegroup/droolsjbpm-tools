@@ -2,14 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
-    <artifactId>drools-eclipse</artifactId>
     <groupId>org.drools</groupId>
-    <version>5.2.0.SNAPSHOT</version>
+    <artifactId>drools-eclipse</artifactId>
+    <version>5.2.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>org.drools.eclipse.task</artifactId>
-  <packaging>pom</packaging>
+  <packaging>eclipse-plugin</packaging>
 
   <name>Drools :: Eclipse :: Task</name>
   <build>
@@ -68,6 +68,7 @@
         <executions>
           <execution>
             <id>copy-dependencies</id>
+            <!-- TODO if the lib directory is empty tycho crashes because it does dep resolving before this phase -->
             <phase>generate-resources</phase>
             <goals>
               <goal>copy-dependencies</goal>

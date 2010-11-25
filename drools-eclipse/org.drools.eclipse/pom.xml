@@ -2,74 +2,75 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
-    <artifactId>drools-eclipse</artifactId>
     <groupId>org.drools</groupId>
-    <version>5.2.0.SNAPSHOT</version>
+    <artifactId>drools-eclipse</artifactId>
+    <version>5.2.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>org.drools.eclipse</artifactId>
-  <packaging>pom</packaging>
+  <packaging>eclipse-plugin</packaging>
 
   <name>Drools :: Eclipse :: Base</name>
   <build>
-    <plugins>    
-    
-     <plugin>
-       <artifactId>maven-antrun-plugin</artifactId>
-       <inherited>false</inherited>
-       <executions>
-         <execution>
-           <id>clean lib</id>
-           <phase>clean</phase>
-           <configuration>
-             <tasks>                              
+    <plugins>
+
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <inherited>false</inherited>
+        <executions>
+          <execution>
+            <id>clean lib</id>
+            <phase>clean</phase>
+            <configuration>
+              <tasks>
                 <delete>
-                  <fileset dir="lib" includes="**/*.jar" excludes="**/.svn" />                 
+                  <fileset dir="lib" includes="**/*.jar" excludes="**/.svn"/>
                 </delete>
-                <delete dir="help/shared" />     
-                <delete dir="help/eclipse" />     
-             </tasks>
-           </configuration>
-           <goals>
-             <goal>run</goal>
-           </goals>
-         </execution>    
-         
-         <execution>
-           <id>unzip manual</id>
-           <phase>process-resources</phase>
-           <configuration>
-             <tasks>     
-               <!--unzip src="lib/drools-docs-introduction-eclipse.war" dest="help/introduction" /-->
-               <!--unzip src="lib/drools-docs-expert-eclipse.war" dest="help/expert" />
-               <unzip src="lib/drools-docs-fusion-eclipse.war" dest="help/fusion" /-->
-               <!--unzip src="lib/drools-docs-flow-eclipse.war" dest="help/flow" />
-               <unzip src="lib/drools-docs-guvnor-eclipse.war" dest="help/guvnor" />
-               
-               
-               <delete file="lib/drools-docs-introduction-eclipse.war" />     
-               <delete file="lib/drools-docs-expert-eclipse.war" />     
-               <delete file="lib/drools-docs-fusion-eclipse.war" />     
-               <delete file="lib/drools-docs-flow-eclipse.war" />     
-               <delete file="lib/drools-docs-guvnor-eclipse.war" /-->   
-               <!--delete file="lib/drools-docs-expert-eclipse.war" />     
-               <delete file="lib/drools-docs-fusion-eclipse.war" /-->                
-             </tasks>
-           </configuration>
-           <goals>
-             <goal>run</goal>
-           </goals>           
-         </execution>        
-       </executions>
-     </plugin>    
-    
-     <plugin>
+                <delete dir="help/shared"/>
+                <delete dir="help/eclipse"/>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+
+          <execution>
+            <id>unzip manual</id>
+            <phase>process-resources</phase>
+            <configuration>
+              <tasks>
+                <!--unzip src="lib/drools-docs-introduction-eclipse.war" dest="help/introduction" /-->
+                <!--unzip src="lib/drools-docs-expert-eclipse.war" dest="help/expert" />
+             <unzip src="lib/drools-docs-fusion-eclipse.war" dest="help/fusion" /-->
+                <!--unzip src="lib/drools-docs-flow-eclipse.war" dest="help/flow" />
+              <unzip src="lib/drools-docs-guvnor-eclipse.war" dest="help/guvnor" />
+
+
+              <delete file="lib/drools-docs-introduction-eclipse.war" />
+              <delete file="lib/drools-docs-expert-eclipse.war" />
+              <delete file="lib/drools-docs-fusion-eclipse.war" />
+              <delete file="lib/drools-docs-flow-eclipse.war" />
+              <delete file="lib/drools-docs-guvnor-eclipse.war" /-->
+                <!--delete file="lib/drools-docs-expert-eclipse.war" />
+              <delete file="lib/drools-docs-fusion-eclipse.war" /-->
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
             <id>copy-dependencies</id>
+            <!-- TODO if the lib directory is empty tycho crashes because it does dep resolving before this phase -->
             <phase>generate-resources</phase>
             <goals>
               <goal>copy-dependencies</goal>
@@ -80,11 +81,11 @@
               <overWriteSnapshots>true</overWriteSnapshots>
               <overWriteIfNewer>true</overWriteIfNewer>
               <stripVersion>true</stripVersion>
-              <includeScope>runtime</includeScope>              
+              <includeScope>runtime</includeScope>
             </configuration>
           </execution>
         </executions>
-      </plugin>     
+      </plugin>
     </plugins>
   </build>
 
@@ -120,7 +121,7 @@
         </exclusion>
       </exclusions>
     </dependency>
-    
+
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-bpmn2</artifactId>
@@ -140,7 +141,7 @@
     <!--dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-docs-expert</artifactId>
-      <version>5.2.0.SNAPSHOT</version>
+      <version>5.2.0-SNAPSHOT</version>
       <classifier>eclipse</classifier>
       <type>war</type>
     </dependency>      
@@ -148,16 +149,16 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-docs-fusion</artifactId>
-      <version>5.2.0.SNAPSHOT</version>
+      <version>5.2.0-SNAPSHOT</version>
       <classifier>eclipse</classifier>
       <type>war</type>
-    </dependency-->    
-    
+    </dependency-->
+
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
     </dependency>
 
-</dependencies>
+  </dependencies>
 
 </project>

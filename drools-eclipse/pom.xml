@@ -4,7 +4,7 @@
   <parent>
     <artifactId>drools</artifactId>
     <groupId>org.drools</groupId>
-    <version>5.2.0.SNAPSHOT</version>
+    <version>5.2.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -12,37 +12,96 @@
   <packaging>pom</packaging>
 
   <name>Drools :: Eclipse-Plugin</name>
+
+  <description>
+    To use these drools eclipse plugins in production, use the download site linked on:
+    http://www.jboss.org/drools/downloads
+    
+    To use these drools eclipse plugins locally in development,
+    see the description of the module org.drools.updatesite.
+  </description>
   
+  <properties>
+    <tycho.version>0.10.0</tycho.version>
+  </properties>
+
   <modules>
-    <!--module>org.drools.eclipse</module>
+    <module>org.drools.eclipse</module>
+    <module>org.drools.eclipse.feature</module>
     <module>org.drools.eclipse.task</module>
-    <module>drools-eclipse-build</module-->
+    <module>org.drools.eclipse.task.feature</module>
+    <module>org.eclipse.webdav</module>
+    <module>org.guvnor.tools</module>
+    <module>org.guvnor.tools.feature</module>
+    <module>org.drools.updatesite</module>
   </modules>
 
+  <repositories>
+    <repository>
+       <id>eclipse-helios</id><!-- helios is 3.6 -->
+       <layout>p2</layout>
+       <url>http://download.eclipse.org/releases/helios</url>
+    </repository>    
+  </repositories>
 
-  <profiles>
-    <profile>
-      <id>soa</id>
-      <activation>
-        <property>
-          <name>soa</name>
-        </property>
-      </activation>
-      <modules>
-        <module>org.drools.eclipse</module>
-        <module>drools-eclipse-build</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>default</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <modules>
-        <module>org.drools.eclipse</module>
-        <module>org.drools.eclipse.task</module>
-        <module>drools-eclipse-build</module>
-      </modules>
-    </profile>
-  </profiles>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.sonatype.tycho</groupId>
+        <artifactId>tycho-maven-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <extensions>true</extensions>
+      </plugin>
+      <!--plugin>
+        <groupId>org.sonatype.tycho</groupId>
+        <artifactId>maven-osgi-packaging-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <configuration>
+          <environments>
+            <environment>
+              <os>macosx</os>
+              <ws>cocoa</ws>
+              <arch>x86</arch>
+            </environment>
+          </environments>
+        </configuration>
+      </plugin-->
+      <plugin>
+        <groupId>org.sonatype.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <version>${tycho.version}</version>
+        <configuration>
+          <resolver>p2</resolver>
+          <environments>
+            <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>x86</arch>
+            </environment>
+            <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>x86_64</arch>
+            </environment>
+            <environment>
+              <os>win32</os>
+              <ws>win32</ws>
+              <arch>x86</arch>
+            </environment>
+            <environment>
+              <os>win32</os>
+              <ws>win32</ws>
+              <arch>x86_64</arch>
+            </environment>
+            <environment>
+              <os>macosx</os>
+              <ws>cocoa</ws>
+              <arch>x86_64</arch>
+            </environment>
+          </environments>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>

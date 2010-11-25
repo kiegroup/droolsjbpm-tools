@@ -7,9 +7,9 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>org.drools.eclipse.feature</artifactId>
+  <artifactId>org.guvnor.tools.feature</artifactId>
   <packaging>eclipse-feature</packaging>
 
-  <name>Drools :: Eclipse :: Base feature</name>
+  <name>Drools :: Eclipse :: Guvnor tools feature</name>
 
 </project>

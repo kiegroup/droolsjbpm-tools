@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <parent>
+    <groupId>org.drools</groupId>
+    <artifactId>drools-eclipse</artifactId>
+    <version>5.2.0-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>org.drools.updatesite</artifactId>
+  <packaging>eclipse-update-site</packaging>
+
+  <name>Drools :: Eclipse :: Update site</name>
+
+  <description>
+    To use this update site locally:
+    - Build the drools project with maven (including the eclipse stuff).
+    - Open Eclipse.
+    - Open the menu "Help", menu item "Install new software..."
+    - Click on the button "Add..." to add a new software site.
+    - Fill in the name "drools local update site"
+    - Click on the button "Local..." and select "drools/drools-eclipse/org.drools.updatesite/target/site/"
+    - Select all the plugins. Click the buttons "Next" and "Finish".
+  </description>
+
+</project>
