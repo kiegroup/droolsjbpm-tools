@@ -34,7 +34,7 @@
     <module>org.eclipse.webdav</module>
     <module>org.guvnor.tools</module>
     <module>org.guvnor.tools.feature</module>
-    <!--<module>org.guvnor.tools.test</module>--><!-- TODO enable me if p2 repo has org.jboss.tools.tests 3.1.0 -->
+    <module>org.guvnor.tools.test</module> 
     <module>org.drools.updatesite</module>
   </modules>
 
