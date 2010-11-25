@@ -28,11 +28,13 @@
   <modules>
     <module>org.drools.eclipse</module>
     <module>org.drools.eclipse.feature</module>
+    <module>org.drools.eclipse.test</module>
     <module>org.drools.eclipse.task</module>
     <module>org.drools.eclipse.task.feature</module>
     <module>org.eclipse.webdav</module>
     <module>org.guvnor.tools</module>
     <module>org.guvnor.tools.feature</module>
+    <!--<module>org.guvnor.tools.test</module>--><!-- TODO enable me if p2 repo has org.jboss.tools.tests 3.1.0 -->
     <module>org.drools.updatesite</module>
   </modules>
 
@@ -100,6 +102,11 @@
             </environment>
           </environments>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.sonatype.tycho</groupId>
+        <artifactId>maven-osgi-test-plugin</artifactId>
+        <version>${tycho.version}</version>
       </plugin>
     </plugins>
   </build>

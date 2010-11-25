@@ -42,7 +42,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
-public class ZoomControlTest extends TestCase {
+public class ZoomControlTestDisabled extends TestCase {
 
     private IFile                         fFile1;
     private IFile                         fFile2;
@@ -51,7 +51,7 @@ public class ZoomControlTest extends TestCase {
 
     private static final String           ORIGINAL_CONTENT = "package test\nrule \"a\"\nend\nrule \"b\"\nend";
 
-    public ZoomControlTest(String name) {
+    public ZoomControlTestDisabled(String name) {
         super( name );
     }
 
