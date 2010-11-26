@@ -141,7 +141,7 @@
     <!--dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-docs-expert</artifactId>
-      <version>5.2.0-SNAPSHOT</version>
+      <version>${project.version}</version>
       <classifier>eclipse</classifier>
       <type>war</type>
     </dependency>      
@@ -149,7 +149,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-docs-fusion</artifactId>
-      <version>5.2.0-SNAPSHOT</version>
+      <version>${project.version}</version>
       <classifier>eclipse</classifier>
       <type>war</type>
     </dependency-->
