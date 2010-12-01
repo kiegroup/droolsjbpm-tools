@@ -12,7 +12,10 @@
   <version>3.0.101</version><!-- TODO the version should clearly show that it is a fork -->
   <packaging>eclipse-plugin</packaging>
 
-  <name>Drools :: Eclipse :: Guvnor tools</name>
+  <name>Drools :: Eclipse :: Webdav for Guvnor tools</name>
+  <description>
+    We build this plugin because eclipse no longer distributes it and Guvnor tools needs it.
+  </description>
 
   <dependencies>
 
