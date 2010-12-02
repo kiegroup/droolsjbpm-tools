@@ -16,6 +16,14 @@
   <description>
     We build this plugin because eclipse no longer distributes it and Guvnor tools needs it.
   </description>
+  
+  <licenses>
+    <license>
+      <name>Eclipse Public License v1.0</name>
+      <url>http://www.eclipse.org/legal/epl-v10.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
   <dependencies>
 
