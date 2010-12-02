@@ -63,7 +63,8 @@ public class EventNodeWrapper extends AbstractNodeWrapper {
     }
     
     public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
-        return false;
+        return super.acceptsIncomingConnection(connection, source)
+    		&& getIncomingConnections().isEmpty();
     }
 
     public boolean acceptsOutgoingConnection(ElementConnection connection, ElementWrapper target) {
