@@ -4,7 +4,7 @@ Bundle-Name: Drools Eclipse Plug-in
 Bundle-SymbolicName: org.drools.eclipse;singleton:=true
 Bundle-Version: 5.2.0.qualifier
 Bundle-Activator: org.drools.eclipse.DroolsEclipsePlugin
-Bundle-Vendor: JBoss, a division of Red Hat
+Bundle-Vendor: JBoss by Red Hat
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
@@ -50,4 +50,3 @@ Bundle-ClassPath: .,
  lib/drools-flow-core.jar,
  lib/drools-flow-compiler.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: org.drools.eclipse.util

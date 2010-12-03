@@ -15,4 +15,4 @@ Bundle-ClassPath: .,
  lib/slf4j-api.jar,
  lib/slf4j-jdk14.jar,
  lib/drools-core.jar
-Bundle-Vendor: JBoss, a division of Red Hat
+Bundle-Vendor: JBoss by Red Hat
