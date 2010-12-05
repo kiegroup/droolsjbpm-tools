@@ -518,8 +518,7 @@ public class DroolsCompilerAntTask extends MatchingTask {
      */
     private PackageBuilder getPackageBuilder(AntClassLoader loader) {
         // creating package builder configured with the give classloader
-        PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
-        conf.setClassLoader( loader );
+        PackageBuilderConfiguration conf = new PackageBuilderConfiguration( loader );
         PackageBuilder builder = new PackageBuilder( conf );
         return builder;
     }
@@ -542,8 +541,7 @@ public class DroolsCompilerAntTask extends MatchingTask {
 
     private KnowledgeBuilder getKnowledgeBuilder(AntClassLoader loader) {
         // creating package builder configured with the give classloader
-        PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
-        conf.setClassLoader( loader );
+        PackageBuilderConfiguration conf = new PackageBuilderConfiguration( loader );
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( conf );
         return kbuilder;
