@@ -123,13 +123,13 @@
     </dependency>
     
     <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-human-task</artifactId>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-process-task</artifactId>
       <exclusions>
                  
         <exclusion>                     
-          <groupId>org.jbpm</groupId>
-          <artifactId>jbpm-workitems</artifactId>
+          <groupId>org.drools</groupId>
+          <artifactId>drools-workitems</artifactId>
         </exclusion>        
 
         <exclusion>
