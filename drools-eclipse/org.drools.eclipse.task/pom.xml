@@ -107,7 +107,6 @@
     <dependency>
       <groupId>javax.persistence</groupId>
       <artifactId>persistence-api</artifactId>
-      <scope>optional</scope>
     </dependency>
     
     <dependency>
