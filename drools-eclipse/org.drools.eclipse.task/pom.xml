@@ -94,15 +94,42 @@
        <artifactId>slf4j-jdk14</artifactId>
     </dependency>
       
-    <!-- this should include core and compiler -->
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-process-task</artifactId>
+       <groupId>org.drools</groupId>
+       <artifactId>drools-api</artifactId>
+    </dependency>
+
+    <dependency>
+       <groupId>org.drools</groupId>
+       <artifactId>drools-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.persistence</groupId>
+      <artifactId>persistence-api</artifactId>
+      <scope>optional</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-xjc</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-human-task</artifactId>
       <exclusions>
                  
         <exclusion>                     
-          <groupId>org.drools</groupId>
-          <artifactId>drools-workitems</artifactId>
+          <groupId>org.jbpm</groupId>
+          <artifactId>jbpm-workitems</artifactId>
         </exclusion>        
 
         <exclusion>
