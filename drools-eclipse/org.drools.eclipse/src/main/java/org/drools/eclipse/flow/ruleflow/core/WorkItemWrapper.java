@@ -29,11 +29,11 @@ import org.drools.process.core.Work;
 import org.drools.process.core.WorkDefinition;
 import org.drools.process.core.datatype.DataType;
 import org.drools.process.core.impl.WorkImpl;
-import org.drools.workflow.core.Node;
-import org.drools.workflow.core.node.WorkItemNode;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
+import org.jbpm.workflow.core.Node;
+import org.jbpm.workflow.core.node.WorkItemNode;
 
 /**
  * Wrapper for a work item node.

@@ -48,7 +48,6 @@ import org.drools.process.core.Work;
 import org.drools.process.core.WorkDefinition;
 import org.drools.process.core.WorkDefinitionExtension;
 import org.drools.process.core.WorkEditor;
-import org.drools.workflow.core.node.WorkItemNode;
 import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
@@ -65,6 +64,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.views.properties.IPropertySource;
+import org.jbpm.workflow.core.node.WorkItemNode;
 
 /**
  * EditPart for a Task node.

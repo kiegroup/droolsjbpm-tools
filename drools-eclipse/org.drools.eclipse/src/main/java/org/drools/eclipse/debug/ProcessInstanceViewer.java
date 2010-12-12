@@ -17,7 +17,6 @@
 package org.drools.eclipse.debug;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +29,6 @@ import org.drools.eclipse.flow.common.editor.editpart.ElementEditPart;
 import org.drools.eclipse.flow.common.editor.editpart.ProcessEditPart;
 import org.drools.eclipse.flow.common.editor.editpart.ProcessEditPartFactory;
 import org.drools.eclipse.flow.common.editor.editpart.figure.ElementFigure;
-import org.drools.process.core.Process;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -54,6 +52,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
+import org.jbpm.process.core.Process;
 
 /**
  * @author Kris Verlaenen
