@@ -27,15 +27,15 @@ import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.eclipse.flow.common.view.property.ListPropertyDescriptor;
 import org.drools.eclipse.flow.ruleflow.view.property.exceptionHandler.ExceptionHandlersPropertyDescriptor;
 import org.drools.eclipse.flow.ruleflow.view.property.variable.VariableListCellEditor;
-import org.drools.process.core.context.exception.ExceptionHandler;
-import org.drools.process.core.context.exception.ExceptionScope;
-import org.drools.process.core.context.variable.Variable;
-import org.drools.process.core.context.variable.VariableScope;
-import org.drools.workflow.core.Node;
-import org.drools.workflow.core.node.CompositeContextNode;
-import org.drools.workflow.core.node.CompositeNode;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
+import org.jbpm.process.core.context.exception.ExceptionHandler;
+import org.jbpm.process.core.context.exception.ExceptionScope;
+import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.workflow.core.Node;
+import org.jbpm.workflow.core.node.CompositeContextNode;
+import org.jbpm.workflow.core.node.CompositeNode;
 
 public class CompositeContextNodeWrapper extends CompositeNodeWrapper {
 

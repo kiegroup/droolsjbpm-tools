@@ -16,11 +16,11 @@
 
 package org.drools.eclipse.flow.ruleflow.core;
 
-import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
-import org.drools.eclipse.flow.common.editor.core.ProcessWrapper;
 import org.drools.definition.process.Node;
 import org.drools.definition.process.Process;
-import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
+import org.drools.eclipse.flow.common.editor.core.ProcessWrapper;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 
 /**
  * Wrapper for a RuleFlow process.
@@ -47,7 +47,7 @@ public class RuleFlowProcessWrapper extends ProcessWrapper {
                 id = n.getId();
             }
         }
-        ((org.drools.workflow.core.Node) node).setId(++id);
+        ((org.jbpm.workflow.core.Node) node).setId(++id);
         getRuleFlowProcess().addNode(node); 
     }
 

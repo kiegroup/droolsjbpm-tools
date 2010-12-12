@@ -19,15 +19,14 @@ package org.drools.eclipse.flow.ruleflow.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
-import org.drools.process.core.event.EventFilter;
-import org.drools.process.core.event.EventTypeFilter;
-import org.drools.workflow.core.node.EventNode;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
+import org.jbpm.process.core.event.EventFilter;
+import org.jbpm.process.core.event.EventTypeFilter;
+import org.jbpm.workflow.core.node.EventNode;
 
 /**
  * Wrapper for a start node.

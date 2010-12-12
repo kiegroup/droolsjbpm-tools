@@ -53,7 +53,7 @@ public class ProcessInstanceLogicalStructureDelegate implements ILogicalStructur
             IJavaClassType classType = (IJavaClassType) type;
             IJavaInterfaceType[] interfaceTypes = classType.getAllInterfaces();
             for ( int i = 0; i < interfaceTypes.length; i++ ) {
-                if ("org.drools.process.instance.ProcessInstance".equals(interfaceTypes[i].getName())) {
+                if ("org.jbpm.process.instance.ProcessInstance".equals(interfaceTypes[i].getName())) {
                     return true;
                 }                
             }

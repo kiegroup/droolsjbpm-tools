@@ -17,7 +17,7 @@
 package org.drools.eclipse.flow.ruleflow.core;
 
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
-import org.drools.workflow.core.Node;
+import org.jbpm.workflow.core.Node;
 
 /*
  * Copyright 2005 JBoss Inc

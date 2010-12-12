@@ -18,13 +18,12 @@ package org.drools.eclipse.flow.ruleflow.core;
 
 import java.util.Map;
 
-import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.ruleflow.view.property.timers.TimersPropertyDescriptor;
-import org.drools.process.core.timer.Timer;
-import org.drools.workflow.core.DroolsAction;
-import org.drools.workflow.core.WorkflowProcess;
-import org.drools.workflow.core.node.StateBasedNode;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
+import org.jbpm.process.core.timer.Timer;
+import org.jbpm.workflow.core.DroolsAction;
+import org.jbpm.workflow.core.WorkflowProcess;
+import org.jbpm.workflow.core.node.StateBasedNode;
 
 public class StateBasedNodeWrapper extends ExtendedNodeWrapper {
 

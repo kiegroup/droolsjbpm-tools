@@ -16,25 +16,12 @@
 
 package org.drools.eclipse.flow.ruleflow.core;
 
-import java.util.List;
-import java.util.Map;
-
-import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
-import org.drools.eclipse.flow.ruleflow.view.property.action.OnEntryActionsPropertyDescriptor;
-import org.drools.eclipse.flow.ruleflow.view.property.action.OnExitActionsPropertyDescriptor;
-import org.drools.eclipse.flow.ruleflow.view.property.timers.TimersPropertyDescriptor;
-import org.drools.process.core.context.variable.VariableScope;
-import org.drools.process.core.timer.Timer;
-import org.drools.workflow.core.DroolsAction;
-import org.drools.workflow.core.WorkflowProcess;
-import org.drools.workflow.core.impl.ExtendedNodeImpl;
-import org.drools.workflow.core.node.DynamicNode;
-import org.drools.workflow.core.node.ForEachNode;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
-import org.eclipse.ui.views.properties.TextPropertyDescriptor;
+import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.workflow.core.node.DynamicNode;
 
 public class DynamicNodeWrapper extends CompositeNodeWrapper {
 

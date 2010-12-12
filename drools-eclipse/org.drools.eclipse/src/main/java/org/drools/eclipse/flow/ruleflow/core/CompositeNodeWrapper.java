@@ -26,14 +26,14 @@ import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.eclipse.flow.ruleflow.view.property.action.OnEntryActionsPropertyDescriptor;
 import org.drools.eclipse.flow.ruleflow.view.property.action.OnExitActionsPropertyDescriptor;
 import org.drools.eclipse.flow.ruleflow.view.property.timers.TimersPropertyDescriptor;
-import org.drools.process.core.timer.Timer;
-import org.drools.workflow.core.DroolsAction;
-import org.drools.workflow.core.Node;
-import org.drools.workflow.core.WorkflowProcess;
-import org.drools.workflow.core.impl.ExtendedNodeImpl;
-import org.drools.workflow.core.node.CompositeNode;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
+import org.jbpm.process.core.timer.Timer;
+import org.jbpm.workflow.core.DroolsAction;
+import org.jbpm.workflow.core.Node;
+import org.jbpm.workflow.core.WorkflowProcess;
+import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
+import org.jbpm.workflow.core.node.CompositeNode;
 
 public abstract class CompositeNodeWrapper extends ElementContainerElementWrapper implements NodeWrapper {
 

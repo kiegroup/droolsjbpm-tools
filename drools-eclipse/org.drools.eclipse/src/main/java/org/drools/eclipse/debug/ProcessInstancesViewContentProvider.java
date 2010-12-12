@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
-import org.drools.process.instance.ProcessInstance;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IValue;
@@ -28,6 +27,7 @@ import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.jdt.debug.core.IJavaArray;
 import org.eclipse.jdt.debug.core.IJavaObject;
 import org.eclipse.jdt.debug.core.IJavaValue;
+import org.jbpm.process.instance.ProcessInstance;
 
 /**
  * The process instances view content provider.

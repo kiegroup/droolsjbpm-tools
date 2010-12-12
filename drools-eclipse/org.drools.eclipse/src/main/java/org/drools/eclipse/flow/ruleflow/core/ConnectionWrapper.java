@@ -22,10 +22,10 @@ import java.util.List;
 
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
-import org.drools.workflow.core.Connection;
-import org.drools.workflow.core.Node;
-import org.drools.workflow.core.impl.ConnectionImpl;
 import org.eclipse.draw2d.geometry.Point;
+import org.jbpm.workflow.core.Connection;
+import org.jbpm.workflow.core.Node;
+import org.jbpm.workflow.core.impl.ConnectionImpl;
 
 /**
  * Wrapper for a connection.

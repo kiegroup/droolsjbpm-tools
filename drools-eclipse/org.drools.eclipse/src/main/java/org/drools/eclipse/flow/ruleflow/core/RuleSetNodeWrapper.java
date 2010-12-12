@@ -18,9 +18,9 @@ package org.drools.eclipse.flow.ruleflow.core;
 
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
-import org.drools.workflow.core.node.RuleSetNode;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
+import org.jbpm.workflow.core.node.RuleSetNode;
 
 /**
  * Wrapper for a RuleSet node.

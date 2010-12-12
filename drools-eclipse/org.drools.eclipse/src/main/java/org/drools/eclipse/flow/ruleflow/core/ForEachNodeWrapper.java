@@ -20,11 +20,11 @@ import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
-import org.drools.workflow.core.Node;
-import org.drools.workflow.core.node.CompositeNode;
-import org.drools.workflow.core.node.ForEachNode;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
+import org.jbpm.workflow.core.Node;
+import org.jbpm.workflow.core.node.CompositeNode;
+import org.jbpm.workflow.core.node.ForEachNode;
 
 public class ForEachNodeWrapper extends CompositeNodeWrapper {
 

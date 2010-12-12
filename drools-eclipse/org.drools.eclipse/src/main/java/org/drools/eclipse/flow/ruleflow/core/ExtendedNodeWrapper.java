@@ -20,10 +20,10 @@ import java.util.List;
 
 import org.drools.eclipse.flow.ruleflow.view.property.action.OnEntryActionsPropertyDescriptor;
 import org.drools.eclipse.flow.ruleflow.view.property.action.OnExitActionsPropertyDescriptor;
-import org.drools.workflow.core.DroolsAction;
-import org.drools.workflow.core.WorkflowProcess;
-import org.drools.workflow.core.impl.ExtendedNodeImpl;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
+import org.jbpm.workflow.core.DroolsAction;
+import org.jbpm.workflow.core.WorkflowProcess;
+import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 
 public class ExtendedNodeWrapper extends AbstractNodeWrapper {
 

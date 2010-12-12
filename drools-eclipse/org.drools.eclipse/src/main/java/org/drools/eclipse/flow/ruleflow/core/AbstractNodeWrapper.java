@@ -23,12 +23,12 @@ import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.eclipse.flow.ruleflow.view.property.metadata.MetaDataPropertyDescriptor;
-import org.drools.workflow.core.Node;
-import org.drools.workflow.core.impl.NodeImpl;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
+import org.jbpm.workflow.core.Node;
+import org.jbpm.workflow.core.impl.NodeImpl;
 
 /**
  * Wrapper for a node.

@@ -19,8 +19,8 @@ package org.drools.eclipse.flow.ruleflow.core;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
-import org.drools.workflow.core.Node;
-import org.drools.workflow.core.NodeExtension;
+import org.jbpm.workflow.core.Node;
+import org.jbpm.workflow.core.NodeExtension;
 
 public class DefaultNodeWrapper extends AbstractNodeWrapper {
 

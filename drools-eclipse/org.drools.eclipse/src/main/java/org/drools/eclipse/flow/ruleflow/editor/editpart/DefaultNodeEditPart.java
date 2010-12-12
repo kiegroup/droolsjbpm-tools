@@ -19,9 +19,9 @@ package org.drools.eclipse.flow.ruleflow.editor.editpart;
 import org.drools.eclipse.flow.common.editor.editpart.ElementEditPart;
 import org.drools.eclipse.flow.ruleflow.core.NodeWrapper;
 import org.drools.eclipse.flow.ruleflow.editor.editpart.figure.DefaultNodeFigure;
-import org.drools.workflow.core.Node;
-import org.drools.workflow.core.NodeExtension;
 import org.eclipse.draw2d.IFigure;
+import org.jbpm.workflow.core.Node;
+import org.jbpm.workflow.core.NodeExtension;
 
 public class DefaultNodeEditPart extends ElementEditPart {
 

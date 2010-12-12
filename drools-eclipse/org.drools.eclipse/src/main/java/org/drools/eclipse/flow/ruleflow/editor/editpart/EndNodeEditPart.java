@@ -36,8 +36,6 @@ import org.drools.eclipse.flow.common.editor.core.ModelEvent;
 import org.drools.eclipse.flow.common.editor.editpart.ElementEditPart;
 import org.drools.eclipse.flow.common.editor.editpart.figure.AbstractElementFigure;
 import org.drools.eclipse.flow.ruleflow.core.EndNodeWrapper;
-import org.drools.eclipse.flow.ruleflow.core.JoinWrapper;
-import org.drools.eclipse.flow.ruleflow.editor.editpart.JoinEditPart.JoinFigureInterface;
 import org.drools.eclipse.flow.ruleflow.skin.SkinManager;
 import org.drools.eclipse.flow.ruleflow.skin.SkinProvider;
 import org.drools.eclipse.preferences.IDroolsConstants;

@@ -23,10 +23,10 @@ import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.eclipse.flow.ruleflow.view.property.subprocess.SubProcessParameterInMappingPropertyDescriptor;
 import org.drools.eclipse.flow.ruleflow.view.property.subprocess.SubProcessParameterOutMappingPropertyDescriptor;
-import org.drools.workflow.core.node.SubProcessNode;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
+import org.jbpm.workflow.core.node.SubProcessNode;
 
 /**
  * Wrapper for a SubFlow node.

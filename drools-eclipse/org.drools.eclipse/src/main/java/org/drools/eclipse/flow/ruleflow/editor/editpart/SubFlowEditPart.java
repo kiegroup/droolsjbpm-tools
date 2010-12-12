@@ -34,13 +34,16 @@ package org.drools.eclipse.flow.ruleflow.editor.editpart;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.editor.editpart.ElementEditPart;
 import org.drools.eclipse.flow.common.editor.editpart.figure.AbstractElementFigure;
+import org.drools.eclipse.flow.ruleflow.core.SubProcessWrapper;
 import org.drools.eclipse.flow.ruleflow.skin.SkinManager;
 import org.drools.eclipse.flow.ruleflow.skin.SkinProvider;
 import org.drools.eclipse.preferences.IDroolsConstants;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.RoundedRectangle;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.jdt.internal.debug.ui.actions.OpenTypeAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -70,6 +73,19 @@ public class SubFlowEditPart extends ElementEditPart {
     	}
     	getElementWrapper().setConstraint(constraint);
     	return result;
+    }
+    
+    protected void doubleClicked() {
+        super.doubleClicked();
+        String processId = ((SubProcessWrapper) getElementWrapper()).getSubProcessNode().getProcessId();
+    	IResource resource = DroolsEclipsePlugin.getDefault().findProcessResource(processId);
+    	if (resource != null) {
+    		try {
+    			OpenTypeAction.findTypeInWorkspace(resource.getFullPath().toString());
+    		} catch (Throwable t) {
+    			DroolsEclipsePlugin.log(t);
+    		}
+    	}
     }
     
     public static class SubFlowNodeFigure extends AbstractElementFigure {

@@ -21,17 +21,16 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.drools.definition.process.Connection;
-import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.eclipse.flow.ruleflow.view.property.constraint.StateConstraintsPropertyDescriptor;
-import org.drools.workflow.core.Constraint;
-import org.drools.workflow.core.Node;
-import org.drools.workflow.core.WorkflowProcess;
-import org.drools.workflow.core.impl.ConnectionRef;
-import org.drools.workflow.core.impl.NodeImpl;
-import org.drools.workflow.core.node.StateNode;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
+import org.jbpm.workflow.core.Constraint;
+import org.jbpm.workflow.core.Node;
+import org.jbpm.workflow.core.WorkflowProcess;
+import org.jbpm.workflow.core.impl.ConnectionRef;
+import org.jbpm.workflow.core.impl.NodeImpl;
+import org.jbpm.workflow.core.node.StateNode;
 
 /**
  * Wrapper for a milestone node.
@@ -76,7 +75,7 @@ public class StateNodeWrapper extends StateBasedNodeWrapper {
 			if (constraint != null) {
 				label = constraint.getName();
 			}
-			((org.drools.workflow.core.Connection) connection).setMetaData("label", label);
+			((org.jbpm.workflow.core.Connection) connection).setMetaData("label", label);
     	}
     }
     

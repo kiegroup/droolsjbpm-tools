@@ -33,26 +33,26 @@ import org.drools.eclipse.flow.common.editor.core.ProcessWrapperBuilder;
 import org.drools.process.core.Work;
 import org.drools.process.core.WorkDefinition;
 import org.drools.process.core.impl.WorkDefinitionImpl;
-import org.drools.ruleflow.core.RuleFlowProcess;
-import org.drools.workflow.core.node.ActionNode;
-import org.drools.workflow.core.node.CompositeContextNode;
-import org.drools.workflow.core.node.CompositeNode;
-import org.drools.workflow.core.node.DynamicNode;
-import org.drools.workflow.core.node.EndNode;
-import org.drools.workflow.core.node.EventNode;
-import org.drools.workflow.core.node.FaultNode;
-import org.drools.workflow.core.node.ForEachNode;
-import org.drools.workflow.core.node.HumanTaskNode;
-import org.drools.workflow.core.node.Join;
-import org.drools.workflow.core.node.MilestoneNode;
-import org.drools.workflow.core.node.RuleSetNode;
-import org.drools.workflow.core.node.Split;
-import org.drools.workflow.core.node.StartNode;
-import org.drools.workflow.core.node.StateNode;
-import org.drools.workflow.core.node.SubProcessNode;
-import org.drools.workflow.core.node.TimerNode;
-import org.drools.workflow.core.node.WorkItemNode;
 import org.eclipse.jdt.core.IJavaProject;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.workflow.core.node.ActionNode;
+import org.jbpm.workflow.core.node.CompositeContextNode;
+import org.jbpm.workflow.core.node.CompositeNode;
+import org.jbpm.workflow.core.node.DynamicNode;
+import org.jbpm.workflow.core.node.EndNode;
+import org.jbpm.workflow.core.node.EventNode;
+import org.jbpm.workflow.core.node.FaultNode;
+import org.jbpm.workflow.core.node.ForEachNode;
+import org.jbpm.workflow.core.node.HumanTaskNode;
+import org.jbpm.workflow.core.node.Join;
+import org.jbpm.workflow.core.node.MilestoneNode;
+import org.jbpm.workflow.core.node.RuleSetNode;
+import org.jbpm.workflow.core.node.Split;
+import org.jbpm.workflow.core.node.StartNode;
+import org.jbpm.workflow.core.node.StateNode;
+import org.jbpm.workflow.core.node.SubProcessNode;
+import org.jbpm.workflow.core.node.TimerNode;
+import org.jbpm.workflow.core.node.WorkItemNode;
 
 public class RuleFlowWrapperBuilder implements ProcessWrapperBuilder {
     
@@ -74,7 +74,7 @@ public class RuleFlowWrapperBuilder implements ProcessWrapperBuilder {
         Map<Node, NodeWrapper> nodeWrappers = new HashMap<Node, NodeWrapper>();
         for (Node node: nodes) {
             NodeWrapper nodeWrapper = getNodeWrapper(node, project);
-            nodeWrapper.setNode((org.drools.workflow.core.Node) node);
+            nodeWrapper.setNode((org.jbpm.workflow.core.Node) node);
             nodeWrapper.setParent(container);
             container.localAddElement(nodeWrapper);
             nodeWrappers.put(node, nodeWrapper);
@@ -100,7 +100,7 @@ public class RuleFlowWrapperBuilder implements ProcessWrapperBuilder {
         }
         for (Connection connection: connections) {
             ConnectionWrapper connectionWrapper = new ConnectionWrapper();
-            connectionWrapper.localSetConnection((org.drools.workflow.core.Connection) connection);
+            connectionWrapper.localSetConnection((org.jbpm.workflow.core.Connection) connection);
             connectionWrapper.localSetBendpoints(null);
             NodeWrapper from = nodeWrappers.get(connection.getFrom());
             NodeWrapper to = nodeWrappers.get(connection.getTo());

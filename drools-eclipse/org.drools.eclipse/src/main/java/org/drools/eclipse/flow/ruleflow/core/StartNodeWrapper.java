@@ -18,7 +18,7 @@ package org.drools.eclipse.flow.ruleflow.core;
 
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
-import org.drools.workflow.core.node.StartNode;
+import org.jbpm.workflow.core.node.StartNode;
 
 /**
  * Wrapper for a start node.

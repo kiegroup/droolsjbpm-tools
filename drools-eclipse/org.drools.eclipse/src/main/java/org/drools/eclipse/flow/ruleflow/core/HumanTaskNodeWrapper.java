@@ -26,9 +26,9 @@ import org.drools.process.core.datatype.impl.type.StringDataType;
 import org.drools.process.core.impl.ParameterDefinitionImpl;
 import org.drools.process.core.impl.WorkDefinitionExtensionImpl;
 import org.drools.process.core.impl.WorkDefinitionImpl;
-import org.drools.workflow.core.node.HumanTaskNode;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
+import org.jbpm.workflow.core.node.HumanTaskNode;
 
 /**
  * Wrapper for a human task node.

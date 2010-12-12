@@ -16,14 +16,13 @@
 
 package org.drools.eclipse.flow.ruleflow.core;
 
-import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.eclipse.flow.ruleflow.view.property.action.ActionPropertyDescriptor;
-import org.drools.workflow.core.DroolsAction;
-import org.drools.workflow.core.WorkflowProcess;
-import org.drools.workflow.core.node.ActionNode;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
+import org.jbpm.workflow.core.DroolsAction;
+import org.jbpm.workflow.core.WorkflowProcess;
+import org.jbpm.workflow.core.node.ActionNode;
 
 /**
  * Wrapper for an action node.
