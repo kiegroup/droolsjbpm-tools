@@ -16,12 +16,6 @@
 
 package org.drools.eclipse.core.ui;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 import org.drools.eclipse.core.DroolsElement;
 import org.drools.eclipse.core.Package;
 import org.drools.eclipse.core.RuleGroup;

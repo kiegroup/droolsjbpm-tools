@@ -23,7 +23,6 @@ package org.drools.eclipse.wizard.dsl;
 import java.io.IOException;
 import java.io.InputStream;
 
-
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;

@@ -18,7 +18,6 @@ package org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.editor.editpart.figure.AbstractElementFigure;
-import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;

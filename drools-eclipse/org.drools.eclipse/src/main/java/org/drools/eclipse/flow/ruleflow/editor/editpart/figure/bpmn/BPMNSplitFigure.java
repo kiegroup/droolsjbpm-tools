@@ -19,10 +19,10 @@ package org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.editor.editpart.figure.AbstractElementFigure;
 import org.drools.eclipse.flow.ruleflow.editor.editpart.SplitEditPart.SplitFigureInterface;
-import org.drools.workflow.core.node.Split;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
+import org.jbpm.workflow.core.node.Split;
 
 public class BPMNSplitFigure extends AbstractElementFigure implements SplitFigureInterface {
     

@@ -16,11 +16,11 @@
 
 package org.drools.eclipse.flow.ruleflow.view.property.action;
 
-import org.drools.workflow.core.WorkflowProcess;
-import org.drools.workflow.core.impl.ExtendedNodeImpl;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
+import org.jbpm.workflow.core.WorkflowProcess;
+import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 
 public class OnEntryActionsPropertyDescriptor extends PropertyDescriptor {
 	

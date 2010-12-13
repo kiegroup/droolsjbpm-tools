@@ -18,7 +18,6 @@ package org.drools.eclipse.editors.rete.commands;
 
 import org.drools.reteoo.BaseVertex;
 import org.eclipse.draw2d.geometry.Rectangle;
-
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.requests.ChangeBoundsRequest;

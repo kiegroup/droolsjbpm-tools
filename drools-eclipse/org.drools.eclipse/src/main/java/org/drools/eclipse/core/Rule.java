@@ -19,8 +19,6 @@ package org.drools.eclipse.core;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.ui.internal.views.markers.GroupsContribution;
-
 /**
  * This represents a rule. 
  * 

@@ -37,11 +37,6 @@ import java.util.Map;
 
 import org.drools.definition.process.Connection;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.workflow.core.Constraint;
-import org.drools.workflow.core.WorkflowProcess;
-import org.drools.workflow.core.impl.ConnectionRef;
-import org.drools.workflow.core.impl.NodeImpl;
-import org.drools.workflow.core.node.StateNode;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -53,6 +48,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.jbpm.workflow.core.Constraint;
+import org.jbpm.workflow.core.WorkflowProcess;
+import org.jbpm.workflow.core.impl.ConnectionRef;
+import org.jbpm.workflow.core.impl.NodeImpl;
+import org.jbpm.workflow.core.node.StateNode;
 
 /**
  * Dialog for editing constraints.

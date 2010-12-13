@@ -32,8 +32,8 @@ package org.drools.eclipse.flow.ruleflow.view.property.variable;
  */
 
 import org.drools.eclipse.flow.common.view.property.EditListDialog;
-import org.drools.process.core.context.variable.Variable;
 import org.eclipse.swt.widgets.Shell;
+import org.jbpm.process.core.context.variable.Variable;
 
 /**
  * Dialog for editing a list of variables.

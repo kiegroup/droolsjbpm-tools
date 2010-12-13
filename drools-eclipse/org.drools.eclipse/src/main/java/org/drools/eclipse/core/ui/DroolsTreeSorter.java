@@ -29,7 +29,6 @@ import org.drools.eclipse.core.Query;
 import org.drools.eclipse.core.Rule;
 import org.drools.eclipse.core.RuleAttribute;
 import org.drools.eclipse.core.RuleFlowGroup;
-import org.drools.eclipse.core.RuleGroup;
 import org.drools.eclipse.core.RuleSet;
 import org.drools.eclipse.core.Template;
 import org.eclipse.jface.viewers.Viewer;

@@ -26,8 +26,6 @@ import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IBreakpoint;
-import org.eclipse.debug.core.model.IStackFrame;
-import org.eclipse.jdt.debug.core.IJavaThread;
 import org.eclipse.jdt.internal.debug.core.model.JDIDebugModelMessages;
 import org.eclipse.jdt.internal.debug.core.model.JDIDebugTarget;
 import org.eclipse.jdt.internal.debug.core.model.JDIStackFrame;
@@ -35,9 +33,7 @@ import org.eclipse.jdt.internal.debug.core.model.JDIThread;
 import org.mvel2.debug.Debugger;
 
 import com.sun.jdi.ClassType;
-import com.sun.jdi.IncompatibleThreadStateException;
 import com.sun.jdi.IntegerValue;
-import com.sun.jdi.InvalidStackFrameException;
 import com.sun.jdi.Location;
 import com.sun.jdi.Method;
 import com.sun.jdi.ObjectCollectedException;

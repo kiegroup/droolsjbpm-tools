@@ -16,11 +16,11 @@
 
 package org.drools.eclipse.flow.ruleflow.view.property.timers;
 
-import org.drools.workflow.core.WorkflowProcess;
-import org.drools.workflow.core.node.StateBasedNode;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
+import org.jbpm.workflow.core.WorkflowProcess;
+import org.jbpm.workflow.core.node.StateBasedNode;
 
 public class TimersPropertyDescriptor extends PropertyDescriptor {
 	

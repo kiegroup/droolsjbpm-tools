@@ -42,11 +42,6 @@ import org.drools.eclipse.flow.common.view.property.MapItemDialog;
 import org.drools.eclipse.flow.ruleflow.view.property.action.ActionCompletionProcessor;
 import org.drools.eclipse.flow.ruleflow.view.property.constraint.RuleFlowGlobalsDialog;
 import org.drools.eclipse.flow.ruleflow.view.property.constraint.RuleFlowImportsDialog;
-import org.drools.process.core.Process;
-import org.drools.process.core.context.exception.ActionExceptionHandler;
-import org.drools.workflow.core.DroolsAction;
-import org.drools.workflow.core.WorkflowProcess;
-import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
@@ -75,6 +70,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
+import org.jbpm.process.core.Process;
+import org.jbpm.process.core.context.exception.ActionExceptionHandler;
+import org.jbpm.workflow.core.DroolsAction;
+import org.jbpm.workflow.core.WorkflowProcess;
+import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 
 /**
  * Dialog for editing exception handlers.

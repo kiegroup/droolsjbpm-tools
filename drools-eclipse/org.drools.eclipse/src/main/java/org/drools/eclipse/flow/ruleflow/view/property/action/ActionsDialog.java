@@ -33,10 +33,10 @@ package org.drools.eclipse.flow.ruleflow.view.property.action;
 
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
 import org.drools.eclipse.flow.common.view.property.EditListDialog;
-import org.drools.workflow.core.DroolsAction;
-import org.drools.workflow.core.WorkflowProcess;
-import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.eclipse.swt.widgets.Shell;
+import org.jbpm.workflow.core.DroolsAction;
+import org.jbpm.workflow.core.WorkflowProcess;
+import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 
 /**
  * Dialog for editing actions.

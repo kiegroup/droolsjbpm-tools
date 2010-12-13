@@ -43,7 +43,6 @@ import org.drools.eclipse.DRLInfo;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.ProcessInfo;
 import org.drools.eclipse.preferences.IDroolsConstants;
-import org.drools.eclipse.util.DroolsRuntime;
 import org.drools.eclipse.util.DroolsRuntimeManager;
 import org.drools.eclipse.wizard.project.NewDroolsProjectWizard;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;

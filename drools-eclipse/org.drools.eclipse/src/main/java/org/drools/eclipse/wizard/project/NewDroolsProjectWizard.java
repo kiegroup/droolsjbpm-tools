@@ -26,7 +26,6 @@ import java.util.List;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.builder.DroolsBuilder;
-import org.drools.eclipse.preferences.DroolsRuntimesPreferencePage;
 import org.drools.eclipse.util.DroolsClasspathContainer;
 import org.drools.eclipse.util.DroolsRuntime;
 import org.eclipse.core.resources.ICommand;

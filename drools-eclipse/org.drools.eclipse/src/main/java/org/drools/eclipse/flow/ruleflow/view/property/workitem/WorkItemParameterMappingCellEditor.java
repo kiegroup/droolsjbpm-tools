@@ -33,9 +33,9 @@ package org.drools.eclipse.flow.ruleflow.view.property.workitem;
 
 import org.drools.eclipse.flow.common.view.property.BeanDialogCellEditor;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.workflow.core.node.WorkItemNode;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.jbpm.workflow.core.node.WorkItemNode;
 
 /**
  * Cell editor for work item result mappings.

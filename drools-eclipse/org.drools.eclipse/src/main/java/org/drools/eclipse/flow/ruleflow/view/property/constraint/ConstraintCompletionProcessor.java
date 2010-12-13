@@ -33,17 +33,13 @@ package org.drools.eclipse.flow.ruleflow.view.property.constraint;
  */
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
 import org.drools.eclipse.editors.DRLRuleEditor;
 import org.drools.eclipse.editors.completion.RuleCompletionProcessor;
 import org.drools.lang.descr.GlobalDescr;
-import org.drools.process.core.context.variable.Variable;
-import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.core.datatype.DataType;
-import org.drools.workflow.core.WorkflowProcess;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
@@ -56,6 +52,9 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.workflow.core.WorkflowProcess;
 
 /**
  * Completion for ruleflow constraints. 
@@ -122,7 +121,7 @@ public class ConstraintCompletionProcessor extends RuleCompletionProcessor {
     
     private void loadImports() {
     	this.imports = new ArrayList();
-    	List imports = ((org.drools.process.core.Process) process).getImports();
+    	List imports = ((org.jbpm.process.core.Process) process).getImports();
     	if (imports != null) {
 	    	Iterator iterator = imports.iterator();
 	        while (iterator.hasNext()) {

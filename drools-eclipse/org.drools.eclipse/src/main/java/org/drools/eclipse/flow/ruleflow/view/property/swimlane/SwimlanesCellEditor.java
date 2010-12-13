@@ -35,9 +35,9 @@ import java.util.List;
 
 import org.drools.eclipse.flow.common.view.property.BeanDialogCellEditor;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.process.core.context.swimlane.Swimlane;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.jbpm.process.core.context.swimlane.Swimlane;
 
 /**
  * Cell edtior for swimlanes.

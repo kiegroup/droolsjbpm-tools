@@ -25,21 +25,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.definition.process.Process;
 import org.drools.eclipse.flow.common.view.property.ListPropertyDescriptor;
 import org.drools.eclipse.flow.ruleflow.view.property.exceptionHandler.ExceptionHandlersPropertyDescriptor;
 import org.drools.eclipse.flow.ruleflow.view.property.swimlane.SwimlanesCellEditor;
 import org.drools.eclipse.flow.ruleflow.view.property.variable.VariableListCellEditor;
-import org.drools.definition.process.Process;
-import org.drools.process.core.context.exception.ExceptionHandler;
-import org.drools.process.core.context.exception.ExceptionScope;
-import org.drools.process.core.context.swimlane.Swimlane;
-import org.drools.process.core.context.swimlane.SwimlaneContext;
-import org.drools.process.core.context.variable.Variable;
-import org.drools.process.core.context.variable.VariableScope;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
+import org.jbpm.process.core.context.exception.ExceptionHandler;
+import org.jbpm.process.core.context.exception.ExceptionScope;
+import org.jbpm.process.core.context.swimlane.Swimlane;
+import org.jbpm.process.core.context.swimlane.SwimlaneContext;
+import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.process.core.context.variable.VariableScope;
 
 /**
  * A wrapper for process element.
@@ -66,13 +66,13 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
     public static final String SWIMLANES = "swimlanes";
     public static final String EXCEPTION_HANDLERS = "exceptionHandlers";
      
-    private org.drools.process.core.Process process;
+    private org.jbpm.process.core.Process process;
     private Map<String, ElementWrapper> elements = new HashMap<String, ElementWrapper>();
     private transient List<ModelListener> listeners = new ArrayList<ModelListener>();
     protected IPropertyDescriptor[] descriptors;
     
     public ProcessWrapper() {
-        process = (org.drools.process.core.Process) createProcess();
+        process = (org.jbpm.process.core.Process) createProcess();
     }
     
     protected abstract Process createProcess();
@@ -82,7 +82,7 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
     }
     
     public void localSetProcess(Process process) {
-        this.process = (org.drools.process.core.Process) process;
+        this.process = (org.jbpm.process.core.Process) process;
     }
     
     public String getName() {

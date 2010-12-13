@@ -37,8 +37,6 @@ import java.util.Map;
 import org.drools.eclipse.editors.DRLSourceViewerConfig;
 import org.drools.eclipse.editors.scanners.DRLPartionScanner;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.workflow.core.WorkflowProcess;
-import org.drools.workflow.core.node.MilestoneNode;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
@@ -63,6 +61,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
+import org.jbpm.workflow.core.WorkflowProcess;
+import org.jbpm.workflow.core.node.MilestoneNode;
 
 /**
  * Dialog for editing constraints.

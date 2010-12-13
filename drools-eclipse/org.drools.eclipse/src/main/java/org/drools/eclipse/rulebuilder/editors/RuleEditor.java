@@ -37,7 +37,6 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.server.rules.SuggestionCompletionLoader;
 import org.drools.ide.common.server.util.BRDRLPersistence;
 import org.drools.ide.common.server.util.BRXMLPersistence;
-import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.eclipse.core.internal.resources.Container;
 import org.eclipse.core.resources.IFile;

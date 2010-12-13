@@ -35,11 +35,11 @@ import java.util.List;
 
 import org.drools.eclipse.flow.common.view.property.BeanDialogCellEditor;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.workflow.core.DroolsAction;
-import org.drools.workflow.core.WorkflowProcess;
-import org.drools.workflow.core.impl.ExtendedNodeImpl;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.jbpm.workflow.core.DroolsAction;
+import org.jbpm.workflow.core.WorkflowProcess;
+import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 
 /**
  * Cell editor for on entry actions.

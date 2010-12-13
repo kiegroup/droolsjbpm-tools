@@ -33,16 +33,12 @@ package org.drools.eclipse.flow.ruleflow.view.property.constraint;
  */
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.editors.completion.CompletionUtil;
 import org.drools.eclipse.editors.completion.DefaultCompletionProcessor;
-import org.drools.eclipse.editors.completion.RuleCompletionProcessor;
 import org.drools.eclipse.editors.completion.RuleCompletionProposal;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;

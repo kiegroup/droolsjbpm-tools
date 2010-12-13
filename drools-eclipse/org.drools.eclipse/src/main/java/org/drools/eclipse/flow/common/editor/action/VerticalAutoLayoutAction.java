@@ -35,11 +35,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.definition.process.Connection;
+import org.drools.definition.process.WorkflowProcess;
 import org.drools.eclipse.flow.common.editor.GenericModelEditor;
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ProcessWrapper;
-import org.drools.definition.process.Connection;
-import org.drools.definition.process.WorkflowProcess;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.graph.DirectedGraph;

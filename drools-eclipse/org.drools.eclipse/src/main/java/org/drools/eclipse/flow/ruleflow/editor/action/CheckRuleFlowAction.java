@@ -33,8 +33,6 @@ package org.drools.eclipse.flow.ruleflow.editor.action;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.ruleflow.editor.RuleFlowModelEditor;
-import org.drools.process.core.validation.ProcessValidationError;
-import org.drools.ruleflow.core.validation.RuleFlowProcessValidator;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
@@ -43,6 +41,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.actions.ActionDelegate;
+import org.jbpm.process.core.validation.ProcessValidationError;
+import org.jbpm.ruleflow.core.validation.RuleFlowProcessValidator;
 
 /**
  * Action for checking a RuleFlow.

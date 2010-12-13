@@ -33,9 +33,9 @@ package org.drools.eclipse.flow.ruleflow.view.property.subprocess;
 
 import org.drools.eclipse.flow.common.view.property.BeanDialogCellEditor;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.workflow.core.node.SubProcessNode;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.jbpm.workflow.core.node.SubProcessNode;
 
 /**
  * Cell editor for sub process parameter mappings.

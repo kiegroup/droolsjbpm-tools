@@ -37,9 +37,6 @@ import java.util.Map;
 import org.drools.core.util.ArrayUtils;
 import org.drools.eclipse.editors.DRLSourceViewerConfig;
 import org.drools.eclipse.editors.scanners.DRLPartionScanner;
-import org.drools.workflow.core.Constraint;
-import org.drools.workflow.core.WorkflowProcess;
-import org.drools.workflow.core.impl.ConstraintImpl;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
@@ -69,6 +66,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
+import org.jbpm.workflow.core.Constraint;
+import org.jbpm.workflow.core.WorkflowProcess;
+import org.jbpm.workflow.core.impl.ConstraintImpl;
 
 /**
  * Dialog for editing constraints.
@@ -282,7 +282,7 @@ public class RuleFlowConstraintDialog extends Dialog {
 				int code = dialog.open();
 				if (code != CANCEL) {
 					List imports = dialog.getImports();
-					((org.drools.process.core.Process) process).setImports(imports);
+					((org.jbpm.process.core.Process) process).setImports(imports);
 					completionProcessor.reset();
 				}
 			}
@@ -299,7 +299,7 @@ public class RuleFlowConstraintDialog extends Dialog {
 				int code = dialog.open();
 				if (code != CANCEL) {
 					Map globals = dialog.getGlobals();
-					((org.drools.process.core.Process) process).setGlobals(globals);
+					((org.jbpm.process.core.Process) process).setGlobals(globals);
 					completionProcessor.reset();
 				}
 			}

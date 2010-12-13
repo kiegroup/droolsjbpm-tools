@@ -16,6 +16,7 @@
 
 package org.drools.eclipse.rulebuilder.ui;
 
+import org.drools.eclipse.rulebuilder.editors.RuleEditor;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionRetractFact;
@@ -27,7 +28,6 @@ import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
-import org.drools.eclipse.rulebuilder.editors.RuleEditor;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;

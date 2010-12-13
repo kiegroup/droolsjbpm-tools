@@ -38,8 +38,6 @@ import java.util.regex.Pattern;
 
 import org.drools.eclipse.editors.DRLSourceViewerConfig;
 import org.drools.eclipse.editors.scanners.DRLPartionScanner;
-import org.drools.process.core.Process;
-import org.drools.workflow.core.WorkflowProcess;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
@@ -62,6 +60,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
+import org.jbpm.process.core.Process;
+import org.jbpm.workflow.core.WorkflowProcess;
 
 /**
  * Dialog for editing imports.

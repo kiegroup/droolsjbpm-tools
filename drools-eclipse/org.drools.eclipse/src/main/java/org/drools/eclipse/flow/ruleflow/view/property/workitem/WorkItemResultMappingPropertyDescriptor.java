@@ -16,10 +16,10 @@
 
 package org.drools.eclipse.flow.ruleflow.view.property.workitem;
 
-import org.drools.workflow.core.node.WorkItemNode;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
+import org.jbpm.workflow.core.node.WorkItemNode;
 
 public class WorkItemResultMappingPropertyDescriptor extends PropertyDescriptor {
 

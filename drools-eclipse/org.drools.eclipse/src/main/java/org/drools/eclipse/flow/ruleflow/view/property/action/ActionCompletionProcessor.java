@@ -41,7 +41,6 @@ import java.util.Map;
 import org.drools.eclipse.editors.DRLRuleEditor;
 import org.drools.eclipse.editors.completion.RuleCompletionProcessor;
 import org.drools.lang.descr.GlobalDescr;
-import org.drools.workflow.core.WorkflowProcess;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
@@ -54,6 +53,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.jbpm.workflow.core.WorkflowProcess;
 
 /**
  * Completion for ruleflow constraints. 
@@ -110,7 +110,7 @@ public class ActionCompletionProcessor extends RuleCompletionProcessor {
     
     private void loadImports() {
     	this.imports = new ArrayList<String>();
-    	List<String> imports = ((org.drools.process.core.Process) process).getImports();
+    	List<String> imports = ((org.jbpm.process.core.Process) process).getImports();
     	
     	if (imports != null) {
 	    	Iterator<String> iterator = imports.iterator();

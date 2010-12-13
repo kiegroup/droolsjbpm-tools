@@ -17,7 +17,6 @@
 package org.drools.eclipse.launching;
 
 import java.text.MessageFormat;
-import java.util.HashMap;
 
 import org.drools.eclipse.debug.core.IDroolsDebugConstants;
 import org.eclipse.core.runtime.CoreException;
@@ -28,7 +27,6 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
-import org.eclipse.jdt.internal.debug.core.breakpoints.JavaLineBreakpoint;
 import org.eclipse.jdt.internal.launching.LaunchingMessages;
 import org.eclipse.jdt.junit.launcher.JUnitLaunchConfigurationDelegate;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;

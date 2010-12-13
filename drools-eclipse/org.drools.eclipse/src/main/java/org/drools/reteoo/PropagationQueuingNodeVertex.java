@@ -19,7 +19,6 @@
  */
 package org.drools.reteoo;
 
-import org.drools.spi.ObjectType;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Color;
 

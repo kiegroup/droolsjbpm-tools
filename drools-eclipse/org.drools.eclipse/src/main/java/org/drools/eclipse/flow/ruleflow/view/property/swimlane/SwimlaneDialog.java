@@ -32,7 +32,6 @@ package org.drools.eclipse.flow.ruleflow.view.property.swimlane;
  */
 
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.process.core.context.swimlane.Swimlane;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -41,6 +40,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.jbpm.process.core.context.swimlane.Swimlane;
 
 /**
  * Dialog for editing swimlanes.

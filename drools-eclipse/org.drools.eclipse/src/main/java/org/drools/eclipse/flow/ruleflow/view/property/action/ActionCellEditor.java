@@ -33,13 +33,13 @@ package org.drools.eclipse.flow.ruleflow.view.property.action;
 
 import org.drools.eclipse.flow.common.view.property.BeanDialogCellEditor;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.workflow.core.DroolsAction;
-import org.drools.workflow.core.WorkflowProcess;
-import org.drools.workflow.core.node.ActionNode;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.jbpm.workflow.core.DroolsAction;
+import org.jbpm.workflow.core.WorkflowProcess;
+import org.jbpm.workflow.core.node.ActionNode;
 
 /**
  * Cell editor for an action.

@@ -31,11 +31,11 @@ package org.drools.eclipse.flow.ruleflow.view.property.constraint;
  * limitations under the License.
  */
 
-import org.drools.workflow.core.WorkflowProcess;
-import org.drools.workflow.core.node.MilestoneNode;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
+import org.jbpm.workflow.core.WorkflowProcess;
+import org.jbpm.workflow.core.node.MilestoneNode;
 
 /**
  * Property descriptor for a milestone constraint.

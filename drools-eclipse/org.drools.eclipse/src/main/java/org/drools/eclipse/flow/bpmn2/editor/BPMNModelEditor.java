@@ -25,10 +25,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.bpmn2.xml.BPMNDISemanticModule;
-import org.drools.bpmn2.xml.BPMNSemanticModule;
-import org.drools.bpmn2.xml.XmlBPMNProcessDumper;
-import org.drools.compiler.xml.XmlProcessReader;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.WorkItemDefinitions;
 import org.drools.eclipse.flow.common.editor.GenericModelEditor;
@@ -41,7 +37,6 @@ import org.drools.eclipse.flow.ruleflow.editor.editpart.RuleFlowEditPartFactory;
 import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.process.core.WorkDefinition;
 import org.drools.process.core.WorkDefinitionExtension;
-import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.xml.SemanticModules;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IStatus;
@@ -58,6 +53,11 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
+import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
+import org.jbpm.bpmn2.xml.BPMNSemanticModule;
+import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
+import org.jbpm.compiler.xml.XmlProcessReader;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 
 /**
  * Graphical editor for a RuleFlow.
@@ -148,6 +148,7 @@ public class BPMNModelEditor extends GenericModelEditor {
 	                        entries.add(combined);
 	                    }
                     } catch (Throwable t) {
+                    	DroolsEclipsePlugin.log(t);
                 		MessageDialog.openError(
                 			getSite().getShell(), "Parsing work item definitions", t.getMessage());
                     }
@@ -171,9 +172,7 @@ public class BPMNModelEditor extends GenericModelEditor {
         	RuleFlowProcess process = getRuleFlowModel().getRuleFlowProcess();
         	String targetNamespace = (String) process.getMetaData("TargetNamespace");
         	if ("http://www.omg.org/bpmn20".equals(targetNamespace)) {
-        		org.drools.bpmn2.legacy.beta1.XmlBPMNProcessDumper dumper = org.drools.bpmn2.legacy.beta1.XmlBPMNProcessDumper.INSTANCE;
-                String out = dumper.dump(process, includeGraphics);
-                writer.write(out);
+        		throw new IllegalArgumentException("BPMN2 beta1 no longer supported");
         	} else {
 	            XmlBPMNProcessDumper dumper = XmlBPMNProcessDumper.INSTANCE;
 	            String out = dumper.dump(process, XmlBPMNProcessDumper.META_DATA_USING_DI);
@@ -204,9 +203,6 @@ public class BPMNModelEditor extends GenericModelEditor {
     		SemanticModules semanticModules = new SemanticModules();
     		semanticModules.addSemanticModule(new BPMNSemanticModule());
     		semanticModules.addSemanticModule(new BPMNDISemanticModule());
-    		semanticModules.addSemanticModule(new org.drools.bpmn2.legacy.beta1.BPMNSemanticModule());
-    		semanticModules.addSemanticModule(new org.drools.bpmn2.legacy.beta1.BPMN2SemanticModule());
-            semanticModules.addSemanticModule(new org.drools.bpmn2.legacy.beta1.BPMNDISemanticModule());
     		XmlProcessReader xmlReader = new XmlProcessReader(semanticModules);
     		
     		try 

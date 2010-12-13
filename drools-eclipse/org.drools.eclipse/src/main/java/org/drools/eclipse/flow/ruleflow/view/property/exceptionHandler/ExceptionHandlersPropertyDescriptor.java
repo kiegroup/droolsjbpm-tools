@@ -16,8 +16,8 @@
 
 package org.drools.eclipse.flow.ruleflow.view.property.exceptionHandler;
 
-import org.drools.eclipse.flow.common.view.property.ListPropertyDescriptor;
 import org.drools.definition.process.Process;
+import org.drools.eclipse.flow.common.view.property.ListPropertyDescriptor;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Composite;
 

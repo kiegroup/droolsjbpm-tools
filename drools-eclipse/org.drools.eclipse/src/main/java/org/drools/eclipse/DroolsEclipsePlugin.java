@@ -26,17 +26,12 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.drools.bpmn2.xml.BPMNSemanticModule;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.PackageRegistry;
-import org.drools.compiler.ProcessBuilder;
-import org.drools.compiler.ProcessBuilderImpl;
-import org.drools.compiler.xml.ProcessSemanticModule;
-import org.drools.compiler.xml.XmlProcessReader;
 import org.drools.core.util.StringUtils;
 import org.drools.eclipse.DRLInfo.FunctionInfo;
 import org.drools.eclipse.DRLInfo.RuleInfo;
@@ -48,7 +43,6 @@ import org.drools.eclipse.preferences.IDroolsConstants;
 import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.process.core.Process;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.xml.SemanticModules;
@@ -70,6 +64,12 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
+import org.jbpm.bpmn2.xml.BPMNSemanticModule;
+import org.jbpm.compiler.ProcessBuilderImpl;
+import org.jbpm.compiler.xml.ProcessSemanticModule;
+import org.jbpm.compiler.xml.XmlProcessReader;
+import org.jbpm.process.core.Process;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -519,10 +519,8 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                 
                 SemanticModules modules = configuration.getSemanticModules();
                 modules.addSemanticModule( new BPMNSemanticModule() );
+                modules.addSemanticModule( new BPMNDISemanticModule() );
                 modules.addSemanticModule( new ProcessSemanticModule() );
-                modules.addSemanticModule( new org.drools.bpmn2.legacy.beta1.BPMNSemanticModule() );
-                modules.addSemanticModule( new org.drools.bpmn2.legacy.beta1.BPMN2SemanticModule() );
-                modules.addSemanticModule( new org.drools.bpmn2.legacy.beta1.BPMNDISemanticModule() );
                 
                 XmlProcessReader xmlReader = new XmlProcessReader( modules );
                 Process process = (Process) xmlReader.read( new StringReader( input ) );

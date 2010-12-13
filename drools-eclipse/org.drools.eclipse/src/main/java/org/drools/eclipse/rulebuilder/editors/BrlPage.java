@@ -16,9 +16,9 @@
 
 package org.drools.eclipse.rulebuilder.editors;
 
+import org.drools.eclipse.rulebuilder.ui.RuleModeller;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.server.util.BRXMLPersistence;
-import org.drools.eclipse.rulebuilder.ui.RuleModeller;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;

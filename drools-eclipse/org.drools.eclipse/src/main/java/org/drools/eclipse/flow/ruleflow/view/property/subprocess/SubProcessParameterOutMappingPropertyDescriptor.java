@@ -16,10 +16,10 @@
 
 package org.drools.eclipse.flow.ruleflow.view.property.subprocess;
 
-import org.drools.workflow.core.node.SubProcessNode;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
+import org.jbpm.workflow.core.node.SubProcessNode;
 
 public class SubProcessParameterOutMappingPropertyDescriptor extends PropertyDescriptor {
 

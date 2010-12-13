@@ -33,7 +33,6 @@ package org.drools.eclipse.flow.common.editor.policy;
 
 import org.drools.eclipse.flow.common.editor.core.ElementContainer;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
-import org.drools.eclipse.flow.common.editor.core.ProcessWrapper;
 import org.drools.eclipse.flow.common.editor.core.command.DeleteElementCommand;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.ComponentEditPolicy;

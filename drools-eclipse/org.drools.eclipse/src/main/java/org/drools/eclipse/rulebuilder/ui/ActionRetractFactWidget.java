@@ -16,8 +16,8 @@
 
 package org.drools.eclipse.rulebuilder.ui;
 
-import org.drools.ide.common.client.modeldriven.brl.ActionRetractFact;
 import org.drools.eclipse.rulebuilder.modeldriven.HumanReadable;
+import org.drools.ide.common.client.modeldriven.brl.ActionRetractFact;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;

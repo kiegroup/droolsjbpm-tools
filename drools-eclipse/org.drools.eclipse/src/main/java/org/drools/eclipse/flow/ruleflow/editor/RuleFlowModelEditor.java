@@ -43,10 +43,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.compiler.xml.ProcessSemanticModule;
-import org.drools.compiler.xml.XmlProcessReader;
-import org.drools.compiler.xml.XmlRuleFlowProcessDumper;
-import org.drools.compiler.xml.processes.RuleFlowMigrator;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.WorkItemDefinitions;
 import org.drools.eclipse.flow.common.editor.GenericModelEditor;
@@ -58,7 +54,6 @@ import org.drools.eclipse.flow.ruleflow.editor.editpart.RuleFlowEditPartFactory;
 import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.process.core.WorkDefinition;
 import org.drools.process.core.WorkDefinitionExtension;
-import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.xml.SemanticModules;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -72,6 +67,11 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
+import org.jbpm.compiler.xml.ProcessSemanticModule;
+import org.jbpm.compiler.xml.XmlProcessReader;
+import org.jbpm.compiler.xml.XmlRuleFlowProcessDumper;
+import org.jbpm.compiler.xml.processes.RuleFlowMigrator;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 
 /**
  * Graphical editor for a RuleFlow.
@@ -166,6 +166,7 @@ public class RuleFlowModelEditor extends GenericModelEditor {
 	                        entries.add(combined);
 	                    }
                     } catch (Throwable t) {
+                    	DroolsEclipsePlugin.log(t);
                 		MessageDialog.openError(
                 			getSite().getShell(), "Parsing work item definitions", t.getMessage());
                     }

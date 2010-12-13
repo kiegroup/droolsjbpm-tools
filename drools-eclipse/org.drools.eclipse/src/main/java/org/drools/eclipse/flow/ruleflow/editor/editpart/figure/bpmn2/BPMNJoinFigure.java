@@ -19,10 +19,10 @@ package org.drools.eclipse.flow.ruleflow.editor.editpart.figure.bpmn2;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.editor.editpart.figure.AbstractElementFigure;
 import org.drools.eclipse.flow.ruleflow.editor.editpart.JoinEditPart.JoinFigureInterface;
-import org.drools.workflow.core.node.Join;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
+import org.jbpm.workflow.core.node.Join;
 
 public class BPMNJoinFigure extends AbstractElementFigure implements JoinFigureInterface {
     

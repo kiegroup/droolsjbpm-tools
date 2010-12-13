@@ -40,9 +40,6 @@ import org.drools.eclipse.editors.scanners.DRLPartionScanner;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
 import org.drools.eclipse.flow.ruleflow.view.property.constraint.RuleFlowGlobalsDialog;
 import org.drools.eclipse.flow.ruleflow.view.property.constraint.RuleFlowImportsDialog;
-import org.drools.workflow.core.DroolsAction;
-import org.drools.workflow.core.WorkflowProcess;
-import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
@@ -70,6 +67,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
+import org.jbpm.workflow.core.DroolsAction;
+import org.jbpm.workflow.core.WorkflowProcess;
+import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 
 /**
  * Dialog for editing an action.

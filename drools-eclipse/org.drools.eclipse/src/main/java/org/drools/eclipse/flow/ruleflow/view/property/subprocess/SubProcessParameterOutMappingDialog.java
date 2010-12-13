@@ -35,7 +35,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.workflow.core.node.SubProcessNode;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
@@ -58,6 +57,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.jbpm.workflow.core.node.SubProcessNode;
 
 /**
  * Dialog for editing work item result mappings.

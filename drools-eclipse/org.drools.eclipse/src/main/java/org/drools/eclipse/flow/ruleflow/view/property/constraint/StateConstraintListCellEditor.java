@@ -35,12 +35,12 @@ import java.util.Map;
 
 import org.drools.eclipse.flow.common.view.property.BeanDialogCellEditor;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.workflow.core.Constraint;
-import org.drools.workflow.core.WorkflowProcess;
-import org.drools.workflow.core.impl.ConnectionRef;
-import org.drools.workflow.core.node.StateNode;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.jbpm.workflow.core.Constraint;
+import org.jbpm.workflow.core.WorkflowProcess;
+import org.jbpm.workflow.core.impl.ConnectionRef;
+import org.jbpm.workflow.core.node.StateNode;
 
 /**
  * Cell editor for state constraints.
