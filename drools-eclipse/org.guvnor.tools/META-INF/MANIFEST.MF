@@ -24,3 +24,4 @@ Export-Package: org.guvnor.tools,
  org.guvnor.tools.wizards
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
