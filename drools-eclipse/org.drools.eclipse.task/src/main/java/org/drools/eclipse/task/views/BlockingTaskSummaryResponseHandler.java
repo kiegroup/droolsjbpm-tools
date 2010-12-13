@@ -18,9 +18,9 @@ package org.drools.eclipse.task.views;
 
 import java.util.List;
 
-import org.drools.task.query.TaskSummary;
-import org.drools.task.service.TaskClientHandler.TaskSummaryResponseHandler;
-import org.drools.task.service.responsehandlers.AbstractBlockingResponseHandler;
+import org.jbpm.task.query.TaskSummary;
+import org.jbpm.task.service.TaskClientHandler.TaskSummaryResponseHandler;
+import org.jbpm.task.service.responsehandlers.AbstractBlockingResponseHandler;
 
 public class BlockingTaskSummaryResponseHandler extends AbstractBlockingResponseHandler implements TaskSummaryResponseHandler {
 	private static final int DEFAULT_WAIT_TIME = 10000;

@@ -16,25 +16,15 @@
 
 package org.drools.eclipse.task.views;
 
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.drools.SystemEventListenerFactory;
 import org.drools.eclipse.task.Activator;
 import org.drools.eclipse.task.preferences.DroolsTaskConstants;
-import org.drools.process.workitem.wsht.BlockingAddTaskResponseHandler;
-import org.drools.task.Status;
-import org.drools.task.User;
-import org.drools.task.query.TaskSummary;
-import org.drools.task.service.TaskClient;
-import org.drools.task.service.mina.MinaTaskClientConnector;
-import org.drools.task.service.mina.MinaTaskClientHandler;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -71,7 +61,16 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.dialogs.ViewContentProvider;
+import org.eclipse.ui.internal.dialogs.ViewLabelProvider;
 import org.eclipse.ui.part.ViewPart;
+import org.jbpm.process.workitem.wsht.BlockingAddTaskResponseHandler;
+import org.jbpm.task.Status;
+import org.jbpm.task.User;
+import org.jbpm.task.query.TaskSummary;
+import org.jbpm.task.service.TaskClient;
+import org.jbpm.task.service.mina.MinaTaskClientConnector;
+import org.jbpm.task.service.mina.MinaTaskClientHandler;
 
 public class TaskView extends ViewPart {
 

@@ -19,14 +19,6 @@ package org.drools.eclipse.task.views;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.task.AccessType;
-import org.drools.task.I18NText;
-import org.drools.task.OrganizationalEntity;
-import org.drools.task.PeopleAssignments;
-import org.drools.task.Task;
-import org.drools.task.TaskData;
-import org.drools.task.User;
-import org.drools.task.service.ContentData;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
@@ -41,6 +33,14 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.jbpm.task.AccessType;
+import org.jbpm.task.I18NText;
+import org.jbpm.task.OrganizationalEntity;
+import org.jbpm.task.PeopleAssignments;
+import org.jbpm.task.Task;
+import org.jbpm.task.TaskData;
+import org.jbpm.task.User;
+import org.jbpm.task.service.ContentData;
 
 
 public class NewTaskDialog extends Dialog {
