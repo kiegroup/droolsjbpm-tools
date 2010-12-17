@@ -262,10 +262,8 @@ public class RepositoryView extends ViewPart {
 										addResourceToGuvnor(target.getGuvnorRepository().getLocation(), 
 										                   target.getFullPath(), sourceFile);
 						if (!res) {
-							String fileName = sourceFile.getName();
-							fileName = fileName.substring(0,fileName.lastIndexOf("."));
 							errors.add(MessageFormat.format(Messages.getString("add.failure.exist"), //$NON-NLS-1$ 
-								                            new Object[] { target.getFullPath() + fileName, items[i] }));
+								                            new Object[] {sourceFile.getName(), target.getFullPath()}));
 						}
 					} else {
 						// Need to check if the drop location is the same as the Guvnor
