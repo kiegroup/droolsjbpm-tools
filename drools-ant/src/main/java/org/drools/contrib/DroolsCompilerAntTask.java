@@ -224,7 +224,7 @@ public class DroolsCompilerAntTask extends MatchingTask {
 			while(iter.hasNext()) {
 				KnowledgePackage pkg = iter.next();
 				if(verboseoption) {
-					log("** Serializing package ["+pkg.getName()+"] to destination file. **** THIS WILL OVERRIDE ANY PREVIOUSLY SERIALIZAED PACKAGE ****");
+					log("** Serializing package ["+pkg.getName()+"] to destination file. **** THIS WILL OVERRIDE ANY PREVIOUSLY SERIALIZED PACKAGE ****");
 				}
 				serializeObject(pkg);
 			}
@@ -316,7 +316,7 @@ public class DroolsCompilerAntTask extends MatchingTask {
 		if (PACKAGEBINFORMAT.equals(binformat)) {
 			for(org.drools.rule.Package pkg : packages) {
 				if(verboseoption) {
-					log("** Serializing package ["+pkg.getName()+"] to destination file. **** THIS WILL OVERRIDE ANY PREVIOUSLY SERIALIZAED PACKAGE ****");
+					log("** Serializing package ["+pkg.getName()+"] to destination file. **** THIS WILL OVERRIDE ANY PREVIOUSLY SERIALIZED PACKAGE ****");
 				}
 				serializeObject(pkg);
 			}
