@@ -26,10 +26,12 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
@@ -54,6 +56,7 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.decisiontable.InputType;
 import org.drools.decisiontable.SpreadsheetCompiler;
 import org.drools.definition.KnowledgePackage;
+import org.drools.definition.rule.Rule;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.server.util.BRDRLPersistence;
 import org.drools.ide.common.server.util.BRXMLPersistence;
@@ -63,6 +66,7 @@ import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
 import org.drools.lang.dsl.DefaultExpanderResolver;
+import org.drools.rule.Package;
 import org.drools.core.util.DroolsStreamUtils;
 
 /**
@@ -90,7 +94,9 @@ public class DroolsCompilerAntTask extends MatchingTask {
 
 	private String binformat;
 	private String bintype;
-
+	private String verbose;
+	private boolean verboseoption;
+	
 	/**
 	 * Source directory to read DRL files from
 	 * 
@@ -145,7 +151,9 @@ public class DroolsCompilerAntTask extends MatchingTask {
 	 */
 	public void execute() throws BuildException {
 		super.execute();
-
+		
+		verboseoption = verbose != null && verbose.equalsIgnoreCase("true");
+		
 		// checking parameters are set
 		if (toFile == null) {
 			throw new BuildException(
@@ -161,7 +169,7 @@ public class DroolsCompilerAntTask extends MatchingTask {
 			throw new BuildException("Source directory does not exists."
 					+ srcdir.getAbsolutePath());
 		}
-
+		
 		AntClassLoader loader = null;
 		try {
 			// create a specialized classloader
@@ -192,6 +200,18 @@ public class DroolsCompilerAntTask extends MatchingTask {
 
 		// gets the packages
 		Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
+		
+		if(verboseoption) {
+			Iterator<KnowledgePackage> iter = pkgs.iterator();
+			while(iter.hasNext()) {
+				KnowledgePackage pkg = iter.next();	
+				log("** Content of package: " + pkg.getName());
+				Iterator<Rule> riter = pkg.getRules().iterator();
+				while(riter.hasNext()) {
+					log("\tRule name: " + riter.next().getName());
+				}
+			}
+		}
 
 		// creates the knowledge base
 		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -200,8 +220,18 @@ public class DroolsCompilerAntTask extends MatchingTask {
 		kbase.addKnowledgePackages(pkgs);
 
 		if (PACKAGEBINFORMAT.equals(binformat)) {
-			serializeObject(pkgs.iterator().next());
+			Iterator<KnowledgePackage> iter = pkgs.iterator();
+			while(iter.hasNext()) {
+				KnowledgePackage pkg = iter.next();
+				if(verboseoption) {
+					log("** Serializing package ["+pkg.getName()+"] to destination file. **** THIS WILL OVERRIDE ANY PREVIOUSLY SERIALIZAED PACKAGE ****");
+				}
+				serializeObject(pkg);
+			}
 		} else {
+			if(verboseoption) {
+				log("** Serializing KnowledgeBase to destination file.");
+			}
 			// serialize the knowledge base to the destination file
 			serializeObject(kbase);
 		}
@@ -261,19 +291,39 @@ public class DroolsCompilerAntTask extends MatchingTask {
 		PackageBuilder builder = getPackageBuilder(loader);
 
 		compileAndAddFiles(builder);
+		
+		org.drools.rule.Package[] packages = builder.getPackages();
+		
+		if(verboseoption) {
+			for(org.drools.rule.Package pkg : packages) {
+				log("** Content of package: " + pkg.getName());
+				Rule[] rules = pkg.getRules();
+				for(Rule rule : rules) {
+					log("\tRule name: " + rule.getName());
+				}
+			}
+		}
 
 		// gets the package
-		org.drools.rule.Package pkg = builder.getPackage();
+		//org.drools.rule.Package pkg = builder.getPackage();
 
 		// creates the rulebase
 		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 
-		// adds the package
-		ruleBase.addPackage(pkg);
+		// adds the packages
+		ruleBase.addPackages(packages);
 
 		if (PACKAGEBINFORMAT.equals(binformat)) {
-			serializeObject(pkg);
+			for(org.drools.rule.Package pkg : packages) {
+				if(verboseoption) {
+					log("** Serializing package ["+pkg.getName()+"] to destination file. **** THIS WILL OVERRIDE ANY PREVIOUSLY SERIALIZAED PACKAGE ****");
+				}
+				serializeObject(pkg);
+			}
 		} else {
+			if(verboseoption) {
+				log("** Serializing RuleBase to destination file.");
+			}
 			// serialize the rule base to the destination file
 			serializeObject(ruleBase);
 		}
@@ -623,6 +673,14 @@ public class DroolsCompilerAntTask extends MatchingTask {
 
 	public void setBintype(String bintype) {
 		this.bintype = bintype;
+	}
+	
+	public void setVerbose(String verbose) {
+		this.verbose = verbose;
+	}
+	
+	public String getVerbose() {
+		return verbose;
 	}
 
 }
