@@ -29,13 +29,13 @@
     <module>org.drools.eclipse</module>
     <module>org.drools.eclipse.feature</module>
     <module>org.drools.eclipse.test</module>
-    <!--module>org.drools.eclipse.task</module>
-    <module>org.drools.eclipse.task.feature</module-->
+    <module>org.drools.eclipse.task</module>
+    <module>org.drools.eclipse.task.feature</module>
     <module>org.eclipse.webdav</module>
     <module>org.guvnor.tools</module>
     <module>org.guvnor.tools.feature</module>
     <module>org.guvnor.tools.test</module> 
-    <!--module>org.drools.updatesite</module-->
+    <module>org.drools.updatesite</module>
   </modules>
 
   <repositories>
