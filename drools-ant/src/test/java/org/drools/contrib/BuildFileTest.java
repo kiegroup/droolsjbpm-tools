@@ -21,7 +21,10 @@ import java.io.File;
 import java.io.PrintStream;
 import java.net.URL;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.BuildException;
@@ -37,7 +40,7 @@ import org.apache.tools.ant.ProjectHelper;
  * tests which extend this class.
  *
  */
-public abstract class BuildFileTest extends TestCase {
+public abstract class BuildFileTest {
 
     protected Project      project;
 
@@ -46,15 +49,6 @@ public abstract class BuildFileTest extends TestCase {
     private StringBuffer   outBuffer;
     private StringBuffer   errBuffer;
     private BuildException buildException;
-
-    /**
-     *  Constructor for the BuildFileTest object
-     *
-     *@param  name string to pass up to TestCase constructor
-     */
-    public BuildFileTest(String name) {
-        super( name );
-    }
 
     /**
      *  run a target, expect for any build exception

@@ -19,23 +19,22 @@ package org.drools.contrib;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import junit.framework.Assert;
-
 import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definition.KnowledgePackage;
 import org.drools.rule.Package;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * DroolsAntTask test case
  */
 public class DroolsAntTaskTest extends BuildFileTest {
 
-    public DroolsAntTaskTest() {
-        super( "DroolsAntTest" );
-    }
-
+    @Before
     public void setUp() {
 
         // Maven and eclipse need different paths
@@ -49,6 +48,7 @@ public class DroolsAntTaskTest extends BuildFileTest {
         configureProject( "src/test/resources/DroolsAntTask.xml" );
     }
 
+    @Test
     public void testVerifierReport() {
         try {
             executeTarget( "verifierreport" );
@@ -57,13 +57,14 @@ public class DroolsAntTaskTest extends BuildFileTest {
         }
     }
 
+    @Test
     public void testDslRules() throws IOException,
                               ClassNotFoundException {
         try {
             executeTarget( "dslRules" );
         } catch ( Exception e ) {
             e.printStackTrace();
-            Assert.fail( "Should not throw any exception: " + e.getMessage() );
+            fail( "Should not throw any exception: " + e.getMessage() );
         }
 
         Package p1 = (Package) DroolsStreamUtils.streamIn( new FileInputStream( "target/cheese.rules.pkg" ) );
@@ -73,13 +74,14 @@ public class DroolsAntTaskTest extends BuildFileTest {
                       p1.getRules().length );
     }
 
+    @Test
     public void testDslRulesKnowledge() throws IOException,
                                        ClassNotFoundException {
         try {
             executeTarget( "dslRulesKnowledge" );
         } catch ( Exception e ) {
             e.printStackTrace();
-            Assert.fail( "Should not throw any exception: " + e.getMessage() );
+            fail( "Should not throw any exception: " + e.getMessage() );
         }
 
         KnowledgePackage kpackage1 = (KnowledgePackage) DroolsStreamUtils.streamIn( new FileInputStream( "target/cheese.rules.pkg" ) );
@@ -89,13 +91,14 @@ public class DroolsAntTaskTest extends BuildFileTest {
                       kpackage1.getRules().size() );
     }
 
+    @Test
     public void testRules() throws IOException,
                            ClassNotFoundException {
         try {
             executeTarget( "rules" );
         } catch ( Exception e ) {
             e.printStackTrace();
-            Assert.fail( "Should not throw any exception: " + e.getMessage() );
+            fail( "Should not throw any exception: " + e.getMessage() );
         }
 
         RuleBase r1 = (RuleBase) DroolsStreamUtils.streamIn( new FileInputStream( "target/cheese.rules" ) );
@@ -105,13 +108,14 @@ public class DroolsAntTaskTest extends BuildFileTest {
                       r1.getPackages().length );
     }
 
+    @Test
     public void testRulesKnowledge() throws IOException,
                                     ClassNotFoundException {
         try {
             executeTarget( "rulesKnowledge" );
         } catch ( Exception e ) {
             e.printStackTrace();
-            Assert.fail( "Should not throw any exception: " + e.getMessage() );
+            fail( "Should not throw any exception: " + e.getMessage() );
         }
 
         KnowledgeBase kbase = (KnowledgeBase) DroolsStreamUtils.streamIn( new FileInputStream( "target/cheese.rules" ) );
@@ -121,13 +125,14 @@ public class DroolsAntTaskTest extends BuildFileTest {
                       kbase.getKnowledgePackages().size() );
     }
 
+    @Test
     public void testRuleFlow() throws IOException,
                               ClassNotFoundException {
         try {
             executeTarget( "ruleFlow" );
         } catch ( Exception e ) {
             e.printStackTrace();
-            Assert.fail( "Should not throw any exception: " + e.getMessage() );
+            fail( "Should not throw any exception: " + e.getMessage() );
         }
 
         RuleBase r1 = (RuleBase) DroolsStreamUtils.streamIn( new FileInputStream( "target/ruleFlow.rules" ) );
@@ -137,13 +142,14 @@ public class DroolsAntTaskTest extends BuildFileTest {
                       r1.getPackages().length );
     }
 
+    @Test
     public void testRuleFlowKnowledge() throws IOException,
                                        ClassNotFoundException {
         try {
             executeTarget( "ruleFlowKnowledge" );
         } catch ( Exception e ) {
             e.printStackTrace();
-            Assert.fail( "Should not throw any exception: " + e.getMessage() );
+            fail( "Should not throw any exception: " + e.getMessage() );
         }
 
         KnowledgeBase kbase = (KnowledgeBase) DroolsStreamUtils.streamIn( new FileInputStream( "target/ruleFlow.rules" ) );
@@ -153,19 +159,21 @@ public class DroolsAntTaskTest extends BuildFileTest {
                       kbase.getKnowledgePackages().size() );
     }
 
+    @Test
     public void testNoPackageFile() {
         try {
             executeTarget( "rulesnopackagefile" );
-            Assert.fail( "Should throw an exception " );
+            fail( "Should throw an exception " );
         } catch ( Exception e ) {
             e.printStackTrace();
         }
     }
 
+    @Test
     public void testManyPackageFiles() {
         try {
             executeTarget( "rulesmanypackagefile" );
-            Assert.fail( "Should throw an exception " );
+            fail( "Should throw an exception " );
         } catch ( Exception e ) {
             e.printStackTrace();
         }
