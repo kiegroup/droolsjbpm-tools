@@ -49,6 +49,7 @@ public class HumanTaskNodeWrapper extends WorkItemWrapper {
         Set<ParameterDefinition> parameterDefinitions = new HashSet<ParameterDefinition>();
         parameterDefinitions.add(new ParameterDefinitionImpl("TaskName", new StringDataType()));
         parameterDefinitions.add(new ParameterDefinitionImpl("ActorId", new StringDataType()));
+        parameterDefinitions.add(new ParameterDefinitionImpl("GroupId", new StringDataType()));
         parameterDefinitions.add(new ParameterDefinitionImpl("Priority", new StringDataType()));
         parameterDefinitions.add(new ParameterDefinitionImpl("Comment", new StringDataType()));
         parameterDefinitions.add(new ParameterDefinitionImpl("Skippable", new StringDataType()));
