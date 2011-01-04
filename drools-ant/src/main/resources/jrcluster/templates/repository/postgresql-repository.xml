@@ -21,7 +21,7 @@
 <Repository>
   <!--  Clustering configuration -->
     <Cluster id="${nodeID}" syncDelay="${journalSyncDelay}">
-      <Journal class="org.apache.jackrabbit.core.journal.DatabaseJournal ">
+      <Journal class="org.apache.jackrabbit.core.journal.DatabaseJournal">
       <#noparse><param name="revision" value="${rep.home}/revision.log" /></#noparse>
       <param name="driver" value="${journalDriver}" />
       <param name="url" value="${journalUrl}" />
