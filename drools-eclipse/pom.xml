@@ -40,9 +40,16 @@
 
   <repositories>
     <repository>
-       <id>eclipse-helios</id><!-- helios is 3.6 -->
-       <layout>p2</layout>
-       <url>http://download.eclipse.org/releases/helios</url>
+      <id>eclipse-helios</id><!-- helios is 3.6 -->
+      <layout>p2</layout>
+      <url>http://download.eclipse.org/releases/helios</url>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </repository>
   </repositories>
   <build>
