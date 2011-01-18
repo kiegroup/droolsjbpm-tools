@@ -22,7 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -40,7 +43,7 @@ import org.drools.spi.AgendaGroup;
  *    
  * @author Kris Verlaenen
  */
-public class DebugViewsTest extends TestCase {
+public class DebugViewsTest {
 	
 	/*
 	 * WARNING: DO NOT CHANGE ANYTHING IN THIS TEST CLASS
@@ -48,6 +51,7 @@ public class DebugViewsTest extends TestCase {
 	 * VIEWS (which are using reflection)
 	 */
     
+    @Test
     public void testApplicationDataView() throws Exception {
     	Reader source = new InputStreamReader(DebugViewsTest.class.getResourceAsStream("/debug.drl"));
     	PackageBuilder builder = new PackageBuilder();
@@ -80,6 +84,7 @@ public class DebugViewsTest extends TestCase {
 	 * VIEWS (which are using reflection)
 	 */
     
+    @Test
     public void testAgendaView() throws Exception {
     	Reader source = new InputStreamReader(DebugViewsTest.class.getResourceAsStream("/debug.drl"));
     	PackageBuilder builder = new PackageBuilder();
@@ -112,6 +117,7 @@ public class DebugViewsTest extends TestCase {
 	 * VIEWS (which are using reflection)
 	 */
     
+    @Test
     public void testWorkingMemoryView() throws Exception {
     	RuleBase ruleBase = RuleBaseFactory.newRuleBase();
     	ReteooStatefulSession session = (ReteooStatefulSession) ruleBase.newStatefulSession();

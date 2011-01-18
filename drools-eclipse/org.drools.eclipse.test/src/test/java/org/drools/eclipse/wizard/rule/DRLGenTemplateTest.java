@@ -21,10 +21,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class DRLGenTemplateTest extends TestCase {
+public class DRLGenTemplateTest {
     
+    @Test
     public void testNewRule() throws Exception {
         DRLGenerator gen = new DRLGenerator();
         InputStream result = gen.generateRule("myPackage", getClass().getResourceAsStream( "new_rule.drl.template" ));
@@ -36,6 +40,7 @@ public class DRLGenTemplateTest extends TestCase {
         
     }
     
+    @Test
     public void testNewPackage() throws Exception {
         DRLGenerator gen = new DRLGenerator();
         InputStream result = gen.generatePackage("myPackage", true, true, getClass().getResourceAsStream( "new_rule.drl.template" ));

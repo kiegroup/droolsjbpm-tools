@@ -19,10 +19,14 @@ package org.drools.eclipse.editors.completion;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class DRLCompletionProcessorTest extends TestCase {
+public class DRLCompletionProcessorTest {
 
+    @Test
     public void testLookBehind() {
         assertEquals("something", CompletionUtil.stripLastWord(" something"));
         assertEquals("another", CompletionUtil.stripLastWord("another"));
@@ -31,6 +35,7 @@ public class DRLCompletionProcessorTest extends TestCase {
         assertEquals("when", CompletionUtil.stripLastWord(s));
     }
 
+    @Test
     public void testPrefixFiltering_FiltersBasedOnDisplayedStringNotContent() {
         List list = new ArrayList();
         list.add(new RuleCompletionProposal(0, 0, "abcd", "zxyz"));
@@ -46,6 +51,7 @@ public class DRLCompletionProcessorTest extends TestCase {
 
     }
 
+    @Test
     public void testPrefixFiltering_FiltersAllWhenThereisNoMatches() {
         List list = new ArrayList();
         list = new ArrayList();
@@ -58,6 +64,7 @@ public class DRLCompletionProcessorTest extends TestCase {
 
     }
 
+    @Test
     public void testPrefixFiltering_IgnoreCase() {
         List list = new ArrayList();
         list = new ArrayList();

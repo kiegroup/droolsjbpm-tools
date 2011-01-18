@@ -16,7 +16,10 @@
 
 package org.drools.eclipse.editors.outline;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.eclipse.core.DroolsElement;
 import org.drools.eclipse.core.Function;
@@ -25,9 +28,10 @@ import org.drools.eclipse.core.RuleSet;
 import org.drools.eclipse.editors.AbstractRuleEditor;
 import org.drools.eclipse.editors.outline.RuleContentOutlinePage;
 
-public class RuleContentOutlineTest extends TestCase {
+public class RuleContentOutlineTest {
 
-	public void testNodeBuild() {		
+    @Test
+    public void testNodeBuild() {
         RuleContentOutlinePage page = new RuleContentOutlinePage( null );
         String source = "package test;\nexpander foobar.dsl\nimport foo\nfunction void smeg(s) {\n \n}\n";
         page.populatePackageTreeNode( source );

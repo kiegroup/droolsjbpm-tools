@@ -16,7 +16,10 @@
 
 package org.drools.eclipse.dsl.editor;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.eclipse.dsl.editor.DSLAdapter;
 
@@ -24,8 +27,9 @@ import org.drools.eclipse.dsl.editor.DSLAdapter;
  * 
  * @author Michael Neale
  */
-public class DSLAdapterTest extends TestCase {
+public class DSLAdapterTest {
     
+    @Test
     public void testFindExpander() {
         
         StringBuffer buf = largeString();
@@ -43,6 +47,7 @@ public class DSLAdapterTest extends TestCase {
         
     }
     
+    @Test
     public void testLoadGrammar() throws Exception {
         DSLAdapter ad = new DSLAdapter();
         
