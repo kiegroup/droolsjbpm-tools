@@ -81,7 +81,7 @@
               <overWriteSnapshots>true</overWriteSnapshots>
               <overWriteIfNewer>true</overWriteIfNewer>
               <stripVersion>true</stripVersion>
-              <includeScope>runtime</includeScope>
+              <includeScope>test</includeScope>
             </configuration>
           </execution>
         </executions>
