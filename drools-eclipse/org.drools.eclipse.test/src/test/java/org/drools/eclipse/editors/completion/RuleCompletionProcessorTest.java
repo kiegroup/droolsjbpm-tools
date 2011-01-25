@@ -26,9 +26,12 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class RuleCompletionProcessorTest extends TestCase {
+public class RuleCompletionProcessorTest {
 
     class MockCompletionProposal
         implements
@@ -71,6 +74,7 @@ public class RuleCompletionProcessorTest extends TestCase {
 
     }
 
+    @Test
     public void testContainsProposal() {
         Collection proposals = new ArrayList();
 
@@ -88,6 +92,7 @@ public class RuleCompletionProcessorTest extends TestCase {
                                                                "getNoName" ) );
     }
 
+    @Test
     public void testAddAllNewProposals() {
         ArrayList proposals = new ArrayList();
         MockCompletionProposal c = new MockCompletionProposal( "getName() Object - MyObject" );
@@ -111,6 +116,7 @@ public class RuleCompletionProcessorTest extends TestCase {
                       prop.getDisplayString() );
     }
 
+    @Test
     public void testProcessMacros() {
         String text = "";
         final String[] functions = new String[]{"update", "retract", "insert", "insertLogical"};
@@ -124,6 +130,7 @@ public class RuleCompletionProcessorTest extends TestCase {
         }
     }
 
+    @Test
     public void testIsStartOfDialectExpression() {
         //for now inside a method start, we are not starting a new expression for completion purpose
         String s = "System.out.println(\"\");\r\n" + "  update(";

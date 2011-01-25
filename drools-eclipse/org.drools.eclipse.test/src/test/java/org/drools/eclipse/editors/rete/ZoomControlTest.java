@@ -19,7 +19,11 @@ package org.drools.eclipse.editors.rete;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.Ignore;
+import static org.junit.Assert.*;
 
 import org.drools.eclipse.editors.DRLRuleEditor2;
 import org.drools.eclipse.editors.ZoomInAction2;
@@ -42,7 +46,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
-public class ZoomControlTestDisabled extends TestCase {
+public class ZoomControlTest {
 
     private IFile                         fFile1;
     private IFile                         fFile2;
@@ -51,10 +55,6 @@ public class ZoomControlTestDisabled extends TestCase {
 
     private static final String           ORIGINAL_CONTENT = "package test\nrule \"a\"\nend\nrule \"b\"\nend";
 
-    public ZoomControlTestDisabled(String name) {
-        super( name );
-    }
-
     private String getOriginalContent() {
         return ORIGINAL_CONTENT;
     }
@@ -62,7 +62,8 @@ public class ZoomControlTestDisabled extends TestCase {
     /*
      * @see junit.framework.TestCase#setUp()
      */
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         IFolder folder = createFolder( "ZoomControlTestProject/multipleEditorTest/" );
         fFile1 = createFile( folder,
                              "myfile1.drl",
@@ -75,12 +76,14 @@ public class ZoomControlTestDisabled extends TestCase {
     /*
      * @see junit.framework.TestCase#tearDown()
      */
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         deleteProject( "ZoomControlTestProject" );
         fFile1 = null;
         fFile2 = null;
     }
 
+    @Test @Ignore
     public void testMultipleEditors() throws PartInitException {
 
         IWorkbench workbench = PlatformUI.getWorkbench();
@@ -157,6 +160,7 @@ public class ZoomControlTestDisabled extends TestCase {
 
     }
 
+    @Test @Ignore
     public void testSecondEditorAfterFirst() throws PartInitException {
 
         IWorkbench workbench = PlatformUI.getWorkbench();

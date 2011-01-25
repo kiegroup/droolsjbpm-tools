@@ -23,10 +23,14 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.rules.FastPartitioner;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class AbstractCompletionProcessorTest extends TestCase {
+public class AbstractCompletionProcessorTest {
 
+    @Test
     public void testReadBackwards() throws BadLocationException {
         //setup
         IDocument doc = getDoc();

@@ -16,51 +16,31 @@
 package org.drools.ide.common.client.modeldriven.dt;
 
 /**
- * This is a rule metadata - eg @foo(bar) etc.
+ * This is a rule description
  * 
- * @author Michael Rhoden
+ * @author manstis
  * 
  */
-public class MetadataCol extends DTColumnConfig {
+public class DescriptionCol extends DTColumnConfig {
 
-	private String metadata;
+	private static final long serialVersionUID = -306736594255777798L;
 
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) {
 			return false;
 		}
-		if (!(obj instanceof MetadataCol)) {
+		if (!(obj instanceof DescriptionCol)) {
 			return false;
 		}
-		MetadataCol that = (MetadataCol) obj;
-		return nullOrEqual(this.metadata, that.metadata) && super.equals(obj);
+		return super.equals(obj);
 	}
 
-    public String getMetadata() {
-        return metadata;
-    }
-
-    @Override
+	@Override
 	public int hashCode() {
 		int hash = 1;
-		hash = hash * 31 + (metadata == null ? 0 : metadata.hashCode());
 		hash = hash * 31 + super.hashCode();
 		return hash;
-	}
-
-	public void setMetadata(String metadata) {
-        this.metadata = metadata;
-    }
-
-	private boolean nullOrEqual(Object thisAttr, Object thatAttr) {
-		if (thisAttr == null && thatAttr == null) {
-			return true;
-		}
-		if (thisAttr == null && thatAttr != null) {
-			return false;
-		}
-		return thisAttr.equals(thatAttr);
 	}
 
 }

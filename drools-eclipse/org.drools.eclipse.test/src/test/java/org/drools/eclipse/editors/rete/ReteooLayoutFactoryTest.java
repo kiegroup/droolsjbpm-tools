@@ -24,7 +24,10 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
@@ -59,16 +62,7 @@ import org.drools.rule.Package;
  * @author Ahti Kitsik
  *
  */
-public class ReteooLayoutFactoryTest extends TestCase {
-
-    /**
-     * Constructor.
-     * 
-     * @param name case name
-     */
-    public ReteooLayoutFactoryTest(String name) {
-        super( name );
-    }
+public class ReteooLayoutFactoryTest {
 
     /**
      * Test method for {@link org.drools.eclipse.editors.rete.ReteooLayoutFactory#calculateReteRows(org.drools.reteoo.BaseVertex)}.
@@ -78,7 +72,8 @@ public class ReteooLayoutFactoryTest extends TestCase {
      * @throws DroolsParserException 
      * @throws PackageIntegrationException 
      */
-    public final void testCalculateReteRows() throws IOException,
+    @Test
+    public void testCalculateReteRows() throws IOException,
                                              PackageIntegrationException,
                                              DroolsParserException {
         ReteGraph graph = new ReteGraph();
@@ -113,7 +108,8 @@ public class ReteooLayoutFactoryTest extends TestCase {
      * @throws DroolsParserException 
      * @throws PackageIntegrationException 
      */
-    public final void testLayoutRowList() throws IOException,
+    @Test
+    public void testLayoutRowList() throws IOException,
                                          PackageIntegrationException,
                                          DroolsParserException {
         ReteGraph graph = new ReteGraph();

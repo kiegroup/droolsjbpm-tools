@@ -18,10 +18,14 @@ package org.drools.eclipse.editors.completion;
 
 import org.drools.eclipse.editors.Keywords;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class KeywordsTest extends TestCase {
+public class KeywordsTest {
 
+    @Test
     public void testAll() {
         Keywords keys = Keywords.getInstance();
         String[] all = keys.getAllDroolsKeywords();
