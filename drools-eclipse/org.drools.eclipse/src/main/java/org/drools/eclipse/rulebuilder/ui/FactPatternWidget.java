@@ -704,7 +704,9 @@ public class FactPatternWidget extends Widget {
                 newPatterns.add( parentPattern.getPatterns()[i] );
             }
         }
-        parentPattern.patterns = (FactPattern[]) newPatterns.toArray( new FactPattern[newPatterns.size()] ); // TODO fixme esteban
+        
+        parentPattern.clearFactPatterns();
+        parentPattern.addFactPatterns((FactPattern[]) newPatterns.toArray( new FactPattern[newPatterns.size()] ));
         getModeller().reloadLhs();
     }
 

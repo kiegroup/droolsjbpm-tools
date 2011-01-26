@@ -19,6 +19,7 @@ package org.drools.eclipse.rulebuilder.ui;
 import org.drools.eclipse.rulebuilder.modeldriven.HumanReadable;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
+import org.drools.ide.common.client.modeldriven.brl.IFactPattern;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
@@ -150,7 +151,10 @@ public class CompositeFactPatternWidget extends Widget {
     	
     	
         if ( pattern.getPatterns() != null ) {
-            FactPattern[] facts = pattern.patterns; // TODO fixme esteban
+            // TODO when composite widget supports multiple pattern types like
+            // Fact patterns, From patterm, Accumulate Pattern, etc, this cast
+            //will fail!
+            FactPattern[] facts = (FactPattern[])pattern.getPatterns(); 
             for ( int i = 0; i < facts.length; i++ ) {
             	
                 new FactPatternWidget( toolkit,
