@@ -149,8 +149,8 @@ public class CompositeFactPatternWidget extends Widget {
                                 Composite constraintComposite) {
     	
     	
-        if ( pattern.patterns != null ) {
-            FactPattern[] facts = pattern.patterns;
+        if ( pattern.getPatterns() != null ) {
+            FactPattern[] facts = pattern.patterns; // TODO fixme esteban
             for ( int i = 0; i < facts.length; i++ ) {
             	
                 new FactPatternWidget( toolkit,
