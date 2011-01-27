@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc..
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,33 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.ide.common.client.modeldriven.testing;
+package org.drools.ide.common.client.modeldriven.brl;
 
 /**
- * @author Toni Rikkola 
- *
+ * Interface for Patterns that contains a Fact Type
+ * @author esteban.aliverti@gmail.com
  */
-public class ActivateRuleFlowGroup
-    implements
-    Fixture {
-
-    private static final long serialVersionUID = 510l;
-
-    private String            name;
-
-    public ActivateRuleFlowGroup() {
-    }
-
-    public ActivateRuleFlowGroup(String s) {
-        this.setName( s );
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
+public interface IFactPattern extends IPattern {
+    public String getFactType();
 }

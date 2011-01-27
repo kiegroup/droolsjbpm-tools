@@ -137,7 +137,7 @@ public class AddNewFieldConstraintDialog extends RuleDialog {
                      "Add a restriction on a field" );
 
         SuggestionCompletionEngine engine = getCompletion();
-        String[] fieldCompletitions = engine.getFieldCompletions( pattern.factType );
+        String[] fieldCompletitions = engine.getFieldCompletions( pattern.getFactType() );
         final Combo fieldsCombo = new Combo( composite,
                                              SWT.READ_ONLY );
         fieldsCombo.setLayoutData( gd );
@@ -146,7 +146,7 @@ public class AddNewFieldConstraintDialog extends RuleDialog {
             String field = fieldCompletitions[i];
             fieldsCombo.add( field );
             fieldsCombo.setData( field,
-                                 engine.getFieldType( pattern.factType + "." + field ) );
+                                 engine.getFieldType( pattern.getFactType() + "." + field ) );
         }
         fieldsCombo.select( 0 );
 

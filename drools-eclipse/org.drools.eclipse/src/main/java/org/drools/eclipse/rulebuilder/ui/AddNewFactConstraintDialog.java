@@ -73,7 +73,7 @@ public class AddNewFactConstraintDialog extends RuleDialog {
                                         }
 
                                         FactPattern factPattern = new FactPattern();
-                                        factPattern.factType = factsCombo.getText();
+                                        factPattern.setFactType(factsCombo.getText());
                                         pattern.addFactPattern( factPattern );
 
                                         modeller.setDirty( true );

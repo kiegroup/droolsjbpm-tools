@@ -82,7 +82,7 @@ public class AddCompositeConstraintOptionDialog extends RuleDialog {
                                        SWT.READ_ONLY );
         combo.setLayoutData( gd );
         combo.add( "..." );
-        String[] fields = this.modeller.getSuggestionCompletionEngine().getFieldCompletions( this.pattern.factType );
+        String[] fields = this.modeller.getSuggestionCompletionEngine().getFieldCompletions( this.pattern.getFactType() );
         for ( int i = 0; i < fields.length; i++ ) {
             combo.add( fields[i] );
         }

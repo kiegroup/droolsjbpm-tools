@@ -44,15 +44,15 @@
                <unzip src="drools-eclipse-plugin/lib/drools-docs-introduction-eclipse.war" dest="drools-eclipse-plugin/help/introduction" />
                <unzip src="drools-eclipse-plugin/lib/drools-docs-expert-eclipse.war" dest="drools-eclipse-plugin/help/expert" />
                <unzip src="drools-eclipse-plugin/lib/drools-docs-fusion-eclipse.war" dest="drools-eclipse-plugin/help/fusion" />
-               <unzip src="drools-eclipse-plugin/lib/drools-docs-flow-eclipse.war" dest="drools-eclipse-plugin/help/flow" />
+               <unzip src="drools-eclipse-plugin/lib/drools-docs-flow-eclipse.war" dest="drools-eclipse-plugin/help/flow" />&lt;!&ndash; TODO flow has been renamed to jbpm &ndash;&gt;
                <unzip src="drools-eclipse-plugin/lib/drools-docs-guvnor-eclipse.war" dest="drools-eclipse-plugin/help/guvnor" />
                
                
-               <delete dir="drools-eclipse-plugin/lib/drools-docs-introduction-eclipse.war" />     
-               <delete dir="drools-eclipse-plugin/lib/drools-docs-expert-eclipse.war" />     
-               <delete dir="drools-eclipse-plugin/lib/drools-docs-fusion-eclipse.war" />     
-               <delete dir="drools-eclipse-plugin/lib/drools-docs-flow-eclipse.war" />     
-               <delete dir="drools-eclipse-plugin/lib/drools-docs-guvnor-eclipse.war" />     
+               <delete dir="drools-eclipse-plugin/lib/drools-docs-introduction-eclipse.war" />
+               <delete dir="drools-eclipse-plugin/lib/drools-docs-expert-eclipse.war" />
+               <delete dir="drools-eclipse-plugin/lib/drools-docs-fusion-eclipse.war" />
+               <delete dir="drools-eclipse-plugin/lib/drools-docs-flow-eclipse.war" />&lt;!&ndash; TODO flow has been renamed to jbpm &ndash;&gt;
+               <delete dir="drools-eclipse-plugin/lib/drools-docs-guvnor-eclipse.war" />
              </tasks>
            </configuration>
            <goals>

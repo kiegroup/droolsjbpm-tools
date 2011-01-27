@@ -66,9 +66,9 @@ public class ActionSetFieldWidget extends Widget {
 		} else {
 			FactPattern pattern = rule.getBoundFact(set.variable);
 			this.fieldCompletions = getCompletion().getFieldCompletions(
-					pattern.factType);
+					pattern.getFactType());
 			this.isBoundFact = true;
-			this.variableClass = pattern.factType;
+			this.variableClass = pattern.getFactType();
 		}
 
 		GridLayout l = new GridLayout();

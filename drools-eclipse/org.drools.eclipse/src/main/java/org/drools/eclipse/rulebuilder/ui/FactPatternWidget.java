@@ -459,7 +459,7 @@ public class FactPatternWidget extends Widget {
     private void constraintValueEditor(Composite parent,
                                        BaseSingleFieldConstraint c,
                                        String name) {
-        String type = this.modeller.getSuggestionCompletionEngine().getFieldType( pattern.factType,
+        String type = this.modeller.getSuggestionCompletionEngine().getFieldType( pattern.getFactType(),
                                                                                   name );
         new ConstraintValueEditor( parent,
                                    c,
@@ -618,14 +618,14 @@ public class FactPatternWidget extends Widget {
      */
     private String getPatternLabel() {
         if ( pattern.boundName != null ) {
-            return pattern.factType + " [" + pattern.boundName + "]";
+            return pattern.getFactType() + " [" + pattern.boundName + "]";
         }
-        return pattern.factType;
+        return pattern.getFactType();
     }
 
     private void operatorDropDown(Composite parent,
                                   final SingleFieldConstraint c) {
-        String[] ops = getCompletions().getOperatorCompletions( pattern.factType,
+        String[] ops = getCompletions().getOperatorCompletions( pattern.getFactType(),
                                                                 c.getFieldName() );
         final Combo box = new Combo( parent,
                                      SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY );
@@ -651,7 +651,7 @@ public class FactPatternWidget extends Widget {
     private void connectiveOperatorDropDown(Composite parent,
                                             final ConnectiveConstraint con,
                                             String fieldName) {
-        String[] ops = getCompletions().getConnectiveOperatorCompletions( pattern.factType,
+        String[] ops = getCompletions().getConnectiveOperatorCompletions( pattern.getFactType(),
                                                                           fieldName );
         final Combo box = new Combo( parent,
                                      SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY );
@@ -699,12 +699,14 @@ public class FactPatternWidget extends Widget {
 
     private void deleteBindedFact() {
         List newPatterns = new ArrayList();
-        for ( int i = 0; i < parentPattern.patterns.length; i++ ) {
-            if ( parentPattern.patterns[i] != pattern ) {
-                newPatterns.add( parentPattern.patterns[i] );
+        for ( int i = 0; i < parentPattern.getPatterns().length; i++ ) {
+            if ( parentPattern.getPatterns()[i] != pattern ) {
+                newPatterns.add( parentPattern.getPatterns()[i] );
             }
         }
-        parentPattern.patterns = (FactPattern[]) newPatterns.toArray( new FactPattern[newPatterns.size()] );
+        
+        parentPattern.clearFactPatterns();
+        parentPattern.addFactPatterns((FactPattern[]) newPatterns.toArray( new FactPattern[newPatterns.size()] ));
         getModeller().reloadLhs();
     }
 
