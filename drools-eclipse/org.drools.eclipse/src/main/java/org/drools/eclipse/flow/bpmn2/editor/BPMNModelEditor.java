@@ -25,6 +25,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.definition.process.Node;
+import org.drools.definition.process.Process;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.WorkItemDefinitions;
 import org.drools.eclipse.flow.common.editor.GenericModelEditor;
@@ -58,6 +60,14 @@ import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.workflow.core.node.CompositeNode;
+import org.jbpm.workflow.core.node.EndNode;
+import org.jbpm.workflow.core.node.EventNode;
+import org.jbpm.workflow.core.node.FaultNode;
+import org.jbpm.workflow.core.node.Join;
+import org.jbpm.workflow.core.node.Split;
+import org.jbpm.workflow.core.node.StartNode;
+import org.jbpm.workflow.core.node.TimerNode;
 
 /**
  * Graphical editor for a RuleFlow.
@@ -170,14 +180,9 @@ public class BPMNModelEditor extends GenericModelEditor {
         OutputStreamWriter writer = new OutputStreamWriter(os);
         try {
         	RuleFlowProcess process = getRuleFlowModel().getRuleFlowProcess();
-        	String targetNamespace = (String) process.getMetaData("TargetNamespace");
-        	if ("http://www.omg.org/bpmn20".equals(targetNamespace)) {
-        		throw new IllegalArgumentException("BPMN2 beta1 no longer supported");
-        	} else {
-	            XmlBPMNProcessDumper dumper = XmlBPMNProcessDumper.INSTANCE;
-	            String out = dumper.dump(process, XmlBPMNProcessDumper.META_DATA_USING_DI);
-	            writer.write(out);
-        	}
+            XmlBPMNProcessDumper dumper = XmlBPMNProcessDumper.INSTANCE;
+            String out = dumper.dump(process, XmlBPMNProcessDumper.META_DATA_USING_DI);
+            writer.write(out);
         } catch (Throwable t) {
             DroolsEclipsePlugin.log(t);
             IStatus status = new Status(
@@ -207,11 +212,17 @@ public class BPMNModelEditor extends GenericModelEditor {
     		
     		try 
     		{
-    			RuleFlowProcess process = (RuleFlowProcess) xmlReader.read(isr);
-    			if (process == null) {
+    			List<Process> processes = xmlReader.read(isr);
+    			if (processes == null || processes.size() == 0) {
     				setModel(createModel());
     			} else {
-    				setModel(new RuleFlowWrapperBuilder().getProcessWrapper(process, getJavaProject()));
+	    			RuleFlowProcess process = (RuleFlowProcess) processes.get(0);
+	    			if (process == null) {
+	    				setModel(createModel());
+	    			} else {
+	    				correctEventNodeSize(process.getNodes());
+	    				setModel(new RuleFlowWrapperBuilder().getProcessWrapper(process, getJavaProject()));
+	    			}
     			}
     		} catch (Throwable t) {
     			DroolsEclipsePlugin.log(t);
@@ -229,4 +240,44 @@ public class BPMNModelEditor extends GenericModelEditor {
     		DroolsEclipsePlugin.log(t);
     	}
     }
+    
+    private void correctEventNodeSize(Node[] nodes) {
+    	for (Node node: nodes) {
+    		if (node instanceof StartNode
+					|| node instanceof EndNode
+					|| node instanceof EventNode
+					|| node instanceof FaultNode
+					|| node instanceof TimerNode) {
+    			Integer width = (Integer) node.getMetaData().get("width");
+    			Integer height = (Integer) node.getMetaData().get("height");
+    			if (width != 48 || height != 48) {
+    				node.getMetaData().put("width", 48);
+    				node.getMetaData().put("height", 48);
+    				Integer x = (Integer) node.getMetaData().get("x");
+        			Integer y = (Integer) node.getMetaData().get("y");
+        			x = x - ((48 - width)/2);
+        			y = y - ((48 - height)/2);
+    				node.getMetaData().put("x", x);
+    				node.getMetaData().put("y", y);
+    			}
+    		} else if (node instanceof Split
+					|| node instanceof Join) {
+    			Integer width = (Integer) node.getMetaData().get("width");
+    			Integer height = (Integer) node.getMetaData().get("height");
+    			if (width != 49 || height != 49) {
+    				node.getMetaData().put("width", 49);
+    				node.getMetaData().put("height", 49);
+    				Integer x = (Integer) node.getMetaData().get("x");
+        			Integer y = (Integer) node.getMetaData().get("y");
+        			x = x - ((49 - width)/2);
+        			y = y - ((49 - height)/2);
+    				node.getMetaData().put("x", x);
+    				node.getMetaData().put("y", y);
+    			}
+    		} else if (node instanceof CompositeNode) {
+    			correctEventNodeSize(((CompositeNode) node).getNodes());
+    		}
+    	}
+    }
+    
 }
