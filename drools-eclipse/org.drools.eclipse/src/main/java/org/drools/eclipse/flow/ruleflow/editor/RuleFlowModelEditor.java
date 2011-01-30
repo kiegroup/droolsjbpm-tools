@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.definition.process.Process;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.WorkItemDefinitions;
 import org.drools.eclipse.flow.common.editor.GenericModelEditor;
@@ -210,11 +211,16 @@ public class RuleFlowModelEditor extends GenericModelEditor {
     			
     			reader =  new StringReader(xml);
 
-    			RuleFlowProcess process = (RuleFlowProcess) xmlReader.read(reader);
-    			if (process == null) {
+    			List<Process> processes = xmlReader.read(reader);
+    			if (processes == null || processes.size() == 0) {
     				setModel(createModel());
     			} else {
-    				setModel(new RuleFlowWrapperBuilder().getProcessWrapper(process, getJavaProject()));
+	    			RuleFlowProcess process = (RuleFlowProcess) processes.get(0);
+	    			if (process == null) {
+	    				setModel(createModel());
+	    			} else {
+	    				setModel(new RuleFlowWrapperBuilder().getProcessWrapper(process, getJavaProject()));
+	    			}
     			}
     		} catch (Throwable t) {
     			DroolsEclipsePlugin.log(t);

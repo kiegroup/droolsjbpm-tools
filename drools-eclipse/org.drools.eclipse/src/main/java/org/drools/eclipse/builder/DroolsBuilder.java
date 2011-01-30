@@ -253,7 +253,8 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             	createMarker(res, t.getMessage(), -1);
             }
             return false;
-        } else if (res instanceof IFile && "bpmn".equals(res.getFileExtension())) {
+        } else if (res instanceof IFile && ("bpmn".equals(res.getFileExtension())
+        		|| "bpmn2".equals(res.getFileExtension()))) {
             removeProblemsFor(res);
             try {
             	if (clean) {

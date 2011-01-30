@@ -523,13 +523,18 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                 modules.addSemanticModule( new ProcessSemanticModule() );
                 
                 XmlProcessReader xmlReader = new XmlProcessReader( modules );
-                Process process = (Process) xmlReader.read( new StringReader( input ) );
-                if ( process != null ) {
-                    return parseProcess( process,
-                                         resource,
-                                         configuration );
-                } else {
-                    throw new IllegalArgumentException( "Could not parse process " + resource );
+                List<org.drools.definition.process.Process> processes = 
+                	(List<org.drools.definition.process.Process>) xmlReader.read( new StringReader( input ) );
+                if (processes != null) {
+	                for (org.drools.definition.process.Process process: processes) {
+		                if ( process != null ) {
+		                    return parseProcess( (Process) process,
+		                                         resource,
+		                                         configuration );
+		                } else {
+		                    throw new IllegalArgumentException( "Could not parse process " + resource );
+		                }
+	                }
                 }
             } finally {
                 Thread.currentThread().setContextClassLoader( oldLoader );
