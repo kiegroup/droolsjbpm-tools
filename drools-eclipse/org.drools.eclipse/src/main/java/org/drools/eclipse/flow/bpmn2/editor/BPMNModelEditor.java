@@ -249,7 +249,13 @@ public class BPMNModelEditor extends GenericModelEditor {
 					|| node instanceof FaultNode
 					|| node instanceof TimerNode) {
     			Integer width = (Integer) node.getMetaData().get("width");
+    			if (width == null) {
+    				width = 48;
+    			}
     			Integer height = (Integer) node.getMetaData().get("height");
+    			if (height == null) {
+    				height = 48;
+    			}
     			if (width != 48 || height != 48) {
     				node.getMetaData().put("width", 48);
     				node.getMetaData().put("height", 48);
@@ -263,7 +269,13 @@ public class BPMNModelEditor extends GenericModelEditor {
     		} else if (node instanceof Split
 					|| node instanceof Join) {
     			Integer width = (Integer) node.getMetaData().get("width");
+    			if (width == null) {
+    				width = 49;
+    			}
     			Integer height = (Integer) node.getMetaData().get("height");
+    			if (height == null) {
+    				height = 49;
+    			}
     			if (width != 49 || height != 49) {
     				node.getMetaData().put("width", 49);
     				node.getMetaData().put("height", 49);
