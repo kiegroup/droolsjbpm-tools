@@ -179,9 +179,9 @@
          id="droolsBreakpointMarker"
          point="org.eclipse.core.resources.markers"
          name="Drools Breakpoint Marker">
-	  <super type="org.eclipse.debug.core.breakpointMarker"/>
+    <super type="org.eclipse.debug.core.breakpointMarker"/>
       <persistent value="true"/>
-	</extension>
+  </extension>
 
    <extension point="org.eclipse.debug.core.breakpoints">
       <breakpoint
@@ -230,9 +230,9 @@
             class="org.drools.eclipse.preferences.DroolsProjectPreferencePage"
             id="org.drools.eclipse.preferences.DroolsProjectPreferencePage">
          <enabledWhen>
-		     <adapt type="org.eclipse.core.resources.IProject">
-		          <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.jdt.core.javanature"/>
-		     </adapt>      
+         <adapt type="org.eclipse.core.resources.IProject">
+              <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.jdt.core.javanature"/>
+         </adapt>
          </enabledWhen>
       </page>
    </extension>
@@ -251,14 +251,14 @@
 
    <extension point = "org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
-   	     id="org.drools.eclipse.launching.DroolsLaunchConfigurationDelegate"
+          id="org.drools.eclipse.launching.DroolsLaunchConfigurationDelegate"
          name="Drools Application"
          delegate="org.drools.eclipse.launching.DroolsLaunchConfigurationDelegate"
          sourceLocatorId="org.drools.eclipse.launching.DroolsSourceLookupDirector"
          sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer"
          modes="debug" />
       <launchConfigurationType
-   	     id="org.drools.eclipse.launching.DroolsJUnitLaunchConfigurationDelegate"
+          id="org.drools.eclipse.launching.DroolsJUnitLaunchConfigurationDelegate"
          name="Drools JUnit Test"
          delegate="org.drools.eclipse.launching.DroolsJUnitLaunchConfigurationDelegate"
          sourceLocatorId="org.drools.eclipse.launching.DroolsSourceLookupDirector"
@@ -317,16 +317,16 @@
                <count value="1"/>
                <iterate>
                 <or>
-               	  <test property="org.eclipse.jdt.launching.hasMain"/>
-               	  <and>
-               	     <test property="org.eclipse.jdt.launching.isContainer"/>
-               	     <test property="org.eclipse.jdt.launching.hasProjectNature" args="org.eclipse.jdt.core.javanature"/>
-               	  </and>
-               	</or>
+                   <test property="org.eclipse.jdt.launching.hasMain"/>
+                   <and>
+                      <test property="org.eclipse.jdt.launching.isContainer"/>
+                      <test property="org.eclipse.jdt.launching.hasProjectNature" args="org.eclipse.jdt.core.javanature"/>
+                   </and>
+                 </or>
                </iterate>
              </with>
            </enablement>
-  		 </contextualLaunch>
+       </contextualLaunch>
          <perspective id="org.eclipse.jdt.ui.JavaPerspective"/>
          <perspective id="org.drools.eclipse.DroolsPerspective"/>
          <perspective id="org.eclipse.jdt.ui.JavaBrowsingPerspective"/>
@@ -343,13 +343,13 @@
             <enablement>
                <with variable="selection">
                   <count value="1"/>
-               	  <iterate>
+                   <iterate>
                      <adapt type="org.eclipse.jdt.core.IJavaElement">
-		                <test property="org.eclipse.jdt.core.isInJavaProject"/>
-		                <test property="org.eclipse.jdt.core.hasTypeOnClasspath" value="junit.framework.Test"/>
-		                <test property="org.eclipse.jdt.junit.canLaunchAsJUnit" forcePluginActivation="true"/>
-		             </adapt>
-		          </iterate>
+                    <test property="org.eclipse.jdt.core.isInJavaProject"/>
+                    <test property="org.eclipse.jdt.core.hasTypeOnClasspath" value="junit.framework.Test"/>
+                    <test property="org.eclipse.jdt.junit.canLaunchAsJUnit" forcePluginActivation="true"/>
+                 </adapt>
+              </iterate>
                </with>
             </enablement>
          </contextualLaunch>
@@ -422,42 +422,42 @@
    </extension>
 
    <extension point = "org.eclipse.ui.popupMenus">
-	 <objectContribution
+   <objectContribution
            objectClass="org.eclipse.core.resources.IProject"
            id="org.drools.eclipse.action.ConvertToDroolsProject1">
         <filter name="nature" value="org.eclipse.jdt.core.javanature"/>
-	    <action id="org.drools.eclipse.action.ConvertToDroolsProjectAction1"
-	       label="Convert to Drools Project"
-	       icon="icons/drools.gif"
-	       menubarPath="org.eclipse.ui.projectConfigure/additions"
-	       class="org.drools.eclipse.action.ConvertToDroolsProjectAction"
+      <action id="org.drools.eclipse.action.ConvertToDroolsProjectAction1"
+         label="Convert to Drools Project"
+         icon="icons/drools.gif"
+         menubarPath="org.eclipse.ui.projectConfigure/additions"
+         class="org.drools.eclipse.action.ConvertToDroolsProjectAction"
            definitionId="org.drools.eclipse.action.ConvertToDroolsProjectAction1"
-	       enablesFor="1">
-	    </action>
+         enablesFor="1">
+      </action>
       </objectContribution>
       <objectContribution
            objectClass="org.eclipse.jdt.core.IJavaProject"
            id="org.drools.eclipse.action.ConvertToDroolsProject2">
-	    <action id="org.drools.eclipse.action.ConvertToDroolsProjectAction2"
-	       label="Convert to Drools Project"
-	       icon="icons/drools.gif"
-	       menubarPath="org.eclipse.ui.projectConfigure/additions"
-	       class="org.drools.eclipse.action.ConvertToDroolsProjectAction"
+      <action id="org.drools.eclipse.action.ConvertToDroolsProjectAction2"
+         label="Convert to Drools Project"
+         icon="icons/drools.gif"
+         menubarPath="org.eclipse.ui.projectConfigure/additions"
+         class="org.drools.eclipse.action.ConvertToDroolsProjectAction"
            definitionId="org.drools.eclipse.action.ConvertToDroolsProjectAction2"
-	       enablesFor="1">
-	    </action>
+         enablesFor="1">
+      </action>
       </objectContribution>
-	  <objectContribution
+    <objectContribution
            objectClass="org.eclipse.core.resources.IFile" nameFilter="*.rf"
            id="org.drools.eclipse.action.ConvertToBPMN2Process">
-	    <action id="ConvertToBPMN2ProcessAction"
-	       label="Convert to BPMN2 process"
-	       icon="icons/drools.gif"
-	       menubarPath="additions"
-	       class="org.drools.eclipse.action.ConvertToBPMN2ProcessAction"
+      <action id="ConvertToBPMN2ProcessAction"
+         label="Convert to BPMN2 process"
+         icon="icons/drools.gif"
+         menubarPath="additions"
+         class="org.drools.eclipse.action.ConvertToBPMN2ProcessAction"
            definitionId="org.drools.eclipse.action.ConvertToBPMN2ProcessAction"
-	       enablesFor="1">
-	    </action>
+         enablesFor="1">
+      </action>
       </objectContribution>
    </extension>
 
@@ -490,10 +490,10 @@
       <editorContribution
             id="org.drools.eclipse.flow.ruleflow.editor.action.CheckRuleFlowAction"
             targetID="org.drools.eclipse.flow.ruleflow.editor.RuleFlowModelEditor">
-	     <action
-	        id="org.drools.eclipse.flow.ruleflow.editor.action.CheckRuleFlowAction"
+       <action
+          id="org.drools.eclipse.flow.ruleflow.editor.action.CheckRuleFlowAction"
             label="Check Flow"
-	        toolbarPath="Drools"
+          toolbarPath="Drools"
             icon="icons/check.gif"
             tooltip="Check the Flow model"
             class="org.drools.eclipse.flow.ruleflow.editor.action.CheckRuleFlowAction"
@@ -502,10 +502,10 @@
       <editorContribution
             id="org.drools.eclipse.flow.common.editor.action.VerticalAutoLayoutAction"
             targetID="org.drools.eclipse.flow.ruleflow.editor.RuleFlowModelEditor">
-	     <action
-	        id="org.drools.eclipse.flow.common.editor.action.VerticalAutoLayoutAction"
+       <action
+          id="org.drools.eclipse.flow.common.editor.action.VerticalAutoLayoutAction"
             label="Auto Layout (Vertical)"
-	        toolbarPath="Drools"
+          toolbarPath="Drools"
             icon="icons/processV.gif"
             tooltip="Auto layout the workflow (vertical)"
             class="org.drools.eclipse.flow.common.editor.action.VerticalAutoLayoutAction"
@@ -514,10 +514,10 @@
       <editorContribution
             id="org.drools.eclipse.flow.common.editor.action.HorizontalAutoLayoutAction"
             targetID="org.drools.eclipse.flow.ruleflow.editor.RuleFlowModelEditor">
-	     <action
-	        id="org.drools.eclipse.flow.common.editor.action.HorizontalAutoLayoutAction"
+       <action
+          id="org.drools.eclipse.flow.common.editor.action.HorizontalAutoLayoutAction"
             label="Auto Layout (Horizontal)"
-	        toolbarPath="Drools"
+          toolbarPath="Drools"
             icon="icons/process.gif"
             tooltip="Auto layout the workflow (horizontal)"
             class="org.drools.eclipse.flow.common.editor.action.HorizontalAutoLayoutAction"
@@ -526,10 +526,10 @@
       <editorContribution
             id="org.drools.eclipse.flow.common.editor.action.ExportImageAction"
             targetID="org.drools.eclipse.flow.ruleflow.editor.RuleFlowModelEditor">
-	     <action
-	        id="org.drools.eclipse.flow.common.editor.action.ExportImageAction"
+       <action
+          id="org.drools.eclipse.flow.common.editor.action.ExportImageAction"
             label="Export Image"
-	        toolbarPath="Drools"
+          toolbarPath="Drools"
             icon="icons/export.gif"
             tooltip="Export image (PNG)"
             class="org.drools.eclipse.flow.common.editor.action.ExportImageAction"
@@ -538,10 +538,10 @@
       <editorContribution
             id="org.drools.eclipse.flow.common.editor.action.VerticalAutoLayoutAction"
             targetID="org.drools.eclipse.flow.bpmn2.editor.BPMNModelEditor">
-	     <action
-	        id="org.drools.eclipse.flow.common.editor.action.VerticalAutoLayoutAction"
+       <action
+          id="org.drools.eclipse.flow.common.editor.action.VerticalAutoLayoutAction"
             label="Auto Layout (Vertical)"
-	        toolbarPath="Drools"
+          toolbarPath="Drools"
             icon="icons/processV.gif"
             tooltip="Auto layout the workflow (vertical)"
             class="org.drools.eclipse.flow.common.editor.action.VerticalAutoLayoutAction"
@@ -550,10 +550,10 @@
       <editorContribution
             id="org.drools.eclipse.flow.common.editor.action.HorizontalAutoLayoutAction"
             targetID="org.drools.eclipse.flow.bpmn2.editor.BPMNModelEditor">
-	     <action
-	        id="org.drools.eclipse.flow.common.editor.action.HorizontalAutoLayoutAction"
+       <action
+          id="org.drools.eclipse.flow.common.editor.action.HorizontalAutoLayoutAction"
             label="Auto Layout (Horizontal)"
-	        toolbarPath="Drools"
+          toolbarPath="Drools"
             icon="icons/process.gif"
             tooltip="Auto layout the workflow (horizontal)"
             class="org.drools.eclipse.flow.common.editor.action.HorizontalAutoLayoutAction"
@@ -562,10 +562,10 @@
       <editorContribution
             id="org.drools.eclipse.flow.common.editor.action.ExportImageAction"
             targetID="org.drools.eclipse.flow.bpmn2.editor.BPMNModelEditor">
-	     <action
-	        id="org.drools.eclipse.flow.common.editor.action.ExportImageAction"
+       <action
+          id="org.drools.eclipse.flow.common.editor.action.ExportImageAction"
             label="Export Image"
-	        toolbarPath="Drools"
+          toolbarPath="Drools"
             icon="icons/export.gif"
             tooltip="Export image (PNG)"
             class="org.drools.eclipse.flow.common.editor.action.ExportImageAction"
@@ -575,19 +575,19 @@
 
    <extension
          point = "org.eclipse.ui.newWizards">
-	  <category
-	    id = "org.drools.eclipse.flow.new"
-	    name="Flow">
-	  </category>
- 	  <wizard
-	      id = "org.drools.eclipse.flow.ruleflow.NewRuleFlowFileWizard"
-      	  name = "Flow File"
-	      class="org.drools.eclipse.flow.ruleflow.NewRuleFlowFileWizard"
+    <category
+      id = "org.drools.eclipse.flow.new"
+      name="Flow">
+    </category>
+     <wizard
+        id = "org.drools.eclipse.flow.ruleflow.NewRuleFlowFileWizard"
+          name = "Flow File"
+        class="org.drools.eclipse.flow.ruleflow.NewRuleFlowFileWizard"
           category="org.drools.eclipse.new"
-	      icon="icons/process.gif">
-    	<description>A wizard that creates a new Flow file</description>
-	    <selection class="org.eclipse.core.resources.IResource"/>
-	  </wizard>
+        icon="icons/process.gif">
+      <description>A wizard that creates a new Flow file</description>
+      <selection class="org.eclipse.core.resources.IResource"/>
+    </wizard>
    </extension>
 
    <extension-point id="processExtension" name="Process Extension" schema="schema/processExtension.exsd"/>
@@ -665,7 +665,7 @@
                <instanceof
                      value="org.eclipse.core.resources.IFile">
                </instanceof>
-      		</enablement>
+          </enablement>
       </renameParticipant>
       <renameParticipant
             class="org.drools.eclipse.refactoring.RuleSourceFieldRenameParticipant"

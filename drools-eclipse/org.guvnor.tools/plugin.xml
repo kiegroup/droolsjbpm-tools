@@ -26,35 +26,35 @@
    </extension>
   
   <extension point = "org.eclipse.ui.newWizards">
-		<category id = "org.guvnor.tools.wizcat" name="%category.name"/>
-	 	<wizard id = "org.guvnor.tools.wizards.checkoutwizard"
-	      	    name = "%wiz.copy.resources"
-		        class="org.guvnor.tools.wizards.CheckoutWizard"
-		        category="org.guvnor.tools.wizcat"
-		        project="true"
-		        icon="icons/guvnor_rep.gif">
-	    	   <description>%wiz.copy.resources.desc</description>
-		</wizard>
-		<wizard name = "%wiz.new.repository.location"
-		        id = "org.guvnor.tools.wizards.newreplocationwizard"
-		        class="org.guvnor.tools.wizards.NewRepLocationWizard"
-		        category="org.guvnor.tools.wizcat"
-		        icon="icons/guvnor_rep.gif">
-	    	   <description>%wiz.new.repository.location.desc</description>
-		</wizard>
-	</extension>
-	<extension point = "org.eclipse.ui.importWizards">
-	    <category id = "org.guvnor.tools.importwizcat" name="%category.name"/>
-	 	<wizard id = "org.guvnor.tools.checkoutwizard"
-	      	    name = "%wiz.import.resources"
-	            category="org.guvnor.tools.importwizcat"
-		        class="org.guvnor.tools.wizards.CheckoutWizard"
-		        icon="icons/guvnor_rep.gif">
-	    	   <description>%wiz.import.resources.desc</description>
-		</wizard>
-	</extension>
-	<extension point="org.eclipse.ui.perspectiveExtensions">
-    	<perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">
+    <category id = "org.guvnor.tools.wizcat" name="%category.name"/>
+     <wizard id = "org.guvnor.tools.wizards.checkoutwizard"
+              name = "%wiz.copy.resources"
+            class="org.guvnor.tools.wizards.CheckoutWizard"
+            category="org.guvnor.tools.wizcat"
+            project="true"
+            icon="icons/guvnor_rep.gif">
+           <description>%wiz.copy.resources.desc</description>
+    </wizard>
+    <wizard name = "%wiz.new.repository.location"
+            id = "org.guvnor.tools.wizards.newreplocationwizard"
+            class="org.guvnor.tools.wizards.NewRepLocationWizard"
+            category="org.guvnor.tools.wizcat"
+            icon="icons/guvnor_rep.gif">
+           <description>%wiz.new.repository.location.desc</description>
+    </wizard>
+  </extension>
+  <extension point = "org.eclipse.ui.importWizards">
+      <category id = "org.guvnor.tools.importwizcat" name="%category.name"/>
+     <wizard id = "org.guvnor.tools.checkoutwizard"
+              name = "%wiz.import.resources"
+              category="org.guvnor.tools.importwizcat"
+            class="org.guvnor.tools.wizards.CheckoutWizard"
+            icon="icons/guvnor_rep.gif">
+           <description>%wiz.import.resources.desc</description>
+    </wizard>
+  </extension>
+  <extension point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">
            <view id="org.guvnor.tools.views.RepositoryView"
                  ratio="0.5"
                  relationship="right"
@@ -76,7 +76,7 @@
   </extension>
   
   <extension point="org.eclipse.ui.popupMenus">
-  	<objectContribution objectClass="org.guvnor.tools.views.model.TreeObject"
+    <objectContribution objectClass="org.guvnor.tools.views.model.TreeObject"
                         adaptable="true"
                         id="org.guvnor.tools.view.model.actions">
         <action label="%action.properties"
@@ -104,7 +104,7 @@
               label="Edit Connection"
               menubarPath="additions">
         </action>
-  	</objectContribution>
+    </objectContribution>
     <objectContribution
           adaptable="true"
           id="org.guvnor.tools.contribution1"
@@ -168,16 +168,16 @@
   <extension point = "org.eclipse.ui.propertyPages">
         <page id="org.guvnor.tools.proppage.ifile"
               name="%category.name"
-	          class="org.guvnor.tools.properties.GuvnorWorkspaceFilePage">
-	          <enabledWhen>
-              	<instanceof value="org.eclipse.core.resources.IFile"/>
-          	  </enabledWhen>
-	    </page>
+            class="org.guvnor.tools.properties.GuvnorWorkspaceFilePage">
+            <enabledWhen>
+                <instanceof value="org.eclipse.core.resources.IFile"/>
+              </enabledWhen>
+      </page>
   </extension>
   <extension point="org.eclipse.ui.preferencePages">
-		<page name="%preferences.guvnor.page"  
-		      class="org.guvnor.tools.preferences.GuvnorPreferencePage" 
-		      id="org.guvnor.tools.preferences.guvnorpreferencepage"/>
+    <page name="%preferences.guvnor.page"
+          class="org.guvnor.tools.preferences.GuvnorPreferencePage"
+          id="org.guvnor.tools.preferences.guvnorpreferencepage"/>
   </extension>
   <extension point="org.eclipse.ui.decorators">
       <decorator lightweight="true" adaptable="true" 

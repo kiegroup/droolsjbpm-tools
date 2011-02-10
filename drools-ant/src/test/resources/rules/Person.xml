@@ -6,26 +6,26 @@
          xs:schemaLocation="http://drools.org/drools-5.0 drools-5.0.xsd">
 
 
-	<import name="org.drools.contrib.Person" />
-	<import name="org.drools.contrib.Cheese" />
+  <import name="org.drools.contrib.Person" />
+  <import name="org.drools.contrib.Cheese" />
 
 <rule name="simple_rule">
-	<rule-attribute name="salience" value="10" />
-	<rule-attribute name="no-loop" value="true" />
+  <rule-attribute name="salience" value="10" />
+  <rule-attribute name="no-loop" value="true" />
 
-	<lhs>
-	
-		<pattern identifier="p" object-type="Person" >
-			<field-binding field-name="status" identifier="s" />		
-			<field-constraint field-name="name">
-            	<literal-restriction evaluator="==" value="bob" />
-            </field-constraint>		
-		</pattern>
-			
-	</lhs>
-	<rhs>
-		s = "DONE";
-	</rhs>
+  <lhs>
+
+    <pattern identifier="p" object-type="Person" >
+      <field-binding field-name="status" identifier="s" />
+      <field-constraint field-name="name">
+              <literal-restriction evaluator="==" value="bob" />
+            </field-constraint>
+    </pattern>
+
+  </lhs>
+  <rhs>
+    s = "DONE";
+  </rhs>
 </rule>
 
 </package>
