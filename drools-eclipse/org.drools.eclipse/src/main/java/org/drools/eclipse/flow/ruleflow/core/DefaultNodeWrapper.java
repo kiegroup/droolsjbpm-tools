@@ -42,12 +42,12 @@ public class DefaultNodeWrapper extends AbstractNodeWrapper {
 
     public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
         return super.acceptsIncomingConnection(connection, source)
-        	&& getIncomingConnections().isEmpty();
+            && getIncomingConnections().isEmpty();
     }
 
     public boolean acceptsOutgoingConnection(ElementConnection connection, ElementWrapper target) {
         return super.acceptsOutgoingConnection(connection, target)
-        	&& getOutgoingConnections().isEmpty();
+            && getOutgoingConnections().isEmpty();
     }
 
 }

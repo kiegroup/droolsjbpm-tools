@@ -46,7 +46,7 @@ public class WorkingMemoryViewContentProvider extends DroolsDebugViewContentProv
     }
     
     protected String getEmptyString() {
-    	return "The selected working memory is empty.";
+        return "The selected working memory is empty.";
     }
 
     public Object[] getChildren(Object obj) {
@@ -57,12 +57,12 @@ public class WorkingMemoryViewContentProvider extends DroolsDebugViewContentProv
                         ((IJavaObject) obj).getReferenceTypeName())) {
                 variables = getWorkingMemoryElements((IJavaObject) obj);
             } else if (obj instanceof IVariable) {
-            	if (view.isShowLogicalStructure()) {
-            		IValue value = getLogicalValue(((IVariable) obj).getValue(), new ArrayList());
-                	variables = value.getVariables();
+                if (view.isShowLogicalStructure()) {
+                    IValue value = getLogicalValue(((IVariable) obj).getValue(), new ArrayList());
+                    variables = value.getVariables();
                 }
-            	if (variables == null) {
-                	variables = ((IVariable) obj).getValue().getVariables();
+                if (variables == null) {
+                    variables = ((IVariable) obj).getValue().getVariables();
                 }
             }
             if (variables == null) {
@@ -93,14 +93,14 @@ public class WorkingMemoryViewContentProvider extends DroolsDebugViewContentProv
 //
 //            if (objects instanceof IJavaArray) {
 //                IJavaArray array = (IJavaArray) objects;
-//	            vals = array.getValues();
-//	            for ( int i = 0; i < vals.length; i++ ) {
-//	            	vals = array.getValues();
-//	            	name = name.replace(' ', '_');
-//	            	result.add(new MyVariableWrapper(name, 
-//	            		new ObjectWrapper((IJavaObject) agendaGroup,
-//	        				(IJavaVariable[]) activationsResult.toArray(new IJavaVariable[activationsResult.size()]))));
-//	            }
+//                vals = array.getValues();
+//                for ( int i = 0; i < vals.length; i++ ) {
+//                    vals = array.getValues();
+//                    name = name.replace(' ', '_');
+//                    result.add(new MyVariableWrapper(name,
+//                        new ObjectWrapper((IJavaObject) agendaGroup,
+//                            (IJavaVariable[]) activationsResult.toArray(new IJavaVariable[activationsResult.size()]))));
+//                }
 //            }
             
             return (IVariable[]) result.toArray(new IVariable[0]);
@@ -111,123 +111,123 @@ public class WorkingMemoryViewContentProvider extends DroolsDebugViewContentProv
     
     public class MyJavaVariable implements IJavaVariable {
 
-    	private String name;
-    	private IJavaValue value;
+        private String name;
+        private IJavaValue value;
 
-    	public MyJavaVariable(String name, IJavaValue value) {
-    		this.name = name;
-    		this.value = value;
-    	}
-    	
-    	public String getSignature() throws DebugException {
-    		return ((IJavaValue)getValue()).getSignature();
-    	}
+        public MyJavaVariable(String name, IJavaValue value) {
+            this.name = name;
+            this.value = value;
+        }
 
-    	public String getGenericSignature() throws DebugException {
-    		return ((IJavaValue)getValue()).getGenericSignature();
-    	}
-    	
-    	public IJavaType getJavaType() throws DebugException {
-    		return ((IJavaValue)getValue()).getJavaType();
-    	}
+        public String getSignature() throws DebugException {
+            return ((IJavaValue)getValue()).getSignature();
+        }
 
-    	public boolean isLocal() {
-    		return false;
-    	}
+        public String getGenericSignature() throws DebugException {
+            return ((IJavaValue)getValue()).getGenericSignature();
+        }
 
-    	public IValue getValue() {
-    		return value;
-    	}
+        public IJavaType getJavaType() throws DebugException {
+            return ((IJavaValue)getValue()).getJavaType();
+        }
 
-    	public String getName() {
-    		return name;
-    	}
+        public boolean isLocal() {
+            return false;
+        }
 
-    	public String getReferenceTypeName() throws DebugException {
-    		return ((IJavaValue) getValue()).getReferenceTypeName();
-    	}
+        public IValue getValue() {
+            return value;
+        }
 
-    	public boolean hasValueChanged() {
-    		return false;
-    	}
+        public String getName() {
+            return name;
+        }
 
-    	public boolean isPublic() {
-    		return false;
-    	}
+        public String getReferenceTypeName() throws DebugException {
+            return ((IJavaValue) getValue()).getReferenceTypeName();
+        }
 
-    	public boolean isPrivate() {
-    		return false;
-    	}
+        public boolean hasValueChanged() {
+            return false;
+        }
 
-    	public boolean isProtected() {
-    		return false;
-    	}
+        public boolean isPublic() {
+            return false;
+        }
 
-    	public boolean isPackagePrivate() {
-    		return false;
-    	}
+        public boolean isPrivate() {
+            return false;
+        }
 
-    	public boolean isFinal() {
-    		return false;
-    	}
+        public boolean isProtected() {
+            return false;
+        }
 
-    	public boolean isStatic() {
-    		return false;
-    	}
+        public boolean isPackagePrivate() {
+            return false;
+        }
 
-    	public boolean isSynthetic() {
-    		return false;
-    	}
+        public boolean isFinal() {
+            return false;
+        }
 
-    	public String getModelIdentifier() {
-    		return getValue().getModelIdentifier();
-    	}
+        public boolean isStatic() {
+            return false;
+        }
 
-    	public IDebugTarget getDebugTarget() {
-    		return ((IJavaValue)getValue()).getDebugTarget();
-    	}
+        public boolean isSynthetic() {
+            return false;
+        }
 
-    	public ILaunch getLaunch() {
-    		return getValue().getLaunch();
-    	}
+        public String getModelIdentifier() {
+            return getValue().getModelIdentifier();
+        }
 
-    	public void setValue(String expression) {
-    	}
+        public IDebugTarget getDebugTarget() {
+            return ((IJavaValue)getValue()).getDebugTarget();
+        }
 
-    	public void setValue(IValue value) {
-    	}
+        public ILaunch getLaunch() {
+            return getValue().getLaunch();
+        }
 
-    	public boolean supportsValueModification() {
-    		return false;
-    	}
+        public void setValue(String expression) {
+        }
 
-    	public boolean verifyValue(String expression) {
-    		return false;
-    	}
+        public void setValue(IValue value) {
+        }
 
-    	public boolean verifyValue(IValue value) {
-    		return false;
-    	}
+        public boolean supportsValueModification() {
+            return false;
+        }
 
-    	public Object getAdapter(Class adapter) {
-    		if (IJavaVariable.class.equals(adapter) ||
-    			IJavaModifiers.class.equals(adapter)) {
-    			return this;
-    		}
-    		return null;
-    	}
+        public boolean verifyValue(String expression) {
+            return false;
+        }
 
-    	public boolean equals(Object obj) {
-    		if (obj instanceof MyJavaVariable) {
-    			MyJavaVariable var = (MyJavaVariable) obj;
-    			return var.getName().equals(getName()) && var.getValue().equals(getValue());
-    		}
-    		return false;
-    	}
+        public boolean verifyValue(IValue value) {
+            return false;
+        }
 
-    	public int hashCode() {
-    		return name.hashCode() + value.hashCode();
-    	}
+        public Object getAdapter(Class adapter) {
+            if (IJavaVariable.class.equals(adapter) ||
+                IJavaModifiers.class.equals(adapter)) {
+                return this;
+            }
+            return null;
+        }
+
+        public boolean equals(Object obj) {
+            if (obj instanceof MyJavaVariable) {
+                MyJavaVariable var = (MyJavaVariable) obj;
+                return var.getName().equals(getName()) && var.getValue().equals(getValue());
+            }
+            return false;
+        }
+
+        public int hashCode() {
+            return name.hashCode() + value.hashCode();
+        }
     }
     
 }

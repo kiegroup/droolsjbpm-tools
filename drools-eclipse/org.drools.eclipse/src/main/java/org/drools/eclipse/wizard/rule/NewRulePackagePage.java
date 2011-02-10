@@ -86,7 +86,7 @@ public class NewRulePackagePage extends WizardNewFileCreationPage {
     }
     
     protected boolean validatePage() {
-    	return super.validatePage() && validate();
+        return super.validatePage() && validate();
     }
 
     private void createPackageName(Composite container) {
@@ -100,9 +100,9 @@ public class NewRulePackagePage extends WizardNewFileCreationPage {
         packageName.setToolTipText( "Rules require a namespace." );
         packageName.setFont( this.getFont() );
         packageName.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				setPageComplete(validatePage());
-			}
+            public void modifyText(ModifyEvent e) {
+                setPageComplete(validatePage());
+            }
         });
     }
 

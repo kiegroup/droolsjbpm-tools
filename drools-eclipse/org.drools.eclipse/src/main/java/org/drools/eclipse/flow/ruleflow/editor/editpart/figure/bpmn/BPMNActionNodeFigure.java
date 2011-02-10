@@ -27,12 +27,12 @@ import org.eclipse.swt.graphics.Image;
 public class BPMNActionNodeFigure extends AbstractElementFigure {
     
     private static final Image ICON = ImageDescriptor.createFromURL(
-		DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/action.gif")).createImage();
+        DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/action.gif")).createImage();
         
     private RoundedRectangle rectangle;
     
     public BPMNActionNodeFigure() {
-    	setSize(80, 48);
+        setSize(80, 48);
     }
     
     protected void customizeFigure() {

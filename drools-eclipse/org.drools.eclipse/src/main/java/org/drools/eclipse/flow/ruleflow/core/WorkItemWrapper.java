@@ -46,9 +46,9 @@ public class WorkItemWrapper extends StateBasedNodeWrapper {
     public static final String RESULT_MAPPING = "ResultMapping";
     public static final String PARAMETER_MAPPING = "ParameterMapping";
     
-	private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 510l;
 
-	private WorkDefinition workDefinition;
+    private WorkDefinition workDefinition;
 
     public WorkItemWrapper() {
         setNode(new WorkItemNode());
@@ -93,10 +93,10 @@ public class WorkItemWrapper extends StateBasedNodeWrapper {
         return false;
     }
     
-	protected void initDescriptors() {
-    	super.initDescriptors();
+    protected void initDescriptors() {
+        super.initDescriptors();
         Set<ParameterDefinition> parameters = workDefinition.getParameters();
-    	IPropertyDescriptor[] oldDescriptors = descriptors; 
+        IPropertyDescriptor[] oldDescriptors = descriptors;
         descriptors = new IPropertyDescriptor[oldDescriptors.length + parameters.size() + 5];
         System.arraycopy(oldDescriptors, 0, descriptors, 0, oldDescriptors.length);
         int i = 0;
@@ -116,12 +116,12 @@ public class WorkItemWrapper extends StateBasedNodeWrapper {
     
     public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
         return super.acceptsIncomingConnection(connection, source)
-        	&& getIncomingConnections().isEmpty();
+            && getIncomingConnections().isEmpty();
     }
 
     public boolean acceptsOutgoingConnection(ElementConnection connection, ElementWrapper target) {
         return super.acceptsOutgoingConnection(connection, target)
-        	&& getOutgoingConnections().isEmpty();
+            && getOutgoingConnections().isEmpty();
     }
     
     public Object getPropertyValue(Object id) {
@@ -134,12 +134,12 @@ public class WorkItemWrapper extends StateBasedNodeWrapper {
         } else if (id instanceof String) {
             String name = (String) id;
             if (workParameterExists(name)) {
-            	DataType type = getWorkItemNode().getWork().getParameterDefinition(name).getType();
-            	Object value = getWorkItemNode().getWork().getParameter(name);
-            	if (value == null) {
-                	return "";
-            	}
-        	    return type.writeValue(value);
+                DataType type = getWorkItemNode().getWork().getParameterDefinition(name).getType();
+                Object value = getWorkItemNode().getWork().getParameter(name);
+                if (value == null) {
+                    return "";
+                }
+                return type.writeValue(value);
             }
         }
         return super.getPropertyValue(id);
@@ -160,7 +160,7 @@ public class WorkItemWrapper extends StateBasedNodeWrapper {
     }
 
     @SuppressWarnings("unchecked")
-	public void setPropertyValue(Object id, Object value) {
+    public void setPropertyValue(Object id, Object value) {
         if (WAIT_FOR_COMPLETION.equals(id)) {
             getWorkItemNode().setWaitForCompletion(((Integer) value).intValue() == 0);
         } else if (PARAMETER_MAPPING.equals(id)) {
@@ -168,8 +168,8 @@ public class WorkItemWrapper extends StateBasedNodeWrapper {
         } else if (RESULT_MAPPING.equals(id)) {
             getWorkItemNode().setOutMappings((Map<String, String>) value);
         } else if (id instanceof String && workParameterExists((String) id)) {
-        	DataType type = getWorkItemNode().getWork().getParameterDefinition((String) id).getType();
-        	getWorkItemNode().getWork().setParameter((String) id, type.readValue((String) value));
+            DataType type = getWorkItemNode().getWork().getParameterDefinition((String) id).getType();
+            getWorkItemNode().getWork().setParameter((String) id, type.readValue((String) value));
         } else {
             super.setPropertyValue(id, value);
         }

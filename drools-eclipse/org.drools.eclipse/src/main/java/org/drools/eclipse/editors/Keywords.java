@@ -57,7 +57,7 @@ public class Keywords {
 
 
     private Keywords() {
-    	allDrools = readKeywords("keywords.properties");
+        allDrools = readKeywords("keywords.properties");
         allJava = readKeywords("java_keywords.properties");
         allMvel = readKeywords("mvel_keywords.properties");
     }

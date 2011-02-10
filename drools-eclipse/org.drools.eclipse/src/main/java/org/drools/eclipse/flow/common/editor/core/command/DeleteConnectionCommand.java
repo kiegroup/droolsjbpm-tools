@@ -32,7 +32,7 @@ public class DeleteConnectionCommand extends Command {
     private ElementConnection connection;
 
     public void execute() {
-    	connection.disconnect();
+        connection.disconnect();
     }
 
     public void setSource(ElementWrapper action) {
@@ -48,6 +48,6 @@ public class DeleteConnectionCommand extends Command {
     }
 
     public void undo() {
-    	connection.connect(source, target);
+        connection.connect(source, target);
     }
 }

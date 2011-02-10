@@ -32,8 +32,8 @@ import org.jbpm.process.core.context.exception.ActionExceptionHandler;
  */
 public class ExceptionHandlersCellEditor extends BeanDialogCellEditor<Map<String, ActionExceptionHandler>> {
 
-	private Process process;
-	
+    private Process process;
+
     public ExceptionHandlersCellEditor(Composite parent, Process process) {
         super(parent);
         this.process = process;
@@ -44,12 +44,12 @@ public class ExceptionHandlersCellEditor extends BeanDialogCellEditor<Map<String
     }
 
     @SuppressWarnings("unchecked")
-	protected String getLabelText(Object value) {
+    protected String getLabelText(Object value) {
         if (value == null) {
             return "";
         }
         if (value instanceof Map) {
-        	return ((Map<String, ActionExceptionHandler>) value).keySet().toString();
+            return ((Map<String, ActionExceptionHandler>) value).keySet().toString();
         }
         return value.toString();
     }

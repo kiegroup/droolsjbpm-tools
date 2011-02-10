@@ -39,13 +39,13 @@ import org.eclipse.swt.widgets.Text;
  */
 public class HumanTaskCustomEditor extends EditBeanDialog<Work> implements WorkEditor {
 
-	private Text nameText;
-	private Text actorText;
-	private Text commentText;
-	private Text priorityText;
-	private Button skippableButton;
-	private Text contentText;
-	
+    private Text nameText;
+    private Text actorText;
+    private Text commentText;
+    private Text priorityText;
+    private Button skippableButton;
+    private Text contentText;
+
     public HumanTaskCustomEditor(Shell parentShell) {
         super(parentShell, "Human Task Editor");
         setBlockOnOpen(true);

@@ -41,6 +41,6 @@ public class SubProcessParameterOutMappingCellEditor extends BeanDialogCellEdito
     }
     
     protected String getLabelText(Object value) {
-		return "";
+        return "";
     }
 }

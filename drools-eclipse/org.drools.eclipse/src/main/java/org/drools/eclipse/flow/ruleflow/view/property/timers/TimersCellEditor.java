@@ -50,7 +50,7 @@ public class TimersCellEditor extends BeanDialogCellEditor<Map<Timer, DroolsActi
     }
     
     protected String getLabelText(Object value) {
-    	return "";
+        return "";
     }
 
 }

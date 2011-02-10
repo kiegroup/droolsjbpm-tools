@@ -24,23 +24,23 @@ package org.eclipse.webdav.dom;
  * certainly be broken (repeatedly) as the API evolves.
  */
 public interface QualifiedName {
-	/**
-	 * Returns the local part of this name.
-	 * The local part cannot be <code>null</code>.
-	 *
-	 * @return the local name.
-	 */
-	public String getLocalName();
+    /**
+     * Returns the local part of this name.
+     * The local part cannot be <code>null</code>.
+     *
+     * @return the local name.
+     */
+    public String getLocalName();
 
-	/**
-	 * Returns the qualifier part for this qualifed name,
-	 * or <code>null</code> if none.
-	 * <p>
-	 * Note that the qualifier is a URI i.e. it follows
-	 * the syntax of RFC1630.</p>
-	 *
-	 * @return the name qualifier as a <code>String</code> URI
-	 * or <code>null</code> if there is no qualifier.
-	 */
-	public String getQualifier();
+    /**
+     * Returns the qualifier part for this qualifed name,
+     * or <code>null</code> if none.
+     * <p>
+     * Note that the qualifier is a URI i.e. it follows
+     * the syntax of RFC1630.</p>
+     *
+     * @return the name qualifier as a <code>String</code> URI
+     * or <code>null</code> if there is no qualifier.
+     */
+    public String getQualifier();
 }

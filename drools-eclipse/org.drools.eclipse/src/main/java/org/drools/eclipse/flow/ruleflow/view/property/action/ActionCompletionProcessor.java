@@ -46,36 +46,36 @@ import org.jbpm.workflow.core.WorkflowProcess;
  */
 public class ActionCompletionProcessor extends RuleCompletionProcessor {
 
-	private WorkflowProcess process;
-	private List<String> imports;
-	private List<String> functions;
-	private List<GlobalDescr> globals;
-	private Map<String, String> attributes;
-	private String dialect;
-	
-	public ActionCompletionProcessor(WorkflowProcess process) {
-		super(null);
-		this.process = process;
-	}
-	
-	public void setDialect(String dialect) {
-	    this.dialect = dialect;
-	    this.attributes = null;
-	}
-	
-	public IEditorPart getEditor() {
-		IWorkbench workbench = PlatformUI.getWorkbench();
-		if (workbench != null) { 
-			IWorkbenchWindow workbenchWindow = workbench.getActiveWorkbenchWindow();
-			if (workbenchWindow != null) {
-				IWorkbenchPage workbenchPage = workbenchWindow.getActivePage(); 
-				if (workbenchPage != null) {
-					return workbenchPage.getActiveEditor();
-				}
-			}
-		}
-		return null;
-	}
+    private WorkflowProcess process;
+    private List<String> imports;
+    private List<String> functions;
+    private List<GlobalDescr> globals;
+    private Map<String, String> attributes;
+    private String dialect;
+
+    public ActionCompletionProcessor(WorkflowProcess process) {
+        super(null);
+        this.process = process;
+    }
+
+    public void setDialect(String dialect) {
+        this.dialect = dialect;
+        this.attributes = null;
+    }
+
+    public IEditorPart getEditor() {
+        IWorkbench workbench = PlatformUI.getWorkbench();
+        if (workbench != null) {
+            IWorkbenchWindow workbenchWindow = workbench.getActiveWorkbenchWindow();
+            if (workbenchWindow != null) {
+                IWorkbenchPage workbenchPage = workbenchWindow.getActivePage();
+                if (workbenchPage != null) {
+                    return workbenchPage.getActiveEditor();
+                }
+            }
+        }
+        return null;
+    }
 
     protected String readBackwards(int documentOffset, IDocument doc) throws BadLocationException {
         int startPart = doc.getPartition(documentOffset).getOffset();
@@ -86,70 +86,70 @@ public class ActionCompletionProcessor extends RuleCompletionProcessor {
     }
     
     public List<String> getImports() {
-    	if (imports == null) {
-    		loadImports();
-    	}
-    	return imports;
+        if (imports == null) {
+            loadImports();
+        }
+        return imports;
     }
     
     private void loadImports() {
-    	this.imports = new ArrayList<String>();
-    	List<String> imports = ((org.jbpm.process.core.Process) process).getImports();
-    	
-    	if (imports != null) {
-	    	Iterator<String> iterator = imports.iterator();
-	        while (iterator.hasNext()) {
-	            String importName = iterator.next();
-	            if (importName.endsWith(".*")) {
-	            	IJavaProject javaProject = getJavaProject();
-	            	if (javaProject != null) {
-		                String packageName = importName.substring(0, importName.length() - 2);
-		                this.imports.addAll(DRLRuleEditor.getAllClassesInPackage(packageName, javaProject));
-	            	}
-	            } else {
-	            	this.imports.add(importName);
-	            }
-	        }
-    	}
+        this.imports = new ArrayList<String>();
+        List<String> imports = ((org.jbpm.process.core.Process) process).getImports();
+
+        if (imports != null) {
+            Iterator<String> iterator = imports.iterator();
+            while (iterator.hasNext()) {
+                String importName = iterator.next();
+                if (importName.endsWith(".*")) {
+                    IJavaProject javaProject = getJavaProject();
+                    if (javaProject != null) {
+                        String packageName = importName.substring(0, importName.length() - 2);
+                        this.imports.addAll(DRLRuleEditor.getAllClassesInPackage(packageName, javaProject));
+                    }
+                } else {
+                    this.imports.add(importName);
+                }
+            }
+        }
     }
     
     public List<GlobalDescr> getGlobals() {
-    	if (globals == null) {
-    		loadGlobals();
-    	}
-    	return globals;
+        if (globals == null) {
+            loadGlobals();
+        }
+        return globals;
     }
     
     private void loadGlobals() {
-    	String[] globalNames = process.getGlobalNames();
-    	
-    	if ( this.globals == null ) {
-    	    this.globals = new ArrayList<GlobalDescr>( globalNames.length );
-    	}
-    	
-    	for (String globalName: globalNames) {
-    		this.globals.add(new GlobalDescr(globalName, "java.lang.Object"));
-    	}
+        String[] globalNames = process.getGlobalNames();
+
+        if ( this.globals == null ) {
+            this.globals = new ArrayList<GlobalDescr>( globalNames.length );
+        }
+
+        for (String globalName: globalNames) {
+            this.globals.add(new GlobalDescr(globalName, "java.lang.Object"));
+        }
     }
     
     protected List<String> getFunctions() {
-    	if (functions == null) {
-    		loadFunctions();
-    	}
-    	return functions;
+        if (functions == null) {
+            loadFunctions();
+        }
+        return functions;
     }
     
     private void loadFunctions() {
-    	this.functions = new ArrayList<String>();
-    	List<String> imports = process.getFunctionImports();
-    	if (imports != null) {
-	    	for (String functionImport: imports) {
+        this.functions = new ArrayList<String>();
+        List<String> imports = process.getFunctionImports();
+        if (imports != null) {
+            for (String functionImport: imports) {
                 int index = functionImport.lastIndexOf('.');
                 if (index != -1) {
                     functions.add(functionImport.substring(index + 1));
                 }
             }
-    	}
+        }
     }
     
     private void loadAttributes() {
@@ -167,22 +167,22 @@ public class ActionCompletionProcessor extends RuleCompletionProcessor {
     }
     
     private IJavaProject getJavaProject() {
-    	IEditorPart editor = getEditor();
-    	if (editor != null && editor.getEditorInput() instanceof IFileEditorInput) {
-			IFile file = ((IFileEditorInput) editor.getEditorInput()).getFile();
-	    	try {
-	    		if (file.getProject().getNature("org.eclipse.jdt.core.javanature") != null) {
-	    			return JavaCore.create(file.getProject());
-	    		}
-	    	} catch (CoreException e) {
-	    		// do nothing
-	    	}
-		}
-    	return null;
+        IEditorPart editor = getEditor();
+        if (editor != null && editor.getEditorInput() instanceof IFileEditorInput) {
+            IFile file = ((IFileEditorInput) editor.getEditorInput()).getFile();
+            try {
+                if (file.getProject().getNature("org.eclipse.jdt.core.javanature") != null) {
+                    return JavaCore.create(file.getProject());
+                }
+            } catch (CoreException e) {
+                // do nothing
+            }
+        }
+        return null;
     }
     
     public void reset() {
-    	this.imports = null;
-    	this.globals = null;
+        this.imports = null;
+        this.globals = null;
     }
 }

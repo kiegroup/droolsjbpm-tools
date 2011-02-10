@@ -255,11 +255,11 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
         store.setDefault( IDroolsConstants.SKIN,
                           "BPMN2" );
         store.setDefault( IDroolsConstants.ALLOW_NODE_CUSTOMIZATION,
-        				  false );
+                          false );
         store.setDefault( IDroolsConstants.INTERNAL_API,
-        				  2 );
+                          2 );
         store.setDefault( IDroolsConstants.FLOW_NODES, 
-        		          "1111111111111" );
+                          "1111111111111" );
     }
 
     public DRLInfo parseResource(IResource resource,
@@ -326,12 +326,12 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
     }
 
     public DRLInfo parseGDSTResource(String content, IResource resource) throws DroolsParserException {
-		DRLInfo result = (DRLInfo) compiledRules.get(resource);
-		if (result != null) {
-			return result;
-		}
-		return generateParsedResource(content, resource, false, true);
-	}
+        DRLInfo result = (DRLInfo) compiledRules.get(resource);
+        if (result != null) {
+            return result;
+        }
+        return generateParsedResource(content, resource, false, true);
+    }
 
     public void invalidateResource(IResource resource) {
         DRLInfo cached = (DRLInfo) compiledRules.remove( resource );
@@ -370,7 +370,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
     }
 
     @SuppressWarnings("unchecked")
-	public DRLInfo generateParsedResource(String content,
+    public DRLInfo generateParsedResource(String content,
                                           IResource resource,
                                           boolean useCache,
                                           boolean compile) throws DroolsParserException {
@@ -460,7 +460,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                 // cache result
                 if ( useCache && resource != null) {
                     if ( compile && !parser.hasErrors() ) {
-                    	parsedRules.remove( resource );
+                        parsedRules.remove( resource );
                         compiledRules.put( resource,
                                            result );
                         RuleInfo[] ruleInfos = result.getRuleInfos();
@@ -524,17 +524,17 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                 
                 XmlProcessReader xmlReader = new XmlProcessReader( modules );
                 List<org.drools.definition.process.Process> processes = 
-                	(List<org.drools.definition.process.Process>) xmlReader.read( new StringReader( input ) );
+                    (List<org.drools.definition.process.Process>) xmlReader.read( new StringReader( input ) );
                 if (processes != null) {
-	                for (org.drools.definition.process.Process process: processes) {
-		                if ( process != null ) {
-		                    return parseProcess( (Process) process,
-		                                         resource,
-		                                         configuration );
-		                } else {
-		                    throw new IllegalArgumentException( "Could not parse process " + resource );
-		                }
-	                }
+                    for (org.drools.definition.process.Process process: processes) {
+                        if ( process != null ) {
+                            return parseProcess( (Process) process,
+                                                 resource,
+                                                 configuration );
+                        } else {
+                            throw new IllegalArgumentException( "Could not parse process " + resource );
+                        }
+                    }
                 }
             } finally {
                 Thread.currentThread().setContextClassLoader( oldLoader );
@@ -550,15 +550,15 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
     }
     
     public IResource findProcessResource(String processId) {
-    	if (processId == null) {
-    		return null;
-    	}
-    	for (Map.Entry<IResource, ProcessInfo> entry: processInfos.entrySet()) {
-    		if (processId.equals(entry.getValue().getProcessId())) {
-    			return entry.getKey();
-    		}
-    	}
-    	return null;
+        if (processId == null) {
+            return null;
+        }
+        for (Map.Entry<IResource, ProcessInfo> entry: processInfos.entrySet()) {
+            if (processId.equals(entry.getValue().getProcessId())) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 
     public ProcessInfo parseProcess(Process process,
@@ -567,7 +567,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
         PackageBuilder packageBuilder = new PackageBuilder( config );
         ProcessBuilderImpl processBuilder = new ProcessBuilderImpl( packageBuilder );
         processBuilder.buildProcess( process, ResourceFactory.newUrlResource(
-    		"file://" + resource.getLocation().toString() ) );
+            "file://" + resource.getLocation().toString() ) );
         ProcessInfo processInfo = new ProcessInfo( process.getId(),
                                                    process );
         List<DroolsError> errors = new ArrayList<DroolsError>();

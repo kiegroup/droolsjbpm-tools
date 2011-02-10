@@ -67,7 +67,7 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
     private Object[] oldExpandedElements = new Object[0];
 
     public void dispose() {
-		DebugContextManager.getDefault().removeDebugContextListener(this);
+        DebugContextManager.getDefault().removeDebugContextListener(this);
         getSite().getPage().removeSelectionListener(IDebugUIConstants.ID_VARIABLE_VIEW, this);
         super.dispose();
     }
@@ -81,87 +81,87 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
     }
 
     protected void setViewerInput(Object context) {
-    	Object input = null;
-    	
-    	// if a working memory has been explicitly selected as variable, use this
-    	if (context instanceof IVariable) {
-        	IVariable variable = (IVariable) context;
+        Object input = null;
+
+        // if a working memory has been explicitly selected as variable, use this
+        if (context instanceof IVariable) {
+            IVariable variable = (IVariable) context;
             try {
                 IValue value = ((IVariable) context).getValue();
                 if (value != null && value instanceof IJavaObject) {
                     if ("org.drools.reteoo.ReteooStatefulSession".equals(variable.getValue().getReferenceTypeName())) {
-                    	input = value;
+                        input = value;
                     } else if ("org.drools.impl.StatefulKnowledgeSessionImpl".equals(variable.getValue().getReferenceTypeName())) {
-                    	IJavaFieldVariable sessionVar = ((IJavaObject) value).getField("session", false);
-                    	if (sessionVar != null) {
+                        IJavaFieldVariable sessionVar = ((IJavaObject) value).getField("session", false);
+                        if (sessionVar != null) {
                             input = sessionVar.getValue();
-                    	}
+                        }
                     }
                 }
             } catch (Throwable t) {
                 DroolsEclipsePlugin.log(t);
             }
         }
-    	// else get selected thread and determine if any of the stack frames
-    	// is executing in a working memory, if so, use that one 
-    	if (input == null) {
-    		IDebugContextService debugContextService = DebugContextManager.getDefault().getContextService(getSite().getWorkbenchWindow());
-    		if (debugContextService != null) {
-	    		ISelection stackSelection = debugContextService.getActiveContext();
-	    		if (stackSelection instanceof IStructuredSelection) {
-	                Object selection = ((IStructuredSelection) stackSelection).getFirstElement();
-	                if (selection instanceof IJavaStackFrame) {
-	                	try {
-	                    	IJavaThread thread = (IJavaThread) ((IJavaStackFrame) selection).getThread();
-	                    	IStackFrame[] frames = thread.getStackFrames();
-	                    	for (int i = 0; i < frames.length; i++) {
-	                            IJavaObject stackObj = ((IJavaStackFrame) frames[i]).getThis();
-	                            if ((stackObj != null)
-	                                    && (stackObj.getJavaType() != null)
-	                                    && ("org.drools.reteoo.ReteooStatefulSession".equals(stackObj.getJavaType().getName())
-	                                    		|| "org.drools.impl.StatefulKnowledgeSessionImpl".equals(stackObj.getJavaType().getName()))) {
-	                                input = stackObj;
-	                                break;
-	                            }
-	                    	}
-	                    } catch (Throwable t) {
-	                        DroolsEclipsePlugin.log(t);
-	                    }
-	                }
-	    		}
-    		}
-    	}
-		
-    	Object current = getViewer().getInput();
-				
-		if (current == null && input == null) {
-			return;
-		}
+        // else get selected thread and determine if any of the stack frames
+        // is executing in a working memory, if so, use that one
+        if (input == null) {
+            IDebugContextService debugContextService = DebugContextManager.getDefault().getContextService(getSite().getWorkbenchWindow());
+            if (debugContextService != null) {
+                ISelection stackSelection = debugContextService.getActiveContext();
+                if (stackSelection instanceof IStructuredSelection) {
+                    Object selection = ((IStructuredSelection) stackSelection).getFirstElement();
+                    if (selection instanceof IJavaStackFrame) {
+                        try {
+                            IJavaThread thread = (IJavaThread) ((IJavaStackFrame) selection).getThread();
+                            IStackFrame[] frames = thread.getStackFrames();
+                            for (int i = 0; i < frames.length; i++) {
+                                IJavaObject stackObj = ((IJavaStackFrame) frames[i]).getThis();
+                                if ((stackObj != null)
+                                        && (stackObj.getJavaType() != null)
+                                        && ("org.drools.reteoo.ReteooStatefulSession".equals(stackObj.getJavaType().getName())
+                                                || "org.drools.impl.StatefulKnowledgeSessionImpl".equals(stackObj.getJavaType().getName()))) {
+                                    input = stackObj;
+                                    break;
+                                }
+                            }
+                        } catch (Throwable t) {
+                            DroolsEclipsePlugin.log(t);
+                        }
+                    }
+                }
+            }
+        }
 
-		Object[] newExpandedElements = ((TreeViewer) getViewer()).getExpandedElements();
-		if (newExpandedElements.length != 0) {
-			oldExpandedElements = newExpandedElements;
-		}
-		getViewer().setInput(input);
-		if (input != null) {
-			((TreeViewer) getViewer()).setExpandedElements(oldExpandedElements);
-			((TreeViewer) getViewer()).expandToLevel(getAutoExpandLevel());
-		}
+        Object current = getViewer().getInput();
+
+        if (current == null && input == null) {
+            return;
+        }
+
+        Object[] newExpandedElements = ((TreeViewer) getViewer()).getExpandedElements();
+        if (newExpandedElements.length != 0) {
+            oldExpandedElements = newExpandedElements;
+        }
+        getViewer().setInput(input);
+        if (input != null) {
+            ((TreeViewer) getViewer()).setExpandedElements(oldExpandedElements);
+            ((TreeViewer) getViewer()).expandToLevel(getAutoExpandLevel());
+        }
     }
 
     protected Viewer createViewer(Composite parent) {
-		TreeViewer variablesViewer = new TreeViewer(parent);
-		variablesViewer.setContentProvider(createContentProvider());
+        TreeViewer variablesViewer = new TreeViewer(parent);
+        variablesViewer.setContentProvider(createContentProvider());
         variablesViewer.setLabelProvider(new VariablesViewLabelProvider(
             getModelPresentation()));
         variablesViewer.setUseHashlookup(true);
-		DebugContextManager.getDefault().addDebugContextListener(this);
+        DebugContextManager.getDefault().addDebugContextListener(this);
         getSite().getPage().addSelectionListener(IDebugUIConstants.ID_VARIABLE_VIEW, this);
-		return variablesViewer;
+        return variablesViewer;
     }
     
     protected int getAutoExpandLevel() {
-    	return 0;
+        return 0;
     }
     
     protected abstract IContentProvider createContentProvider();
@@ -170,23 +170,23 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
         return null;
     }
 
-	protected void becomesHidden() {
-		setViewerInput(null);
-		super.becomesHidden();
-	}
+    protected void becomesHidden() {
+        setViewerInput(null);
+        super.becomesHidden();
+    }
 
-	protected void becomesVisible() {
-		super.becomesVisible();
+    protected void becomesVisible() {
+        super.becomesVisible();
         ISelection selection = getSite().getPage().getSelection(
             IDebugUIConstants.ID_VARIABLE_VIEW);
         if (selection instanceof IStructuredSelection) {
             setViewerInput(((IStructuredSelection) selection).getFirstElement());
         } else {
-        	setViewerInput(null);
+            setViewerInput(null);
         }
     }
 
-	protected void createActions() {
+    protected void createActions() {
         IAction action = new ShowLogicalStructureAction(this);
         setAction("ShowLogicalStructure", action);
     }
@@ -196,33 +196,33 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
     }
 
     protected void fillContextMenu(IMenuManager menu) {
-		menu.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+        menu.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
     }
 
-	public void contextActivated(ISelection selection, IWorkbenchPart part) {
-		if (!isAvailable() || !isVisible()) {
-			return;
-		}
-		
-		if (selection instanceof IStructuredSelection) {
-			setViewerInput(((IStructuredSelection)selection).getFirstElement());
-		}
-		showViewer();
-	}
-
-	public void debugContextChanged(DebugContextEvent event) {
-		//selectionChanged(null, event.getContext());
-	}
-	
-    public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-    	if (!isAvailable()) {
+    public void contextActivated(ISelection selection, IWorkbenchPart part) {
+        if (!isAvailable() || !isVisible()) {
             return;
         }
-    	// In Eclipse 3.5.x, an additional selection changed event with selection null is
-    	// generated when clicking on a process instance in the process instance view
-    	// replacing this null by the actual selected element in those cases
+
+        if (selection instanceof IStructuredSelection) {
+            setViewerInput(((IStructuredSelection)selection).getFirstElement());
+        }
+        showViewer();
+    }
+
+    public void debugContextChanged(DebugContextEvent event) {
+        //selectionChanged(null, event.getContext());
+    }
+
+    public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+        if (!isAvailable()) {
+            return;
+        }
+        // In Eclipse 3.5.x, an additional selection changed event with selection null is
+        // generated when clicking on a process instance in the process instance view
+        // replacing this null by the actual selected element in those cases
         if (part instanceof VariablesView) {
-        	selection = ((VariablesView) part).getCurrentSelection();
+            selection = ((VariablesView) part).getCurrentSelection();
         }
         if (selection == null) {
             setViewerInput(null);
@@ -231,16 +231,16 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
         }
     }
     
-	protected void initActionState(IAction action) {
-		// The show logical structure action is always enabled by default
-		// when (re)starting the view 
-		String id = action.getId();
-		if (id.endsWith("ShowLogicalStructureAction")) {
-			action.setChecked(true);
-		} else {
-			super.initActionState(action);
-		}
-	}
+    protected void initActionState(IAction action) {
+        // The show logical structure action is always enabled by default
+        // when (re)starting the view
+        String id = action.getId();
+        if (id.endsWith("ShowLogicalStructureAction")) {
+            action.setChecked(true);
+        } else {
+            super.initActionState(action);
+        }
+    }
     
     protected IDebugModelPresentation getModelPresentation() {
         if (modelPresentation == null) {
@@ -249,7 +249,7 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
         return modelPresentation;
     }
 
-	private class VariablesViewLabelProvider implements ILabelProvider, IColorProvider {
+    private class VariablesViewLabelProvider implements ILabelProvider, IColorProvider {
 
         private IDebugModelPresentation presentation;
 

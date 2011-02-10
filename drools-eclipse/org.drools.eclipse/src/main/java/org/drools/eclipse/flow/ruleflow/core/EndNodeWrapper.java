@@ -29,7 +29,7 @@ import org.jbpm.workflow.core.node.EndNode;
  */
 public class EndNodeWrapper extends AbstractNodeWrapper {
 
-	public static final int CHANGE_TERMINATE = 5;
+    public static final int CHANGE_TERMINATE = 5;
 
     public static final String TERMINATE = "terminate";
 
@@ -83,7 +83,7 @@ public class EndNodeWrapper extends AbstractNodeWrapper {
 
     public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
         return super.acceptsIncomingConnection(connection, source)
-        	&& getIncomingConnections().isEmpty();
+            && getIncomingConnections().isEmpty();
     }
 
     public boolean acceptsOutgoingConnection(ElementConnection connection, ElementWrapper target) {

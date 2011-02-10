@@ -30,24 +30,24 @@ public class Global extends DroolsElement {
         this.globalName = globalName;
     }
     
-	public Package getParentPackage() {
-		return (Package) getParent();
-	}
-	
-    public String getGlobalName() {
-    	return globalName;
+    public Package getParentPackage() {
+        return (Package) getParent();
     }
 
-	public int getType() {
-		return GLOBAL;
-	}
-	
-	public DroolsElement[] getChildren() {
-		return NO_ELEMENTS;
-	}
+    public String getGlobalName() {
+        return globalName;
+    }
 
-	public String toString() {
-		return globalName;
-	}
+    public int getType() {
+        return GLOBAL;
+    }
+
+    public DroolsElement[] getChildren() {
+        return NO_ELEMENTS;
+    }
+
+    public String toString() {
+        return globalName;
+    }
 
 }

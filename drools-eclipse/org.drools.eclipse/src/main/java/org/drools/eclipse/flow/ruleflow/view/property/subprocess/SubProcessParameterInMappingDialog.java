@@ -57,26 +57,26 @@ public class SubProcessParameterInMappingDialog extends EditBeanDialog implement
     private TableEditor editor;
     private int selectedColumn = -1;
     
-	public SubProcessParameterInMappingDialog(Shell parentShell, SubProcessNode subProcessNode) {
-		super(parentShell, "Parameter In Mapping");
-		setValue(subProcessNode.getInMappings());
-	}
+    public SubProcessParameterInMappingDialog(Shell parentShell, SubProcessNode subProcessNode) {
+        super(parentShell, "Parameter In Mapping");
+        setValue(subProcessNode.getInMappings());
+    }
 
-	protected Object updateValue(Object value) {
-	    Map<String, String> mapping = new HashMap<String, String>();
-	    for (TableItem item: table.getItems()) {
-	        mapping.put(item.getText(0), item.getText(1));
-	    }
-		return mapping;
-	}
+    protected Object updateValue(Object value) {
+        Map<String, String> mapping = new HashMap<String, String>();
+        for (TableItem item: table.getItems()) {
+            mapping.put(item.getText(0), item.getText(1));
+        }
+        return mapping;
+    }
 
-	protected Point getInitialSize() {
-		return new Point(450, 300);
-	}
+    protected Point getInitialSize() {
+        return new Point(450, 300);
+    }
 
-	public Control createDialogArea(Composite parent) {
-	    Composite composite = (Composite) super.createDialogArea(parent);
-		GridLayout layout = new GridLayout();
+    public Control createDialogArea(Composite parent) {
+        Composite composite = (Composite) super.createDialogArea(parent);
+        GridLayout layout = new GridLayout();
         layout.numColumns = 2;
         composite.setLayout(layout);
 
@@ -114,60 +114,60 @@ public class SubProcessParameterInMappingDialog extends EditBeanDialog implement
         editor.horizontalAlignment = SWT.LEFT;
         editor.grabHorizontal = true;
 
-		Button addButton = new Button(composite, SWT.PUSH);
-		addButton.setText("Add");
-		addButton.setFont(JFaceResources.getDialogFont());
-		addButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				addButtonPressed();
-			}
-		});
-		gd = new GridData();
-		gd.horizontalAlignment = SWT.FILL;
-		addButton.setLayoutData(gd);
+        Button addButton = new Button(composite, SWT.PUSH);
+        addButton.setText("Add");
+        addButton.setFont(JFaceResources.getDialogFont());
+        addButton.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+                addButtonPressed();
+            }
+        });
+        gd = new GridData();
+        gd.horizontalAlignment = SWT.FILL;
+        addButton.setLayoutData(gd);
 
-		removeButton = new Button(composite, SWT.PUSH);
-		removeButton.setText("Remove");
-		removeButton.setFont(JFaceResources.getDialogFont());
-		removeButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				removeButtonPressed();
-			}
-		});
-		gd = new GridData();
-		removeButton.setLayoutData(gd);
-		removeButton.setEnabled(false);
+        removeButton = new Button(composite, SWT.PUSH);
+        removeButton.setText("Remove");
+        removeButton.setFont(JFaceResources.getDialogFont());
+        removeButton.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+                removeButtonPressed();
+            }
+        });
+        gd = new GridData();
+        removeButton.setLayoutData(gd);
+        removeButton.setEnabled(false);
 
         updateTable();
         
-		return composite;
-	}
-	
-	private void updateTable() {
+        return composite;
+    }
+
+    private void updateTable() {
         Map<String, String> mapping = (Map<String, String>) getValue();
-	    for (Map.Entry<String, String> entry: mapping.entrySet()) {
+        for (Map.Entry<String, String> entry: mapping.entrySet()) {
             TableItem item = new TableItem(table, SWT.NONE);
             item.setText(new String[] { entry.getKey(), entry.getValue()} );
         }
-	}
-	
-	private void addButtonPressed() {
-	    TableItem item = new TableItem(table, SWT.NONE);
+    }
+
+    private void addButtonPressed() {
+        TableItem item = new TableItem(table, SWT.NONE);
         item.setText(0, "variable");
         item.setText(1, "variable");
         table.setSelection(item);
-	}
-	
-	private void removeButtonPressed() {
+    }
+
+    private void removeButtonPressed() {
         int i = table.getSelectionIndex();
         if (i == -1) {
             return;
         }
         table.remove(i);
         removeButton.setEnabled(table.getItemCount() == 0);
-	}
-	
-	private void doEdit() {
+    }
+
+    private void doEdit() {
         if (text.isVisible()) {
             endEdit();
         }

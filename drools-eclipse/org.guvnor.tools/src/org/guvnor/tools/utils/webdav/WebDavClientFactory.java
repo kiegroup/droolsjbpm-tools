@@ -24,7 +24,7 @@ import java.net.URL;
  * @author jgraham
  */
 public class WebDavClientFactory {
-	public static IWebDavClient createClient(URL serverUrl) {
-		return new WebDavClient(serverUrl);
-	}
+    public static IWebDavClient createClient(URL serverUrl) {
+        return new WebDavClient(serverUrl);
+    }
 }

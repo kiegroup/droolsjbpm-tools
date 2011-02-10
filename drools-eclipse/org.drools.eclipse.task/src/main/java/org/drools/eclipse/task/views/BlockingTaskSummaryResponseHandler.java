@@ -23,16 +23,16 @@ import org.jbpm.task.service.TaskClientHandler.TaskSummaryResponseHandler;
 import org.jbpm.task.service.responsehandlers.AbstractBlockingResponseHandler;
 
 public class BlockingTaskSummaryResponseHandler extends AbstractBlockingResponseHandler implements TaskSummaryResponseHandler {
-	private static final int DEFAULT_WAIT_TIME = 10000;
+    private static final int DEFAULT_WAIT_TIME = 10000;
 
     private volatile List<TaskSummary> results;
 
     public synchronized void execute(List<TaskSummary> results) {
         this.results = results;
         setDone(true);
-	}
+    }
 
-	public synchronized List<TaskSummary> getResults() {
+    public synchronized List<TaskSummary> getResults() {
          // note that this method doesn't need to be synced because if waitTillDone returns true,
         // it means attachmentId is available
         boolean done = waitTillDone(DEFAULT_WAIT_TIME);
@@ -42,6 +42,6 @@ public class BlockingTaskSummaryResponseHandler extends AbstractBlockingResponse
         }
         
         return results;
-	}
+    }
 }
 

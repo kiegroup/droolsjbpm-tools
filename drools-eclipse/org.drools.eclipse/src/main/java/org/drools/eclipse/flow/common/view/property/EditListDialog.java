@@ -118,9 +118,9 @@ public abstract class EditListDialog<T> extends EditBeanDialog<List<T>> {
     public void setValue(List<T> value) {
         super.setValue(value);
         if (value == null) {
-        	this.newList = new ArrayList<T>();
+            this.newList = new ArrayList<T>();
         } else {
-        	this.newList = new ArrayList<T>((List<T>) value);
+            this.newList = new ArrayList<T>((List<T>) value);
         }
     }
     
@@ -142,17 +142,17 @@ public abstract class EditListDialog<T> extends EditBeanDialog<List<T>> {
     protected abstract T createItem();
     
     @SuppressWarnings("unchecked")
-	private void editItem() {
+    private void editItem() {
         EditBeanDialog<T> dialog = createEditItemDialog();
         Iterator<T> iterator = ((StructuredSelection) listViewer.getSelection()).iterator();
         if (iterator.hasNext()) {
-        	T value = iterator.next();
+            T value = iterator.next();
             int index = newList.lastIndexOf(value);
             dialog.setValue(value);
             int code = dialog.open();
             if (code != CANCEL) {
                 T result = dialog.getValue();
-            	newList.set(index, result);
+                newList.set(index, result);
                 listViewer.remove(value);
                 listViewer.add(result);
             }
@@ -160,7 +160,7 @@ public abstract class EditListDialog<T> extends EditBeanDialog<List<T>> {
     }
     
     @SuppressWarnings("unchecked")
-	private void removeItem() {
+    private void removeItem() {
         Iterator<T> iterator = ((StructuredSelection) listViewer.getSelection()).iterator();
         // single selection only allowed
         if (iterator.hasNext()) {

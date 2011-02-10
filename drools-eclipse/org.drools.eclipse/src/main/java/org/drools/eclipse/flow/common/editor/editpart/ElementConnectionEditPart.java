@@ -44,8 +44,8 @@ import org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy;
 public abstract class ElementConnectionEditPart extends AbstractConnectionEditPart implements ModelListener {
     
     protected void createEditPolicies() {
-    	ConnectionEditPolicy connectionEditPolicy = new ConnectionEditPolicy();
-    	connectionEditPolicy.setDefaultElementConnectionFactory(getDefaultElementConnectionFactory());
+        ConnectionEditPolicy connectionEditPolicy = new ConnectionEditPolicy();
+        connectionEditPolicy.setDefaultElementConnectionFactory(getDefaultElementConnectionFactory());
         installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE, new ConnectionEndpointEditPolicy());
         installEditPolicy(EditPolicy.CONNECTION_ROLE, connectionEditPolicy);
         installEditPolicy(EditPolicy.CONNECTION_BENDPOINTS_ROLE, new ConnectionBendpointEditPolicy());
@@ -100,7 +100,7 @@ public abstract class ElementConnectionEditPart extends AbstractConnectionEditPa
     }
 
     protected void refreshVisuals() {
-    	refreshLabel();
+        refreshLabel();
         refreshBendpoints();
     }
 }

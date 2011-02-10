@@ -38,46 +38,46 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
     private IEditorPart editor;
 
     public AbstractCompletionProcessor(IEditorPart editor) {
-    	this.editor = editor;
+        this.editor = editor;
     }
 
     protected IEditorPart getEditor() {
-    	return editor;
+        return editor;
     }
 
-	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int documentOffset) {
-    	List proposals = getCompletionProposals(viewer, documentOffset);
-    	if (proposals == null) {
-    		return new ICompletionProposal[0];
-    	}
+    public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int documentOffset) {
+        List proposals = getCompletionProposals(viewer, documentOffset);
+        if (proposals == null) {
+            return new ICompletionProposal[0];
+        }
         Collections.sort(proposals, new RuleCompletionProposal.RuleCompletionProposalComparator());
         return (ICompletionProposal[]) proposals.toArray(new ICompletionProposal[proposals.size()]);
-	}
+    }
 
-	/**
-	 * Returns a list of RuleCompletionProposals.
-	 *
-	 * @param viewer
-	 * @param documentOffset
-	 * @return
-	 */
-	protected abstract List getCompletionProposals(ITextViewer viewer, int documentOffset);
+    /**
+     * Returns a list of RuleCompletionProposals.
+     *
+     * @param viewer
+     * @param documentOffset
+     * @return
+     */
+    protected abstract List getCompletionProposals(ITextViewer viewer, int documentOffset);
 
     /**
      *  Filter out the proposals whose content does not start with the given prefix.
      */
     protected static void filterProposalsOnPrefix(String prefix, List props) {
-    	if ( prefix != null && prefix.trim().length() > 0 ) {
-    		Iterator iterator = props.iterator();
+        if ( prefix != null && prefix.trim().length() > 0 ) {
+            Iterator iterator = props.iterator();
             String prefixLc = prefix.toLowerCase();
-    		while ( iterator.hasNext() ) {
+            while ( iterator.hasNext() ) {
                 ICompletionProposal item = (ICompletionProposal) iterator.next();
                 String content = item.getDisplayString().toLowerCase();
                 if ( !content.toLowerCase().startsWith( prefixLc ) ) {
                     iterator.remove();
                 }
-    		}
-    	}
+            }
+        }
     }
 
     /**
@@ -92,38 +92,38 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
         return prefix;
     }
 
-	/*
-	 * @see IContentAssistProcessor
-	 */
-	public char[] getCompletionProposalAutoActivationCharacters() {
-		return null;
-	}
+    /*
+     * @see IContentAssistProcessor
+     */
+    public char[] getCompletionProposalAutoActivationCharacters() {
+        return null;
+    }
 
-	/*
-	 * @see IContentAssistProcessor
-	 */
-	public char[] getContextInformationAutoActivationCharacters() {
-		return null;
-	}
+    /*
+     * @see IContentAssistProcessor
+     */
+    public char[] getContextInformationAutoActivationCharacters() {
+        return null;
+    }
 
-	/*
-	 * @see IContentAssistProcessor
-	 */
-	public IContextInformationValidator getContextInformationValidator() {
-		return null;
-	}
+    /*
+     * @see IContentAssistProcessor
+     */
+    public IContextInformationValidator getContextInformationValidator() {
+        return null;
+    }
 
-	/*
-	 * @see IContentAssistProcessor
-	 */
-	public IContextInformation[] computeContextInformation(ITextViewer viewer, int documentOffset) {
-		return null;
-	}
+    /*
+     * @see IContentAssistProcessor
+     */
+    public IContextInformation[] computeContextInformation(ITextViewer viewer, int documentOffset) {
+        return null;
+    }
 
-	/*
-	 * @see IContentAssistProcessor
-	 */
-	public String getErrorMessage() {
-		return null;
-	}
+    /*
+     * @see IContentAssistProcessor
+     */
+    public String getErrorMessage() {
+        return null;
+    }
 }

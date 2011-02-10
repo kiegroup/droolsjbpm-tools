@@ -29,10 +29,10 @@ import org.eclipse.gef.commands.Command;
  */
 public class ReconnectElementConnectionSourceCommand extends Command {
 
-	private ElementConnection connection;
-	private ElementWrapper target;
-	private ElementWrapper oldSource;
-	private ElementWrapper newSource;
+    private ElementConnection connection;
+    private ElementWrapper target;
+    private ElementWrapper oldSource;
+    private ElementWrapper newSource;
     
     public boolean canExecute() {
         if (connection.getTarget().equals(newSource))
@@ -49,13 +49,13 @@ public class ReconnectElementConnectionSourceCommand extends Command {
 
     public void execute() {
         if (newSource != null) {
-        	connection.disconnect();
-        	connection.connect(newSource, target); 
+            connection.disconnect();
+            connection.connect(newSource, target);
         }
     }
 
     public void setSource(ElementWrapper source) {
-    	this.newSource = source;
+        this.newSource = source;
     }
 
     public void setConnection(ElementConnection connection) {
@@ -65,12 +65,12 @@ public class ReconnectElementConnectionSourceCommand extends Command {
     }
 
     public void undo() {
-    	connection.disconnect();
-    	connection.connect(oldSource, target);    	
+        connection.disconnect();
+        connection.connect(oldSource, target);
     }
     
     public void redo() {
-    	connection.disconnect();
-    	connection.connect(newSource, target);
+        connection.disconnect();
+        connection.connect(newSource, target);
     }
 }

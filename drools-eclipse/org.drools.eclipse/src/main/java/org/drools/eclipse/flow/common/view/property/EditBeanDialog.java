@@ -59,7 +59,7 @@ public abstract class EditBeanDialog<T> extends Dialog {
             value = updateValue(value);
             super.okPressed();
         } catch (IllegalArgumentException e) {
-        	showError(e.getMessage());
+            showError(e.getMessage());
             // value could not be set, ignoring ok
         }
     }

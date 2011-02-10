@@ -30,24 +30,24 @@ public class Function extends DroolsElement {
         this.functionName = functionName;
     }
     
-	public Package getParentPackage() {
-		return (Package) getParent();
-	}
-	
-    public String getFunctionName() {
-    	return functionName;
+    public Package getParentPackage() {
+        return (Package) getParent();
     }
 
-	public int getType() {
-		return FUNCTION;
-	}
-	
-	public DroolsElement[] getChildren() {
-		return NO_ELEMENTS;
-	}
+    public String getFunctionName() {
+        return functionName;
+    }
 
-	public String toString() {
-		return functionName;
-	}
+    public int getType() {
+        return FUNCTION;
+    }
+
+    public DroolsElement[] getChildren() {
+        return NO_ELEMENTS;
+    }
+
+    public String toString() {
+        return functionName;
+    }
 
 }

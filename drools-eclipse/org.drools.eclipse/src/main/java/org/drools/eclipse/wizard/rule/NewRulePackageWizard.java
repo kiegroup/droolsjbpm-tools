@@ -40,7 +40,7 @@ public class NewRulePackageWizard extends Wizard implements INewWizard {
         this.selection = selection;
         setWindowTitle("New Rule Package...");
         
-    	ImageDescriptor desc = DroolsEclipsePlugin.getImageDescriptor("icons/drools-large.PNG");
+        ImageDescriptor desc = DroolsEclipsePlugin.getImageDescriptor("icons/drools-large.PNG");
         setDefaultPageImageDescriptor(desc);
     }
     

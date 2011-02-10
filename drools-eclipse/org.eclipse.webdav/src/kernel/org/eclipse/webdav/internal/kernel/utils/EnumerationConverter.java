@@ -20,24 +20,24 @@ import java.util.Enumeration;
 
 public abstract class EnumerationConverter extends EnumerationFilter {
 
-	protected Enumeration sourceEnum;
+    protected Enumeration sourceEnum;
 
-	public EnumerationConverter(Enumeration sourceEnum) {
-		super();
-		this.sourceEnum = sourceEnum;
-	}
+    public EnumerationConverter(Enumeration sourceEnum) {
+        super();
+        this.sourceEnum = sourceEnum;
+    }
 
-	/**
-	 * @see #hasMoreElements()
-	 */
-	public boolean hasMoreElements() {
-		return sourceEnum.hasMoreElements();
-	}
+    /**
+     * @see #hasMoreElements()
+     */
+    public boolean hasMoreElements() {
+        return sourceEnum.hasMoreElements();
+    }
 
-	/**
-	 * @see #nextElement()
-	 * Subclasses should override ths method to convert the
-	 * source enum objects to the new types.
-	 */
-	public abstract Object nextElement();
+    /**
+     * @see #nextElement()
+     * Subclasses should override ths method to convert the
+     * source enum objects to the new types.
+     */
+    public abstract Object nextElement();
 }

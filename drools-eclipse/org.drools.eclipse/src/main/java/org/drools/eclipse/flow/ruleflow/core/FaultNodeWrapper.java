@@ -32,16 +32,16 @@ public class FaultNodeWrapper extends AbstractNodeWrapper {
     public static final String FAULT_NAME = "FaultName";
     public static final String FAULT_VARIABLE = "FaultVariable";
 
-	private static final long serialVersionUID = 510l;
-	private static IPropertyDescriptor[] descriptors;
-	static {
-		descriptors = new IPropertyDescriptor[AbstractNodeWrapper.DESCRIPTORS.length + 2];
+    private static final long serialVersionUID = 510l;
+    private static IPropertyDescriptor[] descriptors;
+    static {
+        descriptors = new IPropertyDescriptor[AbstractNodeWrapper.DESCRIPTORS.length + 2];
         System.arraycopy(AbstractNodeWrapper.DESCRIPTORS, 0, descriptors, 0, AbstractNodeWrapper.DESCRIPTORS.length);
         descriptors[descriptors.length - 2] = 
             new TextPropertyDescriptor(FAULT_NAME, "FaultName");
         descriptors[descriptors.length - 1] = 
             new TextPropertyDescriptor(FAULT_VARIABLE, "FaultVariable");
-	}
+    }
 
     public FaultNodeWrapper() {
         setNode(new FaultNode());
@@ -52,13 +52,13 @@ public class FaultNodeWrapper extends AbstractNodeWrapper {
         return (FaultNode) getNode();
     }
     
-	public IPropertyDescriptor[] getPropertyDescriptors() {
-		return descriptors;
-	}
+    public IPropertyDescriptor[] getPropertyDescriptors() {
+        return descriptors;
+    }
 
     public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
         return super.acceptsIncomingConnection(connection, source)
-        	&& getIncomingConnections().isEmpty();
+            && getIncomingConnections().isEmpty();
     }
 
     public boolean acceptsOutgoingConnection(ElementConnection connection, ElementWrapper target) {
@@ -67,11 +67,11 @@ public class FaultNodeWrapper extends AbstractNodeWrapper {
     
     public Object getPropertyValue(Object id) {
         if (FAULT_NAME.equals(id)) {
-        	String faultName = getFaultNode().getFaultName();
+            String faultName = getFaultNode().getFaultName();
             return faultName == null ? "" : faultName;
         }
         if (FAULT_VARIABLE.equals(id)) {
-        	String faultVariable = getFaultNode().getFaultVariable();
+            String faultVariable = getFaultNode().getFaultVariable();
             return faultVariable == null ? "" : faultVariable;
         }
         return super.getPropertyValue(id);
@@ -79,9 +79,9 @@ public class FaultNodeWrapper extends AbstractNodeWrapper {
 
     public void resetPropertyValue(Object id) {
         if (FAULT_NAME.equals(id)) {
-        	getFaultNode().setFaultName(null);
+            getFaultNode().setFaultName(null);
         } else if (FAULT_VARIABLE.equals(id)) {
-        	getFaultNode().setFaultVariable(null);
+            getFaultNode().setFaultVariable(null);
         } else {
             super.resetPropertyValue(id);
         }
@@ -89,9 +89,9 @@ public class FaultNodeWrapper extends AbstractNodeWrapper {
 
     public void setPropertyValue(Object id, Object value) {
         if (FAULT_NAME.equals(id)) {
-        	getFaultNode().setFaultName((String) value);
+            getFaultNode().setFaultName((String) value);
         } else if (FAULT_VARIABLE.equals(id)) {
-        	getFaultNode().setFaultVariable((String) value);
+            getFaultNode().setFaultVariable((String) value);
         } else {
             super.setPropertyValue(id, value);
         }

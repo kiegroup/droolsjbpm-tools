@@ -41,103 +41,103 @@ import org.guvnor.tools.utils.PlatformUtils;
  */
 public class ResourceChangeListener implements IResourceChangeListener {
 
-	public void resourceChanged(IResourceChangeEvent event) {
-		final List<IResource> toDelete = new ArrayList<IResource>();
-		try {
-			if (event.getDelta() != null) {
-				event.getDelta().accept(new IResourceDeltaVisitor() {
-					public boolean visit(IResourceDelta delta) throws CoreException {
-						try {
-							if (delta.getResource() == null || !delta.getResource().isAccessible()) {
-								return false;
-							}
-							if (delta.getKind() == IResourceDelta.ADDED) {
-								handleResourceAdded(delta.getResource());
-							}
-							if (delta.getKind() == IResourceDelta.CHANGED) {
-								handleResourceChanged(delta.getResource());
-							}
-							if (delta.getKind() == IResourceDelta.REMOVED) {
-								handleResourceDelete(delta.getResource(), toDelete);
-							}
-							if (delta.getMovedFromPath() != null) {
-								handleResourceMoved(delta.getResource(), delta.getMovedFromPath());
-							}
-						} catch (Exception e) {
-							Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
-						}
-						return true;
-					}
-				});
-				deleteResources(toDelete);
-			}
-		} catch (Exception e) {
-			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
-		}
-	}
-	
-	private void handleResourceAdded(IResource resource) throws Exception {
-		if (GuvnorMetadataUtils.isGuvnorMetadata(resource)) {
-			// Look for the corresponding file
-			IFile target = GuvnorMetadataUtils.getGuvnorControlledResource(resource);
-			if (target != null) {
-				GuvnorMetadataUtils.markCurrentGuvnorResource(target);
-			}
-		} else {
-			// Look for the corresponding metadata
-			if (GuvnorMetadataUtils.isGuvnorControlledResource(resource)) {
-				GuvnorMetadataUtils.markCurrentGuvnorResource(resource);
-			}
-		}
-	}
-	
-	private void handleResourceChanged(IResource resource) throws CoreException {
-		if (GuvnorMetadataUtils.getGuvnorResourceProperty(resource) != null) {
-			GuvnorMetadataUtils.markExpiredGuvnorResource(resource);
-			PlatformUtils.updateDecoration();
-		}
-	}
-	
-	private void deleteResources(final List<IResource> resources) throws CoreException {
-		Display display = PlatformUI.getWorkbench().getDisplay();
-		display.asyncExec(new Runnable() {
-			public void run() {
-				IWorkspace ws = Activator.getDefault().getWorkspace();
-				try {
-					IResource[] res = new IResource[resources.size()];
-					resources.toArray(res);
-					ws.delete(res, true, null);
-				} catch (CoreException e) {
-					Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
-				}
-			}
-			
-		});
-	}
-	
-	private void handleResourceDelete(IResource resource, List<IResource> resources) {
-		final IFile mdFile = GuvnorMetadataUtils.findGuvnorMetadata(resource);
-		if (mdFile == null) {
-			return;
-		}
-		resources.add(mdFile);
-	}
-	
-	private void handleResourceMoved(final IResource resource, IPath fromPath) throws Exception {
-		IFile mdFile = GuvnorMetadataUtils.findGuvnorMetadata(fromPath);
-		if (mdFile == null) {
-			return;
-		}
-		final GuvnorMetadataProps mdProps = GuvnorMetadataUtils.loadGuvnorMetadata(mdFile);
-		Display display = PlatformUI.getWorkbench().getDisplay();
-		display.asyncExec(new Runnable() {
-			public void run() {
-				try {
-					GuvnorMetadataUtils.setGuvnorMetadataProps(resource.getFullPath(), mdProps);
-				} catch (Exception e) {
-					Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
-				}
-			}
-		});
-	}
+    public void resourceChanged(IResourceChangeEvent event) {
+        final List<IResource> toDelete = new ArrayList<IResource>();
+        try {
+            if (event.getDelta() != null) {
+                event.getDelta().accept(new IResourceDeltaVisitor() {
+                    public boolean visit(IResourceDelta delta) throws CoreException {
+                        try {
+                            if (delta.getResource() == null || !delta.getResource().isAccessible()) {
+                                return false;
+                            }
+                            if (delta.getKind() == IResourceDelta.ADDED) {
+                                handleResourceAdded(delta.getResource());
+                            }
+                            if (delta.getKind() == IResourceDelta.CHANGED) {
+                                handleResourceChanged(delta.getResource());
+                            }
+                            if (delta.getKind() == IResourceDelta.REMOVED) {
+                                handleResourceDelete(delta.getResource(), toDelete);
+                            }
+                            if (delta.getMovedFromPath() != null) {
+                                handleResourceMoved(delta.getResource(), delta.getMovedFromPath());
+                            }
+                        } catch (Exception e) {
+                            Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+                        }
+                        return true;
+                    }
+                });
+                deleteResources(toDelete);
+            }
+        } catch (Exception e) {
+            Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+        }
+    }
+
+    private void handleResourceAdded(IResource resource) throws Exception {
+        if (GuvnorMetadataUtils.isGuvnorMetadata(resource)) {
+            // Look for the corresponding file
+            IFile target = GuvnorMetadataUtils.getGuvnorControlledResource(resource);
+            if (target != null) {
+                GuvnorMetadataUtils.markCurrentGuvnorResource(target);
+            }
+        } else {
+            // Look for the corresponding metadata
+            if (GuvnorMetadataUtils.isGuvnorControlledResource(resource)) {
+                GuvnorMetadataUtils.markCurrentGuvnorResource(resource);
+            }
+        }
+    }
+
+    private void handleResourceChanged(IResource resource) throws CoreException {
+        if (GuvnorMetadataUtils.getGuvnorResourceProperty(resource) != null) {
+            GuvnorMetadataUtils.markExpiredGuvnorResource(resource);
+            PlatformUtils.updateDecoration();
+        }
+    }
+
+    private void deleteResources(final List<IResource> resources) throws CoreException {
+        Display display = PlatformUI.getWorkbench().getDisplay();
+        display.asyncExec(new Runnable() {
+            public void run() {
+                IWorkspace ws = Activator.getDefault().getWorkspace();
+                try {
+                    IResource[] res = new IResource[resources.size()];
+                    resources.toArray(res);
+                    ws.delete(res, true, null);
+                } catch (CoreException e) {
+                    Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+                }
+            }
+
+        });
+    }
+
+    private void handleResourceDelete(IResource resource, List<IResource> resources) {
+        final IFile mdFile = GuvnorMetadataUtils.findGuvnorMetadata(resource);
+        if (mdFile == null) {
+            return;
+        }
+        resources.add(mdFile);
+    }
+
+    private void handleResourceMoved(final IResource resource, IPath fromPath) throws Exception {
+        IFile mdFile = GuvnorMetadataUtils.findGuvnorMetadata(fromPath);
+        if (mdFile == null) {
+            return;
+        }
+        final GuvnorMetadataProps mdProps = GuvnorMetadataUtils.loadGuvnorMetadata(mdFile);
+        Display display = PlatformUI.getWorkbench().getDisplay();
+        display.asyncExec(new Runnable() {
+            public void run() {
+                try {
+                    GuvnorMetadataUtils.setGuvnorMetadataProps(resource.getFullPath(), mdProps);
+                } catch (Exception e) {
+                    Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+                }
+            }
+        });
+    }
 }

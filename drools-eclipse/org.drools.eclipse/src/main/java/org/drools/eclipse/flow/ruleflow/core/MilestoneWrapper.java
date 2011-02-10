@@ -32,7 +32,7 @@ public class MilestoneWrapper extends StateBasedNodeWrapper {
 
     public static final String CONSTRAINT = "Constraint";
 
-	private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 510l;
 
     public MilestoneWrapper() {
         setNode(new MilestoneNode());
@@ -40,15 +40,15 @@ public class MilestoneWrapper extends StateBasedNodeWrapper {
     }
     
     protected void initDescriptors() {
-    	super.initDescriptors();
-    	IPropertyDescriptor[] oldDescriptors = descriptors; 
+        super.initDescriptors();
+        IPropertyDescriptor[] oldDescriptors = descriptors;
         descriptors = new IPropertyDescriptor[oldDescriptors.length + 3];
         System.arraycopy(oldDescriptors, 0, descriptors, 0, oldDescriptors.length);
         descriptors[descriptors.length - 3] = getOnEntryPropertyDescriptor();
         descriptors[descriptors.length - 2] = getOnExitPropertyDescriptor();
         descriptors[descriptors.length - 1] = 
             new MilestoneConstraintPropertyDescriptor(CONSTRAINT, "Constraint",
-        		getMilestoneNode(), (WorkflowProcess) getParent().getProcessWrapper().getProcess());
+                getMilestoneNode(), (WorkflowProcess) getParent().getProcessWrapper().getProcess());
     }
     
     public MilestoneNode getMilestoneNode() {
@@ -57,17 +57,17 @@ public class MilestoneWrapper extends StateBasedNodeWrapper {
     
     public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
         return super.acceptsIncomingConnection(connection, source)
-        	&& getIncomingConnections().isEmpty();
+            && getIncomingConnections().isEmpty();
     }
 
     public boolean acceptsOutgoingConnection(ElementConnection connection, ElementWrapper target) {
         return super.acceptsOutgoingConnection(connection, target)
-        	&& getOutgoingConnections().isEmpty();
+            && getOutgoingConnections().isEmpty();
     }
     
     public Object getPropertyValue(Object id) {
         if (CONSTRAINT.equals(id)) {
-        	String constraint = getMilestoneNode().getConstraint();
+            String constraint = getMilestoneNode().getConstraint();
             return constraint == null ? "" : constraint;
         }
         return super.getPropertyValue(id);
@@ -75,7 +75,7 @@ public class MilestoneWrapper extends StateBasedNodeWrapper {
 
     public void resetPropertyValue(Object id) {
         if (CONSTRAINT.equals(id)) {
-        	getMilestoneNode().setConstraint("");
+            getMilestoneNode().setConstraint("");
         } else {
             super.resetPropertyValue(id);
         }
@@ -83,7 +83,7 @@ public class MilestoneWrapper extends StateBasedNodeWrapper {
 
     public void setPropertyValue(Object id, Object value) {
         if (CONSTRAINT.equals(id)) {
-        	getMilestoneNode().setConstraint((String) value);
+            getMilestoneNode().setConstraint((String) value);
         } else {
             super.setPropertyValue(id, value);
         }

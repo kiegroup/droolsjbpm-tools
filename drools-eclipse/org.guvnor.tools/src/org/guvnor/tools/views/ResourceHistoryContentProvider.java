@@ -25,16 +25,16 @@ import org.guvnor.tools.views.model.ResourceHistoryEntry;
  *
  */
 public class ResourceHistoryContentProvider implements IStructuredContentProvider {
-	private ResourceHistoryEntry[] entries;
-	
-	public ResourceHistoryContentProvider(ResourceHistoryEntry[] entries) {
-		this.entries = entries;
-	}
-	public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-	}
-	public void dispose() {
-	}
-	public Object[] getElements(Object parent) {
-		return entries;
-	}
+    private ResourceHistoryEntry[] entries;
+
+    public ResourceHistoryContentProvider(ResourceHistoryEntry[] entries) {
+        this.entries = entries;
+    }
+    public void inputChanged(Viewer v, Object oldInput, Object newInput) {
+    }
+    public void dispose() {
+    }
+    public Object[] getElements(Object parent) {
+        return entries;
+    }
 }

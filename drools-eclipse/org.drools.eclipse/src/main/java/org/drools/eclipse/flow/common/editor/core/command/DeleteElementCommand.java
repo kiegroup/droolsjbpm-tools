@@ -42,24 +42,24 @@ public class DeleteElementCommand extends Command {
     
     
     private void deleteConnections(ElementWrapper element) {
-    	for (Iterator it = element.getIncomingConnections().iterator(); it.hasNext(); ) {
-    		ElementConnection connection = (ElementConnection) it.next();
-    		incomingElementWrappers.add(connection.getSource());
-    		incomingConnections.add(connection);
-    	}
-    	for (Iterator it = element.getOutgoingConnections().iterator(); it.hasNext(); ) {
-    		ElementConnection connection = (ElementConnection) it.next();
-    		outgoingElementWrappers.add(connection.getTarget());
-    		outgoingConnections.add(connection);
-    	} 
-    	for (Iterator it = incomingConnections.iterator(); it.hasNext(); ) {
-    		ElementConnection connection = (ElementConnection) it.next();
-    		connection.disconnect();
-    	}
-    	for (Iterator it = outgoingConnections.iterator(); it.hasNext(); ) {
-    		ElementConnection connection = (ElementConnection) it.next();
-    		connection.disconnect();
-    	}
+        for (Iterator it = element.getIncomingConnections().iterator(); it.hasNext(); ) {
+            ElementConnection connection = (ElementConnection) it.next();
+            incomingElementWrappers.add(connection.getSource());
+            incomingConnections.add(connection);
+        }
+        for (Iterator it = element.getOutgoingConnections().iterator(); it.hasNext(); ) {
+            ElementConnection connection = (ElementConnection) it.next();
+            outgoingElementWrappers.add(connection.getTarget());
+            outgoingConnections.add(connection);
+        }
+        for (Iterator it = incomingConnections.iterator(); it.hasNext(); ) {
+            ElementConnection connection = (ElementConnection) it.next();
+            connection.disconnect();
+        }
+        for (Iterator it = outgoingConnections.iterator(); it.hasNext(); ) {
+            ElementConnection connection = (ElementConnection) it.next();
+            connection.disconnect();
+        }
     }
 
     public void execute() {
@@ -68,22 +68,22 @@ public class DeleteElementCommand extends Command {
     }
 
     private void restoreConnections() {
-    	int i = 0;
-    	for (Iterator it = incomingConnections.iterator(); it.hasNext(); ) {
-    		ElementConnection connection = (ElementConnection) it.next();
-    		connection.connect((ElementWrapper) incomingElementWrappers.get(i), child);
-    		i++;
-    	}
-    	i = 0;
-    	for (Iterator it = outgoingConnections.iterator(); it.hasNext(); ) {
-    		ElementConnection connection = (ElementConnection) it.next();
-    		connection.connect(child, (ElementWrapper) outgoingElementWrappers.get(i));
-    		i++;
-    	}
-    	incomingConnections.clear();
-    	incomingElementWrappers.clear();
-    	outgoingConnections.clear();
-    	outgoingElementWrappers.clear();
+        int i = 0;
+        for (Iterator it = incomingConnections.iterator(); it.hasNext(); ) {
+            ElementConnection connection = (ElementConnection) it.next();
+            connection.connect((ElementWrapper) incomingElementWrappers.get(i), child);
+            i++;
+        }
+        i = 0;
+        for (Iterator it = outgoingConnections.iterator(); it.hasNext(); ) {
+            ElementConnection connection = (ElementConnection) it.next();
+            connection.connect(child, (ElementWrapper) outgoingElementWrappers.get(i));
+            i++;
+        }
+        incomingConnections.clear();
+        incomingElementWrappers.clear();
+        outgoingConnections.clear();
+        outgoingElementWrappers.clear();
     }
     
     public void setChild(ElementWrapper child) {

@@ -47,7 +47,7 @@ public class NewRuleFlowFileWizard extends Wizard implements INewWizard {
      }
 
     public boolean performFinish() {
-    	mainPage.setTargetRuntime(runtimePage.getGenerationType());
+        mainPage.setTargetRuntime(runtimePage.getGenerationType());
         return mainPage.finish();
     }
 

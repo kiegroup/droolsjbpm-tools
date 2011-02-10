@@ -64,7 +64,7 @@ public class DSLTree {
      * @param dslcontents
      */
     public void buildTree(Reader dslcontents) {
-    	buildTree(createBufferedReader(dslcontents));
+        buildTree(createBufferedReader(dslcontents));
     }
     
     private void buildTree(BufferedReader breader) {
@@ -101,7 +101,7 @@ public class DSLTree {
      * @return
      */
     protected BufferedReader createBufferedReader(Reader reader) {
-		return new BufferedReader(reader);
+        return new BufferedReader(reader);
     }
     
     /**
@@ -111,7 +111,7 @@ public class DSLTree {
      * @return
      */
     public boolean isEmpty() {
-    	return this.empty;
+        return this.empty;
     }
     
     /**
@@ -123,7 +123,7 @@ public class DSLTree {
         String line = null;
         try {
             while ( (line = reader.readLine()) != null) {
-            	Section section = getSection(line);
+                Section section = getSection(line);
                 String nl = stripHeadingAndCode(line);
                 String objname = this.getObjMetadata(nl);
                 nl = this.stripObjMetadata(nl);
@@ -135,39 +135,39 @@ public class DSLTree {
     }
     
     public void buildTree(DSLMapping mapping) {
-    	List entries = mapping.getEntries();
-    	for (Iterator iterator = entries.iterator(); iterator.hasNext(); ) {
-    		DSLMappingEntry entry = (DSLMappingEntry) iterator.next();
-        	Section section = entry.getSection();
+        List entries = mapping.getEntries();
+        for (Iterator iterator = entries.iterator(); iterator.hasNext(); ) {
+            DSLMappingEntry entry = (DSLMappingEntry) iterator.next();
+            Section section = entry.getSection();
             String nl = entry.getMappingKey();
             String objname = entry.getMetaData().getMetaData();
             addEntry(section, nl, objname);
-    	}
+        }
     }
     
     private void addEntry(Section section, String nl, String objname) {
         if (!nl.startsWith("-")) {
-        	if (objname != null && !"".equals(objname)) {
-        		this.addObjToNLMap(objname, nl);
-        	}
+            if (objname != null && !"".equals(objname)) {
+                this.addObjToNLMap(objname, nl);
+            }
             String[] tokenz = nl.split("\\s");
             if (section == DSLMappingEntry.CONDITION || section == DSLMappingEntry.ANY) {
-            	addTokens(tokenz, rootCond);
+                addTokens(tokenz, rootCond);
             }
             if (section == DSLMappingEntry.CONSEQUENCE || section == DSLMappingEntry.ANY) {
-            	addTokens(tokenz, rootConseq);
+                addTokens(tokenz, rootConseq);
             }
         } else {
-        	String res = (String)this.objToNL.get(objname);
+            String res = (String)this.objToNL.get(objname);
             StringTokenizer tokenz = new StringTokenizer(nl);
             addTokens(res,tokenz);
         }
     }
     
     public void addObjToNLMap(String objname, String nl) {
-    	if (!objname.startsWith("-")) {
-    		this.objToNL.put(objname, nl);
-    	}
+        if (!objname.startsWith("-")) {
+            this.objToNL.put(objname, nl);
+        }
     }
     
     protected Section getSection(String text) {
@@ -178,7 +178,7 @@ public class DSLTree {
         } else if (text.startsWith(DSLMappingEntry.ANY.getSymbol())) {
             return DSLMappingEntry.ANY;
         } else if (text.startsWith(DSLMappingEntry.KEYWORD.getSymbol())) {
-        	return DSLMappingEntry.KEYWORD;
+            return DSLMappingEntry.KEYWORD;
         }
         return null; 
     }
@@ -209,11 +209,11 @@ public class DSLTree {
      * @return
      */
     protected String getObjMetadata(String text) {
-    	if (text.startsWith("[")) {
-        	return text.substring(1,text.lastIndexOf("]"));
-    	} else {
-    		return "";
-    	}
+        if (text.startsWith("[")) {
+            return text.substring(1,text.lastIndexOf("]"));
+        } else {
+            return "";
+        }
     }
 
     /**
@@ -222,11 +222,11 @@ public class DSLTree {
      * @return
      */
     protected String stripObjMetadata(String text) {
-    	if (text.startsWith("[")) {
-        	return text.substring(text.lastIndexOf("]") + 1);
-    	} else {
-    		return text;
-    	}
+        if (text.startsWith("[")) {
+            return text.substring(text.lastIndexOf("]") + 1);
+        } else {
+            return text;
+        }
     }
     
     /**
@@ -238,12 +238,12 @@ public class DSLTree {
      * @param tokens
      */
     public void addTokens(String metadata, StringTokenizer tokens) {
-    	Node mnode = this.rootCond.addToken(metadata);
-    	Node thenode = mnode;
-    	while (tokens.hasMoreTokens()) {
-    		Node newnode = thenode.addToken(tokens.nextToken());
-    		thenode = newnode;
-    	}
+        Node mnode = this.rootCond.addToken(metadata);
+        Node thenode = mnode;
+        while (tokens.hasMoreTokens()) {
+            Node newnode = thenode.addToken(tokens.nextToken());
+            thenode = newnode;
+        }
     }
     
     /**
@@ -268,7 +268,7 @@ public class DSLTree {
      */
     public Node[] getConditionChildren(String text) {
         Node thenode = this.rootCond;
-    	if (text.length() > 0) {
+        if (text.length() > 0) {
             StringTokenizer tokenz = new StringTokenizer(text);
             this.last = this.current;
             while (tokenz.hasMoreTokens()) {
@@ -284,7 +284,7 @@ public class DSLTree {
             if (thenode != this.rootCond) {
                 this.current = thenode;
             }
-    	}
+        }
         Collection children = thenode.getChildren();
         Node[] nchild = new Node[children.size()];
         return (Node[])children.toArray(nchild);
@@ -300,7 +300,7 @@ public class DSLTree {
      */
     public Node[] getConsequenceChildren(String text) {
         Node thenode = this.rootConseq;
-    	if (text.length() >= 0) {
+        if (text.length() >= 0) {
             StringTokenizer tokenz = new StringTokenizer(text);
             this.last = this.current;
             while (tokenz.hasMoreTokens()) {
@@ -316,7 +316,7 @@ public class DSLTree {
             if (thenode != this.rootConseq) {
                 this.current = thenode;
             }
-    	}
+        }
         Collection children = thenode.getChildren();
         Node[] nchild = new Node[children.size()];
         return (Node[]) children.toArray(nchild);
@@ -331,20 +331,20 @@ public class DSLTree {
     public Node[] getChildren(String obj, String text) {
         Node thenode = this.rootCond.getChild(obj);
         if (thenode == null) {
-        	for (Node child: this.rootCond.getChildren()) {
-        		String tokenText = child.getToken();
-        		if (tokenText != null) {
-	        		int index = tokenText.indexOf("{");
-	        		if (index != -1) {
-	        			String substring = tokenText.substring(0, index);
-	        			if (obj != null && obj.startsWith(substring)) {
-	        				thenode = child;
-	        			}
-	        		}
-        		}
-        	}
+            for (Node child: this.rootCond.getChildren()) {
+                String tokenText = child.getToken();
+                if (tokenText != null) {
+                    int index = tokenText.indexOf("{");
+                    if (index != -1) {
+                        String substring = tokenText.substring(0, index);
+                        if (obj != null && obj.startsWith(substring)) {
+                            thenode = child;
+                        }
+                    }
+                }
+            }
         }
-    	if (thenode != null && text.length() > 0) {
+        if (thenode != null && text.length() > 0) {
             StringTokenizer tokenz = new StringTokenizer(text);
             this.last = this.current;
             while (tokenz.hasMoreTokens()) {
@@ -360,11 +360,11 @@ public class DSLTree {
             if (thenode != this.rootCond) {
                 this.current = thenode;
             }
-    	}
-    	if (thenode == null) {
-    		return null;
-    		// thenode = this.rootCond;
-    	}
+        }
+        if (thenode == null) {
+            return null;
+            // thenode = this.rootCond;
+        }
         Collection children = thenode.getChildren();
         Node[] nchild = new Node[children.size()];
         return (Node[])children.toArray(nchild);
@@ -379,15 +379,15 @@ public class DSLTree {
      * @return
      */
     public ArrayList getConditionChildrenList(String text, boolean addChildren) {
-    	Node[] c = getConditionChildren(text);
-    	this.suggestions.clear();
-    	for (int idx=0; idx < c.length; idx++) {
-    		this.suggestions.add(c[idx].getToken());
-    		if (addChildren) {
-        		this.addChildToList(c[idx], c[idx].getToken(), this.suggestions);
-    		}
-    	}
-    	return this.suggestions;
+        Node[] c = getConditionChildren(text);
+        this.suggestions.clear();
+        for (int idx=0; idx < c.length; idx++) {
+            this.suggestions.add(c[idx].getToken());
+            if (addChildren) {
+                this.addChildToList(c[idx], c[idx].getToken(), this.suggestions);
+            }
+        }
+        return this.suggestions;
     }
     
     /**
@@ -399,16 +399,16 @@ public class DSLTree {
      * @return
      */
     public ArrayList getConsequenceChildrenList(String text, boolean addChildren) {
-    	Node[] c = getConsequenceChildren(text);
-    	this.suggestions.clear();
-    	for (int idx=0; idx < c.length; idx++) {
-    		if (addChildren) {
-        		this.addChildToList(c[idx], c[idx].getToken(), this.suggestions);
-    		} else {
-    			this.suggestions.add(c[idx].getToken());
-    		}
-    	}
-    	return this.suggestions;
+        Node[] c = getConsequenceChildren(text);
+        this.suggestions.clear();
+        for (int idx=0; idx < c.length; idx++) {
+            if (addChildren) {
+                this.addChildToList(c[idx], c[idx].getToken(), this.suggestions);
+            } else {
+                this.suggestions.add(c[idx].getToken());
+            }
+        }
+        return this.suggestions;
     }
     
     /**
@@ -419,33 +419,33 @@ public class DSLTree {
      * @return
      */
     public ArrayList getChildrenList(String obj, String text, boolean addChildren, boolean firstLine) {
-    	Node[] c = getChildren(obj,text);
-    	this.suggestions.clear();
-    	if (c != null) {
-	    	for (int idx=0; idx < c.length; idx++) {
-	    		if (addChildren) {
-	        		this.addChildToList(c[idx], c[idx].getToken(), this.suggestions);
-	    		} else {
-	    			this.suggestions.add(c[idx].getToken());
-	    		}
-	    	}
-    	}
-    	if (text.trim().length() == 0 || this.suggestions.isEmpty()) {
-	    	// in the event the list is empty, we also add
-	    	// the top level nodes
-    		Iterator top = this.rootCond.getChildren().iterator();
-        	while (top.hasNext()) {
-        		Node t = (Node)top.next();
-        		if ((!firstLine || t.getToken() != null) && !this.suggestions.contains(t.getToken())) {
-            		if (addChildren) {
-                		this.addChildToList(t, t.getToken(), this.suggestions);
-            		} else {
-                		this.suggestions.add(t.getToken());
-            		}
-        		}
-        	}
-    	}
-    	return this.suggestions;
+        Node[] c = getChildren(obj,text);
+        this.suggestions.clear();
+        if (c != null) {
+            for (int idx=0; idx < c.length; idx++) {
+                if (addChildren) {
+                    this.addChildToList(c[idx], c[idx].getToken(), this.suggestions);
+                } else {
+                    this.suggestions.add(c[idx].getToken());
+                }
+            }
+        }
+        if (text.trim().length() == 0 || this.suggestions.isEmpty()) {
+            // in the event the list is empty, we also add
+            // the top level nodes
+            Iterator top = this.rootCond.getChildren().iterator();
+            while (top.hasNext()) {
+                Node t = (Node)top.next();
+                if ((!firstLine || t.getToken() != null) && !this.suggestions.contains(t.getToken())) {
+                    if (addChildren) {
+                        this.addChildToList(t, t.getToken(), this.suggestions);
+                    } else {
+                        this.suggestions.add(t.getToken());
+                    }
+                }
+            }
+        }
+        return this.suggestions;
     }
 
     /**
@@ -456,25 +456,25 @@ public class DSLTree {
      * @param list
      */
     public void addChildToList(Node n, String prefix, ArrayList list) {
-    	if (n.getChildren().size() > 0) {
-    		Iterator itr = n.getChildren().iterator();
-    		while (itr.hasNext()) {
-    			Node child = (Node)itr.next();
-    			if (prefix != null && "-".equals(child.getToken())) {
-    				if (!list.contains(prefix)) {
-        				list.add(prefix);
-    				}
-    				return;
-    			}
-    			String text = (prefix == null ? "" : prefix + " ") + child.getToken();
-    			// list.add(text);
-    			addChildToList(child,text,list);
-    		}
-    	} else {
-    		if (!list.contains(prefix)) {
-    			list.add(prefix);
-    		}
-    	}
+        if (n.getChildren().size() > 0) {
+            Iterator itr = n.getChildren().iterator();
+            while (itr.hasNext()) {
+                Node child = (Node)itr.next();
+                if (prefix != null && "-".equals(child.getToken())) {
+                    if (!list.contains(prefix)) {
+                        list.add(prefix);
+                    }
+                    return;
+                }
+                String text = (prefix == null ? "" : prefix + " ") + child.getToken();
+                // list.add(text);
+                addChildToList(child,text,list);
+            }
+        } else {
+            if (!list.contains(prefix)) {
+                list.add(prefix);
+            }
+        }
     }
     
     public Node getCurrent() {

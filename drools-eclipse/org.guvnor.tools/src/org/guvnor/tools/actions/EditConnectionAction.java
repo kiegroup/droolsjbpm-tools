@@ -54,57 +54,57 @@ import org.guvnor.tools.wizards.EditRepLocationWizard;
  * @author jgraham
  */
 public class EditConnectionAction implements IObjectActionDelegate {
-	
-	private GuvnorRepository rep;
-	
-	public EditConnectionAction() {
-		super();
-	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.action.IAction, org.eclipse.ui.IWorkbenchPart)
-	 */
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-	}
+    private GuvnorRepository rep;
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
-	 */
-	public void run(IAction action) {
-		EditRepLocationWizard editWizard = new EditRepLocationWizard(rep);
-		editWizard.init(Activator.getDefault().getWorkbench(), null);
-		WizardDialog dialog = 
-			new WizardDialog(Display.getCurrent().getActiveShell(), editWizard);
-	    dialog.create();
-	    dialog.open();
-	    
-	}
+    public EditConnectionAction() {
+        super();
+    }
 
-	/*
-	 * 	(non-Javadoc)
-	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
-	 */
-	public void selectionChanged(IAction action, ISelection selection) {
-		// Reset state to default
-		action.setEnabled(false);
-		
-		if (!(selection instanceof IStructuredSelection)) {
-			return;
-		}
-		
-		IStructuredSelection sel = (IStructuredSelection)selection;
-		if (sel.size() != 1) {
-			return;
-		}
-		
-		if (sel.getFirstElement() instanceof TreeObject) {
-			if (((TreeObject)sel.getFirstElement()).getNodeType() == TreeObject.Type.REPOSITORY) {
-				rep = ((TreeObject)sel.getFirstElement()).getGuvnorRepository();
-				action.setEnabled(true);
-			}
-		}
-		
-	}
+    /*
+     * (non-Javadoc)
+     * @see org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.action.IAction, org.eclipse.ui.IWorkbenchPart)
+     */
+    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
+     */
+    public void run(IAction action) {
+        EditRepLocationWizard editWizard = new EditRepLocationWizard(rep);
+        editWizard.init(Activator.getDefault().getWorkbench(), null);
+        WizardDialog dialog =
+            new WizardDialog(Display.getCurrent().getActiveShell(), editWizard);
+        dialog.create();
+        dialog.open();
+
+    }
+
+    /*
+     *     (non-Javadoc)
+     * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
+     */
+    public void selectionChanged(IAction action, ISelection selection) {
+        // Reset state to default
+        action.setEnabled(false);
+
+        if (!(selection instanceof IStructuredSelection)) {
+            return;
+        }
+
+        IStructuredSelection sel = (IStructuredSelection)selection;
+        if (sel.size() != 1) {
+            return;
+        }
+
+        if (sel.getFirstElement() instanceof TreeObject) {
+            if (((TreeObject)sel.getFirstElement()).getNodeType() == TreeObject.Type.REPOSITORY) {
+                rep = ((TreeObject)sel.getFirstElement()).getGuvnorRepository();
+                action.setEnabled(true);
+            }
+        }
+
+    }
 }

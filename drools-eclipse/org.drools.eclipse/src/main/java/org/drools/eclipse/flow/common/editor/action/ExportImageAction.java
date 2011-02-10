@@ -53,37 +53,37 @@ public class ExportImageAction extends ActionDelegate implements IEditorActionDe
     }
 
     private void execute() {
-    	ExportImageDialog dialog = new ExportImageDialog(editor.getSite().getWorkbenchWindow().getShell());
-		dialog.setOriginalFile(((IFileEditorInput) editor.getEditorInput()).getFile());
-		dialog.open();
-		IPath path = dialog.getResult();
+        ExportImageDialog dialog = new ExportImageDialog(editor.getSite().getWorkbenchWindow().getShell());
+        dialog.setOriginalFile(((IFileEditorInput) editor.getEditorInput()).getFile());
+        dialog.open();
+        IPath path = dialog.getResult();
 
-		if (path == null) {
-			return;
-		}
+        if (path == null) {
+            return;
+        }
 
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		final IFile file = workspace.getRoot().getFile(path);
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        final IFile file = workspace.getRoot().getFile(path);
 
-		WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
-			public void execute(final IProgressMonitor monitor)
-					throws CoreException {
-				try {
-					ByteArrayOutputStream out = new ByteArrayOutputStream();
-					((GenericModelEditor) editor).createImage(out, SWT.IMAGE_PNG);
-					file.create(new ByteArrayInputStream(out.toByteArray()), true, monitor);
-					out.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		};
+        WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
+            public void execute(final IProgressMonitor monitor)
+                    throws CoreException {
+                try {
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    ((GenericModelEditor) editor).createImage(out, SWT.IMAGE_PNG);
+                    file.create(new ByteArrayInputStream(out.toByteArray()), true, monitor);
+                    out.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
 
-		try {
-			new ProgressMonitorDialog(editor.getSite().getWorkbenchWindow().getShell()).run(false, true, op);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+        try {
+            new ProgressMonitorDialog(editor.getSite().getWorkbenchWindow().getShell()).run(false, true, op);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
 }

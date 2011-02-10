@@ -32,7 +32,7 @@ public class TaskPropertyDescriptor extends PropertyDescriptor {
     }
     
     public CellEditor createPropertyEditor(Composite parent) {
-    	TaskCellEditor editor = new TaskCellEditor(parent);
+        TaskCellEditor editor = new TaskCellEditor(parent);
         if (getValidator() != null) {
             editor.setValidator(getValidator());
         }

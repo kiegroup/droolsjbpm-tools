@@ -32,33 +32,33 @@ import org.eclipse.webdav.IResponse;
  * </p>
  */
 public class ResponseInputStream extends FilterInputStream {
-	private IResponse response;
+    private IResponse response;
 
-	/**
-	 * Creates a new input stream on the given response.
-	 *
-	 * @param response a response from a WebDAV server
-	 */
-	public ResponseInputStream(IResponse response) {
-		super(response.getInputStream());
-		this.response = response;
-	}
+    /**
+     * Creates a new input stream on the given response.
+     *
+     * @param response a response from a WebDAV server
+     */
+    public ResponseInputStream(IResponse response) {
+        super(response.getInputStream());
+        this.response = response;
+    }
 
-	/**
-	 * Closes the response and frees all system resources associated with
-	 * this input stream.
-	 */
-	public void close() throws IOException {
-		response.close();
-	}
+    /**
+     * Closes the response and frees all system resources associated with
+     * this input stream.
+     */
+    public void close() throws IOException {
+        response.close();
+    }
 
-	/**
-	 * Returns the http header of the response from the WebDAV server on
-	 * which this input stream is based. The context contains information
-	 * that may be useful such as the content length and content type of
-	 * this input stream.
-	 */
-	public IContext getContext() {
-		return response.getContext();
-	}
+    /**
+     * Returns the http header of the response from the WebDAV server on
+     * which this input stream is based. The context contains information
+     * that may be useful such as the content length and content type of
+     * this input stream.
+     */
+    public IContext getContext() {
+        return response.getContext();
+    }
 }

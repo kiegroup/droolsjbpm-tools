@@ -41,12 +41,12 @@ public class ShowEventCauseAction extends Action {
     }
 
     public void run() {
-    	Event event = view.getSelectedEvent();
-    	if (event != null) {
-    		Event cause = event.getCauseEvent();
-    		if (cause != null) {
-    			view.showEvent(cause);
-    		}
-    	}
+        Event event = view.getSelectedEvent();
+        if (event != null) {
+            Event cause = event.getCauseEvent();
+            if (cause != null) {
+                view.showEvent(cause);
+            }
+        }
     }
 }

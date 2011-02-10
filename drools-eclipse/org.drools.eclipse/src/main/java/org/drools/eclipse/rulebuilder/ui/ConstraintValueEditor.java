@@ -142,15 +142,15 @@ public class ConstraintValueEditor {
 
         String fieldName = null;
         if (c instanceof SingleFieldConstraint)  {
-        	fieldName = ((SingleFieldConstraint) c).getFieldName();
+            fieldName = ((SingleFieldConstraint) c).getFieldName();
         } else if (c instanceof ConnectiveConstraint) {
-        	fieldName = ((ConnectiveConstraint) c).fieldName;
+            fieldName = ((ConnectiveConstraint) c).fieldName;
         }
         String fieldType = null;
         if (c instanceof SingleFieldConstraint)  {
-        	fieldType = ((SingleFieldConstraint) c).getFieldType();
+            fieldType = ((SingleFieldConstraint) c).getFieldType();
         } else if (c instanceof ConnectiveConstraint) {
-        	fieldType = ((ConnectiveConstraint) c).fieldType;
+            fieldType = ((ConnectiveConstraint) c).fieldType;
         }
         DropDownData enums = null;
         boolean found = false;

@@ -69,7 +69,7 @@ public abstract class AbstractElementFigure extends Panel implements ElementFigu
         repaint();
     }
 
-	public void setColor(Color newColor) {
-	}
-	
+    public void setColor(Color newColor) {
+    }
+
 }

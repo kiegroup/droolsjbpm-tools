@@ -34,8 +34,8 @@ public class RuleSetNodeWrapper extends StateBasedNodeWrapper {
     public static final String RULE_FLOW_GROUP = "RuleFlowGroup";
 
     protected void initDescriptors() {
-    	super.initDescriptors();
-    	IPropertyDescriptor[] oldDescriptors = descriptors; 
+        super.initDescriptors();
+        IPropertyDescriptor[] oldDescriptors = descriptors;
         descriptors = new IPropertyDescriptor[oldDescriptors.length + 1];
         System.arraycopy(oldDescriptors, 0, descriptors, 0, oldDescriptors.length);
 //        descriptors[descriptors.length - 3] = getOnEntryPropertyDescriptor();
@@ -56,12 +56,12 @@ public class RuleSetNodeWrapper extends StateBasedNodeWrapper {
     
     public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
         return super.acceptsIncomingConnection(connection, source)
-        	&& getIncomingConnections().isEmpty();
+            && getIncomingConnections().isEmpty();
     }
 
     public boolean acceptsOutgoingConnection(ElementConnection connection, ElementWrapper target) {
         return super.acceptsOutgoingConnection(connection, target)
-        	&& getOutgoingConnections().isEmpty();
+            && getOutgoingConnections().isEmpty();
     }
     
     public Object getPropertyValue(Object id) {
@@ -74,7 +74,7 @@ public class RuleSetNodeWrapper extends StateBasedNodeWrapper {
 
     public void resetPropertyValue(Object id) {
         if (RULE_FLOW_GROUP.equals(id)) {
-        	getRuleSetNode().setRuleFlowGroup("");
+            getRuleSetNode().setRuleFlowGroup("");
         } else {
             super.resetPropertyValue(id);
         }

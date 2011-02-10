@@ -27,12 +27,12 @@ import org.eclipse.swt.graphics.Image;
 public class BPMNSubFlowFigure extends AbstractElementFigure {
     
     private static final Image ICON = ImageDescriptor.createFromURL(
-		DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/process.gif")).createImage();
+        DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/process.gif")).createImage();
         
     private RoundedRectangle rectangle;
     
     public BPMNSubFlowFigure() {
-    	setSize(80, 48);
+        setSize(80, 48);
     }
     
     protected void customizeFigure() {

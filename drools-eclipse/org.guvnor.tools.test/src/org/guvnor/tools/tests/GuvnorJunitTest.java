@@ -30,27 +30,27 @@ import org.guvnor.tools.utils.GuvnorMetadataUtils;
 //import org.jboss.tools.test.util.TestProjectProvider;
 
 public class GuvnorJunitTest {
-	
-//	TestProjectProvider provider;
-	IProject project;
-	
+
+//    TestProjectProvider provider;
+    IProject project;
+
     @Before
     public void setUp() throws Exception {
-//		provider = new TestProjectProvider("org.guvnor.tools.test.junit", "guvnorTestProj", "guvnorTestProj", true);
-//		project = provider.getProject();
-//		project.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
-	}
+//        provider = new TestProjectProvider("org.guvnor.tools.test.junit", "guvnorTestProj", "guvnorTestProj", true);
+//        project = provider.getProject();
+//        project.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
+    }
 
     // TODO this test is disabled because guvnor tools cannot depends on jbosstools (because it's the other way around)
     @Test @Ignore
-	public void testJBIDE5265() throws Exception{
-		IFile meta = project.getFile("guvnorMetadata");
-		GuvnorMetadataUtils.loadGuvnorMetadata(meta);
-		
-		meta.delete(true, null);
-		project.refreshLocal(0, null);
-		
-		assertFalse("The metadata file can not be deleted", meta.exists());
-	}
+    public void testJBIDE5265() throws Exception{
+        IFile meta = project.getFile("guvnorMetadata");
+        GuvnorMetadataUtils.loadGuvnorMetadata(meta);
+
+        meta.delete(true, null);
+        project.refreshLocal(0, null);
+
+        assertFalse("The metadata file can not be deleted", meta.exists());
+    }
 
 }

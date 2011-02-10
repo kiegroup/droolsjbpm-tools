@@ -40,20 +40,20 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 
 public class ProjectClassLoader {
-	
-	public static URLClassLoader getProjectClassLoader(IEditorPart editor) {
-		IEditorInput input = editor.getEditorInput();
-		if (input instanceof IFileEditorInput) {
-			return getProjectClassLoader(((IFileEditorInput) input).getFile());
-		}
-		return null;
-	}
 
-	public static URLClassLoader getProjectClassLoader(IFile file) {
-		IProject project = file.getProject();
-		IJavaProject javaProject = JavaCore.create(project);
-		return getProjectClassLoader(javaProject);
-	}
+    public static URLClassLoader getProjectClassLoader(IEditorPart editor) {
+        IEditorInput input = editor.getEditorInput();
+        if (input instanceof IFileEditorInput) {
+            return getProjectClassLoader(((IFileEditorInput) input).getFile());
+        }
+        return null;
+    }
+
+    public static URLClassLoader getProjectClassLoader(IFile file) {
+        IProject project = file.getProject();
+        IJavaProject javaProject = JavaCore.create(project);
+        return getProjectClassLoader(javaProject);
+    }
 
     public static URLClassLoader getProjectClassLoader(IJavaProject project) {
         List<URL> pathElements = getProjectClassPathURLs(project, new ArrayList<String>());
@@ -91,10 +91,10 @@ public class ProjectClassLoader {
                         URL url = getRawLocationURL(path.getPath());
                         pathElements.add(url);
                     } else if (path.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
-                    	IPath output = path.getOutputLocation();
-                    	if (path.getOutputLocation() != null) {
-                    		outputPaths.add(output);
-                    	}
+                        IPath output = path.getOutputLocation();
+                        if (path.getOutputLocation() != null) {
+                            outputPaths.add(output);
+                        }
                     }
                 }
             }
@@ -102,28 +102,28 @@ public class ProjectClassLoader {
             IPath outputPath = location.append(project.getOutputLocation().removeFirstSegments(1));
             pathElements.add(0, outputPath.toFile().toURI().toURL());
             for (IPath path: outputPaths) {
-            	outputPath = location.append(path.removeFirstSegments(1));
+                outputPath = location.append(path.removeFirstSegments(1));
                 pathElements.add(0, outputPath.toFile().toURI().toURL());
             }
             
             // also add classpath of required projects
             for (String projectName: project.getRequiredProjectNames()) {
-            	if (!alreadyLoadedProjects.contains(projectName)) {
-            		alreadyLoadedProjects.add(projectName);
-		            IProject reqProject = project.getProject().getWorkspace()
-		                .getRoot().getProject(projectName);
-		            if (reqProject != null) {
-		                IJavaProject reqJavaProject = JavaCore.create(reqProject);
-		                pathElements.addAll(getProjectClassPathURLs(reqJavaProject, alreadyLoadedProjects));
-		            }
-            	}
+                if (!alreadyLoadedProjects.contains(projectName)) {
+                    alreadyLoadedProjects.add(projectName);
+                    IProject reqProject = project.getProject().getWorkspace()
+                        .getRoot().getProject(projectName);
+                    if (reqProject != null) {
+                        IJavaProject reqJavaProject = JavaCore.create(reqProject);
+                        pathElements.addAll(getProjectClassPathURLs(reqJavaProject, alreadyLoadedProjects));
+                    }
+                }
             }
         } catch (JavaModelException e) {
             DroolsEclipsePlugin.log(e);
         } catch (MalformedURLException e) {
             DroolsEclipsePlugin.log(e);
         } catch (Throwable t) {
-        	DroolsEclipsePlugin.log(t);
+            DroolsEclipsePlugin.log(t);
         }
         return pathElements;
     }

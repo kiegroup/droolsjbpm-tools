@@ -27,7 +27,7 @@ public class ColorPropertyDescriptor extends PropertyDescriptor {
     }
     
     public CellEditor createPropertyEditor(Composite parent) {
-    	ColorCellEditor editor = new ColorCellEditor(parent);
+        ColorCellEditor editor = new ColorCellEditor(parent);
         if (getValidator() != null) {
             editor.setValidator(getValidator());
         }

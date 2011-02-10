@@ -37,20 +37,20 @@ import org.eclipse.gef.requests.GroupRequest;
  */
 public class ConnectionEditPolicy extends org.eclipse.gef.editpolicies.ConnectionEditPolicy {
 
-	private ElementConnectionFactory elementConnectionFactory;
-	
-	
-	public void setDefaultElementConnectionFactory(ElementConnectionFactory factory) {
-		if (factory == null) {
-			throw new IllegalArgumentException("ElementConnectionFactory is null");
-		}
-		this.elementConnectionFactory = factory;
-	}
-	
-	public ElementConnectionFactory getDefaultElementConnectionFactory() {
-		return elementConnectionFactory;
-	}
-	
+    private ElementConnectionFactory elementConnectionFactory;
+
+
+    public void setDefaultElementConnectionFactory(ElementConnectionFactory factory) {
+        if (factory == null) {
+            throw new IllegalArgumentException("ElementConnectionFactory is null");
+        }
+        this.elementConnectionFactory = factory;
+    }
+
+    public ElementConnectionFactory getDefaultElementConnectionFactory() {
+        return elementConnectionFactory;
+    }
+
     public Command getCommand(Request request) {
         if (REQ_CREATE.equals(request.getType()))
             return getSplitTransitionCommand(request);
@@ -72,9 +72,9 @@ public class ConnectionEditPolicy extends org.eclipse.gef.editpolicies.Connectio
 
     protected Command getSplitTransitionCommand(Request request) {
         // TODO error when using this split, nodes do not know connections
-    	if (elementConnectionFactory == null) {
-    		throw new IllegalStateException("DefaultElementConnectionFactory is null");
-    	}
+        if (elementConnectionFactory == null) {
+            throw new IllegalStateException("DefaultElementConnectionFactory is null");
+        }
         SplitConnectionCommand cmd = new SplitConnectionCommand();
         cmd.setElementConnection(((ElementConnection) getHost().getModel()));
         cmd.setNewSecondConnection(elementConnectionFactory.createElementConnection());

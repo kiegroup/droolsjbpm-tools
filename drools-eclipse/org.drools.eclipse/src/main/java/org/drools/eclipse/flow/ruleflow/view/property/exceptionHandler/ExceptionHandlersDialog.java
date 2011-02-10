@@ -30,8 +30,8 @@ import org.jbpm.workflow.core.WorkflowProcess;
  */
 public class ExceptionHandlersDialog extends EditMapDialog<String, ActionExceptionHandler> {
     
-	private Process process;
-	
+    private Process process;
+
     protected ExceptionHandlersDialog(Shell parentShell, Process process) {
         super(parentShell, "ExceptionHandlers", ExceptionHandlerDialog.class);
         this.process = process;

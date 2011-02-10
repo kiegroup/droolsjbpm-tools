@@ -84,15 +84,15 @@ public class RuleEditor extends FormEditor
     private IResourceChangeListener    packageFileTracker = new IResourceChangeListener() {
 
                                                               public void resourceChanged(IResourceChangeEvent event) {
-                                                            	  if (packageEditorInput != null) {
-	                                                                  IResourceDelta delta = getRootDelta( event.getDelta() );
-	
-	                                                                  IPath p1 = delta.getFullPath();
-	                                                                  IPath p2 = packageEditorInput.getFile().getFullPath();
-	                                                                  if ( p1.equals( p2 ) ) {
-	                                                                      reloadCompletionEngine();
-	                                                                  }
-                                                            	  }                                                              }
+                                                                  if (packageEditorInput != null) {
+                                                                      IResourceDelta delta = getRootDelta( event.getDelta() );
+
+                                                                      IPath p1 = delta.getFullPath();
+                                                                      IPath p2 = packageEditorInput.getFile().getFullPath();
+                                                                      if ( p1.equals( p2 ) ) {
+                                                                          reloadCompletionEngine();
+                                                                      }
+                                                                  }                                                              }
 
                                                           };
 
@@ -140,27 +140,27 @@ public class RuleEditor extends FormEditor
                      xmlEditor.getEditorInput() );
             IPath packagePath = getCurrentDirectoryPath( getEditorInput() );
             if (packagePath != null) {
-            	packagePath = packagePath.append( "drools.package" );
-	            IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile( packagePath );
-	            IJavaProject javaProject = JavaCore.create( file.getProject() );
-	            ClassLoader classLoader = ProjectClassLoader.getProjectClassLoader( javaProject );
-	            loader = new SuggestionCompletionLoader( classLoader );
-	            if ( !file.exists() ) {
-	                String defaultHeader = "//This is a package configuration file";
-	                defaultHeader += "\n//Add imports, globals etc here which will be used by all the rule assets in this folder.";
-	                InputStream is = new ByteArrayInputStream( defaultHeader.getBytes() );
-	                try {
-	                    file.create( is,
-	                                 true,
-	                                 null );
-	                } catch ( CoreException e ) {
-	                    DroolsEclipsePlugin.log( e );
-	                }
-	            }
-	            packageEditorInput = new FileEditorInput( file );
+                packagePath = packagePath.append( "drools.package" );
+                IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile( packagePath );
+                IJavaProject javaProject = JavaCore.create( file.getProject() );
+                ClassLoader classLoader = ProjectClassLoader.getProjectClassLoader( javaProject );
+                loader = new SuggestionCompletionLoader( classLoader );
+                if ( !file.exists() ) {
+                    String defaultHeader = "//This is a package configuration file";
+                    defaultHeader += "\n//Add imports, globals etc here which will be used by all the rule assets in this folder.";
+                    InputStream is = new ByteArrayInputStream( defaultHeader.getBytes() );
+                    try {
+                        file.create( is,
+                                     true,
+                                     null );
+                    } catch ( CoreException e ) {
+                        DroolsEclipsePlugin.log( e );
+                    }
+                }
+                packageEditorInput = new FileEditorInput( file );
             }
             reloadCompletionEngine();
-	
+
             setPageText( 1,
                          "BRL Source" );
 
@@ -190,21 +190,21 @@ public class RuleEditor extends FormEditor
     }
 
     private IPath getCurrentDirectoryPath(IEditorInput editorInput) {
-    	if (editorInput instanceof FileEditorInput) {
-    		return ((FileEditorInput) editorInput).getFile().getFullPath().removeLastSegments( 1 ).addTrailingSeparator();
-    	}
-    	return null;
+        if (editorInput instanceof FileEditorInput) {
+            return ((FileEditorInput) editorInput).getFile().getFullPath().removeLastSegments( 1 ).addTrailingSeparator();
+        }
+        return null;
     }
 
     private void reloadCompletionEngine() {
-    	
-    	if (packageEditorInput == null) {
-    		completion = new SuggestionCompletionLoader( null ).getSuggestionEngine( "",
+
+        if (packageEditorInput == null) {
+            completion = new SuggestionCompletionLoader( null ).getSuggestionEngine( "",
                 new ArrayList(),
                 new ArrayList() );
-    		return;
-    	}
-    	
+            return;
+        }
+
         try {
 
             // Load all .dsl files from current dir

@@ -27,12 +27,12 @@ import org.eclipse.swt.graphics.Image;
 public class BPMNMilestoneFigure extends AbstractElementFigure {
     
     private static final Image ICON = ImageDescriptor.createFromURL(
-		DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/question.gif")).createImage();
+        DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/question.gif")).createImage();
         
     private RoundedRectangle rectangle;
     
     public BPMNMilestoneFigure() {
-    	setSize(80, 48);
+        setSize(80, 48);
     }
     
     protected void customizeFigure() {

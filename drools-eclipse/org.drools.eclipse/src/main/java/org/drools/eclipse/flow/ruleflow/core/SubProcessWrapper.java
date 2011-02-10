@@ -35,7 +35,7 @@ import org.jbpm.workflow.core.node.SubProcessNode;
  */
 public class SubProcessWrapper extends StateBasedNodeWrapper {
 
-	private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 510l;
     
     public static final String PROCESS_ID = "ProcessId";
     public static final String WAIT_FOR_COMPLETION = "WaitForCompletion";
@@ -48,9 +48,9 @@ public class SubProcessWrapper extends StateBasedNodeWrapper {
         getSubProcessNode().setName("SubProcess");
     }
     
-	protected void initDescriptors() {
-    	super.initDescriptors();
-    	IPropertyDescriptor[] oldDescriptors = descriptors; 
+    protected void initDescriptors() {
+        super.initDescriptors();
+        IPropertyDescriptor[] oldDescriptors = descriptors;
         descriptors = new IPropertyDescriptor[oldDescriptors.length + 7];
         System.arraycopy(oldDescriptors, 0, descriptors, 0, oldDescriptors.length);
         descriptors[descriptors.length - 7] = getOnEntryPropertyDescriptor();
@@ -62,7 +62,7 @@ public class SubProcessWrapper extends StateBasedNodeWrapper {
         descriptors[descriptors.length - 3] = 
             new ComboBoxPropertyDescriptor(INDEPENDENT, "Independent", new String[] {"true", "false"});
         descriptors[descriptors.length - 2] = 
-        	new TextPropertyDescriptor(PROCESS_ID, "ProcessId");
+            new TextPropertyDescriptor(PROCESS_ID, "ProcessId");
         descriptors[descriptors.length - 1] = 
             new ComboBoxPropertyDescriptor(WAIT_FOR_COMPLETION, "Wait for completion", new String[] {"true", "false"});
     }
@@ -73,17 +73,17 @@ public class SubProcessWrapper extends StateBasedNodeWrapper {
     
     public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
         return super.acceptsIncomingConnection(connection, source)
-        	&& getIncomingConnections().isEmpty();
+            && getIncomingConnections().isEmpty();
     }
 
     public boolean acceptsOutgoingConnection(ElementConnection connection, ElementWrapper target) {
         return super.acceptsOutgoingConnection(connection, target)
-        	&& getOutgoingConnections().isEmpty();
+            && getOutgoingConnections().isEmpty();
     }
     
     public Object getPropertyValue(Object id) {
         if (PROCESS_ID.equals(id)) {
-        	String processId = getSubProcessNode().getProcessId();
+            String processId = getSubProcessNode().getProcessId();
             return processId == null ? "" : processId;
         }
         if (WAIT_FOR_COMPLETION.equals(id)) {
@@ -103,7 +103,7 @@ public class SubProcessWrapper extends StateBasedNodeWrapper {
 
     public void resetPropertyValue(Object id) {
         if (PROCESS_ID.equals(id)) {
-        	getSubProcessNode().setProcessId("");
+            getSubProcessNode().setProcessId("");
         } else if (WAIT_FOR_COMPLETION.equals(id)) {
             getSubProcessNode().setWaitForCompletion(true);
         } else if (INDEPENDENT.equals(id)) {
@@ -118,9 +118,9 @@ public class SubProcessWrapper extends StateBasedNodeWrapper {
     }
 
     @SuppressWarnings("unchecked")
-	public void setPropertyValue(Object id, Object value) {
+    public void setPropertyValue(Object id, Object value) {
         if (PROCESS_ID.equals(id)) {
-        	getSubProcessNode().setProcessId((String) value);
+            getSubProcessNode().setProcessId((String) value);
         } else if (WAIT_FOR_COMPLETION.equals(id)) {
             getSubProcessNode().setWaitForCompletion(((Integer) value).intValue() == 0);
         } else if (INDEPENDENT.equals(id)) {

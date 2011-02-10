@@ -40,7 +40,7 @@ public class NewDSLFileWizard extends Wizard implements INewWizard {
         this.workbench = workbench;
         this.selection = selection;
         setWindowTitle("New Domain Specific Language configuration");
-    	ImageDescriptor desc = DroolsEclipsePlugin.getImageDescriptor("icons/dsl-large.png");
+        ImageDescriptor desc = DroolsEclipsePlugin.getImageDescriptor("icons/dsl-large.png");
         setDefaultPageImageDescriptor(desc);        
     }
     

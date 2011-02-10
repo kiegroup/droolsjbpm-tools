@@ -86,7 +86,7 @@ public class AgendaLogicalStructureDelegate implements ILogicalStructureTypeDele
                     String paramName = declarationVar.getValue().getValueString();
                     IJavaValue varValue = (IJavaValue) DebugUtil.getValueByExpression("return getRule().getDeclaration(\"" + paramName + "\").getValue(((org.drools.common.InternalFactHandle) getTuple().get(getRule().getDeclaration(\"" + paramName + "\"))).getObject());", value);
                     if (varValue != null) {
-                    	variables.add(new VariableWrapper(paramName, varValue));
+                        variables.add(new VariableWrapper(paramName, varValue));
                     }
                     break;
                 }                

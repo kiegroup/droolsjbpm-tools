@@ -30,24 +30,24 @@ public class Template extends DroolsElement {
         this.templateName = templateName;
     }
 
-	public Package getParentPackage() {
-		return (Package) getParent();
-	}
-	
-	public String getTemplateName() {
-		return templateName;
-	}
-	
-	public int getType() {
-		return TEMPLATE;
-	}
-	
-	public DroolsElement[] getChildren() {
-		return NO_ELEMENTS;
-	}
+    public Package getParentPackage() {
+        return (Package) getParent();
+    }
 
-	public String toString() {
-		return templateName;
-	}
+    public String getTemplateName() {
+        return templateName;
+    }
+
+    public int getType() {
+        return TEMPLATE;
+    }
+
+    public DroolsElement[] getChildren() {
+        return NO_ELEMENTS;
+    }
+
+    public String toString() {
+        return templateName;
+    }
 
 }

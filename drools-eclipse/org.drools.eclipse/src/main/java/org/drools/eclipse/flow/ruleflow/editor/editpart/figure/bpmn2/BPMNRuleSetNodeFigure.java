@@ -30,7 +30,7 @@ public class BPMNRuleSetNodeFigure extends AbstractElementFigure {
     private RoundedRectangle rectangle;
     
     public BPMNRuleSetNodeFigure() {
-    	setSize(80, 48);
+        setSize(80, 48);
     }
     
     protected void customizeFigure() {

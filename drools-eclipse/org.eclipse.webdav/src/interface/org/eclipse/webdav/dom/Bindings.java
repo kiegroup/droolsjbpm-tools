@@ -34,120 +34,120 @@ import org.w3c.dom.Node;
  * </p>
  */
 public class Bindings extends Property {
-	/**
-	 * An ordered collection of the element names of the bindings
-	 * element's children.
-	 */
-	protected static final String[] childNames = new String[] {"href", "segment"}; //$NON-NLS-1$ //$NON-NLS-2$
+    /**
+     * An ordered collection of the element names of the bindings
+     * element's children.
+     */
+    protected static final String[] childNames = new String[] {"href", "segment"}; //$NON-NLS-1$ //$NON-NLS-2$
 
-	/**
-	 * This class represent a single binding.
-	 *
-	 * @see Bindings#getBindings()
-	 */
-	public class Binding {
-		private String fHref = null;
-		private String fSegment = null;
+    /**
+     * This class represent a single binding.
+     *
+     * @see Bindings#getBindings()
+     */
+    public class Binding {
+        private String fHref = null;
+        private String fSegment = null;
 
-		/**
-		 * Construct a new binding with the given href and segment.  The
-		 * href and segment must not be null.
-		 *
-		 * @param href    the binding's href
-		 * @param segment the binding's segment
-		 */
-		public Binding(String href, String segment) {
-			Assert.isNotNull(href);
-			Assert.isNotNull(segment);
-			fHref = href;
-			fSegment = segment;
-		}
+        /**
+         * Construct a new binding with the given href and segment.  The
+         * href and segment must not be null.
+         *
+         * @param href    the binding's href
+         * @param segment the binding's segment
+         */
+        public Binding(String href, String segment) {
+            Assert.isNotNull(href);
+            Assert.isNotNull(segment);
+            fHref = href;
+            fSegment = segment;
+        }
 
-		/**
-		 * Return this binding's href.
-		 */
-		public String getHref() {
-			return fHref;
-		}
+        /**
+         * Return this binding's href.
+         */
+        public String getHref() {
+            return fHref;
+        }
 
-		/**
-		 * Return this binding's segment.
-		 */
-		public String getSegment() {
-			return fSegment;
-		}
-	}
+        /**
+         * Return this binding's segment.
+         */
+        public String getSegment() {
+            return fSegment;
+        }
+    }
 
-	/**
-	 * Creates a new editor on the given WebDAV bindings element. The
-	 * element is assumed to be well formed.
-	 *
-	 * @param root bindings element
-	 * @throws      MalformedElementException if there is reason to
-	 *              believe that the element is not well formed
-	 */
-	public Bindings(Element root) throws MalformedElementException {
-		super(root, "bindings"); //$NON-NLS-1$
-	}
+    /**
+     * Creates a new editor on the given WebDAV bindings element. The
+     * element is assumed to be well formed.
+     *
+     * @param root bindings element
+     * @throws      MalformedElementException if there is reason to
+     *              believe that the element is not well formed
+     */
+    public Bindings(Element root) throws MalformedElementException {
+        super(root, "bindings"); //$NON-NLS-1$
+    }
 
-	/**
-	 * Adds the specified binding to this editor's bindings element. The
-	 * given href and segment must not be <code>null</code>.
-	 *
-	 * @param href the href part of the binding to add
-	 * @param segment the segment part of the binding to add
-	 */
-	public void addBinding(String href, String segment) {
-		Assert.isNotNull(href);
-		Assert.isNotNull(segment);
-		appendChild(root, "href", encodeHref(href)); //$NON-NLS-1$
-		appendChild(root, "segment", segment); //$NON-NLS-1$
-	}
+    /**
+     * Adds the specified binding to this editor's bindings element. The
+     * given href and segment must not be <code>null</code>.
+     *
+     * @param href the href part of the binding to add
+     * @param segment the segment part of the binding to add
+     */
+    public void addBinding(String href, String segment) {
+        Assert.isNotNull(href);
+        Assert.isNotNull(segment);
+        appendChild(root, "href", encodeHref(href)); //$NON-NLS-1$
+        appendChild(root, "segment", segment); //$NON-NLS-1$
+    }
 
-	/**
-	 * Returns an <code>Enumeration</code> over this bindings
-	 * <code>Binding</code>s.
-	 *
-	 * @return an <code>Enumeration</code> of <code>Bindings.Binding</code>s
-	 * @throws MalformedElementException if there is reason to believe that
-	 *         this editor's underlying element is not well formed
-	 */
-	public Enumeration getBindings() throws MalformedElementException {
+    /**
+     * Returns an <code>Enumeration</code> over this bindings
+     * <code>Binding</code>s.
+     *
+     * @return an <code>Enumeration</code> of <code>Bindings.Binding</code>s
+     * @throws MalformedElementException if there is reason to believe that
+     *         this editor's underlying element is not well formed
+     */
+    public Enumeration getBindings() throws MalformedElementException {
 
-		final Node firstHref = getFirstChild(root, "href"); //$NON-NLS-1$
-		Node segment = null;
-		if (firstHref != null)
-			segment = getNextSibling((Element) firstHref, "segment"); //$NON-NLS-1$
+        final Node firstHref = getFirstChild(root, "href"); //$NON-NLS-1$
+        Node segment = null;
+        if (firstHref != null)
+            segment = getNextSibling((Element) firstHref, "segment"); //$NON-NLS-1$
 
-		final Node firstSegment = segment;
+        final Node firstSegment = segment;
 
-		Enumeration e = new Enumeration() {
-			Node fCurrentHref = firstHref;
-			Node fCurrentSegment = firstSegment;
+        Enumeration e = new Enumeration() {
+            Node fCurrentHref = firstHref;
+            Node fCurrentSegment = firstSegment;
 
-			public boolean hasMoreElements() {
+            public boolean hasMoreElements() {
 
-				return fCurrentHref != null && fCurrentSegment != null;
-			}
+                return fCurrentHref != null && fCurrentSegment != null;
+            }
 
-			public Object nextElement() {
+            public Object nextElement() {
 
-				if (!hasMoreElements())
-					throw new NoSuchElementException();
+                if (!hasMoreElements())
+                    throw new NoSuchElementException();
 
-				String nextHref = getFirstText((Element) fCurrentHref);
-				String nextSegment = getFirstText((Element) fCurrentSegment);
-				Binding nextBinding = new Binding(decodeHref(nextHref), nextSegment);
+                String nextHref = getFirstText((Element) fCurrentHref);
+                String nextSegment = getFirstText((Element) fCurrentSegment);
+                Binding nextBinding = new Binding(decodeHref(nextHref), nextSegment);
 
-				fCurrentHref = getNextSibling((Element) fCurrentSegment, "href"); //$NON-NLS-1$
-				fCurrentSegment = null;
-				if (fCurrentHref != null)
-					fCurrentSegment = getNextSibling((Element) fCurrentHref, "segment"); //$NON-NLS-1$
+                fCurrentHref = getNextSibling((Element) fCurrentSegment, "href"); //$NON-NLS-1$
+                fCurrentSegment = null;
+                if (fCurrentHref != null)
+                    fCurrentSegment = getNextSibling((Element) fCurrentHref, "segment"); //$NON-NLS-1$
 
-				return nextBinding;
-			}
-		};
+                return nextBinding;
+            }
+        };
 
-		return e;
-	}
+        return e;
+    }
 }

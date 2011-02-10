@@ -31,28 +31,28 @@ package org.eclipse.webdav.internal.kernel;
  * </p>
  */
 public class RedirectionException extends WebDAVException {
-	/**
-	 * Comment for <code>serialVersionUID</code>
-	 */
-	private static final long serialVersionUID = 510l;
+    /**
+     * Comment for <code>serialVersionUID</code>
+     */
+    private static final long serialVersionUID = 510l;
 
-	/** 
-	 * Construct a RedirectionException with a status code and simple message.
-	 * 
-	 * @param statusCode the WebDAV status code corresponding to the exception
-	 * @param statusMessage a message describing the status code in the context of the exception
-	 */
-	public RedirectionException(int statusCode, String statusMessage) {
-		super(statusCode, statusMessage);
-	}
+    /**
+     * Construct a RedirectionException with a status code and simple message.
+     *
+     * @param statusCode the WebDAV status code corresponding to the exception
+     * @param statusMessage a message describing the status code in the context of the exception
+     */
+    public RedirectionException(int statusCode, String statusMessage) {
+        super(statusCode, statusMessage);
+    }
 
-	/** 
-	 * Construct a RedirectionException with a status code and simple message.
-	 *
-	 * @param statusCode the WebDAV status code corresponding to the exception
-	 * @param statusMessage a message describing the status code in the context of the exception
-	 */
-	public RedirectionException(int statusCode, String statusMessage, Object data) {
-		super(statusCode, statusMessage, data);
-	}
+    /**
+     * Construct a RedirectionException with a status code and simple message.
+     *
+     * @param statusCode the WebDAV status code corresponding to the exception
+     * @param statusMessage a message describing the status code in the context of the exception
+     */
+    public RedirectionException(int statusCode, String statusMessage, Object data) {
+        super(statusCode, statusMessage, data);
+    }
 }

@@ -29,14 +29,14 @@ import org.eclipse.swt.widgets.Display;
 public class BPMNActionNodeFigure extends AbstractElementFigure {
     
     private static final Image ICON = ImageDescriptor.createFromURL(
-		DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/open.gif")).createImage();
+        DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/open.gif")).createImage();
         
     private static final Color color = new Color(Display.getCurrent(), 255, 255, 225);
 
     private RoundedRectangle rectangle;
     
     public BPMNActionNodeFigure() {
-    	setSize(80, 48);
+        setSize(80, 48);
     }
     
     protected void customizeFigure() {

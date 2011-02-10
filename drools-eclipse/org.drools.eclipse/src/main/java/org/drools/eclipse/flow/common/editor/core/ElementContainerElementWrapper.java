@@ -21,7 +21,7 @@ import java.util.List;
 
 public abstract class ElementContainerElementWrapper extends DefaultElementWrapper implements ElementContainer {
 
-	public static final int ADD_ELEMENT = 5;
+    public static final int ADD_ELEMENT = 5;
     public static final int REMOVE_ELEMENT = 6;
     
     private static final long serialVersionUID = 510l;
@@ -58,7 +58,7 @@ public abstract class ElementContainerElementWrapper extends DefaultElementWrapp
     }
     
     public boolean canAddElement(ElementWrapper element) {
-    	return true;
+        return true;
     }
 
 }

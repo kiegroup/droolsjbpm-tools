@@ -31,13 +31,13 @@ public class ColorCellEditor extends DialogCellEditor {
     }
     
     protected Object openDialogBox(Control cellEditorWindow) {
-    	ColorDialog dialog = new ColorDialog(Display.getCurrent().getActiveShell());
-    	Color color = (Color) getValue();
-    	if (color != null) {
-    		dialog.setRGB(color.getRGB());
-    	}
-		RGB result = (RGB) dialog.open();
-		return result == null ? null : new Color(Display.getCurrent(), result);
+        ColorDialog dialog = new ColorDialog(Display.getCurrent().getActiveShell());
+        Color color = (Color) getValue();
+        if (color != null) {
+            dialog.setRGB(color.getRGB());
+        }
+        RGB result = (RGB) dialog.open();
+        return result == null ? null : new Color(Display.getCurrent(), result);
     }
 
 }

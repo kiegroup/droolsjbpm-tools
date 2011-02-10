@@ -49,7 +49,7 @@ public class DeleteLogAction extends Action {
         view.deleteLog();  
         BusyIndicator.showWhile(view.getViewer().getControl().getDisplay(), new Runnable() {
             public void run() {
-            	view.getViewer().refresh();                    
+                view.getViewer().refresh();
             }
         });         
     }

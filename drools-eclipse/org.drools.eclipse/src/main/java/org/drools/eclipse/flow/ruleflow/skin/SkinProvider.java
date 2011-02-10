@@ -24,41 +24,41 @@ import org.eclipse.gef.palette.PaletteContainer;
 import org.eclipse.gef.palette.PaletteEntry;
 
 public interface SkinProvider {
-	
-	PaletteContainer createComponentsDrawer();
-	
-	PaletteEntry createConnectionEntry();
-	
-	IFigure createActionNodeFigure();
-	
-	IFigure createEndNodeFigure();
-	
-	IFigure createEventNodeFigure();
 
-	IFigure createFaultNodeFigure();
+    PaletteContainer createComponentsDrawer();
 
-	JoinFigureInterface createJoinFigure();
+    PaletteEntry createConnectionEntry();
 
-	SplitFigureInterface createSplitFigure();
+    IFigure createActionNodeFigure();
 
-	IFigure createStartNodeFigure();
+    IFigure createEndNodeFigure();
 
-	IFigure createTimerNodeFigure();
+    IFigure createEventNodeFigure();
 
-	IFigure createMilestoneFigure();
+    IFigure createFaultNodeFigure();
 
-	IFigure createRuleSetNodeFigure();
+    JoinFigureInterface createJoinFigure();
 
-	IFigure createSubFlowFigure();
+    SplitFigureInterface createSplitFigure();
 
-	IFigure createStateFigure();
+    IFigure createStartNodeFigure();
 
-	WorkItemFigureInterface createWorkItemFigure();
+    IFigure createTimerNodeFigure();
 
-	IFigure createCompositeNodeFigure();
+    IFigure createMilestoneFigure();
 
-	IFigure createForEachNodeFigure();
-	
-	String getWorkItemsName();
+    IFigure createRuleSetNodeFigure();
+
+    IFigure createSubFlowFigure();
+
+    IFigure createStateFigure();
+
+    WorkItemFigureInterface createWorkItemFigure();
+
+    IFigure createCompositeNodeFigure();
+
+    IFigure createForEachNodeFigure();
+
+    String getWorkItemsName();
 
 }

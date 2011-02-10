@@ -30,9 +30,9 @@ import org.jbpm.workflow.core.node.Join;
  */
 public class JoinWrapper extends AbstractNodeWrapper {
 
-	public static final int CHANGE_TYPE = 5;
+    public static final int CHANGE_TYPE = 5;
 
-	private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 510l;
     private transient IPropertyDescriptor[] descriptors;
 
     public static final String TYPE = "type";
@@ -50,7 +50,7 @@ public class JoinWrapper extends AbstractNodeWrapper {
     
     public boolean acceptsOutgoingConnection(ElementConnection connection, ElementWrapper target) {
         return super.acceptsOutgoingConnection(connection, target)
-        	&& getOutgoingConnections().isEmpty();
+            && getOutgoingConnections().isEmpty();
     }
 
     private void setDescriptors() {

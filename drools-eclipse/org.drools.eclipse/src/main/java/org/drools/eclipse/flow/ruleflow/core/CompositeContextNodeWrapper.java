@@ -56,12 +56,12 @@ public class CompositeContextNodeWrapper extends CompositeNodeWrapper {
         getCompositeContextNode().setDefaultContext(variableScope);
     }
     
-	public IPropertyDescriptor[] getPropertyDescriptors() {
-		if (descriptors == null) {
-			initPropertyDescriptors();
-		}
-		return descriptors;
-	}
+    public IPropertyDescriptor[] getPropertyDescriptors() {
+        if (descriptors == null) {
+            initPropertyDescriptors();
+        }
+        return descriptors;
+    }
 
     private void initPropertyDescriptors() {
         descriptors = new IPropertyDescriptor[DefaultElementWrapper.DESCRIPTORS.length + 4];
@@ -71,10 +71,10 @@ public class CompositeContextNodeWrapper extends CompositeNodeWrapper {
         descriptors[descriptors.length - 3] = 
             new TextPropertyDescriptor(END_NODE, "EndNodeId");
         descriptors[descriptors.length - 2] = 
-        	new ListPropertyDescriptor(VARIABLES, "Variables", VariableListCellEditor.class);
+            new ListPropertyDescriptor(VARIABLES, "Variables", VariableListCellEditor.class);
         descriptors[descriptors.length - 1] = 
-        	new ExceptionHandlersPropertyDescriptor(EXCEPTION_HANDLERS,
-        		"Exception Handlers", getProcessWrapper().getProcess());
+            new ExceptionHandlersPropertyDescriptor(EXCEPTION_HANDLERS,
+                "Exception Handlers", getProcessWrapper().getProcess());
     }
     
     public CompositeContextNode getCompositeContextNode() {
@@ -83,16 +83,16 @@ public class CompositeContextNodeWrapper extends CompositeNodeWrapper {
     
     public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
         return getIncomingConnections().isEmpty()
-        	&& (source == null
-    			|| ((NodeWrapper) source).getNode().getNodeContainer() == getNode().getNodeContainer()
-    			|| ((NodeWrapper) source).getNode().getNodeContainer() == getNode());
+            && (source == null
+                || ((NodeWrapper) source).getNode().getNodeContainer() == getNode().getNodeContainer()
+                || ((NodeWrapper) source).getNode().getNodeContainer() == getNode());
     }
 
     public boolean acceptsOutgoingConnection(ElementConnection connection, ElementWrapper target) {
         return getOutgoingConnections().isEmpty()
-        	&& (target == null
-    			|| ((NodeWrapper) target).getNode().getNodeContainer() == getNode().getNodeContainer()
-        		|| ((NodeWrapper) target).getNode().getNodeContainer() == getNode());
+            && (target == null
+                || ((NodeWrapper) target).getNode().getNodeContainer() == getNode().getNodeContainer()
+                || ((NodeWrapper) target).getNode().getNodeContainer() == getNode());
     }
 
     protected void internalAddElement(ElementWrapper element) {
@@ -108,19 +108,19 @@ public class CompositeContextNodeWrapper extends CompositeNodeWrapper {
             return ((VariableScope) getCompositeContextNode().getDefaultContext(VariableScope.VARIABLE_SCOPE)).getVariables();
         }
         if (START_NODE.equals(id)) {
-        	CompositeNode.NodeAndType link = getCompositeNode().getLinkedIncomingNode(Node.CONNECTION_DEFAULT_TYPE);
-        	return link == null ? "" : link.getNodeId() + "";
+            CompositeNode.NodeAndType link = getCompositeNode().getLinkedIncomingNode(Node.CONNECTION_DEFAULT_TYPE);
+            return link == null ? "" : link.getNodeId() + "";
         }
         if (END_NODE.equals(id)) {
-        	CompositeNode.NodeAndType link = getCompositeNode().getLinkedOutgoingNode(Node.CONNECTION_DEFAULT_TYPE);
-        	return link == null ? "" : link.getNodeId() + "";
+            CompositeNode.NodeAndType link = getCompositeNode().getLinkedOutgoingNode(Node.CONNECTION_DEFAULT_TYPE);
+            return link == null ? "" : link.getNodeId() + "";
         }
         if (EXCEPTION_HANDLERS.equals(id)) {
-        	ExceptionScope exceptionScope = (ExceptionScope)
-        		getCompositeContextNode().getDefaultContext(ExceptionScope.EXCEPTION_SCOPE);
-        	if (exceptionScope == null) {
-        		return new HashMap<String, ExceptionHandler>();
-        	}
+            ExceptionScope exceptionScope = (ExceptionScope)
+                getCompositeContextNode().getDefaultContext(ExceptionScope.EXCEPTION_SCOPE);
+            if (exceptionScope == null) {
+                return new HashMap<String, ExceptionHandler>();
+            }
             return exceptionScope.getExceptionHandlers();
         }
         return super.getPropertyValue(id);
@@ -135,44 +135,44 @@ public class CompositeContextNodeWrapper extends CompositeNodeWrapper {
         } else if (END_NODE.equals(id)) {
             getCompositeNode().linkOutgoingConnections(null, Node.CONNECTION_DEFAULT_TYPE);
         } else if (EXCEPTION_HANDLERS.equals(id)) {
-        	ExceptionScope exceptionScope = (ExceptionScope)
-    			getCompositeContextNode().getDefaultContext(ExceptionScope.EXCEPTION_SCOPE);
-        	if (exceptionScope != null) {
-        		exceptionScope.setExceptionHandlers(new HashMap<String, ExceptionHandler>());
-        	}
+            ExceptionScope exceptionScope = (ExceptionScope)
+                getCompositeContextNode().getDefaultContext(ExceptionScope.EXCEPTION_SCOPE);
+            if (exceptionScope != null) {
+                exceptionScope.setExceptionHandlers(new HashMap<String, ExceptionHandler>());
+            }
         } else {
-        	super.resetPropertyValue(id);
+            super.resetPropertyValue(id);
         }
     }
 
     @SuppressWarnings("unchecked")
-	public void setPropertyValue(Object id, Object value) {
+    public void setPropertyValue(Object id, Object value) {
         if (VARIABLES.equals(id)) {
             ((VariableScope) getCompositeContextNode().getDefaultContext(
                 VariableScope.VARIABLE_SCOPE)).setVariables((List<Variable>) value);
         } else if (START_NODE.equals(id)) {
-        	try {
-        		getCompositeNode().linkIncomingConnections(
-    				Node.CONNECTION_DEFAULT_TYPE, new Long((String) value), Node.CONNECTION_DEFAULT_TYPE);
-        	} catch (IllegalArgumentException e) {
-        		// could not link
-        	}
+            try {
+                getCompositeNode().linkIncomingConnections(
+                    Node.CONNECTION_DEFAULT_TYPE, new Long((String) value), Node.CONNECTION_DEFAULT_TYPE);
+            } catch (IllegalArgumentException e) {
+                // could not link
+            }
         } else if (END_NODE.equals(id)) {
-        	try {
-            	getCompositeNode().linkOutgoingConnections(
-        			new Long((String) value), Node.CONNECTION_DEFAULT_TYPE, Node.CONNECTION_DEFAULT_TYPE);
-        	} catch (IllegalArgumentException e) {
-        		// could not link
-        	}
+            try {
+                getCompositeNode().linkOutgoingConnections(
+                    new Long((String) value), Node.CONNECTION_DEFAULT_TYPE, Node.CONNECTION_DEFAULT_TYPE);
+            } catch (IllegalArgumentException e) {
+                // could not link
+            }
         } else if (EXCEPTION_HANDLERS.equals(id)) {
-        	ExceptionScope exceptionScope = (ExceptionScope)
-    			getCompositeContextNode().getDefaultContext(ExceptionScope.EXCEPTION_SCOPE);
-        	if (exceptionScope == null) {
-        		exceptionScope = new ExceptionScope();
-        		getCompositeContextNode().addContext(exceptionScope);
-        		getCompositeContextNode().setDefaultContext(exceptionScope);
-        	}
-    		exceptionScope.setExceptionHandlers((Map<String, ExceptionHandler>) value);
+            ExceptionScope exceptionScope = (ExceptionScope)
+                getCompositeContextNode().getDefaultContext(ExceptionScope.EXCEPTION_SCOPE);
+            if (exceptionScope == null) {
+                exceptionScope = new ExceptionScope();
+                getCompositeContextNode().addContext(exceptionScope);
+                getCompositeContextNode().setDefaultContext(exceptionScope);
+            }
+            exceptionScope.setExceptionHandlers((Map<String, ExceptionHandler>) value);
         } else {
             super.setPropertyValue(id, value);
         }

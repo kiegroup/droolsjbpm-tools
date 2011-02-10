@@ -55,133 +55,133 @@ import org.jbpm.workflow.core.WorkflowProcess;
  */
 public class RuleFlowImportsDialog extends Dialog {
 
-	private static final Pattern IMPORT_PATTERN = Pattern.compile(
-		"\\n\\s*import\\s+([^\\s;#]+);?", Pattern.DOTALL);
-	private static final Pattern FUNCTION_IMPORT_PATTERN = Pattern.compile(
-			"\\n\\s*import\\s+function\\s+([^\\s;#]+);?", Pattern.DOTALL);
-	
-	private WorkflowProcess process;
-	private boolean success;
-	private TabFolder tabFolder;
-	private SourceViewer importsViewer;
-	private List<String> imports;
-	private List<String> functionImports;
+    private static final Pattern IMPORT_PATTERN = Pattern.compile(
+        "\\n\\s*import\\s+([^\\s;#]+);?", Pattern.DOTALL);
+    private static final Pattern FUNCTION_IMPORT_PATTERN = Pattern.compile(
+            "\\n\\s*import\\s+function\\s+([^\\s;#]+);?", Pattern.DOTALL);
 
-	public RuleFlowImportsDialog(Shell parentShell, WorkflowProcess process) {
-		super(parentShell);
-		this.process = process;
-		setShellStyle(getShellStyle() | SWT.RESIZE);
-	}
+    private WorkflowProcess process;
+    private boolean success;
+    private TabFolder tabFolder;
+    private SourceViewer importsViewer;
+    private List<String> imports;
+    private List<String> functionImports;
 
-	protected void configureShell(Shell newShell) {
-		super.configureShell(newShell);
-		newShell.setText("Imports editor");
-	}
+    public RuleFlowImportsDialog(Shell parentShell, WorkflowProcess process) {
+        super(parentShell);
+        this.process = process;
+        setShellStyle(getShellStyle() | SWT.RESIZE);
+    }
 
-	protected Point getInitialSize() {
-		return new Point(600, 450);
-	}
+    protected void configureShell(Shell newShell) {
+        super.configureShell(newShell);
+        newShell.setText("Imports editor");
+    }
 
-	private Control createTextualEditor(Composite parent) {
-		importsViewer = new SourceViewer(parent, null, SWT.BORDER);
-		importsViewer.configure(new DRLSourceViewerConfig(null) {
-			public IReconciler getReconciler(ISourceViewer sourceViewer) {
-				return null;
-			}
-			public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
-				ContentAssistant assistant = new ContentAssistant();
-				IContentAssistProcessor completionProcessor = new ImportCompletionProcessor();
-				assistant.setContentAssistProcessor(
-					completionProcessor, IDocument.DEFAULT_CONTENT_TYPE);
-				assistant.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
-				return assistant;
-			}
-		});
-		IDocument document = new Document(getProcessImports());
-		importsViewer.setDocument(document);
-		IDocumentPartitioner partitioner =
+    protected Point getInitialSize() {
+        return new Point(600, 450);
+    }
+
+    private Control createTextualEditor(Composite parent) {
+        importsViewer = new SourceViewer(parent, null, SWT.BORDER);
+        importsViewer.configure(new DRLSourceViewerConfig(null) {
+            public IReconciler getReconciler(ISourceViewer sourceViewer) {
+                return null;
+            }
+            public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
+                ContentAssistant assistant = new ContentAssistant();
+                IContentAssistProcessor completionProcessor = new ImportCompletionProcessor();
+                assistant.setContentAssistProcessor(
+                    completionProcessor, IDocument.DEFAULT_CONTENT_TYPE);
+                assistant.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
+                return assistant;
+            }
+        });
+        IDocument document = new Document(getProcessImports());
+        importsViewer.setDocument(document);
+        IDocumentPartitioner partitioner =
             new FastPartitioner(
                 new DRLPartionScanner(),
                 DRLPartionScanner.LEGAL_CONTENT_TYPES);
         partitioner.connect(document);
         document.setDocumentPartitioner(partitioner);
         importsViewer.getControl().addKeyListener(new KeyListener() {
-			public void keyPressed(KeyEvent e) {
-				if (e.character == ' ' && e.stateMask == SWT.CTRL) {
-					importsViewer.doOperation(ISourceViewer.CONTENTASSIST_PROPOSALS);
-				}
-			}
-			public void keyReleased(KeyEvent e) {
-			}
+            public void keyPressed(KeyEvent e) {
+                if (e.character == ' ' && e.stateMask == SWT.CTRL) {
+                    importsViewer.doOperation(ISourceViewer.CONTENTASSIST_PROPOSALS);
+                }
+            }
+            public void keyReleased(KeyEvent e) {
+            }
         });
-		return importsViewer.getControl();
-	}
-	
-	private String getProcessImports() {
-		String result = "# define your imports here: e.g. import com.sample.MyClass\n";
-		List<String> imports = ((Process) process).getImports();
-		if (imports != null) {
-			for (String importString: imports) {
-				result += "import " + importString + "\n";
-			}
-		}
-		imports = process.getFunctionImports();
-		if (imports != null) {
-			for (String importString: imports) {
-				result += "import function " + importString + "\n";
-			}
-		}
-		return result;
-	}
-	
-	public Control createDialogArea(Composite parent) {
-		GridLayout layout = new GridLayout();
-		parent.setLayout(layout);
-		layout.numColumns = 1;
-		tabFolder = new TabFolder(parent, SWT.NONE);
-		GridData gd = new GridData();
-		gd.grabExcessHorizontalSpace = true;
-		gd.grabExcessVerticalSpace = true;
-		gd.verticalAlignment = GridData.FILL;
-		gd.horizontalAlignment = GridData.FILL;
-		tabFolder.setLayoutData(gd);
-		TabItem textEditorTab = new TabItem(tabFolder, SWT.NONE);
-		textEditorTab.setText("Imports");
-		textEditorTab.setControl(createTextualEditor(tabFolder));
-		return tabFolder;
-	}
-	
-	protected void okPressed() {
-		success = true;
-		updateImports();
-		super.okPressed();
-	}
+        return importsViewer.getControl();
+    }
 
-	public boolean isSuccess() {
-		return success;
-	}
+    private String getProcessImports() {
+        String result = "# define your imports here: e.g. import com.sample.MyClass\n";
+        List<String> imports = ((Process) process).getImports();
+        if (imports != null) {
+            for (String importString: imports) {
+                result += "import " + importString + "\n";
+            }
+        }
+        imports = process.getFunctionImports();
+        if (imports != null) {
+            for (String importString: imports) {
+                result += "import function " + importString + "\n";
+            }
+        }
+        return result;
+    }
 
-	public List<String> getImports() {
-		return imports;
-	}
-	
-	public List<String> getFunctionImports() {
-		return functionImports;
-	}
-	
-	private void updateImports() {
-		this.imports = new ArrayList<String>();
-		Matcher matcher = IMPORT_PATTERN.matcher(importsViewer.getDocument().get());
-		while (matcher.find()) {
-			String importString = matcher.group(1);
-			if (!"function".equals(importString)) {
-				this.imports.add(importString);
-			}
-		}
-		this.functionImports = new ArrayList<String>();
-		matcher = FUNCTION_IMPORT_PATTERN.matcher(importsViewer.getDocument().get());
-		while (matcher.find()) {
-			this.functionImports.add(matcher.group(1));
-		}
-	}
+    public Control createDialogArea(Composite parent) {
+        GridLayout layout = new GridLayout();
+        parent.setLayout(layout);
+        layout.numColumns = 1;
+        tabFolder = new TabFolder(parent, SWT.NONE);
+        GridData gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.grabExcessVerticalSpace = true;
+        gd.verticalAlignment = GridData.FILL;
+        gd.horizontalAlignment = GridData.FILL;
+        tabFolder.setLayoutData(gd);
+        TabItem textEditorTab = new TabItem(tabFolder, SWT.NONE);
+        textEditorTab.setText("Imports");
+        textEditorTab.setControl(createTextualEditor(tabFolder));
+        return tabFolder;
+    }
+
+    protected void okPressed() {
+        success = true;
+        updateImports();
+        super.okPressed();
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public List<String> getImports() {
+        return imports;
+    }
+
+    public List<String> getFunctionImports() {
+        return functionImports;
+    }
+
+    private void updateImports() {
+        this.imports = new ArrayList<String>();
+        Matcher matcher = IMPORT_PATTERN.matcher(importsViewer.getDocument().get());
+        while (matcher.find()) {
+            String importString = matcher.group(1);
+            if (!"function".equals(importString)) {
+                this.imports.add(importString);
+            }
+        }
+        this.functionImports = new ArrayList<String>();
+        matcher = FUNCTION_IMPORT_PATTERN.matcher(importsViewer.getDocument().get());
+        while (matcher.find()) {
+            this.functionImports.add(matcher.group(1));
+        }
+    }
 }

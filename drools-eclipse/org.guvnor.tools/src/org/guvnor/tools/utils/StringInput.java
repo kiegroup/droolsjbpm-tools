@@ -27,33 +27,33 @@ import org.eclipse.ui.IStorageEditorInput;
  * @author jgraham
  */
 public class StringInput extends PlatformObject implements IStorageEditorInput {
-	private IStorage storage;
+    private IStorage storage;
 
-	public StringInput(IStorage storage) {
-		this.storage = storage;
-	}
+    public StringInput(IStorage storage) {
+        this.storage = storage;
+    }
 
-	public boolean exists() {
-		return true;
-	}
+    public boolean exists() {
+        return true;
+    }
 
-	public ImageDescriptor getImageDescriptor() {
-		return null;
-	}
+    public ImageDescriptor getImageDescriptor() {
+        return null;
+    }
 
-	public String getName() {
-		return storage.getName();
-	}
+    public String getName() {
+        return storage.getName();
+    }
 
-	public IPersistableElement getPersistable() {
-		return null;
-	}
+    public IPersistableElement getPersistable() {
+        return null;
+    }
 
-	public IStorage getStorage() {
-		return storage;
-	}
+    public IStorage getStorage() {
+        return storage;
+    }
 
-	public String getToolTipText() {
-		return "String-based file: " + storage.getName(); //$NON-NLS-1$
-	}
+    public String getToolTipText() {
+        return "String-based file: " + storage.getName(); //$NON-NLS-1$
+    }
 }

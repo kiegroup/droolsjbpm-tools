@@ -89,13 +89,13 @@ public class RuleFlowWrapperBuilder implements ProcessWrapperBuilder {
                 }
             }
             if (node instanceof CompositeNode) {
-            	Set<Node> subNodes = new HashSet<Node>();
-            	for (Node subNode: ((CompositeNode) node).getNodes()) {
-            		subNodes.add(subNode);
-            	}
-            	if (subNodes.size() > 0) {
-            		processNodes(subNodes, new HashSet<Connection>(), (CompositeNodeWrapper) nodeWrapper, project);
-            	}
+                Set<Node> subNodes = new HashSet<Node>();
+                for (Node subNode: ((CompositeNode) node).getNodes()) {
+                    subNodes.add(subNode);
+                }
+                if (subNodes.size() > 0) {
+                    processNodes(subNodes, new HashSet<Connection>(), (CompositeNodeWrapper) nodeWrapper, project);
+                }
             }
         }
         for (Connection connection: connections) {
@@ -105,10 +105,10 @@ public class RuleFlowWrapperBuilder implements ProcessWrapperBuilder {
             NodeWrapper from = nodeWrappers.get(connection.getFrom());
             NodeWrapper to = nodeWrappers.get(connection.getTo());
             if (from != null && to != null) {
-	            connectionWrapper.localSetSource(from);
-	            from.localAddOutgoingConnection(connectionWrapper);
-	            connectionWrapper.localSetTarget(to);
-	            to.localAddIncomingConnection(connectionWrapper);
+                connectionWrapper.localSetSource(from);
+                from.localAddOutgoingConnection(connectionWrapper);
+                connectionWrapper.localSetTarget(to);
+                to.localAddIncomingConnection(connectionWrapper);
             }
         }
     }
@@ -129,7 +129,7 @@ public class RuleFlowWrapperBuilder implements ProcessWrapperBuilder {
         } else if (node instanceof DynamicNode) {
             return new DynamicNodeWrapper();
         } else if (node instanceof StateNode) {
-        	return new StateNodeWrapper();
+            return new StateNodeWrapper();
         } else if (node instanceof CompositeContextNode) {
             return new CompositeContextNodeWrapper();
         } else if (node instanceof Join) {
@@ -149,19 +149,19 @@ public class RuleFlowWrapperBuilder implements ProcessWrapperBuilder {
             Work work = ((WorkItemNode) node).getWork();
             if (work != null && work.getName() != null) {
                 try {
-                	WorkDefinition workDefinition = 
-	                    WorkItemDefinitions.getWorkDefinitions(project)
-	                        .get(work.getName());
-	                if (workDefinition == null) {
-	//                	DroolsEclipsePlugin.log(
-	//                        new IllegalArgumentException("Could not find work definition for work " + work.getName()));
-	                    workDefinition = new WorkDefinitionImpl();
-	                    ((WorkDefinitionImpl) workDefinition).setName(work.getName());
-	                }
-	                workItemWrapper.setWorkDefinition(workDefinition);
+                    WorkDefinition workDefinition =
+                        WorkItemDefinitions.getWorkDefinitions(project)
+                            .get(work.getName());
+                    if (workDefinition == null) {
+    //                    DroolsEclipsePlugin.log(
+    //                        new IllegalArgumentException("Could not find work definition for work " + work.getName()));
+                        workDefinition = new WorkDefinitionImpl();
+                        ((WorkDefinitionImpl) workDefinition).setName(work.getName());
+                    }
+                    workItemWrapper.setWorkDefinition(workDefinition);
                 } catch (Throwable t) {
-            		// an error might be thrown when parsing the work definitions,
-                	// but this should already be displayed to the user
+                    // an error might be thrown when parsing the work definitions,
+                    // but this should already be displayed to the user
                 }
             }
             return workItemWrapper;

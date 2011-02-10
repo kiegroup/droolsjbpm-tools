@@ -114,10 +114,10 @@ public class ProcessInstancesView extends DroolsDebugEventHandlerView {
             }
             String projectName = null;
             try {
-            	projectName = processInstance.getLaunch().getLaunchConfiguration().getAttribute(
-        			IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, (String) null);
+                projectName = processInstance.getLaunch().getLaunchConfiguration().getAttribute(
+                    IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, (String) null);
             } catch (CoreException e) {
-            	DroolsEclipsePlugin.log(e);
+                DroolsEclipsePlugin.log(e);
             }
             ((ProcessInstanceViewer) view).showProcessInstance(id, processId, nodeIds, projectName);
         }

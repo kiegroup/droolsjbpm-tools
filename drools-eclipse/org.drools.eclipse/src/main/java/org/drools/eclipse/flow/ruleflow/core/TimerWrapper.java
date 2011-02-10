@@ -30,9 +30,9 @@ import org.jbpm.workflow.core.node.TimerNode;
  */
 public class TimerWrapper extends AbstractNodeWrapper {
 
-	private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 510l;
 
-	private IPropertyDescriptor[] descriptors;
+    private IPropertyDescriptor[] descriptors;
 
     public static final String TIMER_DELAY = "TimerDelay";
     public static final String TIMER_PERIOD = "TimerPeriod";
@@ -57,31 +57,31 @@ public class TimerWrapper extends AbstractNodeWrapper {
     }
     
     public IPropertyDescriptor[] getPropertyDescriptors() {
-    	if (descriptors == null) {
-    		setDescriptors();
-    	}
+        if (descriptors == null) {
+            setDescriptors();
+        }
         return descriptors;
     }
 
     public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
         return super.acceptsIncomingConnection(connection, source)
-        	&& getIncomingConnections().isEmpty();
+            && getIncomingConnections().isEmpty();
     }
 
     public boolean acceptsOutgoingConnection(ElementConnection connection, ElementWrapper target) {
         return super.acceptsOutgoingConnection(connection, target)
-        	&& getOutgoingConnections().isEmpty();
+            && getOutgoingConnections().isEmpty();
     }
     
     public Object getPropertyValue(Object id) {
         Timer timer = getTimerNode().getTimer();
         if (TIMER_DELAY.equals(id)) {
-        	return timer == null ? "" : 
-        		(timer.getDelay() == null? "" : timer.getDelay());
+            return timer == null ? "" :
+                (timer.getDelay() == null? "" : timer.getDelay());
         }
         if (TIMER_PERIOD.equals(id)) {
             return timer == null ? "" :
-            	(timer.getPeriod() == null ? "" : timer.getPeriod());
+                (timer.getPeriod() == null ? "" : timer.getPeriod());
         }
         return super.getPropertyValue(id);
     }
@@ -114,16 +114,16 @@ public class TimerWrapper extends AbstractNodeWrapper {
             getTimerNode().setTimer(timer);
         }
         if (TIMER_DELAY.equals(id)) {
-        	String s = ((String) value).trim();
-        	if (s.length() == 0) {
-        		s = null;
-        	}
+            String s = ((String) value).trim();
+            if (s.length() == 0) {
+                s = null;
+            }
             timer.setDelay(s);
         } else if (TIMER_PERIOD.equals(id)) {
-        	String s = ((String) value).trim();
-        	if (s.length() == 0) {
-        		s = null;
-        	}
+            String s = ((String) value).trim();
+            if (s.length() == 0) {
+                s = null;
+            }
             timer.setPeriod(s);
         } else {
             super.setPropertyValue(id, value);

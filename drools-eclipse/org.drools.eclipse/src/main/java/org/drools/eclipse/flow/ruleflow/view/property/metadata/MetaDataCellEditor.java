@@ -39,6 +39,6 @@ public class MetaDataCellEditor extends BeanDialogCellEditor<Map<String, Object>
     }
     
     protected String getLabelText(Object value) {
-		return "";
+        return "";
     }
 }

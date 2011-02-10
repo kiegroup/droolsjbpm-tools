@@ -31,50 +31,50 @@ import org.w3c.dom.Document;
  */
 public class WebDAVFactory implements ILocatorFactory, IContextFactory, IDocumentFactory {
 
-	public static IContextFactory contextFactory = new ContextFactory();
-	public static IDocumentFactory documentFactory = new DocumentFactory();
-	public static ILocatorFactory locatorFactory = new LocatorFactory();
+    public static IContextFactory contextFactory = new ContextFactory();
+    public static IDocumentFactory documentFactory = new DocumentFactory();
+    public static ILocatorFactory locatorFactory = new LocatorFactory();
 
-	/**
-	 * WebDavFactory constructor comment.
-	 */
-	public WebDAVFactory() {
-		super();
-	}
+    /**
+     * WebDavFactory constructor comment.
+     */
+    public WebDAVFactory() {
+        super();
+    }
 
-	public IContext newContext() {
-		return contextFactory.newContext();
-	}
+    public IContext newContext() {
+        return contextFactory.newContext();
+    }
 
-	public IContext newContext(IContext baseContext) {
-		return contextFactory.newContext(baseContext);
-	}
+    public IContext newContext(IContext baseContext) {
+        return contextFactory.newContext(baseContext);
+    }
 
-	public Document newDocument() {
-		return documentFactory.newDocument();
-	}
+    public Document newDocument() {
+        return documentFactory.newDocument();
+    }
 
-	public ILocator newLocator(String resourceURL) {
-		return locatorFactory.newLocator(resourceURL);
-	}
+    public ILocator newLocator(String resourceURL) {
+        return locatorFactory.newLocator(resourceURL);
+    }
 
-	/**
-	 * Answer a new resource locator that identifies a particular
-	 * server resource by it's URL and label.
-	 *
-	 * @param resourceURL the URL of the resource.
-	 * @param label the version label of the resource.
-	 * @return the Locator to the resource.
-	 */
-	public ILocator newLocator(String resourceURL, String label) {
-		return locatorFactory.newLocator(resourceURL, label);
-	}
+    /**
+     * Answer a new resource locator that identifies a particular
+     * server resource by it's URL and label.
+     *
+     * @param resourceURL the URL of the resource.
+     * @param label the version label of the resource.
+     * @return the Locator to the resource.
+     */
+    public ILocator newLocator(String resourceURL, String label) {
+        return locatorFactory.newLocator(resourceURL, label);
+    }
 
-	public QualifiedName newQualifiedName(String qualifier, String localName) {
-		return new QualifiedNameImpl(qualifier, localName);
-	}
+    public QualifiedName newQualifiedName(String qualifier, String localName) {
+        return new QualifiedNameImpl(qualifier, localName);
+    }
 
-	public ILocator newStableLocator(String resourceURL) {
-		return locatorFactory.newStableLocator(resourceURL);
-	}
+    public ILocator newStableLocator(String resourceURL) {
+        return locatorFactory.newStableLocator(resourceURL);
+    }
 }

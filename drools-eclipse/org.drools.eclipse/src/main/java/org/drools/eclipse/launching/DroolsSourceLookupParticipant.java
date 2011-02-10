@@ -24,19 +24,19 @@ import org.eclipse.jdt.launching.sourcelookup.containers.JavaSourceLookupPartici
 
 public class DroolsSourceLookupParticipant extends JavaSourceLookupParticipant {
 
-	public String getSourceName(Object object) throws CoreException {
-		if (object instanceof DroolsStackFrame) {
-			RuleInfo ruleInfo = ((DroolsStackFrame) object).getExecutingRuleInfo();
-			if (ruleInfo != null) {
+    public String getSourceName(Object object) throws CoreException {
+        if (object instanceof DroolsStackFrame) {
+            RuleInfo ruleInfo = ((DroolsStackFrame) object).getExecutingRuleInfo();
+            if (ruleInfo != null) {
                 String p = ruleInfo.getSourcePathName();
-				return p;
-			}
-			FunctionInfo functionInfo = ((DroolsStackFrame) object).getExecutingFunctionInfo();
-			if (functionInfo != null) {
-				return functionInfo.getSourcePathName();
-			}
-		}
-		return super.getSourceName(object);
-	}
-	
+                return p;
+            }
+            FunctionInfo functionInfo = ((DroolsStackFrame) object).getExecutingFunctionInfo();
+            if (functionInfo != null) {
+                return functionInfo.getSourcePathName();
+            }
+        }
+        return super.getSourceName(object);
+    }
+
 }

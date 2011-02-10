@@ -31,9 +31,9 @@ import org.jbpm.workflow.core.node.ActionNode;
  */
 public class ActionWrapper extends AbstractNodeWrapper {
 
-	private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 510l;
 
-	private IPropertyDescriptor[] descriptors;
+    private IPropertyDescriptor[] descriptors;
 
     public static final String ACTION = "Action";
 
@@ -54,25 +54,25 @@ public class ActionWrapper extends AbstractNodeWrapper {
     }
     
     public IPropertyDescriptor[] getPropertyDescriptors() {
-    	if (descriptors == null) {
-    		setDescriptors();
-    	}
+        if (descriptors == null) {
+            setDescriptors();
+        }
         return descriptors;
     }
 
     public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
         return super.acceptsIncomingConnection(connection, source)
-        	&& getIncomingConnections().isEmpty();
+            && getIncomingConnections().isEmpty();
     }
 
     public boolean acceptsOutgoingConnection(ElementConnection connection, ElementWrapper target) {
         return super.acceptsOutgoingConnection(connection, target)
-        	&& getOutgoingConnections().isEmpty();
+            && getOutgoingConnections().isEmpty();
     }
     
     public Object getPropertyValue(Object id) {
         if (ACTION.equals(id)) {
-        	Object action = getActionNode().getAction();
+            Object action = getActionNode().getAction();
             return action == null ? "" : action;
         }
         return super.getPropertyValue(id);
@@ -80,7 +80,7 @@ public class ActionWrapper extends AbstractNodeWrapper {
 
     public void resetPropertyValue(Object id) {
         if (ACTION.equals(id)) {
-        	getActionNode().setAction(null);
+            getActionNode().setAction(null);
         } else {
             super.resetPropertyValue(id);
         }
@@ -88,7 +88,7 @@ public class ActionWrapper extends AbstractNodeWrapper {
 
     public void setPropertyValue(Object id, Object value) {
         if (ACTION.equals(id)) {
-        	getActionNode().setAction((DroolsAction) value);
+            getActionNode().setAction((DroolsAction) value);
         } else {
             super.setPropertyValue(id, value);
         }

@@ -24,32 +24,32 @@ import org.eclipse.webdav.IContext;
  */
 public class Message {
 
-	protected IContext context = new ContextFactory().newContext();
+    protected IContext context = new ContextFactory().newContext();
 
-	// The message body. Can be either an Element, an InputStream
-	protected Object body;
+    // The message body. Can be either an Element, an InputStream
+    protected Object body;
 
-	/**
-	 * Default constructor for the class.
-	 */
-	public Message() {
-		super();
-	}
+    /**
+     * Default constructor for the class.
+     */
+    public Message() {
+        super();
+    }
 
-	/**
-	 * Return the message body.
-	 */
-	public Object getBody() {
-		return body;
-	}
+    /**
+     * Return the message body.
+     */
+    public Object getBody() {
+        return body;
+    }
 
-	/**
-	 * Return the message context.
-	 *
-	 * @return the message context.
-	 * @see Context
-	 */
-	public IContext getContext() {
-		return context;
-	}
+    /**
+     * Return the message context.
+     *
+     * @return the message context.
+     * @see Context
+     */
+    public IContext getContext() {
+        return context;
+    }
 }

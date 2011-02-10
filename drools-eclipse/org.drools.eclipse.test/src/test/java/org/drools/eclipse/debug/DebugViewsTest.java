@@ -44,89 +44,89 @@ import org.drools.spi.AgendaGroup;
  * @author Kris Verlaenen
  */
 public class DebugViewsTest {
-	
-	/*
-	 * WARNING: DO NOT CHANGE ANYTHING IN THIS TEST CLASS
-	 * WITHOUT ALSO CHANGING THE IMPLEMENTATION IN THE DEBUG
-	 * VIEWS (which are using reflection)
-	 */
+
+    /*
+     * WARNING: DO NOT CHANGE ANYTHING IN THIS TEST CLASS
+     * WITHOUT ALSO CHANGING THE IMPLEMENTATION IN THE DEBUG
+     * VIEWS (which are using reflection)
+     */
     
     @Test
     public void testApplicationDataView() throws Exception {
-    	Reader source = new InputStreamReader(DebugViewsTest.class.getResourceAsStream("/debug.drl"));
-    	PackageBuilder builder = new PackageBuilder();
-    	builder.addPackageFromDrl(source);
-    	RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-    	ruleBase.addPackage(builder.getPackage());
-    	ReteooStatefulSession session = (ReteooStatefulSession) ruleBase.newStatefulSession();
-    	session.setGlobal("s", "String");
-    	List list = new ArrayList();
-    	list.add("Value");
-    	session.setGlobal("list", list);
-    	Entry[] globals = ((MapGlobalResolver) session.getGlobalResolver()).getGlobals();
-    	assertEquals(2, globals.length);
-    	if ("list".equals(globals[0].getKey())) {
-	    	assertEquals("list", globals[0].getKey());
-	    	assertEquals(list, globals[0].getValue());
-	    	assertEquals("s", globals[1].getKey());
-	    	assertEquals("String", globals[1].getValue());
-    	} else {
-	    	assertEquals("list", globals[1].getKey());
-	    	assertEquals(list, globals[1].getValue());
-	    	assertEquals("s", globals[0].getKey());
-	    	assertEquals("String", globals[0].getValue());
-    	}
+        Reader source = new InputStreamReader(DebugViewsTest.class.getResourceAsStream("/debug.drl"));
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl(source);
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage(builder.getPackage());
+        ReteooStatefulSession session = (ReteooStatefulSession) ruleBase.newStatefulSession();
+        session.setGlobal("s", "String");
+        List list = new ArrayList();
+        list.add("Value");
+        session.setGlobal("list", list);
+        Entry[] globals = ((MapGlobalResolver) session.getGlobalResolver()).getGlobals();
+        assertEquals(2, globals.length);
+        if ("list".equals(globals[0].getKey())) {
+            assertEquals("list", globals[0].getKey());
+            assertEquals(list, globals[0].getValue());
+            assertEquals("s", globals[1].getKey());
+            assertEquals("String", globals[1].getValue());
+        } else {
+            assertEquals("list", globals[1].getKey());
+            assertEquals(list, globals[1].getValue());
+            assertEquals("s", globals[0].getKey());
+            assertEquals("String", globals[0].getValue());
+        }
     }
     
-	/*
-	 * WARNING: DO NOT CHANGE ANYTHING IN THIS TEST CLASS
-	 * WITHOUT ALSO CHANGING THE IMPLEMENTATION IN THE DEBUG
-	 * VIEWS (which are using reflection)
-	 */
+    /*
+     * WARNING: DO NOT CHANGE ANYTHING IN THIS TEST CLASS
+     * WITHOUT ALSO CHANGING THE IMPLEMENTATION IN THE DEBUG
+     * VIEWS (which are using reflection)
+     */
     
     @Test
     public void testAgendaView() throws Exception {
-    	Reader source = new InputStreamReader(DebugViewsTest.class.getResourceAsStream("/debug.drl"));
-    	PackageBuilder builder = new PackageBuilder();
-    	builder.addPackageFromDrl(source);
-    	RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-    	ruleBase.addPackage(builder.getPackage());
-    	ReteooStatefulSession session = (ReteooStatefulSession) ruleBase.newStatefulSession();
-    	List list = new ArrayList();
-    	session.setGlobal("list", list);
-    	session.insert("String1");
-    	String focusName = session.getAgenda().getFocusName();
-    	assertEquals("MAIN", focusName);
-    	AgendaGroup[] agendaGroups = session.getAgenda().getAgendaGroups();
-    	assertEquals(1, agendaGroups.length);
-    	assertEquals("MAIN", agendaGroups[0].getName());
-    	assertEquals(1, agendaGroups[0].getActivations().length);
-    	
-    	Activation activation = agendaGroups[0].getActivations()[0];
-    	assertEquals("ActivationCreator", activation.getRule().getName());
-    	Entry[] parameters = session.getActivationParameters(
-			((org.drools.spi.Activation) activation).getActivationNumber());
-    	assertEquals(1, parameters.length);
-    	assertEquals("o", parameters[0].getKey());
-    	assertEquals("String1", parameters[0].getValue());
+        Reader source = new InputStreamReader(DebugViewsTest.class.getResourceAsStream("/debug.drl"));
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl(source);
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage(builder.getPackage());
+        ReteooStatefulSession session = (ReteooStatefulSession) ruleBase.newStatefulSession();
+        List list = new ArrayList();
+        session.setGlobal("list", list);
+        session.insert("String1");
+        String focusName = session.getAgenda().getFocusName();
+        assertEquals("MAIN", focusName);
+        AgendaGroup[] agendaGroups = session.getAgenda().getAgendaGroups();
+        assertEquals(1, agendaGroups.length);
+        assertEquals("MAIN", agendaGroups[0].getName());
+        assertEquals(1, agendaGroups[0].getActivations().length);
+
+        Activation activation = agendaGroups[0].getActivations()[0];
+        assertEquals("ActivationCreator", activation.getRule().getName());
+        Entry[] parameters = session.getActivationParameters(
+            ((org.drools.spi.Activation) activation).getActivationNumber());
+        assertEquals(1, parameters.length);
+        assertEquals("o", parameters[0].getKey());
+        assertEquals("String1", parameters[0].getValue());
     }
     
-	/*
-	 * WARNING: DO NOT CHANGE ANYTHING IN THIS TEST CLASS
-	 * WITHOUT ALSO CHANGING THE IMPLEMENTATION IN THE DEBUG
-	 * VIEWS (which are using reflection)
-	 */
+    /*
+     * WARNING: DO NOT CHANGE ANYTHING IN THIS TEST CLASS
+     * WITHOUT ALSO CHANGING THE IMPLEMENTATION IN THE DEBUG
+     * VIEWS (which are using reflection)
+     */
     
     @Test
     public void testWorkingMemoryView() throws Exception {
-    	RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-    	ReteooStatefulSession session = (ReteooStatefulSession) ruleBase.newStatefulSession();
-    	session.insert("Test1");
-    	session.insert("Test2");
-    	Object[] objects = session.iterateObjectsToList().toArray();
-    	assertEquals(2, objects.length);
-    	assertTrue(("Test1".equals(objects[0]) && "Test2".equals(objects[1])) ||
-    			   ("Test2".equals(objects[0]) && "Test1".equals(objects[1])));
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ReteooStatefulSession session = (ReteooStatefulSession) ruleBase.newStatefulSession();
+        session.insert("Test1");
+        session.insert("Test2");
+        Object[] objects = session.iterateObjectsToList().toArray();
+        assertEquals(2, objects.length);
+        assertTrue(("Test1".equals(objects[0]) && "Test2".equals(objects[1])) ||
+                   ("Test2".equals(objects[0]) && "Test1".equals(objects[1])));
     }
     
 }

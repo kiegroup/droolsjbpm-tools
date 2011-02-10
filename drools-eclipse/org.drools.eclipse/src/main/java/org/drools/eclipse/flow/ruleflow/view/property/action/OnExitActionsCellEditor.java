@@ -49,6 +49,6 @@ public class OnExitActionsCellEditor extends BeanDialogCellEditor<List<DroolsAct
     }
     
     protected String getLabelText(Object value) {
-    	return "";
+        return "";
     }
 }

@@ -26,18 +26,18 @@ import org.eclipse.swt.graphics.Image;
 public class BPMNFaultNodeFigure extends AbstractElementFigure {
     
     private static final Image icon = ImageDescriptor.createFromURL(
-    	DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/large/intermediate_error_10.png")).createImage();
+        DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/large/intermediate_error_10.png")).createImage();
         
     public BPMNFaultNodeFigure() {
-    	setSize(48, 48);
+        setSize(48, 48);
     }
     
     public void setText(String text) {
     }
     
     public void setBounds(Rectangle r) {
-    	r.setSize(48, 48);
-    	super.setBounds(r);
+        r.setSize(48, 48);
+        super.setBounds(r);
     }
     
     protected void customizeFigure() {

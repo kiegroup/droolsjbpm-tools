@@ -119,7 +119,7 @@ public class VertexPropertySource
     
     // EntryPoint specific
     private final IPropertyDescriptor PROP_ENTRY_POINT_NAME      = new PropertyDescriptor( "entryPointName",
-    																					   "Entry Point Name" );
+                                                                                           "Entry Point Name" );
 
     private final static String       CAT_GENERAL                = "General";
     private final static String       CAT_OTHER                  = "Other";
@@ -160,11 +160,11 @@ public class VertexPropertySource
             initTerminalNodeProperties( (RuleTerminalNodeVertex) vertex,
                     descriptorList,
                     values );
-    	} else if ( vertex instanceof QueryTerminalNodeVertex ) {
+        } else if ( vertex instanceof QueryTerminalNodeVertex ) {
             initQueryTerminalNodeProperties( (QueryTerminalNodeVertex) vertex,
                     descriptorList,
                     values );
-    	} else if ( vertex instanceof EvalConditionNodeVertex ) {
+        } else if ( vertex instanceof EvalConditionNodeVertex ) {
             initEvalConditionNodeProperties( (EvalConditionNodeVertex) vertex,
                                              descriptorList,
                                              values );
@@ -405,53 +405,53 @@ public class VertexPropertySource
     }
 
     private void initQueryTerminalNodeProperties(QueryTerminalNodeVertex node,
-		            List descriptorList,
-		            Map valueMap) {
-		
-		addProperty( PROP_NAME,
-				     VERTEX_QUERY_TERMINAL,
+                    List descriptorList,
+                    Map valueMap) {
+
+        addProperty( PROP_NAME,
+                     VERTEX_QUERY_TERMINAL,
                      descriptorList,
                      valueMap );
-		addProperty( PROP_ID,
+        addProperty( PROP_ID,
                      Integer.toString( node.getId() ),
                      descriptorList,
-		             valueMap );
-		addProperty( PROP_QUERY,
-		             node.getQueryName(),
-		             descriptorList,
-		             valueMap );
-		
-	}
+                     valueMap );
+        addProperty( PROP_QUERY,
+                     node.getQueryName(),
+                     descriptorList,
+                     valueMap );
+
+    }
 
     private void initPropagationQueuingNodeProperties(PropagationQueuingNodeVertex vertex,
                                                       List descriptorList,
                                                       Map valueMap) {
-    	addProperty( PROP_NAME,
-    			     VERTEX_PROPAGATION_QUEUING,
+        addProperty( PROP_NAME,
+                     VERTEX_PROPAGATION_QUEUING,
                      descriptorList,
                      valueMap );
 
-    	addProperty( PROP_ID,
+        addProperty( PROP_ID,
                      Integer.toString( vertex.getId() ),
                      descriptorList,
-    	             valueMap );
+                     valueMap );
 
     }
 
     private void initEntryPointNodeProperties(EntryPointNodeVertex vertex,
                                               List descriptorList,
                                               Map valueMap) {
-    	addProperty( PROP_NAME,
+        addProperty( PROP_NAME,
                      VERTEX_ENTRY_POINT,
                      descriptorList,
                      valueMap );
 
-    	addProperty( PROP_ENTRY_POINT_NAME,
+        addProperty( PROP_ENTRY_POINT_NAME,
                      vertex.getEntryPointName(),
                      descriptorList,
                      valueMap );
 
-    	addProperty( PROP_ID,
+        addProperty( PROP_ID,
                      Integer.toString( vertex.getId() ),
                      descriptorList,
                      valueMap );

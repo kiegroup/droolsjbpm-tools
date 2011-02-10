@@ -25,20 +25,20 @@ package org.eclipse.webdav.internal.kernel.utils;
  * breakage when assertions in the code are added or removed.
  */
 /* package */class AssertionFailedException extends RuntimeException {
-	/**
-	 * Comment for <code>serialVersionUID</code>
-	 */
-	private static final long serialVersionUID = 510l;
+    /**
+     * Comment for <code>serialVersionUID</code>
+     */
+    private static final long serialVersionUID = 510l;
 
-	/** Constructs a new exception.
-	 */
-	public AssertionFailedException() {
-		super();
-	}
+    /** Constructs a new exception.
+     */
+    public AssertionFailedException() {
+        super();
+    }
 
-	/** Constructs a new exception with the given message.
-	 */
-	public AssertionFailedException(String detail) {
-		super(detail);
-	}
+    /** Constructs a new exception with the given message.
+     */
+    public AssertionFailedException(String detail) {
+        super(detail);
+    }
 }

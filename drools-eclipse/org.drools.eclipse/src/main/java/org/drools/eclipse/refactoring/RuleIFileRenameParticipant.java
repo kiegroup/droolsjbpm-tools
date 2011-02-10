@@ -48,100 +48,100 @@ import org.eclipse.text.edits.ReplaceEdit;
 @SuppressWarnings("restriction")
 public class RuleIFileRenameParticipant extends RenameParticipant {
 
-	public static final String NAME = "Rule File Rename Refactoring";
+    public static final String NAME = "Rule File Rename Refactoring";
 
-	private DRLProjectDetector drlProjectDetector = new DRLProjectDetector();
-	private Matcher matcher;
+    private DRLProjectDetector drlProjectDetector = new DRLProjectDetector();
+    private Matcher matcher;
 
-	private RefactoringProcessor processor;
-	private List<IFile> drlFiles;
-	private IFile file;
-	private String newName;
-	private String currentName;
+    private RefactoringProcessor processor;
+    private List<IFile> drlFiles;
+    private IFile file;
+    private String newName;
+    private String currentName;
 
-	@Override
-	public RefactoringStatus checkConditions(IProgressMonitor pm, CheckConditionsContext context) throws OperationCanceledException {
-		RefactoringStatus status = new RefactoringStatus();
-		if (file==null || file.isReadOnly())
-			status.addFatalError("File don't exists or is read only");
-		return status;
-	}
+    @Override
+    public RefactoringStatus checkConditions(IProgressMonitor pm, CheckConditionsContext context) throws OperationCanceledException {
+        RefactoringStatus status = new RefactoringStatus();
+        if (file==null || file.isReadOnly())
+            status.addFatalError("File don't exists or is read only");
+        return status;
+    }
 
-	@Override
-	public Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
-		CompositeChange changes = null;
-		String content;
-		changes = new CompositeChange("Reorganize DRL " + currentName + " Type ");
-		drlFiles = drlProjectDetector.detect(file.getProject());
-		for (IFile drlFile : drlFiles) {
+    @Override
+    public Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
+        CompositeChange changes = null;
+        String content;
+        changes = new CompositeChange("Reorganize DRL " + currentName + " Type ");
+        drlFiles = drlProjectDetector.detect(file.getProject());
+        for (IFile drlFile : drlFiles) {
 
-			if ((content = readFile(drlFile))==null)
-				return null;
+            if ((content = readFile(drlFile))==null)
+                return null;
 
-			Pattern pattern = Pattern.compile("(?<=\\.|\\s)" + currentName + "(?=\\(|\\n|\\s)");
-			matcher = pattern.matcher(content);
+            Pattern pattern = Pattern.compile("(?<=\\.|\\s)" + currentName + "(?=\\(|\\n|\\s)");
+            matcher = pattern.matcher(content);
 
-			TextFileChange change = new TextFileChange(drlFile.getName(), drlFile);
-			MultiTextEdit mte = new MultiTextEdit();
-			change.setEdit(mte);
-			while (matcher.find()) {
-				ReplaceEdit replace = new ReplaceEdit(matcher.start(), currentName.length(), newName);
-				mte.addChild(replace);
-			}
-			if (change.getEdit().getChildrenSize() > 0)
-				changes.add(change);
-		}
-		if (changes.getChildren().length==0)
-			return null;
-		return (changes.getChildren().length > 0)?changes:null;
-	}
+            TextFileChange change = new TextFileChange(drlFile.getName(), drlFile);
+            MultiTextEdit mte = new MultiTextEdit();
+            change.setEdit(mte);
+            while (matcher.find()) {
+                ReplaceEdit replace = new ReplaceEdit(matcher.start(), currentName.length(), newName);
+                mte.addChild(replace);
+            }
+            if (change.getEdit().getChildrenSize() > 0)
+                changes.add(change);
+        }
+        if (changes.getChildren().length==0)
+            return null;
+        return (changes.getChildren().length > 0)?changes:null;
+    }
 
-	@Override
-	public String getName() {
-		return NAME;
-	}
+    @Override
+    public String getName() {
+        return NAME;
+    }
 
 
-	@Override
-	protected boolean initialize(Object element) {
-		if (element instanceof IFile) {
-			IFile file = (IFile)element;
-			if (file.getType()==IFile.FILE) {
-				if (file.getFileExtension() != null && file.getFileExtension().equalsIgnoreCase("java")) {
-					this.processor = getProcessor();
-					this.file = file;
-					if (this.processor instanceof JavaRenameProcessor) {
-						newName = ((JavaRenameProcessor)processor).getNewElementName().replace(".java", "");
-						currentName = ((JavaRenameProcessor)processor).getCurrentElementName();
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
+    @Override
+    protected boolean initialize(Object element) {
+        if (element instanceof IFile) {
+            IFile file = (IFile)element;
+            if (file.getType()==IFile.FILE) {
+                if (file.getFileExtension() != null && file.getFileExtension().equalsIgnoreCase("java")) {
+                    this.processor = getProcessor();
+                    this.file = file;
+                    if (this.processor instanceof JavaRenameProcessor) {
+                        newName = ((JavaRenameProcessor)processor).getNewElementName().replace(".java", "");
+                        currentName = ((JavaRenameProcessor)processor).getCurrentElementName();
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
-	private String readFile(IFile file) throws CoreException {
-		InputStream inputStream = file.getContents();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-		StringBuilder sb = new StringBuilder();
-		String buffer = null;
-		try {
-			while ((buffer = reader.readLine()) != null)
-				sb.append(buffer + "\n");
-		}
-		catch (IOException e) {
-			return null;
-		}
-		finally {
-			try {
-				inputStream.close();
-			}
-			catch (IOException e) {
-				// Nothing
-			}
-		}
-		return sb.toString();
-	}
+    private String readFile(IFile file) throws CoreException {
+        InputStream inputStream = file.getContents();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        StringBuilder sb = new StringBuilder();
+        String buffer = null;
+        try {
+            while ((buffer = reader.readLine()) != null)
+                sb.append(buffer + "\n");
+        }
+        catch (IOException e) {
+            return null;
+        }
+        finally {
+            try {
+                inputStream.close();
+            }
+            catch (IOException e) {
+                // Nothing
+            }
+        }
+        return sb.toString();
+    }
 
 }

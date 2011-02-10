@@ -42,8 +42,8 @@ import org.eclipse.swt.graphics.Color;
  */
 public class DRLScanner extends RuleBasedScanner {
 
-	private static final Color KEYWORD_COLOR = ColorManager.getInstance().getColor(ColorManager.KEYWORD);
-	private static final Color COMMENT_COLOR = ColorManager.getInstance().getColor(ColorManager.SINGLE_LINE_COMMENT);
+    private static final Color KEYWORD_COLOR = ColorManager.getInstance().getColor(ColorManager.KEYWORD);
+    private static final Color COMMENT_COLOR = ColorManager.getInstance().getColor(ColorManager.SINGLE_LINE_COMMENT);
     private static final Color STRING_COLOR = ColorManager.getInstance().getColor(ColorManager.STRING);
 
     private static final String[] DROOLS_KEYWORDS = Keywords.getInstance().getAllDroolsKeywords();
@@ -56,16 +56,16 @@ public class DRLScanner extends RuleBasedScanner {
     private static final String[] MVEL_CONSTANTS = { "false", "true", "null", "nil", "empty", "this"  };
 
 
-	public DRLScanner() {
+    public DRLScanner() {
 
-		IToken keyword = new Token(new TextAttribute(KEYWORD_COLOR, null, SWT.BOLD));
-		IToken comment= new Token(new TextAttribute(COMMENT_COLOR));
-		IToken string = new Token(new TextAttribute(STRING_COLOR));
-		IToken other = new Token(null);
+        IToken keyword = new Token(new TextAttribute(KEYWORD_COLOR, null, SWT.BOLD));
+        IToken comment= new Token(new TextAttribute(COMMENT_COLOR));
+        IToken string = new Token(new TextAttribute(STRING_COLOR));
+        IToken other = new Token(null);
 
         List rules = new ArrayList();
 
-		rules.add(new EndOfLineRule("//", comment));
+        rules.add(new EndOfLineRule("//", comment));
         rules.add(new EndOfLineRule("#", comment));
 
         // Add rule for strings and character constants.
@@ -102,7 +102,7 @@ public class DRLScanner extends RuleBasedScanner {
         IRule[] result= new IRule[rules.size()];
         rules.toArray(result);
 
-		setRules(result);
-	}
+        setRules(result);
+    }
 
 }

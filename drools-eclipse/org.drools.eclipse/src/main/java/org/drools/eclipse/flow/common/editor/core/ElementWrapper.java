@@ -26,12 +26,12 @@ import org.eclipse.draw2d.geometry.Rectangle;
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public interface ElementWrapper {
-	
-	static final int CHANGE_ID = 0;
-	static final int CHANGE_INCOMING_CONNECTIONS = 1;
-	static final int CHANGE_OUTGOING_CONNECTIONS = 2;
-	static final int CHANGE_CONSTRAINT = 3;
-	static final int CHANGE_NAME = 4;
+
+    static final int CHANGE_ID = 0;
+    static final int CHANGE_INCOMING_CONNECTIONS = 1;
+    static final int CHANGE_OUTGOING_CONNECTIONS = 2;
+    static final int CHANGE_CONSTRAINT = 3;
+    static final int CHANGE_NAME = 4;
     
     String getId();
     String getName();

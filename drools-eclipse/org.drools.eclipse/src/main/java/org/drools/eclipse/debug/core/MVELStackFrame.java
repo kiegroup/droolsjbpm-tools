@@ -503,10 +503,10 @@ public class MVELStackFrame extends DroolsStackFrame {
                                                              return null;
                                                          }
 
-														public long getInstanceCount()
-																throws DebugException {
-															return 0;
-														}
+                                                        public long getInstanceCount()
+                                                                throws DebugException {
+                                                            return 0;
+                                                        }
 
                                                      };
 

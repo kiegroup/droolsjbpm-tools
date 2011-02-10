@@ -63,30 +63,30 @@ public class DroolsClasspathContainer implements IClasspathContainer {
     }
 
     private IClasspathEntry[] createDroolsLibraryEntries(IJavaProject project) {
-    	int internalAPI = DroolsEclipsePlugin.getDefault()
-    		.getPluginPreferences().getInt(IDroolsConstants.INTERNAL_API);
+        int internalAPI = DroolsEclipsePlugin.getDefault()
+            .getPluginPreferences().getInt(IDroolsConstants.INTERNAL_API);
         String[] jarNames = getJarNames(project);
         List<IClasspathEntry> list = new ArrayList<IClasspathEntry>();
         if (jarNames != null) {
-	        for (int i = 0; i < jarNames.length; i++) {
-	        	Path path = new Path(jarNames[i]);
-	        	if (internalAPI != 0) {
-			        if (jarNames[i].contains("drools-api")) {
-			        	list.add(JavaCore.newLibraryEntry(path, path, null));
-			        } else {
-			        	IAccessRule[] accessRules = new IAccessRule[1];
-			            accessRules[0] = new ClasspathAccessRule(new Path("**"), internalAPI);
-			            list.add(JavaCore.newLibraryEntry(
-			                path, path, null, accessRules, ClasspathEntry.NO_EXTRA_ATTRIBUTES, false));
-			        }
-	        	}
-	        }
+            for (int i = 0; i < jarNames.length; i++) {
+                Path path = new Path(jarNames[i]);
+                if (internalAPI != 0) {
+                    if (jarNames[i].contains("drools-api")) {
+                        list.add(JavaCore.newLibraryEntry(path, path, null));
+                    } else {
+                        IAccessRule[] accessRules = new IAccessRule[1];
+                        accessRules[0] = new ClasspathAccessRule(new Path("**"), internalAPI);
+                        list.add(JavaCore.newLibraryEntry(
+                            path, path, null, accessRules, ClasspathEntry.NO_EXTRA_ATTRIBUTES, false));
+                    }
+                }
+            }
         }
         return (IClasspathEntry[]) list.toArray(new IClasspathEntry[list.size()]);
     }
 
     private String[] getJarNames(IJavaProject project) {
-    	return DroolsRuntimeManager.getDroolsRuntimeJars(project.getProject());
+        return DroolsRuntimeManager.getDroolsRuntimeJars(project.getProject());
     }
 
 }

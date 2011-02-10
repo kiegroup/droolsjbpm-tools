@@ -51,8 +51,8 @@ import org.eclipse.swt.SWT;
  */
 public class ProcessEditPart extends AbstractGraphicalEditPart implements ModelListener {
     
-//	private GraphLayoutManager graphLayoutManager;
-	
+//    private GraphLayoutManager graphLayoutManager;
+
     protected IFigure createFigure() {
         Figure f = new Figure();
         f.setLayoutManager(new XYLayout());
@@ -75,7 +75,7 @@ public class ProcessEditPart extends AbstractGraphicalEditPart implements ModelL
     }
     
     public ProcessWrapper getProcessWrapper() {
-    	return (ProcessWrapper) getModel();
+        return (ProcessWrapper) getModel();
     }
 
     public void activate() {
@@ -92,51 +92,51 @@ public class ProcessEditPart extends AbstractGraphicalEditPart implements ModelL
         if (event.getChange() == ProcessWrapper.CHANGE_ELEMENTS) {
             refreshChildren();
         } else if (event.getChange() == ProcessWrapper.CHANGE_ROUTER_LAYOUT) {
-    		refreshVisuals();
-    	}
+            refreshVisuals();
+        }
     }
     
     public Object getAdapter(Class adapter) {
-    	if (adapter == SnapToHelper.class) {
-    		Boolean val = (Boolean) getViewer().getProperty(SnapToGrid.PROPERTY_GRID_ENABLED);
-    		if (val != null && val.booleanValue()) {
-    			return new SnapToGrid(this);
-    		}
-    	}
-    	return super.getAdapter(adapter);
+        if (adapter == SnapToHelper.class) {
+            Boolean val = (Boolean) getViewer().getProperty(SnapToGrid.PROPERTY_GRID_ENABLED);
+            if (val != null && val.booleanValue()) {
+                return new SnapToGrid(this);
+            }
+        }
+        return super.getAdapter(adapter);
     }
     
     protected void refreshVisuals() {
-    	Animation.markBegin();
-    	ConnectionLayer layer = (ConnectionLayer) getLayer(LayerConstants.CONNECTION_LAYER);
+        Animation.markBegin();
+        ConnectionLayer layer = (ConnectionLayer) getLayer(LayerConstants.CONNECTION_LAYER);
         if ((getViewer().getControl().getStyle() & SWT.MIRRORED ) == 0) {
             layer.setAntialias(SWT.ON);
         }
 
-    	if (getProcessWrapper().getRouterLayout().equals(ProcessWrapper.ROUTER_LAYOUT_MANUAL)) {
-    		AutomaticRouter router = new FanRouter();
-    		router.setNextRouter(new BendpointConnectionRouter());
-    		layer.setConnectionRouter(router);
-    	} else if (getProcessWrapper().getRouterLayout().equals(ProcessWrapper.ROUTER_LAYOUT_MANHATTAN)) {
-    		layer.setConnectionRouter(new ManhattanConnectionRouter());
-    	} else {
-    		layer.setConnectionRouter(new ShortestPathConnectionRouter(getFigure()));
-    	}
-    	Animation.run(400);
+        if (getProcessWrapper().getRouterLayout().equals(ProcessWrapper.ROUTER_LAYOUT_MANUAL)) {
+            AutomaticRouter router = new FanRouter();
+            router.setNextRouter(new BendpointConnectionRouter());
+            layer.setConnectionRouter(router);
+        } else if (getProcessWrapper().getRouterLayout().equals(ProcessWrapper.ROUTER_LAYOUT_MANHATTAN)) {
+            layer.setConnectionRouter(new ManhattanConnectionRouter());
+        } else {
+            layer.setConnectionRouter(new ShortestPathConnectionRouter(getFigure()));
+        }
+        Animation.run(400);
     }
     
-	public boolean setTableModelBounds() {
-		List tableParts = getChildren();
-		for (Iterator iter = tableParts.iterator(); iter.hasNext(); ) {
-			ElementEditPart elementEditPart = (ElementEditPart) iter.next();
-			ElementFigure elementFigure = (ElementFigure) elementEditPart.getFigure();
-			if (elementFigure == null) {
-				continue;
-			}
-			Rectangle constraint = elementFigure.getBounds().getCopy();
-			ElementWrapper elementWrapper = elementEditPart.getElementWrapper();
-			elementWrapper.setConstraint(constraint);
-		}
-		return true;
-	}
+    public boolean setTableModelBounds() {
+        List tableParts = getChildren();
+        for (Iterator iter = tableParts.iterator(); iter.hasNext(); ) {
+            ElementEditPart elementEditPart = (ElementEditPart) iter.next();
+            ElementFigure elementFigure = (ElementFigure) elementEditPart.getFigure();
+            if (elementFigure == null) {
+                continue;
+            }
+            Rectangle constraint = elementFigure.getBounds().getCopy();
+            ElementWrapper elementWrapper = elementEditPart.getElementWrapper();
+            elementWrapper.setConstraint(constraint);
+        }
+        return true;
+    }
 }

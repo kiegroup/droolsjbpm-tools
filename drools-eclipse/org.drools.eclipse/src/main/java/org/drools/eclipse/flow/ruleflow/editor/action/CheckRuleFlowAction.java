@@ -53,12 +53,12 @@ public class CheckRuleFlowAction extends ActionDelegate implements IEditorAction
             MessageDialog.openInformation(editor.getSite().getShell(),
             "Check RuleFlow", "The RuleFlow model was checked successfully.");
         } else {
-			StringBuffer error = new StringBuffer(errors[0].toString());
-			error.append("\n");
+            StringBuffer error = new StringBuffer(errors[0].toString());
+            error.append("\n");
             for (int i = 1; i < errors.length; i++) {
-				error.append(" ");
-				error.append(errors[i]);
-				error.append("\n");
+                error.append(" ");
+                error.append(errors[i]);
+                error.append("\n");
             }
             ErrorDialog.openError(editor.getSite().getShell(),
                 "Check RuleFlow", "The RuleFlow model contains errors.", 

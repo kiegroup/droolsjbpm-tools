@@ -178,19 +178,19 @@ public class DSLEditor extends EditorPart {
                      IEditorInput editorInput) throws PartInitException {
         setSite( site );
         setInput( editorInput );
-		setVisibleName( editorInput );
+        setVisibleName( editorInput );
 
         try {
             InputStream stream = null;
-        	if (editorInput instanceof FileEditorInput) {
-        		FileEditorInput input = (FileEditorInput) editorInput;
-        		stream = input.getFile().getContents();
-        	} else if (editorInput instanceof IStorageEditorInput) {
-        		IStorageEditorInput input = (IStorageEditorInput) editorInput;
-        		stream = input.getStorage().getContents();
-        	}
+            if (editorInput instanceof FileEditorInput) {
+                FileEditorInput input = (FileEditorInput) editorInput;
+                stream = input.getFile().getContents();
+            } else if (editorInput instanceof IStorageEditorInput) {
+                IStorageEditorInput input = (IStorageEditorInput) editorInput;
+                stream = input.getStorage().getContents();
+            }
 
-        	model = new NLGrammarModel();
+            model = new NLGrammarModel();
             DSLMappingFile file = new DSLTokenizedMappingFile();
             file.parseAndLoad( new InputStreamReader( stream ) );
             model.addEntries( file.getMapping().getEntries() );
@@ -451,25 +451,25 @@ public class DSLEditor extends EditorPart {
     }
 
     private void showEditPopup() {
-    	DSLMappingEntry selected = getCurrentSelected();
-    	if (selected != null) {
-	        MappingEditor editor = new MappingEditor( getSite().getShell() );
-	        editor.create();
-	        editor.getShell().setText( "Edit language mapping" );
-	        editor.setTitle( "Edit an existing language mapping item." );
-	        editor.setTitleImage( getTitleImage() );
-	
-	        editor.setNLMappingItem( selected );
-	
-	        editor.open();
-	        if ( !editor.isCancelled() ) {
-	            refreshModel();
-	            makeDirty();
+        DSLMappingEntry selected = getCurrentSelected();
+        if (selected != null) {
+            MappingEditor editor = new MappingEditor( getSite().getShell() );
+            editor.create();
+            editor.getShell().setText( "Edit language mapping" );
+            editor.setTitle( "Edit an existing language mapping item." );
+            editor.setTitleImage( getTitleImage() );
+
+            editor.setNLMappingItem( selected );
+
+            editor.open();
+            if ( !editor.isCancelled() ) {
+                refreshModel();
+                makeDirty();
                 exprText.setText(selected.getMappingKey());
                 mappingText.setText(selected.getMappingValue());
                 objText.setText(selected.getMetaData().getMetaData() == null ? "" : selected.getMetaData().getMetaData());
-	        }
-    	}
+            }
+        }
     }
 
     private void createDeleteButton(Composite parent) {
@@ -484,9 +484,9 @@ public class DSLEditor extends EditorPart {
         add.addSelectionListener( new SelectionAdapter() {
             // Add a task to the ExampleTaskList and refresh the view
             public void widgetSelected(SelectionEvent e) {
-            	for (DSLMappingEntry entry: getAllSelected()) {
-            		model.removeEntry( entry );
-            	}
+                for (DSLMappingEntry entry: getAllSelected()) {
+                    model.removeEntry( entry );
+                }
                 refreshModel();
                 makeDirty();
                 exprText.setText( "" );
@@ -524,10 +524,10 @@ public class DSLEditor extends EditorPart {
     }
 
     private List<DSLMappingEntry> getAllSelected() {
-    	List<DSLMappingEntry> result = new ArrayList<DSLMappingEntry>();
-    	for (Object e: ((IStructuredSelection) tableViewer.getSelection()).toList()) {
-    		result.add((DSLMappingEntry) e); 
-    	}
+        List<DSLMappingEntry> result = new ArrayList<DSLMappingEntry>();
+        for (Object e: ((IStructuredSelection) tableViewer.getSelection()).toList()) {
+            result.add((DSLMappingEntry) e);
+        }
         return result;
     }
 
@@ -584,27 +584,27 @@ public class DSLEditor extends EditorPart {
 
                 DSLMappingEntry curr = getCurrentSelected();
                 if (curr != null) {
-	                DSLMappingEntry newItem = new AntlrDSLMappingEntry( curr.getSection(),
-	                                                                      curr.getMetaData(),
-	                                                                      curr.getMappingKey(),
-	                                                                      curr.getMappingValue(),
-	                                                                      null,
-	                                                                      null);
-	
-	                MappingEditor editor = new MappingEditor( getSite().getShell() );//shell);
-	                editor.create();
-	                editor.getShell().setText( "New language mapping" );
-	                editor.setTitle( "Create a new language element mapping from a copy." );
-	                editor.setTitleImage( getTitleImage() );
-	
-	                editor.setNLMappingItem( newItem );
-	
-	                editor.open();
-	                if ( !editor.isCancelled() ) {
-	                    model.addEntry( newItem );
-	                    refreshModel();
-	                    makeDirty();
-	                }
+                    DSLMappingEntry newItem = new AntlrDSLMappingEntry( curr.getSection(),
+                                                                          curr.getMetaData(),
+                                                                          curr.getMappingKey(),
+                                                                          curr.getMappingValue(),
+                                                                          null,
+                                                                          null);
+
+                    MappingEditor editor = new MappingEditor( getSite().getShell() );//shell);
+                    editor.create();
+                    editor.getShell().setText( "New language mapping" );
+                    editor.setTitle( "Create a new language element mapping from a copy." );
+                    editor.setTitleImage( getTitleImage() );
+
+                    editor.setNLMappingItem( newItem );
+
+                    editor.open();
+                    if ( !editor.isCancelled() ) {
+                        model.addEntry( newItem );
+                        refreshModel();
+                        makeDirty();
+                    }
                 }
             }
         } );

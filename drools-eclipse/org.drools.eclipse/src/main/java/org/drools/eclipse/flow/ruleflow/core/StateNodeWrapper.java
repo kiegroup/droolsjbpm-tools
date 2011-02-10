@@ -41,7 +41,7 @@ public class StateNodeWrapper extends StateBasedNodeWrapper {
 
     public static final String CONSTRAINTS = "constraints";
 
-	private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 510l;
 
     public StateNodeWrapper() {
         setNode(new StateNode());
@@ -49,34 +49,34 @@ public class StateNodeWrapper extends StateBasedNodeWrapper {
     }
     
     protected void initDescriptors() {
-    	super.initDescriptors();
-    	IPropertyDescriptor[] oldDescriptors = descriptors; 
+        super.initDescriptors();
+        IPropertyDescriptor[] oldDescriptors = descriptors;
         descriptors = new IPropertyDescriptor[oldDescriptors.length + 3];
-    	System.arraycopy(oldDescriptors, 0, descriptors, 0, oldDescriptors.length);
-    	descriptors[descriptors.length - 3] = getOnEntryPropertyDescriptor();
-    	descriptors[descriptors.length - 2] = getOnExitPropertyDescriptor();
+        System.arraycopy(oldDescriptors, 0, descriptors, 0, oldDescriptors.length);
+        descriptors[descriptors.length - 3] = getOnEntryPropertyDescriptor();
+        descriptors[descriptors.length - 2] = getOnExitPropertyDescriptor();
         descriptors[descriptors.length - 1] = 
             new StateConstraintsPropertyDescriptor(CONSTRAINTS, "Constraints",
-        		getStateNode(), (WorkflowProcess) getParent().getProcessWrapper().getProcess());
+                getStateNode(), (WorkflowProcess) getParent().getProcessWrapper().getProcess());
     }
 
     public IPropertyDescriptor[] getPropertyDescriptors() {
-    	if (descriptors == null) {
-    		initDescriptors();
-    	}
+        if (descriptors == null) {
+            initDescriptors();
+        }
         return descriptors;
     }
 
     public void setNode(Node node) {
-    	super.setNode(node);
-    	for (Connection connection: getStateNode().getOutgoingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE)) {
-    		String label = null;
-    		Constraint constraint = getStateNode().getConstraint(connection);
-			if (constraint != null) {
-				label = constraint.getName();
-			}
-			((org.jbpm.workflow.core.Connection) connection).setMetaData("label", label);
-    	}
+        super.setNode(node);
+        for (Connection connection: getStateNode().getOutgoingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE)) {
+            String label = null;
+            Constraint constraint = getStateNode().getConstraint(connection);
+            if (constraint != null) {
+                label = constraint.getName();
+            }
+            ((org.jbpm.workflow.core.Connection) connection).setMetaData("label", label);
+        }
     }
     
     public StateNode getStateNode() {
@@ -84,41 +84,41 @@ public class StateNodeWrapper extends StateBasedNodeWrapper {
     }
     
     private void updateConnectionLabels() {
-    	for (ElementConnection connection: getOutgoingConnections()) {
-    		updateConnectionLabel(connection);
-    	}
+        for (ElementConnection connection: getOutgoingConnections()) {
+            updateConnectionLabel(connection);
+        }
     }
     
     private void updateConnectionLabel(ElementConnection connection) {
-    	ConnectionWrapper connectionWrapper = (ConnectionWrapper) connection;
-		String label = null;
-		Constraint constraint = getStateNode().getConstraint(
-			connectionWrapper.getConnection());
-		if (constraint != null) {
-			label = constraint.getName();
-		}
-		connectionWrapper.getConnection().setMetaData("label", label);
-		connectionWrapper.notifyListeners(ElementConnection.CHANGE_LABEL);
+        ConnectionWrapper connectionWrapper = (ConnectionWrapper) connection;
+        String label = null;
+        Constraint constraint = getStateNode().getConstraint(
+            connectionWrapper.getConnection());
+        if (constraint != null) {
+            label = constraint.getName();
+        }
+        connectionWrapper.getConnection().setMetaData("label", label);
+        connectionWrapper.notifyListeners(ElementConnection.CHANGE_LABEL);
     }
      
     public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
         return super.acceptsIncomingConnection(connection, source)
-        	&& getIncomingConnections().isEmpty();
+            && getIncomingConnections().isEmpty();
     }
 
     public Object getPropertyValue(Object id) {
         if (CONSTRAINTS.equals(id)) {
-    		return new MyHashMap<ConnectionRef, Constraint>(
-				getStateNode().getConstraints());
+            return new MyHashMap<ConnectionRef, Constraint>(
+                getStateNode().getConstraints());
         }
         return super.getPropertyValue(id);
     }
 
     public void resetPropertyValue(Object id) {
         if (CONSTRAINTS.equals(id)) {
-        	for (Connection connection: getStateNode().getOutgoingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE)) {
-        		getStateNode().setConstraint(connection, null);
-        	}
+            for (Connection connection: getStateNode().getOutgoingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE)) {
+                getStateNode().setConstraint(connection, null);
+            }
             updateConnectionLabels();
         } else {
             super.resetPropertyValue(id);
@@ -126,40 +126,40 @@ public class StateNodeWrapper extends StateBasedNodeWrapper {
     }
 
     @SuppressWarnings("unchecked")
-	public void setPropertyValue(Object id, Object value) {
-    	if (CONSTRAINTS.equals(id)) {
-        	Iterator<Map.Entry<ConnectionRef, Constraint>> iterator = ((Map<ConnectionRef, Constraint>) value).entrySet().iterator();
-        	while (iterator.hasNext()) {
-				Map.Entry<ConnectionRef, Constraint> element = iterator.next();
-				ConnectionRef connectionRef = element.getKey();
-				Connection outgoingConnection = null; 
-				for (Connection out: getStateNode().getOutgoingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE)) {
-				    if (out.getToType().equals(connectionRef.getToType())
-			            && out.getTo().getId() == connectionRef.getNodeId()) {
-				        outgoingConnection = out;
-				    }
-				}
-				if (outgoingConnection == null) {
-				    throw new IllegalArgumentException("Could not find outgoing connection");
-				}
-				getStateNode().setConstraint(outgoingConnection, (Constraint) element.getValue()); 
-			}
-        	updateConnectionLabels();
+    public void setPropertyValue(Object id, Object value) {
+        if (CONSTRAINTS.equals(id)) {
+            Iterator<Map.Entry<ConnectionRef, Constraint>> iterator = ((Map<ConnectionRef, Constraint>) value).entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<ConnectionRef, Constraint> element = iterator.next();
+                ConnectionRef connectionRef = element.getKey();
+                Connection outgoingConnection = null;
+                for (Connection out: getStateNode().getOutgoingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE)) {
+                    if (out.getToType().equals(connectionRef.getToType())
+                        && out.getTo().getId() == connectionRef.getNodeId()) {
+                        outgoingConnection = out;
+                    }
+                }
+                if (outgoingConnection == null) {
+                    throw new IllegalArgumentException("Could not find outgoing connection");
+                }
+                getStateNode().setConstraint(outgoingConnection, (Constraint) element.getValue());
+            }
+            updateConnectionLabels();
         } else {
             super.setPropertyValue(id, value);
         }
     }
     
     public class MyHashMap<K, V> extends HashMap<K, V> {
-		private static final long serialVersionUID = 510l;
-		public MyHashMap() {
-    	}
-    	public MyHashMap(Map<K, V> map) {
-    		super(map);
-    	}
-		public String toString() {
-    		return "";
-    	}
+        private static final long serialVersionUID = 510l;
+        public MyHashMap() {
+        }
+        public MyHashMap(Map<K, V> map) {
+            super(map);
+        }
+        public String toString() {
+            return "";
+        }
     }
 
 }

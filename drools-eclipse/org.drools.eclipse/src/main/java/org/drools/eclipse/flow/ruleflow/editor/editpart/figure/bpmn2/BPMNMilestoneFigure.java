@@ -29,14 +29,14 @@ import org.eclipse.swt.widgets.Display;
 public class BPMNMilestoneFigure extends AbstractElementFigure {
     
     private static final Image ICON = ImageDescriptor.createFromURL(
-		DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/question.gif")).createImage();
+        DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/question.gif")).createImage();
         
     private static final Color color = new Color(Display.getCurrent(), 255, 255, 225);
 
     private RoundedRectangle rectangle;
     
     public BPMNMilestoneFigure() {
-    	setSize(80, 48);
+        setSize(80, 48);
     }
     
     protected void customizeFigure() {

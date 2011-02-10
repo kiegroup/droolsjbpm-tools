@@ -52,14 +52,14 @@ public class ObjectDataTypeEditor extends Composite implements Editor, DataTypeE
         label.setText("ClassName");
         text = new Text(this, SWT.NONE);
         text.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				notifyListeners();
-			}
+            public void modifyText(ModifyEvent e) {
+                notifyListeners();
+            }
         });
     }
     
     public DataType getDataType() {
-    	dataType.setClassName(text.getText());
+        dataType.setClassName(text.getText());
         return dataType;
     }
     
@@ -90,13 +90,13 @@ public class ObjectDataTypeEditor extends Composite implements Editor, DataTypeE
     }
     
     private void notifyListeners() {
-    	for (DataTypeEditor.DataTypeListener listener: listeners) {
-    		listener.dataTypeChanged(getDataType());
-    	}
+        for (DataTypeEditor.DataTypeListener listener: listeners) {
+            listener.dataTypeChanged(getDataType());
+        }
     }
     
     public void setBackground(Color color) {
-    	super.setBackground(color);
-    	label.setBackground(color);
+        super.setBackground(color);
+        label.setBackground(color);
     }
 }

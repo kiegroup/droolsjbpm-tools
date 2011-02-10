@@ -38,21 +38,21 @@ import org.eclipse.swt.widgets.Display;
  */
 public class TimerEditPart extends ElementEditPart {
 
-	private String SKIN =
-		DroolsEclipsePlugin.getDefault().getPreferenceStore().getString(IDroolsConstants.SKIN);
+    private String SKIN =
+        DroolsEclipsePlugin.getDefault().getPreferenceStore().getString(IDroolsConstants.SKIN);
 
-	protected IFigure createFigure() {
-    	SkinProvider skinProvider = SkinManager.getInstance().getSkinProvider(SKIN);
-    	IFigure result = skinProvider.createTimerNodeFigure();
-    	Rectangle constraint = getElementWrapper().getConstraint();
-    	if (constraint.width == -1) {
-    		constraint.width = result.getSize().width;
-    	}
-    	if (constraint.height == -1) {
-    		constraint.height = result.getSize().height;
-    	}
-    	getElementWrapper().setConstraint(constraint);
-    	return result;
+    protected IFigure createFigure() {
+        SkinProvider skinProvider = SkinManager.getInstance().getSkinProvider(SKIN);
+        IFigure result = skinProvider.createTimerNodeFigure();
+        Rectangle constraint = getElementWrapper().getConstraint();
+        if (constraint.width == -1) {
+            constraint.width = result.getSize().width;
+        }
+        if (constraint.height == -1) {
+            constraint.height = result.getSize().height;
+        }
+        getElementWrapper().setConstraint(constraint);
+        return result;
     }
     
     public static class TimerNodeFigure extends AbstractElementFigure {
@@ -60,7 +60,7 @@ public class TimerEditPart extends ElementEditPart {
         private static final Color color = new Color(Display.getCurrent(), 255, 250, 205);
         
         private static final Image ICON = ImageDescriptor.createFromURL(
-    		DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/timer.gif")).createImage();
+            DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/timer.gif")).createImage();
             
         private RoundedRectangle rectangle;
         

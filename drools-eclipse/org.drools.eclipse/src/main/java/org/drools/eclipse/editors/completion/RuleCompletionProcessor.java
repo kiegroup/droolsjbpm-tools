@@ -150,7 +150,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
         boolean startOfDialectExpression = CompletionUtil.isStartOfDialectExpression( consequenceWithoutPrefix );
         if ( //isJavaDialect() && 
-        		startOfDialectExpression ) {
+                startOfDialectExpression ) {
             addRHSKeywordCompletionProposals( list,
                                               documentOffset,
                                               prefix );
@@ -1384,9 +1384,9 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
             String field = entry.getValue()[1];
             String type;
             if (field == null) {
-            	type = clazz;
+                type = clazz;
             } else {
-            	type = getPropertyClass( clazz, field );
+                type = getPropertyClass( clazz, field );
             }
             result.put( name, type );
         }

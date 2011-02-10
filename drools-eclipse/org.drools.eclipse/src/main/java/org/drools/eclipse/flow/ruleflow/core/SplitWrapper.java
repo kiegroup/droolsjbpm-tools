@@ -41,9 +41,9 @@ import org.jbpm.workflow.core.node.Split;
  */
 public class SplitWrapper extends AbstractNodeWrapper {
 
-	public static final int CHANGE_TYPE = 5;
+    public static final int CHANGE_TYPE = 5;
 
-	public static final String TYPE = "type";
+    public static final String TYPE = "type";
     public static final String CONSTRAINTS = "constraints";
     
     private static final long serialVersionUID = 510l;
@@ -56,35 +56,35 @@ public class SplitWrapper extends AbstractNodeWrapper {
     }
     
     public void setNode(Node node) {
-    	super.setNode(node);
-    	for (Connection connection: getSplit().getDefaultOutgoingConnections()) {
-    		String label = null;
-    		Constraint constraint = getSplit().internalGetConstraint(
-				new ConnectionRef(connection.getTo().getId(), connection.getToType()));
-			if (constraint != null) {
-				label = constraint.getName();
-			}
-			((org.jbpm.workflow.core.Connection) connection).setMetaData("label", label);
-    	}
+        super.setNode(node);
+        for (Connection connection: getSplit().getDefaultOutgoingConnections()) {
+            String label = null;
+            Constraint constraint = getSplit().internalGetConstraint(
+                new ConnectionRef(connection.getTo().getId(), connection.getToType()));
+            if (constraint != null) {
+                label = constraint.getName();
+            }
+            ((org.jbpm.workflow.core.Connection) connection).setMetaData("label", label);
+        }
     }
     
     private void updateConnectionLabels() {
-    	for (ElementConnection connection: getOutgoingConnections()) {
-    		updateConnectionLabel(connection);
-    	}
+        for (ElementConnection connection: getOutgoingConnections()) {
+            updateConnectionLabel(connection);
+        }
     }
     
     private void updateConnectionLabel(ElementConnection connection) {
-    	ConnectionWrapper connectionWrapper = (ConnectionWrapper) connection;
-		String label = null;
-		Constraint constraint = getSplit().internalGetConstraint(
-			new ConnectionRef(connectionWrapper.getConnection().getTo().getId(),
-				connectionWrapper.getConnection().getToType()));
-		if (constraint != null) {
-			label = constraint.getName();
-		}
-		connectionWrapper.getConnection().setMetaData("label", label);
-		connectionWrapper.notifyListeners(ElementConnection.CHANGE_LABEL);
+        ConnectionWrapper connectionWrapper = (ConnectionWrapper) connection;
+        String label = null;
+        Constraint constraint = getSplit().internalGetConstraint(
+            new ConnectionRef(connectionWrapper.getConnection().getTo().getId(),
+                connectionWrapper.getConnection().getToType()));
+        if (constraint != null) {
+            label = constraint.getName();
+        }
+        connectionWrapper.getConnection().setMetaData("label", label);
+        connectionWrapper.notifyListeners(ElementConnection.CHANGE_LABEL);
     }
      
     private void setDescriptors() {
@@ -101,7 +101,7 @@ public class SplitWrapper extends AbstractNodeWrapper {
     
     public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
         return super.acceptsIncomingConnection(connection, source)
-        	&& getIncomingConnections().isEmpty();
+            && getIncomingConnections().isEmpty();
     }
 
     public IPropertyDescriptor[] getPropertyDescriptors() {
@@ -121,10 +121,10 @@ public class SplitWrapper extends AbstractNodeWrapper {
             return new Integer(getSplit().getType());
         }
         if (CONSTRAINTS.equals(id)) {
-        	return getSplit().getType() == Split.TYPE_XOR
-        		|| getSplit().getType() == Split.TYPE_OR
-        		? new MyHashMap<ConnectionRef, Constraint>(getSplit().getConstraints())
-	            : new MyHashMap<ConnectionRef, Constraint>();
+            return getSplit().getType() == Split.TYPE_XOR
+                || getSplit().getType() == Split.TYPE_OR
+                ? new MyHashMap<ConnectionRef, Constraint>(getSplit().getConstraints())
+                : new MyHashMap<ConnectionRef, Constraint>();
         }
         return super.getPropertyValue(id);
     }
@@ -135,9 +135,9 @@ public class SplitWrapper extends AbstractNodeWrapper {
             notifyListeners(CHANGE_TYPE);
             updateConnectionLabels();
         } else if (CONSTRAINTS.equals(id)) {
-        	for (Connection connection: getSplit().getDefaultOutgoingConnections()) {
-        		getSplit().setConstraint(connection, null);
-        	}
+            for (Connection connection: getSplit().getDefaultOutgoingConnections()) {
+                getSplit().setConstraint(connection, null);
+            }
             updateConnectionLabels();
         } else {
             super.resetPropertyValue(id);
@@ -145,29 +145,29 @@ public class SplitWrapper extends AbstractNodeWrapper {
     }
 
     @SuppressWarnings("unchecked")
-	public void setPropertyValue(Object id, Object value) {
+    public void setPropertyValue(Object id, Object value) {
         if (TYPE.equals(id)) {
             getSplit().setType(((Integer) value).intValue());
             notifyListeners(CHANGE_TYPE);
             updateConnectionLabels();
         } else if (CONSTRAINTS.equals(id)) {
-        	Iterator<Map.Entry<ConnectionRef, Constraint>> iterator = ((Map<ConnectionRef, Constraint>) value).entrySet().iterator();
-        	while (iterator.hasNext()) {
-				Map.Entry<ConnectionRef, Constraint> element = iterator.next();
-				ConnectionRef connectionRef = element.getKey();
-				Connection outgoingConnection = null; 
-				for (Connection out: getSplit().getDefaultOutgoingConnections()) {
-				    if (out.getToType().equals(connectionRef.getToType())
-			            && out.getTo().getId() == connectionRef.getNodeId()) {
-				        outgoingConnection = out;
-				    }
-				}
-				if (outgoingConnection == null) {
-				    throw new IllegalArgumentException("Could not find outgoing connection");
-				}
-				getSplit().setConstraint(outgoingConnection, (Constraint) element.getValue()); 
-			}
-        	updateConnectionLabels();
+            Iterator<Map.Entry<ConnectionRef, Constraint>> iterator = ((Map<ConnectionRef, Constraint>) value).entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<ConnectionRef, Constraint> element = iterator.next();
+                ConnectionRef connectionRef = element.getKey();
+                Connection outgoingConnection = null;
+                for (Connection out: getSplit().getDefaultOutgoingConnections()) {
+                    if (out.getToType().equals(connectionRef.getToType())
+                        && out.getTo().getId() == connectionRef.getNodeId()) {
+                        outgoingConnection = out;
+                    }
+                }
+                if (outgoingConnection == null) {
+                    throw new IllegalArgumentException("Could not find outgoing connection");
+                }
+                getSplit().setConstraint(outgoingConnection, (Constraint) element.getValue());
+            }
+            updateConnectionLabels();
         } else {
             super.setPropertyValue(id, value);
         }
@@ -179,14 +179,14 @@ public class SplitWrapper extends AbstractNodeWrapper {
     }
 
     public class MyHashMap<K, V> extends HashMap<K, V> {
-		private static final long serialVersionUID = 510l;
-		public MyHashMap() {
-    	}
-    	public MyHashMap(Map<K, V> map) {
-    		super(map);
-    	}
-		public String toString() {
-    		return "";
-    	}
+        private static final long serialVersionUID = 510l;
+        public MyHashMap() {
+        }
+        public MyHashMap(Map<K, V> map) {
+            super(map);
+        }
+        public String toString() {
+            return "";
+        }
     }
 }

@@ -23,31 +23,31 @@ package org.drools.eclipse.core;
  */
 public class Expander extends DroolsElement {
 
-	private final String expander;
+    private final String expander;
 
-	Expander(Package parent, String expander) {
-		super(parent);
-		this.expander = expander;
-	}
-	
-	public Package getParentPackage() {
-		return (Package) getParent();
-	}
-	
-	public String getExpander() {
-		return expander;
-	}
+    Expander(Package parent, String expander) {
+        super(parent);
+        this.expander = expander;
+    }
 
-	public int getType() {
-		return EXPANDER;
-	}
-	
-	public DroolsElement[] getChildren() {
-		return NO_ELEMENTS;
-	}
+    public Package getParentPackage() {
+        return (Package) getParent();
+    }
 
-	public String toString() {
-		return expander;
-	}
+    public String getExpander() {
+        return expander;
+    }
+
+    public int getType() {
+        return EXPANDER;
+    }
+
+    public DroolsElement[] getChildren() {
+        return NO_ELEMENTS;
+    }
+
+    public String toString() {
+        return expander;
+    }
 
 }

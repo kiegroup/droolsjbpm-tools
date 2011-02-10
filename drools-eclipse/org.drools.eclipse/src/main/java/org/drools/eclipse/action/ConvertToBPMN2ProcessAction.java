@@ -36,80 +36,80 @@ public class ConvertToBPMN2ProcessAction implements IObjectActionDelegate {
     private IFile file;
     private IWorkbenchPart targetPart;
     
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		this.targetPart = targetPart;
-	}
+    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+        this.targetPart = targetPart;
+    }
 
-	public void run(IAction action) {
-		if (file != null && file.exists()) {
-			try {
-				convertToBPMN2();
-			} catch (Throwable t) {
-				DroolsEclipsePlugin.log(t);
-			}
-		}
+    public void run(IAction action) {
+        if (file != null && file.exists()) {
+            try {
+                convertToBPMN2();
+            } catch (Throwable t) {
+                DroolsEclipsePlugin.log(t);
+            }
+        }
 
-	}
+    }
 
-	public void selectionChanged(IAction action, ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection structured = (IStructuredSelection) selection;
-			if (structured.size() == 1) {
-				Object element = structured.getFirstElement();
-				if (element instanceof IFile) {
-					file = (IFile) element;
-				}
-			}
-		}
-	}
-	
-	public void convertToBPMN2() {
-		try {
-			InputStreamReader isr = new InputStreamReader(((File) file).getContents());
-			PackageBuilderConfiguration configuration = new PackageBuilderConfiguration();
-    		SemanticModules modules = configuration.getSemanticModules();
-    		modules.addSemanticModule(new ProcessSemanticModule());
-    		XmlProcessReader xmlReader = new XmlProcessReader( modules );
-			String xml = RuleFlowMigrator.convertReaderToString(isr);
-			Reader reader = new StringReader(xml);
-			List<Process> processes = xmlReader.read(reader);
-			if (processes != null && processes.size() == 1) {
-				final String output = XmlBPMNProcessDumper.INSTANCE.dump((WorkflowProcess) processes.get(0), true);
-				
-				ConvertToBPMN2ProcessDialog dialog = new ConvertToBPMN2ProcessDialog(targetPart.getSite().getShell());
-				dialog.setOriginalFile(file);
-				dialog.open();
-				IPath path = dialog.getResult();
-		
-				if (path == null) {
-					return;
-				}
-				
-				IWorkspace workspace = ResourcesPlugin.getWorkspace();
-				final IFile newFile = workspace.getRoot().getFile(path);
-				
-				WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
-					public void execute(final IProgressMonitor monitor)
-							throws CoreException {
-						try {
-							ByteArrayOutputStream out = new ByteArrayOutputStream();
-							newFile.create(new ByteArrayInputStream(output.getBytes()), true, monitor);
-							out.close();
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				};
-				
-				try {
-					new ProgressMonitorDialog(targetPart.getSite().getShell()).run(false, true, op);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		} catch (Throwable t) {
-			t.printStackTrace();
-		}
-	}
-	
+    public void selectionChanged(IAction action, ISelection selection) {
+        if (selection instanceof IStructuredSelection) {
+            IStructuredSelection structured = (IStructuredSelection) selection;
+            if (structured.size() == 1) {
+                Object element = structured.getFirstElement();
+                if (element instanceof IFile) {
+                    file = (IFile) element;
+                }
+            }
+        }
+    }
+
+    public void convertToBPMN2() {
+        try {
+            InputStreamReader isr = new InputStreamReader(((File) file).getContents());
+            PackageBuilderConfiguration configuration = new PackageBuilderConfiguration();
+            SemanticModules modules = configuration.getSemanticModules();
+            modules.addSemanticModule(new ProcessSemanticModule());
+            XmlProcessReader xmlReader = new XmlProcessReader( modules );
+            String xml = RuleFlowMigrator.convertReaderToString(isr);
+            Reader reader = new StringReader(xml);
+            List<Process> processes = xmlReader.read(reader);
+            if (processes != null && processes.size() == 1) {
+                final String output = XmlBPMNProcessDumper.INSTANCE.dump((WorkflowProcess) processes.get(0), true);
+
+                ConvertToBPMN2ProcessDialog dialog = new ConvertToBPMN2ProcessDialog(targetPart.getSite().getShell());
+                dialog.setOriginalFile(file);
+                dialog.open();
+                IPath path = dialog.getResult();
+
+                if (path == null) {
+                    return;
+                }
+
+                IWorkspace workspace = ResourcesPlugin.getWorkspace();
+                final IFile newFile = workspace.getRoot().getFile(path);
+
+                WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
+                    public void execute(final IProgressMonitor monitor)
+                            throws CoreException {
+                        try {
+                            ByteArrayOutputStream out = new ByteArrayOutputStream();
+                            newFile.create(new ByteArrayInputStream(output.getBytes()), true, monitor);
+                            out.close();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+
+                try {
+                    new ProgressMonitorDialog(targetPart.getSite().getShell()).run(false, true, op);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+    }
+
 }

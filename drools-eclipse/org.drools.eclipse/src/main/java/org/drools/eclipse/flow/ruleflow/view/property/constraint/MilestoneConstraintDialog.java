@@ -56,157 +56,157 @@ import org.jbpm.workflow.core.node.MilestoneNode;
  */
 public class MilestoneConstraintDialog extends EditBeanDialog<String> {
 
-	private WorkflowProcess process;
-	private TabFolder tabFolder;
-	private SourceViewer constraintViewer;
-	private ConstraintCompletionProcessor completionProcessor;
+    private WorkflowProcess process;
+    private TabFolder tabFolder;
+    private SourceViewer constraintViewer;
+    private ConstraintCompletionProcessor completionProcessor;
 
-	public MilestoneConstraintDialog(Shell parentShell, WorkflowProcess process, MilestoneNode milestone) {
-		super(parentShell, "Constraint editor");
-		this.process = process;
-		setValue(milestone.getConstraint());
-	}
+    public MilestoneConstraintDialog(Shell parentShell, WorkflowProcess process, MilestoneNode milestone) {
+        super(parentShell, "Constraint editor");
+        this.process = process;
+        setValue(milestone.getConstraint());
+    }
 
-	protected String updateValue(String value) {
-		if (tabFolder.getSelectionIndex() == 0) {
-			return getConstraintText();
-		}
-		return null;
-	}
+    protected String updateValue(String value) {
+        if (tabFolder.getSelectionIndex() == 0) {
+            return getConstraintText();
+        }
+        return null;
+    }
 
-	protected Point getInitialSize() {
-		return new Point(600, 450);
-	}
+    protected Point getInitialSize() {
+        return new Point(600, 450);
+    }
 
-	private Control createTextualEditor(Composite parent) {
-		constraintViewer = new SourceViewer(parent, null, SWT.BORDER);
-		constraintViewer.configure(new DRLSourceViewerConfig(null) {
-			public IReconciler getReconciler(ISourceViewer sourceViewer) {
-				return null;
-			}
-			public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
-				ContentAssistant assistant = new ContentAssistant();
-				completionProcessor = new ConstraintCompletionProcessor(process);
-				assistant.setContentAssistProcessor(
-					completionProcessor, IDocument.DEFAULT_CONTENT_TYPE);
-				assistant.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
-				return assistant;
-			}
-		});
-		String value = (String) getValue();
-		if (value == null) {
-			value = "";
-		}
-		IDocument document = new Document(value);
-		constraintViewer.setDocument(document);
-		IDocumentPartitioner partitioner =
+    private Control createTextualEditor(Composite parent) {
+        constraintViewer = new SourceViewer(parent, null, SWT.BORDER);
+        constraintViewer.configure(new DRLSourceViewerConfig(null) {
+            public IReconciler getReconciler(ISourceViewer sourceViewer) {
+                return null;
+            }
+            public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
+                ContentAssistant assistant = new ContentAssistant();
+                completionProcessor = new ConstraintCompletionProcessor(process);
+                assistant.setContentAssistProcessor(
+                    completionProcessor, IDocument.DEFAULT_CONTENT_TYPE);
+                assistant.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
+                return assistant;
+            }
+        });
+        String value = (String) getValue();
+        if (value == null) {
+            value = "";
+        }
+        IDocument document = new Document(value);
+        constraintViewer.setDocument(document);
+        IDocumentPartitioner partitioner =
             new FastPartitioner(
                 new DRLPartionScanner(),
                 DRLPartionScanner.LEGAL_CONTENT_TYPES);
         partitioner.connect(document);
         document.setDocumentPartitioner(partitioner);
         constraintViewer.getControl().addKeyListener(new KeyListener() {
-			public void keyPressed(KeyEvent e) {
-				if (e.character == ' ' && e.stateMask == SWT.CTRL) {
-					constraintViewer.doOperation(ISourceViewer.CONTENTASSIST_PROPOSALS);
-				}
-			}
-			public void keyReleased(KeyEvent e) {
-			}
+            public void keyPressed(KeyEvent e) {
+                if (e.character == ' ' && e.stateMask == SWT.CTRL) {
+                    constraintViewer.doOperation(ISourceViewer.CONTENTASSIST_PROPOSALS);
+                }
+            }
+            public void keyReleased(KeyEvent e) {
+            }
         });
-		return constraintViewer.getControl();
-	}
-	
-	private String getConstraintText() {
-		return constraintViewer.getDocument().get();
-	}
-	
-	public Control createDialogArea(Composite parent) {
-		GridLayout layout = new GridLayout();
-		parent.setLayout(layout);
-		layout.numColumns = 2;
+        return constraintViewer.getControl();
+    }
 
-		Composite top = new Composite(parent, SWT.NONE);
-		GridData gd = new GridData();
-		gd.horizontalSpan = 2;
-		gd.grabExcessHorizontalSpace = true;
-		top.setLayoutData(gd);
+    private String getConstraintText() {
+        return constraintViewer.getDocument().get();
+    }
 
-		layout = new GridLayout();
-		layout.numColumns = 3;
-		top.setLayout(layout);
+    public Control createDialogArea(Composite parent) {
+        GridLayout layout = new GridLayout();
+        parent.setLayout(layout);
+        layout.numColumns = 2;
 
-		Button importButton = new Button(top, SWT.PUSH);
-		importButton.setText("Imports ...");
-		importButton.setFont(JFaceResources.getDialogFont());
-		importButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				importButtonPressed();
-			}
-		});
-		gd = new GridData();
-		importButton.setLayoutData(gd);
+        Composite top = new Composite(parent, SWT.NONE);
+        GridData gd = new GridData();
+        gd.horizontalSpan = 2;
+        gd.grabExcessHorizontalSpace = true;
+        top.setLayoutData(gd);
 
-		Button globalButton = new Button(top, SWT.PUSH);
-		globalButton.setText("Globals ...");
-		globalButton.setFont(JFaceResources.getDialogFont());
-		globalButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				globalButtonPressed();
-			}
-		});
-		gd = new GridData();
-		globalButton.setLayoutData(gd);
+        layout = new GridLayout();
+        layout.numColumns = 3;
+        top.setLayout(layout);
 
-		tabFolder = new TabFolder(parent, SWT.NONE);
-		gd = new GridData();
-		gd.horizontalSpan = 3;
-		gd.grabExcessHorizontalSpace = true;
-		gd.grabExcessVerticalSpace = true;
-		gd.verticalAlignment = GridData.FILL;
-		gd.horizontalAlignment = GridData.FILL;
-		tabFolder.setLayoutData(gd);
-		TabItem textEditorTab = new TabItem(tabFolder, SWT.NONE);
-		textEditorTab.setText("Textual Editor");
+        Button importButton = new Button(top, SWT.PUSH);
+        importButton.setText("Imports ...");
+        importButton.setFont(JFaceResources.getDialogFont());
+        importButton.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+                importButtonPressed();
+            }
+        });
+        gd = new GridData();
+        importButton.setLayoutData(gd);
 
-		textEditorTab.setControl(createTextualEditor(tabFolder));
-		return tabFolder;
-	}
-	
-	private void importButtonPressed() {
-		final Runnable r = new Runnable() {
-			public void run() {
-				RuleFlowImportsDialog dialog =
-					new RuleFlowImportsDialog(getShell(), process);
-				dialog.create();
-				int code = dialog.open();
-				if (code != CANCEL) {
-					List<String> imports = dialog.getImports();
-					process.setImports(imports);
-					List<String> functionImports = dialog.getFunctionImports();
-					process.setFunctionImports(functionImports);
-					completionProcessor.reset();
-				}
-			}
-		};
-		r.run();
-	}
-	
-	private void globalButtonPressed() {
-		final Runnable r = new Runnable() {
-			public void run() {
-				RuleFlowGlobalsDialog dialog =
-					new RuleFlowGlobalsDialog(getShell(), process);
-				dialog.create();
-				int code = dialog.open();
-				if (code != CANCEL) {
-					Map<String, String> globals = dialog.getGlobals();
-					process.setGlobals(globals);
-					completionProcessor.reset();
-				}
-			}
-		};
-		r.run();
-	}
+        Button globalButton = new Button(top, SWT.PUSH);
+        globalButton.setText("Globals ...");
+        globalButton.setFont(JFaceResources.getDialogFont());
+        globalButton.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+                globalButtonPressed();
+            }
+        });
+        gd = new GridData();
+        globalButton.setLayoutData(gd);
+
+        tabFolder = new TabFolder(parent, SWT.NONE);
+        gd = new GridData();
+        gd.horizontalSpan = 3;
+        gd.grabExcessHorizontalSpace = true;
+        gd.grabExcessVerticalSpace = true;
+        gd.verticalAlignment = GridData.FILL;
+        gd.horizontalAlignment = GridData.FILL;
+        tabFolder.setLayoutData(gd);
+        TabItem textEditorTab = new TabItem(tabFolder, SWT.NONE);
+        textEditorTab.setText("Textual Editor");
+
+        textEditorTab.setControl(createTextualEditor(tabFolder));
+        return tabFolder;
+    }
+
+    private void importButtonPressed() {
+        final Runnable r = new Runnable() {
+            public void run() {
+                RuleFlowImportsDialog dialog =
+                    new RuleFlowImportsDialog(getShell(), process);
+                dialog.create();
+                int code = dialog.open();
+                if (code != CANCEL) {
+                    List<String> imports = dialog.getImports();
+                    process.setImports(imports);
+                    List<String> functionImports = dialog.getFunctionImports();
+                    process.setFunctionImports(functionImports);
+                    completionProcessor.reset();
+                }
+            }
+        };
+        r.run();
+    }
+
+    private void globalButtonPressed() {
+        final Runnable r = new Runnable() {
+            public void run() {
+                RuleFlowGlobalsDialog dialog =
+                    new RuleFlowGlobalsDialog(getShell(), process);
+                dialog.create();
+                int code = dialog.open();
+                if (code != CANCEL) {
+                    Map<String, String> globals = dialog.getGlobals();
+                    process.setGlobals(globals);
+                    completionProcessor.reset();
+                }
+            }
+        };
+        r.run();
+    }
 
 }

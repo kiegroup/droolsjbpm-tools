@@ -51,13 +51,13 @@ public class AlphaNodeVertex extends BaseVertex {
      * @see org.drools.reteoo.BaseNodeVertex#getHtml()
      */
     public String getHtml() {
-    	AlphaNodeFieldConstraint constraint = this.node.getConstraint();
+        AlphaNodeFieldConstraint constraint = this.node.getConstraint();
         if (constraint instanceof LiteralConstraint) {
-        	LiteralConstraint literalConstraint = (LiteralConstraint) constraint;
+            LiteralConstraint literalConstraint = (LiteralConstraint) constraint;
             InternalReadAccessor accessor = literalConstraint.getFieldExtractor();
             if (accessor instanceof ClassFieldReader) {
                 ClassFieldReader classFieldReader = (ClassFieldReader) accessor;
-            	return NODE_NAME + "<BR/>field : " + classFieldReader.getFieldName() + "<BR/>evaluator : " + literalConstraint.getEvaluator() + "<BR/>value :  " + literalConstraint.getField();
+                return NODE_NAME + "<BR/>field : " + classFieldReader.getFieldName() + "<BR/>evaluator : " + literalConstraint.getEvaluator() + "<BR/>value :  " + literalConstraint.getField();
             }
         }
         return NODE_NAME + "<BR/>";
@@ -84,12 +84,12 @@ public class AlphaNodeVertex extends BaseVertex {
      * @return field name
      */
     public String getFieldName() {
-    	AlphaNodeFieldConstraint constraint = this.node.getConstraint();
+        AlphaNodeFieldConstraint constraint = this.node.getConstraint();
         if (constraint instanceof LiteralConstraint) {
-        	LiteralConstraint literalConstraint = (LiteralConstraint) constraint;
+            LiteralConstraint literalConstraint = (LiteralConstraint) constraint;
             InternalReadAccessor accessor = literalConstraint.getFieldExtractor();
             if (accessor instanceof ClassFieldReader) {
-            	return ((ClassFieldReader) accessor).getFieldName();
+                return ((ClassFieldReader) accessor).getFieldName();
             }
         }
         return null;
@@ -101,10 +101,10 @@ public class AlphaNodeVertex extends BaseVertex {
      * @return evaluator string
      */
     public String getEvaluator() {
-    	AlphaNodeFieldConstraint constraint = this.node.getConstraint();
+        AlphaNodeFieldConstraint constraint = this.node.getConstraint();
         if (constraint instanceof LiteralConstraint) {
-        	LiteralConstraint literalConstraint = (LiteralConstraint) constraint;
-        	return literalConstraint.getEvaluator().toString();
+            LiteralConstraint literalConstraint = (LiteralConstraint) constraint;
+            return literalConstraint.getEvaluator().toString();
         }
         return null;
     }
@@ -115,10 +115,10 @@ public class AlphaNodeVertex extends BaseVertex {
      * @return field string
      */
     public String getValue() {
-    	AlphaNodeFieldConstraint constraint = this.node.getConstraint();
+        AlphaNodeFieldConstraint constraint = this.node.getConstraint();
         if (constraint instanceof LiteralConstraint) {
-        	LiteralConstraint literalConstraint = (LiteralConstraint) constraint;
-        	return literalConstraint.getField().toString();
+            LiteralConstraint literalConstraint = (LiteralConstraint) constraint;
+            return literalConstraint.getField().toString();
         }
         return null;
     }

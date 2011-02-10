@@ -65,81 +65,81 @@ public class ActionDialog extends EditBeanDialog<DroolsAction> {
 
     private static final String[] DIALECTS = new String[] { "mvel", "java" };
     
-	private WorkflowProcess process;
-	private TabFolder tabFolder;
-	private SourceViewer actionViewer;
-	private Combo dialectCombo;
-	private ActionCompletionProcessor completionProcessor;
+    private WorkflowProcess process;
+    private TabFolder tabFolder;
+    private SourceViewer actionViewer;
+    private Combo dialectCombo;
+    private ActionCompletionProcessor completionProcessor;
 
-	public ActionDialog(Shell parentShell, WorkflowProcess process) {
-		super(parentShell, "Action editor");
-		this.process = process;
-	}
-	
-	protected DroolsAction updateValue(DroolsAction action) {
-		if (tabFolder.getSelectionIndex() == 0) {
-			DroolsConsequenceAction result = new DroolsConsequenceAction();
-			result.setDialect(dialectCombo.getItem(dialectCombo.getSelectionIndex()));
-			result.setConsequence(actionViewer.getDocument().get());
-			return result;
-		}
-		return null;
-	}
+    public ActionDialog(Shell parentShell, WorkflowProcess process) {
+        super(parentShell, "Action editor");
+        this.process = process;
+    }
 
-	protected Point getInitialSize() {
-		return new Point(600, 450);
-	}
+    protected DroolsAction updateValue(DroolsAction action) {
+        if (tabFolder.getSelectionIndex() == 0) {
+            DroolsConsequenceAction result = new DroolsConsequenceAction();
+            result.setDialect(dialectCombo.getItem(dialectCombo.getSelectionIndex()));
+            result.setConsequence(actionViewer.getDocument().get());
+            return result;
+        }
+        return null;
+    }
 
-	private Control createTextualEditor(Composite parent) {
-		actionViewer = new SourceViewer(parent, null, SWT.BORDER);
-		actionViewer.configure(new DRLSourceViewerConfig(null) {
-			public IReconciler getReconciler(ISourceViewer sourceViewer) {
-				return null;
-			}
-			public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
-				ContentAssistant assistant = new ContentAssistant();
-				completionProcessor = new ActionCompletionProcessor(process);
-				assistant.setContentAssistProcessor(
-					completionProcessor, IDocument.DEFAULT_CONTENT_TYPE);
-				assistant.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
-				return assistant;
-			}
-		});
-		completionProcessor.setDialect(
+    protected Point getInitialSize() {
+        return new Point(600, 450);
+    }
+
+    private Control createTextualEditor(Composite parent) {
+        actionViewer = new SourceViewer(parent, null, SWT.BORDER);
+        actionViewer.configure(new DRLSourceViewerConfig(null) {
+            public IReconciler getReconciler(ISourceViewer sourceViewer) {
+                return null;
+            }
+            public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
+                ContentAssistant assistant = new ContentAssistant();
+                completionProcessor = new ActionCompletionProcessor(process);
+                assistant.setContentAssistProcessor(
+                    completionProcessor, IDocument.DEFAULT_CONTENT_TYPE);
+                assistant.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
+                return assistant;
+            }
+        });
+        completionProcessor.setDialect(
             dialectCombo.getItem(dialectCombo.getSelectionIndex()));
-		Object action = getValue();
-		String value = null;
-		if (action instanceof DroolsConsequenceAction) {
-			value = ((DroolsConsequenceAction) action).getConsequence();
-		}
-		if (value == null) {
-			value = "";
-		}
-		IDocument document = new Document(value);
-		actionViewer.setDocument(document);
-		IDocumentPartitioner partitioner =
+        Object action = getValue();
+        String value = null;
+        if (action instanceof DroolsConsequenceAction) {
+            value = ((DroolsConsequenceAction) action).getConsequence();
+        }
+        if (value == null) {
+            value = "";
+        }
+        IDocument document = new Document(value);
+        actionViewer.setDocument(document);
+        IDocumentPartitioner partitioner =
             new FastPartitioner(
                 new DRLPartionScanner(),
                 DRLPartionScanner.LEGAL_CONTENT_TYPES);
         partitioner.connect(document);
         document.setDocumentPartitioner(partitioner);
         actionViewer.getControl().addKeyListener(new KeyListener() {
-			public void keyPressed(KeyEvent e) {
-				if (e.character == ' ' && e.stateMask == SWT.CTRL) {
-					actionViewer.doOperation(ISourceViewer.CONTENTASSIST_PROPOSALS);
-				}
-			}
-			public void keyReleased(KeyEvent e) {
-			}
+            public void keyPressed(KeyEvent e) {
+                if (e.character == ' ' && e.stateMask == SWT.CTRL) {
+                    actionViewer.doOperation(ISourceViewer.CONTENTASSIST_PROPOSALS);
+                }
+            }
+            public void keyReleased(KeyEvent e) {
+            }
         });
-		return actionViewer.getControl();
-	}
-	
-	private Control createDialectCombo(Composite parent) {
-	    dialectCombo = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
-	    dialectCombo.setItems(DIALECTS);
-	    Object action = getValue();
-	    int index = 0;
+        return actionViewer.getControl();
+    }
+
+    private Control createDialectCombo(Composite parent) {
+        dialectCombo = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
+        dialectCombo.setItems(DIALECTS);
+        Object action = getValue();
+        int index = 0;
         if (action instanceof DroolsConsequenceAction) {
             String dialect = ((DroolsConsequenceAction) action).getDialect();
             int found = ArrayUtils.indexOf(DIALECTS, dialect);
@@ -159,93 +159,93 @@ public class ActionDialog extends EditBeanDialog<DroolsAction> {
             }
         });
         return dialectCombo;
-	}
-	
-	public Control createDialogArea(Composite parent) {
-		GridLayout layout = new GridLayout();
-		parent.setLayout(layout);
-		layout.numColumns = 2;
+    }
 
-		Composite top = new Composite(parent, SWT.NONE);
-		GridData gd = new GridData();
-		gd.horizontalSpan = 2;
-		gd.grabExcessHorizontalSpace = true;
-		top.setLayoutData(gd);
+    public Control createDialogArea(Composite parent) {
+        GridLayout layout = new GridLayout();
+        parent.setLayout(layout);
+        layout.numColumns = 2;
 
-		layout = new GridLayout();
-		layout.numColumns = 4;
-		top.setLayout(layout);
-		
-		Label label = new Label(top, SWT.NONE);
+        Composite top = new Composite(parent, SWT.NONE);
+        GridData gd = new GridData();
+        gd.horizontalSpan = 2;
+        gd.grabExcessHorizontalSpace = true;
+        top.setLayoutData(gd);
+
+        layout = new GridLayout();
+        layout.numColumns = 4;
+        top.setLayout(layout);
+
+        Label label = new Label(top, SWT.NONE);
         label.setText("Dialect:");
         createDialectCombo(top);
-		
-		Button importButton = new Button(top, SWT.PUSH);
-		importButton.setText("Imports ...");
-		importButton.setFont(JFaceResources.getDialogFont());
-		importButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				importButtonPressed();
-			}
-		});
-		
-		Button globalButton = new Button(top, SWT.PUSH);
-		globalButton.setText("Globals ...");
-		globalButton.setFont(JFaceResources.getDialogFont());
-		globalButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				globalButtonPressed();
-			}
-		});
-		
-		tabFolder = new TabFolder(parent, SWT.NONE);
-		gd = new GridData();
-		gd.horizontalSpan = 3;
-		gd.grabExcessHorizontalSpace = true;
-		gd.grabExcessVerticalSpace = true;
-		gd.verticalAlignment = GridData.FILL;
-		gd.horizontalAlignment = GridData.FILL;
-		tabFolder.setLayoutData(gd);
-		TabItem textEditorTab = new TabItem(tabFolder, SWT.NONE);
-		textEditorTab.setText("Textual Editor");
 
-		textEditorTab.setControl(createTextualEditor(tabFolder));
-		return tabFolder;
-	}
-	
-	private void importButtonPressed() {
-		final Runnable r = new Runnable() {
-			public void run() {
-				RuleFlowImportsDialog dialog =
-					new RuleFlowImportsDialog(getShell(), process);
-				dialog.create();
-				int code = dialog.open();
-				if (code != CANCEL) {
-					List<String> imports = dialog.getImports();
-					process.setImports(imports);
-					List<String> functionImports = dialog.getFunctionImports();
-					process.setFunctionImports(functionImports);
-					completionProcessor.reset();
-				}
-			}
-		};
-		r.run();
-	}
-	
-	private void globalButtonPressed() {
-		final Runnable r = new Runnable() {
-			public void run() {
-				RuleFlowGlobalsDialog dialog =
-					new RuleFlowGlobalsDialog(getShell(), process);
-				dialog.create();
-				int code = dialog.open();
-				if (code != CANCEL) {
-					Map<String, String> globals = dialog.getGlobals();
-					process.setGlobals(globals);
-					completionProcessor.reset();
-				}
-			}
-		};
-		r.run();
-	}
+        Button importButton = new Button(top, SWT.PUSH);
+        importButton.setText("Imports ...");
+        importButton.setFont(JFaceResources.getDialogFont());
+        importButton.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+                importButtonPressed();
+            }
+        });
+
+        Button globalButton = new Button(top, SWT.PUSH);
+        globalButton.setText("Globals ...");
+        globalButton.setFont(JFaceResources.getDialogFont());
+        globalButton.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+                globalButtonPressed();
+            }
+        });
+
+        tabFolder = new TabFolder(parent, SWT.NONE);
+        gd = new GridData();
+        gd.horizontalSpan = 3;
+        gd.grabExcessHorizontalSpace = true;
+        gd.grabExcessVerticalSpace = true;
+        gd.verticalAlignment = GridData.FILL;
+        gd.horizontalAlignment = GridData.FILL;
+        tabFolder.setLayoutData(gd);
+        TabItem textEditorTab = new TabItem(tabFolder, SWT.NONE);
+        textEditorTab.setText("Textual Editor");
+
+        textEditorTab.setControl(createTextualEditor(tabFolder));
+        return tabFolder;
+    }
+
+    private void importButtonPressed() {
+        final Runnable r = new Runnable() {
+            public void run() {
+                RuleFlowImportsDialog dialog =
+                    new RuleFlowImportsDialog(getShell(), process);
+                dialog.create();
+                int code = dialog.open();
+                if (code != CANCEL) {
+                    List<String> imports = dialog.getImports();
+                    process.setImports(imports);
+                    List<String> functionImports = dialog.getFunctionImports();
+                    process.setFunctionImports(functionImports);
+                    completionProcessor.reset();
+                }
+            }
+        };
+        r.run();
+    }
+
+    private void globalButtonPressed() {
+        final Runnable r = new Runnable() {
+            public void run() {
+                RuleFlowGlobalsDialog dialog =
+                    new RuleFlowGlobalsDialog(getShell(), process);
+                dialog.create();
+                int code = dialog.open();
+                if (code != CANCEL) {
+                    Map<String, String> globals = dialog.getGlobals();
+                    process.setGlobals(globals);
+                    completionProcessor.reset();
+                }
+            }
+        };
+        r.run();
+    }
 }

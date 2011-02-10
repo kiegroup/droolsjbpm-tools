@@ -29,32 +29,32 @@ import org.eclipse.core.resources.IFile;
  */
 public class RefactoringContent {
 
-	private Integer processorHashcode;
-	private Map<IFile, String> fileContents;
+    private Integer processorHashcode;
+    private Map<IFile, String> fileContents;
 
-	public RefactoringContent() {
-		this.processorHashcode = -1;
-		this.fileContents = new HashMap<IFile, String>();
-	}
+    public RefactoringContent() {
+        this.processorHashcode = -1;
+        this.fileContents = new HashMap<IFile, String>();
+    }
 
-	public void setProcessorHashcode(Integer processorHashcode) {
-		this.processorHashcode = processorHashcode;
-	}
+    public void setProcessorHashcode(Integer processorHashcode) {
+        this.processorHashcode = processorHashcode;
+    }
 
-	public Integer getProcessorHashcode() {
-		return processorHashcode;
-	}
+    public Integer getProcessorHashcode() {
+        return processorHashcode;
+    }
 
-	public String getIFileContent(IFile file) {
-		return this.fileContents.get(file);
-	}
+    public String getIFileContent(IFile file) {
+        return this.fileContents.get(file);
+    }
 
-	public void updateContent(IFile file, String content) {
-		this.fileContents.put(file, content);
-	}
+    public void updateContent(IFile file, String content) {
+        this.fileContents.put(file, content);
+    }
 
-	public void clear() {
-		this.fileContents.clear();
-	}
+    public void clear() {
+        this.fileContents.clear();
+    }
 
 }

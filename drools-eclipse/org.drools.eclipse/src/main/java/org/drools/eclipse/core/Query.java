@@ -30,24 +30,24 @@ public class Query extends DroolsElement {
         this.query = query;
     }
 
-	public Package getParentPackage() {
-		return (Package) getParent();
-	}
-	
-	public String getQueryName() {
-		return query;
-	}
-	
-	public int getType() {
-		return QUERY;
-	}
-	
-	public DroolsElement[] getChildren() {
-		return NO_ELEMENTS;
-	}
+    public Package getParentPackage() {
+        return (Package) getParent();
+    }
 
-	public String toString() {
-		return query;
-	}
+    public String getQueryName() {
+        return query;
+    }
+
+    public int getType() {
+        return QUERY;
+    }
+
+    public DroolsElement[] getChildren() {
+        return NO_ELEMENTS;
+    }
+
+    public String toString() {
+        return query;
+    }
 
 }

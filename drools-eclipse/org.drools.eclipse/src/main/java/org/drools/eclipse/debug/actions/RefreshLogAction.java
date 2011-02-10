@@ -49,7 +49,7 @@ public class RefreshLogAction extends Action {
         view.refresh();  
         BusyIndicator.showWhile(view.getViewer().getControl().getDisplay(), new Runnable() {
             public void run() {
-            	view.getViewer().refresh();                    
+                view.getViewer().refresh();
             }
         });         
     }

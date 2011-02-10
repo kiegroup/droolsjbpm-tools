@@ -45,140 +45,140 @@ import org.guvnor.tools.views.model.ResourceHistoryEntry;
  * @author jgraham
  */
 public class SwitchVersionAction implements IObjectActionDelegate {
-	
-	private IFile selectedFile;
-	private GuvnorMetadataProps props;
-	
-	private IWorkbenchPart targetPart;
-	
-	private IWebDavClient client;
-	
-	public SwitchVersionAction() {
-		super();
-	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.action.IAction, org.eclipse.ui.IWorkbenchPart)
-	 */
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		this.targetPart = targetPart;
-	}
+    private IFile selectedFile;
+    private GuvnorMetadataProps props;
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
-	 */
-	public void run(IAction action) {
-		if (selectedFile == null
-		   || props == null
-		   || targetPart == null) {
-			return;
-		}
-		VersionChooserDialog dialog = 
-			new VersionChooserDialog(targetPart.getSite().getShell(), 
-					                selectedFile.getName(), 
-					                getVersionEntries());
-		if (dialog.open() == VersionChooserDialog.OK) {
-			updateSelectedFile(dialog.getSelectedEntry());
-			PlatformUtils.updateDecoration();
-		}
- 	}
-	
-	private void updateSelectedFile(ResourceHistoryEntry verInfo) {
-		IResponse response = null;
-		try {
-			response = client.getResourceVersionInputStream(props.getFullpath(), verInfo.getRevision());
-			InputStream ins = response.getInputStream();
-			if (ins != null) {
-				selectedFile.setContents(ins, true, true, null);
-				GuvnorMetadataUtils.markCurrentGuvnorResource(selectedFile);
-				GuvnorMetadataProps mdProps = GuvnorMetadataUtils.getGuvnorMetadata(selectedFile);
-				mdProps.setVersion(verInfo.getDate());
-				mdProps.setRevision(verInfo.getRevision());
-				GuvnorMetadataUtils.setGuvnorMetadataProps(selectedFile.getFullPath(), mdProps);
-			}
-		} catch (Exception e) {
-			Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e, true);
-		} finally {
-			if (response != null) {
-				try {
-					response.close();
-				} catch (IOException ioe) {
-					Activator.getDefault().writeLog(IStatus.ERROR, ioe.getMessage(), ioe);
-				}
-			}
-		}
-	}
-	private ResourceHistoryEntry[] getVersionEntries() {
-		ResourceHistoryEntry[] entries = new ResourceHistoryEntry[0];
-		IResponse response = null;
-		try {
-			client = WebDavServerCache.getWebDavClient(props.getRepository());
-			if (client == null) {
-				client = WebDavClientFactory.createClient(new URL(props.getRepository()));
-				WebDavServerCache.cacheWebDavClient(props.getRepository(), client);
-			}
-			InputStream ins = null;
-			try {
-				response = client.getResourceVersions(props.getFullpath());
-				ins = response.getInputStream();
-			} catch (WebDavException wde) {
-				if (wde.getErrorCode() != IResponse.SC_UNAUTHORIZED) {
-					// If not an authentication failure, we don't know what to do with it
-					throw wde;
-				}
-				boolean retry = PlatformUtils.getInstance().
-									authenticateForServer(props.getRepository(), client); 
-				if (retry) {
-					response = client.getResourceVersions(props.getFullpath());
-					ins = response.getInputStream();
-				}
-			}
-			if (ins != null) {
-				Properties verProps = new Properties();
-				verProps.load(ins);
-				entries = GuvnorMetadataUtils.parseHistoryProperties(verProps);
-			}
-		} catch (Exception e) {
-			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
-		} finally {
-			if (response != null) {
-				try {
-					response.close();
-				} catch (IOException ioe) {
-					Activator.getDefault().writeLog(IStatus.ERROR, ioe.getMessage(), ioe);
-				}
-			}
-		}
-		return entries;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
-	 */
-	public void selectionChanged(IAction action, ISelection selection) {
-		// Reset state to default
-		selectedFile = null;
-		props = null;
-		action.setEnabled(false);
-		// See if we should enable for the selection
-		try {
-			if (selection instanceof IStructuredSelection) {
-				IStructuredSelection sel = (IStructuredSelection)selection;
-				if (sel.getFirstElement() instanceof IFile
-				   && sel.size() == 1) {
-					props = GuvnorMetadataUtils.getGuvnorMetadata((IFile)sel.getFirstElement());
-					if (props != null) {
-						selectedFile = (IFile)sel.getFirstElement();
-						action.setEnabled(true);
-					}
-				}
-			} 
-		} catch (Exception e) {
-			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
-		}
-	}
+    private IWorkbenchPart targetPart;
+
+    private IWebDavClient client;
+
+    public SwitchVersionAction() {
+        super();
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.action.IAction, org.eclipse.ui.IWorkbenchPart)
+     */
+    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+        this.targetPart = targetPart;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
+     */
+    public void run(IAction action) {
+        if (selectedFile == null
+           || props == null
+           || targetPart == null) {
+            return;
+        }
+        VersionChooserDialog dialog =
+            new VersionChooserDialog(targetPart.getSite().getShell(),
+                                    selectedFile.getName(),
+                                    getVersionEntries());
+        if (dialog.open() == VersionChooserDialog.OK) {
+            updateSelectedFile(dialog.getSelectedEntry());
+            PlatformUtils.updateDecoration();
+        }
+     }
+
+    private void updateSelectedFile(ResourceHistoryEntry verInfo) {
+        IResponse response = null;
+        try {
+            response = client.getResourceVersionInputStream(props.getFullpath(), verInfo.getRevision());
+            InputStream ins = response.getInputStream();
+            if (ins != null) {
+                selectedFile.setContents(ins, true, true, null);
+                GuvnorMetadataUtils.markCurrentGuvnorResource(selectedFile);
+                GuvnorMetadataProps mdProps = GuvnorMetadataUtils.getGuvnorMetadata(selectedFile);
+                mdProps.setVersion(verInfo.getDate());
+                mdProps.setRevision(verInfo.getRevision());
+                GuvnorMetadataUtils.setGuvnorMetadataProps(selectedFile.getFullPath(), mdProps);
+            }
+        } catch (Exception e) {
+            Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e, true);
+        } finally {
+            if (response != null) {
+                try {
+                    response.close();
+                } catch (IOException ioe) {
+                    Activator.getDefault().writeLog(IStatus.ERROR, ioe.getMessage(), ioe);
+                }
+            }
+        }
+    }
+    private ResourceHistoryEntry[] getVersionEntries() {
+        ResourceHistoryEntry[] entries = new ResourceHistoryEntry[0];
+        IResponse response = null;
+        try {
+            client = WebDavServerCache.getWebDavClient(props.getRepository());
+            if (client == null) {
+                client = WebDavClientFactory.createClient(new URL(props.getRepository()));
+                WebDavServerCache.cacheWebDavClient(props.getRepository(), client);
+            }
+            InputStream ins = null;
+            try {
+                response = client.getResourceVersions(props.getFullpath());
+                ins = response.getInputStream();
+            } catch (WebDavException wde) {
+                if (wde.getErrorCode() != IResponse.SC_UNAUTHORIZED) {
+                    // If not an authentication failure, we don't know what to do with it
+                    throw wde;
+                }
+                boolean retry = PlatformUtils.getInstance().
+                                    authenticateForServer(props.getRepository(), client);
+                if (retry) {
+                    response = client.getResourceVersions(props.getFullpath());
+                    ins = response.getInputStream();
+                }
+            }
+            if (ins != null) {
+                Properties verProps = new Properties();
+                verProps.load(ins);
+                entries = GuvnorMetadataUtils.parseHistoryProperties(verProps);
+            }
+        } catch (Exception e) {
+            Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+        } finally {
+            if (response != null) {
+                try {
+                    response.close();
+                } catch (IOException ioe) {
+                    Activator.getDefault().writeLog(IStatus.ERROR, ioe.getMessage(), ioe);
+                }
+            }
+        }
+        return entries;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
+     */
+    public void selectionChanged(IAction action, ISelection selection) {
+        // Reset state to default
+        selectedFile = null;
+        props = null;
+        action.setEnabled(false);
+        // See if we should enable for the selection
+        try {
+            if (selection instanceof IStructuredSelection) {
+                IStructuredSelection sel = (IStructuredSelection)selection;
+                if (sel.getFirstElement() instanceof IFile
+                   && sel.size() == 1) {
+                    props = GuvnorMetadataUtils.getGuvnorMetadata((IFile)sel.getFirstElement());
+                    if (props != null) {
+                        selectedFile = (IFile)sel.getFirstElement();
+                        action.setEnabled(true);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+        }
+    }
 
 }

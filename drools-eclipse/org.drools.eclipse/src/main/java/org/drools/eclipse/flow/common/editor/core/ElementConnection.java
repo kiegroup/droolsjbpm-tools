@@ -32,12 +32,12 @@ import org.eclipse.draw2d.geometry.Point;
  */
 public abstract class ElementConnection implements Serializable {
     
-	private static final long serialVersionUID = 510l;
-	
-	public static final int CHANGE_BENDPOINTS = 1;
-	public static final int CHANGE_LABEL = 2;
-	
-	private ElementWrapper source;
+    private static final long serialVersionUID = 510l;
+
+    public static final int CHANGE_BENDPOINTS = 1;
+    public static final int CHANGE_LABEL = 2;
+
+    private ElementWrapper source;
     private ElementWrapper target;
     private transient List<Point> bendpoints = new ArrayList<Point>();
     private transient List<ModelListener> listeners = new ArrayList<ModelListener>();
@@ -46,7 +46,7 @@ public abstract class ElementConnection implements Serializable {
     }
     
     public void localSetSource(ElementWrapper source) {
-    	this.source = source;
+        this.source = source;
     }
     
     public void localSetTarget(ElementWrapper target) {
@@ -54,34 +54,34 @@ public abstract class ElementConnection implements Serializable {
     }
     
     public void disconnect() {
-    	if (source == null) {
-    		throw new IllegalStateException("Can't disconnect, source is null");
-    	}
-    	if (target == null) {
-    		throw new IllegalStateException("Can't disconnect, target is null");
-    	}
-    	source.removeOutgoingConnection(this);
-    	target.removeIncomingConnection(this);
-    	source = null;
-    	target = null;
+        if (source == null) {
+            throw new IllegalStateException("Can't disconnect, source is null");
+        }
+        if (target == null) {
+            throw new IllegalStateException("Can't disconnect, target is null");
+        }
+        source.removeOutgoingConnection(this);
+        target.removeIncomingConnection(this);
+        source = null;
+        target = null;
     }
     
     public void connect(ElementWrapper source, ElementWrapper target) {
-    	if (source == null) {
-    		throw new IllegalArgumentException("source is null");
-    	}
+        if (source == null) {
+            throw new IllegalArgumentException("source is null");
+        }
         if (this.source != null) {
             throw new IllegalStateException("The source of a connection cannot be changed");
         }
         if (target == null) {
-    		throw new IllegalArgumentException("target is null");
-    	}
+            throw new IllegalArgumentException("target is null");
+        }
         if (this.target != null) {
             throw new IllegalStateException("The target of a connection cannot be changed");
         }
         this.source = source;
         this.target = target;
-    	source.addOutgoingConnection(this);
+        source.addOutgoingConnection(this);
         target.addIncomingConnection(this);
     }
     
@@ -139,8 +139,8 @@ public abstract class ElementConnection implements Serializable {
     public void notifyListeners(int change) {
         ModelEvent event = new ModelEvent(change);
         for (Iterator it = listeners.iterator(); it.hasNext(); ) {
-        	ModelListener listener = (ModelListener) it.next();
-        	listener.modelChanged(event);
+            ModelListener listener = (ModelListener) it.next();
+            listener.modelChanged(event);
         }
     }
 

@@ -103,19 +103,19 @@ public class RuleHelperActionDelegate
     }
 
     private void addProjectWizard(Menu menu, final Shell shell) {
-		MenuItem rule = new MenuItem(menu, SWT.NONE);
-		rule.setText("New Drools Project");
+        MenuItem rule = new MenuItem(menu, SWT.NONE);
+        rule.setText("New Drools Project");
 
-		rule.addSelectionListener(new SelectionListener() {
-			public void widgetSelected(SelectionEvent e) {
-				NewDroolsProjectWizard wizard = new NewDroolsProjectWizard();
-				launchWizard(shell, wizard);
-			}
+        rule.addSelectionListener(new SelectionListener() {
+            public void widgetSelected(SelectionEvent e) {
+                NewDroolsProjectWizard wizard = new NewDroolsProjectWizard();
+                launchWizard(shell, wizard);
+            }
 
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
-		});
-	}
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+        });
+    }
 
     private void addRuleWizard(Menu menu,
                                final Shell shell) {

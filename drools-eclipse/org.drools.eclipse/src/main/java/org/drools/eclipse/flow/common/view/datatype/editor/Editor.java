@@ -28,7 +28,7 @@ public interface Editor {
 
     void setDataType(DataType dataType);
     
-	Object getValue();
+    Object getValue();
     
     void setValue(Object value);
     

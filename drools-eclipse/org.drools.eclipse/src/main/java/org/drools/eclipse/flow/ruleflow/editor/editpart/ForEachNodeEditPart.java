@@ -31,52 +31,52 @@ import org.eclipse.draw2d.geometry.Rectangle;
  */
 public class ForEachNodeEditPart extends ElementContainerEditPart {
 
-	private String SKIN =
-		DroolsEclipsePlugin.getDefault().getPreferenceStore().getString(IDroolsConstants.SKIN);
+    private String SKIN =
+        DroolsEclipsePlugin.getDefault().getPreferenceStore().getString(IDroolsConstants.SKIN);
 
     protected IFigure createFigure() {
-    	SkinProvider skinProvider = SkinManager.getInstance().getSkinProvider(SKIN);
-    	IFigure result = skinProvider.createForEachNodeFigure();
-    	Rectangle constraint = getElementWrapper().getConstraint();
-    	if (constraint.width == -1) {
-    		constraint.width = result.getSize().width;
-    	}
-    	if (constraint.height == -1) {
-    		constraint.height = result.getSize().height;
-    	}
-    	getElementWrapper().setConstraint(constraint);
-    	return result;
+        SkinProvider skinProvider = SkinManager.getInstance().getSkinProvider(SKIN);
+        IFigure result = skinProvider.createForEachNodeFigure();
+        Rectangle constraint = getElementWrapper().getConstraint();
+        if (constraint.width == -1) {
+            constraint.width = result.getSize().width;
+        }
+        if (constraint.height == -1) {
+            constraint.height = result.getSize().height;
+        }
+        getElementWrapper().setConstraint(constraint);
+        return result;
     }
-	
+
 //    public ConnectionAnchor getSourceConnectionAnchor(Request request) {
-//    	Point p = ((DropRequest) request).getLocation();
-//    	Rectangle figureBounds = getFigure().getBounds();
-//    	if (p.x > figureBounds.x && p.x < figureBounds.x + figureBounds.width &&
-//    			p.y > figureBounds.y && p.y < figureBounds.y + figureBounds.height) {
-//        	FixedConnectionAnchor c = new FixedConnectionAnchor(getFigure());
-//        	c.setOffsetV(getFigure().getBounds().height/2);
-//        	c.setOffsetH(0);
+//        Point p = ((DropRequest) request).getLocation();
+//        Rectangle figureBounds = getFigure().getBounds();
+//        if (p.x > figureBounds.x && p.x < figureBounds.x + figureBounds.width &&
+//                p.y > figureBounds.y && p.y < figureBounds.y + figureBounds.height) {
+//            FixedConnectionAnchor c = new FixedConnectionAnchor(getFigure());
+//            c.setOffsetV(getFigure().getBounds().height/2);
+//            c.setOffsetH(0);
 //            return c;
-//    	}
-//    	FixedConnectionAnchor c = new FixedConnectionAnchor(getFigure());
-//    	c.setOffsetV(getFigure().getBounds().height/2);
-//    	c.setOffsetH(getFigure().getBounds().width);
+//        }
+//        FixedConnectionAnchor c = new FixedConnectionAnchor(getFigure());
+//        c.setOffsetV(getFigure().getBounds().height/2);
+//        c.setOffsetH(getFigure().getBounds().width);
 //        return c;
 //    }
 //
 //    public ConnectionAnchor getTargetConnectionAnchor(Request request) {
-//    	Point p = ((DropRequest) request).getLocation();
-//    	Rectangle figureBounds = getFigure().getBounds();
-//    	if (p.x > figureBounds.x && p.x < figureBounds.x + figureBounds.width &&
-//    			p.y > figureBounds.y && p.y < figureBounds.y + figureBounds.height) {
-//        	FixedConnectionAnchor c = new FixedConnectionAnchor(getFigure());
-//        	c.setOffsetV(getFigure().getBounds().height/2);
-//        	c.setOffsetH(getFigure().getBounds().width);
+//        Point p = ((DropRequest) request).getLocation();
+//        Rectangle figureBounds = getFigure().getBounds();
+//        if (p.x > figureBounds.x && p.x < figureBounds.x + figureBounds.width &&
+//                p.y > figureBounds.y && p.y < figureBounds.y + figureBounds.height) {
+//            FixedConnectionAnchor c = new FixedConnectionAnchor(getFigure());
+//            c.setOffsetV(getFigure().getBounds().height/2);
+//            c.setOffsetH(getFigure().getBounds().width);
 //            return c;
-//    	}
-//    	FixedConnectionAnchor c = new FixedConnectionAnchor(getFigure());
-//    	c.setOffsetV(getFigure().getBounds().height/2);
-//    	c.setOffsetH(0);
+//        }
+//        FixedConnectionAnchor c = new FixedConnectionAnchor(getFigure());
+//        c.setOffsetV(getFigure().getBounds().height/2);
+//        c.setOffsetH(0);
 //        return c;
 //    }
 

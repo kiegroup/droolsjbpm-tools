@@ -26,50 +26,50 @@ import org.eclipse.jface.viewers.ViewerSorter;
  */
 public class DSLMappingSorter extends ViewerSorter {
 
-	public final static int OBJECT = 0;
-	public final static int EXPRESSION = 1;
-	public final static int MAPPING = 2;
-	public final static int SCOPE = 3;
+    public final static int OBJECT = 0;
+    public final static int EXPRESSION = 1;
+    public final static int MAPPING = 2;
+    public final static int SCOPE = 3;
 
-	// Criteria that the instance uses 
-	private int criteria;
+    // Criteria that the instance uses
+    private int criteria;
 
-	/**
-	 * Creates a resource sorter that will use the given sort criteria.
-	 *
-	 * @param criteria the sort criterion to use: one of <code>NAME</code> or 
-	 *   <code>TYPE</code>
-	 */
-	public DSLMappingSorter(int criteria) {
-		super();
-		this.criteria = criteria;
-	}
+    /**
+     * Creates a resource sorter that will use the given sort criteria.
+     *
+     * @param criteria the sort criterion to use: one of <code>NAME</code> or
+     *   <code>TYPE</code>
+     */
+    public DSLMappingSorter(int criteria) {
+        super();
+        this.criteria = criteria;
+    }
 
-	/* (non-Javadoc)
-	 * Method declared on ViewerSorter.
-	 */
-	public int compare(Viewer viewer, Object o1, Object o2) {
+    /* (non-Javadoc)
+     * Method declared on ViewerSorter.
+     */
+    public int compare(Viewer viewer, Object o1, Object o2) {
 
         DSLMappingEntry item1 = (DSLMappingEntry) o1;
         DSLMappingEntry item2 = (DSLMappingEntry) o2;
 
-		switch (criteria) {
-			case OBJECT:
-				return compareObject(item1, item2);
-			case EXPRESSION :
-				return compareExpressions(item1, item2);
-			case MAPPING :
-				return compareMappings(item1, item2);
-			case SCOPE :
-				return compareScope(item1, item2);
-			default:
-				return 0;
-		}
-	}
+        switch (criteria) {
+            case OBJECT:
+                return compareObject(item1, item2);
+            case EXPRESSION :
+                return compareExpressions(item1, item2);
+            case MAPPING :
+                return compareMappings(item1, item2);
+            case SCOPE :
+                return compareScope(item1, item2);
+            default:
+                return 0;
+        }
+    }
 
-	
 
-	private int compareScope(DSLMappingEntry item1,
+
+    private int compareScope(DSLMappingEntry item1,
                              DSLMappingEntry item2) {
         return item1.getSection().compareTo( item2.getSection() );
     }
@@ -86,13 +86,13 @@ public class DSLMappingSorter extends ViewerSorter {
 
     private int compareObject(DSLMappingEntry item1, 
                               DSLMappingEntry item2) {
-		return item1.getMetaData().compareTo(item2.getMetaData());
-	}
+        return item1.getMetaData().compareTo(item2.getMetaData());
+    }
     
     /**
-	 * @return the sort criterion
-	 */
-	public int getCriteria() {
-		return criteria;
-	}
+     * @return the sort criterion
+     */
+    public int getCriteria() {
+        return criteria;
+    }
 }

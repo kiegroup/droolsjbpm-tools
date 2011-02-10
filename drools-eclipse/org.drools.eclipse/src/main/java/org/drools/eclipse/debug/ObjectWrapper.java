@@ -91,7 +91,7 @@ public class ObjectWrapper implements IJavaObject {
     }
     
     protected void setVariables(IJavaVariable[] variables) {
-    	this.variables = variables;
+        this.variables = variables;
     }
 
     public String getModelIdentifier() {
@@ -118,23 +118,23 @@ public class ObjectWrapper implements IJavaObject {
         return object.getOwningThread();
     }
 
-	public IJavaObject[] getReferringObjects(long max) throws DebugException {
-		return object.getReferringObjects(max);
-	}
+    public IJavaObject[] getReferringObjects(long max) throws DebugException {
+        return object.getReferringObjects(max);
+    }
 
-	public void disableCollection() throws DebugException {
-		object.disableCollection();
-	}
+    public void disableCollection() throws DebugException {
+        object.disableCollection();
+    }
 
-	public void enableCollection() throws DebugException {
-		object.enableCollection();
-	}
+    public void enableCollection() throws DebugException {
+        object.enableCollection();
+    }
 
-	public long getUniqueId() throws DebugException {
-		return object.getUniqueId();
-	}
+    public long getUniqueId() throws DebugException {
+        return object.getUniqueId();
+    }
 
-	public boolean isNull() {
-		return false;
-	}
+    public boolean isNull() {
+        return false;
+    }
 }

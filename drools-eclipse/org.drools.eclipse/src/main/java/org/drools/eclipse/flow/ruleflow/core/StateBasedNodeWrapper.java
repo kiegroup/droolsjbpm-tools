@@ -29,26 +29,26 @@ public class StateBasedNodeWrapper extends ExtendedNodeWrapper {
 
     public static final String TIMERS = "Timers";
 
-	private static final long serialVersionUID = 510l;
-	
+    private static final long serialVersionUID = 510l;
+
     protected IPropertyDescriptor[] descriptors;
     
     public StateBasedNode getStateBasedNode() {
-    	return (StateBasedNode) getNode();
+        return (StateBasedNode) getNode();
     }
 
     protected void initDescriptors() {
-    	descriptors = new IPropertyDescriptor[AbstractNodeWrapper.DESCRIPTORS.length + 1];
+        descriptors = new IPropertyDescriptor[AbstractNodeWrapper.DESCRIPTORS.length + 1];
         System.arraycopy(AbstractNodeWrapper.DESCRIPTORS, 0, descriptors, 0, AbstractNodeWrapper.DESCRIPTORS.length);
         descriptors[descriptors.length - 1] = 
             new TimersPropertyDescriptor(TIMERS, "Timers", getStateBasedNode(),
-        		(WorkflowProcess) getParent().getProcessWrapper().getProcess());
+                (WorkflowProcess) getParent().getProcessWrapper().getProcess());
     }
 
     public IPropertyDescriptor[] getPropertyDescriptors() {
-    	if (descriptors == null) {
-    		initDescriptors();
-    	}
+        if (descriptors == null) {
+            initDescriptors();
+        }
         return descriptors;
     }
 
@@ -61,22 +61,22 @@ public class StateBasedNodeWrapper extends ExtendedNodeWrapper {
 
     public void resetPropertyValue(Object id) {
         if (TIMERS.equals(id)) {
-        	getStateBasedNode().removeAllTimers();
+            getStateBasedNode().removeAllTimers();
         } else {
             super.resetPropertyValue(id);
         }
     }
 
-	@SuppressWarnings("unchecked")
-	public void setPropertyValue(Object id, Object value) {
+    @SuppressWarnings("unchecked")
+    public void setPropertyValue(Object id, Object value) {
         if (TIMERS.equals(id)) {
-        	getStateBasedNode().removeAllTimers();
-        	// adding one by one so the ids are set correctly
-        	if (value != null) {
-	        	for (Map.Entry<Timer, DroolsAction> entry: ((Map<Timer, DroolsAction>) value).entrySet()) {
-	        		getStateBasedNode().addTimer(entry.getKey(), entry.getValue());
-	        	}
-        	}
+            getStateBasedNode().removeAllTimers();
+            // adding one by one so the ids are set correctly
+            if (value != null) {
+                for (Map.Entry<Timer, DroolsAction> entry: ((Map<Timer, DroolsAction>) value).entrySet()) {
+                    getStateBasedNode().addTimer(entry.getKey(), entry.getValue());
+                }
+            }
         } else {
             super.setPropertyValue(id, value);
         }

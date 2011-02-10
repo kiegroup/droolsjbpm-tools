@@ -23,18 +23,18 @@ import org.jbpm.workflow.core.WorkflowProcess;
 import org.jbpm.workflow.core.node.StateBasedNode;
 
 public class TimersPropertyDescriptor extends PropertyDescriptor {
-	
-	private WorkflowProcess process;
-	private StateBasedNode stateBasedNode;
 
-	public TimersPropertyDescriptor(Object id, String displayName, StateBasedNode stateBasedNode, WorkflowProcess process) {
+    private WorkflowProcess process;
+    private StateBasedNode stateBasedNode;
+
+    public TimersPropertyDescriptor(Object id, String displayName, StateBasedNode stateBasedNode, WorkflowProcess process) {
         super(id, displayName);
         this.stateBasedNode = stateBasedNode;
         this.process = process;
     }
 
     public CellEditor createPropertyEditor(Composite parent) {
-    	TimersCellEditor editor = new TimersCellEditor(parent, process, stateBasedNode);
+        TimersCellEditor editor = new TimersCellEditor(parent, process, stateBasedNode);
         if (getValidator() != null) {
             editor.setValidator(getValidator());
         }

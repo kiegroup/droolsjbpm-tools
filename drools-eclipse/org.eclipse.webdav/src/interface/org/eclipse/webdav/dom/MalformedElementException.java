@@ -28,20 +28,20 @@ package org.eclipse.webdav.dom;
  * </p>
  */
 public class MalformedElementException extends Exception {
-	/**
-	 * Comment for <code>serialVersionUID</code>
-	 */
-	private static final long serialVersionUID = 510l;
+    /**
+     * Comment for <code>serialVersionUID</code>
+     */
+    private static final long serialVersionUID = 510l;
 
-	/** Constructs a new exception.
-	 */
-	public MalformedElementException() {
-		super();
-	}
+    /** Constructs a new exception.
+     */
+    public MalformedElementException() {
+        super();
+    }
 
-	/** Constructs a new exception with the given message.
-	 */
-	public MalformedElementException(String detail) {
-		super(detail);
-	}
+    /** Constructs a new exception with the given message.
+     */
+    public MalformedElementException(String detail) {
+        super(detail);
+    }
 }

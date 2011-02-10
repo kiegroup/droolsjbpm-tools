@@ -38,47 +38,47 @@ public class DynamicNodeWrapper extends CompositeNodeWrapper {
     }
     
     public DynamicNode getDynamicNode() {
-    	return (DynamicNode) getNode();
+        return (DynamicNode) getNode();
     }
     
     protected void initDescriptors() {
-    	super.initDescriptors();
-    	IPropertyDescriptor[] oldDescriptors = descriptors; 
+        super.initDescriptors();
+        IPropertyDescriptor[] oldDescriptors = descriptors;
         descriptors = new IPropertyDescriptor[oldDescriptors.length + 1];
         System.arraycopy(oldDescriptors, 0, descriptors, 0, oldDescriptors.length);
         descriptors[descriptors.length - 1] = 
-        	new ComboBoxPropertyDescriptor(AUTO_COMPLETE, "Auto-complete", new String[] { "true", "false" });
+            new ComboBoxPropertyDescriptor(AUTO_COMPLETE, "Auto-complete", new String[] { "true", "false" });
     }
 
     public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
         return super.acceptsIncomingConnection(connection, source)
-        	&& getIncomingConnections().isEmpty();
+            && getIncomingConnections().isEmpty();
     }
 
     public boolean acceptsOutgoingConnection(ElementConnection connection, ElementWrapper target) {
         return target == null
-			|| (target.getParent() == getParent() && getOutgoingConnections().isEmpty());
-//			|| (target.getParent() == this && getForEachNode().getLinkedIncomingNode(Node.CONNECTION_DEFAULT_TYPE) == null);
+            || (target.getParent() == getParent() && getOutgoingConnections().isEmpty());
+//            || (target.getParent() == this && getForEachNode().getLinkedIncomingNode(Node.CONNECTION_DEFAULT_TYPE) == null);
     }
     
     public Object getPropertyValue(Object id) {
         if (AUTO_COMPLETE.equals(id)) {
-        	return getDynamicNode().isAutoComplete() ? new Integer(0) : new Integer(1);
+            return getDynamicNode().isAutoComplete() ? new Integer(0) : new Integer(1);
         }
         return super.getPropertyValue(id);
     }
 
     public void resetPropertyValue(Object id) {
         if (AUTO_COMPLETE.equals(id)) {
-        	getDynamicNode().setAutoComplete(false);
+            getDynamicNode().setAutoComplete(false);
         } else {
             super.resetPropertyValue(id);
         }
     }
 
-	public void setPropertyValue(Object id, Object value) {
+    public void setPropertyValue(Object id, Object value) {
         if (AUTO_COMPLETE.equals(id)) {
-        	getDynamicNode().setAutoComplete(((Integer) value).intValue() == 0);
+            getDynamicNode().setAutoComplete(((Integer) value).intValue() == 0);
         } else {
             super.setPropertyValue(id, value);
         }

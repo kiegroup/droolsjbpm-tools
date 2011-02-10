@@ -36,20 +36,20 @@ import org.jbpm.workflow.core.impl.NodeImpl;
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public abstract class AbstractNodeWrapper extends DefaultElementWrapper implements NodeWrapper {
-	
-	private static final long serialVersionUID = 510l;
+
+    private static final long serialVersionUID = 510l;
 
     public static IPropertyDescriptor[] DESCRIPTORS;
 
     public static final String METADATA = "MetaData";
     static {
-    	DESCRIPTORS = new IPropertyDescriptor[DefaultElementWrapper.DESCRIPTORS.length + 1];
+        DESCRIPTORS = new IPropertyDescriptor[DefaultElementWrapper.DESCRIPTORS.length + 1];
         System.arraycopy(DefaultElementWrapper.DESCRIPTORS, 0, DESCRIPTORS, 0, DefaultElementWrapper.DESCRIPTORS.length);
         DESCRIPTORS[DESCRIPTORS.length - 1] = 
             new MetaDataPropertyDescriptor(METADATA, "MetaData");
     }
 
-	public void setNode(Node node) {
+    public void setNode(Node node) {
         setElement(node);
     }
     
@@ -71,18 +71,18 @@ public abstract class AbstractNodeWrapper extends DefaultElementWrapper implemen
         notifyListeners(CHANGE_NAME);
     }
     
-	public Color internalGetColor() {
-		Integer rgb = (Integer) getNode().getMetaData("color");
-		if (rgb != null) {
-			return new Color(Display.getCurrent(), integerToRGB(rgb));
-		}
-		return null;
-	}
-	
-	protected void internalSetColor(Integer color) {
-		getNode().setMetaData("color", color);
-	}
-	
+    public Color internalGetColor() {
+        Integer rgb = (Integer) getNode().getMetaData("color");
+        if (rgb != null) {
+            return new Color(Display.getCurrent(), integerToRGB(rgb));
+        }
+        return null;
+    }
+
+    protected void internalSetColor(Integer color) {
+        getNode().setMetaData("color", color);
+    }
+
     protected void internalSetConstraint(Rectangle constraint) {
         Node node = getNode();
         node.setMetaData("x", constraint.x);
@@ -106,41 +106,41 @@ public abstract class AbstractNodeWrapper extends DefaultElementWrapper implemen
 
     public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
         return source == null
-    		|| source.getParent() == getParent()
-    		|| getParent() == source;
+            || source.getParent() == getParent()
+            || getParent() == source;
     }
 
     public boolean acceptsOutgoingConnection(ElementConnection connection, ElementWrapper target) {
         return target == null
-    		|| ((NodeWrapper) target).getNode().getNodeContainer() == getNode().getNodeContainer()
-    		|| ((NodeWrapper) target).getNode() == getNode().getNodeContainer();
+            || ((NodeWrapper) target).getNode().getNodeContainer() == getNode().getNodeContainer()
+            || ((NodeWrapper) target).getNode() == getNode().getNodeContainer();
     }
     
     public IPropertyDescriptor[] getPropertyDescriptors() {
         return DESCRIPTORS;
     }
 
-	public Object getPropertyValue(Object id) {
-		if (METADATA.equals(id)) {
-			return ((NodeImpl) getNode()).getMetaData();
-		}
-		return super.getPropertyValue(id);
-	}
+    public Object getPropertyValue(Object id) {
+        if (METADATA.equals(id)) {
+            return ((NodeImpl) getNode()).getMetaData();
+        }
+        return super.getPropertyValue(id);
+    }
 
-	public void resetPropertyValue(Object id) {
-		if (METADATA.equals(id)) {
-			((NodeImpl) getNode()).setMetaData(new HashMap<String, Object>());
-		} else {
-			super.resetPropertyValue(id);
-		}
-	}
+    public void resetPropertyValue(Object id) {
+        if (METADATA.equals(id)) {
+            ((NodeImpl) getNode()).setMetaData(new HashMap<String, Object>());
+        } else {
+            super.resetPropertyValue(id);
+        }
+    }
 
-	public void setPropertyValue(Object id, Object value) {
-		if (METADATA.equals(id)) {
-			((NodeImpl) getNode()).setMetaData((Map<String, Object>) value);
-		} else {
-			super.setPropertyValue(id, value);
-		}
-	}
-	
+    public void setPropertyValue(Object id, Object value) {
+        if (METADATA.equals(id)) {
+            ((NodeImpl) getNode()).setMetaData((Map<String, Object>) value);
+        } else {
+            super.setPropertyValue(id, value);
+        }
+    }
+
 }

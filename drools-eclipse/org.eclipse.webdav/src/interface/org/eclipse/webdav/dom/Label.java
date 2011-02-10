@@ -28,34 +28,34 @@ import org.w3c.dom.Element;
  */
 public class Label extends ElementEditor {
 
-	// An ordered collection of the element names of the label
-	// element's possible children.
-	protected static final String[] childNames = new String[] {"add", "set", "remove"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    // An ordered collection of the element names of the label
+    // element's possible children.
+    protected static final String[] childNames = new String[] {"add", "set", "remove"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-	public Label(Element root) throws MalformedElementException {
-		super(root, "label"); //$NON-NLS-1$
-	}
+    public Label(Element root) throws MalformedElementException {
+        super(root, "label"); //$NON-NLS-1$
+    }
 
-	public String getLabelName() throws MalformedElementException {
-		Element child = getFirstChild(root, childNames);
-		ensureNotNull(Policy.bind("ensure.missingElmt"), child); //$NON-NLS-1$
-		String labelName = getChildText(child, "label-name", true); //$NON-NLS-1$
-		ensureNotNull(Policy.bind("ensure.missingLabel"), labelName); //$NON-NLS-1$
-		return labelName;
-	}
+    public String getLabelName() throws MalformedElementException {
+        Element child = getFirstChild(root, childNames);
+        ensureNotNull(Policy.bind("ensure.missingElmt"), child); //$NON-NLS-1$
+        String labelName = getChildText(child, "label-name", true); //$NON-NLS-1$
+        ensureNotNull(Policy.bind("ensure.missingLabel"), labelName); //$NON-NLS-1$
+        return labelName;
+    }
 
-	public boolean isAdd() {
-		Element child = getFirstChild(root, childNames);
-		return getNSLocalName(child).equals("add"); //$NON-NLS-1$
-	}
+    public boolean isAdd() {
+        Element child = getFirstChild(root, childNames);
+        return getNSLocalName(child).equals("add"); //$NON-NLS-1$
+    }
 
-	public boolean isRemove() {
-		Element child = getFirstChild(root, childNames);
-		return getNSLocalName(child).equals("remove"); //$NON-NLS-1$
-	}
+    public boolean isRemove() {
+        Element child = getFirstChild(root, childNames);
+        return getNSLocalName(child).equals("remove"); //$NON-NLS-1$
+    }
 
-	public boolean isSet() {
-		Element child = getFirstChild(root, childNames);
-		return getNSLocalName(child).equals("set"); //$NON-NLS-1$
-	}
+    public boolean isSet() {
+        Element child = getFirstChild(root, childNames);
+        return getNSLocalName(child).equals("set"); //$NON-NLS-1$
+    }
 }

@@ -36,10 +36,10 @@ import org.eclipse.webdav.IContext;
  * @see Request#getRequestBodyWriter()
  */
 public interface IRequestBodyWriter {
-	/**
-	 * Writes a request body to the given output stream.
-	 *
-	 * @throws IOException if there is a problem writing to the stream
-	 */
-	public void writeRequestBody(OutputStream os) throws IOException;
+    /**
+     * Writes a request body to the given output stream.
+     *
+     * @throws IOException if there is a problem writing to the stream
+     */
+    public void writeRequestBody(OutputStream os) throws IOException;
 }

@@ -115,12 +115,12 @@ public abstract class EditMapDialog<S, T> extends EditBeanDialog<Map<S, T>> {
         return composite;
     }
     
-	public void setValue(Map<S, T> value) {
+    public void setValue(Map<S, T> value) {
         super.setValue(value);
         if (value == null) {
-        	this.newMap = new HashMap<S, T>();
+            this.newMap = new HashMap<S, T>();
         } else {
-        	this.newMap = new HashMap<S, T>((Map<S, T>) value);
+            this.newMap = new HashMap<S, T>((Map<S, T>) value);
         }
     }
     
@@ -129,7 +129,7 @@ public abstract class EditMapDialog<S, T> extends EditBeanDialog<Map<S, T>> {
     }
 
     @SuppressWarnings("unchecked")
-	private void addItem() {
+    private void addItem() {
         EditBeanDialog<T> dialog = createEditItemDialog();
         dialog.setValue(createItem());
         int code = dialog.open();
@@ -138,7 +138,7 @@ public abstract class EditMapDialog<S, T> extends EditBeanDialog<Map<S, T>> {
         if (code != CANCEL) {
             T object = newMap.put(key, result);
             if (object == null) {
-            	listViewer.add(key);
+                listViewer.add(key);
             }
         }
     }
@@ -146,11 +146,11 @@ public abstract class EditMapDialog<S, T> extends EditBeanDialog<Map<S, T>> {
     protected abstract T createItem();
     
     @SuppressWarnings("unchecked")
-	private void editItem() {
+    private void editItem() {
         EditBeanDialog<T> dialog = createEditItemDialog();
         Iterator<S> iterator = ((StructuredSelection) listViewer.getSelection()).iterator();
         if (iterator.hasNext()) {
-        	S key = iterator.next();
+            S key = iterator.next();
             ((MapItemDialog<S>) dialog).setKey(key);
             dialog.setValue(newMap.get(key));
             int code = dialog.open();
@@ -162,7 +162,7 @@ public abstract class EditMapDialog<S, T> extends EditBeanDialog<Map<S, T>> {
     }
     
     @SuppressWarnings("unchecked")
-	private void removeItem() {
+    private void removeItem() {
         Iterator<S> iterator = ((StructuredSelection) listViewer.getSelection()).iterator();
         // single selection only allowed
         if (iterator.hasNext()) {
@@ -172,7 +172,7 @@ public abstract class EditMapDialog<S, T> extends EditBeanDialog<Map<S, T>> {
         }
     }
     
-	protected EditBeanDialog<T> createEditItemDialog() {
+    protected EditBeanDialog<T> createEditItemDialog() {
         try {
             return (EditBeanDialog<T>) editItemDialogClass.getConstructor(
                 new Class[] { Shell.class }).newInstance(

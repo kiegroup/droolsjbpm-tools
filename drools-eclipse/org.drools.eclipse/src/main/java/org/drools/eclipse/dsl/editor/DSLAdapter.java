@@ -56,7 +56,7 @@ public class DSLAdapter {
     private boolean valid = false;
     private List conditionProposals = new ArrayList();
     private List consequenceProposals = new ArrayList();
-	private DSLTree dslTree = new DSLTree();
+    private DSLTree dslTree = new DSLTree();
     
     //to dig out the expander, without using the parser.
     private static final Pattern EXPANDER_PATTERN = Pattern.compile( "\\n\\s*expander\\s*(.*)\\.dsl", 
@@ -71,7 +71,7 @@ public class DSLAdapter {
     public DSLAdapter(String content, IFile input) throws CoreException {
         dslConfigName = findDSLConfigName( content, input );
         if (dslConfigName == null) {
-        	return;
+            return;
         }
         loadConfig( input );
     }
@@ -80,7 +80,7 @@ public class DSLAdapter {
     public static Reader getDSLContent(String ruleSource, IResource input) throws CoreException {
         String dslFileName = findDSLConfigName( ruleSource, input );
         if (dslFileName == null) {
-        	return null;
+            return null;
         }
         IResource res = findDSLResource( input, dslFileName );
         if (res instanceof IFile) {
@@ -125,7 +125,7 @@ public class DSLAdapter {
     
     /** This will load in the DSL config file, using the DSLMapping from drools-compiler */
     void readConfig(InputStream stream) throws IOException, CoreException {
-    	DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
+        DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
         file.parseAndLoad(new InputStreamReader(stream));
 
         DSLMapping grammar = file.getMapping();
@@ -135,12 +135,12 @@ public class DSLAdapter {
         conditionProposals = buildProposals(conditions);
         consequenceProposals = buildProposals(consequences);
         
-		dslTree.buildTree(grammar);
+        dslTree.buildTree(grammar);
     }
 
     private List buildProposals(List suggestions) {
-    	List result = new ArrayList(suggestions.size());
-    	Iterator iterator = suggestions.iterator();
+        List result = new ArrayList(suggestions.size());
+        Iterator iterator = suggestions.iterator();
         while (iterator.hasNext()) {
             DSLMappingEntry text = (DSLMappingEntry) iterator.next();
             result.add(text.getMappingKey());
@@ -161,23 +161,23 @@ public class DSLAdapter {
     private static String findDSLConfigName(String content, IResource input) throws CoreException {
         String dslConfigName = findDSLConfigName( content );
         if (dslConfigName == null)  {
-	    	// try searching the .package file
-	    	if (input != null && input.getParent() != null) {
-	        	MyResourceVisitor visitor = new MyResourceVisitor();
-	        	input.getParent().accept(visitor, IResource.DEPTH_ONE, IResource.NONE);
-	        	IResource packageDef = visitor.getPackageDef();
-	        	if (packageDef != null) {
-	        		if (packageDef instanceof IFile) {
-	        			IFile file = (IFile) packageDef;
-	        	        try {
-	        	        	String pContent = new String(Util.getResourceContentsAsCharArray(file));
-	        	        	dslConfigName = findDSLConfigName( pContent );
-	        	        } catch (CoreException e) {
-	        	        	DroolsEclipsePlugin.log(e);
-	        	        }
-	        		}
-	        	}
-	        }
+            // try searching the .package file
+            if (input != null && input.getParent() != null) {
+                MyResourceVisitor visitor = new MyResourceVisitor();
+                input.getParent().accept(visitor, IResource.DEPTH_ONE, IResource.NONE);
+                IResource packageDef = visitor.getPackageDef();
+                if (packageDef != null) {
+                    if (packageDef instanceof IFile) {
+                        IFile file = (IFile) packageDef;
+                        try {
+                            String pContent = new String(Util.getResourceContentsAsCharArray(file));
+                            dslConfigName = findDSLConfigName( pContent );
+                        } catch (CoreException e) {
+                            DroolsEclipsePlugin.log(e);
+                        }
+                    }
+                }
+            }
         }
         return dslConfigName;
     }
@@ -220,19 +220,19 @@ public class DSLAdapter {
     }    
     
     public DSLTree getDSLTree() {
-    	return dslTree;
+        return dslTree;
     }
     
     private static class MyResourceVisitor implements IResourceVisitor {
-    	private IResource packageDef;
-		public boolean visit(IResource resource) throws CoreException {
-			if ("package".equals(resource.getFileExtension())) {
-				packageDef = resource;
-			}
-			return true;
-		}
-		public IResource getPackageDef() {
-			return packageDef;
-		}
-	}
+        private IResource packageDef;
+        public boolean visit(IResource resource) throws CoreException {
+            if ("package".equals(resource.getFileExtension())) {
+                packageDef = resource;
+            }
+            return true;
+        }
+        public IResource getPackageDef() {
+            return packageDef;
+        }
+    }
 }

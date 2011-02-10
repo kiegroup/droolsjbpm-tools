@@ -77,8 +77,8 @@ import org.jbpm.workflow.core.node.TimerNode;
 public class BPMNModelEditor extends GenericModelEditor {
 
     protected EditPartFactory createEditPartFactory() {
-    	RuleFlowEditPartFactory factory = new RuleFlowEditPartFactory();
-    	factory.setProject(getJavaProject());
+        RuleFlowEditPartFactory factory = new RuleFlowEditPartFactory();
+        factory.setProject(getJavaProject());
         return factory;
     }
 
@@ -105,7 +105,7 @@ public class BPMNModelEditor extends GenericModelEditor {
     protected void setInput(IEditorInput input) {
         super.setInput(input);
         if (input instanceof IFileEditorInput) {
-        	refreshPalette(((IFileEditorInput) input).getFile());
+            refreshPalette(((IFileEditorInput) input).getFile());
         }
     }
     
@@ -120,47 +120,47 @@ public class BPMNModelEditor extends GenericModelEditor {
                     PaletteDrawer drawer = (PaletteDrawer) getPaletteRoot().getChildren().get(2);
                     List entries = new ArrayList();
                     try {
-	                    for (final WorkDefinition workDefinition: WorkItemDefinitions.getWorkDefinitions(file).values()) {
-	                        final String label;
-	                        String description = workDefinition.getName();
-	                        String icon = null;
-	                        if (workDefinition instanceof WorkDefinitionExtension) {
-	                            WorkDefinitionExtension extension = (WorkDefinitionExtension) workDefinition;
-	                            label = extension.getDisplayName();
-	                            description = extension.getExplanationText();
-	                            icon = extension.getIcon();
-	                        } else {
-	                            label = workDefinition.getName();
-	                        }
-	                        
-	                        URL iconUrl = null;
-	                        if (icon != null) {
-	                            iconUrl = newLoader.getResource(icon);
-	                        }
-	                        if (iconUrl == null) {
-	                            iconUrl = DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/action.gif");
-	                        }
-	                        CombinedTemplateCreationEntry combined = new CombinedTemplateCreationEntry(
-	                            label,
-	                            description,
-	                            WorkItemWrapper.class,
-	                            new SimpleFactory(WorkItemWrapper.class) {
-	                                public Object getNewObject() {
-	                                    WorkItemWrapper workItemWrapper = (WorkItemWrapper) super.getNewObject();
-	                                    workItemWrapper.setName(label);
-	                                    workItemWrapper.setWorkDefinition(workDefinition);
-	                                    return workItemWrapper;
-	                                }
-	                            },
-	                            ImageDescriptor.createFromURL(iconUrl), 
-	                            ImageDescriptor.createFromURL(iconUrl)
-	                        );
-	                        entries.add(combined);
-	                    }
+                        for (final WorkDefinition workDefinition: WorkItemDefinitions.getWorkDefinitions(file).values()) {
+                            final String label;
+                            String description = workDefinition.getName();
+                            String icon = null;
+                            if (workDefinition instanceof WorkDefinitionExtension) {
+                                WorkDefinitionExtension extension = (WorkDefinitionExtension) workDefinition;
+                                label = extension.getDisplayName();
+                                description = extension.getExplanationText();
+                                icon = extension.getIcon();
+                            } else {
+                                label = workDefinition.getName();
+                            }
+
+                            URL iconUrl = null;
+                            if (icon != null) {
+                                iconUrl = newLoader.getResource(icon);
+                            }
+                            if (iconUrl == null) {
+                                iconUrl = DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/action.gif");
+                            }
+                            CombinedTemplateCreationEntry combined = new CombinedTemplateCreationEntry(
+                                label,
+                                description,
+                                WorkItemWrapper.class,
+                                new SimpleFactory(WorkItemWrapper.class) {
+                                    public Object getNewObject() {
+                                        WorkItemWrapper workItemWrapper = (WorkItemWrapper) super.getNewObject();
+                                        workItemWrapper.setName(label);
+                                        workItemWrapper.setWorkDefinition(workDefinition);
+                                        return workItemWrapper;
+                                    }
+                                },
+                                ImageDescriptor.createFromURL(iconUrl),
+                                ImageDescriptor.createFromURL(iconUrl)
+                            );
+                            entries.add(combined);
+                        }
                     } catch (Throwable t) {
-                    	DroolsEclipsePlugin.log(t);
-                		MessageDialog.openError(
-                			getSite().getShell(), "Parsing work item definitions", t.getMessage());
+                        DroolsEclipsePlugin.log(t);
+                        MessageDialog.openError(
+                            getSite().getShell(), "Parsing work item definitions", t.getMessage());
                     }
                     drawer.setChildren(entries);
                 } finally {
@@ -173,25 +173,25 @@ public class BPMNModelEditor extends GenericModelEditor {
     }
 
     protected void writeModel(OutputStream os) throws IOException {
-    	writeModel(os, true);
+        writeModel(os, true);
     }
     
     protected void writeModel(OutputStream os, boolean includeGraphics) throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(os);
         try {
-        	RuleFlowProcess process = getRuleFlowModel().getRuleFlowProcess();
+            RuleFlowProcess process = getRuleFlowModel().getRuleFlowProcess();
             XmlBPMNProcessDumper dumper = XmlBPMNProcessDumper.INSTANCE;
             String out = dumper.dump(process, XmlBPMNProcessDumper.META_DATA_USING_DI);
             writer.write(out);
         } catch (Throwable t) {
             DroolsEclipsePlugin.log(t);
             IStatus status = new Status(
-        		IStatus.ERROR,
+                IStatus.ERROR,
                 DroolsEclipsePlugin.getUniqueIdentifier(),
                 -1,
                 "Could not save BPMN process, see error log for more details and contact the developers: " + t.getMessage(),
                 t);
-    		ErrorDialog.openError( getSite().getShell(),
+            ErrorDialog.openError( getSite().getShell(),
                 "Process Save Error",
                 "Unable to save process.",
                 status);
@@ -202,94 +202,94 @@ public class BPMNModelEditor extends GenericModelEditor {
     
     
     protected void createModel(InputStream is) {
-    	try 
-    	{
-    		InputStreamReader isr = new InputStreamReader(is);
-    		SemanticModules semanticModules = new SemanticModules();
-    		semanticModules.addSemanticModule(new BPMNSemanticModule());
-    		semanticModules.addSemanticModule(new BPMNDISemanticModule());
-    		XmlProcessReader xmlReader = new XmlProcessReader(semanticModules);
-    		
-    		try 
-    		{
-    			List<Process> processes = xmlReader.read(isr);
-    			if (processes == null || processes.size() == 0) {
-    				setModel(createModel());
-    			} else {
-	    			RuleFlowProcess process = (RuleFlowProcess) processes.get(0);
-	    			if (process == null) {
-	    				setModel(createModel());
-	    			} else {
-	    				correctEventNodeSize(process.getNodes());
-	    				setModel(new RuleFlowWrapperBuilder().getProcessWrapper(process, getJavaProject()));
-	    			}
-    			}
-    		} catch (Throwable t) {
-    			DroolsEclipsePlugin.log(t);
-    			MessageDialog.openError( getSite().getShell(),
+        try
+        {
+            InputStreamReader isr = new InputStreamReader(is);
+            SemanticModules semanticModules = new SemanticModules();
+            semanticModules.addSemanticModule(new BPMNSemanticModule());
+            semanticModules.addSemanticModule(new BPMNDISemanticModule());
+            XmlProcessReader xmlReader = new XmlProcessReader(semanticModules);
+
+            try
+            {
+                List<Process> processes = xmlReader.read(isr);
+                if (processes == null || processes.size() == 0) {
+                    setModel(createModel());
+                } else {
+                    RuleFlowProcess process = (RuleFlowProcess) processes.get(0);
+                    if (process == null) {
+                        setModel(createModel());
+                    } else {
+                        correctEventNodeSize(process.getNodes());
+                        setModel(new RuleFlowWrapperBuilder().getProcessWrapper(process, getJavaProject()));
+                    }
+                }
+            } catch (Throwable t) {
+                DroolsEclipsePlugin.log(t);
+                MessageDialog.openError( getSite().getShell(),
                     "Could not read RuleFlow file",
                     "An exception occurred while reading in the RuleFlow XML: "
-                    	+ t.getMessage() + " See the error log for more details.");
-    			setModel(createModel());
-    		}
+                        + t.getMessage() + " See the error log for more details.");
+                setModel(createModel());
+            }
 
-    		if (isr != null){
-    			isr.close();
-    		}
-    	} catch (Throwable t) {
-    		DroolsEclipsePlugin.log(t);
-    	}
+            if (isr != null){
+                isr.close();
+            }
+        } catch (Throwable t) {
+            DroolsEclipsePlugin.log(t);
+        }
     }
     
     private void correctEventNodeSize(Node[] nodes) {
-    	for (Node node: nodes) {
-    		if (node instanceof StartNode
-					|| node instanceof EndNode
-					|| node instanceof EventNode
-					|| node instanceof FaultNode
-					|| node instanceof TimerNode) {
-    			Integer width = (Integer) node.getMetaData().get("width");
-    			if (width == null) {
-    				width = 48;
-    			}
-    			Integer height = (Integer) node.getMetaData().get("height");
-    			if (height == null) {
-    				height = 48;
-    			}
-    			if (width != 48 || height != 48) {
-    				node.getMetaData().put("width", 48);
-    				node.getMetaData().put("height", 48);
-    				Integer x = (Integer) node.getMetaData().get("x");
-        			Integer y = (Integer) node.getMetaData().get("y");
-        			x = x - ((48 - width)/2);
-        			y = y - ((48 - height)/2);
-    				node.getMetaData().put("x", x);
-    				node.getMetaData().put("y", y);
-    			}
-    		} else if (node instanceof Split
-					|| node instanceof Join) {
-    			Integer width = (Integer) node.getMetaData().get("width");
-    			if (width == null) {
-    				width = 49;
-    			}
-    			Integer height = (Integer) node.getMetaData().get("height");
-    			if (height == null) {
-    				height = 49;
-    			}
-    			if (width != 49 || height != 49) {
-    				node.getMetaData().put("width", 49);
-    				node.getMetaData().put("height", 49);
-    				Integer x = (Integer) node.getMetaData().get("x");
-        			Integer y = (Integer) node.getMetaData().get("y");
-        			x = x - ((49 - width)/2);
-        			y = y - ((49 - height)/2);
-    				node.getMetaData().put("x", x);
-    				node.getMetaData().put("y", y);
-    			}
-    		} else if (node instanceof CompositeNode) {
-    			correctEventNodeSize(((CompositeNode) node).getNodes());
-    		}
-    	}
+        for (Node node: nodes) {
+            if (node instanceof StartNode
+                    || node instanceof EndNode
+                    || node instanceof EventNode
+                    || node instanceof FaultNode
+                    || node instanceof TimerNode) {
+                Integer width = (Integer) node.getMetaData().get("width");
+                if (width == null) {
+                    width = 48;
+                }
+                Integer height = (Integer) node.getMetaData().get("height");
+                if (height == null) {
+                    height = 48;
+                }
+                if (width != 48 || height != 48) {
+                    node.getMetaData().put("width", 48);
+                    node.getMetaData().put("height", 48);
+                    Integer x = (Integer) node.getMetaData().get("x");
+                    Integer y = (Integer) node.getMetaData().get("y");
+                    x = x - ((48 - width)/2);
+                    y = y - ((48 - height)/2);
+                    node.getMetaData().put("x", x);
+                    node.getMetaData().put("y", y);
+                }
+            } else if (node instanceof Split
+                    || node instanceof Join) {
+                Integer width = (Integer) node.getMetaData().get("width");
+                if (width == null) {
+                    width = 49;
+                }
+                Integer height = (Integer) node.getMetaData().get("height");
+                if (height == null) {
+                    height = 49;
+                }
+                if (width != 49 || height != 49) {
+                    node.getMetaData().put("width", 49);
+                    node.getMetaData().put("height", 49);
+                    Integer x = (Integer) node.getMetaData().get("x");
+                    Integer y = (Integer) node.getMetaData().get("y");
+                    x = x - ((49 - width)/2);
+                    y = y - ((49 - height)/2);
+                    node.getMetaData().put("x", x);
+                    node.getMetaData().put("y", y);
+                }
+            } else if (node instanceof CompositeNode) {
+                correctEventNodeSize(((CompositeNode) node).getNodes());
+            }
+        }
     }
     
 }

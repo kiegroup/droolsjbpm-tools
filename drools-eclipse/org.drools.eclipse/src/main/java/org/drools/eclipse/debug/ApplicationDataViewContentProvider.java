@@ -41,7 +41,7 @@ public class ApplicationDataViewContentProvider extends DroolsDebugViewContentPr
     }
     
     protected String getEmptyString() {
-    	return "The selected working memory has no globals defined.";
+        return "The selected working memory has no globals defined.";
     }
 
     public Object[] getChildren(Object obj) {
@@ -52,12 +52,12 @@ public class ApplicationDataViewContentProvider extends DroolsDebugViewContentPr
                         ((IJavaObject) obj).getReferenceTypeName())) {
                 variables = getApplicationDataElements((IJavaObject) obj);
             } else if (obj instanceof IVariable) {
-            	if (view.isShowLogicalStructure()) {
-            		IValue value = getLogicalValue(((IVariable) obj).getValue(), new ArrayList());
-                	variables = value.getVariables();
+                if (view.isShowLogicalStructure()) {
+                    IValue value = getLogicalValue(((IVariable) obj).getValue(), new ArrayList());
+                    variables = value.getVariables();
                 }
-            	if (variables == null) {
-                	variables = ((IVariable) obj).getValue().getVariables();
+                if (variables == null) {
+                    variables = ((IVariable) obj).getValue().getVariables();
                 }
             }
             if (variables == null) {

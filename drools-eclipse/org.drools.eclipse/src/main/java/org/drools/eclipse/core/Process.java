@@ -30,24 +30,24 @@ public class Process extends DroolsElement {
         this.processId = processId;
     }
     
-	public Package getParentPackage() {
-		return (Package) getParent();
-	}
-	
-    public String getProcessId() {
-    	return processId;
+    public Package getParentPackage() {
+        return (Package) getParent();
     }
 
-	public int getType() {
-		return PROCESS;
-	}
-	
-	public DroolsElement[] getChildren() {
-		return NO_ELEMENTS;
-	}
+    public String getProcessId() {
+        return processId;
+    }
 
-	public String toString() {
-		return processId;
-	}
+    public int getType() {
+        return PROCESS;
+    }
+
+    public DroolsElement[] getChildren() {
+        return NO_ELEMENTS;
+    }
+
+    public String toString() {
+        return processId;
+    }
 
 }

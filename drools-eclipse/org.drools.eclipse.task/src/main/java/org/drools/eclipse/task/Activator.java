@@ -27,33 +27,33 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator extends AbstractUIPlugin {
 
-	// The plug-in ID
-	public static final String PLUGIN_ID = "org.drools.eclipse.task";
+    // The plug-in ID
+    public static final String PLUGIN_ID = "org.drools.eclipse.task";
 
-	// The shared instance
-	private static Activator plugin;
-	
-	public Activator() {
-	}
+    // The shared instance
+    private static Activator plugin;
 
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-		plugin = this;
-	}
+    public Activator() {
+    }
 
-	public void stop(BundleContext context) throws Exception {
-		plugin = null;
-		super.stop(context);
-	}
+    public void start(BundleContext context) throws Exception {
+        super.start(context);
+        plugin = this;
+    }
 
-	public static Activator getDefault() {
-		return plugin;
-	}
+    public void stop(BundleContext context) throws Exception {
+        plugin = null;
+        super.stop(context);
+    }
 
-	public static ImageDescriptor getImageDescriptor(String path) {
-		return imageDescriptorFromPlugin(PLUGIN_ID, path);
-	}
-	
+    public static Activator getDefault() {
+        return plugin;
+    }
+
+    public static ImageDescriptor getImageDescriptor(String path) {
+        return imageDescriptorFromPlugin(PLUGIN_ID, path);
+    }
+
     protected void initializeDefaultPreferences(IPreferenceStore store) {
         store.setDefault( DroolsTaskConstants.SERVER_IP_ADDRESS, "127.0.0.1");
         store.setDefault( DroolsTaskConstants.SERVER_PORT, 9123 );

@@ -43,7 +43,7 @@ public class MilestoneConstraintPropertyDescriptor extends PropertyDescriptor {
     }
     
     public CellEditor createPropertyEditor(Composite parent) {
-    	MilestoneConstraintCellEditor editor = new MilestoneConstraintCellEditor(parent, process, milestone);
+        MilestoneConstraintCellEditor editor = new MilestoneConstraintCellEditor(parent, process, milestone);
         if (getValidator() != null) {
             editor.setValidator(getValidator());
         }

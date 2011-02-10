@@ -26,42 +26,42 @@ import java.util.Properties;
  * certainly be broken (repeatedly) as the API evolves.
  */
 public class Namespaces {
-	private String fDefaultNSName = null;
-	private Properties fNSNames = null;
-	private Properties fNSPrefixes = null;
+    private String fDefaultNSName = null;
+    private Properties fNSNames = null;
+    private Properties fNSPrefixes = null;
 
-	public Namespaces() {
-		fNSNames = new Properties();
-		fNSPrefixes = new Properties();
-	}
+    public Namespaces() {
+        fNSNames = new Properties();
+        fNSPrefixes = new Properties();
+    }
 
-	public Namespaces(Namespaces namespaces) {
-		fDefaultNSName = namespaces.fDefaultNSName;
-		fNSNames = new Properties(namespaces.fNSNames);
-		fNSPrefixes = new Properties(namespaces.fNSPrefixes);
-	}
+    public Namespaces(Namespaces namespaces) {
+        fDefaultNSName = namespaces.fDefaultNSName;
+        fNSNames = new Properties(namespaces.fNSNames);
+        fNSPrefixes = new Properties(namespaces.fNSPrefixes);
+    }
 
-	public String getDefaultNSName() {
-		return fDefaultNSName;
-	}
+    public String getDefaultNSName() {
+        return fDefaultNSName;
+    }
 
-	public String getNSName(String nsPrefix) {
-		return fNSNames.getProperty(nsPrefix);
-	}
+    public String getNSName(String nsPrefix) {
+        return fNSNames.getProperty(nsPrefix);
+    }
 
-	public String getNSPrefix(String nsName) {
-		return fNSPrefixes.getProperty(nsName);
-	}
+    public String getNSPrefix(String nsName) {
+        return fNSPrefixes.getProperty(nsName);
+    }
 
-	public void putNSName(String nsPrefix, String nsName) {
-		fNSNames.put(nsPrefix, nsName);
-	}
+    public void putNSName(String nsPrefix, String nsName) {
+        fNSNames.put(nsPrefix, nsName);
+    }
 
-	public void putNSPrefix(String nsName, String nsPrefix) {
-		fNSPrefixes.put(nsName, nsPrefix);
-	}
+    public void putNSPrefix(String nsName, String nsPrefix) {
+        fNSPrefixes.put(nsName, nsPrefix);
+    }
 
-	public void setDefaultNSName(String nsName) {
-		fDefaultNSName = nsName;
-	}
+    public void setDefaultNSName(String nsName) {
+        fDefaultNSName = nsName;
+    }
 }

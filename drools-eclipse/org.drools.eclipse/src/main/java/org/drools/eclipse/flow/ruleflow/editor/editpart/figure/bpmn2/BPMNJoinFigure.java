@@ -27,32 +27,32 @@ import org.jbpm.workflow.core.node.Join;
 public class BPMNJoinFigure extends AbstractElementFigure implements JoinFigureInterface {
     
     private static final Image ICON_COMPLEX = ImageDescriptor.createFromURL(
-		DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/large/gateway_complex.png")).createImage();
+        DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/large/gateway_complex.png")).createImage();
     private static final Image ICON_AND = ImageDescriptor.createFromURL(
-		DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/large/gateway_parallel.png")).createImage();
+        DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/large/gateway_parallel.png")).createImage();
     private static final Image ICON_XOR = ImageDescriptor.createFromURL(
-		DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/large/gateway_exclusive.png")).createImage();
+        DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/large/gateway_exclusive.png")).createImage();
                 
-	public BPMNJoinFigure() {
-		super.setSize(49, 49);
-	}
-	
+    public BPMNJoinFigure() {
+        super.setSize(49, 49);
+    }
+
     public void setText(String text) {
     }
     
     public void setBounds(Rectangle r) {
-    	r.setSize(49, 49);
-    	super.setBounds(r);
+        r.setSize(49, 49);
+        super.setBounds(r);
     }
     
     public void setType(int type) {
-    	if (type == Join.TYPE_AND) {
-    		setIcon(ICON_AND);
-    	} else if (type == Join.TYPE_XOR) {
-    		setIcon(ICON_XOR);
-    	} else {
-    		setIcon(ICON_COMPLEX);
-    	}
+        if (type == Join.TYPE_AND) {
+            setIcon(ICON_AND);
+        } else if (type == Join.TYPE_XOR) {
+            setIcon(ICON_XOR);
+        } else {
+            setIcon(ICON_COMPLEX);
+        }
     }
     
     protected void customizeFigure() {

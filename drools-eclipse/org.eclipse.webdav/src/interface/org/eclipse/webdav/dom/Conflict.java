@@ -34,43 +34,43 @@ import org.w3c.dom.Element;
  * @see ConflictReportResponse
  */
 public class Conflict extends ElementEditor {
-	/**
-	 * Creates a new editor on the given WebDAV conflict element. The
-	 * element is assumed to be well formed.
-	 *
-	 * @param root a conflict element
-	 * @throws        MalformedElementException if there is reason to
-	 *                believe that the element is not well formed
-	 */
-	public Conflict(Element root) throws MalformedElementException {
-		super(root, "conflict"); //$NON-NLS-1$
-	}
+    /**
+     * Creates a new editor on the given WebDAV conflict element. The
+     * element is assumed to be well formed.
+     *
+     * @param root a conflict element
+     * @throws        MalformedElementException if there is reason to
+     *                believe that the element is not well formed
+     */
+    public Conflict(Element root) throws MalformedElementException {
+        super(root, "conflict"); //$NON-NLS-1$
+    }
 
-	public void addContributor(String contributor) {
-		// do nothing
-	}
+    public void addContributor(String contributor) {
+        // do nothing
+    }
 
-	public String getCommonAncestor() throws MalformedElementException {
-		return null;
-	}
+    public String getCommonAncestor() throws MalformedElementException {
+        return null;
+    }
 
-	public Enumeration getContributors() throws MalformedElementException {
-		return null;
-	}
+    public Enumeration getContributors() throws MalformedElementException {
+        return null;
+    }
 
-	public String getHref() throws MalformedElementException {
-		return null;
-	}
+    public String getHref() throws MalformedElementException {
+        return null;
+    }
 
-	public void setCommonAncestor(String commonAncestor) {
-		// do nothing
-	}
+    public void setCommonAncestor(String commonAncestor) {
+        // do nothing
+    }
 
-	public void setContributor(String contributor) {
-		// do nothing
-	}
+    public void setContributor(String contributor) {
+        // do nothing
+    }
 
-	public void setHref(String href) {
-		// do nothing
-	}
+    public void setHref(String href) {
+        // do nothing
+    }
 }

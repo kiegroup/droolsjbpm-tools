@@ -31,17 +31,17 @@ import org.w3c.dom.Document;
  */
 public class RequestBodyWriter implements IRequestBodyWriter {
 
-	private Document body;
-	private String characterEncoding;
+    private Document body;
+    private String characterEncoding;
 
-	public RequestBodyWriter(Document document, String characterEncoding) {
-		body = document;
-		this.characterEncoding = characterEncoding;
-	}
+    public RequestBodyWriter(Document document, String characterEncoding) {
+        body = document;
+        this.characterEncoding = characterEncoding;
+    }
 
-	public void writeRequestBody(OutputStream os) throws IOException {
-		IDocumentMarshaler marshaler = new DocumentMarshaler();
-		OutputStreamWriter writer = new OutputStreamWriter(os, characterEncoding);
-		marshaler.print(body, writer, "utf-8"); //$NON-NLS-1$
-	}
+    public void writeRequestBody(OutputStream os) throws IOException {
+        IDocumentMarshaler marshaler = new DocumentMarshaler();
+        OutputStreamWriter writer = new OutputStreamWriter(os, characterEncoding);
+        marshaler.print(body, writer, "utf-8"); //$NON-NLS-1$
+    }
 }

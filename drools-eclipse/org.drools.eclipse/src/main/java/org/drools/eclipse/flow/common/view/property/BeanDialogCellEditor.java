@@ -34,7 +34,7 @@ public abstract class BeanDialogCellEditor<T> extends DialogCellEditor {
     }
 
     @SuppressWarnings("unchecked")
-	protected Object openDialogBox(Control cellEditorWindow) {
+    protected Object openDialogBox(Control cellEditorWindow) {
         EditBeanDialog<T> dialog = createDialog(cellEditorWindow.getShell());
         T value = (T) getValue();
         if (value != null) {

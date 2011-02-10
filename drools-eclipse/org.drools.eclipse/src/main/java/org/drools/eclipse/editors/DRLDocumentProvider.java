@@ -31,8 +31,8 @@ import org.eclipse.ui.editors.text.TextFileDocumentProvider;
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class DRLDocumentProvider extends TextFileDocumentProvider {
-	
-	public IDocument getDocument(Object element) {
+
+    public IDocument getDocument(Object element) {
         IDocument document = getParentDocument(element); 
         if (document != null) {
             IDocumentPartitioner partitioner =
@@ -47,7 +47,7 @@ public class DRLDocumentProvider extends TextFileDocumentProvider {
     
     protected IAnnotationModel createAnnotationModel(IFile file) {
         return new DRLAnnotationModel(file);
-	}
+    }
     
     protected IDocument getParentDocument(Object element) {
         return super.getDocument(element);

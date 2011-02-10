@@ -36,101 +36,101 @@ import org.eclipse.webdav.internal.kernel.*;
  */
 public class ResourceHandle extends AbstractResourceHandle {
 
-	/**
-	 * Creates a new <code>ResourceHandle</code> from the given
-	 * <code>DAVClient</code> and <code>Locator</code>.
-	 *
-	 * @param davClient
-	 * @param locator
-	 */
-	public ResourceHandle(DAVClient davClient, ILocator locator) {
-		super(davClient, locator);
-	}
+    /**
+     * Creates a new <code>ResourceHandle</code> from the given
+     * <code>DAVClient</code> and <code>Locator</code>.
+     *
+     * @param davClient
+     * @param locator
+     */
+    public ResourceHandle(DAVClient davClient, ILocator locator) {
+        super(davClient, locator);
+    }
 
-	/**
-	 * Check out this resource. Returns a resource handle on the checked out
-	 * version selector, or the working resource if a version is checked out.
-	 */
-	public AbstractResourceHandle checkOut() throws DAVException {
-		ILocator locator = protectedCheckOut();
-		return new ResourceHandle(davClient, locator);
-	}
+    /**
+     * Check out this resource. Returns a resource handle on the checked out
+     * version selector, or the working resource if a version is checked out.
+     */
+    public AbstractResourceHandle checkOut() throws DAVException {
+        ILocator locator = protectedCheckOut();
+        return new ResourceHandle(davClient, locator);
+    }
 
-	/**
-	 * Persistently create this resource instance in the repository.
-	 * <p>
-	 * Note that the usual method for creating an instance of a non-collection
-	 * resource would be setContent(InputStream).
-	 *
-	 * @exception DAVException if there was a problem creating this resource
-	 * @see AbstractResourceHandle#setContent(InputStream)
-	 */
-	public void create() throws DAVException {
-		setContent(new ByteArrayInputStream(new byte[0]));
-	}
+    /**
+     * Persistently create this resource instance in the repository.
+     * <p>
+     * Note that the usual method for creating an instance of a non-collection
+     * resource would be setContent(InputStream).
+     *
+     * @exception DAVException if there was a problem creating this resource
+     * @see AbstractResourceHandle#setContent(InputStream)
+     */
+    public void create() throws DAVException {
+        setContent(new ByteArrayInputStream(new byte[0]));
+    }
 
-	/**
-	 * Check to see if the resource is an activity resource.
-	 * <p>
-	 * The resource is an activity resource if it has
-	 * &lt;DAV:subactivity-set&gt; in the
-	 * &lt;DAV:supported-live-properties-set&gt;.</p>
-	 *
-	 * @return <code>true</code> if the resource is an activity
-	 * and <code>false</code> otherwise.
-	 * @throws DAVException if a problem occurs determining the state
-	 * of the resource.
-	 */
-	public boolean isActivity() throws DAVException {
-		return supportsLiveProperty(DAV_SUBACTIVITY_SET);
-	}
+    /**
+     * Check to see if the resource is an activity resource.
+     * <p>
+     * The resource is an activity resource if it has
+     * &lt;DAV:subactivity-set&gt; in the
+     * &lt;DAV:supported-live-properties-set&gt;.</p>
+     *
+     * @return <code>true</code> if the resource is an activity
+     * and <code>false</code> otherwise.
+     * @throws DAVException if a problem occurs determining the state
+     * of the resource.
+     */
+    public boolean isActivity() throws DAVException {
+        return supportsLiveProperty(DAV_SUBACTIVITY_SET);
+    }
 
-	/**
-	 * Check to see if the resource is a baseline resource.
-	 * <p>
-	 * The resource is a baseline resource if it has
-	 * &lt;DAV:baseline-collection&gt; in the
-	 * &lt;DAV:supported-live-properties-set&gt;.</p>
-	 *
-	 * @return <code>true</code> if the resource is a baseline
-	 * and <code>false</code> otherwise.
-	 * @throws DAVException if a problem occurs determining the state
-	 * of the resource.
-	 */
-	public boolean isBaseline() throws DAVException {
-		return supportsLiveProperty(DAV_BASELINE_COLLECTION);
-	}
+    /**
+     * Check to see if the resource is a baseline resource.
+     * <p>
+     * The resource is a baseline resource if it has
+     * &lt;DAV:baseline-collection&gt; in the
+     * &lt;DAV:supported-live-properties-set&gt;.</p>
+     *
+     * @return <code>true</code> if the resource is a baseline
+     * and <code>false</code> otherwise.
+     * @throws DAVException if a problem occurs determining the state
+     * of the resource.
+     */
+    public boolean isBaseline() throws DAVException {
+        return supportsLiveProperty(DAV_BASELINE_COLLECTION);
+    }
 
-	/**
-	 * Check to see if the resource is a version-controlled configuration
-	 * resource.
-	 * <p>
-	 * The resource is a version-controlled configuration resource if it has
-	 * &lt;DAV:baseline-controlled-collection&gt; in the
-	 * &lt;DAV:supported-live-properties-set&gt;.</p>
-	 *
-	 * @return <code>true</code> if the resource is a version-controlled
-	 * configuration and <code>false</code> otherwise.
-	 * @throws DAVException if a problem occurs determining the state
-	 * of the resource.
-	 */
-	public boolean isVersionControlledConfiguration() throws DAVException {
-		return supportsLiveProperty(DAV_BASELINE_CONTROLLED_COLLECTION);
-	}
+    /**
+     * Check to see if the resource is a version-controlled configuration
+     * resource.
+     * <p>
+     * The resource is a version-controlled configuration resource if it has
+     * &lt;DAV:baseline-controlled-collection&gt; in the
+     * &lt;DAV:supported-live-properties-set&gt;.</p>
+     *
+     * @return <code>true</code> if the resource is a version-controlled
+     * configuration and <code>false</code> otherwise.
+     * @throws DAVException if a problem occurs determining the state
+     * of the resource.
+     */
+    public boolean isVersionControlledConfiguration() throws DAVException {
+        return supportsLiveProperty(DAV_BASELINE_CONTROLLED_COLLECTION);
+    }
 
-	/**
-	 * Check to see if the resource is a version history resource.
-	 * <p>
-	 * The resource is a version history resource if it has
-	 * &lt;DAV:root-version&gt; in the
-	 * &lt;DAV:supported-live-properties-set&gt;.</p>
-	 *
-	 * @return <code>true</code> if the resource is a version history
-	 * and <code>false</code> otherwise.
-	 * @throws DAVException if a problem occurs determining the state
-	 * of the resource.
-	 */
-	public boolean isVersionHistory() throws DAVException {
-		return supportsLiveProperty(DAV_ROOT_VERSION);
-	}
+    /**
+     * Check to see if the resource is a version history resource.
+     * <p>
+     * The resource is a version history resource if it has
+     * &lt;DAV:root-version&gt; in the
+     * &lt;DAV:supported-live-properties-set&gt;.</p>
+     *
+     * @return <code>true</code> if the resource is a version history
+     * and <code>false</code> otherwise.
+     * @throws DAVException if a problem occurs determining the state
+     * of the resource.
+     */
+    public boolean isVersionHistory() throws DAVException {
+        return supportsLiveProperty(DAV_ROOT_VERSION);
+    }
 }

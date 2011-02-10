@@ -52,7 +52,7 @@ public class OpenLogAction extends Action {
         view.setLogFile(fileName);  
         BusyIndicator.showWhile(view.getViewer().getControl().getDisplay(), new Runnable() {
             public void run() {
-            	view.getViewer().refresh();                    
+                view.getViewer().refresh();
             }
         });         
     }

@@ -23,28 +23,28 @@ public class RuleEditorMessages {
 
     
     
-	private static final String RESOURCE_BUNDLE= getLocation();
+    private static final String RESOURCE_BUNDLE= getLocation();
     
 
 
     
-	private static ResourceBundle fgResourceBundle= ResourceBundle.getBundle(RESOURCE_BUNDLE);
+    private static ResourceBundle fgResourceBundle= ResourceBundle.getBundle(RESOURCE_BUNDLE);
 
-	private RuleEditorMessages() {
-	}
+    private RuleEditorMessages() {
+    }
 
-	public static String getString(String key) {
+    public static String getString(String key) {
         
-		try {
-			return fgResourceBundle.getString(key);
-		} catch (MissingResourceException e) {
-			return "!" + key + "!";//$NON-NLS-2$ //$NON-NLS-1$
-		}
-	}
-	
-	public static ResourceBundle getResourceBundle() {
-		return fgResourceBundle;
-	}
+        try {
+            return fgResourceBundle.getString(key);
+        } catch (MissingResourceException e) {
+            return "!" + key + "!";//$NON-NLS-2$ //$NON-NLS-1$
+        }
+    }
+
+    public static ResourceBundle getResourceBundle() {
+        return fgResourceBundle;
+    }
 
     
     private static String getLocation()  {

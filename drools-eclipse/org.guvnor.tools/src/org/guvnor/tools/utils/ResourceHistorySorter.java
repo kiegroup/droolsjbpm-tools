@@ -26,16 +26,16 @@ import org.guvnor.tools.views.model.ResourceHistoryEntry;
  */
 public class ResourceHistorySorter extends ViewerSorter {
 
-	@Override
-	public int compare(Viewer viewer, Object e1, Object e2) {
-		if (e1 instanceof ResourceHistoryEntry
-		   && e2 instanceof ResourceHistoryEntry) {
-			ResourceHistoryEntry entry1 = (ResourceHistoryEntry)e1;
-			ResourceHistoryEntry entry2 = (ResourceHistoryEntry)e2;
-			return Integer.parseInt(entry2.getRevision()) - Integer.parseInt(entry1.getRevision());
-		} else {
-			return super.compare(viewer, e1, e2);
-		}
-	}
-	
+    @Override
+    public int compare(Viewer viewer, Object e1, Object e2) {
+        if (e1 instanceof ResourceHistoryEntry
+           && e2 instanceof ResourceHistoryEntry) {
+            ResourceHistoryEntry entry1 = (ResourceHistoryEntry)e1;
+            ResourceHistoryEntry entry2 = (ResourceHistoryEntry)e2;
+            return Integer.parseInt(entry2.getRevision()) - Integer.parseInt(entry1.getRevision());
+        } else {
+            return super.compare(viewer, e1, e2);
+        }
+    }
+
 }

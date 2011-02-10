@@ -66,7 +66,7 @@ public class DroolsPluginImages {
     private static ImageRegistry imageRegistry;
     private static final String PATH_SUFFIX = "/icons/";
     private static final URL ICON_BASE_URL =
-    	DroolsEclipsePlugin.getDefault().getBundle().getEntry(PATH_SUFFIX);
+        DroolsEclipsePlugin.getDefault().getBundle().getEntry(PATH_SUFFIX);
     
     private static void declareImages() {
         declareRegistryImage(IMG_LOGICAL, "logical_structure.gif");
@@ -149,7 +149,7 @@ public class DroolsPluginImages {
      * or <code>null</code> if it does not exist.
      */
     public static ImageDescriptor getImageDescriptor(String key) {
-		return getImageRegistry().getDescriptor(key);
+        return getImageRegistry().getDescriptor(key);
     }
     
     private static URL makeIconFileURL(String iconPath) throws MalformedURLException {

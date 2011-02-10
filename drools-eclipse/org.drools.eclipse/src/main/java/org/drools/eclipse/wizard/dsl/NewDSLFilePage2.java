@@ -27,34 +27,34 @@ import org.eclipse.swt.widgets.Composite;
 
 public class NewDSLFilePage2 extends WizardPage {
 
-	private Button exampleContent;
-	private boolean isExampleContent = false;
-	
-	public NewDSLFilePage2() {
-		super("exampleContentPage");
-		setTitle("Content");
+    private Button exampleContent;
+    private boolean isExampleContent = false;
+
+    public NewDSLFilePage2() {
+        super("exampleContentPage");
+        setTitle("Content");
         setDescription("Select the default content of the DSL file");
-	}
-	
-	public void createControl(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NONE);
-		GridLayout gridLayout = new GridLayout();
+    }
+
+    public void createControl(Composite parent) {
+        Composite composite = new Composite(parent, SWT.NONE);
+        GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 2;
         composite.setLayout(gridLayout);
         
         exampleContent = createCheckBox(composite,
-			"Create the DSL file with some sample DSL statements");
+            "Create the DSL file with some sample DSL statements");
         exampleContent.setSelection(false);
         exampleContent.addSelectionListener(new SelectionListener() {
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// do nothing
-			}
-			public void widgetSelected(SelectionEvent e) {
-				isExampleContent = ((Button) e.widget).getSelection();
-			}
-		});
-		GridData gridData = new GridData();
-		gridData.horizontalSpan = 2;
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // do nothing
+            }
+            public void widgetSelected(SelectionEvent e) {
+                isExampleContent = ((Button) e.widget).getSelection();
+            }
+        });
+        GridData gridData = new GridData();
+        gridData.horizontalSpan = 2;
         gridData.grabExcessHorizontalSpace = true;
         gridData.horizontalAlignment = GridData.FILL;
         exampleContent.setLayoutData(gridData);
@@ -62,18 +62,18 @@ public class NewDSLFilePage2 extends WizardPage {
         setMessage(null);
         setPageComplete(true);
         setControl(composite);
-	}
-	
-	private Button createCheckBox(Composite group, String label) {
+    }
+
+    private Button createCheckBox(Composite group, String label) {
         Button button = new Button(group, SWT.CHECK | SWT.LEFT);
         button.setText(label);
         GridData data = new GridData();
         button.setLayoutData(data);
         return button;
     }
-	
-	public boolean isExampleContent() {
-		return isExampleContent;
-	}
-	
+
+    public boolean isExampleContent() {
+        return isExampleContent;
+    }
+
 }

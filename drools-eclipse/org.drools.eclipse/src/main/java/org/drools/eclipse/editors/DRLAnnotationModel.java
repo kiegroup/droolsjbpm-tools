@@ -32,24 +32,24 @@ import org.eclipse.ui.texteditor.ResourceMarkerAnnotationModel;
  */
 public class DRLAnnotationModel extends ResourceMarkerAnnotationModel {
 
-	public DRLAnnotationModel(IResource resource) {
-		super(resource);
-	}
+    public DRLAnnotationModel(IResource resource) {
+        super(resource);
+    }
 
-	protected Position createPositionFromMarker(IMarker marker) {
+    protected Position createPositionFromMarker(IMarker marker) {
         try {
-        	if (!marker.getType().equals(IDroolsDebugConstants.DROOLS_MARKER_TYPE)) {
-	            return super.createPositionFromMarker(marker);
-	        }
-	        int line = marker.getAttribute(IDroolsDebugConstants.DRL_LINE_NUMBER, -1);
-	        try {
-	        	return new Position(fDocument.getLineOffset(line - 1));
-	        } catch (BadLocationException exc) {
-	        	return super.createPositionFromMarker(marker);
-	        }
+            if (!marker.getType().equals(IDroolsDebugConstants.DROOLS_MARKER_TYPE)) {
+                return super.createPositionFromMarker(marker);
+            }
+            int line = marker.getAttribute(IDroolsDebugConstants.DRL_LINE_NUMBER, -1);
+            try {
+                return new Position(fDocument.getLineOffset(line - 1));
+            } catch (BadLocationException exc) {
+                return super.createPositionFromMarker(marker);
+            }
         } catch (CoreException exc) {
-        	DroolsEclipsePlugin.log(exc);
-        	return null;
+            DroolsEclipsePlugin.log(exc);
+            return null;
         }
     }
 }

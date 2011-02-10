@@ -60,127 +60,127 @@ public class DRLRuleEditor extends AbstractRuleEditor {
     protected List<GlobalDescr> globals;
     protected String packageName;
     protected List<String> classesInPackage;
-	protected Map<String, String> attributes;
+    protected Map<String, String> attributes;
 
     public DRLRuleEditor() {
-	}
+    }
 
-	public List<String> getImports() {
-		if (imports == null || isDirty()) {
-			loadImportsAndFunctions();
-		}
-		return imports;
-	}
+    public List<String> getImports() {
+        if (imports == null || isDirty()) {
+            loadImportsAndFunctions();
+        }
+        return imports;
+    }
 
-	public List<String> getFunctions() {
-		if (functions == null) {
-			loadImportsAndFunctions();
-		}
-		return functions;
-	}
+    public List<String> getFunctions() {
+        if (functions == null) {
+            loadImportsAndFunctions();
+        }
+        return functions;
+    }
 
-	public Set<String> getTemplates() {
-		if (templates == null) {
-			loadImportsAndFunctions();
-		}
-		return templates.keySet();
-	}
+    public Set<String> getTemplates() {
+        if (templates == null) {
+            loadImportsAndFunctions();
+        }
+        return templates.keySet();
+    }
 
-	public Map<String, String> getAttributes() {
-		if ( attributes == null ) {
-			loadImportsAndFunctions();
-		}
-		return attributes;
-	}
+    public Map<String, String> getAttributes() {
+        if ( attributes == null ) {
+            loadImportsAndFunctions();
+        }
+        return attributes;
+    }
 
-	public FactTemplateDescr getTemplate(String name) {
-		if (templates == null) {
-			loadImportsAndFunctions();
-		}
-		return templates.get(name);
-	}
+    public FactTemplateDescr getTemplate(String name) {
+        if (templates == null) {
+            loadImportsAndFunctions();
+        }
+        return templates.get(name);
+    }
 
-	public List<GlobalDescr> getGlobals() {
-		if (globals == null ) {
-			loadImportsAndFunctions();
-		}
-		return globals;
-	}
+    public List<GlobalDescr> getGlobals() {
+        if (globals == null ) {
+            loadImportsAndFunctions();
+        }
+        return globals;
+    }
 
-	public String getPackage() {
-		if (packageName == null) {
-			loadImportsAndFunctions();
-		}
-		return packageName;
-	}
+    public String getPackage() {
+        if (packageName == null) {
+            loadImportsAndFunctions();
+        }
+        return packageName;
+    }
 
-	public List<String> getClassesInPackage() {
-		if (classesInPackage == null) {
-			classesInPackage = getAllClassesInPackage(getPackage());
-		}
-		return classesInPackage;
-	}
+    public List<String> getClassesInPackage() {
+        if (classesInPackage == null) {
+            classesInPackage = getAllClassesInPackage(getPackage());
+        }
+        return classesInPackage;
+    }
 
-	protected List<String> getAllClassesInPackage(String packageName) {
-		List<String> list = new ArrayList<String>();
-		if (packageName != null) {
-			IEditorInput input = getEditorInput();
-			if (input instanceof IFileEditorInput) {
-				IProject project = ((IFileEditorInput) input).getFile().getProject();
-				IJavaProject javaProject = JavaCore.create(project);
-				list = getAllClassesInPackage(packageName, javaProject);
-			}
-		}
-		return list;
-	}
+    protected List<String> getAllClassesInPackage(String packageName) {
+        List<String> list = new ArrayList<String>();
+        if (packageName != null) {
+            IEditorInput input = getEditorInput();
+            if (input instanceof IFileEditorInput) {
+                IProject project = ((IFileEditorInput) input).getFile().getProject();
+                IJavaProject javaProject = JavaCore.create(project);
+                list = getAllClassesInPackage(packageName, javaProject);
+            }
+        }
+        return list;
+    }
 
-	public static List<String> getAllClassesInPackage(String packageName, IJavaProject javaProject) {
-		final List<String> list = new ArrayList<String>();
-		CompletionRequestor requestor = new CompletionRequestor() {
-			public void accept(org.eclipse.jdt.core.CompletionProposal proposal) {
-				String className = new String(proposal.getCompletion());
-				if (proposal.getKind() == org.eclipse.jdt.core.CompletionProposal.TYPE_REF) {
-					list.add(className);
-				}
-				// ignore all other proposals
-			}
-		};
+    public static List<String> getAllClassesInPackage(String packageName, IJavaProject javaProject) {
+        final List<String> list = new ArrayList<String>();
+        CompletionRequestor requestor = new CompletionRequestor() {
+            public void accept(org.eclipse.jdt.core.CompletionProposal proposal) {
+                String className = new String(proposal.getCompletion());
+                if (proposal.getKind() == org.eclipse.jdt.core.CompletionProposal.TYPE_REF) {
+                    list.add(className);
+                }
+                // ignore all other proposals
+            }
+        };
 
-		try {
-			javaProject.newEvaluationContext().codeComplete(packageName + ".", packageName.length() + 1, requestor);
-		} catch (Throwable t) {
-			DroolsEclipsePlugin.log(t);
-		}
-		return list;
-	}
+        try {
+            javaProject.newEvaluationContext().codeComplete(packageName + ".", packageName.length() + 1, requestor);
+        } catch (Throwable t) {
+            DroolsEclipsePlugin.log(t);
+        }
+        return list;
+    }
 
-	protected List<String> getAllStaticMethodsInClass(String className) {
-		final List<String> list = new ArrayList<String>();
-		if (className != null) {
-			IEditorInput input = getEditorInput();
-			if (input instanceof IFileEditorInput) {
-				IProject project = ((IFileEditorInput) input).getFile().getProject();
-				IJavaProject javaProject = JavaCore.create(project);
+    protected List<String> getAllStaticMethodsInClass(String className) {
+        final List<String> list = new ArrayList<String>();
+        if (className != null) {
+            IEditorInput input = getEditorInput();
+            if (input instanceof IFileEditorInput) {
+                IProject project = ((IFileEditorInput) input).getFile().getProject();
+                IJavaProject javaProject = JavaCore.create(project);
 
-				CompletionRequestor requestor = new CompletionRequestor() {
-					public void accept(org.eclipse.jdt.core.CompletionProposal proposal) {
-						String functionName = new String(proposal.getCompletion());
-						if (proposal.getKind() == org.eclipse.jdt.core.CompletionProposal.METHOD_REF) {
-							list.add(functionName.substring(0, functionName.length() - 2)); // remove the ()
-						}
-						// ignore all other proposals
-					}
-				};
+                CompletionRequestor requestor = new CompletionRequestor() {
+                    public void accept(org.eclipse.jdt.core.CompletionProposal proposal) {
+                        String functionName = new String(proposal.getCompletion());
+                        if (proposal.getKind() == org.eclipse.jdt.core.CompletionProposal.METHOD_REF) {
+                            list.add(functionName.substring(0, functionName.length() - 2)); // remove the ()
+                        }
+                        // ignore all other proposals
+                    }
+                };
 
-				try {
-					javaProject.newEvaluationContext().codeComplete(className + ".", className.length() + 1, requestor);
-				} catch (Throwable t) {
-					DroolsEclipsePlugin.log(t);
-				}
-			}
-		}
-		return list;
-	}
+                try {
+                    javaProject.newEvaluationContext().codeComplete(className + ".", className.length() + 1, requestor);
+                } catch (Throwable t) {
+                    DroolsEclipsePlugin.log(t);
+                }
+            }
+        }
+        return list;
+    }
 
     protected void loadImportsAndFunctions() {
         try {
@@ -243,67 +243,67 @@ public class DRLRuleEditor extends AbstractRuleEditor {
 
             //attributes
             this.attributes = new HashMap<String, String>();
-        	for (Iterator<AttributeDescr> attrIter = descr.getAttributes().iterator(); attrIter.hasNext();) {
-        		AttributeDescr attribute = attrIter.next();
-        		if (attribute != null && attribute.getName() != null) {
-        			attributes.put(attribute.getName(), attribute.getValue());
-        		}
-        	}
+            for (Iterator<AttributeDescr> attrIter = descr.getAttributes().iterator(); attrIter.hasNext();) {
+                AttributeDescr attribute = attrIter.next();
+                if (attribute != null && attribute.getName() != null) {
+                    attributes.put(attribute.getName(), attribute.getValue());
+                }
+            }
 
         } catch (DroolsParserException e) {
             DroolsEclipsePlugin.log(e);
         }
     }
 
-	public Object getAdapter(Class adapter) {
-		if (adapter.equals(IToggleBreakpointsTarget.class)) {
-			return getBreakpointAdapter();
-		}
-		return super.getAdapter(adapter);
-	}
+    public Object getAdapter(Class adapter) {
+        if (adapter.equals(IToggleBreakpointsTarget.class)) {
+            return getBreakpointAdapter();
+        }
+        return super.getAdapter(adapter);
+    }
 
-	private Object getBreakpointAdapter() {
-		return new DroolsLineBreakpointAdapter();
-	}
+    private Object getBreakpointAdapter() {
+        return new DroolsLineBreakpointAdapter();
+    }
 
-	public void doSave(IProgressMonitor monitor) {
-		super.doSave(monitor);
-		// remove cached content
-		imports = null;
-		functions = null;
-		templates = null;
-		globals = null;
-		packageName = null;
-		classesInPackage = null;
-	}
+    public void doSave(IProgressMonitor monitor) {
+        super.doSave(monitor);
+        // remove cached content
+        imports = null;
+        functions = null;
+        templates = null;
+        globals = null;
+        packageName = null;
+        classesInPackage = null;
+    }
 
-	public void gotoMarker(IMarker marker) {
-		try {
-			if (marker.getType().equals(IDroolsDebugConstants.DROOLS_MARKER_TYPE)) {
-				int line = marker.getAttribute(IDroolsDebugConstants.DRL_LINE_NUMBER, -1);
-	            if (line > -1)
-	            	--line;
-	                try {
-	                    IDocument document = getDocumentProvider().getDocument(getEditorInput());
-	                    selectAndReveal(document.getLineOffset(line), document.getLineLength(line));
-	                } catch(BadLocationException exc) {
-	                	DroolsEclipsePlugin.log(exc);
-	                }
-			} else {
-				super.gotoMarker(marker);
-			}
-		} catch (CoreException exc) {
-			DroolsEclipsePlugin.log(exc);
-		}
-	}
+    public void gotoMarker(IMarker marker) {
+        try {
+            if (marker.getType().equals(IDroolsDebugConstants.DROOLS_MARKER_TYPE)) {
+                int line = marker.getAttribute(IDroolsDebugConstants.DRL_LINE_NUMBER, -1);
+                if (line > -1)
+                    --line;
+                    try {
+                        IDocument document = getDocumentProvider().getDocument(getEditorInput());
+                        selectAndReveal(document.getLineOffset(line), document.getLineLength(line));
+                    } catch(BadLocationException exc) {
+                        DroolsEclipsePlugin.log(exc);
+                    }
+            } else {
+                super.gotoMarker(marker);
+            }
+        } catch (CoreException exc) {
+            DroolsEclipsePlugin.log(exc);
+        }
+    }
 
 
-	public BaseDescr getDescr(int offset) {
-		try {
-			DRLInfo info = DroolsEclipsePlugin.getDefault().parseResource(this, true, false);
-			return DescrUtil.getDescr(info.getPackageDescr(), offset);
-		} catch (DroolsParserException exc) {
-			return null;
-		}
-	}
+    public BaseDescr getDescr(int offset) {
+        try {
+            DRLInfo info = DroolsEclipsePlugin.getDefault().parseResource(this, true, false);
+            return DescrUtil.getDescr(info.getPackageDescr(), offset);
+        } catch (DroolsParserException exc) {
+            return null;
+        }
+    }
 }

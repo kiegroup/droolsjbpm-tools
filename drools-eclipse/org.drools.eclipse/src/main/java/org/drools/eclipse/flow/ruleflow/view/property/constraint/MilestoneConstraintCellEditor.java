@@ -44,9 +44,9 @@ public class MilestoneConstraintCellEditor extends BeanDialogCellEditor {
     }
     
     protected String getLabelText(Object value) {
-    	if (milestone == null || milestone.getConstraint() == null) {
-    		return "";
-    	}
+        if (milestone == null || milestone.getConstraint() == null) {
+            return "";
+        }
         return milestone.getConstraint();
     }
 }

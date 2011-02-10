@@ -42,7 +42,7 @@ public class ReconnectElementConnectionTargetCommand extends Command {
             
         List connections = newTarget.getIncomingConnections();
         for (Iterator it = connections.iterator(); it.hasNext(); ) {
-        	ElementConnection connection = (ElementConnection) it.next();
+            ElementConnection connection = (ElementConnection) it.next();
             if (connection.getSource().equals(source) && !connection.getTarget().equals(oldTarget))
                 return false;
         }   
@@ -51,8 +51,8 @@ public class ReconnectElementConnectionTargetCommand extends Command {
 
     public void execute() {
         if (newTarget != null) {
-        	connection.disconnect();
-        	connection.connect(source, newTarget);    	
+            connection.disconnect();
+            connection.connect(source, newTarget);
         }
     }
 
@@ -67,12 +67,12 @@ public class ReconnectElementConnectionTargetCommand extends Command {
     }
 
     public void undo() {
-    	connection.disconnect();
-    	connection.connect(source, oldTarget);
+        connection.disconnect();
+        connection.connect(source, oldTarget);
     }
     
     public void redo() {
-    	connection.disconnect();
-    	connection.connect(source, newTarget);
+        connection.disconnect();
+        connection.connect(source, newTarget);
     }
 }

@@ -103,24 +103,24 @@ public class DroolsDebugTarget extends JDIDebugTarget {
                         req.addClassFilter( "org.drools.base.mvel.MVELDebugHandler" );
                         req.setSuspendPolicy( EventRequest.SUSPEND_ALL );
 
-						addJDIEventListener(new IJDIEventListener() {
-							public boolean handleEvent(Event event,	JDIDebugTarget target) {
-								addRemoteBreakpoint(d);
-								return true;
-							}
+                        addJDIEventListener(new IJDIEventListener() {
+                            public boolean handleEvent(Event event,    JDIDebugTarget target) {
+                                addRemoteBreakpoint(d);
+                                return true;
+                            }
 
-							public void wonSuspendVote(Event event, JDIDebugTarget target) {
-							}
+                            public void wonSuspendVote(Event event, JDIDebugTarget target) {
+                            }
 
-							public void eventSetComplete(Event event, JDIDebugTarget target, boolean suspend, EventSet eventSet) {
-								wonSuspendVote(event, target);
-							}
+                            public void eventSetComplete(Event event, JDIDebugTarget target, boolean suspend, EventSet eventSet) {
+                                wonSuspendVote(event, target);
+                            }
 
-							public boolean handleEvent(Event event,	JDIDebugTarget target, boolean suspendVote, EventSet eventSet) {
-								return handleEvent(event, target);
-							}
+                            public boolean handleEvent(Event event,    JDIDebugTarget target, boolean suspendVote, EventSet eventSet) {
+                                return handleEvent(event, target);
+                            }
 
-						}, req);
+                        }, req);
 
                         req.enable();
                         return;
@@ -303,13 +303,13 @@ public class DroolsDebugTarget extends JDIDebugTarget {
             // do nothing
         }
 
-		public void eventSetComplete(Event event, JDIDebugTarget target, boolean suspend, EventSet eventSet) {
-			wonSuspendVote(event, target);
-		}
+        public void eventSetComplete(Event event, JDIDebugTarget target, boolean suspend, EventSet eventSet) {
+            wonSuspendVote(event, target);
+        }
 
-		public boolean handleEvent(Event event, JDIDebugTarget target, boolean suspendVote, EventSet eventSet) {
-			return handleEvent(event, target);
-		}
+        public boolean handleEvent(Event event, JDIDebugTarget target, boolean suspendVote, EventSet eventSet) {
+            return handleEvent(event, target);
+        }
 
     }
 
@@ -409,14 +409,14 @@ public class DroolsDebugTarget extends JDIDebugTarget {
             fRequest = request;
         }
 
-		public void eventSetComplete(Event event, JDIDebugTarget target, boolean suspend, EventSet eventSet) {
-			wonSuspendVote(event, target);
-			
-		}
+        public void eventSetComplete(Event event, JDIDebugTarget target, boolean suspend, EventSet eventSet) {
+            wonSuspendVote(event, target);
 
-		public boolean handleEvent(Event event, JDIDebugTarget target, boolean suspendVote, EventSet eventSet) {
-			return handleEvent(event, target);
-		}
+        }
+
+        public boolean handleEvent(Event event, JDIDebugTarget target, boolean suspendVote, EventSet eventSet) {
+            return handleEvent(event, target);
+        }
     }
 
     private void disposeThreadHandler() {
@@ -677,7 +677,7 @@ public class DroolsDebugTarget extends JDIDebugTarget {
             EventRequestManager manager = getEventRequestManager();
             if ( manager != null ) {
                 try {
-                	ClassPrepareRequest req = manager.createClassPrepareRequest();
+                    ClassPrepareRequest req = manager.createClassPrepareRequest();
                     req.addClassFilter( "org.drools.base.mvel.MVELDebugHandler" );
                     req.setSuspendPolicy( EventRequest.SUSPEND_ALL );
                     addJDIEventListener( MVELTraceHandler.this,
@@ -702,28 +702,28 @@ public class DroolsDebugTarget extends JDIDebugTarget {
          */
         public boolean handleEvent(Event event,
                                    JDIDebugTarget target) {
-        	ClassType classType = ( ClassType ) ((ClassPrepareEvent) event).referenceType();
+            ClassType classType = ( ClassType ) ((ClassPrepareEvent) event).referenceType();
             String name = classType.name();            
 
             // change this to create a breakpoint, as the method enter was too slow
             BreakpointRequest req = null;
             List list = classType.methodsByName( "onBreak" );
             if (  list.size() == 0 ) {
-            	throw new IllegalStateException( "MVELDebugHandler.onBreak cannot be found by JDI" );
+                throw new IllegalStateException( "MVELDebugHandler.onBreak cannot be found by JDI" );
             }
             
             Method method = ( Method ) list.get( 0 );
             if (method != null && !method.isNative()) {
-	            Location location = method.location();
-	            if (location != null && location.codeIndex() != -1) {
-	            	req = getEventRequestManager().createBreakpointRequest(location);
-	                req.addThreadFilter( ((ClassPrepareEvent) event).thread() );
-	                req.setSuspendPolicy( EventRequest.SUSPEND_ALL  );
-	            } else {
-	            	throw new IllegalStateException( "MVELDebugHandler.onBreak location cannot be found by JDI" );
-	            }
-            }	else {
-            	throw new IllegalStateException( "MVELDebugHandler.onBreak cannot be found by JDI" );
+                Location location = method.location();
+                if (location != null && location.codeIndex() != -1) {
+                    req = getEventRequestManager().createBreakpointRequest(location);
+                    req.addThreadFilter( ((ClassPrepareEvent) event).thread() );
+                    req.setSuspendPolicy( EventRequest.SUSPEND_ALL  );
+                } else {
+                    throw new IllegalStateException( "MVELDebugHandler.onBreak location cannot be found by JDI" );
+                }
+            }    else {
+                throw new IllegalStateException( "MVELDebugHandler.onBreak cannot be found by JDI" );
             }
             
 
@@ -734,48 +734,48 @@ public class DroolsDebugTarget extends JDIDebugTarget {
              EventRequest req= manager.createModificationWatchpointRequest(field);
              */
             //req.setSuspendPolicy( EventRequest.SUSPEND_EVENT_THREAD );
-			addJDIEventListener(new IJDIEventListener() {
+            addJDIEventListener(new IJDIEventListener() {
 
-				public boolean handleEvent(Event event, JDIDebugTarget target) {
-					BreakpointEvent entryEvent = (BreakpointEvent) event;
-					
-					//System.out.println( entryEvent + ":" + entryEvent.location() );
+                public boolean handleEvent(Event event, JDIDebugTarget target) {
+                    BreakpointEvent entryEvent = (BreakpointEvent) event;
 
-					try {
-						IThread[] tharr = getThreads();
-						ThreadReference t = null;
-						DroolsThread t2 = null;
-						for (int i = 0; i < tharr.length; i++) {
-							DroolsThread th2 = (DroolsThread) tharr[i];
-							ThreadReference th2real = ((DroolsThread) tharr[i]).getUnderlyingThread();
-							if (th2real.suspendCount() == 1	&& th2.getName().equals("main")) {
-								t = th2real;
-								t2 = (DroolsThread) th2;
-								th2real.suspend();
-								th2.setRunning(false);
-								th2.fireSuspendEvent(DebugEvent.CLIENT_REQUEST);
-								return true;
-							}
-						}
-					} catch (Exception t) {
-						logError(t);
-					}
-					return true;
-				}
+                    //System.out.println( entryEvent + ":" + entryEvent.location() );
 
-				public void wonSuspendVote(Event event, JDIDebugTarget target) {
-					// do nothing
-				}
+                    try {
+                        IThread[] tharr = getThreads();
+                        ThreadReference t = null;
+                        DroolsThread t2 = null;
+                        for (int i = 0; i < tharr.length; i++) {
+                            DroolsThread th2 = (DroolsThread) tharr[i];
+                            ThreadReference th2real = ((DroolsThread) tharr[i]).getUnderlyingThread();
+                            if (th2real.suspendCount() == 1    && th2.getName().equals("main")) {
+                                t = th2real;
+                                t2 = (DroolsThread) th2;
+                                th2real.suspend();
+                                th2.setRunning(false);
+                                th2.fireSuspendEvent(DebugEvent.CLIENT_REQUEST);
+                                return true;
+                            }
+                        }
+                    } catch (Exception t) {
+                        logError(t);
+                    }
+                    return true;
+                }
 
-				public void eventSetComplete(Event event, JDIDebugTarget target, boolean suspend, EventSet eventSet) {
-					wonSuspendVote(event, target);
-				}
+                public void wonSuspendVote(Event event, JDIDebugTarget target) {
+                    // do nothing
+                }
 
-				public boolean handleEvent(Event event, JDIDebugTarget target, boolean suspendVote, EventSet eventSet) {
-					return handleEvent(event, target);
-				}
+                public void eventSetComplete(Event event, JDIDebugTarget target, boolean suspend, EventSet eventSet) {
+                    wonSuspendVote(event, target);
+                }
 
-			}, req);
+                public boolean handleEvent(Event event, JDIDebugTarget target, boolean suspendVote, EventSet eventSet) {
+                    return handleEvent(event, target);
+                }
+
+            }, req);
 
             req.enable();            
             
@@ -793,13 +793,13 @@ public class DroolsDebugTarget extends JDIDebugTarget {
             // do nothing
         }
 
-		public void eventSetComplete(Event event, JDIDebugTarget target, boolean suspend, EventSet eventSet) {
-			wonSuspendVote(event, target);
-		}
+        public void eventSetComplete(Event event, JDIDebugTarget target, boolean suspend, EventSet eventSet) {
+            wonSuspendVote(event, target);
+        }
 
-		public boolean handleEvent(Event event, JDIDebugTarget target, boolean suspendVote, EventSet eventSet) {
-			return handleEvent(event, target);
-		}
+        public boolean handleEvent(Event event, JDIDebugTarget target, boolean suspendVote, EventSet eventSet) {
+            return handleEvent(event, target);
+        }
 
     }
 

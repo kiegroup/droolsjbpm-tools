@@ -22,16 +22,16 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Composite;
 
 public class ExceptionHandlersPropertyDescriptor extends ListPropertyDescriptor {
-	
-	private Process process;
-	
-	public ExceptionHandlersPropertyDescriptor(Object id, String displayName, Process process) {
-		super(id, displayName, ExceptionHandlersCellEditor.class);
-		this.process = process;
-	}
-	
-	public CellEditor createPropertyEditor(Composite parent) {
-		return new ExceptionHandlersCellEditor(parent, process);
-	}
+
+    private Process process;
+
+    public ExceptionHandlersPropertyDescriptor(Object id, String displayName, Process process) {
+        super(id, displayName, ExceptionHandlersCellEditor.class);
+        this.process = process;
+    }
+
+    public CellEditor createPropertyEditor(Composite parent) {
+        return new ExceptionHandlersCellEditor(parent, process);
+    }
 
 }

@@ -41,35 +41,35 @@ import org.eclipse.swt.widgets.Display;
  */
 public class SplitEditPart extends ElementEditPart {
 
-	private String SKIN =
-		DroolsEclipsePlugin.getDefault().getPreferenceStore().getString(IDroolsConstants.SKIN);
-	
+    private String SKIN =
+        DroolsEclipsePlugin.getDefault().getPreferenceStore().getString(IDroolsConstants.SKIN);
+
     protected IFigure createFigure() {
-    	SkinProvider skinProvider = SkinManager.getInstance().getSkinProvider(SKIN);
-    	IFigure result = skinProvider.createSplitFigure();
-    	Rectangle constraint = getElementWrapper().getConstraint();
-    	if (constraint.width == -1) {
-    		constraint.width = result.getSize().width;
-    	}
-    	if (constraint.height == -1) {
-    		constraint.height = result.getSize().height;
-    	}
-    	getElementWrapper().setConstraint(constraint);
-    	return result;
+        SkinProvider skinProvider = SkinManager.getInstance().getSkinProvider(SKIN);
+        IFigure result = skinProvider.createSplitFigure();
+        Rectangle constraint = getElementWrapper().getConstraint();
+        if (constraint.width == -1) {
+            constraint.width = result.getSize().width;
+        }
+        if (constraint.height == -1) {
+            constraint.height = result.getSize().height;
+        }
+        getElementWrapper().setConstraint(constraint);
+        return result;
     }
 
     public void modelChanged(ModelEvent event) {
         if (event.getChange() == SplitWrapper.CHANGE_TYPE) {
             refreshVisuals();
         } else {
-        	super.modelChanged(event);
+            super.modelChanged(event);
         }
     }
     
     protected void refreshVisuals() {
-    	super.refreshVisuals();
-    	int type = ((SplitWrapper) getModel()).getSplit().getType();
-		((SplitFigureInterface) getFigure()).setType(type);
+        super.refreshVisuals();
+        int type = ((SplitWrapper) getModel()).getSplit().getType();
+        ((SplitFigureInterface) getFigure()).setType(type);
     }
     
     public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connection) {
@@ -89,7 +89,7 @@ public class SplitEditPart extends ElementEditPart {
     }
     
     public static interface SplitFigureInterface extends IFigure {
-    	void setType(int type);
+        void setType(int type);
     }
 
     public static class SplitFigure extends AbstractElementFigure implements SplitFigureInterface {
@@ -116,9 +116,9 @@ public class SplitEditPart extends ElementEditPart {
             repaint();
         }
 
-		public void setType(int type) {
-			// Do nothing
-		}
+        public void setType(int type) {
+            // Do nothing
+        }
     }
 
 }

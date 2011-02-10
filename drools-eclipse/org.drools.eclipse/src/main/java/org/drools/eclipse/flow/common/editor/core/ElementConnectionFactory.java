@@ -22,7 +22,7 @@ package org.drools.eclipse.flow.common.editor.core;
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public interface ElementConnectionFactory {
-	
-	ElementConnection createElementConnection();
-	
+
+    ElementConnection createElementConnection();
+
 }

@@ -26,25 +26,25 @@ import org.eclipse.jface.action.Action;
  */
 public class FilterAction extends Action {
 
-	private int filterType;
+    private int filterType;
 
-	private FilterActionGroup filterActionGroup;
+    private FilterActionGroup filterActionGroup;
 
-	public FilterAction(FilterActionGroup actionGroup, String title,
-			int property, boolean initValue, String imageDescriptorKey) {
-		super(title);
-		filterActionGroup = actionGroup;
-		filterType = property;
-		setChecked(initValue);
-		setImageDescriptor(DroolsPluginImages.getImageDescriptor(imageDescriptorKey));
-	}
+    public FilterAction(FilterActionGroup actionGroup, String title,
+            int property, boolean initValue, String imageDescriptorKey) {
+        super(title);
+        filterActionGroup = actionGroup;
+        filterType = property;
+        setChecked(initValue);
+        setImageDescriptor(DroolsPluginImages.getImageDescriptor(imageDescriptorKey));
+    }
 
-	public int getFilterType() {
-		return filterType;
-	}
+    public int getFilterType() {
+        return filterType;
+    }
 
-	public void run() {
-		filterActionGroup.setFilter(filterType, isChecked());
-	}
-	
+    public void run() {
+        filterActionGroup.setFilter(filterType, isChecked());
+    }
+
 }

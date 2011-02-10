@@ -35,38 +35,38 @@ import org.w3c.dom.Document;
  */
 public class WorkspaceHandle extends CollectionHandle {
 
-	public WorkspaceHandle(DAVClient davClient, ILocator locator) {
-		super(davClient, locator);
-	}
+    public WorkspaceHandle(DAVClient davClient, ILocator locator) {
+        super(davClient, locator);
+    }
 
-	/**
-	 * Check out this resource. Returns a resource handle on the checked out
-	 * version selector, or the working resource if a version is checked out.
-	 */
-	public AbstractResourceHandle checkOut() throws DAVException {
-		ILocator locator = protectedCheckOut();
-		return new WorkspaceHandle(davClient, locator);
-	}
+    /**
+     * Check out this resource. Returns a resource handle on the checked out
+     * version selector, or the working resource if a version is checked out.
+     */
+    public AbstractResourceHandle checkOut() throws DAVException {
+        ILocator locator = protectedCheckOut();
+        return new WorkspaceHandle(davClient, locator);
+    }
 
-	/**
-	 * Create a new workspace in the location described by this handle.
-	 * <p>
-	 * A new workspace is created using a MKWORKSPACE method call.</p>
-	 *
-	 * @throws DAVException if a problem occured creating the workspace
-	 * on the WebDAV server.
-	 */
-	public void create() throws DAVException {
-		Document document = newDocument();
-		Mkworkspace.create(document);
-		IResponse response = null;
-		try {
-			response = davClient.mkworkspace(locator, newContext(), document);
-			examineResponse(response);
-		} catch (IOException e) {
-			throw new SystemException(e);
-		} finally {
-			closeResponse(response);
-		}
-	}
+    /**
+     * Create a new workspace in the location described by this handle.
+     * <p>
+     * A new workspace is created using a MKWORKSPACE method call.</p>
+     *
+     * @throws DAVException if a problem occured creating the workspace
+     * on the WebDAV server.
+     */
+    public void create() throws DAVException {
+        Document document = newDocument();
+        Mkworkspace.create(document);
+        IResponse response = null;
+        try {
+            response = davClient.mkworkspace(locator, newContext(), document);
+            examineResponse(response);
+        } catch (IOException e) {
+            throw new SystemException(e);
+        } finally {
+            closeResponse(response);
+        }
+    }
 }

@@ -71,19 +71,19 @@ public class VariableDialog extends EditBeanDialog<Variable> {
         typeLabel.setText("Type: ");
         
         dataTypeCombo = new DataTypeCombo(composite,
-    		SWT.NONE, DefaultDataTypeRegistry.getInstance());
+            SWT.NONE, DefaultDataTypeRegistry.getInstance());
         DataType dataType = getValue().getType();
         dataTypeCombo.setDataType(dataType);
         dataTypeCombo.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				DataType dataType = dataTypeCombo.getDataType();
-				dataTypeEditorComposite.setDataType(dataType);
-				editorComposite.setDataType(dataType);
-				composite.layout();
-			}
+            public void selectionChanged(SelectionChangedEvent event) {
+                DataType dataType = dataTypeCombo.getDataType();
+                dataTypeEditorComposite.setDataType(dataType);
+                editorComposite.setDataType(dataType);
+                composite.layout();
+            }
         });
         
-    	new Label(composite, SWT.NONE);
+        new Label(composite, SWT.NONE);
         
         dataTypeEditorComposite = new DataTypeEditorComposite(composite,
             SWT.NONE, DefaultDataTypeRegistry.getInstance());
@@ -126,7 +126,7 @@ public class VariableDialog extends EditBeanDialog<Variable> {
         Variable variable = (Variable) getValue();
         String name = nameText.getText();
         if ("".equals(name)) {
-        	throw new IllegalArgumentException("Name should not be empty");
+            throw new IllegalArgumentException("Name should not be empty");
         }
         variable.setName(name);
         variable.setType(dataTypeEditorComposite.getDataType());

@@ -46,103 +46,103 @@ import org.jbpm.workflow.core.node.StateNode;
  */
 public class StateConstraintListDialog extends EditBeanDialog<Map<ConnectionRef, Constraint>> {
 
-	private WorkflowProcess process;
-	private StateNode stateNode;
-	private Map<ConnectionRef, Constraint> newMap;
-	private Map<Connection, Label> labels = new HashMap<Connection, Label>();
+    private WorkflowProcess process;
+    private StateNode stateNode;
+    private Map<ConnectionRef, Constraint> newMap;
+    private Map<Connection, Label> labels = new HashMap<Connection, Label>();
 
-	protected StateConstraintListDialog(Shell parentShell, WorkflowProcess process,
-			StateNode stateNode) {
-		super(parentShell, "Edit Constraints");
-		this.process = process;
-		this.stateNode = stateNode;
-	}
+    protected StateConstraintListDialog(Shell parentShell, WorkflowProcess process,
+            StateNode stateNode) {
+        super(parentShell, "Edit Constraints");
+        this.process = process;
+        this.stateNode = stateNode;
+    }
 
-	protected Control createDialogArea(Composite parent) {
-		Composite composite = (Composite) super.createDialogArea(parent);
-		GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 3;
-		composite.setLayout(gridLayout);
+    protected Control createDialogArea(Composite parent) {
+        Composite composite = (Composite) super.createDialogArea(parent);
+        GridLayout gridLayout = new GridLayout();
+        gridLayout.numColumns = 3;
+        composite.setLayout(gridLayout);
 
-		List<Connection> outgoingConnections = stateNode.getOutgoingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE);
-		labels.clear();
-		for (Connection outgoingConnection: outgoingConnections) {
-			Label label1 = new Label(composite, SWT.NONE);
-			label1.setText("To node "
-		        + outgoingConnection.getTo().getName() + ": ");
-			Label label2 = new Label(composite, SWT.NONE);
-			labels.put(outgoingConnection, label2);
-			GridData gridData = new GridData();
-			gridData.grabExcessHorizontalSpace = true;
-			gridData.horizontalAlignment = GridData.FILL;
-			label2.setLayoutData(gridData);
-			Constraint constraint = newMap.get(
-		        new ConnectionRef(outgoingConnection.getTo().getId(), outgoingConnection.getToType()));
-			if (constraint != null) {
-				label2.setText(constraint.getName());
-			}
-			Button editButton = new Button(composite, SWT.NONE);
-			editButton.setText("Edit");
-			editButton.addSelectionListener(new EditButtonListener(
-					outgoingConnection));
-		}
+        List<Connection> outgoingConnections = stateNode.getOutgoingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE);
+        labels.clear();
+        for (Connection outgoingConnection: outgoingConnections) {
+            Label label1 = new Label(composite, SWT.NONE);
+            label1.setText("To node "
+                + outgoingConnection.getTo().getName() + ": ");
+            Label label2 = new Label(composite, SWT.NONE);
+            labels.put(outgoingConnection, label2);
+            GridData gridData = new GridData();
+            gridData.grabExcessHorizontalSpace = true;
+            gridData.horizontalAlignment = GridData.FILL;
+            label2.setLayoutData(gridData);
+            Constraint constraint = newMap.get(
+                new ConnectionRef(outgoingConnection.getTo().getId(), outgoingConnection.getToType()));
+            if (constraint != null) {
+                label2.setText(constraint.getName());
+            }
+            Button editButton = new Button(composite, SWT.NONE);
+            editButton.setText("Edit");
+            editButton.addSelectionListener(new EditButtonListener(
+                    outgoingConnection));
+        }
 
-		return composite;
-	}
+        return composite;
+    }
 
-	public void setValue(Map<ConnectionRef, Constraint> value) {
-		super.setValue(value);
-		this.newMap = new HashMap<ConnectionRef, Constraint>((Map<ConnectionRef, Constraint>) value);
-	}
+    public void setValue(Map<ConnectionRef, Constraint> value) {
+        super.setValue(value);
+        this.newMap = new HashMap<ConnectionRef, Constraint>((Map<ConnectionRef, Constraint>) value);
+    }
 
-	protected Map<ConnectionRef, Constraint> updateValue(Map<ConnectionRef, Constraint> value) {
-		return newMap;
-	}
+    protected Map<ConnectionRef, Constraint> updateValue(Map<ConnectionRef, Constraint> value) {
+        return newMap;
+    }
 
-	private void editItem(final Connection connection) {
+    private void editItem(final Connection connection) {
 
-		final Runnable r = new Runnable() {
-			public void run() {
-				RuleFlowConstraintDialog dialog = new RuleFlowConstraintDialog(
-						getShell(), process);
-				dialog.create();
-				ConnectionRef connectionRef = new ConnectionRef(connection.getTo().getId(), connection.getToType());
-				Constraint constraint = newMap.get(connectionRef);
-				dialog.setConstraint(constraint);
-				dialog.fixType(0);
-				dialog.fixDialect(0);
-				int code = dialog.open();
-				if (code != CANCEL) {
-					constraint = dialog.getConstraint();
-					newMap.put(
-				        connectionRef,
-				        constraint);
-					setConnectionText(
-				        (Label) labels.get(connection), constraint.getName());
-				}
-			}
+        final Runnable r = new Runnable() {
+            public void run() {
+                RuleFlowConstraintDialog dialog = new RuleFlowConstraintDialog(
+                        getShell(), process);
+                dialog.create();
+                ConnectionRef connectionRef = new ConnectionRef(connection.getTo().getId(), connection.getToType());
+                Constraint constraint = newMap.get(connectionRef);
+                dialog.setConstraint(constraint);
+                dialog.fixType(0);
+                dialog.fixDialect(0);
+                int code = dialog.open();
+                if (code != CANCEL) {
+                    constraint = dialog.getConstraint();
+                    newMap.put(
+                        connectionRef,
+                        constraint);
+                    setConnectionText(
+                        (Label) labels.get(connection), constraint.getName());
+                }
+            }
 
-		};
-		r.run();
-	}
+        };
+        r.run();
+    }
 
-	private void setConnectionText(final Label connection, final String name) {
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				connection.setText(name);
-			}
-		});
-	}
+    private void setConnectionText(final Label connection, final String name) {
+        Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+                connection.setText(name);
+            }
+        });
+    }
 
-	private class EditButtonListener extends SelectionAdapter {
-		private Connection connection;
+    private class EditButtonListener extends SelectionAdapter {
+        private Connection connection;
 
-		public EditButtonListener(Connection connection) {
-			this.connection = connection;
-		}
+        public EditButtonListener(Connection connection) {
+            this.connection = connection;
+        }
 
-		public void widgetSelected(SelectionEvent e) {
-			editItem(connection);
-		}
-	}
+        public void widgetSelected(SelectionEvent e) {
+            editItem(connection);
+        }
+    }
 }

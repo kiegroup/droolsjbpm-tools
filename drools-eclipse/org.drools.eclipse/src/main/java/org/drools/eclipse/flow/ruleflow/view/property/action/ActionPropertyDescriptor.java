@@ -43,7 +43,7 @@ public class ActionPropertyDescriptor extends PropertyDescriptor {
     }
     
     public CellEditor createPropertyEditor(Composite parent) {
-    	ActionCellEditor editor = new ActionCellEditor(parent, process, actionNode);
+        ActionCellEditor editor = new ActionCellEditor(parent, process, actionNode);
         if (getValidator() != null) {
             editor.setValidator(getValidator());
         }

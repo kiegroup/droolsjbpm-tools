@@ -36,53 +36,53 @@ public class SplitConnectionCommand extends Command {
     private ElementWrapper newElement;
     
     public void setNewSecondConnection(ElementConnection connection) {
-    	if (connection == null) {
-    		throw new IllegalArgumentException("new second connection cannot be null");
-    	}
-    	this.secondConnection = connection;
+        if (connection == null) {
+            throw new IllegalArgumentException("new second connection cannot be null");
+        }
+        this.secondConnection = connection;
     }
     
     public void execute() {
-    	if (secondConnection == null) {
-    		throw new IllegalStateException("new second connection is still null");
-    	}
-    	oldConnection.disconnect();
-    	parent.addElement(newElement);
+        if (secondConnection == null) {
+            throw new IllegalStateException("new second connection is still null");
+        }
+        oldConnection.disconnect();
+        parent.addElement(newElement);
         newElement.setParent(parent);
-    	oldConnection.connect(oldSource, newElement);
-    	secondConnection.connect(newElement, oldTarget);
+        oldConnection.connect(oldSource, newElement);
+        secondConnection.connect(newElement, oldTarget);
     }
 
     public void setParent(ProcessWrapper process) {
-    	if (process == null) {
-    		throw new IllegalArgumentException("process is null");
-    	}
+        if (process == null) {
+            throw new IllegalArgumentException("process is null");
+        }
         parent = process;
     }
 
     public void setElementConnection(ElementConnection connection) {
-    	if (connection == null) {
-    		throw new IllegalArgumentException("Element connection is null");
-    	}
+        if (connection == null) {
+            throw new IllegalArgumentException("Element connection is null");
+        }
         this.oldConnection = connection;
         oldSource = connection.getSource();
         oldTarget = connection.getTarget();
     }
 
     public void setNewElement(ElementWrapper newElement) {
-    	if (newElement == null) {
-    		throw new IllegalArgumentException("NewElement is null");
-    	}
+        if (newElement == null) {
+            throw new IllegalArgumentException("NewElement is null");
+        }
         this.newElement = newElement;
         
     }
 
     public void undo() {
-    	oldConnection.disconnect();
-    	secondConnection.disconnect();
-    	parent.removeElement(newElement);
-    	newElement.setParent(null);
-    	oldConnection.connect(oldSource, oldTarget);    	
+        oldConnection.disconnect();
+        secondConnection.disconnect();
+        parent.removeElement(newElement);
+        newElement.setParent(null);
+        oldConnection.connect(oldSource, oldTarget);
     }
 
 }

@@ -70,9 +70,9 @@ public class BPMNSkinProvider implements SkinProvider {
 
     public PaletteContainer createComponentsDrawer() {
 
-    	String flowNodes = DroolsEclipsePlugin.getDefault().getPluginPreferences().getString(IDroolsConstants.FLOW_NODES);
+        String flowNodes = DroolsEclipsePlugin.getDefault().getPluginPreferences().getString(IDroolsConstants.FLOW_NODES);
 
-    	PaletteDrawer drawer = new PaletteDrawer("Components", null);
+        PaletteDrawer drawer = new PaletteDrawer("Components", null);
 
         List<PaletteEntry> entries = new ArrayList<PaletteEntry>();
 
@@ -97,147 +97,147 @@ public class BPMNSkinProvider implements SkinProvider {
         entries.add(combined);
                 
         if (flowNodes.charAt(0) == '1') {
-	        combined = new CombinedTemplateCreationEntry(
-	            "Rule Task",
-	            "Create a new Rule Task",
-	            RuleSetNodeWrapper.class,
-	            new SimpleFactory(RuleSetNodeWrapper.class),
-	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/Activity.gif")), 
-	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/Activity.gif"))
-	        );
-	        entries.add(combined);
+            combined = new CombinedTemplateCreationEntry(
+                "Rule Task",
+                "Create a new Rule Task",
+                RuleSetNodeWrapper.class,
+                new SimpleFactory(RuleSetNodeWrapper.class),
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/Activity.gif")),
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/Activity.gif"))
+            );
+            entries.add(combined);
         }
         
         if (flowNodes.charAt(1) == '1') {
-	        combined = new CombinedTemplateCreationEntry(
-	            "Gateway [diverge]",
-	            "Create a new Gateway [diverge]",
-	            SplitWrapper.class,
-	            new SimpleFactory(SplitWrapper.class),
-	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/gateway_complex.png")), 
-	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/gateway_complex.png"))
-	        );
-	        entries.add(combined);
+            combined = new CombinedTemplateCreationEntry(
+                "Gateway [diverge]",
+                "Create a new Gateway [diverge]",
+                SplitWrapper.class,
+                new SimpleFactory(SplitWrapper.class),
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/gateway_complex.png")),
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/gateway_complex.png"))
+            );
+            entries.add(combined);
         }
                     
         if (flowNodes.charAt(2) == '1') {
-        	combined = new CombinedTemplateCreationEntry(
-	            "Gateway [converge]",
-	            "Create a new Gateway [converge]",
-	            JoinWrapper.class,
-	            new SimpleFactory(JoinWrapper.class),
-	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/gateway_complex.png")), 
-	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/gateway_complex.png"))
-	        );
-	        entries.add(combined);
+            combined = new CombinedTemplateCreationEntry(
+                "Gateway [converge]",
+                "Create a new Gateway [converge]",
+                JoinWrapper.class,
+                new SimpleFactory(JoinWrapper.class),
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/gateway_complex.png")),
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/gateway_complex.png"))
+            );
+            entries.add(combined);
         }
                         
         if (flowNodes.charAt(3) == '1') {
-	        combined = new CombinedTemplateCreationEntry(
-	            "Wait Task",
-	            "Create a new Wait Task",
-	            StateNodeWrapper.class,
-	            new SimpleFactory(StateNodeWrapper.class),
-	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/Activity.gif")), 
-	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/Activity.gif"))
-	        );
-	        entries.add(combined);
+            combined = new CombinedTemplateCreationEntry(
+                "Wait Task",
+                "Create a new Wait Task",
+                StateNodeWrapper.class,
+                new SimpleFactory(StateNodeWrapper.class),
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/Activity.gif")),
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/Activity.gif"))
+            );
+            entries.add(combined);
         }
                             
         if (flowNodes.charAt(4) == '1') {
-	        combined = new CombinedTemplateCreationEntry(
-	            "Reusable Sub-Process",
-	            "Create a new Reusable Sub-Process",
-	            SubProcessWrapper.class,
-	            new SimpleFactory(SubProcessWrapper.class),
-	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/sub_process.png")), 
-	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/sub_process.png"))
-	        );
-	        entries.add(combined);
+            combined = new CombinedTemplateCreationEntry(
+                "Reusable Sub-Process",
+                "Create a new Reusable Sub-Process",
+                SubProcessWrapper.class,
+                new SimpleFactory(SubProcessWrapper.class),
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/sub_process.png")),
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/sub_process.png"))
+            );
+            entries.add(combined);
         }
         
         if (flowNodes.charAt(5) == '1') {
-	        combined = new CombinedTemplateCreationEntry(
-	            "Script Task",
-	            "Create a new Script Task",
-	            ActionWrapper.class,
-	            new SimpleFactory(ActionWrapper.class),
-	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/Activity.gif")), 
-	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/Activity.gif"))
-	        );
-	        entries.add(combined);
+            combined = new CombinedTemplateCreationEntry(
+                "Script Task",
+                "Create a new Script Task",
+                ActionWrapper.class,
+                new SimpleFactory(ActionWrapper.class),
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/Activity.gif")),
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/Activity.gif"))
+            );
+            entries.add(combined);
         }
                       
         if (flowNodes.charAt(6) == '1') {
-	        combined = new CombinedTemplateCreationEntry(
-	            "Timer Event",
-	            "Create a new Timer Event",
-	            TimerWrapper.class,
-	            new SimpleFactory(TimerWrapper.class),
-	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/intermediate_timer.png")), 
-	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/intermediate_timer.png"))
-	        );
-	        entries.add(combined);
+            combined = new CombinedTemplateCreationEntry(
+                "Timer Event",
+                "Create a new Timer Event",
+                TimerWrapper.class,
+                new SimpleFactory(TimerWrapper.class),
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/intermediate_timer.png")),
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/intermediate_timer.png"))
+            );
+            entries.add(combined);
         }
                       
         if (flowNodes.charAt(7) == '1') {
-	    	combined = new CombinedTemplateCreationEntry(
-	            "Error Event",
-	            "Create a new Error Event",
-	            FaultNodeWrapper.class,
-	            new SimpleFactory(FaultNodeWrapper.class),
-	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/intermediate_error_10.png")), 
-	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/intermediate_error_10.png"))
-	        );
-	        entries.add(combined);
+            combined = new CombinedTemplateCreationEntry(
+                "Error Event",
+                "Create a new Error Event",
+                FaultNodeWrapper.class,
+                new SimpleFactory(FaultNodeWrapper.class),
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/intermediate_error_10.png")),
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/intermediate_error_10.png"))
+            );
+            entries.add(combined);
         }
                           
         if (flowNodes.charAt(8) == '1') {
-	        combined = new CombinedTemplateCreationEntry(
-			    "Message Event",
-			    "Create a new Message Event",
-			    EventNodeWrapper.class,
-			    new SimpleFactory(EventNodeWrapper.class),
-			    ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/intermediate_message.png")), 
-			    ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/intermediate_empty.png"))
-			);
-			entries.add(combined);
+            combined = new CombinedTemplateCreationEntry(
+                "Message Event",
+                "Create a new Message Event",
+                EventNodeWrapper.class,
+                new SimpleFactory(EventNodeWrapper.class),
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/intermediate_message.png")),
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/intermediate_empty.png"))
+            );
+            entries.add(combined);
         }
-	                    
+
         if (flowNodes.charAt(9) == '1') {
-	        combined = new CombinedTemplateCreationEntry(
-	            "User Task",
-	            "Create a new User Task",
-	            HumanTaskNodeWrapper.class,
-	            new SimpleFactory(HumanTaskNodeWrapper.class),
-	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/task.png")), 
-	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/task.png"))
-	        );
-	        entries.add(combined);
+            combined = new CombinedTemplateCreationEntry(
+                "User Task",
+                "Create a new User Task",
+                HumanTaskNodeWrapper.class,
+                new SimpleFactory(HumanTaskNodeWrapper.class),
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/task.png")),
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/task.png"))
+            );
+            entries.add(combined);
         }
                               
         if (flowNodes.charAt(10) == '1') {
-	        combined = new CombinedTemplateCreationEntry(
-	            "Embedded Sub-Process",
-	            "Create a new Embedded Sub-Process",
-	            CompositeContextNodeWrapper.class,
-	            new SimpleFactory(CompositeContextNodeWrapper.class),
-	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/sub_process_expanded.png")), 
-	            ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/sub_process_expanded.png"))
-	        );
-	        entries.add(combined);
+            combined = new CombinedTemplateCreationEntry(
+                "Embedded Sub-Process",
+                "Create a new Embedded Sub-Process",
+                CompositeContextNodeWrapper.class,
+                new SimpleFactory(CompositeContextNodeWrapper.class),
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/sub_process_expanded.png")),
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/sub_process_expanded.png"))
+            );
+            entries.add(combined);
         }
                           
         if (flowNodes.charAt(11) == '1') {
-		    combined = new CombinedTemplateCreationEntry(
-			    "Multiple Instances",
-			    "Create a new Multiple Instances",
-			    ForEachNodeWrapper.class,
-			    new SimpleFactory(ForEachNodeWrapper.class),
-			    ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/sub_process_expanded.png")), 
-			    ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/sub_process_expanded.png"))
-			);
-			entries.add(combined);
+            combined = new CombinedTemplateCreationEntry(
+                "Multiple Instances",
+                "Create a new Multiple Instances",
+                ForEachNodeWrapper.class,
+                new SimpleFactory(ForEachNodeWrapper.class),
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/sub_process_expanded.png")),
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/sub_process_expanded.png"))
+            );
+            entries.add(combined);
         }
                     
         drawer.addAll(entries);
@@ -245,83 +245,83 @@ public class BPMNSkinProvider implements SkinProvider {
     }
     
     public PaletteEntry createConnectionEntry() {
-    	final ElementConnectionFactory normalConnectionFactory = new ConnectionWrapperFactory();
+        final ElementConnectionFactory normalConnectionFactory = new ConnectionWrapperFactory();
         PaletteEntry tool = new ConnectionCreationToolEntry(
-    		"Sequence Flow",
+            "Sequence Flow",
             "Creating connections",
             new CreationFactory() {
                 public Object getNewObject() {
-                	return normalConnectionFactory.createElementConnection();
+                    return normalConnectionFactory.createElementConnection();
                 }
                 public Object getObjectType() {
-                	return ConnectionWrapper.class;
+                    return ConnectionWrapper.class;
                 }
             },
             ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/connection.gif")), 
             ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/connection.gif"))
         );
-    	return tool;
+        return tool;
     }
 
     public IFigure createActionNodeFigure() {
-		return new BPMNActionNodeFigure();
-	}
+        return new BPMNActionNodeFigure();
+    }
 
-	public IFigure createEndNodeFigure() {
-		return new BPMNEndNodeFigure();
-	}
+    public IFigure createEndNodeFigure() {
+        return new BPMNEndNodeFigure();
+    }
 
-	public IFigure createEventNodeFigure() {
-		return new BPMNEventNodeFigure();
-	}
+    public IFigure createEventNodeFigure() {
+        return new BPMNEventNodeFigure();
+    }
 
-	public IFigure createFaultNodeFigure() {
-		return new BPMNFaultNodeFigure();
-	}
+    public IFigure createFaultNodeFigure() {
+        return new BPMNFaultNodeFigure();
+    }
 
-	public JoinFigureInterface createJoinFigure() {
-		return new BPMNJoinFigure();
-	}
+    public JoinFigureInterface createJoinFigure() {
+        return new BPMNJoinFigure();
+    }
 
-	public SplitFigureInterface createSplitFigure() {
-		return new BPMNSplitFigure();
-	}
+    public SplitFigureInterface createSplitFigure() {
+        return new BPMNSplitFigure();
+    }
 
-	public IFigure createStartNodeFigure() {
-		return new BPMNStartNodeFigure();
-	}
+    public IFigure createStartNodeFigure() {
+        return new BPMNStartNodeFigure();
+    }
 
-	public IFigure createTimerNodeFigure() {
-		return new BPMNTimerNodeFigure();
-	}
+    public IFigure createTimerNodeFigure() {
+        return new BPMNTimerNodeFigure();
+    }
 
-	public IFigure createMilestoneFigure() {
-		return new BPMNMilestoneFigure();
-	}
+    public IFigure createMilestoneFigure() {
+        return new BPMNMilestoneFigure();
+    }
 
-	public IFigure createRuleSetNodeFigure() {
-		return new BPMNRuleSetNodeFigure();
-	}
+    public IFigure createRuleSetNodeFigure() {
+        return new BPMNRuleSetNodeFigure();
+    }
 
-	public IFigure createSubFlowFigure() {
-		return new BPMNSubFlowFigure();
-	}
+    public IFigure createSubFlowFigure() {
+        return new BPMNSubFlowFigure();
+    }
 
-	public IFigure createStateFigure() {
-		return new BPMNStateFigure();
-	}
+    public IFigure createStateFigure() {
+        return new BPMNStateFigure();
+    }
 
-	public WorkItemFigureInterface createWorkItemFigure() {
-		return new BPMNWorkItemNodeFigure();
-	}
+    public WorkItemFigureInterface createWorkItemFigure() {
+        return new BPMNWorkItemNodeFigure();
+    }
 
-	public IFigure createCompositeNodeFigure() {
-		return new BPMNCompositeNodeFigure();
-	}
+    public IFigure createCompositeNodeFigure() {
+        return new BPMNCompositeNodeFigure();
+    }
 
-	public IFigure createForEachNodeFigure() {
-		return new ElementContainerFigure();
-	}
+    public IFigure createForEachNodeFigure() {
+        return new ElementContainerFigure();
+    }
 
     public String getWorkItemsName() {
         return "Service Tasks";

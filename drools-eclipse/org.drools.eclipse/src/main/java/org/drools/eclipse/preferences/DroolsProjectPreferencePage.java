@@ -35,18 +35,18 @@ import org.eclipse.swt.widgets.Label;
 
 public class DroolsProjectPreferencePage extends PropertyAndPreferencePage {
 
-	public static final String PREF_ID= "org.drools.eclipse.preferences.DroolsRuntimesPreferencePage";
-	public static final String PROP_ID= "org.drools.eclipse.preferences.DroolsProjectPreferencePage";
+    public static final String PREF_ID= "org.drools.eclipse.preferences.DroolsRuntimesPreferencePage";
+    public static final String PROP_ID= "org.drools.eclipse.preferences.DroolsProjectPreferencePage";
 
-	private Combo droolsRuntimeCombo;
-	
-	public DroolsProjectPreferencePage() {
-		setTitle("Drools Project Preferences");
-	}
-	
-	protected Control createPreferenceContent(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NONE);
-		GridLayout gridLayout = new GridLayout();
+    private Combo droolsRuntimeCombo;
+
+    public DroolsProjectPreferencePage() {
+        setTitle("Drools Project Preferences");
+    }
+
+    protected Control createPreferenceContent(Composite parent) {
+        Composite composite = new Composite(parent, SWT.NONE);
+        GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 2;
         composite.setLayout(gridLayout);
         
@@ -57,13 +57,13 @@ public class DroolsProjectPreferencePage extends PropertyAndPreferencePage {
         int selection = -1;
         String currentRuntime = DroolsRuntimeManager.getDroolsRuntime(getProject());
         for (int i = 0; i < runtimes.length; i++) {
-        	droolsRuntimeCombo.add(runtimes[i].getName());
-        	if (runtimes[i].getName().equals(currentRuntime)) {
-        		selection = i;
-        	}
+            droolsRuntimeCombo.add(runtimes[i].getName());
+            if (runtimes[i].getName().equals(currentRuntime)) {
+                selection = i;
+            }
         }
         if (selection != -1) {
-        	droolsRuntimeCombo.select(selection);
+            droolsRuntimeCombo.select(selection);
         } else if (runtimes.length > 0) {
             droolsRuntimeCombo.select(0);
         }
@@ -71,49 +71,49 @@ public class DroolsProjectPreferencePage extends PropertyAndPreferencePage {
         gridData.grabExcessHorizontalSpace = true;
         gridData.horizontalAlignment = GridData.FILL;
         droolsRuntimeCombo.setLayoutData(gridData);
-		return composite;
-	}
-	
-	protected String getPreferencePageID() {
-		return PREF_ID;
-	}
+        return composite;
+    }
 
-	protected String getPropertyPageID() {
-		return PROP_ID;
-	}
+    protected String getPreferencePageID() {
+        return PREF_ID;
+    }
 
-	protected boolean hasProjectSpecificOptions(IProject project) {
-		return project.getFile(".settings/.drools.runtime").exists();
-	}
+    protected String getPropertyPageID() {
+        return PROP_ID;
+    }
 
-	public boolean performOk() {
-		try {
-			IFile file = getProject().getFile(".settings/.drools.runtime");
-			if (useProjectSettings()) {
-				String runtime = "<runtime>"
-					+ droolsRuntimeCombo.getItem(droolsRuntimeCombo.getSelectionIndex())
-					+ "</runtime>";
-				if (!file.exists()) {
-					IFolder folder = getProject().getFolder(".settings");
-					if (!folder.exists()) {
-						folder.create(true, true, null);
-					}
-					file.create(new ByteArrayInputStream(runtime.getBytes()), true, null);
-				} else {
-					file.setContents(new ByteArrayInputStream(runtime.getBytes()), true, false, null);
-				}
-			} else {
-				if (file.exists()) {
-					file.delete(true, null);
-				}
-			}
-			getProject().close(null);
-			getProject().open(null);
-		} catch (Throwable t) {
-			DroolsEclipsePlugin.log(t);
-			return false;
-		}
-		return super.performOk();
-	}
-	
+    protected boolean hasProjectSpecificOptions(IProject project) {
+        return project.getFile(".settings/.drools.runtime").exists();
+    }
+
+    public boolean performOk() {
+        try {
+            IFile file = getProject().getFile(".settings/.drools.runtime");
+            if (useProjectSettings()) {
+                String runtime = "<runtime>"
+                    + droolsRuntimeCombo.getItem(droolsRuntimeCombo.getSelectionIndex())
+                    + "</runtime>";
+                if (!file.exists()) {
+                    IFolder folder = getProject().getFolder(".settings");
+                    if (!folder.exists()) {
+                        folder.create(true, true, null);
+                    }
+                    file.create(new ByteArrayInputStream(runtime.getBytes()), true, null);
+                } else {
+                    file.setContents(new ByteArrayInputStream(runtime.getBytes()), true, false, null);
+                }
+            } else {
+                if (file.exists()) {
+                    file.delete(true, null);
+                }
+            }
+            getProject().close(null);
+            getProject().open(null);
+        } catch (Throwable t) {
+            DroolsEclipsePlugin.log(t);
+            return false;
+        }
+        return super.performOk();
+    }
+
 }

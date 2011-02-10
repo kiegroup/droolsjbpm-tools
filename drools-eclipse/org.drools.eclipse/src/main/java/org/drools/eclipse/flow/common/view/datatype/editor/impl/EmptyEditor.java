@@ -72,7 +72,7 @@ public class EmptyEditor extends Composite implements Editor, DataTypeEditor {
     }
     
     public void setBackground(Color color) {
-    	super.setBackground(color);
-    	label.setBackground(color);
+        super.setBackground(color);
+        label.setBackground(color);
     }
 }

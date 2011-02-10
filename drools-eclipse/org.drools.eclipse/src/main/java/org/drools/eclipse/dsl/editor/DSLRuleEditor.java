@@ -26,28 +26,28 @@ public class DSLRuleEditor extends DRLRuleEditor {
 
     protected DSLAdapter dslAdapter;
 
-	public DSLAdapter getDSLAdapter() {
-		if (dslAdapter == null) {
-			try {
-				String content = getSourceViewer().getDocument().get();
-				dslAdapter = new DSLAdapter(content, ((FileEditorInput) getEditorInput()).getFile());
-				if (!dslAdapter.isValid()) {
-					dslAdapter = null;
-				}
-			} catch (CoreException exc) {
-				dslAdapter = null;
-			}
-		}
-		return dslAdapter;
-	}
+    public DSLAdapter getDSLAdapter() {
+        if (dslAdapter == null) {
+            try {
+                String content = getSourceViewer().getDocument().get();
+                dslAdapter = new DSLAdapter(content, ((FileEditorInput) getEditorInput()).getFile());
+                if (!dslAdapter.isValid()) {
+                    dslAdapter = null;
+                }
+            } catch (CoreException exc) {
+                dslAdapter = null;
+            }
+        }
+        return dslAdapter;
+    }
 
-	protected SourceViewerConfiguration createSourceViewerConfiguration() {
-		return new DSLRuleSourceViewerConfig(this); 
-	}
+    protected SourceViewerConfiguration createSourceViewerConfiguration() {
+        return new DSLRuleSourceViewerConfig(this);
+    }
 
-	public void doSave(IProgressMonitor monitor) {
-		super.doSave(monitor);
-		// remove cached content
-		dslAdapter = null;
-	}
+    public void doSave(IProgressMonitor monitor) {
+        super.doSave(monitor);
+        // remove cached content
+        dslAdapter = null;
+    }
 }

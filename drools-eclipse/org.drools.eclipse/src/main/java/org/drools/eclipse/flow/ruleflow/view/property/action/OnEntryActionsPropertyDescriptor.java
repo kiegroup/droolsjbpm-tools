@@ -23,18 +23,18 @@ import org.jbpm.workflow.core.WorkflowProcess;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 
 public class OnEntryActionsPropertyDescriptor extends PropertyDescriptor {
-	
-	private WorkflowProcess process;
-	private ExtendedNodeImpl extendedNode;
 
-	public OnEntryActionsPropertyDescriptor(Object id, String displayName, ExtendedNodeImpl extendedNode, WorkflowProcess process) {
+    private WorkflowProcess process;
+    private ExtendedNodeImpl extendedNode;
+
+    public OnEntryActionsPropertyDescriptor(Object id, String displayName, ExtendedNodeImpl extendedNode, WorkflowProcess process) {
         super(id, displayName);
         this.extendedNode = extendedNode;
         this.process = process;
     }
 
     public CellEditor createPropertyEditor(Composite parent) {
-    	OnEntryActionsCellEditor editor = new OnEntryActionsCellEditor(parent, process, extendedNode);
+        OnEntryActionsCellEditor editor = new OnEntryActionsCellEditor(parent, process, extendedNode);
         if (getValidator() != null) {
             editor.setValidator(getValidator());
         }

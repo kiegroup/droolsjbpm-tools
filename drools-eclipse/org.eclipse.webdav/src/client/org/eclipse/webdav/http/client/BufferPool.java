@@ -32,48 +32,48 @@ import org.eclipse.webdav.internal.kernel.utils.Assert;
  * </p>
  */
 public class BufferPool {
-	/**
-	 * The size of each buffer in the pool.
-	 */
-	private static int BUFFER_SIZE = 8 * 1024;
+    /**
+     * The size of each buffer in the pool.
+     */
+    private static int BUFFER_SIZE = 8 * 1024;
 
-	/**
-	 * The maximum number of buffers in the pool.
-	 */
-	private static int MAX_BUFFERS = 5;
+    /**
+     * The maximum number of buffers in the pool.
+     */
+    private static int MAX_BUFFERS = 5;
 
-	/**
-	 * The buffer pool.
-	 */
-	private Vector pool = new Vector(MAX_BUFFERS);
+    /**
+     * The buffer pool.
+     */
+    private Vector pool = new Vector(MAX_BUFFERS);
 
-	/**
-	 * Returns a buffer (byte array) of size <code>BUFFER_SIZE</code> from the
-	 * pool. When the buffer is no longer needed, it should be put back in the
-	 * pool for future use by calling <code>putBuffer</code>.
-	 *
-	 * @return a buffer
-	 * @see #putBuffer(byte[])
-	 */
-	public synchronized byte[] getBuffer() {
-		if (pool.isEmpty())
-			return new byte[BUFFER_SIZE];
-		byte[] buffer = (byte[]) pool.lastElement();
-		pool.removeElementAt(pool.size() - 1);
-		return buffer;
-	}
+    /**
+     * Returns a buffer (byte array) of size <code>BUFFER_SIZE</code> from the
+     * pool. When the buffer is no longer needed, it should be put back in the
+     * pool for future use by calling <code>putBuffer</code>.
+     *
+     * @return a buffer
+     * @see #putBuffer(byte[])
+     */
+    public synchronized byte[] getBuffer() {
+        if (pool.isEmpty())
+            return new byte[BUFFER_SIZE];
+        byte[] buffer = (byte[]) pool.lastElement();
+        pool.removeElementAt(pool.size() - 1);
+        return buffer;
+    }
 
-	/**
-	 * Puts the given buffer into the pool for future use. The size of the
-	 * buffer must be <code>BUFFER_SIZE</code>.
-	 *
-	 * @param buffer the buffer to be put back into the buffer pool
-	 * @see #getBuffer()
-	 */
-	public synchronized void putBuffer(byte[] buffer) {
-		Assert.isNotNull(buffer);
-		Assert.isTrue(buffer.length == BUFFER_SIZE);
-		if (pool.size() < MAX_BUFFERS)
-			pool.addElement(buffer);
-	}
+    /**
+     * Puts the given buffer into the pool for future use. The size of the
+     * buffer must be <code>BUFFER_SIZE</code>.
+     *
+     * @param buffer the buffer to be put back into the buffer pool
+     * @see #getBuffer()
+     */
+    public synchronized void putBuffer(byte[] buffer) {
+        Assert.isNotNull(buffer);
+        Assert.isTrue(buffer.length == BUFFER_SIZE);
+        if (pool.size() < MAX_BUFFERS)
+            pool.addElement(buffer);
+    }
 }

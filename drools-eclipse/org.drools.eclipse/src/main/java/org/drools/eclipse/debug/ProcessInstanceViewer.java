@@ -93,7 +93,7 @@ public class ProcessInstanceViewer extends ViewPart implements ISelectionListene
         private String projectName;
         
         public ProcessInstanceTabItem(CTabFolder folder, String processInstanceId, String processId, List<String> nodeIds, String projectName) {
-        	this.projectName = projectName;
+            this.projectName = projectName;
             tabItem = new CTabItem(folder, SWT.NONE);
             ProcessInfo processInfo = DroolsEclipsePlugin.getDefault().getProcessInfo(processId);
             if (processInfo == null) {
@@ -135,7 +135,7 @@ public class ProcessInstanceViewer extends ViewPart implements ISelectionListene
             }
 
             for (String nodeId: nodeIds) {
-            	handleNodeInstanceSelection(nodeId);
+                handleNodeInstanceSelection(nodeId);
             }
             folder.setSelection(tabItem);
         }
@@ -172,26 +172,26 @@ public class ProcessInstanceViewer extends ViewPart implements ISelectionListene
     }
     
     private IJavaProject getJavaProject(String projectName) {
-    	if (projectName != null) {
-			projectName = projectName.trim();
-			if (projectName.length() > 0) {
-				IProject project = ResourcesPlugin.getWorkspace().getRoot()
-					.getProject(projectName);
-				if (project != null) {
-					try {
-						if (project.getNature("org.eclipse.jdt.core.javanature") != null) {
-			                IJavaProject javaProject = JavaCore.create(project);
-			                if (javaProject.exists()){
-			                	return javaProject;
-			                }
-			            }
-					} catch (CoreException e) {
-						DroolsEclipsePlugin.log(e);
-					}
-				}
-			}
-		}
-    	return null;
+        if (projectName != null) {
+            projectName = projectName.trim();
+            if (projectName.length() > 0) {
+                IProject project = ResourcesPlugin.getWorkspace().getRoot()
+                    .getProject(projectName);
+                if (project != null) {
+                    try {
+                        if (project.getNature("org.eclipse.jdt.core.javanature") != null) {
+                            IJavaProject javaProject = JavaCore.create(project);
+                            if (javaProject.exists()){
+                                return javaProject;
+                            }
+                        }
+                    } catch (CoreException e) {
+                        DroolsEclipsePlugin.log(e);
+                    }
+                }
+            }
+        }
+        return null;
     }
 
 }

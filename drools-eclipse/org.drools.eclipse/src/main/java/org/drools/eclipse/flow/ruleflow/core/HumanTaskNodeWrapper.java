@@ -39,7 +39,7 @@ public class HumanTaskNodeWrapper extends WorkItemWrapper {
 
     public static final String SWIMLANE = "Swimlane";
 
-	private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 510l;
 
     private static final WorkDefinition WORK_DEFINITION;
     
@@ -66,7 +66,7 @@ public class HumanTaskNodeWrapper extends WorkItemWrapper {
     }
     
     protected void initDescriptors() {
-    	super.initDescriptors();
+        super.initDescriptors();
         IPropertyDescriptor[] parentDescriptors = descriptors;
         descriptors = new IPropertyDescriptor[parentDescriptors.length + 1];
         System.arraycopy(parentDescriptors, 0, descriptors, 0, parentDescriptors.length);
@@ -80,7 +80,7 @@ public class HumanTaskNodeWrapper extends WorkItemWrapper {
     
     public Object getPropertyValue(Object id) {
         if (SWIMLANE.equals(id)) {
-        	String swimlane = getHumanTaskNode().getSwimlane();
+            String swimlane = getHumanTaskNode().getSwimlane();
             return swimlane == null ? "" : swimlane;
         }
         return super.getPropertyValue(id);
@@ -88,7 +88,7 @@ public class HumanTaskNodeWrapper extends WorkItemWrapper {
 
     public void resetPropertyValue(Object id) {
         if (SWIMLANE.equals(id)) {
-        	getHumanTaskNode().setSwimlane(null);
+            getHumanTaskNode().setSwimlane(null);
         } else {
             super.resetPropertyValue(id);
         }
@@ -96,7 +96,7 @@ public class HumanTaskNodeWrapper extends WorkItemWrapper {
 
     public void setPropertyValue(Object id, Object value) {
         if (SWIMLANE.equals(id)) {
-        	getHumanTaskNode().setSwimlane((String) value);
+            getHumanTaskNode().setSwimlane((String) value);
         } else {
             super.setPropertyValue(id, value);
         }

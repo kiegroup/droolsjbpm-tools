@@ -29,7 +29,7 @@ import org.jbpm.ruleflow.core.RuleFlowProcess;
  */
 public class RuleFlowProcessWrapper extends ProcessWrapper {
 
-	private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 510l;
 
     public RuleFlowProcess getRuleFlowProcess() {
         return (RuleFlowProcess) getProcess();
@@ -56,10 +56,10 @@ public class RuleFlowProcessWrapper extends ProcessWrapper {
     }
     
     public boolean canAddElement(ElementWrapper element) {
-    	if (element instanceof StartNodeWrapper && getRuleFlowProcess().getStart() != null) {
-    		return false;
-    	}
-    	return true;
+        if (element instanceof StartNodeWrapper && getRuleFlowProcess().getStart() != null) {
+            return false;
+        }
+        return true;
     }
     
 }

@@ -29,14 +29,14 @@ import org.eclipse.swt.widgets.Display;
 public class BPMNSubFlowFigure extends AbstractElementFigure {
     
     private static final Image ICON = ImageDescriptor.createFromURL(
-		DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/process.gif")).createImage();
+        DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/process.gif")).createImage();
         
     private static final Color color = new Color(Display.getCurrent(), 255, 255, 225);
 
     private RoundedRectangle rectangle;
     
     public BPMNSubFlowFigure() {
-    	setSize(110, 48);
+        setSize(110, 48);
     }
     
     protected void customizeFigure() {

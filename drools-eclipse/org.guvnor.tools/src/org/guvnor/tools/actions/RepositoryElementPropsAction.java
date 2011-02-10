@@ -32,27 +32,27 @@ import org.guvnor.tools.views.model.TreeObject;
  */
 public class RepositoryElementPropsAction implements IViewActionDelegate {
 
-	private TreeObject node;
-	
-	public void init(IViewPart view) { }
+    private TreeObject node;
 
-	public void run(IAction action) {
-		if (node == null) {
-			return;
-		}
-		
-		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().
-									getActivePage().getActivePart().getSite().getShell();
-		RepositoryElementPropsDialog diag = new RepositoryElementPropsDialog(shell, node);
-		diag.open();
-	}
+    public void init(IViewPart view) { }
 
-	public void selectionChanged(IAction action, ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection sel = (IStructuredSelection)selection;
-			if (sel.getFirstElement() instanceof TreeObject) {
-				node = (TreeObject)sel.getFirstElement();
-			}
-		}
-	}
+    public void run(IAction action) {
+        if (node == null) {
+            return;
+        }
+
+        Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().
+                                    getActivePage().getActivePart().getSite().getShell();
+        RepositoryElementPropsDialog diag = new RepositoryElementPropsDialog(shell, node);
+        diag.open();
+    }
+
+    public void selectionChanged(IAction action, ISelection selection) {
+        if (selection instanceof IStructuredSelection) {
+            IStructuredSelection sel = (IStructuredSelection)selection;
+            if (sel.getFirstElement() instanceof TreeObject) {
+                node = (TreeObject)sel.getFirstElement();
+            }
+        }
+    }
 }

@@ -42,9 +42,9 @@ public class DRLPartionScanner extends RuleBasedPartitionScanner {
     public static final String RULE_COMMENT = "__partition_multiline_comment";
 
     public static final String[] LEGAL_CONTENT_TYPES = {
-    	IDocument.DEFAULT_CONTENT_TYPE,
-    	RULE_PART_CONTENT,
-    	RULE_COMMENT
+        IDocument.DEFAULT_CONTENT_TYPE,
+        RULE_PART_CONTENT,
+        RULE_COMMENT
     };
 
     public DRLPartionScanner() {

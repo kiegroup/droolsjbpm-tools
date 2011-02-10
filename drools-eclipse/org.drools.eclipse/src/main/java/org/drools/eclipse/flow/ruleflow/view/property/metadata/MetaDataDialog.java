@@ -56,31 +56,31 @@ public class MetaDataDialog extends EditBeanDialog<Map<String, Object>> implemen
     private TableEditor editor;
     private int selectedColumn = -1;
     
-	public MetaDataDialog(Shell parentShell) {
-		super(parentShell, "Meta Data");
-	}
+    public MetaDataDialog(Shell parentShell) {
+        super(parentShell, "Meta Data");
+    }
 
-	protected Map<String, Object> updateValue(Map<String, Object> value) {
-	    Map<String, Object> mapping = new HashMap<String, Object>();
-	    for (TableItem item: table.getItems()) {
-	    	String name = item.getText();
-	    	String text = item.getText(1);
-	    	if ("x".equals(name) || "y".equals(name) || "width".equals(name) || "height".equals(name) || "color".equals(name)) {
-	    		mapping.put(name, new Integer(text));
-	    	} else {
-	    		mapping.put(item.getText(0), item.getText(1));
-	    	}
-	    }
-		return mapping;
-	}
+    protected Map<String, Object> updateValue(Map<String, Object> value) {
+        Map<String, Object> mapping = new HashMap<String, Object>();
+        for (TableItem item: table.getItems()) {
+            String name = item.getText();
+            String text = item.getText(1);
+            if ("x".equals(name) || "y".equals(name) || "width".equals(name) || "height".equals(name) || "color".equals(name)) {
+                mapping.put(name, new Integer(text));
+            } else {
+                mapping.put(item.getText(0), item.getText(1));
+            }
+        }
+        return mapping;
+    }
 
-	protected Point getInitialSize() {
-		return new Point(450, 300);
-	}
+    protected Point getInitialSize() {
+        return new Point(450, 300);
+    }
 
-	public Control createDialogArea(Composite parent) {
-	    Composite composite = (Composite) super.createDialogArea(parent);
-		GridLayout layout = new GridLayout();
+    public Control createDialogArea(Composite parent) {
+        Composite composite = (Composite) super.createDialogArea(parent);
+        GridLayout layout = new GridLayout();
         layout.numColumns = 2;
         composite.setLayout(layout);
 
@@ -118,63 +118,63 @@ public class MetaDataDialog extends EditBeanDialog<Map<String, Object>> implemen
         editor.horizontalAlignment = SWT.LEFT;
         editor.grabHorizontal = true;
 
-		Button addButton = new Button(composite, SWT.PUSH);
-		addButton.setText("Add");
-		addButton.setFont(JFaceResources.getDialogFont());
-		addButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				addButtonPressed();
-			}
-		});
-		gd = new GridData();
-		gd.horizontalAlignment = SWT.FILL;
-		addButton.setLayoutData(gd);
+        Button addButton = new Button(composite, SWT.PUSH);
+        addButton.setText("Add");
+        addButton.setFont(JFaceResources.getDialogFont());
+        addButton.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+                addButtonPressed();
+            }
+        });
+        gd = new GridData();
+        gd.horizontalAlignment = SWT.FILL;
+        addButton.setLayoutData(gd);
 
-		removeButton = new Button(composite, SWT.PUSH);
-		removeButton.setText("Remove");
-		removeButton.setFont(JFaceResources.getDialogFont());
-		removeButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				removeButtonPressed();
-			}
-		});
-		gd = new GridData();
-		removeButton.setLayoutData(gd);
-		removeButton.setEnabled(false);
+        removeButton = new Button(composite, SWT.PUSH);
+        removeButton.setText("Remove");
+        removeButton.setFont(JFaceResources.getDialogFont());
+        removeButton.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+                removeButtonPressed();
+            }
+        });
+        gd = new GridData();
+        removeButton.setLayoutData(gd);
+        removeButton.setEnabled(false);
 
         updateTable();
         
-		return composite;
-	}
-	
-	private void updateTable() {
+        return composite;
+    }
+
+    private void updateTable() {
         Map<String, Object> mapping = getValue();
         if (mapping != null) {
-		    for (Map.Entry<String, Object> entry: mapping.entrySet()) {
-	            TableItem item = new TableItem(table, SWT.NONE);
-	            item.setText(new String[] { entry.getKey(),
-	        		entry.getValue() == null ? "" : entry.getValue().toString()} );
-	        }
+            for (Map.Entry<String, Object> entry: mapping.entrySet()) {
+                TableItem item = new TableItem(table, SWT.NONE);
+                item.setText(new String[] { entry.getKey(),
+                    entry.getValue() == null ? "" : entry.getValue().toString()} );
+            }
         }
-	}
-	
-	private void addButtonPressed() {
-	    TableItem item = new TableItem(table, SWT.NONE);
+    }
+
+    private void addButtonPressed() {
+        TableItem item = new TableItem(table, SWT.NONE);
         item.setText(0, "name");
         item.setText(1, "value");
         table.setSelection(item);
-	}
-	
-	private void removeButtonPressed() {
+    }
+
+    private void removeButtonPressed() {
         int i = table.getSelectionIndex();
         if (i == -1) {
             return;
         }
         table.remove(i);
         removeButton.setEnabled(table.getItemCount() == 0);
-	}
-	
-	private void doEdit() {
+    }
+
+    private void doEdit() {
         if (text.isVisible()) {
             endEdit();
         }

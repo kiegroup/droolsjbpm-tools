@@ -30,19 +30,19 @@ import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class TimersDialog extends EditMapDialog<Timer, DroolsAction> {
-	
-	private WorkflowProcess process;
+
+    private WorkflowProcess process;
 
     protected TimersDialog(Shell parentShell, WorkflowProcess process) {
-		super(parentShell, "Edit Timers", TimerDialog.class);
-		this.process = process;
-	}
+        super(parentShell, "Edit Timers", TimerDialog.class);
+        this.process = process;
+    }
 
     protected DroolsAction createItem() {
         return new DroolsConsequenceAction();
     }
 
     protected EditBeanDialog<DroolsAction> createEditItemDialog() {
-    	return new TimerDialog(getShell(), process);
+        return new TimerDialog(getShell(), process);
     }
 }

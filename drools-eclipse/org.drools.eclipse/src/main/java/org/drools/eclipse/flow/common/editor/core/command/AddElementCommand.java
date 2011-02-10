@@ -31,7 +31,7 @@ public class AddElementCommand extends Command {
     private ElementContainer parent;
     
     public boolean canExecute() {
-    	return parent.canAddElement(child);
+        return parent.canAddElement(child);
     }
 
     public void execute() {

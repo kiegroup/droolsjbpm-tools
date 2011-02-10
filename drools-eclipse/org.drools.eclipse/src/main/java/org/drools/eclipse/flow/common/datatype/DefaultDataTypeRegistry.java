@@ -43,41 +43,41 @@ import org.drools.process.core.datatype.impl.type.UndefinedDataType;
  */
 public class DefaultDataTypeRegistry {
 
-	private static final DataTypeRegistry variableDataTypeRegistry = new DataTypeRegistryImpl();
+    private static final DataTypeRegistry variableDataTypeRegistry = new DataTypeRegistryImpl();
 
-	private DefaultDataTypeRegistry() {
-	}
+    private DefaultDataTypeRegistry() {
+    }
 
-	static {
-		registerVariableDataType(UndefinedDataType.class,
-				new InstanceDataTypeFactory(UndefinedDataType.class),
-				"Undefined", EmptyEditor.class, EmptyEditor.class);
-		registerVariableDataType(BooleanDataType.class,
-				new InstanceDataTypeFactory(BooleanDataType.class), "Boolean",
-				BooleanEditor.class, EmptyEditor.class);
-		registerVariableDataType(IntegerDataType.class,
-				new InstanceDataTypeFactory(IntegerDataType.class), "Integer",
-				IntegerEditor.class, EmptyEditor.class);
-		registerVariableDataType(FloatDataType.class,
-				new InstanceDataTypeFactory(FloatDataType.class), "Float",
-				FloatEditor.class, EmptyEditor.class);
-		registerVariableDataType(StringDataType.class,
-				new InstanceDataTypeFactory(StringDataType.class), "String",
-				StringEditor.class, EmptyEditor.class);
-		registerVariableDataType(ObjectDataType.class,
-				new NewInstanceDataTypeFactory(ObjectDataType.class), "Object",
-				EmptyEditor.class, ObjectDataTypeEditor.class);
-	}
+    static {
+        registerVariableDataType(UndefinedDataType.class,
+                new InstanceDataTypeFactory(UndefinedDataType.class),
+                "Undefined", EmptyEditor.class, EmptyEditor.class);
+        registerVariableDataType(BooleanDataType.class,
+                new InstanceDataTypeFactory(BooleanDataType.class), "Boolean",
+                BooleanEditor.class, EmptyEditor.class);
+        registerVariableDataType(IntegerDataType.class,
+                new InstanceDataTypeFactory(IntegerDataType.class), "Integer",
+                IntegerEditor.class, EmptyEditor.class);
+        registerVariableDataType(FloatDataType.class,
+                new InstanceDataTypeFactory(FloatDataType.class), "Float",
+                FloatEditor.class, EmptyEditor.class);
+        registerVariableDataType(StringDataType.class,
+                new InstanceDataTypeFactory(StringDataType.class), "String",
+                StringEditor.class, EmptyEditor.class);
+        registerVariableDataType(ObjectDataType.class,
+                new NewInstanceDataTypeFactory(ObjectDataType.class), "Object",
+                EmptyEditor.class, ObjectDataTypeEditor.class);
+    }
 
-	public static void registerVariableDataType(Class type,
-			DataTypeFactory dataTypeFactory, String name,
-			Class valueEditorClass, Class dataTypeEditorClass) {
-		variableDataTypeRegistry.registerDataType(type, dataTypeFactory, name,
-				valueEditorClass, dataTypeEditorClass);
-	}
+    public static void registerVariableDataType(Class type,
+            DataTypeFactory dataTypeFactory, String name,
+            Class valueEditorClass, Class dataTypeEditorClass) {
+        variableDataTypeRegistry.registerDataType(type, dataTypeFactory, name,
+                valueEditorClass, dataTypeEditorClass);
+    }
 
-	public static DataTypeRegistry getInstance() {
-		return variableDataTypeRegistry;
-	}
+    public static DataTypeRegistry getInstance() {
+        return variableDataTypeRegistry;
+    }
 
 }

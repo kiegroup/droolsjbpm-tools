@@ -57,7 +57,7 @@ public class NewDSLFilePage extends WizardNewFileCreationPage {
     }
 
     public boolean finish(boolean exampleContent) {
-    	this.exampleContent = exampleContent;
+        this.exampleContent = exampleContent;
         String fileName = getFileName();
         if (!fileName.endsWith(".dsl")) {
             setFileName(fileName + ".dsl");
@@ -79,12 +79,12 @@ public class NewDSLFilePage extends WizardNewFileCreationPage {
     
     protected InputStream getInitialContents() {
         try {
-        	if (exampleContent) {
-        		return DroolsEclipsePlugin.getDefault().getBundle().getResource(
-                	"org/drools/eclipse/wizard/dsl/template.dsl").openStream();
-        	} else {
-        		return null;
-        	}
+            if (exampleContent) {
+                return DroolsEclipsePlugin.getDefault().getBundle().getResource(
+                    "org/drools/eclipse/wizard/dsl/template.dsl").openStream();
+            } else {
+                return null;
+            }
         } catch (IOException e) {
             return null;
         } catch (NullPointerException e) {

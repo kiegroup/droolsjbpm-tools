@@ -87,10 +87,10 @@ public class CompositeFactPatternWidget extends Widget {
         Composite composite = toolkit.createComposite( parent );
         
 
-    	GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+        GridData gd = new GridData(GridData.FILL_HORIZONTAL);
         gd.horizontalAlignment = SWT.CENTER;
-    	composite.setLayoutData(gd);
-    	
+        composite.setLayoutData(gd);
+
         createFactRows( toolkit,
                         composite );
     }
@@ -148,15 +148,15 @@ public class CompositeFactPatternWidget extends Widget {
 
     private void createFactRows(FormToolkit toolkit,
                                 Composite constraintComposite) {
-    	
-    	
+
+
         if ( pattern.getPatterns() != null ) {
             // TODO when composite widget supports multiple pattern types like
             // Fact patterns, From patterm, Accumulate Pattern, etc, this cast
             //will fail!
             FactPattern[] facts = (FactPattern[])pattern.getPatterns(); 
             for ( int i = 0; i < facts.length; i++ ) {
-            	
+
                 new FactPatternWidget( toolkit,
                                        constraintComposite,
                                        getModeller(),

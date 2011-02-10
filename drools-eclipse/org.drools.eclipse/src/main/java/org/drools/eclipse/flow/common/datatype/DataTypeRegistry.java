@@ -27,9 +27,9 @@ import org.drools.process.core.datatype.DataTypeFactory;
  */
 public interface DataTypeRegistry {
     
-	/**
-	 * Returns all registered data types.
-	 */
+    /**
+     * Returns all registered data types.
+     */
     Set getDataTypes();
     
     void registerDataType(Class type, DataTypeFactory dataTypeFactory, String name,

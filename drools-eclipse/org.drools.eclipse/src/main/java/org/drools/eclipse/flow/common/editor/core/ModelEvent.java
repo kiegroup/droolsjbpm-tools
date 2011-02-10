@@ -22,8 +22,8 @@ package org.drools.eclipse.flow.common.editor.core;
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class ModelEvent {
-	
-	private int change;
+
+    private int change;
     
     public ModelEvent(int change) {
         this.change = change;

@@ -179,7 +179,7 @@ public class CompletionUtilTest {
 
     @Test
     public void testStripLastWord() {
-        String backtext = "rule \"GoodBye\"\r\n" + "	no-loop true\r\n" + "	when\r\n" + "		m : Message( status == Message.GOODBYE, message : message )\r\n" + "	then\r\n" + "		m.message=message;\r\n" + "		m.last";
+        String backtext = "rule \"GoodBye\"\r\n" + "    no-loop true\r\n" + "    when\r\n" + "        m : Message( status == Message.GOODBYE, message : message )\r\n" + "    then\r\n" + "        m.message=message;\r\n" + "        m.last";
 
         String lastword = "last";
         assertEquals( lastword,

@@ -33,20 +33,20 @@ import org.guvnor.tools.utils.webdav.WebDavSessionAuthenticator;
  * @author jgraham
  */
 public class WizardUtils {
-	public static void createGuvnorRepository(GuvWizardModel model) throws Exception {
-		Activator.getLocationManager().addRepository(new GuvnorRepository(model.getRepLocation()));
-		URL serverUrl = new URL(model.getRepLocation());
-		Map<String, String> info = new HashMap<String, String>();
-		info.put("username", model.getUsername()); //$NON-NLS-1$
-		info.put("password", model.getPassword()); //$NON-NLS-1$
-		if (model.shouldSaveAuthInfo()) {
-			Platform.addAuthorizationInfo(serverUrl, "", "basic", info);	 //$NON-NLS-1$ //$NON-NLS-2$
-		} else {
-			IWebDavClient client = WebDavClientFactory.createClient(serverUrl);
-			WebDavServerCache.cacheWebDavClient(serverUrl.toString(), client);
-			WebDavSessionAuthenticator authen = new WebDavSessionAuthenticator();
-			authen.addAuthenticationInfo(serverUrl, "", "basic", info); //$NON-NLS-1$ //$NON-NLS-2$
-			client.setSessionAuthenticator(authen);
-		}
-	}
+    public static void createGuvnorRepository(GuvWizardModel model) throws Exception {
+        Activator.getLocationManager().addRepository(new GuvnorRepository(model.getRepLocation()));
+        URL serverUrl = new URL(model.getRepLocation());
+        Map<String, String> info = new HashMap<String, String>();
+        info.put("username", model.getUsername()); //$NON-NLS-1$
+        info.put("password", model.getPassword()); //$NON-NLS-1$
+        if (model.shouldSaveAuthInfo()) {
+            Platform.addAuthorizationInfo(serverUrl, "", "basic", info);     //$NON-NLS-1$ //$NON-NLS-2$
+        } else {
+            IWebDavClient client = WebDavClientFactory.createClient(serverUrl);
+            WebDavServerCache.cacheWebDavClient(serverUrl.toString(), client);
+            WebDavSessionAuthenticator authen = new WebDavSessionAuthenticator();
+            authen.addAuthenticationInfo(serverUrl, "", "basic", info); //$NON-NLS-1$ //$NON-NLS-2$
+            client.setSessionAuthenticator(authen);
+        }
+    }
 }

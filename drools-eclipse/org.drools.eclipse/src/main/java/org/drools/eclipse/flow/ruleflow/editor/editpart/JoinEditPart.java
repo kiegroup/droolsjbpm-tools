@@ -41,37 +41,37 @@ import org.eclipse.swt.widgets.Display;
  */
 public class JoinEditPart extends ElementEditPart {
 
-	private String SKIN =
-		DroolsEclipsePlugin.getDefault().getPreferenceStore().getString(IDroolsConstants.SKIN);
-	
+    private String SKIN =
+        DroolsEclipsePlugin.getDefault().getPreferenceStore().getString(IDroolsConstants.SKIN);
+
     private static final Color color = new Color(Display.getCurrent(), 70, 130, 180);
     
     protected IFigure createFigure() {
-    	SkinProvider skinProvider = SkinManager.getInstance().getSkinProvider(SKIN);
-    	IFigure result = skinProvider.createJoinFigure();
-    	Rectangle constraint = getElementWrapper().getConstraint();
-    	if (constraint.width == -1) {
-    		constraint.width = result.getSize().width;
-    	}
-    	if (constraint.height == -1) {
-    		constraint.height = result.getSize().height;
-    	}
-    	getElementWrapper().setConstraint(constraint);
-    	return result;
+        SkinProvider skinProvider = SkinManager.getInstance().getSkinProvider(SKIN);
+        IFigure result = skinProvider.createJoinFigure();
+        Rectangle constraint = getElementWrapper().getConstraint();
+        if (constraint.width == -1) {
+            constraint.width = result.getSize().width;
+        }
+        if (constraint.height == -1) {
+            constraint.height = result.getSize().height;
+        }
+        getElementWrapper().setConstraint(constraint);
+        return result;
     }
 
     public void modelChanged(ModelEvent event) {
         if (event.getChange() == JoinWrapper.CHANGE_TYPE) {
             refreshVisuals();
         } else {
-        	super.modelChanged(event);
+            super.modelChanged(event);
         }
     }
     
     protected void refreshVisuals() {
-    	super.refreshVisuals();
-    	int type = ((JoinWrapper) getModel()).getJoin().getType();
-		((JoinFigureInterface) getFigure()).setType(type);
+        super.refreshVisuals();
+        int type = ((JoinWrapper) getModel()).getJoin().getType();
+        ((JoinFigureInterface) getFigure()).setType(type);
     }
     
     public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connection) {
@@ -91,7 +91,7 @@ public class JoinEditPart extends ElementEditPart {
     }
     
     public static interface JoinFigureInterface extends IFigure {
-    	void setType(int type);
+        void setType(int type);
     }
 
     public static class JoinFigure extends AbstractElementFigure implements JoinFigureInterface {
@@ -116,9 +116,9 @@ public class JoinEditPart extends ElementEditPart {
             repaint();
         }
 
-		public void setType(int type) {
-			// Do nothing
-		}
+        public void setType(int type) {
+            // Do nothing
+        }
 
     }
 

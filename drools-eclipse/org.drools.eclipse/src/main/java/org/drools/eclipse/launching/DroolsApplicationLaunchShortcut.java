@@ -23,13 +23,13 @@ import org.eclipse.jdt.debug.ui.launchConfigurations.JavaApplicationLaunchShortc
 
 public class DroolsApplicationLaunchShortcut extends JavaApplicationLaunchShortcut {
 
-	protected ILaunchConfigurationType getConfigurationType() {
-		return DebugPlugin.getDefault().getLaunchManager()
-			.getLaunchConfigurationType(IDroolsDebugConstants.LAUNCH_CONFIGURATION_TYPE);		
-	}
+    protected ILaunchConfigurationType getConfigurationType() {
+        return DebugPlugin.getDefault().getLaunchManager()
+            .getLaunchConfigurationType(IDroolsDebugConstants.LAUNCH_CONFIGURATION_TYPE);
+    }
 
-	protected String getTypeSelectionTitle() {
-		return "Select Drools Application";
-	}
+    protected String getTypeSelectionTitle() {
+        return "Select Drools Application";
+    }
 
 }

@@ -41,6 +41,6 @@ public class WorkItemParameterMappingCellEditor extends BeanDialogCellEditor {
     }
     
     protected String getLabelText(Object value) {
-		return "";
+        return "";
     }
 }

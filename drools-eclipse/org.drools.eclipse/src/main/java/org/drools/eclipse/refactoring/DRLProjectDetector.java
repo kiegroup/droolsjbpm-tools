@@ -32,33 +32,33 @@ import org.eclipse.core.runtime.CoreException;
  */
 public class DRLProjectDetector {
 
-	private List<IFile> resources;
+    private List<IFile> resources;
 
-	public DRLProjectDetector() {
-		resources = new ArrayList<IFile>();
-	}
+    public DRLProjectDetector() {
+        resources = new ArrayList<IFile>();
+    }
 
-	public List<IFile> detect(IProject project) throws CoreException {
-		detect(project.members());
-		return resources;
-	}
+    public List<IFile> detect(IProject project) throws CoreException {
+        detect(project.members());
+        return resources;
+    }
 
-	private void detect(IResource[] members) throws CoreException {
-		if (members == null) {
-			return;
-		}
-		for (int i = 0; i < members.length; i++) {
-			if (members[i] instanceof IFolder) {
-				IFolder folder = (IFolder) members[i];
-				if (!folder.isDerived())
-					detect(folder.members());
-			} else if (members[i] instanceof IFile) {
-				IFile file = (IFile) members[i];
-				if (file.getFileExtension() != null && file.getFileExtension().equalsIgnoreCase("drl"))
-					if (file.isAccessible() && !file.isReadOnly() && !file.isDerived())
-						resources.add(file);
-			}
-		}
-	}
+    private void detect(IResource[] members) throws CoreException {
+        if (members == null) {
+            return;
+        }
+        for (int i = 0; i < members.length; i++) {
+            if (members[i] instanceof IFolder) {
+                IFolder folder = (IFolder) members[i];
+                if (!folder.isDerived())
+                    detect(folder.members());
+            } else if (members[i] instanceof IFile) {
+                IFile file = (IFile) members[i];
+                if (file.getFileExtension() != null && file.getFileExtension().equalsIgnoreCase("drl"))
+                    if (file.isAccessible() && !file.isReadOnly() && !file.isDerived())
+                        resources.add(file);
+            }
+        }
+    }
 
 }

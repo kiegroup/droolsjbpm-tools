@@ -39,36 +39,36 @@ import org.eclipse.webdav.Policy;
  * </p>
  */
 /* package */class Assert {
-	/** Asserts that the given object is not <code>null</code>. If this
-	 * is not the case, some kind of unchecked exception is thrown.
-	 */
-	public static void isNotNull(Object o) {
-		isNotNull(o, ""); //$NON-NLS-1$
-	}
+    /** Asserts that the given object is not <code>null</code>. If this
+     * is not the case, some kind of unchecked exception is thrown.
+     */
+    public static void isNotNull(Object o) {
+        isNotNull(o, ""); //$NON-NLS-1$
+    }
 
-	/** Asserts that the given object is not <code>null</code>. If this
-	 * is not the case, some kind of unchecked exception is thrown.
-	 * The given message is included in that exception, to aid debugging.
-	 */
-	public static void isNotNull(Object o, String message) {
-		if (o == null)
-			throw new AssertionFailedException(Policy.bind("assert.nullArgument", message)); //$NON-NLS-1$
-	}
+    /** Asserts that the given object is not <code>null</code>. If this
+     * is not the case, some kind of unchecked exception is thrown.
+     * The given message is included in that exception, to aid debugging.
+     */
+    public static void isNotNull(Object o, String message) {
+        if (o == null)
+            throw new AssertionFailedException(Policy.bind("assert.nullArgument", message)); //$NON-NLS-1$
+    }
 
-	/** Asserts that the given boolean is <code>true</code>. If this
-	 * is not the case, some kind of unchecked exception is thrown.
-	 */
-	public static boolean isTrue(boolean expression) {
-		return isTrue(expression, ""); //$NON-NLS-1$
-	}
+    /** Asserts that the given boolean is <code>true</code>. If this
+     * is not the case, some kind of unchecked exception is thrown.
+     */
+    public static boolean isTrue(boolean expression) {
+        return isTrue(expression, ""); //$NON-NLS-1$
+    }
 
-	/** Asserts that the given boolean is <code>true</code>. If this
-	 * is not the case, some kind of unchecked exception is thrown.
-	 * The given message is included in that exception, to aid debugging.
-	 */
-	public static boolean isTrue(boolean expression, String message) {
-		if (!expression)
-			throw new AssertionFailedException(Policy.bind("assert.failed", message)); //$NON-NLS-1$
-		return expression;
-	}
+    /** Asserts that the given boolean is <code>true</code>. If this
+     * is not the case, some kind of unchecked exception is thrown.
+     * The given message is included in that exception, to aid debugging.
+     */
+    public static boolean isTrue(boolean expression, String message) {
+        if (!expression)
+            throw new AssertionFailedException(Policy.bind("assert.failed", message)); //$NON-NLS-1$
+        return expression;
+    }
 }

@@ -34,75 +34,75 @@ import org.eclipse.webdav.Policy;
  */
 public class QualifiedNameImpl implements QualifiedName {
 
-	/** Qualifier part (potentially <code>null</code>). */
-	protected String qualifier = null;
+    /** Qualifier part (potentially <code>null</code>). */
+    protected String qualifier = null;
 
-	/** Local name part. */
-	protected String localName = null;
+    /** Local name part. */
+    protected String localName = null;
 
-	/**
-	 * Creates and returns a new qualified name with the given qualifier
-	 * and local name.  The local name must not be the empty string.
-	 * The qualifier may be <code>null</code>.   
-	 */
-	public QualifiedNameImpl(String qualifier, String localName) {
-		Assert.isTrue(localName != null && localName.length() != 0);
-		this.qualifier = qualifier;
-		this.localName = localName;
-	}
+    /**
+     * Creates and returns a new qualified name with the given qualifier
+     * and local name.  The local name must not be the empty string.
+     * The qualifier may be <code>null</code>.
+     */
+    public QualifiedNameImpl(String qualifier, String localName) {
+        Assert.isTrue(localName != null && localName.length() != 0);
+        this.qualifier = qualifier;
+        this.localName = localName;
+    }
 
-	/**
-	 * Returns <code>true</code> if this qualified name is equivalent to the given object.
-	 * <p>
-	 * Qualified names are equal if and only if they have the same
-	 * qualified parts and local parts.
-	 * Qualified names are not equal to objects other than qualified names.
-	 *
-	 */
-	public boolean equals(Object obj) {
-		if (obj == this)
-			return true;
-		if (!(obj instanceof QualifiedName))
-			return false;
-		// There may or may not be a qualifier.
-		QualifiedName qName = (QualifiedName) obj;
-		if (qualifier == null && qName.getQualifier() != null)
-			return false;
-		if (qualifier != null && !qualifier.equals(qName.getQualifier()))
-			return false;
-		return localName.equals(qName.getLocalName());
-	}
+    /**
+     * Returns <code>true</code> if this qualified name is equivalent to the given object.
+     * <p>
+     * Qualified names are equal if and only if they have the same
+     * qualified parts and local parts.
+     * Qualified names are not equal to objects other than qualified names.
+     *
+     */
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+        if (!(obj instanceof QualifiedName))
+            return false;
+        // There may or may not be a qualifier.
+        QualifiedName qName = (QualifiedName) obj;
+        if (qualifier == null && qName.getQualifier() != null)
+            return false;
+        if (qualifier != null && !qualifier.equals(qName.getQualifier()))
+            return false;
+        return localName.equals(qName.getLocalName());
+    }
 
-	/**
-	 * Returns the local part of this name.  
-	 */
-	public String getLocalName() {
-		return localName;
-	}
+    /**
+     * Returns the local part of this name.
+     */
+    public String getLocalName() {
+        return localName;
+    }
 
-	/**
-	 * Returns the qualifier part for this qualifed name, or <code>null</code>
-	 * if none.
-	 */
-	public String getQualifier() {
-		return qualifier;
-	}
+    /**
+     * Returns the qualifier part for this qualifed name, or <code>null</code>
+     * if none.
+     */
+    public String getQualifier() {
+        return qualifier;
+    }
 
-	/**
-	 * Returns the hash code for this qualified name.
-	 */
-	public int hashCode() {
-		return (qualifier == null ? 0 : qualifier.hashCode()) + localName.hashCode();
-	}
+    /**
+     * Returns the hash code for this qualified name.
+     */
+    public int hashCode() {
+        return (qualifier == null ? 0 : qualifier.hashCode()) + localName.hashCode();
+    }
 
-	/**
-	 * Converts this qualified name into a string, suitable for 
-	 * display (unsuitable for parsing back to a qualified name!).
-	 */
-	public String toString() {
-		return Policy.bind("qualifiedNameImpl.namespace") + ": \"" + //$NON-NLS-1$ //$NON-NLS-2$
-				(getQualifier() == null ? "null" : getQualifier()) + //$NON-NLS-1$
-				"\", " + Policy.bind("qualifiedNameImpl.localPart") + ": \"" + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				getLocalName() + "\""; //$NON-NLS-1$
-	}
+    /**
+     * Converts this qualified name into a string, suitable for
+     * display (unsuitable for parsing back to a qualified name!).
+     */
+    public String toString() {
+        return Policy.bind("qualifiedNameImpl.namespace") + ": \"" + //$NON-NLS-1$ //$NON-NLS-2$
+                (getQualifier() == null ? "null" : getQualifier()) + //$NON-NLS-1$
+                "\", " + Policy.bind("qualifiedNameImpl.localPart") + ": \"" + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                getLocalName() + "\""; //$NON-NLS-1$
+    }
 }

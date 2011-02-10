@@ -41,42 +41,42 @@ import org.eclipse.swt.widgets.Display;
  */
 public class SubFlowEditPart extends ElementEditPart {
 
-	private String SKIN =
-		DroolsEclipsePlugin.getDefault().getPreferenceStore().getString(IDroolsConstants.SKIN);
-	
+    private String SKIN =
+        DroolsEclipsePlugin.getDefault().getPreferenceStore().getString(IDroolsConstants.SKIN);
+
     private static final Color color = new Color(Display.getCurrent(), 255, 250, 205);
     
     protected IFigure createFigure() {
-    	SkinProvider skinProvider = SkinManager.getInstance().getSkinProvider(SKIN);
-    	IFigure result = skinProvider.createSubFlowFigure();
-    	Rectangle constraint = getElementWrapper().getConstraint();
-    	if (constraint.width == -1) {
-    		constraint.width = result.getSize().width;
-    	}
-    	if (constraint.height == -1) {
-    		constraint.height = result.getSize().height;
-    	}
-    	getElementWrapper().setConstraint(constraint);
-    	return result;
+        SkinProvider skinProvider = SkinManager.getInstance().getSkinProvider(SKIN);
+        IFigure result = skinProvider.createSubFlowFigure();
+        Rectangle constraint = getElementWrapper().getConstraint();
+        if (constraint.width == -1) {
+            constraint.width = result.getSize().width;
+        }
+        if (constraint.height == -1) {
+            constraint.height = result.getSize().height;
+        }
+        getElementWrapper().setConstraint(constraint);
+        return result;
     }
     
     protected void doubleClicked() {
         super.doubleClicked();
         String processId = ((SubProcessWrapper) getElementWrapper()).getSubProcessNode().getProcessId();
-    	IResource resource = DroolsEclipsePlugin.getDefault().findProcessResource(processId);
-    	if (resource != null) {
-    		try {
-    			OpenTypeAction.findTypeInWorkspace(resource.getFullPath().toString());
-    		} catch (Throwable t) {
-    			DroolsEclipsePlugin.log(t);
-    		}
-    	}
+        IResource resource = DroolsEclipsePlugin.getDefault().findProcessResource(processId);
+        if (resource != null) {
+            try {
+                OpenTypeAction.findTypeInWorkspace(resource.getFullPath().toString());
+            } catch (Throwable t) {
+                DroolsEclipsePlugin.log(t);
+            }
+        }
     }
     
     public static class SubFlowNodeFigure extends AbstractElementFigure {
         
         private static final Image ICON = ImageDescriptor.createFromURL(
-        		DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/process.gif")).createImage();
+                DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/process.gif")).createImage();
                 
         private RoundedRectangle rectangle;
         

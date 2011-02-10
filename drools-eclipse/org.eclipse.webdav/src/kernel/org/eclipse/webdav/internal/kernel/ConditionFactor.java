@@ -32,72 +32,72 @@ import org.eclipse.webdav.IResponse;
  */
 public abstract class ConditionFactor {
 
-	private boolean not = false;
+    private boolean not = false;
 
-	/** 
-	 * Create a ConditionFactor (either a StateToken or EntityTag) by parsing
-	 * the tokenizer contining an If header value.
-	 *
-	 * @param tokenizer a StreamTokenizer containing the contents of a state token or entity tag
-	 *    from a WebDAV If header
-	 * @return the parsed ConditionFactor
-	 * @exception WebDAVException thrown if there is a syntax error in the If header
-	 */
-	public static ConditionFactor create(StreamTokenizer tokenizer) throws WebDAVException {
-		boolean not = false;
-		ConditionFactor factor = null;
-		try {
-			int token = tokenizer.ttype;
-			if (token == StreamTokenizer.TT_WORD) {
-				if (tokenizer.sval.equalsIgnoreCase("Not")) { //$NON-NLS-1$
-					not = true;
-				} else {
-					throw new WebDAVException(IResponse.SC_BAD_REQUEST, Policy.bind("error.parseMissingNot")); //$NON-NLS-1$
-				}
-				token = tokenizer.nextToken();
-			}
-			switch (token) {
-				case '<' :
-					factor = StateToken.create(tokenizer);
-					break;
-				case '[' :
-					factor = EntityTag.create(tokenizer);
-					break;
-				default :
-					throw new WebDAVException(IResponse.SC_BAD_REQUEST, Policy.bind("error.parseMissingOpen", String.valueOf(token))); //$NON-NLS-1$
-			}
-		} catch (IOException exc) {
-			// ignore or log?
-		}
-		factor.setNot(not);
-		return factor;
-	}
+    /**
+     * Create a ConditionFactor (either a StateToken or EntityTag) by parsing
+     * the tokenizer contining an If header value.
+     *
+     * @param tokenizer a StreamTokenizer containing the contents of a state token or entity tag
+     *    from a WebDAV If header
+     * @return the parsed ConditionFactor
+     * @exception WebDAVException thrown if there is a syntax error in the If header
+     */
+    public static ConditionFactor create(StreamTokenizer tokenizer) throws WebDAVException {
+        boolean not = false;
+        ConditionFactor factor = null;
+        try {
+            int token = tokenizer.ttype;
+            if (token == StreamTokenizer.TT_WORD) {
+                if (tokenizer.sval.equalsIgnoreCase("Not")) { //$NON-NLS-1$
+                    not = true;
+                } else {
+                    throw new WebDAVException(IResponse.SC_BAD_REQUEST, Policy.bind("error.parseMissingNot")); //$NON-NLS-1$
+                }
+                token = tokenizer.nextToken();
+            }
+            switch (token) {
+                case '<' :
+                    factor = StateToken.create(tokenizer);
+                    break;
+                case '[' :
+                    factor = EntityTag.create(tokenizer);
+                    break;
+                default :
+                    throw new WebDAVException(IResponse.SC_BAD_REQUEST, Policy.bind("error.parseMissingOpen", String.valueOf(token))); //$NON-NLS-1$
+            }
+        } catch (IOException exc) {
+            // ignore or log?
+        }
+        factor.setNot(not);
+        return factor;
+    }
 
-	/** 
-	 * Negate the comparison on this ConditionFactor?
-	 *
-	 * @return true if the condition factor was negated in the If header
-	 */
-	public boolean not() {
-		return not;
-	}
+    /**
+     * Negate the comparison on this ConditionFactor?
+     *
+     * @return true if the condition factor was negated in the If header
+     */
+    public boolean not() {
+        return not;
+    }
 
-	/** 
-	 * Set how to compare to this ConditionFactor. Value is true implies match for
-	 * a valid request, false implies the request is valid only if the ConditionFactor
-	 * doesn't match.
-	 * 
-	 * @param value true means negate the condition
-	 */
-	public void setNot(boolean value) {
-		not = value;
-	}
+    /**
+     * Set how to compare to this ConditionFactor. Value is true implies match for
+     * a valid request, false implies the request is valid only if the ConditionFactor
+     * doesn't match.
+     *
+     * @param value true means negate the condition
+     */
+    public void setNot(boolean value) {
+        not = value;
+    }
 
-	/**
-	 * Return a String representation of this ConditionFactor as defined by the If
-	 * header in section 9.4 of the WebDAV spec.
-	 * 
-	 * @return a string representation of a state token or entity tag
-	 */
-	public abstract String toString();
+    /**
+     * Return a String representation of this ConditionFactor as defined by the If
+     * header in section 9.4 of the WebDAV spec.
+     *
+     * @return a string representation of a state token or entity tag
+     */
+    public abstract String toString();
 }

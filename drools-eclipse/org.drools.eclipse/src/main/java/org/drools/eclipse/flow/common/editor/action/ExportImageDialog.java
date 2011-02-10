@@ -44,10 +44,10 @@ import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.internal.ide.misc.ResourceAndContainerGroup;
 
 public class ExportImageDialog extends TitleAreaDialog {
-	
-	private static final String DIALOG_SETTINGS_SECTION = "SaveAsDialogSettings"; //$NON-NLS-1$
-	
-	private IFile originalFile = null;
+
+    private static final String DIALOG_SETTINGS_SECTION = "SaveAsDialogSettings"; //$NON-NLS-1$
+
+    private IFile originalFile = null;
 
     private String originalName = null;
 
@@ -92,8 +92,8 @@ public class ExportImageDialog extends TitleAreaDialog {
 
     public boolean close() {
         if (dlgTitleImage != null) {
-			dlgTitleImage.dispose();
-		}
+            dlgTitleImage.dispose();
+        }
         return super.close();
     }
 
@@ -158,13 +158,13 @@ public class ExportImageDialog extends TitleAreaDialog {
             String fileName = originalFile.getName();
             int index = fileName.lastIndexOf(".");
             if (index != -1) {
-            	fileName = fileName.substring(0, index);
+                fileName = fileName.substring(0, index);
             }
             fileName += ".png";
             resourceGroup.setResource(fileName);
         } else if (originalName != null) {
-			resourceGroup.setResource(originalName);
-		}
+            resourceGroup.setResource(originalName);
+        }
         setDialogComplete(validatePage());
     }
 
@@ -181,12 +181,12 @@ public class ExportImageDialog extends TitleAreaDialog {
         //of the default filename to the new name
         if (path.getFileExtension() == null) {
             if (originalFile != null && originalFile.getFileExtension() != null) {
-				path = path.addFileExtension(originalFile.getFileExtension());
-			} else if (originalName != null) {
+                path = path.addFileExtension(originalFile.getFileExtension());
+            } else if (originalName != null) {
                 int pos = originalName.lastIndexOf('.');
                 if (++pos > 0 && pos < originalName.length()) {
-					path = path.addFileExtension(originalName.substring(pos));
-				}
+                    path = path.addFileExtension(originalName.substring(pos));
+                }
             }
         }
 
@@ -196,9 +196,9 @@ public class ExportImageDialog extends TitleAreaDialog {
             String[] buttons = new String[] { IDialogConstants.YES_LABEL,
                     IDialogConstants.NO_LABEL, IDialogConstants.CANCEL_LABEL };
             String question = NLS.bind(
-					IDEWorkbenchMessages.SaveAsDialog_overwriteQuestion, path
-							.toString());
-			MessageDialog d = new MessageDialog(getShell(),
+                    IDEWorkbenchMessages.SaveAsDialog_overwriteQuestion, path
+                            .toString());
+            MessageDialog d = new MessageDialog(getShell(),
                     IDEWorkbenchMessages.Question,
                     null, question, MessageDialog.QUESTION, buttons, 0);
             int overwrite = d.open();
@@ -258,9 +258,9 @@ public class ExportImageDialog extends TitleAreaDialog {
     private boolean validatePage() {
         if (!resourceGroup.areAllValuesValid()) {
             if (!resourceGroup.getResource().equals("")) { //$NON-NLS-1$
-				setErrorMessage(resourceGroup.getProblemMessage());
-			} else {
-            	setErrorMessage(null);
+                setErrorMessage(resourceGroup.getProblemMessage());
+            } else {
+                setErrorMessage(null);
             }
             return false;
         }
@@ -271,46 +271,46 @@ public class ExportImageDialog extends TitleAreaDialog {
         // Do not allow a closed project to be selected
         IPath fullPath = resourceGroup.getContainerFullPath();
         if (fullPath != null) {
-        	String projectName = fullPath.segment(0);
-	        IStatus isValidProjectName = workspace.validateName(projectName, IResource.PROJECT);
-	        if(isValidProjectName.isOK()) {
-	        	IProject project = workspace.getRoot().getProject(projectName);
-	        	if(!project.isOpen()) {
-	        		setErrorMessage(IDEWorkbenchMessages.SaveAsDialog_closedProjectMessage);
-	        		return false;
-	        	}
-	        }
+            String projectName = fullPath.segment(0);
+            IStatus isValidProjectName = workspace.validateName(projectName, IResource.PROJECT);
+            if(isValidProjectName.isOK()) {
+                IProject project = workspace.getRoot().getProject(projectName);
+                if(!project.isOpen()) {
+                    setErrorMessage(IDEWorkbenchMessages.SaveAsDialog_closedProjectMessage);
+                    return false;
+                }
+            }
         }
         
         IStatus result = workspace.validateName(resourceName, IResource.FILE);
         if (!result.isOK()){
-        	setErrorMessage(result.getMessage());
-        	return false;
+            setErrorMessage(result.getMessage());
+            return false;
         }
         
         setErrorMessage(null);
         return true;
     }
     
-	/* (non-Javadoc)
+    /* (non-Javadoc)
      * @see org.eclipse.jface.window.Dialog#getDialogBoundsSettings()
      * 
      * @since 3.2
      */
-	protected IDialogSettings getDialogBoundsSettings() {
+    protected IDialogSettings getDialogBoundsSettings() {
         IDialogSettings settings = IDEWorkbenchPlugin.getDefault().getDialogSettings();
         IDialogSettings section = settings.getSection(DIALOG_SETTINGS_SECTION);
         if (section == null) {
             section = settings.addNewSection(DIALOG_SETTINGS_SECTION);
         } 
         return section;
-	}
-	
+    }
+
     /*
      * (non-Javadoc)
      * @see org.eclipse.jface.dialogs.Dialog#isResizable()
      */
     protected boolean isResizable() {
-    	return true;
+        return true;
     }
 }

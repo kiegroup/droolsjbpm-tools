@@ -29,61 +29,61 @@ import org.guvnor.tools.Activator;
  * @author jgraham
  */
 public class ActionUtils {
-	
-	@SuppressWarnings("unchecked")
-	public static boolean checkResourceSet(ISelection selection, boolean guvnorControlled) {
-		boolean res = true;
-		try {
-			if (!(selection instanceof IStructuredSelection)) {
-				return false;
-			}
-			IStructuredSelection sel = (IStructuredSelection)selection;
-			for (Iterator<Object> it = sel.iterator(); it.hasNext();) {
-				Object oneSelection = it.next();
-				if (oneSelection instanceof IFile) {
-					if(!(((IFile)oneSelection).getName().indexOf(".") > 0)){
-						res = false;
-						break;
-					}
-					GuvnorMetadataProps props = 
-						GuvnorMetadataUtils.getGuvnorMetadata((IFile)oneSelection);
-					if ((guvnorControlled && props == null)
-					   || (!guvnorControlled && props != null)) {
-						res = false;
-						break;
-					}
-				}
-			}
-		} catch (Exception e) {
-			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
-			res = false;
-		}
-		return res;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public static boolean areFilesDirty(ISelection selection) {
-		boolean res = true;
-		try {
-			if (!(selection instanceof IStructuredSelection)) {
-				return false;
-			}
-			IStructuredSelection sel = (IStructuredSelection)selection;
-			for (Iterator<Object> it = sel.iterator(); it.hasNext();) {
-				Object oneSelection = it.next();
-				if (oneSelection instanceof IFile) {
-					boolean isCurrent = 
-						GuvnorMetadataUtils.isGuvnorResourceCurrent((IFile)oneSelection);
-					if (isCurrent) {
-						res = false;
-						break;
-					}
-				}
-			}
-		} catch (Exception e) {
-			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
-			res = false;
-		}
-		return res;
-	}
+
+    @SuppressWarnings("unchecked")
+    public static boolean checkResourceSet(ISelection selection, boolean guvnorControlled) {
+        boolean res = true;
+        try {
+            if (!(selection instanceof IStructuredSelection)) {
+                return false;
+            }
+            IStructuredSelection sel = (IStructuredSelection)selection;
+            for (Iterator<Object> it = sel.iterator(); it.hasNext();) {
+                Object oneSelection = it.next();
+                if (oneSelection instanceof IFile) {
+                    if(!(((IFile)oneSelection).getName().indexOf(".") > 0)){
+                        res = false;
+                        break;
+                    }
+                    GuvnorMetadataProps props =
+                        GuvnorMetadataUtils.getGuvnorMetadata((IFile)oneSelection);
+                    if ((guvnorControlled && props == null)
+                       || (!guvnorControlled && props != null)) {
+                        res = false;
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+            res = false;
+        }
+        return res;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static boolean areFilesDirty(ISelection selection) {
+        boolean res = true;
+        try {
+            if (!(selection instanceof IStructuredSelection)) {
+                return false;
+            }
+            IStructuredSelection sel = (IStructuredSelection)selection;
+            for (Iterator<Object> it = sel.iterator(); it.hasNext();) {
+                Object oneSelection = it.next();
+                if (oneSelection instanceof IFile) {
+                    boolean isCurrent =
+                        GuvnorMetadataUtils.isGuvnorResourceCurrent((IFile)oneSelection);
+                    if (isCurrent) {
+                        res = false;
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+            res = false;
+        }
+        return res;
+    }
 }

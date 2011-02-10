@@ -27,5 +27,5 @@ import java.net.Socket;
  * certainly be broken (repeatedly) as the API evolves.
  */
 public interface ISocketFactory {
-	public Socket createSocket(String protocol, String host, int port) throws IOException;
+    public Socket createSocket(String protocol, String host, int port) throws IOException;
 }

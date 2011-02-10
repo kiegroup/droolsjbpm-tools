@@ -31,40 +31,40 @@ import org.w3c.dom.Element;
  * </p>
  */
 public class BaselineControl extends ElementEditor {
-	/**
-	 * An ordered collection of the element names of the resourceid
-	 * element's children.
-	 */
-	protected static final String[] childNames = new String[] {"href"}; //$NON-NLS-1$
+    /**
+     * An ordered collection of the element names of the resourceid
+     * element's children.
+     */
+    protected static final String[] childNames = new String[] {"href"}; //$NON-NLS-1$
 
-	/**
-	 * Creates a new editor on the given WebDAV baseline control element. The
-	 * element is assumed to be well formed.
-	 *
-	 * @param root a baseline control element
-	 * @throws        MalformedElementException if there is reason to
-	 *                believe that the element is not well formed
-	 */
-	public BaselineControl(Element root) throws MalformedElementException {
-		super(root, "baseline-control"); //$NON-NLS-1$
-	}
+    /**
+     * Creates a new editor on the given WebDAV baseline control element. The
+     * element is assumed to be well formed.
+     *
+     * @param root a baseline control element
+     * @throws        MalformedElementException if there is reason to
+     *                believe that the element is not well formed
+     */
+    public BaselineControl(Element root) throws MalformedElementException {
+        super(root, "baseline-control"); //$NON-NLS-1$
+    }
 
-	/**
-	 * Answer the href passed in the body of the baseline control element.
-	 */
-	public String getHref() throws MalformedElementException {
-		String href = getChildText(root, "href", true); //$NON-NLS-1$
-		ensureNotNull(Policy.bind("ensure.missingHrefElmt"), href); //$NON-NLS-1$
-		return decodeHref(href);
-	}
+    /**
+     * Answer the href passed in the body of the baseline control element.
+     */
+    public String getHref() throws MalformedElementException {
+        String href = getChildText(root, "href", true); //$NON-NLS-1$
+        ensureNotNull(Policy.bind("ensure.missingHrefElmt"), href); //$NON-NLS-1$
+        return decodeHref(href);
+    }
 
-	/**
-	 * Sets this baseline control elment description to the given href.
-	 *
-	 * @param href the href of the baseline.
-	 */
-	public void setHref(String href) {
-		Assert.isNotNull(href);
-		setChild(root, "href", encodeHref(href), childNames, true); //$NON-NLS-1$
-	}
+    /**
+     * Sets this baseline control elment description to the given href.
+     *
+     * @param href the href of the baseline.
+     */
+    public void setHref(String href) {
+        Assert.isNotNull(href);
+        setChild(root, "href", encodeHref(href), childNames, true); //$NON-NLS-1$
+    }
 }

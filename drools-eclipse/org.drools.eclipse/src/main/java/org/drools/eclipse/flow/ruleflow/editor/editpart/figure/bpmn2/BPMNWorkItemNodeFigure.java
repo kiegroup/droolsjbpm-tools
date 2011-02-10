@@ -31,7 +31,7 @@ public class BPMNWorkItemNodeFigure extends AbstractElementFigure implements Wor
     private RoundedRectangle rectangle;
     
     public BPMNWorkItemNodeFigure() {
-    	setSize(100, 48);
+        setSize(100, 48);
     }
     
     protected void customizeFigure() {

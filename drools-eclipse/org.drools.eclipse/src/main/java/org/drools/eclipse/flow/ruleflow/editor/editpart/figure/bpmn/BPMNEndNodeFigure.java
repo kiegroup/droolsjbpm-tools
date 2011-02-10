@@ -27,18 +27,18 @@ import org.eclipse.swt.graphics.Image;
 public class BPMNEndNodeFigure extends AbstractElementFigure implements EndNodeFigureInterface {
     
     private static final Image icon = ImageDescriptor.createFromURL(
-    	DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/large/end_terminate.png")).createImage();
+        DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn/large/end_terminate.png")).createImage();
         
     public BPMNEndNodeFigure() {
-    	setSize(48, 48);
+        setSize(48, 48);
     }
     
     public void setText(String text) {
     }
     
     public void setBounds(Rectangle r) {
-    	r.setSize(48, 48);
-    	super.setBounds(r);
+        r.setSize(48, 48);
+        super.setBounds(r);
     }
     
     protected void customizeFigure() {
@@ -51,8 +51,8 @@ public class BPMNEndNodeFigure extends AbstractElementFigure implements EndNodeF
         repaint();
     }
     
-	public void setTerminate(boolean terminate) {
-		// Do nothing
-	}
+    public void setTerminate(boolean terminate) {
+        // Do nothing
+    }
 
 }

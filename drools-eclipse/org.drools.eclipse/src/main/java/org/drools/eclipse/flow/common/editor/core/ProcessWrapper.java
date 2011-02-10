@@ -48,10 +48,10 @@ import org.jbpm.process.core.context.variable.VariableScope;
  */
 public abstract class ProcessWrapper implements ElementContainer, IPropertySource, Serializable {
 
-	private static final long serialVersionUID = 510l;
-	
-	public static final int CHANGE_ELEMENTS = 1;
-	public static final int CHANGE_ROUTER_LAYOUT = 2;
+    private static final long serialVersionUID = 510l;
+
+    public static final int CHANGE_ELEMENTS = 1;
+    public static final int CHANGE_ROUTER_LAYOUT = 2;
 
     public static final Integer ROUTER_LAYOUT_MANUAL = new Integer(0);
     public static final Integer ROUTER_LAYOUT_MANHATTAN = new Integer(1);
@@ -102,11 +102,11 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
     }
     
     public String getId() {
-    	return process.getId();
+        return process.getId();
     }
     
     public void setId(String id) {
-    	process.setId(id);
+        process.setId(id);
     }
     
     public String getPackageName() {
@@ -119,15 +119,15 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
     
     public Integer getRouterLayout() {
         Integer routerLayout = (Integer) process.getMetaData("routerLayout");
-    	if (routerLayout == null) {
-    		return ROUTER_LAYOUT_MANUAL;
-    	}
-    	return routerLayout;
+        if (routerLayout == null) {
+            return ROUTER_LAYOUT_MANUAL;
+        }
+        return routerLayout;
     }
     
     public void setRouterLayout(Integer routerLayout) {
-    	process.setMetaData("routerLayout", routerLayout);
-    	notifyListeners(CHANGE_ROUTER_LAYOUT);
+        process.setMetaData("routerLayout", routerLayout);
+        notifyListeners(CHANGE_ROUTER_LAYOUT);
     }
     
     public List<ElementWrapper> getElements() {
@@ -141,9 +141,9 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
     
     public void addElement(ElementWrapper element) {
         internalAddElement(element);
-		//id is set in methode above
-		localAddElement(element);
-		notifyListeners(CHANGE_ELEMENTS);
+        //id is set in methode above
+        localAddElement(element);
+        notifyListeners(CHANGE_ELEMENTS);
     }
     
     public void localAddElement(ElementWrapper element) {
@@ -175,7 +175,7 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
     public void notifyListeners(int change) {
         ModelEvent event = new ModelEvent(change);
         for (ModelListener listener: listeners) {
-        	listener.modelChanged(event);
+            listener.modelChanged(event);
         }
     }
     
@@ -189,9 +189,9 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
     }
 
     public IPropertyDescriptor[] getPropertyDescriptors() {
-    	if (descriptors == null) {
-    		initPropertyDescriptors();
-    	}
+        if (descriptors == null) {
+            initPropertyDescriptors();
+        }
         return descriptors;
     }
 
@@ -207,7 +207,7 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
             new ListPropertyDescriptor(SWIMLANES, "Swimlanes",
                 SwimlanesCellEditor.class),
             new ExceptionHandlersPropertyDescriptor(EXCEPTION_HANDLERS,
-        		"Exception Handlers", process),
+                "Exception Handlers", process),
         };
     }
     
@@ -274,7 +274,7 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
     }
 
     @SuppressWarnings("unchecked")
-	public void setPropertyValue(Object id, Object value) {
+    public void setPropertyValue(Object id, Object value) {
         if (NAME.equals(id)) {
             setName((String) value);
         } else if (VERSION.equals(id)) {
@@ -292,12 +292,12 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
             ((SwimlaneContext) process.getDefaultContext(
                 SwimlaneContext.SWIMLANE_SCOPE)).setSwimlanes((List<Swimlane>) value);
         } else if (EXCEPTION_HANDLERS.equals(id)) {
-        	((ExceptionScope) process.getDefaultContext(
+            ((ExceptionScope) process.getDefaultContext(
                 ExceptionScope.EXCEPTION_SCOPE)).setExceptionHandlers((Map<String, ExceptionHandler>) value);
         }
     }
 
     public boolean canAddElement(ElementWrapper element) {
-    	return true;
+        return true;
     }
 }

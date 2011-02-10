@@ -66,142 +66,142 @@ public class RuleFlowConstraintDialog extends Dialog {
     private static final String[] TYPES = new String[] { "rule", "code" };
 
     private Constraint constraint;
-	private WorkflowProcess process;
-	private boolean success;
-	private Button alwaysTrue;
-	private Text nameText;
-	private Text priorityText;
+    private WorkflowProcess process;
+    private boolean success;
+    private Button alwaysTrue;
+    private Text nameText;
+    private Text priorityText;
     private Combo typeCombo;
     private Combo dialectCombo;
-	private TabFolder tabFolder;
-	private SourceViewer constraintViewer;
-	private ConstraintCompletionProcessor completionProcessor;
+    private TabFolder tabFolder;
+    private SourceViewer constraintViewer;
+    private ConstraintCompletionProcessor completionProcessor;
 
-	public RuleFlowConstraintDialog(Shell parentShell, WorkflowProcess process) {
-		super(parentShell);
-		this.process = process;
-		setShellStyle(getShellStyle() | SWT.RESIZE);
-	}
+    public RuleFlowConstraintDialog(Shell parentShell, WorkflowProcess process) {
+        super(parentShell);
+        this.process = process;
+        setShellStyle(getShellStyle() | SWT.RESIZE);
+    }
 
-	protected void configureShell(Shell newShell) {
-		super.configureShell(newShell);
-		newShell.setText("Constraint editor");
-	}
+    protected void configureShell(Shell newShell) {
+        super.configureShell(newShell);
+        newShell.setText("Constraint editor");
+    }
 
-	protected Point getInitialSize() {
-		return new Point(600, 450);
-	}
+    protected Point getInitialSize() {
+        return new Point(600, 450);
+    }
 
-	private Control createTextualEditor(Composite parent) {
-		constraintViewer = new SourceViewer(parent, null, SWT.BORDER);
-		constraintViewer.configure(new DRLSourceViewerConfig(null) {
-			public IReconciler getReconciler(ISourceViewer sourceViewer) {
-				return null;
-			}
-			public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
-				ContentAssistant assistant = new ContentAssistant();
-				completionProcessor = new ConstraintCompletionProcessor(process);
-				assistant.setContentAssistProcessor(
-					completionProcessor, IDocument.DEFAULT_CONTENT_TYPE);
-				assistant.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
-				return assistant;
-			}
-		});
-		IDocument document = new Document();
-		constraintViewer.setDocument(document);
-		IDocumentPartitioner partitioner =
+    private Control createTextualEditor(Composite parent) {
+        constraintViewer = new SourceViewer(parent, null, SWT.BORDER);
+        constraintViewer.configure(new DRLSourceViewerConfig(null) {
+            public IReconciler getReconciler(ISourceViewer sourceViewer) {
+                return null;
+            }
+            public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
+                ContentAssistant assistant = new ContentAssistant();
+                completionProcessor = new ConstraintCompletionProcessor(process);
+                assistant.setContentAssistProcessor(
+                    completionProcessor, IDocument.DEFAULT_CONTENT_TYPE);
+                assistant.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
+                return assistant;
+            }
+        });
+        IDocument document = new Document();
+        constraintViewer.setDocument(document);
+        IDocumentPartitioner partitioner =
             new FastPartitioner(
                 new DRLPartionScanner(),
                 DRLPartionScanner.LEGAL_CONTENT_TYPES);
         partitioner.connect(document);
         document.setDocumentPartitioner(partitioner);
         constraintViewer.getControl().addKeyListener(new KeyListener() {
-			public void keyPressed(KeyEvent e) {
-				if (e.character == ' ' && e.stateMask == SWT.CTRL) {
-					constraintViewer.doOperation(ISourceViewer.CONTENTASSIST_PROPOSALS);
-				}
-			}
-			public void keyReleased(KeyEvent e) {
-			}
+            public void keyPressed(KeyEvent e) {
+                if (e.character == ' ' && e.stateMask == SWT.CTRL) {
+                    constraintViewer.doOperation(ISourceViewer.CONTENTASSIST_PROPOSALS);
+                }
+            }
+            public void keyReleased(KeyEvent e) {
+            }
         });
-		return constraintViewer.getControl();
-	}
-	
-	private String getConstraintText() {
-		return constraintViewer.getDocument().get();
-	}
-	
-	private void setConstraintText(String text) {
-		constraintViewer.getDocument().set(text);
-	}
+        return constraintViewer.getControl();
+    }
 
-	public Control createDialogArea(Composite parent) {
+    private String getConstraintText() {
+        return constraintViewer.getDocument().get();
+    }
 
-		GridLayout layout = new GridLayout();
-		parent.setLayout(layout);
-		layout.numColumns = 2;
+    private void setConstraintText(String text) {
+        constraintViewer.getDocument().set(text);
+    }
 
-		Composite top = new Composite(parent, SWT.NONE);
-		GridData gd = new GridData();
-		gd.horizontalSpan = 2;
-		gd.grabExcessHorizontalSpace = true;
-		top.setLayoutData(gd);
+    public Control createDialogArea(Composite parent) {
 
-		layout = new GridLayout();
-		layout.numColumns = 4;
-		top.setLayout(layout);
+        GridLayout layout = new GridLayout();
+        parent.setLayout(layout);
+        layout.numColumns = 2;
 
-		Label l1 = new Label(top, SWT.None);
-		l1.setText("Name:");
-		gd = new GridData();
-		l1.setLayoutData(gd);
-		nameText = new Text(top, SWT.BORDER);
-		gd = new GridData();
-		gd.horizontalAlignment = GridData.FILL;
-		gd.widthHint = 200;
-		gd.horizontalSpan = 3;
-		nameText.setLayoutData(gd);
+        Composite top = new Composite(parent, SWT.NONE);
+        GridData gd = new GridData();
+        gd.horizontalSpan = 2;
+        gd.grabExcessHorizontalSpace = true;
+        top.setLayoutData(gd);
 
-		Label l2 = new Label(top, SWT.NONE);
-		gd = new GridData();
-		l2.setLayoutData(gd);
-		l2.setText("Priority:");
-		priorityText = new Text(top, SWT.BORDER);
-		gd = new GridData();
-		gd.widthHint = 200;
-		gd.horizontalSpan = 3;
-		priorityText.setLayoutData(gd);
+        layout = new GridLayout();
+        layout.numColumns = 4;
+        top.setLayout(layout);
 
-		alwaysTrue = new Button(top, SWT.CHECK);
-		alwaysTrue.setText("Always true");
-		gd = new GridData();
-		gd.horizontalSpan = 2;
-		alwaysTrue.setLayoutData(gd);
-		
-		Button importButton = new Button(top, SWT.PUSH);
-		importButton.setText("Imports ...");
-		importButton.setFont(JFaceResources.getDialogFont());
-		importButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				importButtonPressed();
-			}
-		});
-		gd = new GridData();
-		gd.grabExcessHorizontalSpace = true;
-		gd.horizontalAlignment = GridData.END;
-		importButton.setLayoutData(gd);
+        Label l1 = new Label(top, SWT.None);
+        l1.setText("Name:");
+        gd = new GridData();
+        l1.setLayoutData(gd);
+        nameText = new Text(top, SWT.BORDER);
+        gd = new GridData();
+        gd.horizontalAlignment = GridData.FILL;
+        gd.widthHint = 200;
+        gd.horizontalSpan = 3;
+        nameText.setLayoutData(gd);
 
-		Button globalButton = new Button(top, SWT.PUSH);
-		globalButton.setText("Globals ...");
-		globalButton.setFont(JFaceResources.getDialogFont());
-		globalButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				globalButtonPressed();
-			}
-		});
-		gd = new GridData();
-		gd.horizontalAlignment = GridData.END;
-		globalButton.setLayoutData(gd);
+        Label l2 = new Label(top, SWT.NONE);
+        gd = new GridData();
+        l2.setLayoutData(gd);
+        l2.setText("Priority:");
+        priorityText = new Text(top, SWT.BORDER);
+        gd = new GridData();
+        gd.widthHint = 200;
+        gd.horizontalSpan = 3;
+        priorityText.setLayoutData(gd);
+
+        alwaysTrue = new Button(top, SWT.CHECK);
+        alwaysTrue.setText("Always true");
+        gd = new GridData();
+        gd.horizontalSpan = 2;
+        alwaysTrue.setLayoutData(gd);
+
+        Button importButton = new Button(top, SWT.PUSH);
+        importButton.setText("Imports ...");
+        importButton.setFont(JFaceResources.getDialogFont());
+        importButton.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+                importButtonPressed();
+            }
+        });
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = GridData.END;
+        importButton.setLayoutData(gd);
+
+        Button globalButton = new Button(top, SWT.PUSH);
+        globalButton.setText("Globals ...");
+        globalButton.setFont(JFaceResources.getDialogFont());
+        globalButton.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+                globalButtonPressed();
+            }
+        });
+        gd = new GridData();
+        gd.horizontalAlignment = GridData.END;
+        globalButton.setLayoutData(gd);
 
         Label l3 = new Label(top, SWT.NONE);
         gd = new GridData();
@@ -212,13 +212,13 @@ public class RuleFlowConstraintDialog extends Dialog {
         gd = new GridData();
         typeCombo.setLayoutData(gd);
         typeCombo.addSelectionListener(new SelectionListener() {
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
-			public void widgetSelected(SelectionEvent e) {
-				if (completionProcessor != null) {
-					completionProcessor.setType(typeCombo.getText());
-				}
-			}
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+            public void widgetSelected(SelectionEvent e) {
+                if (completionProcessor != null) {
+                    completionProcessor.setType(typeCombo.getText());
+                }
+            }
         });
         typeCombo.select(0);
         
@@ -232,142 +232,142 @@ public class RuleFlowConstraintDialog extends Dialog {
         gd = new GridData();
         dialectCombo.setLayoutData(gd);
         
-		tabFolder = new TabFolder(parent, SWT.NONE);
-		gd = new GridData();
-		gd.horizontalSpan = 4;
-		gd.grabExcessHorizontalSpace = true;
-		gd.grabExcessVerticalSpace = true;
-		gd.verticalAlignment = GridData.FILL;
-		gd.horizontalAlignment = GridData.FILL;
-		tabFolder.setLayoutData(gd);
-		TabItem textEditorTab = new TabItem(tabFolder, SWT.NONE);
-		textEditorTab.setText("Textual Editor");
+        tabFolder = new TabFolder(parent, SWT.NONE);
+        gd = new GridData();
+        gd.horizontalSpan = 4;
+        gd.grabExcessHorizontalSpace = true;
+        gd.grabExcessVerticalSpace = true;
+        gd.verticalAlignment = GridData.FILL;
+        gd.horizontalAlignment = GridData.FILL;
+        tabFolder.setLayoutData(gd);
+        TabItem textEditorTab = new TabItem(tabFolder, SWT.NONE);
+        textEditorTab.setText("Textual Editor");
 
-		textEditorTab.setControl(createTextualEditor(tabFolder));
+        textEditorTab.setControl(createTextualEditor(tabFolder));
 
-		alwaysTrue.addSelectionListener(new SelectionListener() {
-			public void widgetSelected(SelectionEvent e) {
-				tabFolder.setVisible(!alwaysTrue.getSelection());
-			}
+        alwaysTrue.addSelectionListener(new SelectionListener() {
+            public void widgetSelected(SelectionEvent e) {
+                tabFolder.setVisible(!alwaysTrue.getSelection());
+            }
 
-			public void widgetDefaultSelected(SelectionEvent e) {
-				widgetSelected(e);
-			}
-		});
+            public void widgetDefaultSelected(SelectionEvent e) {
+                widgetSelected(e);
+            }
+        });
 
-		return tabFolder;
-	}
-	
-	private void importButtonPressed() {
-		final Runnable r = new Runnable() {
-			public void run() {
-				RuleFlowImportsDialog dialog =
-					new RuleFlowImportsDialog(getShell(), process);
-				dialog.create();
-				int code = dialog.open();
-				if (code != CANCEL) {
-					List imports = dialog.getImports();
-					((org.jbpm.process.core.Process) process).setImports(imports);
-					completionProcessor.reset();
-				}
-			}
-		};
-		r.run();
-	}
+        return tabFolder;
+    }
 
-	private void globalButtonPressed() {
-		final Runnable r = new Runnable() {
-			public void run() {
-				RuleFlowGlobalsDialog dialog =
-					new RuleFlowGlobalsDialog(getShell(), process);
-				dialog.create();
-				int code = dialog.open();
-				if (code != CANCEL) {
-					Map globals = dialog.getGlobals();
-					((org.jbpm.process.core.Process) process).setGlobals(globals);
-					completionProcessor.reset();
-				}
-			}
-		};
-		r.run();
-	}
-	
-	public void fixType(int index) {
-		typeCombo.select(index);
-		typeCombo.setEnabled(false);
-	}
+    private void importButtonPressed() {
+        final Runnable r = new Runnable() {
+            public void run() {
+                RuleFlowImportsDialog dialog =
+                    new RuleFlowImportsDialog(getShell(), process);
+                dialog.create();
+                int code = dialog.open();
+                if (code != CANCEL) {
+                    List imports = dialog.getImports();
+                    ((org.jbpm.process.core.Process) process).setImports(imports);
+                    completionProcessor.reset();
+                }
+            }
+        };
+        r.run();
+    }
 
-	public void fixDialect(int index) {
-		typeCombo.select(index);
-		typeCombo.setEnabled(false);
-	}
+    private void globalButtonPressed() {
+        final Runnable r = new Runnable() {
+            public void run() {
+                RuleFlowGlobalsDialog dialog =
+                    new RuleFlowGlobalsDialog(getShell(), process);
+                dialog.create();
+                int code = dialog.open();
+                if (code != CANCEL) {
+                    Map globals = dialog.getGlobals();
+                    ((org.jbpm.process.core.Process) process).setGlobals(globals);
+                    completionProcessor.reset();
+                }
+            }
+        };
+        r.run();
+    }
 
-	protected void okPressed() {
-		int selectionIndex = tabFolder.getSelectionIndex();
-		if (selectionIndex == 1) {
-			updateTranslation();
-		} else {
-			updateConstraint();
-		}
-		super.okPressed();
-	}
+    public void fixType(int index) {
+        typeCombo.select(index);
+        typeCombo.setEnabled(false);
+    }
 
-	private void updateTranslation() {
-		// TODO add custom token model checker
-		success = true;
-		constraint = new ConstraintImpl();
-		constraint.setConstraint(null);
-		constraint.setConstraint(getConstraintText());
-		constraint.setName(nameText.getText());
-		try {
-			constraint.setPriority(Integer.parseInt(priorityText.getText()));
-		} catch (NumberFormatException exc) {
-			constraint.setPriority(1);
-		}
-	}
+    public void fixDialect(int index) {
+        typeCombo.select(index);
+        typeCombo.setEnabled(false);
+    }
 
-	public boolean isSuccess() {
-		return success;
-	}
+    protected void okPressed() {
+        int selectionIndex = tabFolder.getSelectionIndex();
+        if (selectionIndex == 1) {
+            updateTranslation();
+        } else {
+            updateConstraint();
+        }
+        super.okPressed();
+    }
 
-	public void updateConstraint() {
-		constraint = new ConstraintImpl();
-		if (!alwaysTrue.getSelection()) {
-			constraint.setConstraint(getConstraintText());
-		} else {
-			if (typeCombo.getSelectionIndex() == 0) {
-				constraint.setConstraint("eval(true)");
-			} else {
-				constraint.setConstraint("return true;");
-			}
-		}
-		constraint.setName(nameText.getText());
-		try {
-			constraint.setPriority(Integer.parseInt(priorityText.getText()));
-		} catch (NumberFormatException exc) {
-			constraint.setPriority(1);
-		}
-		constraint.setType(typeCombo.getItem(typeCombo.getSelectionIndex()));
+    private void updateTranslation() {
+        // TODO add custom token model checker
+        success = true;
+        constraint = new ConstraintImpl();
+        constraint.setConstraint(null);
+        constraint.setConstraint(getConstraintText());
+        constraint.setName(nameText.getText());
+        try {
+            constraint.setPriority(Integer.parseInt(priorityText.getText()));
+        } catch (NumberFormatException exc) {
+            constraint.setPriority(1);
+        }
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void updateConstraint() {
+        constraint = new ConstraintImpl();
+        if (!alwaysTrue.getSelection()) {
+            constraint.setConstraint(getConstraintText());
+        } else {
+            if (typeCombo.getSelectionIndex() == 0) {
+                constraint.setConstraint("eval(true)");
+            } else {
+                constraint.setConstraint("return true;");
+            }
+        }
+        constraint.setName(nameText.getText());
+        try {
+            constraint.setPriority(Integer.parseInt(priorityText.getText()));
+        } catch (NumberFormatException exc) {
+            constraint.setPriority(1);
+        }
+        constraint.setType(typeCombo.getItem(typeCombo.getSelectionIndex()));
         constraint.setDialect(dialectCombo.getItem(dialectCombo.getSelectionIndex()));
-	}
+    }
 
-	public Constraint getConstraint() {
-		return constraint;
-	}
+    public Constraint getConstraint() {
+        return constraint;
+    }
 
-	public void setConstraint(Constraint constraint) {
-		this.constraint = constraint;
-		if (constraint != null) {
-			if ("eval(true)".equals(constraint.getConstraint()) || "return true;".equals(constraint.getConstraint())) {
-				alwaysTrue.setSelection(true);
-			} else {
-				setConstraintText(constraint.getConstraint() == null ? "" : constraint.getConstraint());
-			}
-			tabFolder.setVisible(!alwaysTrue.getSelection());
-			nameText.setText(constraint.getName() == null ? "" : constraint
-					.getName());
-			priorityText.setText(constraint.getPriority() + "");
-	        int index = 0;
+    public void setConstraint(Constraint constraint) {
+        this.constraint = constraint;
+        if (constraint != null) {
+            if ("eval(true)".equals(constraint.getConstraint()) || "return true;".equals(constraint.getConstraint())) {
+                alwaysTrue.setSelection(true);
+            } else {
+                setConstraintText(constraint.getConstraint() == null ? "" : constraint.getConstraint());
+            }
+            tabFolder.setVisible(!alwaysTrue.getSelection());
+            nameText.setText(constraint.getName() == null ? "" : constraint
+                    .getName());
+            priorityText.setText(constraint.getPriority() + "");
+            int index = 0;
             String type = constraint.getType();
             int found = ArrayUtils.indexOf(TYPES, type);
             if (found >= 0) {
@@ -379,13 +379,13 @@ public class RuleFlowConstraintDialog extends Dialog {
             found = ArrayUtils.indexOf(DIALECTS, dialect);
             if (found >= 0) {
                 index = found;
-	        }
-	        dialectCombo.select(index);
+            }
+            dialectCombo.select(index);
             completionProcessor.setType(typeCombo.getText());
-			setConstraintText(constraint.getConstraint());
-		} else {
-			priorityText.setText("1");
-			nameText.setText("constraint");
-		}
-	}
+            setConstraintText(constraint.getConstraint());
+        } else {
+            priorityText.setText("1");
+            nameText.setText("constraint");
+        }
+    }
 }

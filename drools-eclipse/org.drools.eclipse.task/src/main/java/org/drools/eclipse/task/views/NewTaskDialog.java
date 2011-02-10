@@ -45,19 +45,19 @@ import org.jbpm.task.service.ContentData;
 
 public class NewTaskDialog extends Dialog {
 
-	private Task task;
-	private ContentData content;
-	
-	private Text nameText;
-	private Text actorText;
-	private Text subjectText;
-	private Text commentText;
-	private Text priorityText;
-	private Button skippableButton;
-	private Text contentText;
-	
-	public NewTaskDialog(Shell shell) {
-		super(shell);
+    private Task task;
+    private ContentData content;
+
+    private Text nameText;
+    private Text actorText;
+    private Text subjectText;
+    private Text commentText;
+    private Text priorityText;
+    private Button skippableButton;
+    private Text contentText;
+
+    public NewTaskDialog(Shell shell) {
+        super(shell);
         setShellStyle(getShellStyle() | SWT.RESIZE);
     }
     
@@ -70,9 +70,9 @@ public class NewTaskDialog extends Dialog {
         return new Point(450, 350);
     }
     
-	protected Control createDialogArea(Composite parent) {
-		Composite composite = (Composite) super.createDialogArea(parent);
-		GridLayout gridLayout = new GridLayout();
+    protected Control createDialogArea(Composite parent) {
+        Composite composite = (Composite) super.createDialogArea(parent);
+        GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 2;
         composite.setLayout(gridLayout);
         Label label = new Label(composite, SWT.NONE);
@@ -133,87 +133,87 @@ public class NewTaskDialog extends Dialog {
         gridData.verticalAlignment = GridData.FILL;
         contentText.setLayoutData(gridData);
         
-		return composite;
-	}
+        return composite;
+    }
 
-	protected void buttonPressed(int buttonId) {
+    protected void buttonPressed(int buttonId) {
         if (buttonId == IDialogConstants.OK_ID) {
             createTask();
         }
         super.buttonPressed(buttonId);
     }
-	
-	private void createTask() {
-		task = new Task();
-		String taskName = nameText.getText();
-		List<I18NText> names = new ArrayList<I18NText>();
-		names.add(new I18NText("en-UK", taskName));
-		task.setNames(names);
-		String subject = subjectText.getText();
-		List<I18NText> subjects = new ArrayList<I18NText>();
-		subjects.add(new I18NText("en-UK", subject));
-		task.setSubjects(subjects);
-		String comment = commentText.getText();
-		List<I18NText> descriptions = new ArrayList<I18NText>();
-		descriptions.add(new I18NText("en-UK", comment));
-		task.setDescriptions(descriptions);
-		String priority = priorityText.getText();
-		priorityText.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				String priority = priorityText.getText();
-				boolean enabled = false;
-				if (priority.length() == 0) {
-					enabled = true;
-				} else {
-					try {
-						new Integer(priority);
-						enabled = true;
-					} catch (NumberFormatException exc) {
-						// do nothing
-					}
-				}
-				getButton(IDialogConstants.OK_ID).setEnabled(enabled);
-					
-			}
-		});
-		try {
-			task.setPriority(new Integer(priority));
-		} catch (NumberFormatException e) {
-			// do nothing
-		}
-		TaskData taskData = new TaskData();
-		taskData.setSkipable(skippableButton.getSelection());
-		task.setTaskData(taskData);
-		
-		String actors = actorText.getText();
-		PeopleAssignments assignments = new PeopleAssignments();
-		String[] actorIds = actors.trim().split(",");
-		List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
-		for (String id: actorIds) {
-			User user = new User();
-			user.setId(id.trim());
-			potentialOwners.add(user);
-		}
-		assignments.setPotentialOwners(potentialOwners);
-		
-		List<OrganizationalEntity> businessAdministrators = new ArrayList<OrganizationalEntity>();
-		businessAdministrators.add(new User("Administrator"));
-		assignments.setBusinessAdministrators(businessAdministrators);
-		task.setPeopleAssignments(assignments);
-		
-		ContentData content = null;
-		String contentString = contentText.getText();
-		content = new ContentData();
-		content.setContent(contentString.getBytes());
-		content.setAccessType(AccessType.Inline);
-	}
-	
-	public Task getTask() {
-		return task;
-	}
-	
-	public ContentData getContent() {
-		return content;
-	}
-	
+
+    private void createTask() {
+        task = new Task();
+        String taskName = nameText.getText();
+        List<I18NText> names = new ArrayList<I18NText>();
+        names.add(new I18NText("en-UK", taskName));
+        task.setNames(names);
+        String subject = subjectText.getText();
+        List<I18NText> subjects = new ArrayList<I18NText>();
+        subjects.add(new I18NText("en-UK", subject));
+        task.setSubjects(subjects);
+        String comment = commentText.getText();
+        List<I18NText> descriptions = new ArrayList<I18NText>();
+        descriptions.add(new I18NText("en-UK", comment));
+        task.setDescriptions(descriptions);
+        String priority = priorityText.getText();
+        priorityText.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                String priority = priorityText.getText();
+                boolean enabled = false;
+                if (priority.length() == 0) {
+                    enabled = true;
+                } else {
+                    try {
+                        new Integer(priority);
+                        enabled = true;
+                    } catch (NumberFormatException exc) {
+                        // do nothing
+                    }
+                }
+                getButton(IDialogConstants.OK_ID).setEnabled(enabled);
+
+            }
+        });
+        try {
+            task.setPriority(new Integer(priority));
+        } catch (NumberFormatException e) {
+            // do nothing
+        }
+        TaskData taskData = new TaskData();
+        taskData.setSkipable(skippableButton.getSelection());
+        task.setTaskData(taskData);
+
+        String actors = actorText.getText();
+        PeopleAssignments assignments = new PeopleAssignments();
+        String[] actorIds = actors.trim().split(",");
+        List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
+        for (String id: actorIds) {
+            User user = new User();
+            user.setId(id.trim());
+            potentialOwners.add(user);
+        }
+        assignments.setPotentialOwners(potentialOwners);
+
+        List<OrganizationalEntity> businessAdministrators = new ArrayList<OrganizationalEntity>();
+        businessAdministrators.add(new User("Administrator"));
+        assignments.setBusinessAdministrators(businessAdministrators);
+        task.setPeopleAssignments(assignments);
+
+        ContentData content = null;
+        String contentString = contentText.getText();
+        content = new ContentData();
+        content.setContent(contentString.getBytes());
+        content.setAccessType(AccessType.Inline);
+    }
+
+    public Task getTask() {
+        return task;
+    }
+
+    public ContentData getContent() {
+        return content;
+    }
+
 }

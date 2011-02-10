@@ -34,23 +34,23 @@ import org.w3c.dom.Element;
  * @see Conflict
  */
 public class ConflictReportResponse extends ElementEditor {
-	/**
-	 * Creates a new editor on the given WebDAV conflict-report-response
-	 * element. The element is assumed to be well formed.
-	 *
-	 * @param root a conflict-report-response element
-	 * @throws        MalformedElementException if there is reason to
-	 *                believe that the element is not well formed
-	 */
-	public ConflictReportResponse(Element root) throws MalformedElementException {
-		super(root, "conflict-report-response"); //$NON-NLS-1$
-	}
+    /**
+     * Creates a new editor on the given WebDAV conflict-report-response
+     * element. The element is assumed to be well formed.
+     *
+     * @param root a conflict-report-response element
+     * @throws        MalformedElementException if there is reason to
+     *                believe that the element is not well formed
+     */
+    public ConflictReportResponse(Element root) throws MalformedElementException {
+        super(root, "conflict-report-response"); //$NON-NLS-1$
+    }
 
-	public Conflict addConflict() {
-		return null;
-	}
+    public Conflict addConflict() {
+        return null;
+    }
 
-	public Enumeration getConflicts() throws MalformedElementException {
-		return null;
-	}
+    public Enumeration getConflicts() throws MalformedElementException {
+        return null;
+    }
 }

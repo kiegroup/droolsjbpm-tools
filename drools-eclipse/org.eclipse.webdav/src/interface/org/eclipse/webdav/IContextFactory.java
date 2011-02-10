@@ -34,25 +34,25 @@ import org.eclipse.webdav.internal.kernel.Context;
  * @see Context
  */
 public interface IContextFactory {
-	/**
-	 * Create a new empty context.
-	 *
-	 * @return the new empty <code>Context</code>.
-	 */
-	public IContext newContext();
+    /**
+     * Create a new empty context.
+     *
+     * @return the new empty <code>Context</code>.
+     */
+    public IContext newContext();
 
-	/**
-	 * Creates a new context based on the given context.
-	 * <p>
-	 * The newly created context acts like an acetate layer
-	 * over the base context: any changes made to the new
-	 * context are confined to that layer and do not affect
-	 * the base context; but changes to the base context show
-	 * through to the new context unless masked by another
-	 * change made to the new context (c.f. properties).</p>
-	 *
-	 * @param baseContext the default values for the new context.
-	 * @return the new wrapping <code>Context</code>.
-	 */
-	public IContext newContext(IContext baseContext);
+    /**
+     * Creates a new context based on the given context.
+     * <p>
+     * The newly created context acts like an acetate layer
+     * over the base context: any changes made to the new
+     * context are confined to that layer and do not affect
+     * the base context; but changes to the base context show
+     * through to the new context unless masked by another
+     * change made to the new context (c.f. properties).</p>
+     *
+     * @param baseContext the default values for the new context.
+     * @return the new wrapping <code>Context</code>.
+     */
+    public IContext newContext(IContext baseContext);
 }

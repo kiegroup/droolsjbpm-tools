@@ -33,40 +33,40 @@ import org.guvnor.tools.Activator;
  *
  */
 public class GuvnorResourceEdition implements IStreamContentAccessor, ITypedElement {
-	
-	private String contents;
-	private String name;
-	private String type;
-	private String encoding;
-	
-	public GuvnorResourceEdition(String name, String type, String contents, String encoding) {
-		this.name = name;
-		this.type = type;
-		this.contents = contents;
-		this.encoding = encoding;
-	}
-	
-	public InputStream getContents() throws CoreException {
-		byte[] bytes = null;
-		try {
-			bytes = contents.getBytes(encoding);
-		} catch (UnsupportedEncodingException e) {
-			Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
-			// Better than nothing?
-			bytes = contents.getBytes();
-		}
-		return new ByteArrayInputStream(bytes);
-	}
 
-	public Image getImage() {
-		return null;
-	}
+    private String contents;
+    private String name;
+    private String type;
+    private String encoding;
 
-	public String getName() {
-		return name;
-	}
+    public GuvnorResourceEdition(String name, String type, String contents, String encoding) {
+        this.name = name;
+        this.type = type;
+        this.contents = contents;
+        this.encoding = encoding;
+    }
 
-	public String getType() {
-		return type;
-	}
+    public InputStream getContents() throws CoreException {
+        byte[] bytes = null;
+        try {
+            bytes = contents.getBytes(encoding);
+        } catch (UnsupportedEncodingException e) {
+            Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
+            // Better than nothing?
+            bytes = contents.getBytes();
+        }
+        return new ByteArrayInputStream(bytes);
+    }
+
+    public Image getImage() {
+        return null;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getType() {
+        return type;
+    }
 }

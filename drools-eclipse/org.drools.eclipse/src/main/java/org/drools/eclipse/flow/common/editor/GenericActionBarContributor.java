@@ -43,9 +43,9 @@ public class GenericActionBarContributor extends ActionBarContributor {
         addRetargetAction( new RedoRetargetAction() );
         addRetargetAction( new DeleteRetargetAction() );
 
-    	addRetargetAction( new ZoomInRetargetAction() );
-    	addRetargetAction( new ZoomOutRetargetAction() );
-    	
+        addRetargetAction( new ZoomInRetargetAction() );
+        addRetargetAction( new ZoomOutRetargetAction() );
+
         addRetargetAction( new AlignmentRetargetAction( PositionConstants.LEFT ) );
         addRetargetAction( new AlignmentRetargetAction( PositionConstants.CENTER ) );
         addRetargetAction( new AlignmentRetargetAction( PositionConstants.RIGHT ) );
@@ -53,8 +53,8 @@ public class GenericActionBarContributor extends ActionBarContributor {
         addRetargetAction( new AlignmentRetargetAction( PositionConstants.MIDDLE ) );
         addRetargetAction( new AlignmentRetargetAction( PositionConstants.BOTTOM ) );
         
-    	addRetargetAction( new RetargetAction(
-			GEFActionConstants.TOGGLE_GRID_VISIBILITY, "Grid" ));
+        addRetargetAction( new RetargetAction(
+            GEFActionConstants.TOGGLE_GRID_VISIBILITY, "Grid" ));
     }
 
     public void contributeToToolBar(IToolBarManager toolBarManager) {

@@ -30,7 +30,7 @@ import org.eclipse.gef.commands.Command;
  */
 public class ElementConnectionCreateCommand extends Command {
 
-	private ElementConnection connection;
+    private ElementConnection connection;
     private ElementWrapper source;
     private ElementWrapper target;
 
@@ -42,9 +42,9 @@ public class ElementConnectionCreateCommand extends Command {
         // Check for existence of connection already
         List connections = source.getOutgoingConnections();
         for (Iterator it = connections.iterator(); it.hasNext(); ) {
-        	ElementConnection conn = (ElementConnection) it.next();
+            ElementConnection conn = (ElementConnection) it.next();
             if (conn.getTarget().equals(target)) {
-            	return false;
+                return false;
             }
         }
         return source.acceptsOutgoingConnection(connection, target)
@@ -66,11 +66,11 @@ public class ElementConnectionCreateCommand extends Command {
     
 
     public void redo() {
-    	connection.connect(source, target);
+        connection.connect(source, target);
     }
 
     public void setSource(ElementWrapper source) {
-    	this.source = source;
+        this.source = source;
     }
 
     public void setConnection(ElementConnection connection) {
@@ -78,11 +78,11 @@ public class ElementConnectionCreateCommand extends Command {
     }
 
     public void setTarget(ElementWrapper target) {
-    	this.target = target;
+        this.target = target;
     }
 
     public void undo() {
-    	connection.disconnect();
+        connection.disconnect();
     }
 
 }

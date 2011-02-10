@@ -29,27 +29,27 @@ import org.eclipse.core.runtime.PlatformObject;
  * @author jgraham
  */
 public class StringStorage extends PlatformObject implements IStorage {
-	private String contents;
-	private String name;
-	
-	public StringStorage(String contents, String name) {
-		this.contents = contents;
-		this.name = name;
-	}
+    private String contents;
+    private String name;
 
-	public InputStream getContents() throws CoreException {
-		return new ByteArrayInputStream(contents.getBytes());
-	}
+    public StringStorage(String contents, String name) {
+        this.contents = contents;
+        this.name = name;
+    }
 
-	public IPath getFullPath() {
-		return null;
-	}
+    public InputStream getContents() throws CoreException {
+        return new ByteArrayInputStream(contents.getBytes());
+    }
 
-	public String getName() {
-		return name + " (Read only)"; //$NON-NLS-1$
-	}
+    public IPath getFullPath() {
+        return null;
+    }
 
-	public boolean isReadOnly() {
-		return true;
-	}
+    public String getName() {
+        return name + " (Read only)"; //$NON-NLS-1$
+    }
+
+    public boolean isReadOnly() {
+        return true;
+    }
 }

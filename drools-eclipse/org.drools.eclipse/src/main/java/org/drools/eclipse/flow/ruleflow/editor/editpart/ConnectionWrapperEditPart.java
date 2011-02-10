@@ -26,41 +26,41 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 
 public class ConnectionWrapperEditPart extends ElementConnectionEditPart {
-	
-	private Label sourceLabel;
 
-	protected ElementConnectionFactory getDefaultElementConnectionFactory() {
-    	return new ConnectionWrapperFactory();
+    private Label sourceLabel;
+
+    protected ElementConnectionFactory getDefaultElementConnectionFactory() {
+        return new ConnectionWrapperFactory();
     }
-	
-	public ConnectionWrapper getConnectionWrapper() {
-		return (ConnectionWrapper) getModel();
-	}
-	
+
+    public ConnectionWrapper getConnectionWrapper() {
+        return (ConnectionWrapper) getModel();
+    }
+
     protected IFigure createFigure() {
         Connection result = (Connection) super.createFigure();
         // add connection label
         String label = (String) getConnectionWrapper().getConnection().getMetaData("label");
         if (label != null) {
-	        ConnectionEndpointLocator sourceEndpointLocator = new ConnectionEndpointLocator(result, true);
-	        sourceEndpointLocator.setVDistance(15);
-	        sourceLabel = new Label(label);
-	        result.add(sourceLabel, sourceEndpointLocator);
+            ConnectionEndpointLocator sourceEndpointLocator = new ConnectionEndpointLocator(result, true);
+            sourceEndpointLocator.setVDistance(15);
+            sourceLabel = new Label(label);
+            result.add(sourceLabel, sourceEndpointLocator);
         }
         return result;
     }
     
     protected void refreshLabel() {
-    	super.refreshLabel();
-    	String label = (String) getConnectionWrapper().getConnection().getMetaData("label");
+        super.refreshLabel();
+        String label = (String) getConnectionWrapper().getConnection().getMetaData("label");
         if (sourceLabel != null) {
-        	sourceLabel.setText(label == null ? "" : label);
+            sourceLabel.setText(label == null ? "" : label);
         } else if (label != null) {
-        	Connection connection = (Connection) getFigure();
-        	ConnectionEndpointLocator endpointLocator = new ConnectionEndpointLocator(connection, true);
-	        endpointLocator.setVDistance(15);
-	        sourceLabel = new Label(label);
-	        connection.add(sourceLabel, endpointLocator);
+            Connection connection = (Connection) getFigure();
+            ConnectionEndpointLocator endpointLocator = new ConnectionEndpointLocator(connection, true);
+            endpointLocator.setVDistance(15);
+            sourceLabel = new Label(label);
+            connection.add(sourceLabel, endpointLocator);
         }
     }
     

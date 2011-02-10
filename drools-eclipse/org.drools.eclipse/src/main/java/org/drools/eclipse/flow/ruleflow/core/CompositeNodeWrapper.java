@@ -37,15 +37,15 @@ import org.jbpm.workflow.core.node.CompositeNode;
 
 public abstract class CompositeNodeWrapper extends ElementContainerElementWrapper implements NodeWrapper {
 
-	public static final String ON_ENTRY_ACTIONS = "OnEntryActions";
-	public static final String ON_EXIT_ACTIONS = "OnExitActions";
+    public static final String ON_ENTRY_ACTIONS = "OnEntryActions";
+    public static final String ON_EXIT_ACTIONS = "OnExitActions";
     public static final String TIMERS = "Timers";
-	
+
     protected IPropertyDescriptor[] descriptors;
     
-	private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 510l;
 
-	public void setNode(Node node) {
+    public void setNode(Node node) {
         setElement(node);
     }
     
@@ -94,16 +94,16 @@ public abstract class CompositeNodeWrapper extends ElementContainerElementWrappe
     
     public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
         return getIncomingConnections().isEmpty()
-        	&& (source == null
-    			|| ((NodeWrapper) source).getNode().getNodeContainer() == getNode().getNodeContainer()
-    			|| ((NodeWrapper) source).getNode().getNodeContainer() == getNode());
+            && (source == null
+                || ((NodeWrapper) source).getNode().getNodeContainer() == getNode().getNodeContainer()
+                || ((NodeWrapper) source).getNode().getNodeContainer() == getNode());
     }
 
     public boolean acceptsOutgoingConnection(ElementConnection connection, ElementWrapper target) {
         return getOutgoingConnections().isEmpty()
-        	&& (target == null
-    			|| ((NodeWrapper) target).getNode().getNodeContainer() == getNode().getNodeContainer()
-        		|| ((NodeWrapper) target).getNode().getNodeContainer() == getNode());
+            && (target == null
+                || ((NodeWrapper) target).getNode().getNodeContainer() == getNode().getNodeContainer()
+                || ((NodeWrapper) target).getNode().getNodeContainer() == getNode());
     }
 
     protected void internalAddElement(ElementWrapper element) {
@@ -115,25 +115,25 @@ public abstract class CompositeNodeWrapper extends ElementContainerElementWrappe
     }
  
     public IPropertyDescriptor[] getPropertyDescriptors() {
-    	if (descriptors == null) {
-    		initDescriptors();
-    	}
+        if (descriptors == null) {
+            initDescriptors();
+        }
         return descriptors;
     }
 
     protected void initDescriptors() {
-    	IPropertyDescriptor[] oldDescriptors = DefaultElementWrapper.DESCRIPTORS; 
+        IPropertyDescriptor[] oldDescriptors = DefaultElementWrapper.DESCRIPTORS;
         descriptors = new IPropertyDescriptor[oldDescriptors.length + 3];
         System.arraycopy(oldDescriptors, 0, descriptors, 0, oldDescriptors.length);
         descriptors[descriptors.length - 3] = new OnEntryActionsPropertyDescriptor(
-    			ON_ENTRY_ACTIONS, "On Entry Actions", getCompositeNode(),
-    			(WorkflowProcess) getParent().getProcessWrapper().getProcess());
+                ON_ENTRY_ACTIONS, "On Entry Actions", getCompositeNode(),
+                (WorkflowProcess) getParent().getProcessWrapper().getProcess());
         descriptors[descriptors.length - 2] = new OnExitActionsPropertyDescriptor(
-    			ON_EXIT_ACTIONS, "On Exit Actions", getCompositeNode(),
-    			(WorkflowProcess) getParent().getProcessWrapper().getProcess());
+                ON_EXIT_ACTIONS, "On Exit Actions", getCompositeNode(),
+                (WorkflowProcess) getParent().getProcessWrapper().getProcess());
         descriptors[descriptors.length - 1] = 
             new TimersPropertyDescriptor(TIMERS, "Timers", getCompositeNode(),
-        		(WorkflowProcess) getParent().getProcessWrapper().getProcess());
+                (WorkflowProcess) getParent().getProcessWrapper().getProcess());
     }
     
     public Object getPropertyValue(Object id) {
@@ -151,28 +151,28 @@ public abstract class CompositeNodeWrapper extends ElementContainerElementWrappe
 
     public void resetPropertyValue(Object id) {
         if (ON_ENTRY_ACTIONS.equals(id)) {
-        	getCompositeNode().setActions(ExtendedNodeImpl.EVENT_NODE_ENTER, null);
+            getCompositeNode().setActions(ExtendedNodeImpl.EVENT_NODE_ENTER, null);
         } else if (ON_EXIT_ACTIONS.equals(id)) {
-        	getCompositeNode().setActions(ExtendedNodeImpl.EVENT_NODE_EXIT, null);
+            getCompositeNode().setActions(ExtendedNodeImpl.EVENT_NODE_EXIT, null);
         } else if (TIMERS.equals(id)) {
-        	getCompositeNode().removeAllTimers();
+            getCompositeNode().removeAllTimers();
         } else {
             super.resetPropertyValue(id);
         }
     }
 
     @SuppressWarnings("unchecked")
-	public void setPropertyValue(Object id, Object value) {
+    public void setPropertyValue(Object id, Object value) {
         if (ON_ENTRY_ACTIONS.equals(id)) {
-        	getCompositeNode().setActions(ExtendedNodeImpl.EVENT_NODE_ENTER, (List<DroolsAction>) value);
+            getCompositeNode().setActions(ExtendedNodeImpl.EVENT_NODE_ENTER, (List<DroolsAction>) value);
         } else if (ON_EXIT_ACTIONS.equals(id)) {
-        	getCompositeNode().setActions(ExtendedNodeImpl.EVENT_NODE_EXIT, (List<DroolsAction>) value);
+            getCompositeNode().setActions(ExtendedNodeImpl.EVENT_NODE_EXIT, (List<DroolsAction>) value);
         } else if (TIMERS.equals(id)) {
-        	getCompositeNode().removeAllTimers();
-        	// adding one by one so the ids are set correctly
-        	for (Map.Entry<Timer, DroolsAction> entry: ((Map<Timer, DroolsAction>) value).entrySet()) {
-        		getCompositeNode().addTimer(entry.getKey(), entry.getValue());
-        	}
+            getCompositeNode().removeAllTimers();
+            // adding one by one so the ids are set correctly
+            for (Map.Entry<Timer, DroolsAction> entry: ((Map<Timer, DroolsAction>) value).entrySet()) {
+                getCompositeNode().addTimer(entry.getKey(), entry.getValue());
+            }
         } else {
             super.setPropertyValue(id, value);
         }

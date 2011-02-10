@@ -30,9 +30,9 @@ package org.eclipse.webdav;
  */
 public interface IServerFactory {
 
-	/**
-	 * Returns a new server for the WebDAV server with
-	 * the given URL.
-	 */
-	public IServer newServer(String serverURL);
+    /**
+     * Returns a new server for the WebDAV server with
+     * the given URL.
+     */
+    public IServer newServer(String serverURL);
 }

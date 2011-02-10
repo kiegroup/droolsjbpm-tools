@@ -32,44 +32,44 @@ import org.w3c.dom.Element;
  * </p>
  */
 public class ResourceID extends Property {
-	/**
-	 * An ordered collection of the element names of the resourceid
-	 * element's children.
-	 */
-	protected static final String[] childNames = new String[] {"href"}; //$NON-NLS-1$
+    /**
+     * An ordered collection of the element names of the resourceid
+     * element's children.
+     */
+    protected static final String[] childNames = new String[] {"href"}; //$NON-NLS-1$
 
-	/**
-	 * Creates a new editor on the given WebDAV resourceid element. The
-	 * element is assumed to be well formed.
-	 *
-	 * @param root a resourceid element
-	 * @throws        MalformedElementException if there is reason to
-	 *                believe that the element is not well formed
-	 */
-	public ResourceID(Element root) throws MalformedElementException {
-		super(root, "resourceid"); //$NON-NLS-1$
-	}
+    /**
+     * Creates a new editor on the given WebDAV resourceid element. The
+     * element is assumed to be well formed.
+     *
+     * @param root a resourceid element
+     * @throws        MalformedElementException if there is reason to
+     *                believe that the element is not well formed
+     */
+    public ResourceID(Element root) throws MalformedElementException {
+        super(root, "resourceid"); //$NON-NLS-1$
+    }
 
-	/**
-	 * Returns this resourceid's href.
-	 *
-	 * @return this resourceid's href
-	 * @throws MalformedElementException if there is reason to believe that
-	 *         this editor's underlying element is not well formed
-	 */
-	public String getHref() throws MalformedElementException {
-		String href = getChildText(root, "href", true); //$NON-NLS-1$
-		ensureNotNull(Policy.bind("ensure.missingHrefElmt"), href); //$NON-NLS-1$
-		return decodeHref(href);
-	}
+    /**
+     * Returns this resourceid's href.
+     *
+     * @return this resourceid's href
+     * @throws MalformedElementException if there is reason to believe that
+     *         this editor's underlying element is not well formed
+     */
+    public String getHref() throws MalformedElementException {
+        String href = getChildText(root, "href", true); //$NON-NLS-1$
+        ensureNotNull(Policy.bind("ensure.missingHrefElmt"), href); //$NON-NLS-1$
+        return decodeHref(href);
+    }
 
-	/**
-	 * Sets this resourceid's href to the given href.
-	 *
-	 * @param href the href to set this resourceid's href to
-	 */
-	public void setHref(String href) {
-		Assert.isNotNull(href);
-		setChild(root, "href", encodeHref(href), childNames, true); //$NON-NLS-1$
-	}
+    /**
+     * Sets this resourceid's href to the given href.
+     *
+     * @param href the href to set this resourceid's href to
+     */
+    public void setHref(String href) {
+        Assert.isNotNull(href);
+        setChild(root, "href", encodeHref(href), childNames, true); //$NON-NLS-1$
+    }
 }

@@ -58,22 +58,22 @@ import org.jbpm.workflow.core.node.WorkItemNode;
  */
 public class WorkItemEditPart extends ElementEditPart {
 
-	private String SKIN =
-		DroolsEclipsePlugin.getDefault().getPreferenceStore().getString(IDroolsConstants.SKIN);
+    private String SKIN =
+        DroolsEclipsePlugin.getDefault().getPreferenceStore().getString(IDroolsConstants.SKIN);
 
-	private static final Color color = new Color(Display.getCurrent(), 255, 250, 205);
+    private static final Color color = new Color(Display.getCurrent(), 255, 250, 205);
 
     protected IFigure createFigure() {
-    	SkinProvider skinProvider = SkinManager.getInstance().getSkinProvider(SKIN);
-    	WorkItemFigureInterface figure = skinProvider.createWorkItemFigure();
-    	Rectangle constraint = getElementWrapper().getConstraint();
-    	if (constraint.width == -1) {
-    		constraint.width = figure.getSize().width;
-    	}
-    	if (constraint.height == -1) {
-    		constraint.height = figure.getSize().height;
-    	}
-    	getElementWrapper().setConstraint(constraint);
+        SkinProvider skinProvider = SkinManager.getInstance().getSkinProvider(SKIN);
+        WorkItemFigureInterface figure = skinProvider.createWorkItemFigure();
+        Rectangle constraint = getElementWrapper().getConstraint();
+        if (constraint.width == -1) {
+            constraint.width = figure.getSize().width;
+        }
+        if (constraint.height == -1) {
+            constraint.height = figure.getSize().height;
+        }
+        getElementWrapper().setConstraint(constraint);
         String icon = null;
         WorkDefinition workDefinition = getWorkDefinition();
         if (workDefinition instanceof WorkDefinitionExtension) {
@@ -115,8 +115,8 @@ public class WorkItemEditPart extends ElementEditPart {
     }
     
 //    public ConnectionAnchor getSourceConnectionAnchor(Request request) {
-//    	Point p = ((DropRequest) request).getLocation();
-//    	return ((WorkItemFigure) getFigure()).getOutgoingConnectionAnchorAt(p);
+//        Point p = ((DropRequest) request).getLocation();
+//        return ((WorkItemFigure) getFigure()).getOutgoingConnectionAnchorAt(p);
 //    }
     
     protected void doubleClicked() {
@@ -128,17 +128,17 @@ public class WorkItemEditPart extends ElementEditPart {
             if (editor != null) {
                 Work work = openEditor(editor, workDefinition);
                 if (work != null) {
-	                SetWorkCommand setCommand = new SetWorkCommand();
-	        		setCommand.setPropertyValue(work);
-	                CommandStack stack = getViewer().getEditDomain().getCommandStack();
-	                stack.execute(setCommand);
+                    SetWorkCommand setCommand = new SetWorkCommand();
+                    setCommand.setPropertyValue(work);
+                    CommandStack stack = getViewer().getEditDomain().getCommandStack();
+                    stack.execute(setCommand);
                 }
             }
         }
     }
     
     @SuppressWarnings("unchecked")
-	private Work openEditor(String editorClassName, WorkDefinition workDefinition) {
+    private Work openEditor(String editorClassName, WorkDefinition workDefinition) {
         IJavaProject javaProject = getProject();
         if (javaProject != null) {
             try {
@@ -165,7 +165,7 @@ public class WorkItemEditPart extends ElementEditPart {
     }
     
     public static interface WorkItemFigureInterface extends IFigure {
-    	void setIcon(Image icon);
+        void setIcon(Image icon);
     }
     
     public static class WorkItemFigure extends AbstractElementFigure implements WorkItemFigureInterface {
@@ -175,37 +175,37 @@ public class WorkItemEditPart extends ElementEditPart {
         private List<ConnectionAnchor> outgoingConnectionAnchors = new ArrayList<ConnectionAnchor>();
         
         public WorkItemFigure() {
-        	defaultConnectionAnchor = new ChopboxAnchor(this);
-//        	FixedConnectionAnchor c = new FixedConnectionAnchor(this);
-//        	outgoingConnectionAnchors.add(c);
-//        	c = new FixedConnectionAnchor(this);
-//        	outgoingConnectionAnchors.add(c);
+            defaultConnectionAnchor = new ChopboxAnchor(this);
+//            FixedConnectionAnchor c = new FixedConnectionAnchor(this);
+//            outgoingConnectionAnchors.add(c);
+//            c = new FixedConnectionAnchor(this);
+//            outgoingConnectionAnchors.add(c);
         }
         
         public void layoutConnectionAnchors() {
-//        	FixedConnectionAnchor c = (FixedConnectionAnchor) outgoingConnectionAnchors.get(0);
-//        	c.setOffsetV(getBounds().height);
-//        	c.setOffsetH(0);
-//        	c = (FixedConnectionAnchor) outgoingConnectionAnchors.get(1);
-//        	c.setOffsetV(getBounds().height);
-//        	c.setOffsetH(getBounds().width);
+//            FixedConnectionAnchor c = (FixedConnectionAnchor) outgoingConnectionAnchors.get(0);
+//            c.setOffsetV(getBounds().height);
+//            c.setOffsetH(0);
+//            c = (FixedConnectionAnchor) outgoingConnectionAnchors.get(1);
+//            c.setOffsetV(getBounds().height);
+//            c.setOffsetH(getBounds().width);
         }
         
         public ConnectionAnchor getOutgoingConnectionAnchorAt(Point p) {
-        	ConnectionAnchor closest = null;
-        	long min = Long.MAX_VALUE;
-        	for (ConnectionAnchor c: outgoingConnectionAnchors) {
-        		Point p2 = c.getLocation(null);
-        		long d = p.getDistance2(p2);
-        		if (d < min) {
-        			min = d;
-        			closest = c;
-        		}
-        	}
-        	if (min > 100) {
-        		return defaultConnectionAnchor;
-        	}
-        	return closest;
+            ConnectionAnchor closest = null;
+            long min = Long.MAX_VALUE;
+            for (ConnectionAnchor c: outgoingConnectionAnchors) {
+                Point p2 = c.getLocation(null);
+                long d = p.getDistance2(p2);
+                if (d < min) {
+                    min = d;
+                    closest = c;
+                }
+            }
+            if (min > 100) {
+                return defaultConnectionAnchor;
+            }
+            return closest;
         }
         
         protected void customizeFigure() {
@@ -229,42 +229,42 @@ public class WorkItemEditPart extends ElementEditPart {
         }
         
         public void validate() {
-        	if(isValid()) return;
-        	layoutConnectionAnchors();
-        	super.validate();
+            if(isValid()) return;
+            layoutConnectionAnchors();
+            super.validate();
         }
     }
     
     private class SetWorkCommand extends Command {
 
-		protected Work propertyValue;
-		protected Work undoValue;
-		protected IPropertySource target;
+        protected Work propertyValue;
+        protected Work undoValue;
+        protected IPropertySource target;
 
-		public SetWorkCommand() {
-			super("Set Work Value");
-		}
+        public SetWorkCommand() {
+            super("Set Work Value");
+        }
 
-		public boolean canExecute() {
-			return true;
-		}
+        public boolean canExecute() {
+            return true;
+        }
 
-		public void execute() {
-			undoValue = getWorkItemWrapper().getWorkItemNode().getWork();
-			getWorkItemWrapper().getWorkItemNode().setWork(propertyValue);
-		}
+        public void execute() {
+            undoValue = getWorkItemWrapper().getWorkItemNode().getWork();
+            getWorkItemWrapper().getWorkItemNode().setWork(propertyValue);
+        }
 
-		public void redo() {
-			execute();
-		}
+        public void redo() {
+            execute();
+        }
 
-		public void setPropertyValue(Work val) {
-			propertyValue = val;
-		}
+        public void setPropertyValue(Work val) {
+            propertyValue = val;
+        }
 
-		public void undo() {
-			getWorkItemWrapper().getWorkItemNode().setWork(undoValue);
-		}
-		
-	}
+        public void undo() {
+            getWorkItemWrapper().getWorkItemNode().setWork(undoValue);
+        }
+
+    }
 }

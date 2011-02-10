@@ -49,19 +49,19 @@ public class NewRuleFlowFilePage extends WizardNewFileCreationPage {
     }
     
     public void setTargetRuntime(String targetRuntime) {
-    	this.targetRuntime = targetRuntime;
+        this.targetRuntime = targetRuntime;
     }
 
     public boolean finish() {
         String fileName = getFileName();
         if (NewRuleFlowFileRuntimePage.DROOLS5.equals(targetRuntime)) {
-	        if (!fileName.endsWith(".rf")) {
-	            setFileName(fileName + ".rf");
-	        }
+            if (!fileName.endsWith(".rf")) {
+                setFileName(fileName + ".rf");
+            }
         } else if (NewRuleFlowFileRuntimePage.DROOLS5_1.equals(targetRuntime)) {
-	        if (!fileName.endsWith(".bpmn")) {
-	            setFileName(fileName + ".bpmn");
-	        }
+            if (!fileName.endsWith(".bpmn")) {
+                setFileName(fileName + ".bpmn");
+            }
         }
         org.eclipse.core.resources.IFile newFile = createNewFile();
         if (newFile == null)
@@ -80,13 +80,13 @@ public class NewRuleFlowFilePage extends WizardNewFileCreationPage {
     
     protected InputStream getInitialContents() {
         if (NewRuleFlowFileRuntimePage.DROOLS5.equals(targetRuntime)) {
-	        String s = "org/drools/eclipse/flow/ruleflow/SampleRuleFlow.rf.template";
-	        return getClass().getClassLoader().getResourceAsStream(s);
+            String s = "org/drools/eclipse/flow/ruleflow/SampleRuleFlow.rf.template";
+            return getClass().getClassLoader().getResourceAsStream(s);
         } else if (NewRuleFlowFileRuntimePage.DROOLS5_1.equals(targetRuntime)) {
             String s = "org/drools/eclipse/flow/bpmn2/Sample.bpmn.template";
-	        return getClass().getClassLoader().getResourceAsStream(s);
+            return getClass().getClassLoader().getResourceAsStream(s);
         } else {
-        	throw new IllegalArgumentException("Unknown target runtime " + targetRuntime);
+            throw new IllegalArgumentException("Unknown target runtime " + targetRuntime);
         }
     }
 }

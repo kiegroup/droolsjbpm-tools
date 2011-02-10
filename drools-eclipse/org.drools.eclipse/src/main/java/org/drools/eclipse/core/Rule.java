@@ -31,51 +31,51 @@ public class Rule extends DroolsElement {
     private RuleGroup group = null;
     
     Rule(Package parent, String ruleName) {
-    	super(parent);
+        super(parent);
         this.ruleName = ruleName;
     }
 
-	public Package getParentPackage() {
-		return (Package) getParent();
-	}
-	
-	public String getRuleName() {
-		return ruleName;
-	}
-	
-	public RuleGroup getGroup() {
-		Package pkg = (Package)getParent();
-		if (pkg.getDefaultGroup().equals(group)) {
-			return null;
-		}
-		return group;
-	}
+    public Package getParentPackage() {
+        return (Package) getParent();
+    }
 
-	public void setGroup(RuleGroup group) {
-		this.group = group;
-	}
+    public String getRuleName() {
+        return ruleName;
+    }
 
-	public RuleAttribute getAttribute(String attributeName) {
-		return (RuleAttribute) attributes.get(attributeName);
-	}
-	
-	public int getType() {
-		return RULE;
-	}
-	
-	public DroolsElement[] getChildren() {
-		return NO_ELEMENTS;			
-	}
+    public RuleGroup getGroup() {
+        Package pkg = (Package)getParent();
+        if (pkg.getDefaultGroup().equals(group)) {
+            return null;
+        }
+        return group;
+    }
 
-	public String toString() {
-		return ruleName;
-	}
+    public void setGroup(RuleGroup group) {
+        this.group = group;
+    }
 
-	// These are helper methods for creating the model and should not
-	// be used directly.  Use DroolsModelBuilder instead.
+    public RuleAttribute getAttribute(String attributeName) {
+        return (RuleAttribute) attributes.get(attributeName);
+    }
+
+    public int getType() {
+        return RULE;
+    }
+
+    public DroolsElement[] getChildren() {
+        return NO_ELEMENTS;
+    }
+
+    public String toString() {
+        return ruleName;
+    }
+
+    // These are helper methods for creating the model and should not
+    // be used directly.  Use DroolsModelBuilder instead.
 
     void addAttribute(RuleAttribute attribute) {
-		attributes.put(attribute.getAttributeName(), attribute);
-	}
+        attributes.put(attribute.getAttributeName(), attribute);
+    }
 
 }

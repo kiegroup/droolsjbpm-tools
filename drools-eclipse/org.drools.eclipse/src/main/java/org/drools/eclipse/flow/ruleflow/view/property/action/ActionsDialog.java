@@ -30,18 +30,18 @@ import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
  */
 public class ActionsDialog extends EditListDialog<DroolsAction> {
     
-	private WorkflowProcess process;
+    private WorkflowProcess process;
 
-	protected ActionsDialog(Shell parentShell, WorkflowProcess process) {
-		super(parentShell, "Edit Actions", ActionDialog.class);
-		this.process = process;
-	}
+    protected ActionsDialog(Shell parentShell, WorkflowProcess process) {
+        super(parentShell, "Edit Actions", ActionDialog.class);
+        this.process = process;
+    }
 
     protected DroolsAction createItem() {
         return new DroolsConsequenceAction();
     }
 
     protected EditBeanDialog<DroolsAction> createEditItemDialog() {
-    	return new ActionDialog(getShell(), process);
+        return new ActionDialog(getShell(), process);
     }
 }

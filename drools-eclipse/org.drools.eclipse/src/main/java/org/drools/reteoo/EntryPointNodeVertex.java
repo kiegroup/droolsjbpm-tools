@@ -73,7 +73,7 @@ public class EntryPointNodeVertex extends BaseVertex {
     }
     
     public String getEntryPointName() {
-    	return node.getEntryPoint().toString();
+        return node.getEntryPoint().toString();
     }
 
 }

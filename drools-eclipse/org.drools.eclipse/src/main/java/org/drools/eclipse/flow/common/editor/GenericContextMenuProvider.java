@@ -31,36 +31,36 @@ import org.eclipse.ui.actions.ActionFactory;
  */
 public class GenericContextMenuProvider extends ContextMenuProvider {
 
-	private ActionRegistry actionRegistry;
+    private ActionRegistry actionRegistry;
 
-	public GenericContextMenuProvider(GraphicalViewer viewer,
-			ActionRegistry registry) {
-		super(viewer);
-		setActionRegistry(registry);
-	}
+    public GenericContextMenuProvider(GraphicalViewer viewer,
+            ActionRegistry registry) {
+        super(viewer);
+        setActionRegistry(registry);
+    }
 
-	public void buildContextMenu(IMenuManager menu) {
-		GEFActionConstants.addStandardActionGroups(menu);
+    public void buildContextMenu(IMenuManager menu) {
+        GEFActionConstants.addStandardActionGroups(menu);
 
-		IAction action = getActionRegistry().getAction(
-				ActionFactory.UNDO.getId());
-		menu.appendToGroup(GEFActionConstants.GROUP_UNDO, action);
+        IAction action = getActionRegistry().getAction(
+                ActionFactory.UNDO.getId());
+        menu.appendToGroup(GEFActionConstants.GROUP_UNDO, action);
 
-		action = getActionRegistry().getAction(ActionFactory.REDO.getId());
-		menu.appendToGroup(GEFActionConstants.GROUP_UNDO, action);
+        action = getActionRegistry().getAction(ActionFactory.REDO.getId());
+        menu.appendToGroup(GEFActionConstants.GROUP_UNDO, action);
 
-		action = getActionRegistry().getAction(ActionFactory.DELETE.getId());
-		if (action.isEnabled()) {
-			menu.appendToGroup(GEFActionConstants.GROUP_EDIT, action);
-		}
-	}
+        action = getActionRegistry().getAction(ActionFactory.DELETE.getId());
+        if (action.isEnabled()) {
+            menu.appendToGroup(GEFActionConstants.GROUP_EDIT, action);
+        }
+    }
 
-	private ActionRegistry getActionRegistry() {
-		return actionRegistry;
-	}
+    private ActionRegistry getActionRegistry() {
+        return actionRegistry;
+    }
 
-	public void setActionRegistry(ActionRegistry registry) {
-		actionRegistry = registry;
-	}
+    public void setActionRegistry(ActionRegistry registry) {
+        actionRegistry = registry;
+    }
 
 }

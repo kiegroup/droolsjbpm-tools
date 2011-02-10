@@ -33,34 +33,34 @@ import org.jbpm.workflow.core.impl.ConnectionImpl;
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class ConnectionWrapper extends ElementConnection {
-		
-	private static final long serialVersionUID = 510l;
 
-	private ConnectionImpl connection;
-	
-	public ConnectionWrapper() {
-	}
-	
-	public Connection getConnection() {
-	    return connection;
-	}
-	
-	public void localSetConnection(Connection connection) {
-	    this.connection = (ConnectionImpl) connection;
-	}
-	
-	public void disconnect() {
-		super.disconnect();
-		connection.terminate();
-		connection = null;
-	}
-	
-	public void connect(ElementWrapper source, ElementWrapper target) {
-		connection = new ConnectionImpl(
-			((NodeWrapper) source).getNode(), Node.CONNECTION_DEFAULT_TYPE,
-			((NodeWrapper) target).getNode(), Node.CONNECTION_DEFAULT_TYPE);		
-		super.connect(source, target);
-	}
+    private static final long serialVersionUID = 510l;
+
+    private ConnectionImpl connection;
+
+    public ConnectionWrapper() {
+    }
+
+    public Connection getConnection() {
+        return connection;
+    }
+
+    public void localSetConnection(Connection connection) {
+        this.connection = (ConnectionImpl) connection;
+    }
+
+    public void disconnect() {
+        super.disconnect();
+        connection.terminate();
+        connection = null;
+    }
+
+    public void connect(ElementWrapper source, ElementWrapper target) {
+        connection = new ConnectionImpl(
+            ((NodeWrapper) source).getNode(), Node.CONNECTION_DEFAULT_TYPE,
+            ((NodeWrapper) target).getNode(), Node.CONNECTION_DEFAULT_TYPE);
+        super.connect(source, target);
+    }
 
     protected List<Point> internalGetBendpoints() {
         return (List<Point>) stringToBendpoints((String) connection.getMetaData("bendpoints"));
@@ -91,22 +91,22 @@ public class ConnectionWrapper extends ElementConnection {
         s = s.substring(1, s.length() - 1);
         String[] bendpoints = s.split(";");
         for (String bendpoint: bendpoints) {
-        	bendpoint = bendpoint.trim();
-        	if (bendpoint.length() != 0) { 
-        		String[] xy = bendpoint.split(",");
-        		if (xy.length != 2) {
-        			throw new IllegalArgumentException(
-    					"Unexpected bendpoint: " + bendpoint + " for bendpoints " + bendpoints +
-    					" - nb points = " + xy.length);
-        		}
-        		try {
-        			result.add(new Point(new Integer(xy[0]), new Integer(xy[1])));
-        		} catch (NumberFormatException e) {
-        			throw new IllegalArgumentException("Could not parse bendpoint " + bendpoint, e);
-        		}
-        	}
+            bendpoint = bendpoint.trim();
+            if (bendpoint.length() != 0) {
+                String[] xy = bendpoint.split(",");
+                if (xy.length != 2) {
+                    throw new IllegalArgumentException(
+                        "Unexpected bendpoint: " + bendpoint + " for bendpoints " + bendpoints +
+                        " - nb points = " + xy.length);
+                }
+                try {
+                    result.add(new Point(new Integer(xy[0]), new Integer(xy[1])));
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("Could not parse bendpoint " + bendpoint, e);
+                }
+            }
         }
         return result;
     }
-	
+
 }

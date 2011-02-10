@@ -30,24 +30,24 @@ public class Import extends DroolsElement {
         this.importClass = importClass;
     }
     
-	public Package getParentPackage() {
-		return (Package) getParent();
-	}
-	
-    public String getImportClass() {
-    	return importClass;
+    public Package getParentPackage() {
+        return (Package) getParent();
     }
 
-	public int getType() {
-		return IMPORT;
-	}
-	
-	public DroolsElement[] getChildren() {
-		return NO_ELEMENTS;
-	}
+    public String getImportClass() {
+        return importClass;
+    }
 
-	public String toString() {
-		return importClass;
-	}
+    public int getType() {
+        return IMPORT;
+    }
+
+    public DroolsElement[] getChildren() {
+        return NO_ELEMENTS;
+    }
+
+    public String toString() {
+        return importClass;
+    }
 
 }

@@ -21,13 +21,13 @@ package org.guvnor.tools;
  * @author jgraham
  */
 public class GuvnorRepository {
-	private String location;
-	
-	public GuvnorRepository(String location) {
-		this.location = location;
-	}
+    private String location;
 
-	public String getLocation() {
-		return location;
-	}
+    public GuvnorRepository(String location) {
+        this.location = location;
+    }
+
+    public String getLocation() {
+        return location;
+    }
 }

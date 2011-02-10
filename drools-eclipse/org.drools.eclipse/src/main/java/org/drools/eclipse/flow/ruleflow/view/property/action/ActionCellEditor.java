@@ -42,7 +42,7 @@ public class ActionCellEditor extends BeanDialogCellEditor<DroolsAction> {
         this.actionNode = actionNode;
     }
 
-	protected Object openDialogBox(Control cellEditorWindow) {
+    protected Object openDialogBox(Control cellEditorWindow) {
         ActionDialog dialog = (ActionDialog) createDialog(cellEditorWindow.getShell());
         dialog.setValue(actionNode.getAction());
         int result = dialog.open();
@@ -51,17 +51,17 @@ public class ActionCellEditor extends BeanDialogCellEditor<DroolsAction> {
         }
         return dialog.getValue();
     }
-	
+
     protected EditBeanDialog<DroolsAction> createDialog(Shell shell) {
         ActionDialog dialog = new ActionDialog(shell, process);
         dialog.setValue(actionNode.getAction());
         return dialog;
     }
     
-	protected String getLabelText(Object value) {
-    	if (actionNode == null || actionNode.getAction() == null || actionNode.getAction().toString() == null) {
-    		return "";
-    	}
+    protected String getLabelText(Object value) {
+        if (actionNode == null || actionNode.getAction() == null || actionNode.getAction().toString() == null) {
+            return "";
+        }
         return actionNode.getAction().toString();
     }
 

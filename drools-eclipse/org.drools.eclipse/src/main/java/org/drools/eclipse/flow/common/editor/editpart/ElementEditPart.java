@@ -58,7 +58,7 @@ public abstract class ElementEditPart extends AbstractGraphicalEditPart implemen
     }
     
     public ElementWrapper getElementWrapper() {
-    	return (ElementWrapper) getModel();
+        return (ElementWrapper) getModel();
     }
 
     protected List<ElementConnection> getModelSourceConnections() {
@@ -135,10 +135,10 @@ public abstract class ElementEditPart extends AbstractGraphicalEditPart implemen
     }
     
     private void performDirectEdit() {
-    	Label label = ((ElementFigure) getFigure()).getLabel();
-    	if (label == null) {
-    		return;
-    	}
+        Label label = ((ElementFigure) getFigure()).getLabel();
+        if (label == null) {
+            return;
+        }
         if (manager == null) {
             manager = new ElementDirectEditManager(this, TextCellEditor.class,
                 new ElementCellEditorLocator(label));

@@ -38,113 +38,113 @@ import org.w3c.dom.*;
  * @see Property
  */
 public class Prop extends ElementEditor {
-	/**
-	 * Creates a new editor on the given WebDAV prop element. The element
-	 * is assumed to be well formed.
-	 *
-	 * @param root a prop element
-	 * @throws        MalformedElementException if there is reason to
-	 *                believe that the element is not well formed
-	 */
-	public Prop(Element root) throws MalformedElementException {
-		super(root, "prop"); //$NON-NLS-1$
-	}
+    /**
+     * Creates a new editor on the given WebDAV prop element. The element
+     * is assumed to be well formed.
+     *
+     * @param root a prop element
+     * @throws        MalformedElementException if there is reason to
+     *                believe that the element is not well formed
+     */
+    public Prop(Element root) throws MalformedElementException {
+        super(root, "prop"); //$NON-NLS-1$
+    }
 
-	/**
-	 * Creates a clone of the given element and adds it to this prop. The
-	 * element must not be <code>null</code>.
-	 *
-	 * @param element any element
-	 * @throws        MalformedElementException if there is reason to
-	 *                believe that the given element is not well formed
-	 */
-	public void addProperty(Element element) throws MalformedElementException {
-		Assert.isNotNull(element);
-		extractNode(root, element);
-	}
+    /**
+     * Creates a clone of the given element and adds it to this prop. The
+     * element must not be <code>null</code>.
+     *
+     * @param element any element
+     * @throws        MalformedElementException if there is reason to
+     *                believe that the given element is not well formed
+     */
+    public void addProperty(Element element) throws MalformedElementException {
+        Assert.isNotNull(element);
+        extractNode(root, element);
+    }
 
-	/**
-	 * Creates a new element with the given name and adds it to this prop.
-	 * The name must not be <code>null</code> and its qualifier and local
-	 * name must not be <code>null</code> and must not be the empty string.
-	 *
-	 * @param name the <code>QualifiedName</code> of the property to add
-	 */
-	public void addPropertyName(QualifiedName name) {
-		Assert.isNotNull(name);
-		String nsName = name.getQualifier();
-		Assert.isTrue(!"".equals(nsName)); //$NON-NLS-1$
-		String localName = name.getLocalName();
-		Assert.isNotNull(localName);
-		Assert.isTrue(!localName.equals("")); //$NON-NLS-1$
-		Document document = root.getOwnerDocument();
-		Element element = document.createElement(localName);
-		declareNS(element, null, nsName);
-		root.appendChild(element);
-	}
+    /**
+     * Creates a new element with the given name and adds it to this prop.
+     * The name must not be <code>null</code> and its qualifier and local
+     * name must not be <code>null</code> and must not be the empty string.
+     *
+     * @param name the <code>QualifiedName</code> of the property to add
+     */
+    public void addPropertyName(QualifiedName name) {
+        Assert.isNotNull(name);
+        String nsName = name.getQualifier();
+        Assert.isTrue(!"".equals(nsName)); //$NON-NLS-1$
+        String localName = name.getLocalName();
+        Assert.isNotNull(localName);
+        Assert.isTrue(!localName.equals("")); //$NON-NLS-1$
+        Document document = root.getOwnerDocument();
+        Element element = document.createElement(localName);
+        declareNS(element, null, nsName);
+        root.appendChild(element);
+    }
 
-	/**
-	 * Returns an <code>Enumeration</code> over this prop's property
-	 * <code>Element</code>s.
-	 *
-	 * @returns an <code>Enumeration</code> of </code>Element</code>s
-	 * @throws  MalformedElementException if there is reason to believe that
-	 *          this editor's underlying element is not well formed
-	 */
-	public Enumeration getProperties() throws MalformedElementException {
-		Node firstChild = getChildElement(root, true);
-		final Node firstElement = firstChild;
-		Enumeration e = new Enumeration() {
-			Node currentElement = firstElement;
+    /**
+     * Returns an <code>Enumeration</code> over this prop's property
+     * <code>Element</code>s.
+     *
+     * @returns an <code>Enumeration</code> of </code>Element</code>s
+     * @throws  MalformedElementException if there is reason to believe that
+     *          this editor's underlying element is not well formed
+     */
+    public Enumeration getProperties() throws MalformedElementException {
+        Node firstChild = getChildElement(root, true);
+        final Node firstElement = firstChild;
+        Enumeration e = new Enumeration() {
+            Node currentElement = firstElement;
 
-			public boolean hasMoreElements() {
-				return currentElement != null;
-			}
+            public boolean hasMoreElements() {
+                return currentElement != null;
+            }
 
-			public Object nextElement() {
-				if (!hasMoreElements())
-					throw new NoSuchElementException();
-				Node nextElement = currentElement;
-				currentElement = getNextSibling((Element) currentElement);
-				return nextElement;
-			}
-		};
-		return e;
-	}
+            public Object nextElement() {
+                if (!hasMoreElements())
+                    throw new NoSuchElementException();
+                Node nextElement = currentElement;
+                currentElement = getNextSibling((Element) currentElement);
+                return nextElement;
+            }
+        };
+        return e;
+    }
 
-	/**
-	 * Returns an <code>Enumeration</code> over this prop's property
-	 * <code>QualifiedName</code>s.
-	 *
-	 * @returns an <code>Enumeration</code> of </code>QualifiedName</code>s
-	 * @throws  MalformedElementException if there is reason to believe that
-	 *          this editor's underlying element is not well formed
-	 */
-	public Enumeration getPropertyNames() throws MalformedElementException {
-		Node firstChild = getChildElement(root, true);
-		final Node firstElement = firstChild;
-		Enumeration e = new Enumeration() {
-			Node currentElement = firstElement;
+    /**
+     * Returns an <code>Enumeration</code> over this prop's property
+     * <code>QualifiedName</code>s.
+     *
+     * @returns an <code>Enumeration</code> of </code>QualifiedName</code>s
+     * @throws  MalformedElementException if there is reason to believe that
+     *          this editor's underlying element is not well formed
+     */
+    public Enumeration getPropertyNames() throws MalformedElementException {
+        Node firstChild = getChildElement(root, true);
+        final Node firstElement = firstChild;
+        Enumeration e = new Enumeration() {
+            Node currentElement = firstElement;
 
-			public boolean hasMoreElements() {
-				return currentElement != null;
-			}
+            public boolean hasMoreElements() {
+                return currentElement != null;
+            }
 
-			public Object nextElement() {
-				if (!hasMoreElements())
-					throw new NoSuchElementException();
-				String nsName = null;
-				try {
-					nsName = getNSName((Element) currentElement);
-				} catch (MalformedElementException ex) {
-					Assert.isTrue(false, Policy.bind("assert.internalError")); //$NON-NLS-1$
-				}
-				String localName = getNSLocalName((Element) currentElement);
-				QualifiedNameImpl name = new QualifiedNameImpl(nsName, localName);
-				currentElement = getNextSibling((Element) currentElement);
-				return name;
-			}
-		};
-		return e;
-	}
+            public Object nextElement() {
+                if (!hasMoreElements())
+                    throw new NoSuchElementException();
+                String nsName = null;
+                try {
+                    nsName = getNSName((Element) currentElement);
+                } catch (MalformedElementException ex) {
+                    Assert.isTrue(false, Policy.bind("assert.internalError")); //$NON-NLS-1$
+                }
+                String localName = getNSLocalName((Element) currentElement);
+                QualifiedNameImpl name = new QualifiedNameImpl(nsName, localName);
+                currentElement = getNextSibling((Element) currentElement);
+                return name;
+            }
+        };
+        return e;
+    }
 }

@@ -63,12 +63,12 @@ public class EventNodeWrapper extends AbstractNodeWrapper {
     
     public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
         return super.acceptsIncomingConnection(connection, source)
-    		&& getIncomingConnections().isEmpty();
+            && getIncomingConnections().isEmpty();
     }
 
     public boolean acceptsOutgoingConnection(ElementConnection connection, ElementWrapper target) {
         return super.acceptsOutgoingConnection(connection, target)
-        	&& getOutgoingConnections().isEmpty();
+            && getOutgoingConnections().isEmpty();
     }
     
     public IPropertyDescriptor[] getPropertyDescriptors() {
@@ -77,14 +77,14 @@ public class EventNodeWrapper extends AbstractNodeWrapper {
 
     public Object getPropertyValue(Object id) {
         if (VARIABLE_NAME.equals(id)) {
-        	String variableName = getEventNode().getVariableName();
+            String variableName = getEventNode().getVariableName();
             return variableName == null ? "" : variableName;
         }
         if (EVENT_TYPE.equals(id)) {
-        	if (getEventNode().getEventFilters().isEmpty()) {
-        		return "";
-        	}
-        	return ((EventTypeFilter) getEventNode().getEventFilters().get(0)).getType();
+            if (getEventNode().getEventFilters().isEmpty()) {
+                return "";
+            }
+            return ((EventTypeFilter) getEventNode().getEventFilters().get(0)).getType();
         }
         if (SCOPE.equals(id)) {
             return "external".equals(getEventNode().getScope()) ? 1 : 0;
@@ -108,10 +108,10 @@ public class EventNodeWrapper extends AbstractNodeWrapper {
         if (VARIABLE_NAME.equals(id)) {
             getEventNode().setVariableName((String) value);
         } else if (EVENT_TYPE.equals(id)) {
-        	List<EventFilter> eventFilters = new ArrayList<EventFilter>();
-        	EventTypeFilter eventFilter = new EventTypeFilter();
-        	eventFilter.setType((String) value);
-        	eventFilters.add(eventFilter);
+            List<EventFilter> eventFilters = new ArrayList<EventFilter>();
+            EventTypeFilter eventFilter = new EventTypeFilter();
+            eventFilter.setType((String) value);
+            eventFilters.add(eventFilter);
             getEventNode().setEventFilters(eventFilters);
         } else if (SCOPE.equals(id)) {
             getEventNode().setScope((Integer) value == 1 ? "external" : "internal");

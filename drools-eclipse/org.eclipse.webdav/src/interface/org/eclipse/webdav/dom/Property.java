@@ -35,17 +35,17 @@ import org.w3c.dom.Element;
  * @see Prop
  */
 public abstract class Property extends ElementEditor {
-	/**
-	 * Creates a new editor on the given property element. The element is
-	 * assumed to be well formed.
-	 *
-	 * @param element a property element
-	 * @param expectedType the tag name for the element tht this editor
-	 *  is expected to manipulate.
-	 * @throws        MalformedElementException if there is reason to
-	 *                believe that the element is not well formed
-	 */
-	public Property(Element element, String expectedType) throws MalformedElementException {
-		super(element, expectedType);
-	}
+    /**
+     * Creates a new editor on the given property element. The element is
+     * assumed to be well formed.
+     *
+     * @param element a property element
+     * @param expectedType the tag name for the element tht this editor
+     *  is expected to manipulate.
+     * @throws        MalformedElementException if there is reason to
+     *                believe that the element is not well formed
+     */
+    public Property(Element element, String expectedType) throws MalformedElementException {
+        super(element, expectedType);
+    }
 }

@@ -47,30 +47,30 @@ public class EditorComposite extends Composite {
         if (type == null) {
             editor = new EmptyEditor(this);
         } else {
-        	Class editorClass = null;
+            Class editorClass = null;
             try {
                 editorClass = registry.getDataTypeInfo(type.getClass()).getValueEditorClass();
                 editor = (Editor) editorClass.getConstructor(
                     new Class[] { Composite.class }).newInstance(new Object[] { this });
             } catch (IllegalArgumentException e) {
                 // "Could not find data type info for type " + type.getClass()
-            	DroolsEclipsePlugin.log(e);
+                DroolsEclipsePlugin.log(e);
                 editor = new EmptyEditor(this);
             } catch (InstantiationException e) {
                 // "Could not create editor for editor " + editorClass
-            	DroolsEclipsePlugin.log(e);
+                DroolsEclipsePlugin.log(e);
                 editor = new EmptyEditor(this);
             } catch (NoSuchMethodException e) {
-            	// "Could not create editor for editor " + editorClass
-            	DroolsEclipsePlugin.log(e);
+                // "Could not create editor for editor " + editorClass
+                DroolsEclipsePlugin.log(e);
                 editor = new EmptyEditor(this);
             } catch (InvocationTargetException e) {
-            	// "Could not create editor for editor " + editorClass
-            	DroolsEclipsePlugin.log(e);
+                // "Could not create editor for editor " + editorClass
+                DroolsEclipsePlugin.log(e);
                 editor = new EmptyEditor(this);
             } catch (IllegalAccessException e) {
-            	// "Could not create editor for editor " + editorClass
-            	DroolsEclipsePlugin.log(e);
+                // "Could not create editor for editor " + editorClass
+                DroolsEclipsePlugin.log(e);
                 editor = new EmptyEditor(this);
             }
             editor.setDataType(type);

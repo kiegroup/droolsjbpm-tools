@@ -136,9 +136,9 @@ public class ReteooLayoutFactoryTest {
                      } );
 
         Class[] expectedTypes = new Class[]{ReteVertex.class, EntryPointNodeVertex.class,
-    		ObjectTypeNodeVertex.class, AlphaNodeVertex.class, AlphaNodeVertex.class,
-    		LeftInputAdapterNodeVertex.class, LeftInputAdapterNodeVertex.class,
-    		RuleTerminalNodeVertex.class, RuleTerminalNodeVertex.class};
+            ObjectTypeNodeVertex.class, AlphaNodeVertex.class, AlphaNodeVertex.class,
+            LeftInputAdapterNodeVertex.class, LeftInputAdapterNodeVertex.class,
+            RuleTerminalNodeVertex.class, RuleTerminalNodeVertex.class};
 
         for ( int i = 0; i < yOrder.length; i++ ) {
             assertEquals( expectedTypes[i],
@@ -175,8 +175,8 @@ public class ReteooLayoutFactoryTest {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackage(packageDescr);
         Package pkg = builder.getPackage();
-		ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase(RuleBase.RETEOO);
-		ruleBase.addPackage(pkg);
+        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase(RuleBase.RETEOO);
+        ruleBase.addPackage(pkg);
 
         final ReteooVisitor visitor = new ReteooVisitor( graph );
         visitor.visit( ruleBase );

@@ -48,82 +48,82 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ImportCompletionProcessor extends DefaultCompletionProcessor {
 
-	public ImportCompletionProcessor() {
-		super(null);
-	}
-	
-	public IEditorPart getEditor() {
-		IWorkbench workbench = PlatformUI.getWorkbench();
-		if (workbench != null) { 
-			IWorkbenchWindow workbenchWindow = workbench.getActiveWorkbenchWindow();
-			if (workbenchWindow != null) {
-				IWorkbenchPage workbenchPage = workbenchWindow.getActivePage(); 
-				if (workbenchPage != null) {
-					return workbenchPage.getActiveEditor();
-				}
-			}
-		}
-		return null;
-	}
+    public ImportCompletionProcessor() {
+        super(null);
+    }
+
+    public IEditorPart getEditor() {
+        IWorkbench workbench = PlatformUI.getWorkbench();
+        if (workbench != null) {
+            IWorkbenchWindow workbenchWindow = workbench.getActiveWorkbenchWindow();
+            if (workbenchWindow != null) {
+                IWorkbenchPage workbenchPage = workbenchWindow.getActivePage();
+                if (workbenchPage != null) {
+                    return workbenchPage.getActiveEditor();
+                }
+            }
+        }
+        return null;
+    }
 
     protected List getCompletionProposals(ITextViewer viewer,
             int documentOffset) {
-		try {
-			IDocument doc = viewer.getDocument();
-			String backText = readBackwards(documentOffset, doc);
+        try {
+            IDocument doc = viewer.getDocument();
+            String backText = readBackwards(documentOffset, doc);
 
-			String prefix = CompletionUtil.stripLastWord(backText);
+            String prefix = CompletionUtil.stripLastWord(backText);
 
-			List props = null;
-			Matcher matcher = IMPORT_PATTERN.matcher(backText);
-			if (matcher.matches()) {
-				String classNameStart = backText.substring(backText
-						.lastIndexOf("import") + 7);
-				props = getAllClassProposals(classNameStart, documentOffset,
-						prefix);
-			} else {
-				props = getPossibleProposals(viewer, documentOffset, backText, prefix);
-			}
-			return props;
-		} catch (Throwable t) {
-			DroolsEclipsePlugin.log(t);
-		}
-		return null;
-	}
+            List props = null;
+            Matcher matcher = IMPORT_PATTERN.matcher(backText);
+            if (matcher.matches()) {
+                String classNameStart = backText.substring(backText
+                        .lastIndexOf("import") + 7);
+                props = getAllClassProposals(classNameStart, documentOffset,
+                        prefix);
+            } else {
+                props = getPossibleProposals(viewer, documentOffset, backText, prefix);
+            }
+            return props;
+        } catch (Throwable t) {
+            DroolsEclipsePlugin.log(t);
+        }
+        return null;
+    }
 
     
     public List getImports() {
-    	return Collections.EMPTY_LIST;
+        return Collections.EMPTY_LIST;
     }
     
     public List getGlobals() {
-    	return Collections.EMPTY_LIST;
+        return Collections.EMPTY_LIST;
     }
     
     protected IJavaProject getCurrentJavaProject() {
-    	IEditorPart editor = getEditor();
-    	if (editor != null && editor.getEditorInput() instanceof IFileEditorInput) {
-			IFile file = ((IFileEditorInput) editor.getEditorInput()).getFile();
-	    	try {
-	    		if (file.getProject().getNature("org.eclipse.jdt.core.javanature") != null) {
-	    			return JavaCore.create(file.getProject());
-	    		}
-	    	} catch (CoreException e) {
-	    		// do nothing
-	    	}
-		}
-    	return null;
+        IEditorPart editor = getEditor();
+        if (editor != null && editor.getEditorInput() instanceof IFileEditorInput) {
+            IFile file = ((IFileEditorInput) editor.getEditorInput()).getFile();
+            try {
+                if (file.getProject().getNature("org.eclipse.jdt.core.javanature") != null) {
+                    return JavaCore.create(file.getProject());
+                }
+            } catch (CoreException e) {
+                // do nothing
+            }
+        }
+        return null;
     }
     
     protected List getPossibleProposals(ITextViewer viewer,
             int documentOffset,
             String backText,
             final String prefix) {
-		List list = new ArrayList();
-		list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "import", "import "));
-		DefaultCompletionProcessor.filterProposalsOnPrefix(prefix, list);
-		return list;
-	}
+        List list = new ArrayList();
+        list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "import", "import "));
+        DefaultCompletionProcessor.filterProposalsOnPrefix(prefix, list);
+        return list;
+    }
 
     /**
      * @return a list of "MVELified" RuleCompletionProposal. That list contains only unique proposal based on

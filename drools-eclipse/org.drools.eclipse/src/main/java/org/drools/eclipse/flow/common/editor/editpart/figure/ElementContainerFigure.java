@@ -49,7 +49,7 @@ public class ElementContainerFigure extends Figure implements ElementFigure {
         flowLayout.setMajorAlignment(FlowLayout.ALIGN_CENTER);
         panel.setLayoutManager(flowLayout);
         panel.add(label);
-    	add(panel);
+        add(panel);
         scrollpane.setViewport(new FreeformViewport());
         scrollpane.setContents(pane);
     }
@@ -78,7 +78,7 @@ public class ElementContainerFigure extends Figure implements ElementFigure {
         return pane;
     }
 
-	public void setColor(Color newColor) {
-	}
-	
+    public void setColor(Color newColor) {
+    }
+
 }

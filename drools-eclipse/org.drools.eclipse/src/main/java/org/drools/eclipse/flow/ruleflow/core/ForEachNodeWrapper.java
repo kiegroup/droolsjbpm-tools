@@ -55,40 +55,40 @@ public class ForEachNodeWrapper extends CompositeNodeWrapper {
     }
     
     public ForEachNode getForEachNode() {
-    	return (ForEachNode) getNode();
+        return (ForEachNode) getNode();
     }
     
-	public IPropertyDescriptor[] getPropertyDescriptors() {
-		return descriptors;
-	}
+    public IPropertyDescriptor[] getPropertyDescriptors() {
+        return descriptors;
+    }
 
     public boolean acceptsIncomingConnection(ElementConnection connection, ElementWrapper source) {
         return super.acceptsIncomingConnection(connection, source)
-        	&& getIncomingConnections().isEmpty();
+            && getIncomingConnections().isEmpty();
     }
 
     public boolean acceptsOutgoingConnection(ElementConnection connection, ElementWrapper target) {
         return target == null
-			|| (target.getParent() == getParent() && getOutgoingConnections().isEmpty());
-//			|| (target.getParent() == this && getForEachNode().getLinkedIncomingNode(Node.CONNECTION_DEFAULT_TYPE) == null);
+            || (target.getParent() == getParent() && getOutgoingConnections().isEmpty());
+//            || (target.getParent() == this && getForEachNode().getLinkedIncomingNode(Node.CONNECTION_DEFAULT_TYPE) == null);
     }
     
     public Object getPropertyValue(Object id) {
         if (VARIABLE_NAME.equals(id)) {
-        	String variableName = getForEachNode().getVariableName();
-        	return variableName == null ? "" : variableName;
+            String variableName = getForEachNode().getVariableName();
+            return variableName == null ? "" : variableName;
         }
         if (COLLECTION_EXPRESSION.equals(id)) {
-        	String collectionExpression = getForEachNode().getCollectionExpression();
-        	return collectionExpression == null ? "" : collectionExpression;
+            String collectionExpression = getForEachNode().getCollectionExpression();
+            return collectionExpression == null ? "" : collectionExpression;
         }
         if (START_NODE.equals(id)) {
-        	CompositeNode.NodeAndType link = getForEachNode().getLinkedIncomingNode(Node.CONNECTION_DEFAULT_TYPE);
-        	return link == null ? "" : link.getNodeId() + "";
+            CompositeNode.NodeAndType link = getForEachNode().getLinkedIncomingNode(Node.CONNECTION_DEFAULT_TYPE);
+            return link == null ? "" : link.getNodeId() + "";
         }
         if (END_NODE.equals(id)) {
-        	CompositeNode.NodeAndType link = getForEachNode().getLinkedOutgoingNode(Node.CONNECTION_DEFAULT_TYPE);
-        	return link == null ? "" : link.getNodeId() + "";
+            CompositeNode.NodeAndType link = getForEachNode().getLinkedOutgoingNode(Node.CONNECTION_DEFAULT_TYPE);
+            return link == null ? "" : link.getNodeId() + "";
         }
         return super.getPropertyValue(id);
     }

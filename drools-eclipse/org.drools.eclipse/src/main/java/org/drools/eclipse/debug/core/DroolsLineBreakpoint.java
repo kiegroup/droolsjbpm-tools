@@ -53,7 +53,7 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
      * @throws CoreException if unable to create the breakpoint
      */
     public DroolsLineBreakpoint(IResource resource, int lineNumber)
-			throws CoreException {
+            throws CoreException {
         super( resource, "", -1, -1, -1, 0, true,
             createAttributesMap( lineNumber ), IDroolsDebugConstants.DROOLS_MARKER_TYPE );
         setJavaBreakpointProperties();
@@ -144,7 +144,7 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
                 if ( ruleInfo.getConsequenceDrlLineNumber() < lineNumber ) {
 
                     int line = ruleInfo.getConsequenceJavaLineNumber()
-                                        	+ (lineNumber - ruleInfo.getConsequenceDrlLineNumber());
+                                            + (lineNumber - ruleInfo.getConsequenceDrlLineNumber());
                     if (ruleInfo.getDialectName() != null && ruleInfo.getDialectName().equals( "mvel" )) {
                         return line;
                     }
@@ -154,7 +154,7 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
             FunctionInfo functionInfo = drlInfo.getFunctionInfo( lineNumber );
             if ( functionInfo != null ) {
                 return functionInfo.getJavaLineNumber()
-                	+ (lineNumber - functionInfo.getDrlLineNumber());
+                    + (lineNumber - functionInfo.getDrlLineNumber());
             }
         }
         throw new CoreException( new Status( IStatus.ERROR, DroolsEclipsePlugin.getUniqueIdentifier(), 0,

@@ -63,27 +63,27 @@ public class DataTypeCombo extends Composite {
     
     public void setDataType(DataType dataType) {
         if (dataType == null) {
-        	dataTypeCombo.setSelection(null);
+            dataTypeCombo.setSelection(null);
         } else {
-        	// TODO : check what happens if dataType not in combo
+            // TODO : check what happens if dataType not in combo
             try {
-            	dataTypeCombo.setSelection(new StructuredSelection(registry.getDataTypeInfo(dataType.getClass())));
+                dataTypeCombo.setSelection(new StructuredSelection(registry.getDataTypeInfo(dataType.getClass())));
             } catch (IllegalArgumentException e) {
-            	// "DataTypeInfo not found in registry: " + dataType.getClass()
-            	DroolsEclipsePlugin.log(e);
+                // "DataTypeInfo not found in registry: " + dataType.getClass()
+                DroolsEclipsePlugin.log(e);
             }
         }
     }
     
     public DataType getDataType() {
-    	DataTypeRegistry.IDataTypeInfo dataTypeInfo =
-    		getSelectedTypeInfo();
+        DataTypeRegistry.IDataTypeInfo dataTypeInfo =
+            getSelectedTypeInfo();
         return dataTypeInfo == null ? null : 
-        	dataTypeInfo.getDataTypeFactory().createDataType();
+            dataTypeInfo.getDataTypeFactory().createDataType();
     }
     
     public void reset() {
-    	dataTypeCombo.setSelection(null);
+        dataTypeCombo.setSelection(null);
     }
     
     public void setEnabled(boolean enabled) {
@@ -92,6 +92,6 @@ public class DataTypeCombo extends Composite {
     }
     
     public void addSelectionChangedListener(ISelectionChangedListener listener) {
-    	dataTypeCombo.addSelectionChangedListener(listener);
+        dataTypeCombo.addSelectionChangedListener(listener);
     }
 }

@@ -28,21 +28,21 @@ import org.eclipse.swt.widgets.Label;
 
 public class NewRuleFlowFileRuntimePage extends WizardPage {
 
-	public static final String DROOLS5 = "Drools 5.0.x";
+    public static final String DROOLS5 = "Drools 5.0.x";
     public static final String DROOLS5_1 = "Drools 5.1.x";
-	
-	private String generationType = DROOLS5;
-	private Combo droolsGenerateCombo;
-	
-	public NewRuleFlowFileRuntimePage() {
-		super("extendedNewProjectRuntimePage");
-		setTitle("Drools Runtime");
+
+    private String generationType = DROOLS5;
+    private Combo droolsGenerateCombo;
+
+    public NewRuleFlowFileRuntimePage() {
+        super("extendedNewProjectRuntimePage");
+        setTitle("Drools Runtime");
         setDescription("Select a Drools Runtime");
-	}
-	
-	public void createControl(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NONE);
-		GridLayout gridLayout = new GridLayout();
+    }
+
+    public void createControl(Composite parent) {
+        Composite composite = new Composite(parent, SWT.NONE);
+        GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 2;
         composite.setLayout(gridLayout);
         
@@ -52,12 +52,12 @@ public class NewRuleFlowFileRuntimePage extends WizardPage {
         droolsGenerateCombo.add("Drools 5.0.x");
         droolsGenerateCombo.add("Drools 5.1.x");
         droolsGenerateCombo.addSelectionListener(new SelectionListener() {
-			public void widgetDefaultSelected(SelectionEvent e) {
-				generationType = droolsGenerateCombo.getText();
-			}
-			public void widgetSelected(SelectionEvent e) {
-				generationType = droolsGenerateCombo.getText();
-			}
+            public void widgetDefaultSelected(SelectionEvent e) {
+                generationType = droolsGenerateCombo.getText();
+            }
+            public void widgetSelected(SelectionEvent e) {
+                generationType = droolsGenerateCombo.getText();
+            }
         });
         droolsGenerateCombo.select(0);
         generationType = DROOLS5;
@@ -69,10 +69,10 @@ public class NewRuleFlowFileRuntimePage extends WizardPage {
         setMessage(null);
         setPageComplete(true);
         setControl(composite);
-	}
-	
-	public String getGenerationType() {
-		return generationType;
-	}
-	
+    }
+
+    public String getGenerationType() {
+        return generationType;
+    }
+
 }

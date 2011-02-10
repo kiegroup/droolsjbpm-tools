@@ -48,8 +48,8 @@ public class DSLLabelProvider extends LabelProvider
                 result = item.getMappingValue();
                 break;
             case 2 :
-            	result = item.getMetaData().getMetaData();
-            	break;
+                result = item.getMetaData().getMetaData();
+                break;
             case 3 :
                 result = item.getSection().getSymbol();
                 break;

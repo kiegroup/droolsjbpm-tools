@@ -43,7 +43,7 @@ public class ProcessInstancesViewContentProvider extends DroolsDebugViewContentP
     }
     
     protected String getEmptyString() {
-    	return "The selected working memory has no process instances.";
+        return "The selected working memory has no process instances.";
     }
 
     public Object[] getChildren(Object obj) {
@@ -54,12 +54,12 @@ public class ProcessInstancesViewContentProvider extends DroolsDebugViewContentP
                         ((IJavaObject) obj).getReferenceTypeName())) {
                 instances = getProcessInstances((IJavaObject) obj);
             } else if (obj instanceof IVariable) {
-            	if (view.isShowLogicalStructure()) {
-            		IValue value = getLogicalValue(((IVariable) obj).getValue(), new ArrayList<IVariable>());
-            		instances = value.getVariables();
+                if (view.isShowLogicalStructure()) {
+                    IValue value = getLogicalValue(((IVariable) obj).getValue(), new ArrayList<IVariable>());
+                    instances = value.getVariables();
                 }
-            	if (instances == null) {
-            	    instances = ((IVariable) obj).getValue().getVariables();
+                if (instances == null) {
+                    instances = ((IVariable) obj).getValue().getVariables();
                 }
             }
             if (instances == null) {
@@ -98,8 +98,8 @@ public class ProcessInstancesViewContentProvider extends DroolsDebugViewContentP
     }
     
     @SuppressWarnings("unused")
-	private ProcessInstance[] getProcessInstances(ReteooStatefulSession session) {
-    	return (ProcessInstance[]) session.getProcessInstances().toArray();
+    private ProcessInstance[] getProcessInstances(ReteooStatefulSession session) {
+        return (ProcessInstance[]) session.getProcessInstances().toArray();
     }
     
 }

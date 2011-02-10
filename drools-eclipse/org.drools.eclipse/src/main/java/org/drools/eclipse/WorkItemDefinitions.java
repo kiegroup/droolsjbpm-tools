@@ -41,20 +41,20 @@ public final class WorkItemDefinitions {
     }
 
     public static Map<String, WorkDefinition> getWorkDefinitions(IResource resource) {
-    	IProject project = resource.getProject();
-    	if (project != null) {
-    		try {
-		        if (project.getNature("org.eclipse.jdt.core.javanature") != null) {
-		            IJavaProject javaProject = JavaCore.create(project);
-		            if (javaProject != null && javaProject.exists()) {
-		            	return getWorkDefinitions(javaProject);
-		            }
-		        }
-    		} catch (CoreException e) {
-    			DroolsEclipsePlugin.log(e);
-    		}
-    	}
-    	return null;
+        IProject project = resource.getProject();
+        if (project != null) {
+            try {
+                if (project.getNature("org.eclipse.jdt.core.javanature") != null) {
+                    IJavaProject javaProject = JavaCore.create(project);
+                    if (javaProject != null && javaProject.exists()) {
+                        return getWorkDefinitions(javaProject);
+                    }
+                }
+            } catch (CoreException e) {
+                DroolsEclipsePlugin.log(e);
+            }
+        }
+        return null;
     }
     
     public static Map<String, WorkDefinition> getWorkDefinitions(IJavaProject project) {
@@ -62,7 +62,7 @@ public final class WorkItemDefinitions {
             ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
             ClassLoader newLoader = ProjectClassLoader.getProjectClassLoader(project);
             try {
-            	Map<String, WorkDefinition> workDefinitions = new HashMap<String, WorkDefinition>();
+                Map<String, WorkDefinition> workDefinitions = new HashMap<String, WorkDefinition>();
                 Thread.currentThread().setContextClassLoader(newLoader);
                 List<Map<String, Object>> workDefinitionsMaps = new RuleBaseConfiguration().getWorkDefinitions();
                 for ( Map<String, Object> workDefinitionMap : workDefinitionsMaps ) {

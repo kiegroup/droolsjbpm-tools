@@ -33,59 +33,59 @@ import org.eclipse.webdav.internal.kernel.utils.Assert;
  */
 public abstract class DAVClient implements IServer {
 
-	protected WebDAVFactory davFactory = null;
+    protected WebDAVFactory davFactory = null;
 
-	/**
-	 * Creates a new DAV client from a clone of the given DAV client.
-	 *
-	 * @param davClient the DAV client to clone
-	 */
-	public DAVClient(DAVClient davClient) {
-		davFactory = davClient.davFactory;
-	}
+    /**
+     * Creates a new DAV client from a clone of the given DAV client.
+     *
+     * @param davClient the DAV client to clone
+     */
+    public DAVClient(DAVClient davClient) {
+        davFactory = davClient.davFactory;
+    }
 
-	/**
-	 * Creates a new DAV client.
-	 *
-	 * @param davFactory
-	 */
-	public DAVClient(WebDAVFactory davFactory) {
-		Assert.isNotNull(davFactory);
-		this.davFactory = davFactory;
-	}
+    /**
+     * Creates a new DAV client.
+     *
+     * @param davFactory
+     */
+    public DAVClient(WebDAVFactory davFactory) {
+        Assert.isNotNull(davFactory);
+        this.davFactory = davFactory;
+    }
 
-	/**
-	 * @see Object#clone()
-	 */
-	protected abstract Object clone();
+    /**
+     * @see Object#clone()
+     */
+    protected abstract Object clone();
 
-	public WebDAVFactory getDAVFactory() {
-		return davFactory;
-	}
+    public WebDAVFactory getDAVFactory() {
+        return davFactory;
+    }
 
-	/**
-	 * Returns a new context that is based on the given context.
-	 *
-	 * @param userContext
-	 * @param locator
-	 *
-	 * @return a new context that is based on the given context
-	 */
-	protected IContext newContext(IContext userContext, ILocator locator) throws MalformedURLException {
-		Assert.isNotNull(userContext);
-		Assert.isNotNull(locator);
-		IContext context = davFactory.newContext(userContext);
-		if (locator.getLabel() != null)
-			context.setLabel(locator.getLabel());
-		return context;
-	}
+    /**
+     * Returns a new context that is based on the given context.
+     *
+     * @param userContext
+     * @param locator
+     *
+     * @return a new context that is based on the given context
+     */
+    protected IContext newContext(IContext userContext, ILocator locator) throws MalformedURLException {
+        Assert.isNotNull(userContext);
+        Assert.isNotNull(locator);
+        IContext context = davFactory.newContext(userContext);
+        if (locator.getLabel() != null)
+            context.setLabel(locator.getLabel());
+        return context;
+    }
 
-	/**
-	 * Shut down the client for future use, and release any system resources associated with the
-	 * instance.  Callers should not expect the client to succeed with further API calls once the
-	 * client has been closed.
-	 */
-	public void close() {
-		// Default is to do nothing.
-	}
+    /**
+     * Shut down the client for future use, and release any system resources associated with the
+     * instance.  Callers should not expect the client to succeed with further API calls once the
+     * client has been closed.
+     */
+    public void close() {
+        // Default is to do nothing.
+    }
 }

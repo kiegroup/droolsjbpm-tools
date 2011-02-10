@@ -54,7 +54,7 @@ public class ShowLogicalStructureAction extends Action {
         view.setShowLogicalStructure(on);  
         BusyIndicator.showWhile(view.getViewer().getControl().getDisplay(), new Runnable() {
             public void run() {
-            	view.getViewer().refresh();                    
+                view.getViewer().refresh();
             }
         });         
     }

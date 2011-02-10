@@ -33,15 +33,15 @@ import org.w3c.dom.Element;
  * @see LockInfo
  */
 public class Owner extends ElementEditor {
-	/**
-	 * Creates a new editor on the given WebDAV owner element. The element
-	 * is assumed to be well formed.
-	 *
-	 * @param root a owner element
-	 * @throws        MalformedElementException if there is reason to
-	 *                believe that the element is not well formed
-	 */
-	public Owner(Element root) throws MalformedElementException {
-		super(root, "owner"); //$NON-NLS-1$
-	}
+    /**
+     * Creates a new editor on the given WebDAV owner element. The element
+     * is assumed to be well formed.
+     *
+     * @param root a owner element
+     * @throws        MalformedElementException if there is reason to
+     *                believe that the element is not well formed
+     */
+    public Owner(Element root) throws MalformedElementException {
+        super(root, "owner"); //$NON-NLS-1$
+    }
 }

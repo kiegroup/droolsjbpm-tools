@@ -67,8 +67,8 @@ import org.jbpm.ruleflow.core.RuleFlowProcess;
 public class RuleFlowModelEditor extends GenericModelEditor {
 
     protected EditPartFactory createEditPartFactory() {
-    	RuleFlowEditPartFactory factory = new RuleFlowEditPartFactory();
-    	factory.setProject(getJavaProject());
+        RuleFlowEditPartFactory factory = new RuleFlowEditPartFactory();
+        factory.setProject(getJavaProject());
         return factory;
     }
 
@@ -95,14 +95,14 @@ public class RuleFlowModelEditor extends GenericModelEditor {
     protected void setInput(IEditorInput input) {
         super.setInput(input);
         if (input instanceof IFileEditorInput) {
-        	refreshPalette(((IFileEditorInput) input).getFile());
+            refreshPalette(((IFileEditorInput) input).getFile());
         }
     }
     
     private void refreshPalette(IFile file) {
         if (getPaletteRoot().getChildren().size() <= 2) {
-        	// work items category not visible
-        	return;
+            // work items category not visible
+            return;
         }
         IJavaProject javaProject = getJavaProject();
         if (javaProject != null) {
@@ -114,47 +114,47 @@ public class RuleFlowModelEditor extends GenericModelEditor {
                     PaletteDrawer drawer = (PaletteDrawer) getPaletteRoot().getChildren().get(2);
                     List entries = new ArrayList();
                     try {
-	                    for (final WorkDefinition workDefinition: WorkItemDefinitions.getWorkDefinitions(file).values()) {
-	                        final String label;
-	                        String description = workDefinition.getName();
-	                        String icon = null;
-	                        if (workDefinition instanceof WorkDefinitionExtension) {
-	                            WorkDefinitionExtension extension = (WorkDefinitionExtension) workDefinition;
-	                            label = extension.getDisplayName();
-	                            description = extension.getExplanationText();
-	                            icon = extension.getIcon();
-	                        } else {
-	                            label = workDefinition.getName();
-	                        }
-	                        
-	                        URL iconUrl = null;
-	                        if (icon != null) {
-	                            iconUrl = newLoader.getResource(icon);
-	                        }
-	                        if (iconUrl == null) {
-	                            iconUrl = DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/action.gif");
-	                        }
-	                        CombinedTemplateCreationEntry combined = new CombinedTemplateCreationEntry(
-	                            label,
-	                            description,
-	                            WorkItemWrapper.class,
-	                            new SimpleFactory(WorkItemWrapper.class) {
-	                                public Object getNewObject() {
-	                                    WorkItemWrapper workItemWrapper = (WorkItemWrapper) super.getNewObject();
-	                                    workItemWrapper.setName(label);
-	                                    workItemWrapper.setWorkDefinition(workDefinition);
-	                                    return workItemWrapper;
-	                                }
-	                            },
-	                            ImageDescriptor.createFromURL(iconUrl), 
-	                            ImageDescriptor.createFromURL(iconUrl)
-	                        );
-	                        entries.add(combined);
-	                    }
+                        for (final WorkDefinition workDefinition: WorkItemDefinitions.getWorkDefinitions(file).values()) {
+                            final String label;
+                            String description = workDefinition.getName();
+                            String icon = null;
+                            if (workDefinition instanceof WorkDefinitionExtension) {
+                                WorkDefinitionExtension extension = (WorkDefinitionExtension) workDefinition;
+                                label = extension.getDisplayName();
+                                description = extension.getExplanationText();
+                                icon = extension.getIcon();
+                            } else {
+                                label = workDefinition.getName();
+                            }
+
+                            URL iconUrl = null;
+                            if (icon != null) {
+                                iconUrl = newLoader.getResource(icon);
+                            }
+                            if (iconUrl == null) {
+                                iconUrl = DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/action.gif");
+                            }
+                            CombinedTemplateCreationEntry combined = new CombinedTemplateCreationEntry(
+                                label,
+                                description,
+                                WorkItemWrapper.class,
+                                new SimpleFactory(WorkItemWrapper.class) {
+                                    public Object getNewObject() {
+                                        WorkItemWrapper workItemWrapper = (WorkItemWrapper) super.getNewObject();
+                                        workItemWrapper.setName(label);
+                                        workItemWrapper.setWorkDefinition(workDefinition);
+                                        return workItemWrapper;
+                                    }
+                                },
+                                ImageDescriptor.createFromURL(iconUrl),
+                                ImageDescriptor.createFromURL(iconUrl)
+                            );
+                            entries.add(combined);
+                        }
                     } catch (Throwable t) {
-                    	DroolsEclipsePlugin.log(t);
-                		MessageDialog.openError(
-                			getSite().getShell(), "Parsing work item definitions", t.getMessage());
+                        DroolsEclipsePlugin.log(t);
+                        MessageDialog.openError(
+                            getSite().getShell(), "Parsing work item definitions", t.getMessage());
                     }
                     drawer.setChildren(entries);
                 } finally {
@@ -167,7 +167,7 @@ public class RuleFlowModelEditor extends GenericModelEditor {
     }
 
     protected void writeModel(OutputStream os) throws IOException {
-    	writeModel(os, true);
+        writeModel(os, true);
     }
     
     protected void writeModel(OutputStream os, boolean includeGraphics) throws IOException {
@@ -184,58 +184,58 @@ public class RuleFlowModelEditor extends GenericModelEditor {
     
     
     protected void createModel(InputStream is) {
-    	try 
-    	{
-    		InputStreamReader isr = new InputStreamReader(is);
-    		PackageBuilderConfiguration configuration = new PackageBuilderConfiguration();
-    		SemanticModules modules = configuration.getSemanticModules();
-    		modules.addSemanticModule(new ProcessSemanticModule());
-    		XmlProcessReader xmlReader = new XmlProcessReader( modules );
-    		
-    		//Migrate v4 ruleflows to v5
-    		Reader reader = null;
-    		try 
-    		{
-    			String xml = RuleFlowMigrator.convertReaderToString(isr);
-    			if (RuleFlowMigrator.needToMigrateRFM(xml))
-    			{
-    				xml = RuleFlowMigrator.portRFToCurrentVersion(xml);
-    				MessageDialog.openInformation(this.getSite().getShell(),
-    			            "Incompatible RuleFlow Version", 
-    			            "WARNING! The selected RuleFlow is Drools version 4 format.\n\n" +
-    			            "Any changes made to this RuleFlow will be saved in Drools 5 format, which is " +
-    			            "not compatible with Drools 4. To convert this RuleFlow " +
-    			            "to Drools 5 format, select Save As from the File menu and overwrite this " +
-    			            "file - the new RuleFlow file will be saved in Drools 5 format.");
-    			}
-    			
-    			reader =  new StringReader(xml);
+        try
+        {
+            InputStreamReader isr = new InputStreamReader(is);
+            PackageBuilderConfiguration configuration = new PackageBuilderConfiguration();
+            SemanticModules modules = configuration.getSemanticModules();
+            modules.addSemanticModule(new ProcessSemanticModule());
+            XmlProcessReader xmlReader = new XmlProcessReader( modules );
 
-    			List<Process> processes = xmlReader.read(reader);
-    			if (processes == null || processes.size() == 0) {
-    				setModel(createModel());
-    			} else {
-	    			RuleFlowProcess process = (RuleFlowProcess) processes.get(0);
-	    			if (process == null) {
-	    				setModel(createModel());
-	    			} else {
-	    				setModel(new RuleFlowWrapperBuilder().getProcessWrapper(process, getJavaProject()));
-	    			}
-    			}
-    		} catch (Throwable t) {
-    			DroolsEclipsePlugin.log(t);
-    			MessageDialog.openError( getSite().getShell(),
+            //Migrate v4 ruleflows to v5
+            Reader reader = null;
+            try
+            {
+                String xml = RuleFlowMigrator.convertReaderToString(isr);
+                if (RuleFlowMigrator.needToMigrateRFM(xml))
+                {
+                    xml = RuleFlowMigrator.portRFToCurrentVersion(xml);
+                    MessageDialog.openInformation(this.getSite().getShell(),
+                            "Incompatible RuleFlow Version",
+                            "WARNING! The selected RuleFlow is Drools version 4 format.\n\n" +
+                            "Any changes made to this RuleFlow will be saved in Drools 5 format, which is " +
+                            "not compatible with Drools 4. To convert this RuleFlow " +
+                            "to Drools 5 format, select Save As from the File menu and overwrite this " +
+                            "file - the new RuleFlow file will be saved in Drools 5 format.");
+                }
+
+                reader =  new StringReader(xml);
+
+                List<Process> processes = xmlReader.read(reader);
+                if (processes == null || processes.size() == 0) {
+                    setModel(createModel());
+                } else {
+                    RuleFlowProcess process = (RuleFlowProcess) processes.get(0);
+                    if (process == null) {
+                        setModel(createModel());
+                    } else {
+                        setModel(new RuleFlowWrapperBuilder().getProcessWrapper(process, getJavaProject()));
+                    }
+                }
+            } catch (Throwable t) {
+                DroolsEclipsePlugin.log(t);
+                MessageDialog.openError( getSite().getShell(),
                     "Could not read RuleFlow file",
                     "An exception occurred while reading in the RuleFlow XML: "
-                    	+ t.getMessage() + " See the error log for more details.");
-    			setModel(createModel());
-    		}
+                        + t.getMessage() + " See the error log for more details.");
+                setModel(createModel());
+            }
 
-    		if (reader != null){
-    			reader.close();
-    		}
-    	} catch (Throwable t) {
-    		DroolsEclipsePlugin.log(t);
-    	}
+            if (reader != null){
+                reader.close();
+            }
+        } catch (Throwable t) {
+            DroolsEclipsePlugin.log(t);
+        }
     }
 }
