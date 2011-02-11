@@ -57,9 +57,6 @@ import org.drools.decisiontable.InputType;
 import org.drools.decisiontable.SpreadsheetCompiler;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.rule.Rule;
-import org.drools.ide.common.client.modeldriven.brl.RuleModel;
-import org.drools.ide.common.server.util.BRDRLPersistence;
-import org.drools.ide.common.server.util.BRXMLPersistence;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.Expander;
 import org.drools.lang.dsl.DSLMappingFile;
@@ -125,8 +122,7 @@ public class DroolsCompilerAntTask extends MatchingTask {
     /**
      * Classpath to use, by reference, when compiling the rulebase
      *
-     * @param a
-     *            reference to an existing classpath
+     * @param a reference to an existing classpath
      */
     public void setClasspathref(Reference r) {
         createClasspath().setRefid(r);
@@ -199,13 +195,13 @@ public class DroolsCompilerAntTask extends MatchingTask {
         // gets the packages
         Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
 
-        if(verboseoption) {
+        if (verboseoption) {
             Iterator<KnowledgePackage> iter = pkgs.iterator();
-            while(iter.hasNext()) {
+            while (iter.hasNext()) {
                 KnowledgePackage pkg = iter.next();
                 log("** Content of package: " + pkg.getName());
                 Iterator<Rule> riter = pkg.getRules().iterator();
-                while(riter.hasNext()) {
+                while (riter.hasNext()) {
                     log("\tRule name: " + riter.next().getName());
                 }
             }
@@ -219,15 +215,15 @@ public class DroolsCompilerAntTask extends MatchingTask {
 
         if (PACKAGEBINFORMAT.equals(binformat)) {
             Iterator<KnowledgePackage> iter = pkgs.iterator();
-            while(iter.hasNext()) {
+            while (iter.hasNext()) {
                 KnowledgePackage pkg = iter.next();
-                if(verboseoption) {
-                    log("** Serializing package ["+pkg.getName()+"] to destination file. **** THIS WILL OVERRIDE ANY PREVIOUSLY SERIALIZED PACKAGE ****");
+                if (verboseoption) {
+                    log("** Serializing package [" + pkg.getName() + "] to destination file. **** THIS WILL OVERRIDE ANY PREVIOUSLY SERIALIZED PACKAGE ****");
                 }
                 serializeObject(pkg);
             }
         } else {
-            if(verboseoption) {
+            if (verboseoption) {
                 log("** Serializing KnowledgeBase to destination file.");
             }
             // serialize the knowledge base to the destination file
@@ -292,11 +288,11 @@ public class DroolsCompilerAntTask extends MatchingTask {
 
         org.drools.rule.Package[] packages = builder.getPackages();
 
-        if(verboseoption) {
-            for(org.drools.rule.Package pkg : packages) {
+        if (verboseoption) {
+            for (org.drools.rule.Package pkg : packages) {
                 log("** Content of package: " + pkg.getName());
                 Rule[] rules = pkg.getRules();
-                for(Rule rule : rules) {
+                for (Rule rule : rules) {
                     log("\tRule name: " + rule.getName());
                 }
             }
@@ -312,14 +308,14 @@ public class DroolsCompilerAntTask extends MatchingTask {
         ruleBase.addPackages(packages);
 
         if (PACKAGEBINFORMAT.equals(binformat)) {
-            for(org.drools.rule.Package pkg : packages) {
-                if(verboseoption) {
-                    log("** Serializing package ["+pkg.getName()+"] to destination file. **** THIS WILL OVERRIDE ANY PREVIOUSLY SERIALIZED PACKAGE ****");
+            for (org.drools.rule.Package pkg : packages) {
+                if (verboseoption) {
+                    log("** Serializing package [" + pkg.getName() + "] to destination file. **** THIS WILL OVERRIDE ANY PREVIOUSLY SERIALIZED PACKAGE ****");
                 }
                 serializeObject(pkg);
             }
         } else {
-            if(verboseoption) {
+            if (verboseoption) {
                 log("** Serializing RuleBase to destination file.");
             }
             // serialize the rule base to the destination file
@@ -360,29 +356,13 @@ public class DroolsCompilerAntTask extends MatchingTask {
 
         if (fileName.endsWith(DroolsCompilerAntTask.BRLFILEEXTENSION)) {
 
-            // TODO: Right now I have to first change this to String. Change to
-            // use KnowledgeBuilder directly when the support for that is done.
-            // -Toni Rikkola-
-
-            RuleModel model = BRXMLPersistence.getInstance().unmarshal(
-                    loadResource(fileName));
-            String packagefile = loadResource(resolvePackageFile(this.srcdir
-                    .getAbsolutePath()));
-            model.name = fileName.replace(
-                    DroolsCompilerAntTask.BRLFILEEXTENSION, "");
-            ByteArrayInputStream istream = new ByteArrayInputStream(
-                    (packagefile + BRDRLPersistence.getInstance()
-                            .marshal(model)).getBytes());
-
-            Reader instream = new InputStreamReader(istream);
-
-            kbuilder.add(ResourceFactory.newReaderResource(instream),
-                    ResourceType.DRL);
+            kbuilder.add(ResourceFactory.newReaderResource(fileReader),
+                    ResourceType.BRL);
 
         } else if (fileName
                 .endsWith(DroolsCompilerAntTask.RULEFLOWMODELFILEEXTENSION)
                 || fileName
-                        .endsWith(DroolsCompilerAntTask.RULEFLOWFILEEXTENSION)) {
+                .endsWith(DroolsCompilerAntTask.RULEFLOWFILEEXTENSION)) {
 
             kbuilder.add(ResourceFactory.newReaderResource(fileReader),
                     ResourceType.DRF);
@@ -438,31 +418,19 @@ public class DroolsCompilerAntTask extends MatchingTask {
 
         try {
 
-            if (fileName.endsWith(DroolsCompilerAntTask.BRLFILEEXTENSION)) {
-
-                RuleModel model = BRXMLPersistence.getInstance().unmarshal(
-                        loadResource(fileName));
-                String packagefile = loadResource(resolvePackageFile(this.srcdir
-                        .getAbsolutePath()));
-                model.name = fileName.replace(
-                        DroolsCompilerAntTask.BRLFILEEXTENSION, "");
-                ByteArrayInputStream istream = new ByteArrayInputStream(
-                        (packagefile + BRDRLPersistence.getInstance().marshal(
-                                model)).getBytes());
-                instream = new InputStreamReader(istream);
-
-            } else {
-                instream = new InputStreamReader(new FileInputStream(file));
-            }
+            instream = new InputStreamReader(new FileInputStream(file));
 
             if (fileName
                     .endsWith(DroolsCompilerAntTask.RULEFLOWMODELFILEEXTENSION)
                     || fileName
-                            .endsWith(DroolsCompilerAntTask.RULEFLOWFILEEXTENSION)) {
+                    .endsWith(DroolsCompilerAntTask.RULEFLOWFILEEXTENSION)) {
                 builder.addRuleFlow(instream);
             } else if (fileName
                     .endsWith(DroolsCompilerAntTask.XMLFILEEXTENSION)) {
                 builder.addPackageFromXml(instream);
+
+            } else if (fileName.endsWith(DroolsCompilerAntTask.BRLFILEEXTENSION)) {
+                builder.addPackageFromBrl(ResourceFactory.newReaderResource(instream));
             } else if (fileName
                     .endsWith(DroolsCompilerAntTask.XLSFILEEXTENSION)) {
 
@@ -618,7 +586,7 @@ public class DroolsCompilerAntTask extends MatchingTask {
     private String[] getFileList() {
         // scan source directory for rule files
         DirectoryScanner directoryScanner = getDirectoryScanner(srcdir);
-        String[] excludes = { "*\\*\\*." + DROOLSPACKAGEEXTENSION };
+        String[] excludes = {"*\\*\\*." + DROOLSPACKAGEEXTENSION};
         directoryScanner.setExcludes(excludes);
         String[] fileNames = directoryScanner.getIncludedFiles();
 
@@ -636,7 +604,7 @@ public class DroolsCompilerAntTask extends MatchingTask {
      */
     private String[] getDroolsPackageFileList() {
         DirectoryScanner directoryScanner = getDirectoryScanner(srcdir);
-        String[] includes = { "*\\*\\*." + DROOLSPACKAGEEXTENSION };
+        String[] includes = {"*\\*\\*." + DROOLSPACKAGEEXTENSION};
         directoryScanner.setIncludes(includes);
 
         String[] fileNames = directoryScanner.getIncludedFiles();

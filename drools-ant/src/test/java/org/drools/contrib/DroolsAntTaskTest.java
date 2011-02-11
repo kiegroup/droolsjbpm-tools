@@ -169,14 +169,4 @@ public class DroolsAntTaskTest extends BuildFileTest {
         }
     }
 
-    @Test
-    public void testManyPackageFiles() {
-        try {
-            executeTarget( "rulesmanypackagefile" );
-            fail( "Should throw an exception " );
-        } catch ( Exception e ) {
-            e.printStackTrace();
-        }
-    }
-
 }

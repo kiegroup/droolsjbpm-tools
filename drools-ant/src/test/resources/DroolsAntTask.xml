@@ -97,14 +97,4 @@
     </compiler>
   </target>
 
-  <target name="rulesmanypackagefile" >
-    <compiler
-      srcdir="${eclipsepath}src/test/resources/packagefiletest"
-      tofile="${eclipsepath}target/cheese.rules"
-      classpathref="cheese.classpath" >
-      <include name="*.drl" />
-      <include name="*.brl" />
-    </compiler>
-  </target>
-
 </project>
