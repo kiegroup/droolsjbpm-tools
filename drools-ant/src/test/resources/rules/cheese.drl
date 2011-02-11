@@ -4,9 +4,9 @@ package org.drools.test;
 import org.drools.contrib.Cheese;
 
 rule "Cheese"
-	when
-		Cheese( type == "stilton" )
-	then 
-	    System.out.println("STILTON");
+    when
+        Cheese( type == "stilton" )
+    then
+        System.out.println("STILTON");
 end
 
