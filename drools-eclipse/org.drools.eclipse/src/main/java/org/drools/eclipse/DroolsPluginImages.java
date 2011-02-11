@@ -25,7 +25,6 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * Handles the images used in this plugin.
- * 
  */
 public class DroolsPluginImages {
 

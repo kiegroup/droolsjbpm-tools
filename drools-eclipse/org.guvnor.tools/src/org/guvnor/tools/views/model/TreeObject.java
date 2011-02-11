@@ -23,7 +23,6 @@ import org.guvnor.tools.utils.webdav.ResourceProperties;
 
 /**
  * Basic node for the tree representation of Guvnor contents.
- *
  */
 public class TreeObject implements IAdaptable {
 

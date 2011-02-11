@@ -29,7 +29,6 @@ import org.eclipse.jdt.debug.core.IJavaVariable;
 
 /**
  * Creates a IJavaObject from an IJavaObject and given variables.
- * 
  */
 public class ObjectWrapper implements IJavaObject {
     

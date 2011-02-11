@@ -51,7 +51,6 @@ public class QualifiedNameImpl implements QualifiedName {
      * Qualified names are equal if and only if they have the same
      * qualified parts and local parts.
      * Qualified names are not equal to objects other than qualified names.
-     *
      */
     public boolean equals(Object obj) {
         if (obj == this)

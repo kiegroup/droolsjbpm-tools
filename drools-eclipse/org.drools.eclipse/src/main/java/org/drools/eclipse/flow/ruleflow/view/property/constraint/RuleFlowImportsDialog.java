@@ -50,7 +50,6 @@ import org.jbpm.workflow.core.WorkflowProcess;
 
 /**
  * Dialog for editing imports.
- * 
  */
 public class RuleFlowImportsDialog extends Dialog {
 

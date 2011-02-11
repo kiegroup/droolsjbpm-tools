@@ -42,7 +42,6 @@ import org.eclipse.jdt.core.IJavaProject;
 
 /**
  * Factory for RuleFlow EditParts.
- * 
  */
 public class RuleFlowEditPartFactory implements ProcessEditPartFactory {
     

@@ -22,7 +22,6 @@ import freemarker.template.Template;
 
 /**
  * Ant task to help configure JR cluster for a set of Guvnor nodes.
- * 
  */
 public class GuvnorJRClusterConfigAntTask  extends MatchingTask {
     private String verbose; //optional

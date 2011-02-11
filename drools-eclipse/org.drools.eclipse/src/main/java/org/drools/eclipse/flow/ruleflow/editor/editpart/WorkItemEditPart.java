@@ -53,7 +53,6 @@ import org.jbpm.workflow.core.node.WorkItemNode;
 
 /**
  * EditPart for a Task node.
- * 
  */
 public class WorkItemEditPart extends ElementEditPart {
 

@@ -26,7 +26,6 @@ import org.eclipse.swt.custom.BusyIndicator;
 
 /**
  * Action to refresh the log.
- * 
  */
 public class RefreshLogAction extends Action {
     

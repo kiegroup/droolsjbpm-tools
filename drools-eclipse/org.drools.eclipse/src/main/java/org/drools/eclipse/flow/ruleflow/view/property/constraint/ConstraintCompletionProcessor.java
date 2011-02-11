@@ -42,7 +42,6 @@ import org.jbpm.workflow.core.WorkflowProcess;
 
 /**
  * Completion for ruleflow constraints. 
- * 
  */
 public class ConstraintCompletionProcessor extends RuleCompletionProcessor {
 

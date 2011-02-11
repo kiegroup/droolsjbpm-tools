@@ -28,7 +28,6 @@ import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 
 /**
  * Cell editor for on entry actions.
- * 
  */
 public class OnEntryActionsCellEditor extends BeanDialogCellEditor<List<DroolsAction>> {
 

@@ -41,8 +41,6 @@ import org.eclipse.text.edits.ReplaceEdit;
 
 /**
  * Participant to generate refactoring when a type is renamed.
- * 
- *
  */
 @SuppressWarnings("restriction")
 public class RuleIFileRenameParticipant extends RenameParticipant {

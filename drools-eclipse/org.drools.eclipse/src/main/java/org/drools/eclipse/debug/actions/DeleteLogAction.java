@@ -26,7 +26,6 @@ import org.eclipse.swt.custom.BusyIndicator;
 
 /**
  * Action to clear the log.
- * 
  */
 public class DeleteLogAction extends Action {
     

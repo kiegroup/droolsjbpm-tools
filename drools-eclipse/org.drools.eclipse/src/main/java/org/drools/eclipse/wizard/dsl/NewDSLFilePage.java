@@ -16,7 +16,6 @@
 
 /*
  * Created on 11-jan-2005
- *
  */
 package org.drools.eclipse.wizard.dsl;
 
@@ -35,7 +34,6 @@ import org.eclipse.ui.ide.IDE;
 /**
  * A page to create a new Domain Specific Language configuration.
  * There may be additional options here in future.
- * 
  */
 public class NewDSLFilePage extends WizardNewFileCreationPage {
 

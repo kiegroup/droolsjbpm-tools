@@ -29,7 +29,6 @@ import org.eclipse.ui.forms.editor.FormEditor;
 /**
  * This is a multi table editor wrapper for both the text editor and the flow
  * chart.
- * 
  */
 public class RuleFlowModelEditor2 extends FormEditor {
 

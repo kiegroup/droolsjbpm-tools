@@ -29,8 +29,6 @@ import org.drools.lang.Location;
 /**
  * Test to check the location determination when doing code completion inside
  * rule conditions.
- *
- *
  */
 public class CompletionContextTest {
 

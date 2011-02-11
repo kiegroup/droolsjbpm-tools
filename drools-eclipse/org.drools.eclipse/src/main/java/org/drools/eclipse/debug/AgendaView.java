@@ -20,7 +20,6 @@ import org.eclipse.jface.viewers.IContentProvider;
 
 /**
  * The Agenda View.
- * 
  */
 public class AgendaView extends DroolsDebugEventHandlerView {
 

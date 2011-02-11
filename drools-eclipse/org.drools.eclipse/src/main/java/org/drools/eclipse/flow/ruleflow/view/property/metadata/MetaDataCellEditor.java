@@ -25,7 +25,6 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * Cell editor for meta data.
- * 
  */
 public class MetaDataCellEditor extends BeanDialogCellEditor<Map<String, Object>> {
 

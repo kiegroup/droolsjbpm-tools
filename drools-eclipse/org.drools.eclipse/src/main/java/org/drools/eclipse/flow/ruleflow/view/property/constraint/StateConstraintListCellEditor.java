@@ -29,7 +29,6 @@ import org.jbpm.workflow.core.node.StateNode;
 
 /**
  * Cell editor for state constraints.
- * 
  */
 public class StateConstraintListCellEditor extends BeanDialogCellEditor<Map<ConnectionRef, Constraint>> {
 

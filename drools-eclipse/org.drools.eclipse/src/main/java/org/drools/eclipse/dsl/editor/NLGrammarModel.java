@@ -24,8 +24,6 @@ import org.drools.lang.dsl.DefaultDSLMapping;
 /**
  * This extends the compilers DSL grammar implementation to provide
  * change listener support.
- * 
- *
  */
 public class NLGrammarModel extends DefaultDSLMapping {
     

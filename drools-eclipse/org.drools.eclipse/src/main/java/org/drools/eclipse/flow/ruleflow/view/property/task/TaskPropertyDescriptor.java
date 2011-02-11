@@ -22,7 +22,6 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
 
 /**
  * Property descriptor for a task.
- * 
  */
 public class TaskPropertyDescriptor extends PropertyDescriptor {
     

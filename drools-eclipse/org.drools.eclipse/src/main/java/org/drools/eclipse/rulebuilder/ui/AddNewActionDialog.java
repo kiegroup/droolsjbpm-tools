@@ -41,7 +41,6 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * This provides a popup for new RHS action selection.
- *
  */
 public class AddNewActionDialog extends RuleDialog {
 

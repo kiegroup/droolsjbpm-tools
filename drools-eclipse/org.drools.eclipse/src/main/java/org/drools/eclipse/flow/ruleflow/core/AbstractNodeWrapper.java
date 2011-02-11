@@ -32,7 +32,6 @@ import org.jbpm.workflow.core.impl.NodeImpl;
 
 /**
  * Wrapper for a node.
- * 
  */
 public abstract class AbstractNodeWrapper extends DefaultElementWrapper implements NodeWrapper {
 

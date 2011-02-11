@@ -27,7 +27,6 @@ import org.drools.reteoo.BaseVertex;
 
 /**
  * Represents one row in rete graph
- *
  */
 public class Row {
 
@@ -91,7 +90,6 @@ public class Row {
 
     /**
      * Optimizing vertices for optimal presentation
-     * 
      */
     public void optimize() {
         final List sorted = new ArrayList( this.vertices );

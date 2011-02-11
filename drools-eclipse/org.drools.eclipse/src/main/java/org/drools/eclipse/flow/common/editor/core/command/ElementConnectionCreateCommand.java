@@ -25,7 +25,6 @@ import org.eclipse.gef.commands.Command;
 
 /**
  * A command for creating an element.
- * 
  */
 public class ElementConnectionCreateCommand extends Command {
 

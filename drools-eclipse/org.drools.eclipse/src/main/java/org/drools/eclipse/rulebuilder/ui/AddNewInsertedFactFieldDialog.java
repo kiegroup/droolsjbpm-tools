@@ -27,10 +27,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
-/**
- * 
- *
- */
 public class AddNewInsertedFactFieldDialog extends RuleDialog {
 
     private RuleModeller modeller;

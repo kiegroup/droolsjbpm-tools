@@ -24,7 +24,6 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * Cell editor for an action.
- * 
  */
 public class TaskCellEditor extends BeanDialogCellEditor<Work> {
 

@@ -47,8 +47,6 @@ import org.eclipse.text.edits.ReplaceEdit;
  * Participant to generate refactoring when a field is renamed.
  * This isn't executed by the RefactoringProcessor when a field is refactored with
  * the rename hotkey into the editor. Only is called when the Rename field dialog is used.
- * 
- *
  */
 @SuppressWarnings("restriction")
 public class RuleSourceFieldRenameParticipant extends RenameParticipant {

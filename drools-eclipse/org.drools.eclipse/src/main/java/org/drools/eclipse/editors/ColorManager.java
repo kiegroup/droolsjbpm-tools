@@ -26,7 +26,6 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * Drools color manager.
- * 
  */
 public class ColorManager {
 

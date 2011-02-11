@@ -21,7 +21,6 @@ import java.util.Map;
 
 /**
  * This represents a rule set. 
- *
  */
 public class RuleSet extends DroolsElement {
 

@@ -25,7 +25,6 @@ import org.eclipse.gef.requests.DirectEditRequest;
 
 /**
  * Policy for directly editing elements.
- * 
  */
 public class ElementDirectEditPolicy extends DirectEditPolicy {
 

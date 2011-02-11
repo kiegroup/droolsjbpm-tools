@@ -28,7 +28,6 @@ import org.jbpm.workflow.core.node.ActionNode;
 
 /**
  * Cell editor for an action.
- * 
  */
 public class ActionCellEditor extends BeanDialogCellEditor<DroolsAction> {
 

@@ -22,7 +22,6 @@ import org.eclipse.draw2d.geometry.Rectangle;
 
 /**
  * Wrapper of a model element.
- * 
  */
 public interface ElementWrapper {
 

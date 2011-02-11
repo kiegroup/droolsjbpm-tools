@@ -28,7 +28,6 @@ import org.guvnor.tools.views.model.TreeObject.Type;
 
 /**
  * Label providers for Guvnor structure.
- *
  */
 public class RepositoryLabelProvider extends LabelProvider {
     private Image repImage;

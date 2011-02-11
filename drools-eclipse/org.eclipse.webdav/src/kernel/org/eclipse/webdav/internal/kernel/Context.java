@@ -35,7 +35,6 @@ import org.eclipse.webdav.internal.kernel.utils.MergedEnumeration;
  *the HTTP spec for details.
  * 2) Identify the fields where multiple values are permissible, and change the
  *params to be arrays of values.
- *
  */
 public class Context implements IContext {
 

@@ -26,7 +26,6 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * Default integer editor.
- * 
  */
 public class IntegerEditor extends Composite implements Editor {
 

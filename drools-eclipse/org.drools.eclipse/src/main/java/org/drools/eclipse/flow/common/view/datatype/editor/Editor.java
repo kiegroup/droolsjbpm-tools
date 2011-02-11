@@ -21,7 +21,6 @@ import org.drools.process.core.datatype.DataType;
 
 /**
  * An editor for an object with a given datatype.
- * 
  */
 public interface Editor {
 

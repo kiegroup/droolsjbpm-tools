@@ -25,7 +25,6 @@ import org.jbpm.workflow.core.WorkflowProcess;
 
 /**
  * Dialog for editing exception handlers.
- * 
  */
 public class ExceptionHandlersDialog extends EditMapDialog<String, ActionExceptionHandler> {
     

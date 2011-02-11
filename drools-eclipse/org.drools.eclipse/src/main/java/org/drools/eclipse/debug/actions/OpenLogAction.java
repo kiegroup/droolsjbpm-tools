@@ -27,7 +27,6 @@ import org.eclipse.swt.widgets.FileDialog;
 
 /**
  * Action to open a log.
- * 
  */
 public class OpenLogAction extends Action {
     

@@ -26,7 +26,6 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * Default boolean editor.
- * 
  */
 public class BooleanEditor extends Composite implements Editor {
 

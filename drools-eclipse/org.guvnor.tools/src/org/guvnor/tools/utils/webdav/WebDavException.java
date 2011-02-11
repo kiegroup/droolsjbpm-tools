@@ -20,7 +20,6 @@ import org.eclipse.webdav.IResponse;
 
 /**
  * An Exception specifically for WebDav errors. Stores the response code and status message.
- *
  */
 public class WebDavException extends Exception {
 

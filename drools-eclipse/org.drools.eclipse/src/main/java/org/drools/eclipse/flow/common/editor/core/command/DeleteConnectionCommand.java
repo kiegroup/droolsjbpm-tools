@@ -22,7 +22,6 @@ import org.eclipse.gef.commands.Command;
 
 /**
  * A command for deleting a connection.
- * 
  */
 public class DeleteConnectionCommand extends Command {
 

@@ -37,9 +37,6 @@ import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
-/**
- *
- */
 public class ActionSetFieldWidget extends Widget {
 
     private ActionSetField set;

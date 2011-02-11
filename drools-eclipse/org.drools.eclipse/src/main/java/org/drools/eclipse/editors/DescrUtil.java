@@ -30,7 +30,6 @@ import org.drools.lang.descr.RuleDescr;
 
 /**
  * Util class for searching Descr tree.
- * 
  */
 public final class DescrUtil {
 

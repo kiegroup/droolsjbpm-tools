@@ -62,7 +62,6 @@ import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 
 /**
  * A wizard to create a new Drools project.
- * 
  */
 public class NewDroolsProjectWizard extends BasicNewResourceWizard {
 

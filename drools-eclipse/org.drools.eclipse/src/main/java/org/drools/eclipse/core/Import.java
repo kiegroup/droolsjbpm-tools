@@ -18,7 +18,6 @@ package org.drools.eclipse.core;
 
 /**
  * This represents an import. 
- * 
  */
 public class Import extends DroolsElement {
 

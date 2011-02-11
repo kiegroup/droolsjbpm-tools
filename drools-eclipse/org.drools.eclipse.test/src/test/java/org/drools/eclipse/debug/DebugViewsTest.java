@@ -40,7 +40,6 @@ import org.drools.spi.AgendaGroup;
  * WARNING: DO NOT CHANGE ANYTHING IN THIS TEST CLASS
  * WITHOUT ALSO CHANGING THE IMPLEMENTATION IN THE DEBUG
  * VIEWS (which are using reflection)
- *    
  */
 public class DebugViewsTest {
 

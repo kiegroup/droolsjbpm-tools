@@ -18,7 +18,6 @@ package org.drools.eclipse.core;
 
 /**
  * This represents a global. 
- * 
  */
 public class Global extends DroolsElement {
 

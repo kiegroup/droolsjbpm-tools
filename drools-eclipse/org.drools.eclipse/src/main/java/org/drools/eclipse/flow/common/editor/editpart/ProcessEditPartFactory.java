@@ -21,7 +21,6 @@ import org.eclipse.jdt.core.IJavaProject;
 
 /**
  * Factory for RuleFlow EditParts.
- * 
  */
 public interface ProcessEditPartFactory extends EditPartFactory {
     

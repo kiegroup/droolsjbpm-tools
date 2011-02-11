@@ -54,7 +54,6 @@ import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
  * Simple outline view of a DRL file. At present this is not wired in with the Parser, so it is fault
  * tolerant of incorrect syntax. 
  * Should provide navigation assistance in large rule files.
- * 
  */
 public class RuleContentOutlinePage extends ContentOutlinePage {
 

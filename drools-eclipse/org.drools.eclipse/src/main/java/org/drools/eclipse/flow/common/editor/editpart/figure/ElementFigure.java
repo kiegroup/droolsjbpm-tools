@@ -23,7 +23,6 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * Default implementation of an element Figure.
- * 
  */
 public interface ElementFigure extends IFigure {
     

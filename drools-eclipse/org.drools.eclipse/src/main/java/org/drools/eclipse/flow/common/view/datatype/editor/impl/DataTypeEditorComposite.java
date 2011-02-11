@@ -32,7 +32,6 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * Default editor for a datatype. 
- * 
  */
 public class DataTypeEditorComposite extends Composite implements DataTypeEditor.DataTypeListener {
     private DataTypeRegistry registry;

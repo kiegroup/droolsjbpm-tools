@@ -20,7 +20,6 @@ import org.eclipse.jface.text.source.Annotation;
 
 /**
  * Problem annotation for Drools.
- * 
  */
 public class DRLProblemAnnotation extends Annotation {
 

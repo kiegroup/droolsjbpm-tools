@@ -61,8 +61,6 @@ import org.eclipse.swt.SWT;
 
 /**
  * GEF-based RETE Viewer
- * 
- *
  */
 public class ReteViewer extends GraphicalEditor {
 
@@ -205,7 +203,6 @@ public class ReteViewer extends GraphicalEditor {
 
     /**
      * Loads Rete model and initializes zoom manager.
-     * 
      */
     protected void initializeGraphicalViewer() {
         ZoomManager zoomManager = rootEditPart.getZoomManager();
@@ -228,7 +225,6 @@ public class ReteViewer extends GraphicalEditor {
     /**
      * Moves all <code>diagram</code> nodes to upper left corner
      * and shifting to right if neccessary to get rid of negative XY coordinates.
-     * 
      */
     private void zeroBaseDiagram(ReteGraph graph) {
 

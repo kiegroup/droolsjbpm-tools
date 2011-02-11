@@ -37,7 +37,6 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 
 /**
  * Action for exporting an image of a RuleFlow.
- * 
  */
 public class ExportImageAction extends ActionDelegate implements IEditorActionDelegate {
 

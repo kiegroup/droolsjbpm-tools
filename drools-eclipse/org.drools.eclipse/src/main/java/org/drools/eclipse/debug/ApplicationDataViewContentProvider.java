@@ -29,7 +29,6 @@ import org.eclipse.jdt.debug.core.IJavaValue;
 
 /**
  * The Application Data View content provider.
- * 
  */
 public class ApplicationDataViewContentProvider extends DroolsDebugViewContentProvider {
 

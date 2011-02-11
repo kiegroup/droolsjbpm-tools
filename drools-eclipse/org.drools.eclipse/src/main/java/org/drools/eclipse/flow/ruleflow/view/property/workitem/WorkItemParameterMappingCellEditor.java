@@ -24,7 +24,6 @@ import org.jbpm.workflow.core.node.WorkItemNode;
 
 /**
  * Cell editor for work item result mappings.
- * 
  */
 public class WorkItemParameterMappingCellEditor extends BeanDialogCellEditor {
 

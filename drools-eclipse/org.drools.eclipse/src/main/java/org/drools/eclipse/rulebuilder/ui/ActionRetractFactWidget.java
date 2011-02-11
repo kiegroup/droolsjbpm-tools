@@ -22,10 +22,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-/**
- * 
- *
- */
 public class ActionRetractFactWidget extends Widget {
 
     private final ActionRetractFact fact;

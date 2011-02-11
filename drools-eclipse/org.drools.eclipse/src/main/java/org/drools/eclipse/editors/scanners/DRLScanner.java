@@ -37,7 +37,6 @@ import org.eclipse.swt.graphics.Color;
 
 /**
  * Basic keyword scanner for syntax highlighting.
- *
  */
 public class DRLScanner extends RuleBasedScanner {
 

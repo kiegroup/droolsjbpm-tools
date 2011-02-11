@@ -29,7 +29,6 @@ import org.eclipse.core.runtime.Status;
 
 /**
  * Utility class.
- * 
  */
 public class Util {
 

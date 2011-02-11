@@ -25,7 +25,6 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * A CellEditorLocator for elements.
- * 
  */
 public class ElementCellEditorLocator implements CellEditorLocator {
 

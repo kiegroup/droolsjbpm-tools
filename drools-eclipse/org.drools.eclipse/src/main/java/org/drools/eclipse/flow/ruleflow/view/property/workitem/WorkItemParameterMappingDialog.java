@@ -46,7 +46,6 @@ import org.jbpm.workflow.core.node.WorkItemNode;
 
 /**
  * Dialog for editing work item parameter mappings.
- * 
  */
 public class WorkItemParameterMappingDialog extends EditBeanDialog implements FocusListener, MouseListener {
 

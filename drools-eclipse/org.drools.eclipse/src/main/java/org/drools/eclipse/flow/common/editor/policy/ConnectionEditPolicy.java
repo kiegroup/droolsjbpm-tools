@@ -32,7 +32,6 @@ import org.eclipse.gef.requests.GroupRequest;
 
 /**
  * Policy for editing connections.
- * 
  */
 public class ConnectionEditPolicy extends org.eclipse.gef.editpolicies.ConnectionEditPolicy {
 

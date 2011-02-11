@@ -25,7 +25,6 @@ import org.jbpm.workflow.core.node.Join;
 
 /**
  * Wrapper for a join node.
- * 
  */
 public class JoinWrapper extends AbstractNodeWrapper {
 

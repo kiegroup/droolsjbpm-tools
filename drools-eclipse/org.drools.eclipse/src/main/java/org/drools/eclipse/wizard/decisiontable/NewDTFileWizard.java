@@ -25,7 +25,6 @@ import org.eclipse.ui.IWorkbench;
 
 /**
  * A wizard to create a Decision Table scaffold.
- * 
  */
 public class NewDTFileWizard extends Wizard implements INewWizard {
 

@@ -46,7 +46,6 @@ import org.jbpm.workflow.core.node.SubProcessNode;
 
 /**
  * Dialog for editing work item parameter mappings.
- * 
  */
 public class SubProcessParameterInMappingDialog extends EditBeanDialog implements FocusListener, MouseListener {
 

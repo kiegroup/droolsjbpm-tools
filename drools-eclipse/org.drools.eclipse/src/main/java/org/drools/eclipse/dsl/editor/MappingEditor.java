@@ -35,7 +35,6 @@ import org.eclipse.swt.widgets.Text;
  * edit little.
  * 
  * This is a simple popup modal dialog.
- * 
  */
 public class MappingEditor extends TitleAreaDialog {
 

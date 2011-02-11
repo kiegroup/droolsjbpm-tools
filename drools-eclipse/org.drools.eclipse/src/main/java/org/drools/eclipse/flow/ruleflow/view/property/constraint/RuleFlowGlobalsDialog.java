@@ -49,7 +49,6 @@ import org.jbpm.workflow.core.WorkflowProcess;
 
 /**
  * Dialog for editing imports.
- * 
  */
 public class RuleFlowGlobalsDialog extends Dialog {
 

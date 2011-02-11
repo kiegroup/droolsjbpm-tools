@@ -28,7 +28,6 @@ import org.eclipse.draw2d.geometry.Point;
 
 /**
  * Factory methods for calculating and layouting reteoo graph
- *
  */
 public class ReteooLayoutFactory {
 

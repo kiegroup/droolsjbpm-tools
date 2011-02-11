@@ -74,7 +74,6 @@ import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
- * 
  */
 public class DroolsEclipsePlugin extends AbstractUIPlugin {
 

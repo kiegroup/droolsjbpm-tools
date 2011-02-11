@@ -49,8 +49,6 @@ import org.eclipse.text.edits.ReplaceEdit;
 
 /**
  * Participant to generate refactoring when types are moved or a package is renamed
- * 
- *
  */
 @SuppressWarnings("restriction")
 public class RuleIFileMoveParticipant extends MoveParticipant {

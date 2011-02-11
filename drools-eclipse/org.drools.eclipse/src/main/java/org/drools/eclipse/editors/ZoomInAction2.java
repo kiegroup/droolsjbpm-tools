@@ -30,8 +30,6 @@ import org.eclipse.gef.ui.actions.ZoomInAction;
  * correct zoomManager set by setZoomManager(ZoomManager manager).<br/>
  * 
  * setZoomManager(ZoomManager manager) can be used several times.
- * 
- *
  */
 public class ZoomInAction2 extends ZoomInAction {
 

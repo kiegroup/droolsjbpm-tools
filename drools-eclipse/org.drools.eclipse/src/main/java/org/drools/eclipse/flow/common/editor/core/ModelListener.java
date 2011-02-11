@@ -18,7 +18,6 @@ package org.drools.eclipse.flow.common.editor.core;
 
 /**
  * A listener for model events.
- * 
  */
 public interface ModelListener {
 

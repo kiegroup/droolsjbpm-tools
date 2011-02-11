@@ -28,7 +28,6 @@ import org.eclipse.ui.ide.IDE;
 
 /**
  * Page for creating a new RuleFlow file.
- * 
  */
 public class NewRuleFlowFilePage extends WizardNewFileCreationPage {
 

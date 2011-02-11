@@ -29,9 +29,6 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.ui.IEditorPart;
 
-/**
- *
- */
 public abstract class AbstractCompletionProcessor implements IContentAssistProcessor {
 
     private IEditorPart editor;

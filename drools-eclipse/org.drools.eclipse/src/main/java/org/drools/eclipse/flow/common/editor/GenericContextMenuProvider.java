@@ -26,7 +26,6 @@ import org.eclipse.ui.actions.ActionFactory;
 
 /**
  * Common implementation of a ContextMenuProvider.
- * 
  */
 public class GenericContextMenuProvider extends ContextMenuProvider {
 

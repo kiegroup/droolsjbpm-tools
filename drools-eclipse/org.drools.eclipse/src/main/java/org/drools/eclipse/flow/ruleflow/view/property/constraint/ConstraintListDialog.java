@@ -40,7 +40,6 @@ import org.jbpm.workflow.core.node.Split;
 
 /**
  * Dialog for editing constraints.
- * 
  */
 public class ConstraintListDialog extends EditBeanDialog<Map<ConnectionRef, Constraint>> {
 

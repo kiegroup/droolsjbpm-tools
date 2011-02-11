@@ -220,10 +220,6 @@ public class DSLEditor extends EditorPart {
         firePropertyChange( PROP_DIRTY );
     }
 
-    /**
-     * The method sorts th e
-     *
-     */
     public void sortModel() {
         if ( sortCombo.getSelectionIndex() == DSLMappingSorter.EXPRESSION ) {
             tableViewer.setSorter( new DSLMappingSorter( DSLMappingSorter.EXPRESSION ) );

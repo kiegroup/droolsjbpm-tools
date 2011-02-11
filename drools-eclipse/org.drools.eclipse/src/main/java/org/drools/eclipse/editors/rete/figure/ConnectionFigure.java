@@ -22,7 +22,6 @@ import org.eclipse.swt.SWT;
 
 /**
  * ConnectionFigure between two Vertices. 
- *
  */
 public class ConnectionFigure extends PolylineConnection {
 

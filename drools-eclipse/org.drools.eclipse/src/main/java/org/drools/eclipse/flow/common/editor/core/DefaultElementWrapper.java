@@ -37,7 +37,6 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 /**
  * Default wrapper of a model element.
- * 
  */
 public abstract class DefaultElementWrapper implements ElementWrapper, IPropertySource, Serializable {
 

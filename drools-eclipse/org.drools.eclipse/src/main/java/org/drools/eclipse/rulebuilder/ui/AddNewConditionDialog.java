@@ -36,7 +36,6 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * This provides a popup for new LHS condition selection. (add new if-condition)
- * 
  */
 public class AddNewConditionDialog extends RuleDialog {
 

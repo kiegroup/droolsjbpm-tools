@@ -55,7 +55,6 @@ import org.guvnor.tools.views.ResourceHistoryView;
 
 /**
  * A set of utilities for interacting with the Eclipse platform.
- * 
  */
 public class PlatformUtils {
 

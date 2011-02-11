@@ -20,7 +20,6 @@ import org.eclipse.jface.viewers.IContentProvider;
 
 /**
  * The Application Data View.
- * 
  */
 public class ApplicationDataView extends DroolsDebugEventHandlerView {
 

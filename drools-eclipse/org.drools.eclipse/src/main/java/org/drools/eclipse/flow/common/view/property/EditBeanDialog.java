@@ -27,7 +27,6 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * Dialog for editing a JavaBean.
- * 
  */
 public abstract class EditBeanDialog<T> extends Dialog {
 

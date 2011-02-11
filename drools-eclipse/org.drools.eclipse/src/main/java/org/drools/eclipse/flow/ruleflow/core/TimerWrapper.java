@@ -25,7 +25,6 @@ import org.jbpm.workflow.core.node.TimerNode;
 
 /**
  * Wrapper for a timer node.
- * 
  */
 public class TimerWrapper extends AbstractNodeWrapper {
 

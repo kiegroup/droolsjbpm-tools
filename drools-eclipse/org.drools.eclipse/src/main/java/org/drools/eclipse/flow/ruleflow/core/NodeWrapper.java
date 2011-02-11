@@ -22,7 +22,6 @@ import org.jbpm.workflow.core.Node;
 
 /**
  * Wrapper for a node.
- * 
  */
 public interface NodeWrapper extends ElementWrapper {
 

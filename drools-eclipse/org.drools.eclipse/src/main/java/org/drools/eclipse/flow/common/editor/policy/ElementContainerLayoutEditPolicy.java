@@ -29,7 +29,6 @@ import org.eclipse.gef.requests.CreateRequest;
 
 /**
  * Policy for performing layout of a process.
- * 
  */
 public class ElementContainerLayoutEditPolicy extends XYLayoutEditPolicy {
     

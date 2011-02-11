@@ -25,7 +25,6 @@ import org.eclipse.gef.requests.GroupRequest;
 
 /**
  * Policy for editing elements.
- * 
  */
 public class ElementEditPolicy extends ComponentEditPolicy {
 

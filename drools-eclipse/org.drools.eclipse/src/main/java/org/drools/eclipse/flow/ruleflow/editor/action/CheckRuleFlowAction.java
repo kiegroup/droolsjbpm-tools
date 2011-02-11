@@ -31,7 +31,6 @@ import org.jbpm.ruleflow.core.validation.RuleFlowProcessValidator;
 
 /**
  * Action for checking a RuleFlow.
- * 
  */
 public class CheckRuleFlowAction extends ActionDelegate implements IEditorActionDelegate {
 

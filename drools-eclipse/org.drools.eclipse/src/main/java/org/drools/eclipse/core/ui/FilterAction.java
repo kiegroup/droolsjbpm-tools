@@ -21,7 +21,6 @@ import org.eclipse.jface.action.Action;
 
 /**
  * Action used to enable / disable filter properties
- * 
  */
 public class FilterAction extends Action {
 

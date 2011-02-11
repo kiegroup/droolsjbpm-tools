@@ -26,8 +26,6 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /**
  * Rule Builder main page used as a tab in {@link RuleEditor} multipage.
- * 
- *
  */
 public class BrlPage extends FormPage {
 

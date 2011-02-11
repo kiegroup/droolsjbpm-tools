@@ -60,8 +60,6 @@ import com.sun.jdi.Value;
 
 /**
  * Stack Frame for MVEL Dialect
- * 
- *
  */
 public class MVELStackFrame extends DroolsStackFrame {
 

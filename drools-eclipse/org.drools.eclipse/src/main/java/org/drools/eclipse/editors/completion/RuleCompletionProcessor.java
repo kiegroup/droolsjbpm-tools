@@ -61,7 +61,6 @@ import org.mvel2.compiler.PropertyVerifier;
 
 /**
  * For handling within rules.
- *
  */
 public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 

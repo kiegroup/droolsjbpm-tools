@@ -33,7 +33,6 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * EditPart for a RuleSet node.
- * 
  */
 public class StateNodeEditPart extends ElementEditPart {
 

@@ -33,7 +33,6 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * EditPart for a timer node.
- * 
  */
 public class TimerEditPart extends ElementEditPart {
 

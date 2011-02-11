@@ -24,7 +24,6 @@ import org.drools.reteoo.BaseVertex;
 
 /**
  * Holder for Row elements.
- * 
  */
 public class RowList {
 

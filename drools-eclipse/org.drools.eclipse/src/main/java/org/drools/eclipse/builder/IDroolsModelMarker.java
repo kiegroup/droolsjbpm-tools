@@ -20,7 +20,6 @@ import org.drools.eclipse.DroolsEclipsePlugin;
 
 /**
  * The drools problem marker id.
- * 
  */
 public interface IDroolsModelMarker {
 

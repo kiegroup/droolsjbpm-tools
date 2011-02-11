@@ -28,7 +28,6 @@ import org.eclipse.ui.actions.ActionGroup;
 
 /**
  * Action Group that contributes filter buttons.
- * 
  */
 public class FilterActionGroup extends ActionGroup {
 

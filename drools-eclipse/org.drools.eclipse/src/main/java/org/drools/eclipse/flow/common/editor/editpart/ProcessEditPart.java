@@ -46,7 +46,6 @@ import org.eclipse.swt.SWT;
 
 /**
  * Default implementation of a process EditPart.
- * 
  */
 public class ProcessEditPart extends AbstractGraphicalEditPart implements ModelListener {
     

@@ -58,8 +58,6 @@ import org.drools.rule.Package;
  * {@link RowList},
  * org.drools.reteoo.*Vertex,
  * org.drools.ide.editors.rete.model.*
- * 
- *
  */
 public class ReteooLayoutFactoryTest {
 
@@ -208,7 +206,6 @@ public class ReteooLayoutFactoryTest {
 
     /**
      * Used by simplerule.drl
-     *
      */
     public static class Message {
         public static final int HELLO   = 0;

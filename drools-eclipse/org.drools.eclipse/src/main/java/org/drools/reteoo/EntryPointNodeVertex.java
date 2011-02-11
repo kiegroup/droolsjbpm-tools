@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-/**
- * 
- */
 package org.drools.reteoo;
 
 import org.eclipse.draw2d.ColorConstants;
@@ -24,7 +21,6 @@ import org.eclipse.swt.graphics.Color;
 
 /**
  * Wraps {@link ObjectTypeNode} and adds visual extras like color information
- *
  */
 public class EntryPointNodeVertex extends BaseVertex {
 

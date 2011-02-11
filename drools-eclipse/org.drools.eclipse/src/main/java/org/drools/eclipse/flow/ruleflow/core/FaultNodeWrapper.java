@@ -24,7 +24,6 @@ import org.jbpm.workflow.core.node.FaultNode;
 
 /**
  * Wrapper for a fault node.
- * 
  */
 public class FaultNodeWrapper extends AbstractNodeWrapper {
 

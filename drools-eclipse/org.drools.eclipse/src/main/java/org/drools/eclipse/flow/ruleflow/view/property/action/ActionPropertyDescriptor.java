@@ -24,7 +24,6 @@ import org.jbpm.workflow.core.node.ActionNode;
 
 /**
  * Property descriptor for an action.
- * 
  */
 public class ActionPropertyDescriptor extends PropertyDescriptor {
     

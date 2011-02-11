@@ -33,8 +33,6 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  * Base impl for all rete vertices.
  * 
  * Can be connected with another BaseVertex with a Connector.
- * 
- *
  */
 abstract public class GraphicalVertex extends ModelElement {
 
@@ -143,7 +141,6 @@ abstract public class GraphicalVertex extends ModelElement {
 
     /**
      * Returns an array of IPropertyDescriptors for this vertex.
-     * 
      */
     public IPropertyDescriptor[] getPropertyDescriptors() {
         return descriptors;

@@ -24,7 +24,6 @@ import org.jbpm.workflow.core.node.MilestoneNode;
 
 /**
  * Property descriptor for a milestone constraint.
- * 
  */
 public class MilestoneConstraintPropertyDescriptor extends PropertyDescriptor {
     

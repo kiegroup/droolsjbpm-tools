@@ -51,7 +51,6 @@ import org.jbpm.workflow.core.node.MilestoneNode;
 
 /**
  * Dialog for editing constraints.
- * 
  */
 public class MilestoneConstraintDialog extends EditBeanDialog<String> {
 

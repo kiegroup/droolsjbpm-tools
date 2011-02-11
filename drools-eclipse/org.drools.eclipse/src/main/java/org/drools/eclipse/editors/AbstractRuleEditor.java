@@ -50,7 +50,6 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 /**
  * Abstract text-based rule editor.
- * 
  */
 public class AbstractRuleEditor extends TextEditor {
 

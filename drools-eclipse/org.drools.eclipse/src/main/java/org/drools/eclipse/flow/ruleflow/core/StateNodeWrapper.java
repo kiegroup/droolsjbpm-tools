@@ -34,7 +34,6 @@ import org.jbpm.workflow.core.node.StateNode;
 
 /**
  * Wrapper for a milestone node.
- * 
  */
 public class StateNodeWrapper extends StateBasedNodeWrapper {
 

@@ -27,7 +27,6 @@ import org.eclipse.swt.widgets.Label;
 
 /**
  * Default empty editor.
- * 
  */
 public class EmptyEditor extends Composite implements Editor, DataTypeEditor {
 

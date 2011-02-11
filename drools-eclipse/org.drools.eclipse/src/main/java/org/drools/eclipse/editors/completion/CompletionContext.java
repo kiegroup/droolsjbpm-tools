@@ -34,7 +34,6 @@ import org.drools.lang.Location;
  * A utility class that invokes the DRLParser on some partial drl text, and
  * provides information back about the context of that parsed drl, such as a
  * location type, a dialect, and so on.
- * 
  */
 public class CompletionContext {
 

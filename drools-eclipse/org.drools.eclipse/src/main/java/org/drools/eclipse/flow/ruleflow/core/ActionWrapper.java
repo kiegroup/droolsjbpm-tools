@@ -26,7 +26,6 @@ import org.jbpm.workflow.core.node.ActionNode;
 
 /**
  * Wrapper for an action node.
- * 
  */
 public class ActionWrapper extends AbstractNodeWrapper {
 

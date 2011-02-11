@@ -33,7 +33,6 @@ import org.eclipse.ui.forms.editor.FormEditor;
 
 /**
  * Editor for rules using a domain-specific language.
- * 
  */
 public class DSLRuleEditor2 extends FormEditor {
 

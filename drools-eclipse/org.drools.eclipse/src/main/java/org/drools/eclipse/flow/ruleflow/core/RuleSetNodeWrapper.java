@@ -24,7 +24,6 @@ import org.jbpm.workflow.core.node.RuleSetNode;
 
 /**
  * Wrapper for a RuleSet node.
- * 
  */
 public class RuleSetNodeWrapper extends StateBasedNodeWrapper {
 

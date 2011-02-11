@@ -34,7 +34,6 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * For handling DSL rules.
- * 
  */
 public class DSLRuleCompletionProcessor extends RuleCompletionProcessor {
 

@@ -63,7 +63,6 @@ import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 
 /**
  * Dialog for editing exception handlers.
- * 
  */
 public class ExceptionHandlerDialog extends EditBeanDialog<ActionExceptionHandler> implements MapItemDialog<String> {
     

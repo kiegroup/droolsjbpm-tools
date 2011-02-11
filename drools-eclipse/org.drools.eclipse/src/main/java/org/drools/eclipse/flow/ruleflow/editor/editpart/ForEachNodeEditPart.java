@@ -26,7 +26,6 @@ import org.eclipse.draw2d.geometry.Rectangle;
 
 /**
  * EditPart for a ForEach node.
- * 
  */
 public class ForEachNodeEditPart extends ElementContainerEditPart {
 

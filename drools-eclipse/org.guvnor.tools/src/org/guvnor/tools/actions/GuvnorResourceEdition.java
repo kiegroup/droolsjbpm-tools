@@ -29,7 +29,6 @@ import org.guvnor.tools.Activator;
 
 /**
  * Represents compare input contents.
- *
  */
 public class GuvnorResourceEdition implements IStreamContentAccessor, ITypedElement {
 

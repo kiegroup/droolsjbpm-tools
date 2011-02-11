@@ -23,7 +23,6 @@ import org.eclipse.gef.commands.Command;
 
 /**
  * A command for deleting a bendpoint.
- * 
  */
 public class DeleteBendpointCommand extends Command {
 

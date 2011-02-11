@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-/**
- * 
- */
 package org.drools.eclipse.task.views;
 
 import org.jbpm.task.service.TaskClientHandler.TaskOperationResponseHandler;

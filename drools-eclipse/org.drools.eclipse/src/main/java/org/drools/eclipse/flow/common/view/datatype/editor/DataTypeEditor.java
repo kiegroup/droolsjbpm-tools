@@ -20,7 +20,6 @@ import org.drools.process.core.datatype.DataType;
 
 /**
  * An editor for a datatype.
- * 
  */
 public interface DataTypeEditor {
 

@@ -35,7 +35,6 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 /**
  * Common implementation of an outline page.
- * 
  */
 public class OverviewOutlinePage extends Page implements IContentOutlinePage {
 

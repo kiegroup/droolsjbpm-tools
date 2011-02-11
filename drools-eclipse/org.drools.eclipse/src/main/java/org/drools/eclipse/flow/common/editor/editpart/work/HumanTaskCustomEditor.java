@@ -34,7 +34,6 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * Custom Work editor for human tasks.
- * 
  */
 public class HumanTaskCustomEditor extends EditBeanDialog<Work> implements WorkEditor {
 

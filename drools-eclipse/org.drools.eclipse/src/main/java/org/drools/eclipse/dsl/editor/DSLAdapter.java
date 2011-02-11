@@ -46,7 +46,6 @@ import org.eclipse.core.runtime.CoreException;
  * It will look for a DSL configuration, as named in the rule file, in the same directory as the rule file.
  * Failing this, it will search one directory above the rule file. 
  * Failing that, it will search the root of the project in the workspace.
- * 
  */
 public class DSLAdapter {
 

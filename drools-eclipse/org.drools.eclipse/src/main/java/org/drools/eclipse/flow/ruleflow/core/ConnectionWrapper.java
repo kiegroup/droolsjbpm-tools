@@ -29,7 +29,6 @@ import org.jbpm.workflow.core.impl.ConnectionImpl;
 
 /**
  * Wrapper for a connection.
- * 
  */
 public class ConnectionWrapper extends ElementConnection {
 

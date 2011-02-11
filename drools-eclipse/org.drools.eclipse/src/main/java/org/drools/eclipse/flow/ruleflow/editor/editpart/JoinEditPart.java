@@ -36,7 +36,6 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * EditPart for a join node.
- * 
  */
 public class JoinEditPart extends ElementEditPart {
 

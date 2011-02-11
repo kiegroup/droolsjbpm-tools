@@ -18,7 +18,6 @@ package org.drools.eclipse.flow.common.editor.core;
 
 /**
  * Factory for creating element connections.
- * 
  */
 public interface ElementConnectionFactory {
 

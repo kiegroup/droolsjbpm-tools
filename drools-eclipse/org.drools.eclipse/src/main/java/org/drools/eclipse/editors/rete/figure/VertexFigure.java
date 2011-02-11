@@ -24,7 +24,6 @@ import org.eclipse.swt.graphics.Color;
 
 /**
  * Figure representing BaseVertex
- *
  */
 public class VertexFigure extends Figure {
 

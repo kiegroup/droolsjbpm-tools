@@ -37,7 +37,6 @@ import org.jbpm.process.core.context.variable.Variable;
 
 /**
  * Dialog for editing variables.
- * 
  */
 public class VariableDialog extends EditBeanDialog<Variable> {
     

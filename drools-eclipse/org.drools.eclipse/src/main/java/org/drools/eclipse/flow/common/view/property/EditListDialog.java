@@ -37,7 +37,6 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * Dialog for editing a list.
- * 
  */
 public abstract class EditListDialog<T> extends EditBeanDialog<List<T>> {
     

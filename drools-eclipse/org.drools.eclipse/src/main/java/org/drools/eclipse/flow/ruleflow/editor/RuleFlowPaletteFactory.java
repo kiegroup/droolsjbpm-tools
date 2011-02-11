@@ -34,7 +34,6 @@ import org.eclipse.gef.palette.ToolEntry;
 
 /**
  * Factory for creating a RuleFlow palette.
- * 
  */
 public class RuleFlowPaletteFactory {
 

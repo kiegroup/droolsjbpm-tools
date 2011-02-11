@@ -18,7 +18,6 @@ package org.guvnor.tools.wizards;
 
 /**
  * Methods common to Guvnor wizards.
- *
  */
 public interface IGuvnorWizard {
     public GuvWizardModel getModel();

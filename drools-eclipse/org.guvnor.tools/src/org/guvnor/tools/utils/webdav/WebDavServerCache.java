@@ -20,7 +20,6 @@ import java.util.HashMap;
 
 /**
  * Simple cache for WebDav connections.
- *
  */
 public class WebDavServerCache {
 

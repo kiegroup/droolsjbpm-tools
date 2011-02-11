@@ -42,7 +42,6 @@ import org.eclipse.gef.requests.CreateRequest;
 
 /**
  * EditPart for ReteGraph
- * 
  */
 public class DiagramEditPart extends AbstractGraphicalEditPart
     implements

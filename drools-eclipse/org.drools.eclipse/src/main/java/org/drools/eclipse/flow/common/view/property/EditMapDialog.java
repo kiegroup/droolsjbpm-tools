@@ -37,7 +37,6 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * Dialog for editing a list.
- * 
  */
 public abstract class EditMapDialog<S, T> extends EditBeanDialog<Map<S, T>> {
     

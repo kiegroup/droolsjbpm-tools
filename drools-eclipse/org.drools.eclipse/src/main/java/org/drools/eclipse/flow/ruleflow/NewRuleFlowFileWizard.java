@@ -23,7 +23,6 @@ import org.eclipse.ui.IWorkbench;
 
 /**
  * Wizard for creating a new RuleFlow file.
- * 
  */
 public class NewRuleFlowFileWizard extends Wizard implements INewWizard {
 

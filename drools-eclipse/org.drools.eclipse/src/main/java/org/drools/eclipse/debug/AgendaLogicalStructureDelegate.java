@@ -35,7 +35,6 @@ import org.eclipse.jdt.debug.core.IJavaVariable;
 
 /**
  * The logical structures of Agenda.
- * 
  */
 public class AgendaLogicalStructureDelegate implements ILogicalStructureTypeDelegate {
 

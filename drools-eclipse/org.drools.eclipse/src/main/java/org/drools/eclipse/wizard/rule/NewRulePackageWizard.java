@@ -25,7 +25,6 @@ import org.eclipse.ui.IWorkbench;
 
 /**
  * This is a wizard to create a new .drl file (for example a rule or a whole rule package).
- * 
  */
 public class NewRulePackageWizard extends Wizard implements INewWizard {
 

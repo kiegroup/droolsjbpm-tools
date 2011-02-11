@@ -55,9 +55,6 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
 import org.jbpm.process.core.Process;
 
-/**
- *
- */
 public class ProcessInstanceViewer extends ViewPart implements ISelectionListener {
 
     private CTabFolder tabFolder;

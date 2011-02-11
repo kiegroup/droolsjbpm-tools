@@ -71,7 +71,6 @@ import org.jbpm.workflow.core.node.TimerNode;
 
 /**
  * Graphical editor for a RuleFlow.
- * 
  */
 public class BPMNModelEditor extends GenericModelEditor {
 

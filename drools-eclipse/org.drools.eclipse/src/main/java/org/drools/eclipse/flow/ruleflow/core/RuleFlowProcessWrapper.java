@@ -24,7 +24,6 @@ import org.jbpm.ruleflow.core.RuleFlowProcess;
 
 /**
  * Wrapper for a RuleFlow process.
- * 
  */
 public class RuleFlowProcessWrapper extends ProcessWrapper {
 

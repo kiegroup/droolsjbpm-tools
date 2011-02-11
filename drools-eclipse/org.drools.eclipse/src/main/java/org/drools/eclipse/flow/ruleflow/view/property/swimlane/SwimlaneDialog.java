@@ -29,7 +29,6 @@ import org.jbpm.process.core.context.swimlane.Swimlane;
 
 /**
  * Dialog for editing swimlanes.
- * 
  */
 public class SwimlaneDialog extends EditBeanDialog<Swimlane> {
     

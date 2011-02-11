@@ -18,7 +18,6 @@ package org.drools.eclipse.core;
 
 /**
  * This represents a function. 
- * 
  */
 public class Function extends DroolsElement {
 

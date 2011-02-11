@@ -43,7 +43,6 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * Completion for ruleflow constraints. 
- * 
  */
 public class ImportCompletionProcessor extends DefaultCompletionProcessor {
 

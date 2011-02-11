@@ -30,7 +30,6 @@ import org.jbpm.workflow.core.node.EventNode;
 
 /**
  * Wrapper for a start node.
- * 
  */
 public class EventNodeWrapper extends AbstractNodeWrapper {
 

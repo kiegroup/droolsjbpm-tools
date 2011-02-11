@@ -27,7 +27,6 @@ import org.eclipse.ui.texteditor.ResourceMarkerAnnotationModel;
 
 /**
  * Drools annotation model.
- * 
  */
 public class DRLAnnotationModel extends ResourceMarkerAnnotationModel {
 

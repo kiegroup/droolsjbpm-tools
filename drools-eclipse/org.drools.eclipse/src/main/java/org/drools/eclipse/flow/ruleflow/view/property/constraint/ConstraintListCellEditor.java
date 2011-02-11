@@ -25,7 +25,6 @@ import org.jbpm.workflow.core.node.Split;
 
 /**
  * Cell editor for constraints.
- * 
  */
 public class ConstraintListCellEditor extends BeanDialogCellEditor {
 

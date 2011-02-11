@@ -44,7 +44,6 @@ import com.sun.jdi.ThreadReference;
 
 /**
  * Drools Thread supporting MVEL and Java dialect stackframes
- *
  */
 public class DroolsThread extends JDIThread {
     public DroolsThread(JDIDebugTarget target,

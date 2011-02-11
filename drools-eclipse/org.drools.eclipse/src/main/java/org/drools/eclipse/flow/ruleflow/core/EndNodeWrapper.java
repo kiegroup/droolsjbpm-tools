@@ -24,7 +24,6 @@ import org.jbpm.workflow.core.node.EndNode;
 
 /**
  * Wrapper for an end node.
- * 
  */
 public class EndNodeWrapper extends AbstractNodeWrapper {
 

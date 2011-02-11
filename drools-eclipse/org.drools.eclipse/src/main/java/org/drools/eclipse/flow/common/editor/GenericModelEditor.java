@@ -76,7 +76,6 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 /**
  * Abstract implementation of a graphical editor.
- * 
  */
 public abstract class GenericModelEditor extends GraphicalEditorWithPalette { // implements ITabbedPropertySheetPageContributor {
 

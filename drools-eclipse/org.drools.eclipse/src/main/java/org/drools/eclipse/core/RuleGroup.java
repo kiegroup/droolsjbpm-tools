@@ -21,8 +21,6 @@ import java.util.List;
 
 /**
  * Represent a rule group of type Agenda-Group Or RuleFlow-Group
- * 
- *
  */
 public abstract class RuleGroup extends DroolsElement {
     private String groupName = null;

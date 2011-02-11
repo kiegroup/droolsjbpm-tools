@@ -24,7 +24,6 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * Manager for directly editing elements.
- * 
  */
 public class ElementDirectEditManager extends DirectEditManager {
 

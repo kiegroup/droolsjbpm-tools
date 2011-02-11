@@ -21,7 +21,6 @@ import org.drools.eclipse.flow.common.editor.core.ElementConnectionFactory;
 
 /**
  * Factory for creating a connection wrapper.
- * 
  */
 public class ConnectionWrapperFactory implements ElementConnectionFactory {
 

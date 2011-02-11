@@ -27,7 +27,6 @@ import org.jbpm.process.core.context.exception.ActionExceptionHandler;
 
 /**
  * Cell edtior for exception handlers.
- * 
  */
 public class ExceptionHandlersCellEditor extends BeanDialogCellEditor<Map<String, ActionExceptionHandler>> {
 

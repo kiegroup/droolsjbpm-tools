@@ -18,7 +18,6 @@ package org.drools.eclipse.core;
 
 /**
  * This represents a template. 
- *
  */
 public class Template extends DroolsElement {
 

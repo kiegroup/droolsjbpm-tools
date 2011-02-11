@@ -55,7 +55,6 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * Custom Work editor for email work item.
- * 
  */
 public class EmailCustomEditor extends EditBeanDialog implements WorkEditor {
 

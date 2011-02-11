@@ -12,7 +12,6 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
  */
 
 package org.drools.contrib;
@@ -38,7 +37,6 @@ import org.apache.tools.ant.ProjectHelper;
  *
  * This class provides a number of utility methods for particular build file
  * tests which extend this class.
- *
  */
 public abstract class BuildFileTest {
 
@@ -78,7 +76,6 @@ public abstract class BuildFileTest {
     /**
      * Assert that the given substring is in the log messages
      */
-
     protected void assertLogContaining(String substring) {
         String realLog = getLog();
         assertTrue( "expecting log to contain \"" + substring + "\" log was \"" + realLog + "\"",
@@ -135,7 +132,6 @@ public abstract class BuildFileTest {
      *@param  target  target to execute
      *@param  output  output to look for
      */
-
     protected void expectOutput(String target,
                                 String output) {
         executeTarget( target );
@@ -151,7 +147,6 @@ public abstract class BuildFileTest {
      *@param  output  output to look for
      *@param  error   Description of Parameter
      */
-
     protected void expectOutputAndError(String target,
                                         String output,
                                         String error) {

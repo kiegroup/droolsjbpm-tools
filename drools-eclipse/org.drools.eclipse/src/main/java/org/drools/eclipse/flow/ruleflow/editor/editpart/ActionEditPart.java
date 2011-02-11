@@ -34,7 +34,6 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * EditPart for an action node.
- * 
  */
 public class ActionEditPart extends ElementEditPart {
 

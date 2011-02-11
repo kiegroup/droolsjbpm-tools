@@ -32,7 +32,6 @@ import org.jbpm.workflow.core.node.HumanTaskNode;
 
 /**
  * Wrapper for a human task node.
- * 
  */
 public class HumanTaskNodeWrapper extends WorkItemWrapper {
 

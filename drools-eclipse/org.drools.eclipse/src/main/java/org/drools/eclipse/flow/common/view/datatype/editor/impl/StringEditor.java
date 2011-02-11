@@ -26,7 +26,6 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * Default string editor.
- * 
  */
 public class StringEditor extends Composite implements Editor {
 

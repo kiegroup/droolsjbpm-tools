@@ -26,7 +26,6 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * Default float editor.
- * 
  */
 public class FloatEditor extends Composite implements Editor {
 

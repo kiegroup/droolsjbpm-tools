@@ -48,8 +48,6 @@ import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
 /**
  * This is the new smart widget that works off the model.
- * 
- *
  */
 public class FactPatternWidget extends Widget {
 

@@ -26,7 +26,6 @@ import org.eclipse.gef.requests.BendpointRequest;
 
 /**
  * Policy for bendpoints of connections.
- * 
  */
 public class ConnectionBendpointEditPolicy extends BendpointEditPolicy {
 

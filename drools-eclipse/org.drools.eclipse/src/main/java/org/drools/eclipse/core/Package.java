@@ -24,7 +24,6 @@ import java.util.Map;
 
 /**
  * This represents a package.
- * 
  */
 public class Package extends DroolsElement {
 

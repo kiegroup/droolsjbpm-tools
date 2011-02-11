@@ -24,7 +24,6 @@ import org.eclipse.draw2d.graph.Node;
 
 /**
  * Action for auto layouting a RuleFlow.
- * 
  */
 public class HorizontalAutoLayoutAction extends VerticalAutoLayoutAction {
 

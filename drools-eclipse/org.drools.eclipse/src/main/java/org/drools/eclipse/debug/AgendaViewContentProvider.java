@@ -32,7 +32,6 @@ import org.eclipse.jdt.debug.core.IJavaVariable;
 
 /**
  * The Agenda View content provider.
- * 
  */
 public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
 

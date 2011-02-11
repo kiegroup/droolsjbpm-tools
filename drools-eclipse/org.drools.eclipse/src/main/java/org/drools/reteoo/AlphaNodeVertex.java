@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-/**
- * 
- */
 package org.drools.reteoo;
 
 import org.drools.base.ClassFieldReader;
@@ -29,7 +26,6 @@ import org.eclipse.swt.graphics.Color;
 
 /**
  * Wraps {@link AlphaNode} and adds visual extras like color information
- *
  */
 public class AlphaNodeVertex extends BaseVertex {
 

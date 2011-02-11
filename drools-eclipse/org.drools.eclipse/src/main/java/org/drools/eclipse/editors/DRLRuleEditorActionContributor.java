@@ -31,8 +31,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
  * ActionContributors for DRLRuleEditor2
  * 
  * Currently implements contributors to zoom feature at rete viewer. 
- * 
- *
  */
 public class DRLRuleEditorActionContributor extends MultiPageEditorActionBarContributor {
 
@@ -68,7 +66,6 @@ public class DRLRuleEditorActionContributor extends MultiPageEditorActionBarCont
      * In addition to @link org.eclipse.ui.part.MultiPageEditorActionBarContributor#setActiveEditor(org.eclipse.ui.IEditorPart)
      * it sets contribution items to DRLRuleEditor2 for later use when
      * multipageditor tabs are switched.
-     * 
      */
     public void setActiveEditor(IEditorPart part) {
         super.setActiveEditor( part );

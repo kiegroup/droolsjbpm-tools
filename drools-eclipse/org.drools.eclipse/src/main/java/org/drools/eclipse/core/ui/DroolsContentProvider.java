@@ -23,7 +23,6 @@ import org.eclipse.jface.viewers.Viewer;
 
 /**
  * Content provider for Drools model elements. 
- * 
  */
 public class DroolsContentProvider implements ITreeContentProvider {
 

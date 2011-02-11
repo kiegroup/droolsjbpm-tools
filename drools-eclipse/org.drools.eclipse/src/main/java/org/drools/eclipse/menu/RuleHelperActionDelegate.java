@@ -45,7 +45,6 @@ import org.eclipse.ui.IWorkbenchWindowPulldownDelegate;
  * Menu driver for launching wizards etc from the top level toolbar.
  * 
  * More can be added to this as needed.
- * 
  */
 public class RuleHelperActionDelegate
     implements

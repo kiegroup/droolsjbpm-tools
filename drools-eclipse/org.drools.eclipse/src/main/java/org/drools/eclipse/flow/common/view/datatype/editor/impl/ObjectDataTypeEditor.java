@@ -34,7 +34,6 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * Default empty editor.
- * 
  */
 public class ObjectDataTypeEditor extends Composite implements Editor, DataTypeEditor {
 

@@ -22,7 +22,6 @@ import org.jbpm.workflow.core.node.StartNode;
 
 /**
  * Wrapper for a start node.
- * 
  */
 public class StartNodeWrapper extends AbstractNodeWrapper {
 

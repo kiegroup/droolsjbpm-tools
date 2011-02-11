@@ -37,7 +37,6 @@ import org.jbpm.workflow.core.node.WorkItemNode;
 
 /**
  * Wrapper for a work item node.
- * 
  */
 public class WorkItemWrapper extends StateBasedNodeWrapper {
 

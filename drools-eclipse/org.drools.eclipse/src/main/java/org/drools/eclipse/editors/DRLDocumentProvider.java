@@ -27,7 +27,6 @@ import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 
 /**
  * Simple document provider.
- * 
  */
 public class DRLDocumentProvider extends TextFileDocumentProvider {
 

@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-/**
- * 
- */
 package org.drools.reteoo;
 
 import org.drools.spi.Constraint;
@@ -25,7 +22,6 @@ import org.eclipse.swt.graphics.Color;
 
 /**
  * Wraps {@link JoinNode} and adds visual extras like color information
- *
  */
 public class JoinNodeVertex extends BaseVertex {
 

@@ -38,11 +38,6 @@ import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
-/**
- * 
- * 
- *
- */
 public class ActionInsertFactWidget extends Widget {
 
     private final ActionInsertFact fact;

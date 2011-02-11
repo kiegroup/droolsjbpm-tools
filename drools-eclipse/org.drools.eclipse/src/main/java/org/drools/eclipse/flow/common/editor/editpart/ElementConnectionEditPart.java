@@ -38,7 +38,6 @@ import org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy;
 
 /**
  * Implementation of a connection EditPart.
- * 
  */
 public abstract class ElementConnectionEditPart extends AbstractConnectionEditPart implements ModelListener {
     

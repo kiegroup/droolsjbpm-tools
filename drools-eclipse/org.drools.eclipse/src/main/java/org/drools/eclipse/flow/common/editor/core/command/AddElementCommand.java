@@ -22,7 +22,6 @@ import org.eclipse.gef.commands.Command;
 
 /**
  * A command for adding an element.
- * 
  */
 public class AddElementCommand extends Command {
 

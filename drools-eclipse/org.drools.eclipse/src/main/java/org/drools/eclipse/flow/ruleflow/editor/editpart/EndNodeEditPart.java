@@ -32,7 +32,6 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * EditPart for an end node.
- * 
  */
 public class EndNodeEditPart extends ElementEditPart {
 

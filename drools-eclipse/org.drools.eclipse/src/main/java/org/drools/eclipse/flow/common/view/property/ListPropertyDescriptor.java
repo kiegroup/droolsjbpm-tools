@@ -24,7 +24,6 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
 
 /**
  * Property descriptor for a list.
- * 
  */
 public class ListPropertyDescriptor extends PropertyDescriptor {
     

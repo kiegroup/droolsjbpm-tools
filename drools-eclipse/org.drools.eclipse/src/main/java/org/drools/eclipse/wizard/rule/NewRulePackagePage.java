@@ -16,7 +16,6 @@
 
 /*
  * Created on 11-jan-2005
- *
  */
 package org.drools.eclipse.wizard.rule;
 
@@ -47,7 +46,6 @@ import org.eclipse.ui.ide.IDE;
  * 
  * Enhancements may be made to allow configuration of semantic languages, DSLs (locate a DSL) and other 
  * package level options.
- * 
  */
 public class NewRulePackagePage extends WizardNewFileCreationPage {
 

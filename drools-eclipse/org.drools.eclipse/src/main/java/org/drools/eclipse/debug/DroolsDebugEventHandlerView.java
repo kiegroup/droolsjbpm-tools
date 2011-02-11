@@ -57,7 +57,6 @@ import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * A generic Drools debug view.
- * 
  */
 public abstract class DroolsDebugEventHandlerView extends AbstractDebugView implements IDebugContextListener, ISelectionListener {
 

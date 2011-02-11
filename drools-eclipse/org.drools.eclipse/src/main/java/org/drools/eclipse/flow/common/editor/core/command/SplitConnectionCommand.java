@@ -23,7 +23,6 @@ import org.eclipse.gef.commands.Command;
 
 /**
  * A command for splitting a connection.
- * 
  */
 public class SplitConnectionCommand extends Command {
 

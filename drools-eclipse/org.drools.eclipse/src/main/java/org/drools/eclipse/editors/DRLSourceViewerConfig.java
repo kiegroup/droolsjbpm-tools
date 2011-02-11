@@ -40,7 +40,6 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
 /**
  * Source viewer config wires up the syntax highlighting, partitioning
  * and content assistance.
- * 
  */
 public class DRLSourceViewerConfig extends SourceViewerConfiguration {
 

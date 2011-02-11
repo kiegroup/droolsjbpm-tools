@@ -29,7 +29,6 @@ import org.eclipse.gef.requests.ReconnectRequest;
 
 /**
  * Policy for editing an element node.
- * 
  */
 public class ElementNodeEditPolicy extends GraphicalNodeEditPolicy {
 

@@ -22,7 +22,6 @@ import org.eclipse.gef.commands.Command;
 
 /**
  * A command for moving a bendpoint.
- * 
  */
 public class MoveBendpointCommand extends Command {
 

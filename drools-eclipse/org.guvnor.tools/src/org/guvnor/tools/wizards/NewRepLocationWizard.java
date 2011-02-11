@@ -26,7 +26,6 @@ import org.guvnor.tools.Messages;
 
 /**
  * Wizard page for creating a new Guvnor connection.
- *
  */
 public class NewRepLocationWizard extends Wizard implements INewWizard, IGuvnorWizard {
 

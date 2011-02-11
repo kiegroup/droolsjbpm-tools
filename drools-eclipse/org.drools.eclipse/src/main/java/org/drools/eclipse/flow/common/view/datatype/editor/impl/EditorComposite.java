@@ -27,7 +27,6 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * Container for an editor.
- * 
  */
 public class EditorComposite extends Composite {
     

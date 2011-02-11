@@ -24,7 +24,6 @@ import org.jbpm.workflow.core.node.Split;
 
 /**
  * Property descriptor for constraints.
- * 
  */
 public class ConstraintsPropertyDescriptor extends PropertyDescriptor {
     

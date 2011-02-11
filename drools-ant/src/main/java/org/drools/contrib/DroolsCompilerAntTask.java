@@ -71,7 +71,6 @@ import org.drools.core.util.DroolsStreamUtils;
 
 /**
  * An ant task to allow rulebase compilation and serialization during a build.
- * 
  */
 public class DroolsCompilerAntTask extends MatchingTask {
 

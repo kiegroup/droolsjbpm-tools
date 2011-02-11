@@ -24,7 +24,6 @@ import org.eclipse.gef.commands.Command;
 
 /**
  * A command for reconnecting the source of a connection.
- * 
  */
 public class ReconnectElementConnectionSourceCommand extends Command {
 

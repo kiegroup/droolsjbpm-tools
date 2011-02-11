@@ -29,7 +29,6 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * Dialog for editing tasks.
- * 
  */
 public class TaskDialog extends EditBeanDialog<Work> {
     

@@ -33,7 +33,6 @@ import org.eclipse.ui.actions.RetargetAction;
 
 /**
  * Common implementation of a ActionBarContributor.
- * 
  */
 public class GenericActionBarContributor extends ActionBarContributor {
 

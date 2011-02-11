@@ -20,7 +20,6 @@ import org.eclipse.jface.viewers.IContentProvider;
 
 /**
  * The Working Memory view.
- * 
  */
 public class WorkingMemoryView extends DroolsDebugEventHandlerView {
 

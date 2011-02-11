@@ -23,7 +23,6 @@ import org.eclipse.core.resources.IFile;
  * parents and its children. If relevant, Drools model elements refer
  * to the file they are defined in and the offset and length of that
  * element in the file. 
- * 
  */
 public abstract class DroolsElement {
 

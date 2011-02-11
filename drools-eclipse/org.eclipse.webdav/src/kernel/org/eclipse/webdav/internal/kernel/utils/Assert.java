@@ -29,7 +29,6 @@ import org.eclipse.webdav.internal.kernel.Policy;
  * unspecified behavior; consequently, clients should never rely on
  * these being thrown (and certainly should not being catching them
  * specifically).
- * 
  */
 public class Assert {
     /** Block instantiation. */

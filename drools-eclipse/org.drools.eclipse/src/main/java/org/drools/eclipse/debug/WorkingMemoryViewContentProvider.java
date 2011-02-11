@@ -34,7 +34,6 @@ import org.eclipse.jdt.debug.core.IJavaVariable;
 
 /**
  * The Working Memory view content provider.
- * 
  */
 public class WorkingMemoryViewContentProvider extends DroolsDebugViewContentProvider {
 

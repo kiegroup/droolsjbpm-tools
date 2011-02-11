@@ -26,7 +26,6 @@ import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 
 /**
  * Dialog for editing a list of timers.
- * 
  */
 public class TimersDialog extends EditMapDialog<Timer, DroolsAction> {
 

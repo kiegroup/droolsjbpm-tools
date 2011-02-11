@@ -18,7 +18,6 @@ package org.drools.eclipse.core;
 
 /**
  * This represents a query. 
- * 
  */
 public class Query extends DroolsElement {
 

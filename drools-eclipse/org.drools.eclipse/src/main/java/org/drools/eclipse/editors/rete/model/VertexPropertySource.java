@@ -45,7 +45,6 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
 /**
  * Providing IPropertySource for property sheets that show
  * rete graph vertex properties.
- * 
  */
 public class VertexPropertySource
     implements

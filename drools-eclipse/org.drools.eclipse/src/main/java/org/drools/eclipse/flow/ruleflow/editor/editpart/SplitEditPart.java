@@ -36,7 +36,6 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * EditPart for a split node.
- * 
  */
 public class SplitEditPart extends ElementEditPart {
 

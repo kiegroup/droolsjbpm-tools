@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.CoreException;
 
 /**
  * To detect the DRL files in the project
- *
  */
 public class DRLProjectDetector {
 

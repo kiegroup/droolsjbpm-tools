@@ -24,7 +24,6 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * Default implementation of an element Figure.
- * 
  */
 public abstract class AbstractElementFigure extends Panel implements ElementFigure {
     

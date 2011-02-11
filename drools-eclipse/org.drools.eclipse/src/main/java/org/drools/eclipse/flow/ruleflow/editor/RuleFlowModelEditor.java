@@ -61,7 +61,6 @@ import org.jbpm.ruleflow.core.RuleFlowProcess;
 
 /**
  * Graphical editor for a RuleFlow.
- * 
  */
 public class RuleFlowModelEditor extends GenericModelEditor {
 

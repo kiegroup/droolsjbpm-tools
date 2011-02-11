@@ -25,7 +25,6 @@ import org.eclipse.jface.action.IAction;
 
 /**
  * Action to show the cause event of an audit event.
- * 
  */
 public class ShowEventCauseAction extends Action {
     

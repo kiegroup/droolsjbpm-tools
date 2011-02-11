@@ -26,7 +26,6 @@ import org.drools.process.core.datatype.DataTypeFactory;
 
 /**
  * Default implementation of a datatype registry.
- * 
  */
 public class DataTypeRegistryImpl implements DataTypeRegistry {
 

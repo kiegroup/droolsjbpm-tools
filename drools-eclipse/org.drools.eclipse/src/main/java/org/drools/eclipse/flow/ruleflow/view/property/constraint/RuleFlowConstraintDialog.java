@@ -57,7 +57,6 @@ import org.jbpm.workflow.core.impl.ConstraintImpl;
 
 /**
  * Dialog for editing constraints.
- * 
  */
 public class RuleFlowConstraintDialog extends Dialog {
 

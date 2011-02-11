@@ -24,7 +24,6 @@ import org.eclipse.gef.requests.ChangeBoundsRequest;
 
 /**
  * A command to move a vertex.
- * 
  */
 public class NodeSetConstraintCommand extends Command {
 

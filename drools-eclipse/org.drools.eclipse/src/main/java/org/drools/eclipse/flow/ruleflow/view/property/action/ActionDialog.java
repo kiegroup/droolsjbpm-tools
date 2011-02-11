@@ -58,7 +58,6 @@ import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 
 /**
  * Dialog for editing an action.
- * 
  */
 public class ActionDialog extends EditBeanDialog<DroolsAction> {
 

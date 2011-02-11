@@ -29,7 +29,6 @@ import org.eclipse.jface.text.ITextStore;
  * NOT change the original document (as the transformation is only
  * defined in one way). All changes will also be overridden as soon
  * as the original document changes.
- * 
  */
 public abstract class TransformedDocument extends AbstractDocument {
 

@@ -21,7 +21,6 @@ import org.eclipse.gef.commands.Command;
 
 /**
  * A command for renaming an element.
- * 
  */
 public class RenameElementCommand extends Command {
 

@@ -30,7 +30,6 @@ import org.jbpm.workflow.core.node.SubProcessNode;
 
 /**
  * Wrapper for a SubFlow node.
- * 
  */
 public class SubProcessWrapper extends StateBasedNodeWrapper {
 

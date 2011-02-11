@@ -22,7 +22,6 @@ import org.eclipse.gef.commands.Command;
 
 /**
  * A command for changing a constraint.
- * 
  */
 public class ChangeConstraintCommand extends Command {
 

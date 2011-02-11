@@ -43,7 +43,6 @@ import org.eclipse.jface.viewers.TextCellEditor;
 
 /**
  * Default implementation of an element EditPart.
- * 
  */
 public abstract class ElementEditPart extends AbstractGraphicalEditPart implements NodeEditPart, ModelListener {
     

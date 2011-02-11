@@ -18,7 +18,6 @@ package org.drools.eclipse.core;
 
 /**
  * This represents an expander. 
- * 
  */
 public class Expander extends DroolsElement {
 

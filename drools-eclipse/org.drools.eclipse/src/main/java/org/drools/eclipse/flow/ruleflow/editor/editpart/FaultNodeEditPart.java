@@ -33,7 +33,6 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * EditPart for a fault node.
- * 
  */
 public class FaultNodeEditPart extends ElementEditPart {
 

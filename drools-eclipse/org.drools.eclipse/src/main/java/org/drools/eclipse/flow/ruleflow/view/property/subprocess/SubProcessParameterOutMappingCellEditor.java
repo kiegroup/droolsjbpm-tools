@@ -24,7 +24,6 @@ import org.jbpm.workflow.core.node.SubProcessNode;
 
 /**
  * Cell editor for sub process parameter mappings.
- * 
  */
 public class SubProcessParameterOutMappingCellEditor extends BeanDialogCellEditor {
 

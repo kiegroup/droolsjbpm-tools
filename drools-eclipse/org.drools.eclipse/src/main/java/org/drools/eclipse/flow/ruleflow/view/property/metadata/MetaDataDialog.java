@@ -45,7 +45,6 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * Dialog for editing meta data.
- * 
  */
 public class MetaDataDialog extends EditBeanDialog<Map<String, Object>> implements FocusListener, MouseListener {
 

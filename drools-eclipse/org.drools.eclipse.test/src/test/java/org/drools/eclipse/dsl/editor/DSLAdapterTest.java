@@ -23,9 +23,6 @@ import static org.junit.Assert.*;
 
 import org.drools.eclipse.dsl.editor.DSLAdapter;
 
-/**
- * 
- */
 public class DSLAdapterTest {
     
     @Test

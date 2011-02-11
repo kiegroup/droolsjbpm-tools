@@ -30,7 +30,6 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * EditPart for a start node.
- * 
  */
 public class EventNodeEditPart extends ElementEditPart {
 

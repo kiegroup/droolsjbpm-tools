@@ -18,7 +18,6 @@ package org.drools.eclipse.core;
 
 /**
  * This represents a rule attribute. 
- * 
  */
 public class RuleAttribute extends DroolsElement {
 

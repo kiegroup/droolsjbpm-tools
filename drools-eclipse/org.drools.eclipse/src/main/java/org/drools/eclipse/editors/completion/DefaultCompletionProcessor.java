@@ -63,7 +63,6 @@ import org.eclipse.ui.IFileEditorInput;
  *
  * This processor will also read behind the current editing position, to provide some context to
  * help provide the pop up list.
- *
  */
 public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
 

@@ -22,7 +22,6 @@ import org.drools.process.core.datatype.DataTypeFactory;
 
 /**
  * A registry of datatypes.
- * 
  */
 public interface DataTypeRegistry {
     

@@ -35,7 +35,6 @@ import org.eclipse.jface.viewers.Viewer;
 
 /**
  * A generic Drools debug view content provider.
- * 
  */
 public class DroolsDebugViewContentProvider implements ITreeContentProvider {
     

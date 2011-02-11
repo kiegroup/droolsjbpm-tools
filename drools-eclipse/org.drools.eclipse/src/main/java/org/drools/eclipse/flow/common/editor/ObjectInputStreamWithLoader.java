@@ -25,7 +25,6 @@ import java.lang.reflect.Array;
 
 /**
  * Implementation of an ObjectInputStream that has a custom classloader.
- * 
  */
 public class ObjectInputStreamWithLoader extends ObjectInputStream {
 

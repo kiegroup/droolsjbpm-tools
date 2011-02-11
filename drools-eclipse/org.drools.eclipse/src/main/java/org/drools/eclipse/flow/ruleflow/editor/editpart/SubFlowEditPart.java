@@ -36,7 +36,6 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * EditPart for a SubFlow node.
- * 
  */
 public class SubFlowEditPart extends ElementEditPart {
 

@@ -36,7 +36,6 @@ import org.jbpm.workflow.core.node.Split;
 
 /**
  * Wrapper for a split node.
- * 
  */
 public class SplitWrapper extends AbstractNodeWrapper {
 
