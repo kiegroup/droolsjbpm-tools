@@ -12,7 +12,8 @@
   <groupId>org.droolsjbpm</groupId>
   <artifactId>droolsjbpm-tools</artifactId>
   <packaging>pom</packaging>
-  <name>Drools JBPM Tools multiproject</name>
+
+  <name>Drools and jBPM Tools multiproject</name>
   <description>
     Drools/jBPM/Guvnor plugins and support for maven, ant, eclipse, ...
   </description>
