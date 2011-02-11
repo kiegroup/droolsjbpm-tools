@@ -32,7 +32,6 @@ import org.guvnor.tools.utils.PlatformUtils;
 
 /**
  * Wizard page for selecting a Guvnor repository.
- * @author jgraham
  */
 public class SelectGuvnorRepPage extends WizardPage {
 

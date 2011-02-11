@@ -29,7 +29,6 @@ import org.guvnor.tools.wizards.AddResourceWizard;
 
 /**
  * Adds a new resource to Guvnor.
- * @author jgraham
  */
 public class AddAction implements IObjectActionDelegate {
 

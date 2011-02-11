@@ -41,7 +41,6 @@ import org.guvnor.tools.utils.webdav.WebDavServerCache;
 
 /**
  * Wizard for copying Guvnor resources to the local workspace.
- * @author jgraham
  */
 public class CheckoutWizard extends Wizard implements INewWizard, IGuvnorWizard {
 

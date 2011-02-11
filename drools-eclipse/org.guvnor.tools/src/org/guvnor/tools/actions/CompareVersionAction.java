@@ -46,7 +46,6 @@ import org.guvnor.tools.views.model.ResourceHistoryEntry;
 
 /**
  * Simple text-based compare editor input.
- * @author jgraham
  */
 public class CompareVersionAction implements IObjectActionDelegate {
 

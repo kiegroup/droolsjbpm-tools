@@ -31,7 +31,6 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * Combobox for datatypes based on a datatype registry.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class DataTypeCombo extends Composite {
     

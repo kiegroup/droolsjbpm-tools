@@ -30,7 +30,6 @@ import org.jbpm.workflow.core.node.StateBasedNode;
 /**
  * Cell editor for timers.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class TimersCellEditor extends BeanDialogCellEditor<Map<Timer, DroolsAction>> {
 

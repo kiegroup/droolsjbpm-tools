@@ -50,7 +50,6 @@ import org.eclipse.ui.IFileEditorInput;
 
 /**
  * Generic rule editor for drools.
- * @author Michael Neale
  */
 public class DRLRuleEditor extends AbstractRuleEditor {
 

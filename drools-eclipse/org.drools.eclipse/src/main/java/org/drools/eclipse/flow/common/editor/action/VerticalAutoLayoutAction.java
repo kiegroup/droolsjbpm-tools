@@ -39,7 +39,6 @@ import org.eclipse.ui.actions.ActionDelegate;
 /**
  * Action for auto layouting a RuleFlow.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class VerticalAutoLayoutAction extends ActionDelegate implements IEditorActionDelegate {
 

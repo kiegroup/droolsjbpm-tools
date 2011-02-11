@@ -42,7 +42,6 @@ import org.guvnor.tools.views.model.TreeObject;
 
 /**
  * Shows the revision history for a given resource.
- * @author jgraham
  */
 public class ShowHistoryAction implements IObjectActionDelegate {
 

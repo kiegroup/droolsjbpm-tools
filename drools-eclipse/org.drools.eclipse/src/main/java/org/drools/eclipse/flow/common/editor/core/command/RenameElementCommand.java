@@ -22,7 +22,6 @@ import org.eclipse.gef.commands.Command;
 /**
  * A command for renaming an element.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class RenameElementCommand extends Command {
 

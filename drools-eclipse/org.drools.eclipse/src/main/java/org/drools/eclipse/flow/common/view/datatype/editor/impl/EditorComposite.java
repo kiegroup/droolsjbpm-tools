@@ -28,7 +28,6 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * Container for an editor.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class EditorComposite extends Composite {
     

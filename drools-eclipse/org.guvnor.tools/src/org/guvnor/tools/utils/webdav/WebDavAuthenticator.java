@@ -24,7 +24,6 @@ import org.eclipse.webdav.http.client.IAuthenticator;
 
 /**
  * A WebDav authenticator based on the Eclipse platform key-ring file.
- * @author jgraham
  */
 public class WebDavAuthenticator implements IAuthenticator {
 

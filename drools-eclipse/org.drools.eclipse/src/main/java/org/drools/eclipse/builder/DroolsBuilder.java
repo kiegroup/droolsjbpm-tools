@@ -75,7 +75,6 @@ import org.eclipse.jdt.core.JavaModelException;
  * Automatically syntax checks .drl files and adds possible
  * errors or warnings to the problem list. Nominally is triggerd on save.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  */
 public class DroolsBuilder extends IncrementalProjectBuilder {
 

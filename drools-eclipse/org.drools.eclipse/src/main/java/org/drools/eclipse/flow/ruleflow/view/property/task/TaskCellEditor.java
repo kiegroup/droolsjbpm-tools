@@ -25,7 +25,6 @@ import org.eclipse.swt.widgets.Shell;
 /**
  * Cell editor for an action.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class TaskCellEditor extends BeanDialogCellEditor<Work> {
 

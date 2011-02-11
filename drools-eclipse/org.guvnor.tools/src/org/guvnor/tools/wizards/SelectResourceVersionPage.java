@@ -28,7 +28,6 @@ import org.guvnor.tools.utils.PlatformUtils;
 
 /**
  * Wizard page for selecting the revision of a given resource.
- * @author jgraham
  */
 public class SelectResourceVersionPage extends WizardPage {
 

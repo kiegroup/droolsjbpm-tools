@@ -25,7 +25,6 @@ import org.jbpm.workflow.core.node.StateNode;
 /**
  * Property descriptor for state constraints.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class StateConstraintsPropertyDescriptor extends PropertyDescriptor {
     

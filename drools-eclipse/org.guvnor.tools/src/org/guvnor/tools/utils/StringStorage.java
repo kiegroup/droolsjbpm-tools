@@ -26,7 +26,6 @@ import org.eclipse.core.runtime.PlatformObject;
 
 /**
  * Stores a string for in-memory editing.
- * @author jgraham
  */
 public class StringStorage extends PlatformObject implements IStorage {
     private String contents;

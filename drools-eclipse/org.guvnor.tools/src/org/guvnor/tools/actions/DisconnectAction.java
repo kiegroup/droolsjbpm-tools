@@ -36,7 +36,6 @@ import org.guvnor.tools.utils.PlatformUtils;
 
 /**
  * Disconnects a local resource from its association with Guvnor.
- * @author jgraham
  */
 public class DisconnectAction implements IObjectActionDelegate {
 

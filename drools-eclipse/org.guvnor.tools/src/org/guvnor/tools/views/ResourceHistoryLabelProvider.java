@@ -22,7 +22,6 @@ import org.eclipse.swt.graphics.Image;
 import org.guvnor.tools.views.model.ResourceHistoryEntry;
 /**
  * Label provider for the Resource History view.
- * @author jgraham
  *
  */
 public class ResourceHistoryLabelProvider implements ITableLabelProvider {

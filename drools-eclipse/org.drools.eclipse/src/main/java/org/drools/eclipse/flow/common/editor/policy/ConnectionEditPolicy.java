@@ -33,7 +33,6 @@ import org.eclipse.gef.requests.GroupRequest;
 /**
  * Policy for editing connections.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class ConnectionEditPolicy extends org.eclipse.gef.editpolicies.ConnectionEditPolicy {
 

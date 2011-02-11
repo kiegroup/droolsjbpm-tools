@@ -34,7 +34,6 @@ import org.eclipse.ui.actions.RetargetAction;
 /**
  * Common implementation of a ActionBarContributor.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class GenericActionBarContributor extends ActionBarContributor {
 

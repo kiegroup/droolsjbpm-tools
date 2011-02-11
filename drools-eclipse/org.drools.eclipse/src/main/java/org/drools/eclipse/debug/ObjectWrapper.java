@@ -30,7 +30,6 @@ import org.eclipse.jdt.debug.core.IJavaVariable;
 /**
  * Creates a IJavaObject from an IJavaObject and given variables.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  */
 public class ObjectWrapper implements IJavaObject {
     

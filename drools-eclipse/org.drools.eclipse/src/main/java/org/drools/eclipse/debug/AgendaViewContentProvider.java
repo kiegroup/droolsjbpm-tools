@@ -33,7 +33,6 @@ import org.eclipse.jdt.debug.core.IJavaVariable;
 /**
  * The Agenda View content provider.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  */
 public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
 

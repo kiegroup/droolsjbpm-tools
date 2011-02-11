@@ -51,7 +51,6 @@ import org.guvnor.tools.wizards.EditRepLocationWizard;
 
 /**
  * Shows the revision history for a given resource.
- * @author jgraham
  */
 public class EditConnectionAction implements IObjectActionDelegate {
 

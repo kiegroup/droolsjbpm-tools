@@ -33,7 +33,6 @@ import org.jbpm.workflow.core.impl.NodeImpl;
 /**
  * Wrapper for a node.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public abstract class AbstractNodeWrapper extends DefaultElementWrapper implements NodeWrapper {
 

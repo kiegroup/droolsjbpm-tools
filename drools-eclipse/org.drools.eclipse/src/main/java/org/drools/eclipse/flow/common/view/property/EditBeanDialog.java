@@ -28,7 +28,6 @@ import org.eclipse.swt.widgets.Shell;
 /**
  * Dialog for editing a JavaBean.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public abstract class EditBeanDialog<T> extends Dialog {
 

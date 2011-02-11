@@ -22,7 +22,6 @@ import java.util.Map;
 /**
  * This represents a rule set. 
  *
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class RuleSet extends DroolsElement {
 

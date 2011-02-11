@@ -38,7 +38,6 @@ import org.guvnor.tools.preferences.GuvnorPreferencePage;
 
 /**
  * A dialog for collecting user authentication information
- * @author jgraham
  *
  */
 public class AuthenticationPromptDialog extends TitleAreaDialog {

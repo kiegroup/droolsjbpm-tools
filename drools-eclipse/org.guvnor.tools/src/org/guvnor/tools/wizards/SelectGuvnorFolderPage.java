@@ -40,7 +40,6 @@ import org.guvnor.tools.views.model.TreeParent;
 
 /**
  * Wizard page for selecting a target folder in Guvnor.
- * @author jgraham
  */
 public class SelectGuvnorFolderPage extends WizardPage {
 

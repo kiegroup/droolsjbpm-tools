@@ -31,7 +31,6 @@ import org.eclipse.swt.graphics.Image;
 /**
  * EditPart for a start node.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class StartNodeEditPart extends ElementEditPart {
 

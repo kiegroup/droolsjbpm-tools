@@ -19,7 +19,6 @@ package org.drools.eclipse.flow.common.editor.core;
 /**
  * Event notifying a change in a model element.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class ModelEvent {
 

@@ -29,7 +29,6 @@ import org.eclipse.jface.text.source.ISourceViewer;
  * Source viewer config wires up the syntax highlighting, partitioning
  * and content assistance.
  * 
- * @author Michael Neale
  *
  */
 public class DSLRuleSourceViewerConfig extends DRLSourceViewerConfig {

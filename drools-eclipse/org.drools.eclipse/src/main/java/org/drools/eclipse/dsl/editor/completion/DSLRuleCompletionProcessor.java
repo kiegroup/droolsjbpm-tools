@@ -35,7 +35,6 @@ import org.eclipse.swt.graphics.Image;
 /**
  * For handling DSL rules.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class DSLRuleCompletionProcessor extends RuleCompletionProcessor {
 

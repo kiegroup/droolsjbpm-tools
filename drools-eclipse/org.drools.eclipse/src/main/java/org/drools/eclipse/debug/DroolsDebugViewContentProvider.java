@@ -36,7 +36,6 @@ import org.eclipse.jface.viewers.Viewer;
 /**
  * A generic Drools debug view content provider.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  */
 public class DroolsDebugViewContentProvider implements ITreeContentProvider {
     

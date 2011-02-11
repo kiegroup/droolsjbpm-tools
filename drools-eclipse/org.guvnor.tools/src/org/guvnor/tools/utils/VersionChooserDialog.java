@@ -37,7 +37,6 @@ import org.guvnor.tools.views.model.ResourceHistoryEntry;
 
 /**
  * Dialog for choosing a Guvnor revision of a selected resource.
- * @author jgraham
  */
 public class VersionChooserDialog extends TitleAreaDialog {
 

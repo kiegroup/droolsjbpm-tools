@@ -39,7 +39,6 @@ import org.eclipse.swt.widgets.Text;
  * Custom Work editor that can handle work definitions that only have
  * String parameters.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class SampleCustomEditor extends EditBeanDialog implements WorkEditor {
 

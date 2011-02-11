@@ -54,9 +54,7 @@ import org.eclipse.ui.forms.widgets.Section;
  * Main modeling class responsible for Eclipse Forms-based rule builder widget
  * rendering
  * 
- * @author Anton Arhipov
- * @author Ahti Kitsik
- * 
+ *
  */
 public class RuleModeller {
 

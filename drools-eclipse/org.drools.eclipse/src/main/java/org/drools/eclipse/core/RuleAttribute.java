@@ -19,7 +19,6 @@ package org.drools.eclipse.core;
 /**
  * This represents a rule attribute. 
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  */
 public class RuleAttribute extends DroolsElement {
 

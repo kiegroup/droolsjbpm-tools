@@ -30,8 +30,6 @@ import org.eclipse.swt.widgets.Shell;
 /**
  * Adds new fact pattern to a composite fact
  * 
- * @author Anton Arhipov
- * @author Ahti Kitsik
  */
 public class AddNewFactConstraintDialog extends RuleDialog {
 

@@ -25,7 +25,6 @@ import org.drools.eclipse.editors.rete.model.GraphicalVertex;
  * It's not good to have {@link GraphicalVertex} dependency in
  * org.drools.reteoo package. 
  * 
- * @author Ahti Kitsik
  *
  */
 abstract public class BaseVertex extends GraphicalVertex {

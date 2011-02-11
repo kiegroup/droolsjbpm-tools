@@ -28,7 +28,6 @@ import org.eclipse.draw2d.geometry.Point;
 /**
  * A connection between two model elements.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public abstract class ElementConnection implements Serializable {
     

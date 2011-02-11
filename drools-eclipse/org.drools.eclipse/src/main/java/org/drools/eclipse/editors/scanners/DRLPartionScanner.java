@@ -34,7 +34,6 @@ import org.eclipse.jface.text.rules.Token;
  * is in a rule block, or not.  Comments are also generated as a
  * separate partition.
  *  TODO: add support for dialect based partitioning for correct syntaxhighlighting
- * @author Michael Neale
  */
 public class DRLPartionScanner extends RuleBasedPartitionScanner {
 

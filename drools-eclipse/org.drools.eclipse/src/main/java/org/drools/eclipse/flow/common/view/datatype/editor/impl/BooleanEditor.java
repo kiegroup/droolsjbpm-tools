@@ -27,7 +27,6 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * Default boolean editor.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class BooleanEditor extends Composite implements Editor {
 

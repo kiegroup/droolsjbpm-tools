@@ -26,7 +26,6 @@ import org.jbpm.workflow.core.node.Join;
 /**
  * Wrapper for a join node.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class JoinWrapper extends AbstractNodeWrapper {
 

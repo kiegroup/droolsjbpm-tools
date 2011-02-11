@@ -27,7 +27,6 @@ import org.eclipse.gef.requests.BendpointRequest;
 /**
  * Policy for bendpoints of connections.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class ConnectionBendpointEditPolicy extends BendpointEditPolicy {
 

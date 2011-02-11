@@ -46,7 +46,6 @@ import org.eclipse.ui.IWorkbenchWindowPulldownDelegate;
  * 
  * More can be added to this as needed.
  * 
- * @author Michael Neale
  */
 public class RuleHelperActionDelegate
     implements

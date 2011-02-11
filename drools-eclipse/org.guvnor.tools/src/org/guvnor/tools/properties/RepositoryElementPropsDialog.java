@@ -44,7 +44,6 @@ import org.guvnor.tools.utils.PlatformUtils;
 import org.guvnor.tools.views.model.TreeObject;
 /**
  * Shows properties for a Guvnor repository element.
- * @author jgraham
  */
 public class RepositoryElementPropsDialog extends TitleAreaDialog {
 

@@ -27,7 +27,6 @@ import org.eclipse.swt.widgets.Text;
 /**
  * Default string editor.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class StringEditor extends Composite implements Editor {
 

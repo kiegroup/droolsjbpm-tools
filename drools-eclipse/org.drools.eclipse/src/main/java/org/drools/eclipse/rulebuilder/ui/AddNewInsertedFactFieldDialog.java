@@ -29,9 +29,7 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * 
- * @author Anton Arhipov
- * @author Ahti Kitsik
- * 
+ *
  */
 public class AddNewInsertedFactFieldDialog extends RuleDialog {
 

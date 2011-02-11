@@ -36,7 +36,6 @@ import org.w3c.dom.NodeList;
 
 /**
  * Utilities for dealing with streams.
- * @author jgraham
  */
 public class StreamProcessingUtils {
 

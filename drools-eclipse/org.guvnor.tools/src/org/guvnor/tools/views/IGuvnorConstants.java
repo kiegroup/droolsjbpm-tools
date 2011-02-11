@@ -18,7 +18,6 @@ package org.guvnor.tools.views;
 
 /**
  * Id strings for the Guvnor views.
- * @author jgraham
  *
  */
 public interface IGuvnorConstants {

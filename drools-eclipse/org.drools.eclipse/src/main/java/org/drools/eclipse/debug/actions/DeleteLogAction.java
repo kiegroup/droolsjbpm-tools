@@ -27,7 +27,6 @@ import org.eclipse.swt.custom.BusyIndicator;
 /**
  * Action to clear the log.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  */
 public class DeleteLogAction extends Action {
     

@@ -50,7 +50,6 @@ import org.jbpm.workflow.core.WorkflowProcess;
 /**
  * Dialog for editing imports.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class RuleFlowGlobalsDialog extends Dialog {
 

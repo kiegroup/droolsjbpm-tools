@@ -43,7 +43,6 @@ import org.eclipse.jdt.core.IJavaProject;
 /**
  * Factory for RuleFlow EditParts.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class RuleFlowEditPartFactory implements ProcessEditPartFactory {
     

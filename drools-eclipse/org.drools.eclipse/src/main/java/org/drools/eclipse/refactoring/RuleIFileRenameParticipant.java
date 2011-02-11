@@ -42,7 +42,6 @@ import org.eclipse.text.edits.ReplaceEdit;
 /**
  * Participant to generate refactoring when a type is renamed.
  * 
- * @author Lucas Amador
  *
  */
 @SuppressWarnings("restriction")

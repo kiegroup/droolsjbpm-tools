@@ -28,7 +28,6 @@ import org.guvnor.tools.views.model.TreeObject;
 
 /**
  * Action for showing properties for a Guvnor repository element.
- * @author jgraham
  */
 public class RepositoryElementPropsAction implements IViewActionDelegate {
 

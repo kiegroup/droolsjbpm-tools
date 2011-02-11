@@ -26,7 +26,6 @@ import org.eclipse.gef.requests.GroupRequest;
 /**
  * Policy for editing elements.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class ElementEditPolicy extends ComponentEditPolicy {
 

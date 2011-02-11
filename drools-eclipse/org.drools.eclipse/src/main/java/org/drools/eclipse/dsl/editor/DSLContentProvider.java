@@ -23,8 +23,6 @@ import org.eclipse.jface.viewers.Viewer;
 
 /**
  * Content provider for the Domain Specific Language editor.
- * @author Michael Neale
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class DSLContentProvider
     implements

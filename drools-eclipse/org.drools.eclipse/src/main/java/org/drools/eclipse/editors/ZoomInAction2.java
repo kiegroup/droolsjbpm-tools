@@ -31,7 +31,6 @@ import org.eclipse.gef.ui.actions.ZoomInAction;
  * 
  * setZoomManager(ZoomManager manager) can be used several times.
  * 
- * @author Ahti Kitsik
  *
  */
 public class ZoomInAction2 extends ZoomInAction {

@@ -41,7 +41,6 @@ import org.jbpm.workflow.core.node.Split;
 /**
  * Dialog for editing constraints.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class ConstraintListDialog extends EditBeanDialog<Map<ConnectionRef, Constraint>> {
 

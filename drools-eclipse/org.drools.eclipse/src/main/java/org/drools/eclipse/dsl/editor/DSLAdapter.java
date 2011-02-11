@@ -47,8 +47,6 @@ import org.eclipse.core.runtime.CoreException;
  * Failing this, it will search one directory above the rule file. 
  * Failing that, it will search the root of the project in the workspace.
  * 
- * @author Michael Neale
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class DSLAdapter {
 

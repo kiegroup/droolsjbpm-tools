@@ -30,7 +30,6 @@ import org.guvnor.tools.utils.PlatformUtils;
 
 /**
  * Commits changes to Guvnor resources.
- * @author jgraham
  */
 public class CommitAction implements IObjectActionDelegate {
 

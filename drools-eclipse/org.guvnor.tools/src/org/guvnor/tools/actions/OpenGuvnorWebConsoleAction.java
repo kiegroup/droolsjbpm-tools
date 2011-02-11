@@ -31,7 +31,6 @@ import org.guvnor.tools.views.model.TreeObject;
 /**
  * Opens the Guvnor web console in a browser instance.
  * Defaults to an internal Eclipse web browser if available.
- * @author jgraham
  */
 public class OpenGuvnorWebConsoleAction implements IObjectActionDelegate {
 

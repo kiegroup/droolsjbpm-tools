@@ -30,7 +30,6 @@ import org.eclipse.gef.requests.ReconnectRequest;
 /**
  * Policy for editing an element node.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class ElementNodeEditPolicy extends GraphicalNodeEditPolicy {
 

@@ -32,7 +32,6 @@ import org.jbpm.process.instance.ProcessInstance;
 /**
  * The process instances view content provider.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  */
 public class ProcessInstancesViewContentProvider extends DroolsDebugViewContentProvider {
 

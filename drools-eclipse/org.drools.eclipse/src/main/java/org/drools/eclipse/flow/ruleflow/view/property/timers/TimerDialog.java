@@ -64,7 +64,6 @@ import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 /**
  * Dialog for editing exception handlers.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class TimerDialog extends EditBeanDialog<DroolsAction> implements MapItemDialog<Timer> {
     

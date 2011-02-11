@@ -21,7 +21,6 @@ import org.drools.process.core.datatype.DataType;
 /**
  * An editor for a datatype.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public interface DataTypeEditor {
 

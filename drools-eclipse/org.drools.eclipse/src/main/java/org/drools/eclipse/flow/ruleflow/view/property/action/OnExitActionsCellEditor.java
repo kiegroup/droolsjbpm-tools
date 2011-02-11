@@ -29,7 +29,6 @@ import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 /**
  * Cell editor for on exit actions.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class OnExitActionsCellEditor extends BeanDialogCellEditor<List<DroolsAction>> {
 

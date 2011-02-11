@@ -56,8 +56,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.jbpm.process.core.Process;
 
 /**
- * @author Kris Verlaenen
- *  
+ *
  */
 public class ProcessInstanceViewer extends ViewPart implements ISelectionListener {
 

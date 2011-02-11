@@ -27,7 +27,6 @@ import org.jbpm.process.core.context.variable.Variable;
 /**
  * Cell edtior for variables.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class VariableListCellEditor extends BeanDialogCellEditor<List<Variable>> {
 

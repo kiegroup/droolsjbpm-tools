@@ -29,7 +29,6 @@ import org.eclipse.ui.ide.IDE;
 /**
  * Page for creating a new RuleFlow file.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class NewRuleFlowFilePage extends WizardNewFileCreationPage {
 

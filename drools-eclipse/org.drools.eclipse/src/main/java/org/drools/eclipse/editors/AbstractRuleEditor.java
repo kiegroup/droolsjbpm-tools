@@ -51,7 +51,6 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 /**
  * Abstract text-based rule editor.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class AbstractRuleEditor extends TextEditor {
 

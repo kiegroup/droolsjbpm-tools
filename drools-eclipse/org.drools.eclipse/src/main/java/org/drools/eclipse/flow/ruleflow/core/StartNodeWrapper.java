@@ -23,7 +23,6 @@ import org.jbpm.workflow.core.node.StartNode;
 /**
  * Wrapper for a start node.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class StartNodeWrapper extends AbstractNodeWrapper {
 

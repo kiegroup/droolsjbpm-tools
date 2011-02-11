@@ -21,7 +21,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.guvnor.tools.views.model.ResourceHistoryEntry;
 /**
  * Structured content provider for resource history tables, etc.
- * @author jgraham
  *
  */
 public class ResourceHistoryContentProvider implements IStructuredContentProvider {

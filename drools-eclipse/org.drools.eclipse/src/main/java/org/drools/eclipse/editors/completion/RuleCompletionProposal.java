@@ -28,7 +28,6 @@ import org.eclipse.swt.graphics.Point;
 /**
  * Holds a completion proposal to be popped up.
  *
- * @author Michael Neale
  *
  */
 public class RuleCompletionProposal

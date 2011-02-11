@@ -48,7 +48,6 @@ import org.eclipse.text.edits.ReplaceEdit;
  * This isn't executed by the RefactoringProcessor when a field is refactored with
  * the rename hotkey into the editor. Only is called when the Rename field dialog is used.
  * 
- * @author Lucas Amador
  *
  */
 @SuppressWarnings("restriction")

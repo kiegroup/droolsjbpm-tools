@@ -24,7 +24,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * 
- * @author Anton Arhipov
  *
  */
 public class ActionRetractFactWidget extends Widget {

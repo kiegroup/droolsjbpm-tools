@@ -22,7 +22,6 @@ import org.guvnor.tools.views.model.ResourceHistoryEntry;
 
 /**
  * Sorts resource versions based on revision number.
- * @author jgraham
  */
 public class ResourceHistorySorter extends ViewerSorter {
 

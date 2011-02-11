@@ -41,7 +41,6 @@ import org.guvnor.tools.utils.webdav.WebDavServerCache;
 
 /**
  * A container node for Guvnor structure.
- * @author jgraham
  */
 public class TreeParent extends TreeObject implements IDeferredWorkbenchAdapter {
 

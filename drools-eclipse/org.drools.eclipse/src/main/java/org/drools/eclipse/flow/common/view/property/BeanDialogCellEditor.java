@@ -25,7 +25,6 @@ import org.eclipse.swt.widgets.Shell;
 /**
  * Cell editor for a JavaBean.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public abstract class BeanDialogCellEditor<T> extends DialogCellEditor {
 

@@ -30,7 +30,6 @@ import org.jbpm.workflow.core.impl.ConnectionImpl;
 /**
  * Wrapper for a connection.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class ConnectionWrapper extends ElementConnection {
 

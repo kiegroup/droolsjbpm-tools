@@ -24,7 +24,6 @@ import org.eclipse.gef.commands.Command;
 /**
  * A command for deleting a bendpoint.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class DeleteBendpointCommand extends Command {
 

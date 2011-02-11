@@ -24,7 +24,6 @@ import org.eclipse.webdav.http.client.Response;
 
 /**
  * An intercept client that dumps debug information to System.out.
- * @author jgraham
  */
 public class DebugHttpClient extends HttpClient {
 

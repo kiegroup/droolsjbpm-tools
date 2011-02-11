@@ -18,7 +18,6 @@ package org.guvnor.tools.utils.webdav;
 
 /**
  * Container for Guvnor properties.
- * @author jgraham
  */
 public class ResourceProperties {
     private boolean isDirectory;

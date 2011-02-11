@@ -24,7 +24,6 @@ import org.eclipse.swt.graphics.Image;
 /**
  * Default implementation of an element Figure.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public interface ElementFigure extends IFigure {
     

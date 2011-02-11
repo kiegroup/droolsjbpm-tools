@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * A simple compare editor input for text files. 
- * @author jgraham
  */
 public class GuvnorCompareEditorInput extends CompareEditorInput {
 

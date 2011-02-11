@@ -22,7 +22,6 @@ import org.eclipse.ui.IPerspectiveFactory;
 import org.guvnor.tools.views.IGuvnorConstants;
 /**
  * Definition of the Guvnor repository perspective.
- * @author jgraham
  */
 public class GuvnorRepExplorerPerspective implements IPerspectiveFactory {
 

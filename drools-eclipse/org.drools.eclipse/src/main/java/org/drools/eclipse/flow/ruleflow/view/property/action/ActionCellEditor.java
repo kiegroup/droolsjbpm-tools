@@ -29,7 +29,6 @@ import org.jbpm.workflow.core.node.ActionNode;
 /**
  * Cell editor for an action.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class ActionCellEditor extends BeanDialogCellEditor<DroolsAction> {
 

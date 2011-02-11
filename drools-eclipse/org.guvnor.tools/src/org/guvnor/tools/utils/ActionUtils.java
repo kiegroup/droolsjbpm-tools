@@ -26,7 +26,6 @@ import org.guvnor.tools.Activator;
 
 /**
  * Convenience methods for actions.
- * @author jgraham
  */
 public class ActionUtils {
 

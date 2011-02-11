@@ -37,7 +37,6 @@ import org.guvnor.tools.utils.PlatformUtils;
 
 /**
  * Wizard page for selecting the location where Guvnor resources will be copied.
- * @author jgraham
  *
  */
 public class SelectLocalTargetPage extends WizardPage {

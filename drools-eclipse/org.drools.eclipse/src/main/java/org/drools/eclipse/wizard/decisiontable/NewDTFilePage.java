@@ -31,7 +31,6 @@ import org.eclipse.ui.ide.IDE;
 /**
  * A page to create a new Decision table scaffolding based on a template.
  *
- * @author Michael Neale
  */
 public class NewDTFilePage extends WizardNewFileCreationPage {
 

@@ -22,7 +22,6 @@ import org.eclipse.jface.action.Action;
 /**
  * Action used to enable / disable filter properties
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  */
 public class FilterAction extends Action {
 

@@ -26,7 +26,6 @@ import org.jbpm.workflow.core.node.MilestoneNode;
 /**
  * Cell editor for milestone constraints.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class MilestoneConstraintCellEditor extends BeanDialogCellEditor {
 

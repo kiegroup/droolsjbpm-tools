@@ -30,7 +30,6 @@ import org.eclipse.jface.text.ITextStore;
  * defined in one way). All changes will also be overridden as soon
  * as the original document changes.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public abstract class TransformedDocument extends AbstractDocument {
 

@@ -32,7 +32,6 @@ import org.guvnor.tools.utils.PlatformUtils;
 
 /**
  * Wizard for adding resources to Guvnor.
- * @author jgraham
  */
 public class AddResourceWizard extends Wizard implements INewWizard, IGuvnorWizard {
 

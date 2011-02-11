@@ -23,7 +23,6 @@ import org.eclipse.gef.commands.Command;
 /**
  * A command for adding an element.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class AddElementCommand extends Command {
 

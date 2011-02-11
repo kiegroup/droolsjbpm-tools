@@ -44,7 +44,6 @@ import org.jbpm.process.core.context.variable.VariableScope;
 /**
  * A wrapper for process element.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public abstract class ProcessWrapper implements ElementContainer, IPropertySource, Serializable {
 

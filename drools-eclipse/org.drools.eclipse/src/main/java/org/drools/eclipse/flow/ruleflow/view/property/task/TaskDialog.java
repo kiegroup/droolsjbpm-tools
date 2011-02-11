@@ -30,7 +30,6 @@ import org.eclipse.swt.widgets.Text;
 /**
  * Dialog for editing tasks.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class TaskDialog extends EditBeanDialog<Work> {
     

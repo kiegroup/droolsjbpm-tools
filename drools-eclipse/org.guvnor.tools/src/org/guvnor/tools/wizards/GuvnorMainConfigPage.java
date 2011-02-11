@@ -48,7 +48,6 @@ import org.guvnor.tools.utils.PlatformUtils;
 
 /**
  * Wizard page for entering Guvnor connection details.
- * @author jgraham
  */
 public class GuvnorMainConfigPage extends WizardPage {
 

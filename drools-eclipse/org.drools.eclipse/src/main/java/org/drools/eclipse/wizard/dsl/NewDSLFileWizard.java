@@ -26,8 +26,6 @@ import org.eclipse.ui.IWorkbench;
 /**
  * A wizard to create a new Domain Specific Language.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
- * @author Michael Neale
  */
 public class NewDSLFileWizard extends Wizard implements INewWizard {
 

@@ -38,8 +38,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
 /**
- * @author Anton Arhipov
- * @author Ahti Kitsik
  *
  */
 public class ActionSetFieldWidget extends Widget {

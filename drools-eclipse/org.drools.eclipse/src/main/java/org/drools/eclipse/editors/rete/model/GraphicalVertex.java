@@ -34,8 +34,7 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  * 
  * Can be connected with another BaseVertex with a Connector.
  * 
- * @author Ahti Kitsik
- * 
+ *
  */
 abstract public class GraphicalVertex extends ModelElement {
 

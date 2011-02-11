@@ -27,9 +27,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
 /**
- * @author Anton Arhipov
- * @author Ahti Kitsik
- * 
+ *
  */
 public class ActionSetFieldDialog extends RuleDialog {
 

@@ -30,7 +30,6 @@ import org.eclipse.gef.requests.CreateRequest;
 /**
  * Policy for performing layout of a process.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class ElementContainerLayoutEditPolicy extends XYLayoutEditPolicy {
     

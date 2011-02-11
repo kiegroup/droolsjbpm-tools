@@ -55,8 +55,6 @@ import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
  * tolerant of incorrect syntax. 
  * Should provide navigation assistance in large rule files.
  * 
- * @author "Jeff Brown" <brown_j@ociweb.com>
- * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  */
 public class RuleContentOutlinePage extends ContentOutlinePage {
 

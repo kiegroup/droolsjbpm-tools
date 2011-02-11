@@ -52,7 +52,6 @@ import org.guvnor.tools.views.model.ResourceHistoryEntry;
 
 /**
  * A set of utilities for dealing with (local) Guvnor metadata.
- * @author jgraham
  */
 public class GuvnorMetadataUtils {
     /**

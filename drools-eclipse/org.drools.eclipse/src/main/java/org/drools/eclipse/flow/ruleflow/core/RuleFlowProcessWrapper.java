@@ -25,7 +25,6 @@ import org.jbpm.ruleflow.core.RuleFlowProcess;
 /**
  * Wrapper for a RuleFlow process.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class RuleFlowProcessWrapper extends ProcessWrapper {
 

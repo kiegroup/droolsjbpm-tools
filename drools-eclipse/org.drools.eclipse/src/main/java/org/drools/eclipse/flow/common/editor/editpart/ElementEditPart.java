@@ -44,7 +44,6 @@ import org.eclipse.jface.viewers.TextCellEditor;
 /**
  * Default implementation of an element EditPart.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public abstract class ElementEditPart extends AbstractGraphicalEditPart implements NodeEditPart, ModelListener {
     

@@ -22,7 +22,6 @@ import org.eclipse.jface.viewers.ViewerSorter;
 
 /** 
  * Provides sorting for the natural language table viewer.
- * @author Michael Neale
  */
 public class DSLMappingSorter extends ViewerSorter {
 

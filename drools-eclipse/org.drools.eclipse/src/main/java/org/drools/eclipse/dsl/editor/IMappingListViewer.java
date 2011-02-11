@@ -21,7 +21,6 @@ import org.drools.lang.dsl.DSLMappingEntry;
 /**
  * Used to keep the view up to date with changes in mappings.
  * 
- * @author Michael Neale
  */
 public interface IMappingListViewer {
 

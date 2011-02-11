@@ -29,7 +29,6 @@ import org.eclipse.ui.actions.ActionGroup;
 /**
  * Action Group that contributes filter buttons.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  */
 public class FilterActionGroup extends ActionGroup {
 

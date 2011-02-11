@@ -24,7 +24,6 @@ import org.eclipse.ui.IStorageEditorInput;
 
 /**
  * A in-memory editor input.
- * @author jgraham
  */
 public class StringInput extends PlatformObject implements IStorageEditorInput {
     private IStorage storage;

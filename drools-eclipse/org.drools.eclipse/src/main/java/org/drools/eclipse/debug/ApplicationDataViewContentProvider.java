@@ -30,7 +30,6 @@ import org.eclipse.jdt.debug.core.IJavaValue;
 /**
  * The Application Data View content provider.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  */
 public class ApplicationDataViewContentProvider extends DroolsDebugViewContentProvider {
 

@@ -23,7 +23,6 @@ import org.jbpm.process.core.context.variable.Variable;
 /**
  * Dialog for editing a list of variables.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class VariableListDialog extends EditListDialog<Variable> {
     

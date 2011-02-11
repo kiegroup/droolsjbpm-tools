@@ -39,7 +39,6 @@ import org.drools.process.core.datatype.impl.type.UndefinedDataType;
 /**
  * Default datatype registry containing default datatypes.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class DefaultDataTypeRegistry {
 

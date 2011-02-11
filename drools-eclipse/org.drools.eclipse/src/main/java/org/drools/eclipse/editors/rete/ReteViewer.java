@@ -62,7 +62,6 @@ import org.eclipse.swt.SWT;
 /**
  * GEF-based RETE Viewer
  * 
- * @author Ahti Kitsik
  *
  */
 public class ReteViewer extends GraphicalEditor {

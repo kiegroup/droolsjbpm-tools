@@ -19,7 +19,6 @@ package org.drools.eclipse.core;
 /**
  * This represents a template. 
  *
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class Template extends DroolsElement {
 

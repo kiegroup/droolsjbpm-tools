@@ -27,7 +27,6 @@ import org.eclipse.swt.widgets.Text;
 /**
  * Default float editor.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class FloatEditor extends Composite implements Editor {
 

@@ -17,7 +17,6 @@
 package org.guvnor.tools.utils;
 /**
  * Model for properties associated with Guvnor resources.
- * @author jgraham
  */
 public class GuvnorMetadataProps {
     private String filename;

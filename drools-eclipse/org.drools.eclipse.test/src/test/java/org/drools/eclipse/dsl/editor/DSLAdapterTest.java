@@ -25,7 +25,6 @@ import org.drools.eclipse.dsl.editor.DSLAdapter;
 
 /**
  * 
- * @author Michael Neale
  */
 public class DSLAdapterTest {
     

@@ -66,7 +66,6 @@ import org.eclipse.ui.part.FileEditorInput;
 
 /**
  * This is the tablular DSL configuration editor.
- * @author Michael Neale
  */
 public class DSLEditor extends EditorPart {
 

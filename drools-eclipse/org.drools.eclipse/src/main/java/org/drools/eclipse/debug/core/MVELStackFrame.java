@@ -61,7 +61,6 @@ import com.sun.jdi.Value;
 /**
  * Stack Frame for MVEL Dialect
  * 
- * @author Ahti Kitsik
  *
  */
 public class MVELStackFrame extends DroolsStackFrame {

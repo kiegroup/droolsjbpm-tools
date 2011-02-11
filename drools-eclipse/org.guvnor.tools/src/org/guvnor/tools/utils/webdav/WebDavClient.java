@@ -36,7 +36,6 @@ import org.guvnor.tools.Activator;
 
 /**
  * WebDav wrapper client.
- * @author jgraham
  *
  */
 public class WebDavClient implements IWebDavClient {

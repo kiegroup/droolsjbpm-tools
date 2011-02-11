@@ -42,7 +42,6 @@ import org.guvnor.tools.views.model.ResourceHistoryEntry;
 
 /**
  * Switches to a specific revision of a given resource.
- * @author jgraham
  */
 public class SwitchVersionAction implements IObjectActionDelegate {
 

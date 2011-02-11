@@ -26,7 +26,6 @@ import java.util.List;
 /**
  * This provides a list of keywords for syntax highlighting.
  * Uses a pseudo properties file format.
- * @author Michael Neale
  */
 public class Keywords {
 

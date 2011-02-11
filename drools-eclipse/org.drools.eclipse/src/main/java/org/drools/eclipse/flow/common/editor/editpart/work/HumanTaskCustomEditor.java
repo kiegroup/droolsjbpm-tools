@@ -35,7 +35,6 @@ import org.eclipse.swt.widgets.Text;
 /**
  * Custom Work editor for human tasks.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class HumanTaskCustomEditor extends EditBeanDialog<Work> implements WorkEditor {
 

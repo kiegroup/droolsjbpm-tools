@@ -44,7 +44,6 @@ import org.eclipse.ui.PlatformUI;
 /**
  * Completion for ruleflow constraints. 
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class ImportCompletionProcessor extends DefaultCompletionProcessor {
 

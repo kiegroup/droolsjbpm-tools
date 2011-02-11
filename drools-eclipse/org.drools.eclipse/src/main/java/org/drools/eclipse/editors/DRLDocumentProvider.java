@@ -28,7 +28,6 @@ import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 /**
  * Simple document provider.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class DRLDocumentProvider extends TextFileDocumentProvider {
 

@@ -26,7 +26,6 @@ import org.eclipse.webdav.http.client.IAuthenticator;
 
 /**
  * Client methods for interacting with Guvnor through WebDav.
- * @author jgraham
  */
 public interface IWebDavClient {
     /**

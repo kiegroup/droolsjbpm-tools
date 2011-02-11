@@ -42,7 +42,6 @@ import org.guvnor.tools.utils.webdav.WebDavServerCache;
 
 /**
  * Deletes a resource in Guvnor.
- * @author jgraham
  */
 public class DeleteAction implements IObjectActionDelegate {
 

@@ -56,7 +56,6 @@ import org.guvnor.tools.views.ResourceHistoryView;
 /**
  * A set of utilities for interacting with the Eclipse platform.
  * 
- * @author jgraham
  */
 public class PlatformUtils {
 
@@ -278,7 +277,6 @@ public class PlatformUtils {
     /**
      * An operation for running a log in dialog in the next
      * available UI thread.
-     * @author jgraham
      */
     class AuthPromptRunnable implements Runnable {
         AuthPromptResults res = null;
@@ -307,7 +305,6 @@ public class PlatformUtils {
 
     /**
      * The results from a log in dialog prompt.
-     * @author jgraham
      */
     public class AuthPromptResults {
         // username and password

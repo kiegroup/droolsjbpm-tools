@@ -23,7 +23,6 @@ import org.eclipse.gef.commands.Command;
 /**
  * A command for creating a bendpoint.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class CreateBendpointCommand extends Command {
 

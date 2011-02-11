@@ -25,7 +25,6 @@ import org.jbpm.workflow.core.node.FaultNode;
 /**
  * Wrapper for a fault node.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class FaultNodeWrapper extends AbstractNodeWrapper {
 

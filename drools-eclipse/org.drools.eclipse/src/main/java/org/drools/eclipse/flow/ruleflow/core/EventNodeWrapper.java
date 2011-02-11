@@ -31,7 +31,6 @@ import org.jbpm.workflow.core.node.EventNode;
 /**
  * Wrapper for a start node.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class EventNodeWrapper extends AbstractNodeWrapper {
 

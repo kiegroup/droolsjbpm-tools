@@ -55,7 +55,6 @@ import org.guvnor.tools.views.model.ResourceHistoryEntry;
 
 /**
  * View showing the revisions of a given resource.
- * @author jgraham
  *
  */
 public class ResourceHistoryView extends ViewPart {

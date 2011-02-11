@@ -25,7 +25,6 @@ import java.util.Map;
 /**
  * This represents a package.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class Package extends DroolsElement {
 

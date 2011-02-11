@@ -25,7 +25,6 @@ import org.eclipse.jface.viewers.Viewer;
 /**
  * Content provider for Drools model elements. 
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  */
 public class DroolsGroupByRuleGroupContentProvider implements ITreeContentProvider {
 

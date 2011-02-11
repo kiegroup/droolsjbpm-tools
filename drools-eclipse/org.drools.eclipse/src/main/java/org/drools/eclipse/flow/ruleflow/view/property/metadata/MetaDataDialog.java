@@ -46,7 +46,6 @@ import org.eclipse.swt.widgets.Text;
 /**
  * Dialog for editing meta data.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class MetaDataDialog extends EditBeanDialog<Map<String, Object>> implements FocusListener, MouseListener {
 

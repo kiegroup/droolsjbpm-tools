@@ -59,7 +59,6 @@ import org.drools.rule.Package;
  * org.drools.reteoo.*Vertex,
  * org.drools.ide.editors.rete.model.*
  * 
- * @author Ahti Kitsik
  *
  */
 public class ReteooLayoutFactoryTest {

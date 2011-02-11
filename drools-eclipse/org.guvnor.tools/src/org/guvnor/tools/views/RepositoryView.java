@@ -75,7 +75,6 @@ import org.guvnor.tools.wizards.NewRepLocationWizard;
 
 /**
  * A view showing Guvnor structure in a tree.
- * @author jgraham
  */
 public class RepositoryView extends ViewPart {
 

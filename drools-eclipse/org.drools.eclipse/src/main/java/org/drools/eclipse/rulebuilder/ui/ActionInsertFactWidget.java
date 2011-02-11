@@ -41,9 +41,7 @@ import org.eclipse.ui.forms.widgets.ImageHyperlink;
 /**
  * 
  * 
- * @author Anton Arhipov
- * @author Ahti Kitsik
- * 
+ *
  */
 public class ActionInsertFactWidget extends Widget {
 

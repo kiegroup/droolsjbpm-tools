@@ -37,7 +37,6 @@ import org.eclipse.swt.widgets.Display;
 /**
  * EditPart for a SubFlow node.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class SubFlowEditPart extends ElementEditPart {
 

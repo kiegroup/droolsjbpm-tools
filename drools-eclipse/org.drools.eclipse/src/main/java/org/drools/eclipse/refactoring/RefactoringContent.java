@@ -24,7 +24,6 @@ import org.eclipse.core.resources.IFile;
 /**
  * Store the files content changes when multiple files are refactored at same time.
  * 
- * @author Lucas Amador
  *
  */
 public class RefactoringContent {

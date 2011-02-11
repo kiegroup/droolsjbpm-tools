@@ -55,8 +55,6 @@ import org.eclipse.ui.forms.widgets.ImageHyperlink;
 /**
  * This displays a widget to edit a DSL sentence.
  * 
- * @author Ahti Kitsik
- * @author Anton Arhipov
  */
 public abstract class DSLSentenceWidget extends Widget {
 

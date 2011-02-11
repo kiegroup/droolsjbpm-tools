@@ -37,9 +37,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 /**
  * Adding a new constraint for a field of a FactPattern
  * 
- * @author Anton Arhipov
- * @author Ahti Kitsik
- * 
+ *
  */
 public class AddNewFieldConstraintDialog extends RuleDialog {
 

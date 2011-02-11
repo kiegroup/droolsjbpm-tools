@@ -24,7 +24,6 @@ import org.eclipse.swt.graphics.Image;
 /**
  * Provides visible part of the DSL editor table.
  * 
- * @author Michael Neale
  *
  */
 public class DSLLabelProvider extends LabelProvider

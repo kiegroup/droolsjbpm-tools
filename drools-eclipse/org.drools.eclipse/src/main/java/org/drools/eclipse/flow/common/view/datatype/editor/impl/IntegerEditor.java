@@ -27,7 +27,6 @@ import org.eclipse.swt.widgets.Text;
 /**
  * Default integer editor.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class IntegerEditor extends Composite implements Editor {
 

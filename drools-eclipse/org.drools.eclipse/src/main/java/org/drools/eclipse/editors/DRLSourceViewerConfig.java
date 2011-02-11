@@ -41,8 +41,6 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
  * Source viewer config wires up the syntax highlighting, partitioning
  * and content assistance.
  * 
- * @author Michael Neale
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class DRLSourceViewerConfig extends SourceViewerConfiguration {
 

@@ -38,7 +38,6 @@ import org.eclipse.ui.PartInitException;
 /**
  * The Process instances view.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  */
 public class ProcessInstancesView extends DroolsDebugEventHandlerView {
 

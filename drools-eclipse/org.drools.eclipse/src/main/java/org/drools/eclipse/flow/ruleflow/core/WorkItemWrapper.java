@@ -38,7 +38,6 @@ import org.jbpm.workflow.core.node.WorkItemNode;
 /**
  * Wrapper for a work item node.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class WorkItemWrapper extends StateBasedNodeWrapper {
 

@@ -24,7 +24,6 @@ import org.eclipse.core.resources.IFile;
  * to the file they are defined in and the offset and length of that
  * element in the file. 
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  */
 public abstract class DroolsElement {
 

@@ -36,7 +36,6 @@ import org.eclipse.jdt.debug.core.IJavaVariable;
 /**
  * The logical structures of a process instance.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  */
 public class ProcessInstanceLogicalStructureDelegate implements ILogicalStructureTypeDelegate {
 

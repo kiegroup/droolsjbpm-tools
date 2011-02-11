@@ -23,7 +23,6 @@ import org.jbpm.workflow.core.Node;
 /**
  * Wrapper for a node.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public interface NodeWrapper extends ElementWrapper {
 

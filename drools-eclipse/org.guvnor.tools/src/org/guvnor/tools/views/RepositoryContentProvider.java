@@ -31,7 +31,6 @@ import org.guvnor.tools.views.model.TreeParent;
 
 /**
  * Content provider for representing Guvnor structure.
- * @author jgraham
  */
 public class RepositoryContentProvider implements IStructuredContentProvider, 
                                                   ITreeContentProvider {

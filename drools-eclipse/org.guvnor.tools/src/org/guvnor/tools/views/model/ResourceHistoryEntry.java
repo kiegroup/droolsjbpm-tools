@@ -18,7 +18,6 @@ package org.guvnor.tools.views.model;
 
 /**
  * A model for resource history data. 
- * @author jgraham
  *
  */
 public class ResourceHistoryEntry {

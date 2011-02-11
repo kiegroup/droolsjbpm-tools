@@ -44,7 +44,6 @@ import org.guvnor.tools.views.model.TreeObject;
 
 /**
  * Wizard page for selecting resources in Guvnor.
- * @author jgraham
  */
 public class SelectGuvnorResourcesPage extends WizardPage {
 

@@ -21,7 +21,6 @@ import java.util.ResourceBundle;
 
 /**
  * Auto-generated class for dealing with externalized strings.
- * @author jgraham
  */
 public class Messages {
     private static final String BUNDLE_NAME = "org.guvnor.tools.messages"; //$NON-NLS-1$

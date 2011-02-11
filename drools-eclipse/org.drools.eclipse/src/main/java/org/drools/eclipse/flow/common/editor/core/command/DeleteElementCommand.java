@@ -28,7 +28,6 @@ import org.eclipse.gef.commands.Command;
 /**
  * A command for deleting an element.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class DeleteElementCommand extends Command {
 

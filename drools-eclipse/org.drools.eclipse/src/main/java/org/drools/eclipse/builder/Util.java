@@ -30,7 +30,6 @@ import org.eclipse.core.runtime.Status;
 /**
  * Utility class.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  */
 public class Util {
 

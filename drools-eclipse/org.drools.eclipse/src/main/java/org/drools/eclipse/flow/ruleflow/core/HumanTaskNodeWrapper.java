@@ -33,7 +33,6 @@ import org.jbpm.workflow.core.node.HumanTaskNode;
 /**
  * Wrapper for a human task node.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class HumanTaskNodeWrapper extends WorkItemWrapper {
 

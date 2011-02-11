@@ -41,7 +41,6 @@ import org.drools.spi.AgendaGroup;
  * WITHOUT ALSO CHANGING THE IMPLEMENTATION IN THE DEBUG
  * VIEWS (which are using reflection)
  *    
- * @author Kris Verlaenen
  */
 public class DebugViewsTest {
 

@@ -32,7 +32,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
  * 
  * Currently implements contributors to zoom feature at rete viewer. 
  * 
- * @author Ahti Kitsik
  *
  */
 public class DRLRuleEditorActionContributor extends MultiPageEditorActionBarContributor {

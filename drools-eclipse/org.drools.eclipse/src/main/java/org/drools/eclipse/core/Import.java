@@ -19,7 +19,6 @@ package org.drools.eclipse.core;
 /**
  * This represents an import. 
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  */
 public class Import extends DroolsElement {
 

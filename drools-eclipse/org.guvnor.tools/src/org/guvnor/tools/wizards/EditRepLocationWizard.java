@@ -28,7 +28,6 @@ import org.guvnor.tools.utils.PlatformUtils;
 
 /**
  * Wizard page for creating a new Guvnor connection.
- * @author jgraham
  *
  */
 public class EditRepLocationWizard extends Wizard implements INewWizard, IGuvnorWizard {

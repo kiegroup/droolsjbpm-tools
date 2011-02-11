@@ -26,7 +26,6 @@ import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 /**
  * Dialog for editing actions.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class ActionsDialog extends EditListDialog<DroolsAction> {
     

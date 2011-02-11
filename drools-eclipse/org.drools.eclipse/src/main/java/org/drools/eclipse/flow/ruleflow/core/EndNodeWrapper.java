@@ -25,7 +25,6 @@ import org.jbpm.workflow.core.node.EndNode;
 /**
  * Wrapper for an end node.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class EndNodeWrapper extends AbstractNodeWrapper {
 

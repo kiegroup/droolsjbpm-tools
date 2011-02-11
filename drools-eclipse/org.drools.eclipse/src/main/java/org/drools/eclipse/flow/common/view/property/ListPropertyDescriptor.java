@@ -25,7 +25,6 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
 /**
  * Property descriptor for a list.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class ListPropertyDescriptor extends PropertyDescriptor {
     

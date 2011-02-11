@@ -42,7 +42,6 @@ import org.jbpm.workflow.core.node.StateNode;
 /**
  * Dialog for editing constraints.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class StateConstraintListDialog extends EditBeanDialog<Map<ConnectionRef, Constraint>> {
 

@@ -25,7 +25,6 @@ import org.jbpm.workflow.core.node.ActionNode;
 /**
  * Property descriptor for an action.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class ActionPropertyDescriptor extends PropertyDescriptor {
     

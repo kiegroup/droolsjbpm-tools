@@ -27,7 +27,6 @@ import org.jbpm.process.core.context.swimlane.Swimlane;
 /**
  * Cell edtior for swimlanes.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class SwimlanesCellEditor extends BeanDialogCellEditor<List<Swimlane>> {
 

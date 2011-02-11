@@ -20,7 +20,6 @@ import org.guvnor.tools.Messages;
 
 /**
  * Constants for Guvnor tools preference names and values.
- * @author jgraham
  */
 public interface IGuvnorPreferenceConstants {
 

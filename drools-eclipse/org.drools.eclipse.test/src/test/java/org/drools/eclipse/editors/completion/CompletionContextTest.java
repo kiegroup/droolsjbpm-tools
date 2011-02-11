@@ -28,9 +28,8 @@ import org.drools.lang.Location;
 
 /**
  * Test to check the location determination when doing code completion inside
- * rule condtions.
+ * rule conditions.
  *
- * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  *
  */
 public class CompletionContextTest {

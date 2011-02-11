@@ -23,7 +23,6 @@ import org.jbpm.process.core.context.swimlane.Swimlane;
 /**
  * Dialog for editing swimlanes.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class SwimlanesDialog extends EditListDialog<Swimlane> {
     

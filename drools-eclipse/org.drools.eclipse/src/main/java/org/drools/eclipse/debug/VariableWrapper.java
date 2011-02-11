@@ -29,7 +29,6 @@ import org.eclipse.jdt.debug.core.IJavaVariable;
 /**
  * Creates a Variable from an IValue and a given name.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  */
 public class VariableWrapper extends PlatformObject implements IJavaVariable  {
 

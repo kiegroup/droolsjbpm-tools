@@ -29,7 +29,6 @@ import org.guvnor.tools.utils.GuvnorMetadataProps;
 import org.guvnor.tools.utils.GuvnorMetadataUtils;
 /**
  * Handles decorating Guvnor resources with an icon overlay and label text.
- * @author jgraham
  */
 public class GuvnorDecorator implements ILightweightLabelDecorator {
 

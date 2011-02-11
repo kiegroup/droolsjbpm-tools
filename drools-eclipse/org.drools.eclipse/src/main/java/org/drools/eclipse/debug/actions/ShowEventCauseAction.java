@@ -26,7 +26,6 @@ import org.eclipse.jface.action.IAction;
 /**
  * Action to show the cause event of an audit event.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  */
 public class ShowEventCauseAction extends Action {
     

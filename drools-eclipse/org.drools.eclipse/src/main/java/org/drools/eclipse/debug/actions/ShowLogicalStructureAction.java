@@ -28,7 +28,6 @@ import org.eclipse.swt.custom.BusyIndicator;
  * Action to toggle the display of the logical structure of variables
  * that are shown in the tree.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  */
 public class ShowLogicalStructureAction extends Action {
     

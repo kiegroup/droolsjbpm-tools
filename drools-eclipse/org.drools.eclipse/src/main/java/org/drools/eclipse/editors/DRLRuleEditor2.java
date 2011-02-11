@@ -40,8 +40,6 @@ import org.eclipse.ui.forms.editor.FormEditor;
  * This is a multi table editor wrapper for both the text editor and the RETE
  * viewer.
  * 
- * @author Kris
- * @author Ahti Kitsik
  */
 public class DRLRuleEditor2 extends FormEditor {
 

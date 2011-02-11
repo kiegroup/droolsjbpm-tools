@@ -32,7 +32,6 @@ import org.jbpm.ruleflow.core.validation.RuleFlowProcessValidator;
 /**
  * Action for checking a RuleFlow.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class CheckRuleFlowAction extends ActionDelegate implements IEditorActionDelegate {
 

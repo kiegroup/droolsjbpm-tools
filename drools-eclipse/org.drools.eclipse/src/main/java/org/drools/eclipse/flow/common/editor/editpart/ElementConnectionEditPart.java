@@ -39,7 +39,6 @@ import org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy;
 /**
  * Implementation of a connection EditPart.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public abstract class ElementConnectionEditPart extends AbstractConnectionEditPart implements ModelListener {
     

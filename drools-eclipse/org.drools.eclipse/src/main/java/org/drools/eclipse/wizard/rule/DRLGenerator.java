@@ -30,7 +30,6 @@ import java.util.regex.Pattern;
  * This will generate DRL bits and bobs based on various templates.
  * For use by the wizards only. 
  * TODO: move this to string template (as it is being used elsewhere in drools)
- * @author Michael Neale
  */
 public class DRLGenerator {
 

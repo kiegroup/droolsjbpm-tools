@@ -63,7 +63,6 @@ import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 /**
  * A wizard to create a new Drools project.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  */
 public class NewDroolsProjectWizard extends BasicNewResourceWizard {
 

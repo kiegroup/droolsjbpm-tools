@@ -34,7 +34,6 @@ import org.eclipse.ui.forms.editor.FormEditor;
 /**
  * Editor for rules using a domain-specific language.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class DSLRuleEditor2 extends FormEditor {
 

@@ -26,7 +26,6 @@ import org.eclipse.swt.graphics.Image;
 /**
  * Handles the images used in this plugin.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  */
 public class DroolsPluginImages {
 

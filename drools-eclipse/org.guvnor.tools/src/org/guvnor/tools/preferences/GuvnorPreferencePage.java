@@ -37,7 +37,6 @@ import org.guvnor.tools.utils.PlatformUtils;
 
 /**
  * Page for setting Guvnor preferences.
- * @author jgraham
  */
 public class GuvnorPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 

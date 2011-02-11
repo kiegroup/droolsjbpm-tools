@@ -48,8 +48,6 @@ import org.eclipse.ui.ide.IDE;
  * Enhancements may be made to allow configuration of semantic languages, DSLs (locate a DSL) and other 
  * package level options.
  * 
- * @author Michael Neale
- * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  */
 public class NewRulePackagePage extends WizardNewFileCreationPage {
 

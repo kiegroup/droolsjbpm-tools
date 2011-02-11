@@ -35,7 +35,6 @@ import org.eclipse.swt.widgets.Text;
 /**
  * Default empty editor.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class ObjectDataTypeEditor extends Composite implements Editor, DataTypeEditor {
 

@@ -28,7 +28,6 @@ import org.guvnor.tools.GuvnorRepository;
 
 /**
  * Wizard page for entering Guvnor connection details.
- * @author jgraham
  */
 public class GuvnorConnectionEditPage extends GuvnorMainConfigPage {
 

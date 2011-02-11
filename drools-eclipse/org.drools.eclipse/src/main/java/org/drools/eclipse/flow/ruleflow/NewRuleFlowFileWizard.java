@@ -24,7 +24,6 @@ import org.eclipse.ui.IWorkbench;
 /**
  * Wizard for creating a new RuleFlow file.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class NewRuleFlowFileWizard extends Wizard implements INewWizard {
 

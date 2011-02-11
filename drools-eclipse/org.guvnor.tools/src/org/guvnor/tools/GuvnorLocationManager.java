@@ -31,7 +31,6 @@ import org.eclipse.core.runtime.Platform;
 
 /**
  * Reads and writes Guvnor location information to disk.
- * @author jgraham
  */
 public class GuvnorLocationManager {
 

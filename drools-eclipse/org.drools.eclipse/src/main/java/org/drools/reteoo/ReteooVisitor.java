@@ -34,7 +34,6 @@ import org.drools.eclipse.editors.rete.model.ReteGraph;
  * @see http://www.research.att.com/sw/tools/graphviz/ 
  * @see http://www.pixelglow.com/graphviz/
  *
- * @author Andy Barnett
  */
 public class ReteooVisitor extends ReflectiveVisitor {
 

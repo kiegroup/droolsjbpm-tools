@@ -33,7 +33,6 @@ import org.eclipse.swt.graphics.Image;
 /**
  * EditPart for an end node.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class EndNodeEditPart extends ElementEditPart {
 

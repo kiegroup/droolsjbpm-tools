@@ -27,7 +27,6 @@ import org.jbpm.workflow.core.node.ActionNode;
 /**
  * Wrapper for an action node.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class ActionWrapper extends AbstractNodeWrapper {
 

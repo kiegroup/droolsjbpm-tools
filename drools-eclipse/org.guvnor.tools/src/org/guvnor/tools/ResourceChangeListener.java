@@ -37,7 +37,6 @@ import org.guvnor.tools.utils.PlatformUtils;
 
 /**
  * Updates local Guvnor properties when changes occur in the Eclipse workspace.
- * @author jgraham
  */
 public class ResourceChangeListener implements IResourceChangeListener {
 
