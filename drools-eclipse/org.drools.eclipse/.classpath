@@ -7,7 +7,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/drools-api.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/drools-core.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/drools-compiler.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/drools-ide-common.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/droolsjbpm-ide-common.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/drools-decisiontables.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/drools-jsr94.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jsr94.jar"/>
