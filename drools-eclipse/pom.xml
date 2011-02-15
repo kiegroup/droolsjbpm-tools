@@ -13,12 +13,12 @@
   <artifactId>drools-eclipse</artifactId>
   <packaging>pom</packaging>
   
-  <name>Drools :: Eclipse-Plugin</name>
+  <name>Drools, jBPM and Guvnor plugins for Eclipse</name>
   <description>
-    To use these drools eclipse plugins in production, use the download site linked on:
+    To use these Eclipse plugins in production, use the download site linked on:
     http://www.jboss.org/drools/downloads
     
-    To use these drools eclipse plugins locally in development,
+    To use these Eclipse plugins locally in development,
     see the description of the module org.drools.updatesite.
   </description>
   

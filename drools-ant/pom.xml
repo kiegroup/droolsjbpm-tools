@@ -12,7 +12,7 @@
   <groupId>org.drools</groupId><!-- TODO rename groupId, artifactId, name and description -->
   <artifactId>drools-ant</artifactId>
 
-  <name>Drools :: Ant Task</name>
+  <name>Drools, jBMN and Guvnor Ant tasks</name>
 
   <build>
     <plugins>
@@ -27,7 +27,6 @@
       </plugin>
     </plugins>
   </build>
-
 
   <dependencies>
     <dependency>
