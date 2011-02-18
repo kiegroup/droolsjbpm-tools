@@ -95,5 +95,5 @@ public class ApplicationDataViewContentProvider extends DroolsDebugViewContentPr
             return (IVariable[]) result.toArray(new IVariable[result.size()]);
         }
         return null;
-    }    
+    }
 }

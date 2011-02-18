@@ -183,6 +183,6 @@ public abstract class EditMapDialog<S, T> extends EditBeanDialog<Map<S, T>> {
             throw new RuntimeException(e);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
-        } 
+        }
     }
 }

@@ -66,7 +66,7 @@ public class DRLGenerator {
         return toStream( temp );
 
         
-    }    
+    }
 
     private ByteArrayInputStream toStream(String temp) throws UnsupportedEncodingException {
         ByteArrayInputStream stream = new ByteArrayInputStream(temp.getBytes( "UTF-8" ));

@@ -671,7 +671,7 @@ public class DroolsDebugTarget extends JDIDebugTarget {
 
         protected MVELTraceHandler() {
             createRequest();
-        }        
+        }
 
         protected void createRequest() {
             EventRequestManager manager = getEventRequestManager();

@@ -28,7 +28,7 @@ import org.w3c.dom.Document;
  *     ... // handle standard response
  *   } else {
  *     ... // handle non-standard response
- *   } 
+ *   }
  * } finally {
  *     r.close();
  * }

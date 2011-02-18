@@ -303,7 +303,7 @@ public class DroolsVMDebugger extends StandardVMDebugger {
             } else {
                 buf.append(command.toString());
             }
-        }   
+        }
         return buf.toString();
     }
 

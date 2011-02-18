@@ -60,10 +60,10 @@ public class DroolsDebugViewContentProvider implements ITreeContentProvider {
         return "Empty";
     }
 
-    protected void cache(Object parent, Object[] children) {        
+    protected void cache(Object parent, Object[] children) {
         for (int i = 0; i < children.length; i++) {
             parentCache.put(children[i], parent);
-        }       
+        }
     }
     
     public Object getParent(Object item) {

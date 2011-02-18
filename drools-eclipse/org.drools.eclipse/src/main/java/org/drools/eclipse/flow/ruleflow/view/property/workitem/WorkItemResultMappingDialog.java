@@ -220,7 +220,7 @@ public class WorkItemResultMappingDialog extends EditBeanDialog implements Focus
                 columnToEdit = i;
                 break;
             }
-        }   
+        }
         return columnToEdit;
     }
 

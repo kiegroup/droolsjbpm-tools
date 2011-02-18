@@ -73,12 +73,12 @@ public class GuvnorJRClusterConfigAntTask  extends MatchingTask {
     private void createConfigEntries(String node, Map<String, Object> data) {
         String repositoryConfig = processTemplate(dbtype+"-repository.xml", data);
         // write configs to file system
-        try {           
+        try {
             File repoFile = new File(destinationdir + "jrcluster/" + node + "/repository.xml");
             if(!repoFile.exists()) {
                 boolean success = repoFile.createNewFile();
                 if(!success) throw new BuildException("Unable to create file [" + repoFile.getPath() + "]");
-            } 
+            }
             FileOutputStream fosr = new FileOutputStream(repoFile);
             fosr.write(repositoryConfig.getBytes());
             fosr.flush();
@@ -113,7 +113,7 @@ public class GuvnorJRClusterConfigAntTask  extends MatchingTask {
         boolean success = (new File(destinationdir + "jrcluster")).mkdir();
         if (!success) {
             throw new BuildException("Unable to create directory: [" + destinationdir + "jrcluster/]");
-        }  
+        }
         
         // now the node directories
         for(int i = 0; i < nodeCountVal; i++) {
@@ -136,7 +136,7 @@ public class GuvnorJRClusterConfigAntTask  extends MatchingTask {
             }
         } catch (NumberFormatException e) {
             errors += "\nNode count is not a number";
-        } 
+        }
         if(destinationdir == null) {
             errors += "\nInvalid destination directory.";
         }
@@ -279,4 +279,4 @@ public class GuvnorJRClusterConfigAntTask  extends MatchingTask {
         this.verbose = verbose;
     }
     
-}   
+}

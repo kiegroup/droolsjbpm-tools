@@ -220,7 +220,7 @@ public class WorkItemParameterMappingDialog extends EditBeanDialog implements Fo
                 columnToEdit = i;
                 break;
             }
-        }   
+        }
         return columnToEdit;
     }
 

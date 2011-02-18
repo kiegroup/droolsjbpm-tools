@@ -41,7 +41,7 @@ public class FromNodeVertex extends BaseVertex {
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNodeVertex#getHtml()
      */
-    public String getHtml() {        
+    public String getHtml() {
         return NODE_NAME + " : " + this.node.getId() + " : Shared count=" + this.node.getSinkPropagator().size();
     }
 

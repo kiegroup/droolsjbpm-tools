@@ -92,10 +92,10 @@ public class SubProcessWrapper extends StateBasedNodeWrapper {
         }
         if (PARAMETER_IN_MAPPING.equals(id)) {
             return getSubProcessNode().getInMappings();
-        } 
+        }
         if (PARAMETER_OUT_MAPPING.equals(id)) {
             return getSubProcessNode().getOutMappings();
-        } 
+        }
         return super.getPropertyValue(id);
     }
 

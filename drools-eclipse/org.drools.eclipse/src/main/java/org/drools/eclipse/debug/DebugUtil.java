@@ -207,7 +207,7 @@ public class DebugUtil {
                         } catch ( InterruptedException e ) {
                         }
                 }
-            }            
+            }
             
             if (fResult == null) {
                 return null;

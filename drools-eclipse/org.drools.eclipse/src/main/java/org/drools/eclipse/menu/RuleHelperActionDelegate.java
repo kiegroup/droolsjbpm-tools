@@ -171,7 +171,7 @@ public class RuleHelperActionDelegate
         WizardDialog dialog = new WizardDialog( shell,
                                                 wizard );
         dialog.open();
-    }    
+    }
 
     public void dispose() {
     }
@@ -211,7 +211,7 @@ public class RuleHelperActionDelegate
 
         public boolean isEmpty() {
             return true;
-        }        
+        }
     }
 
 }

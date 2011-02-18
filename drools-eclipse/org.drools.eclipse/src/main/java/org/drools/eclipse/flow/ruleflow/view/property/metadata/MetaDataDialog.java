@@ -227,7 +227,7 @@ public class MetaDataDialog extends EditBeanDialog<Map<String, Object>> implemen
                 columnToEdit = i;
                 break;
             }
-        }   
+        }
         return columnToEdit;
     }
 

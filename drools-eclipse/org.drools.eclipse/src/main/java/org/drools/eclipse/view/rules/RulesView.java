@@ -241,7 +241,7 @@ public class RulesView extends ViewPart implements IDoubleClickListener, IResour
                         }
                     } catch (Throwable t) {
                         DroolsEclipsePlugin.log(t);
-                    }     
+                    }
                     return false;
                 }
             }

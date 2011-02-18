@@ -49,7 +49,7 @@ public class DroolsStackFrame  extends JDIStackFrame {
             DroolsEclipsePlugin.log( exc );
         }
         return false;
-    }    
+    }
     
     public RuleInfo getExecutingRuleInfo() {
         try {
@@ -65,7 +65,7 @@ public class DroolsStackFrame  extends JDIStackFrame {
             DroolsEclipsePlugin.log( exc );
         }
         return null;
-    }    
+    }
     
     public FunctionInfo getExecutingFunctionInfo() {
         try {
@@ -74,7 +74,7 @@ public class DroolsStackFrame  extends JDIStackFrame {
             DroolsEclipsePlugin.log( exc );
         }
         return null;
-    }    
+    }
     
     @Override
     protected JDIStackFrame bind(StackFrame frame,
@@ -132,7 +132,7 @@ public class DroolsStackFrame  extends JDIStackFrame {
         }
 
         return super.getLineNumber();
-    } 
+    }
    
     
     public StackFrame getUnderlyingStackFrame() throws DebugException {

@@ -209,7 +209,7 @@ public class RuleContentOutlinePage extends ContentOutlinePage {
                     matcher.start(1), matcher.end(1) - matcher.start(1),
                     extractAttributes(descr));
             }
-         } 
+         }
         matcher = FUNCTION_PATTERN.matcher(ruleFileContents);
         while (matcher.find()) {
             String functionName = matcher.group(2);

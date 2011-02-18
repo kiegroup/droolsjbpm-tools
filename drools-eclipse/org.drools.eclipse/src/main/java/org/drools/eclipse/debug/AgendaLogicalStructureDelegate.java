@@ -53,7 +53,7 @@ public class AgendaLogicalStructureDelegate implements ILogicalStructureTypeDele
             for ( int i = 0; i < interfaceTypes.length; i++ ) {
                 if ("org.drools.spi.Activation".equals(interfaceTypes[i].getName())) {
                     return true;
-                }                
+                }
             }
             return false;
         } catch (DebugException e) {
@@ -87,8 +87,8 @@ public class AgendaLogicalStructureDelegate implements ILogicalStructureTypeDele
                         variables.add(new VariableWrapper(paramName, varValue));
                     }
                     break;
-                }                
-            }            
+                }
+            }
         }
         return new ObjectWrapper(javaValue, (IJavaVariable[]) variables.toArray(new IJavaVariable[variables.size()]));
     }

@@ -214,7 +214,7 @@ public class DSLAdapter {
     
     public List listConsequenceItems() {
         return consequenceProposals;
-    }    
+    }
     
     public DSLTree getDSLTree() {
         return dslTree;

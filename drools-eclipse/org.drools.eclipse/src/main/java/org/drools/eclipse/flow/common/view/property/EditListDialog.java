@@ -181,6 +181,6 @@ public abstract class EditListDialog<T> extends EditBeanDialog<List<T>> {
             throw new RuntimeException(e);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
-        } 
+        }
     }
 }

@@ -220,7 +220,7 @@ public class SubProcessParameterInMappingDialog extends EditBeanDialog implement
                 columnToEdit = i;
                 break;
             }
-        }   
+        }
         return columnToEdit;
     }
 

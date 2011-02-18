@@ -53,7 +53,7 @@ public class ProcessInstanceLogicalStructureDelegate implements ILogicalStructur
             for ( int i = 0; i < interfaceTypes.length; i++ ) {
                 if ("org.jbpm.process.instance.ProcessInstance".equals(interfaceTypes[i].getName())) {
                     return true;
-                }                
+                }
             }
             return false;
         } catch (DebugException e) {
