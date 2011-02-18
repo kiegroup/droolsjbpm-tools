@@ -33,7 +33,7 @@ public class ColorManager {
     
     public static final RGB SINGLE_LINE_COMMENT = new RGB(128, 128, 0);
     public static final RGB KEYWORD = new RGB(150, 0, 0);
-    public static final RGB STRING = new RGB(0, 128, 0); 
+    public static final RGB STRING = new RGB(0, 128, 0);
 
     protected Map colorTable = new HashMap(10);
 

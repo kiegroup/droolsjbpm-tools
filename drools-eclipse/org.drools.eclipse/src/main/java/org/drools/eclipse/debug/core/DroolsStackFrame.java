@@ -104,7 +104,7 @@ public class DroolsStackFrame  extends JDIStackFrame {
 //        for ( IVariable var : variables ) {
 //            System.out.print( var.getName()  + " " );
 //        }
-//        System.out.println( );        
+//        System.out.println( );
         return variables;
     }
     

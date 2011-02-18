@@ -30,7 +30,7 @@ public class DroolsDebugModelPresentation extends JDIModelPresentation {
             try {
                 real = breakp.getLineNumber();
             } catch ( CoreException e ) {
-                return breakpoint.getMarker().getResource().getName() + " [line: " + lineNumber + "] real: NA!!"; 
+                return breakpoint.getMarker().getResource().getName() + " [line: " + lineNumber + "] real: NA!!";
             }
             return breakpoint.getMarker().getResource().getName() + " [line: " + lineNumber + "] real: "+real;
         }

@@ -63,7 +63,7 @@ public abstract class CompositeNodeWrapper extends ElementContainerElementWrappe
     }
 
     public void internalSetName(String name) {
-        getNode().setName(name);    
+        getNode().setName(name);
         notifyListeners(CHANGE_NAME);
     }
     

@@ -277,7 +277,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             DRLInfo drlInfo =
                 DroolsEclipsePlugin.getDefault().parseResource(file, true);
             //parser errors
-            markParseErrors(markers, drlInfo.getParserErrors());  
+            markParseErrors(markers, drlInfo.getParserErrors());
             markOtherErrors(markers, drlInfo.getBuilderErrors());
         } catch (DroolsParserException e) {
             // we have an error thrown from DrlParser
@@ -304,7 +304,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             DRLInfo drlInfo =
                 DroolsEclipsePlugin.getDefault().parseXLSResource(drl, file);
             // parser errors
-            markParseErrors(markers, drlInfo.getParserErrors());  
+            markParseErrors(markers, drlInfo.getParserErrors());
             markOtherErrors(markers, drlInfo.getBuilderErrors());
         } catch (DroolsParserException e) {
             // we have an error thrown from DrlParser
@@ -335,7 +335,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             DRLInfo drlInfo =
                 DroolsEclipsePlugin.getDefault().parseXLSResource(drl, file);
             // parser errors
-            markParseErrors(markers, drlInfo.getParserErrors());  
+            markParseErrors(markers, drlInfo.getParserErrors());
             markOtherErrors(markers, drlInfo.getBuilderErrors());
         } catch (DroolsParserException e) {
             // we have an error thrown from DrlParser
@@ -366,7 +366,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             DRLInfo drlInfo =
                 DroolsEclipsePlugin.getDefault().parseBRLResource(drl, file);
             // parser errors
-            markParseErrors(markers, drlInfo.getParserErrors());  
+            markParseErrors(markers, drlInfo.getParserErrors());
             markOtherErrors(markers, drlInfo.getBuilderErrors());
         } catch (DroolsParserException e) {
             // we have an error thrown from DrlParser
@@ -397,7 +397,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             DRLInfo drlInfo =
                 DroolsEclipsePlugin.getDefault().parseGDSTResource(drl, file);
             // parser errors
-            markParseErrors(markers, drlInfo.getParserErrors());  
+            markParseErrors(markers, drlInfo.getParserErrors());
             markOtherErrors(markers, drlInfo.getBuilderErrors());
         } catch (DroolsParserException e) {
             // we have an error thrown from DrlParser

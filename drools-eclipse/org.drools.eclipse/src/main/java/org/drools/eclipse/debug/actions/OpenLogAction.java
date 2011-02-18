@@ -47,11 +47,11 @@ public class OpenLogAction extends Action {
         FileDialog dialog = new FileDialog(view.getSite().getShell());
         dialog.setFilterExtensions(new String[] { "*.log" });
         String fileName = dialog.open();
-        view.setLogFile(fileName);  
+        view.setLogFile(fileName);
         BusyIndicator.showWhile(view.getViewer().getControl().getDisplay(), new Runnable() {
             public void run() {
                 view.getViewer().refresh();
             }
-        });         
+        });
     }
 }

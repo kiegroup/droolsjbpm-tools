@@ -69,7 +69,7 @@ public class RuleHelperActionDelegate
                       shell );
         
         addDTWizard( menu,
-                      shell );        
+                      shell );
         
         addGuidedEditorWizard( menu,
                                shell );

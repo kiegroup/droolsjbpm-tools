@@ -46,11 +46,11 @@ public class RuleFlowProcessWrapper extends ProcessWrapper {
             }
         }
         ((org.jbpm.workflow.core.Node) node).setId(++id);
-        getRuleFlowProcess().addNode(node); 
+        getRuleFlowProcess().addNode(node);
     }
 
     protected void internalRemoveElement(ElementWrapper element) {
-        getRuleFlowProcess().removeNode(((NodeWrapper) element).getNode()); 
+        getRuleFlowProcess().removeNode(((NodeWrapper) element).getNode());
     }
     
     public boolean canAddElement(ElementWrapper element) {

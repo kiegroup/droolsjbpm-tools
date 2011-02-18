@@ -44,11 +44,11 @@ public class RefreshLogAction extends Action {
         if (!view.isAvailable()) {
             return;
         }
-        view.refresh();  
+        view.refresh();
         BusyIndicator.showWhile(view.getViewer().getControl().getDisplay(), new Runnable() {
             public void run() {
                 view.getViewer().refresh();
             }
-        });         
+        });
     }
 }

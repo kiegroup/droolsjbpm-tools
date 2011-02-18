@@ -60,7 +60,7 @@ public class GenericActionBarContributor extends ActionBarContributor {
         toolBarManager.add( getAction( ActionFactory.REDO.getId() ) );
         toolBarManager.add( new Separator() );
         toolBarManager.add( new ZoomComboContributionItem( getPage() ) );
-        toolBarManager.add( new Separator() );                              
+        toolBarManager.add( new Separator() );
         
         DropDownMenuWithDefaultAction alignMenu = new DropDownMenuWithDefaultAction( getActionRegistry().getAction( GEFActionConstants.ALIGN_LEFT ) );
         alignMenu.add( getActionRegistry().getAction( GEFActionConstants.ALIGN_LEFT ) );
@@ -72,7 +72,7 @@ public class GenericActionBarContributor extends ActionBarContributor {
         alignMenu.add( getActionRegistry().getAction( GEFActionConstants.ALIGN_BOTTOM ) );
         toolBarManager.add( alignMenu );
         
-        toolBarManager.add( new Separator() );                              
+        toolBarManager.add( new Separator() );
         toolBarManager.add( getAction(GEFActionConstants.TOGGLE_GRID_VISIBILITY) );
     }
     

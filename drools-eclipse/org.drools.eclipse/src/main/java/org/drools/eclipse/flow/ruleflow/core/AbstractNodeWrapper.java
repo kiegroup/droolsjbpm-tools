@@ -65,7 +65,7 @@ public abstract class AbstractNodeWrapper extends DefaultElementWrapper implemen
     }
 
     public void internalSetName(String name) {
-        getNode().setName(name);    
+        getNode().setName(name);
         notifyListeners(CHANGE_NAME);
     }
     

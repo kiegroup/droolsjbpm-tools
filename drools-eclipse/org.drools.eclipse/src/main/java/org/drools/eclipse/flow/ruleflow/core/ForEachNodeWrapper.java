@@ -109,7 +109,7 @@ public class ForEachNodeWrapper extends CompositeNodeWrapper {
 
     public void setPropertyValue(Object id, Object value) {
         if (VARIABLE_NAME.equals(id)) {
-            getForEachNode().setVariable((String) value, new ObjectDataType("java.lang.Object")); 
+            getForEachNode().setVariable((String) value, new ObjectDataType("java.lang.Object"));
         } else if (COLLECTION_EXPRESSION.equals(id)) {
             getForEachNode().setCollectionExpression((String) value);
         } else if (START_NODE.equals(id)) {

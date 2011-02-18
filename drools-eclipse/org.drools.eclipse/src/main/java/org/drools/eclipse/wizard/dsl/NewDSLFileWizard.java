@@ -38,7 +38,7 @@ public class NewDSLFileWizard extends Wizard implements INewWizard {
         this.selection = selection;
         setWindowTitle("New Domain Specific Language configuration");
         ImageDescriptor desc = DroolsEclipsePlugin.getImageDescriptor("icons/dsl-large.png");
-        setDefaultPageImageDescriptor(desc);        
+        setDefaultPageImageDescriptor(desc);
     }
     
     public void addPages() {

@@ -703,7 +703,7 @@ public class DroolsDebugTarget extends JDIDebugTarget {
         public boolean handleEvent(Event event,
                                    JDIDebugTarget target) {
             ClassType classType = ( ClassType ) ((ClassPrepareEvent) event).referenceType();
-            String name = classType.name();            
+            String name = classType.name();
 
             // change this to create a breakpoint, as the method enter was too slow
             BreakpointRequest req = null;
@@ -777,7 +777,7 @@ public class DroolsDebugTarget extends JDIDebugTarget {
 
             }, req);
 
-            req.enable();            
+            req.enable();
             
             // now remove the ClassPrepareEvent
             removeJDIEventListener(MVELTraceHandler.this, ((ClassPrepareEvent) event).request() );

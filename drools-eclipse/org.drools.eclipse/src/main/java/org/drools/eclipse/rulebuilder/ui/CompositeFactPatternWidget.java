@@ -150,7 +150,7 @@ public class CompositeFactPatternWidget extends Widget {
             // TODO when composite widget supports multiple pattern types like
             // Fact patterns, From patterm, Accumulate Pattern, etc, this cast
             //will fail!
-            FactPattern[] facts = (FactPattern[])pattern.getPatterns(); 
+            FactPattern[] facts = (FactPattern[])pattern.getPatterns();
             for ( int i = 0; i < facts.length; i++ ) {
 
                 new FactPatternWidget( toolkit,

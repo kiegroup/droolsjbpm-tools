@@ -37,7 +37,7 @@ public class NewDTFileWizard extends Wizard implements INewWizard {
         this.selection = selection;
         setWindowTitle("New Decision Table");
         ImageDescriptor desc = DroolsEclipsePlugin.getImageDescriptor("icons/dt-large.gif");
-        setDefaultPageImageDescriptor(desc);        
+        setDefaultPageImageDescriptor(desc);
     }
     
     public void addPages() {

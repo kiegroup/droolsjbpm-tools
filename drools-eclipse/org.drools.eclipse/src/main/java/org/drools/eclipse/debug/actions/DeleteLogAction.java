@@ -44,11 +44,11 @@ public class DeleteLogAction extends Action {
         if (!view.isAvailable()) {
             return;
         }
-        view.deleteLog();  
+        view.deleteLog();
         BusyIndicator.showWhile(view.getViewer().getControl().getDisplay(), new Runnable() {
             public void run() {
                 view.getViewer().refresh();
             }
-        });         
+        });
     }
 }

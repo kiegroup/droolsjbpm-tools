@@ -80,7 +80,7 @@ public class ResourceHistoryView extends ViewPart {
 
         resourceLabel = new Label(composite, SWT.NONE);
         resourceLabel.setText(MessageFormat.format(Messages.getString("history.resource.label"), //$NON-NLS-1$
-                                                  new Object[] { "" })); 
+                                                  new Object[] { "" }));
         resourceLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         viewer = new TableViewer(PlatformUtils.createResourceHistoryTable(composite));

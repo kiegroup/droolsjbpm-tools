@@ -43,10 +43,10 @@ public class MappingEditor extends TitleAreaDialog {
     private static final int       SCOPE_THEN    = 2;
     private static final int       SCOPE_ALL     = 3;
     
-    private static final String    SCOPE_STR_KEYWORD = "keyword"; 
-    private static final String    SCOPE_STR_WHEN = "condition"; 
-    private static final String    SCOPE_STR_THEN = "consequence"; 
-    private static final String    SCOPE_STR_ALL  = "*"; 
+    private static final String    SCOPE_STR_KEYWORD = "keyword";
+    private static final String    SCOPE_STR_WHEN = "condition";
+    private static final String    SCOPE_STR_THEN = "consequence";
+    private static final String    SCOPE_STR_ALL  = "*";
 
     private Text                   exprText;
     private Text                   mappingText;

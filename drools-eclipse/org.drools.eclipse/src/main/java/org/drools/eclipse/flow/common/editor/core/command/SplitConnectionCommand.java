@@ -30,7 +30,7 @@ public class SplitConnectionCommand extends Command {
     private ElementWrapper oldSource;
     private ElementWrapper oldTarget;
     private ElementConnection oldConnection;
-    private ElementConnection secondConnection;    
+    private ElementConnection secondConnection;
     private ElementWrapper newElement;
     
     public void setNewSecondConnection(ElementConnection connection) {

@@ -65,7 +65,7 @@ public class DSLContentProvider
     }
 
     public Object[] getElements(Object inputElement) {
-        return model.getEntries().toArray();        
+        return model.getEntries().toArray();
     }
 
 }

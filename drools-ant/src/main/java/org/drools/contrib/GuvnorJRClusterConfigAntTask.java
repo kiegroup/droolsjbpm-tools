@@ -82,7 +82,7 @@ public class GuvnorJRClusterConfigAntTask  extends MatchingTask {
             FileOutputStream fosr = new FileOutputStream(repoFile);
             fosr.write(repositoryConfig.getBytes());
             fosr.flush();
-            fosr.close();         
+            fosr.close();
         } catch (Exception e) {
             throw new BuildException(e.getMessage());
         }
@@ -144,7 +144,7 @@ public class GuvnorJRClusterConfigAntTask  extends MatchingTask {
             errors += "\nInvalid database type.";
         }
         if(!availDbTypes.contains(dbtype)) {
-            errors += "\nInvalid db type [" + dbtype + "].";   
+            errors += "\nInvalid db type [" + dbtype + "].";
         }
         if(dbdriver == null) {
             errors += "\nInvalid database driver.";
@@ -208,7 +208,7 @@ public class GuvnorJRClusterConfigAntTask  extends MatchingTask {
             }
         }
         try {
-            Configuration cfg = new Configuration(); 
+            Configuration cfg = new Configuration();
             cfg.setObjectWrapper( new DefaultObjectWrapper() );
             cfg.setTemplateUpdateDelay( 0 );
             

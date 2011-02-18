@@ -49,11 +49,11 @@ public class ShowLogicalStructureAction extends Action {
         if (!view.isAvailable()) {
             return;
         }
-        view.setShowLogicalStructure(on);  
+        view.setShowLogicalStructure(on);
         BusyIndicator.showWhile(view.getViewer().getControl().getDisplay(), new Runnable() {
             public void run() {
                 view.getViewer().refresh();
             }
-        });         
+        });
     }
 }

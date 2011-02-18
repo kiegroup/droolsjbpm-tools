@@ -48,7 +48,7 @@ public class RuleEditorMessages {
 
     
     private static String getLocation()  {
-        return RuleEditorMessages.class.getPackage().getName() + ".RuleEditorMessages";        
+        return RuleEditorMessages.class.getPackage().getName() + ".RuleEditorMessages";
     }    
     
 }

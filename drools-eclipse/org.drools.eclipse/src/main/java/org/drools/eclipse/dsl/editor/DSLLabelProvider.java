@@ -51,7 +51,7 @@ public class DSLLabelProvider extends LabelProvider
                 result = item.getSection().getSymbol();
                 break;
             default :
-                break;  
+                break;
         }
         return result;
     }

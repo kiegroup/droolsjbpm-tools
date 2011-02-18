@@ -180,7 +180,7 @@ public class DSLTree {
         } else if (text.startsWith(DSLMappingEntry.KEYWORD.getSymbol())) {
             return DSLMappingEntry.KEYWORD;
         }
-        return null; 
+        return null;
     }
     
     /**

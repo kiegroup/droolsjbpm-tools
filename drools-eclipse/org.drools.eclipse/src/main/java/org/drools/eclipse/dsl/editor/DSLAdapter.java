@@ -97,7 +97,7 @@ public class DSLAdapter {
         if (res instanceof IFile) {
             IFile dslConf = (IFile) res;
             if (dslConf.exists()) {
-                InputStream stream = null; 
+                InputStream stream = null;
                 try {
                     stream = dslConf.getContents();
                     readConfig( stream );

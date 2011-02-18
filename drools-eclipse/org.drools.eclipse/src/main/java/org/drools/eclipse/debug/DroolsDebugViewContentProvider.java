@@ -85,7 +85,7 @@ public class DroolsDebugViewContentProvider implements ITreeContentProvider {
             return;
         }
         for (int i = 0; i < children.length; i++) {
-            parentCache.remove(children[i]);   
+            parentCache.remove(children[i]);
         }
     }
 

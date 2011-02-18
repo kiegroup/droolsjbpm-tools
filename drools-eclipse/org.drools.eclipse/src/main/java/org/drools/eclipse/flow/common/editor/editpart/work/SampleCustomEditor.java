@@ -42,7 +42,7 @@ import org.eclipse.swt.widgets.Text;
 public class SampleCustomEditor extends EditBeanDialog implements WorkEditor {
 
     private WorkDefinition workDefinition;
-    private Map<String, Text> texts = new HashMap<String, Text>(); 
+    private Map<String, Text> texts = new HashMap<String, Text>();
     
     public SampleCustomEditor(Shell parentShell) {
         super(parentShell, "Custom Work Editor");
