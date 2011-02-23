@@ -15,7 +15,7 @@
 
   <name>Drools and jBPM Tools multiproject</name>
   <description>
-    Maven, ant, eclipse, ... plugins and support for Drools/jBPM/Guvnor functionality
+    Maven, ant, eclipse, ... plugins and support for Drools, jBPM and Guvnor functionality
   </description>
 
   <repositories>
