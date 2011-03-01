@@ -56,7 +56,7 @@ public class CompletionContext {
         DRLParser parser = getParser(backText);
 
         try {
-            parser.compilation_unit();
+            parser.compilationUnit();
         } catch (Exception ex) {
         }
         parserList = parser.getEditorInterface().get(0).getContent();

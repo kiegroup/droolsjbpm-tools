@@ -1214,7 +1214,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                                          qualifiedName );
 
         if (dialect.getPackgeImports() != null) {
-            for ( Iterator it = dialect.getPackgeImports().values().iterator(); it.hasNext(); ) {
+            for ( Iterator it = dialect.getPackgeImports().iterator(); it.hasNext(); ) {
                 String packageImport = (String) it.next();
                 context.addPackageImport( packageImport );
             }
