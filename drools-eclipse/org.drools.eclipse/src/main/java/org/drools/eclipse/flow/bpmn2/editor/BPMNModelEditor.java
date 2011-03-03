@@ -56,6 +56,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
+import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
 import org.jbpm.compiler.xml.XmlProcessReader;
@@ -205,6 +206,7 @@ public class BPMNModelEditor extends GenericModelEditor {
             InputStreamReader isr = new InputStreamReader(is);
             SemanticModules semanticModules = new SemanticModules();
             semanticModules.addSemanticModule(new BPMNSemanticModule());
+    	    semanticModules.addSemanticModule(new BPMNExtensionsSemanticModule());
             semanticModules.addSemanticModule(new BPMNDISemanticModule());
             XmlProcessReader xmlReader = new XmlProcessReader(semanticModules);
 
