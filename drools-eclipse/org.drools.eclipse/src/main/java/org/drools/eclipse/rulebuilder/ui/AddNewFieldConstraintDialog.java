@@ -193,8 +193,8 @@ public class AddNewFieldConstraintDialog extends RuleDialog {
         final Text variableText = createText( composite,
                                               "" );
 
-        if ( pattern.boundName != null ) {
-            variableText.setText( pattern.boundName );
+        if ( pattern.getBoundName() != null ) {
+            variableText.setText( pattern.getBoundName() );
         }
 
         Button varButton = toolkit.createButton( composite,
@@ -203,7 +203,7 @@ public class AddNewFieldConstraintDialog extends RuleDialog {
         varButton.addListener( SWT.Selection,
                                new Listener() {
                                    public void handleEvent(Event event) {
-                                       pattern.boundName = variableText.getText();
+                                       pattern.setBoundName(variableText.getText());
                                        modeller.reloadLhs();
                                        modeller.setDirty( true );
                                        close();

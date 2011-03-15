@@ -612,8 +612,8 @@ public class FactPatternWidget extends Widget {
      * This returns the pattern label.
      */
     private String getPatternLabel() {
-        if ( pattern.boundName != null ) {
-            return pattern.getFactType() + " [" + pattern.boundName + "]";
+        if ( pattern.getBoundName() != null ) {
+            return pattern.getFactType() + " [" + pattern.getBoundName() + "]";
         }
         return pattern.getFactType();
     }
