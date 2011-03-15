@@ -508,7 +508,6 @@ public class CompletionContext {
     private DRLParser getParser(final String text) {
         DRLParser parser = new DRLParser(new CommonTokenStream(new DRLLexer(
                 new ANTLRStringStream(text))));
-        parser.setTreeAdaptor(new DroolsTreeAdaptor());
         parser.enableEditorInterface();
         return parser;
     }
