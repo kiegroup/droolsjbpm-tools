@@ -46,7 +46,7 @@ import org.drools.eclipse.preferences.IDroolsConstants;
 import org.drools.eclipse.util.DroolsRuntimeManager;
 import org.drools.eclipse.wizard.project.NewDroolsProjectWizard;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
-import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
+import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
 import org.drools.ide.common.server.util.BRDRLPersistence;
 import org.drools.ide.common.server.util.BRXMLPersistence;
 import org.drools.ide.common.server.util.GuidedDTDRLPersistence;
@@ -389,7 +389,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         List markers = new ArrayList();
         try {
             String gdst = convertToString(file.getContents());
-            GuidedDecisionTable dt = GuidedDTXMLPersistence.getInstance().unmarshal(gdst);
+            TypeSafeGuidedDecisionTable dt = GuidedDTXMLPersistence.getInstance().unmarshal(gdst);
             String drl = GuidedDTDRLPersistence.getInstance().marshal(dt);
 
             // TODO pass this through DSL converter in case brl is based on dsl
