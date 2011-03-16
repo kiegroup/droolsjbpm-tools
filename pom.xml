@@ -36,6 +36,12 @@
     </repository>
   </repositories>
 
+  <scm>
+    <connection>scm:git:git@github.com:droolsjbpm/droolsjbpm-tools.git</connection>
+    <developerConnection>scm:git:git@github.com:droolsjbpm/droolsjbpm-tools.git</developerConnection>
+    <url>https://github.com/droolsjbpm/droolsjbpm-tools</url>
+  </scm>
+
   <modules>
     <module>drools-ant</module>
     <module>drools-eclipse</module>
