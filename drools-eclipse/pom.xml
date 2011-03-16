@@ -43,6 +43,8 @@
     <repository>
       <id>eclipse-helios</id><!-- helios is 3.6 -->
       <layout>p2</layout>
+      <!-- TODO switch to jboss mirror, but that gives weird output (PARTIAL IU: org.eclipse.team.svn ...)-->
+      <!--<url>http://download.jboss.org/jbosstools/updates/helios/</url>-->
       <url>http://download.eclipse.org/releases/helios</url>
       <releases>
         <enabled>true</enabled>
@@ -61,27 +63,42 @@
         <version>${tycho.version}</version>
         <extensions>true</extensions>
       </plugin>
-      <!--plugin>
+      <plugin>
         <groupId>org.sonatype.tycho</groupId>
         <artifactId>maven-osgi-packaging-plugin</artifactId>
         <version>${tycho.version}</version>
         <configuration>
           <environments>
             <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>x86</arch>
+            </environment>
+            <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>x86_64</arch>
+            </environment>
+            <environment>
               <os>macosx</os>
               <ws>cocoa</ws>
+              <arch>x86_64</arch>
+            </environment>
+            <environment>
+              <os>win32</os>
+              <ws>win32</ws>
               <arch>x86</arch>
             </environment>
           </environments>
         </configuration>
-      </plugin-->
+      </plugin>
       <plugin>
         <groupId>org.sonatype.tycho</groupId>
         <artifactId>target-platform-configuration</artifactId>
         <version>${tycho.version}</version>
         <configuration>
           <resolver>p2</resolver>
-          <pomDependencies>consider</pomDependencies><!-- TODO doesn't work: first build still fails -->
+          <ignoreTychoRepositories>true</ignoreTychoRepositories>
           <environments>
             <environment>
               <os>linux</os>
@@ -94,19 +111,14 @@
               <arch>x86_64</arch>
             </environment>
             <environment>
-              <os>win32</os>
-              <ws>win32</ws>
-              <arch>x86</arch>
-            </environment>
-            <environment>
-              <os>win32</os>
-              <ws>win32</ws>
-              <arch>x86_64</arch>
-            </environment>
-            <environment>
               <os>macosx</os>
               <ws>cocoa</ws>
               <arch>x86_64</arch>
+            </environment>
+            <environment>
+              <os>win32</os>
+              <ws>win32</ws>
+              <arch>x86</arch>
             </environment>
           </environments>
         </configuration>
