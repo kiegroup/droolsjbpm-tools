@@ -1,0 +1,30 @@
+<project default="migraterepo">
+  <path id="migration.classpath">
+    <pathelement path="${classpath}" />
+    <fileset dir="/Users/tihomir/development/droolsjbpm/workspace/guvnor/guvnor-webapp/target/guvnor-webapp/WEB-INF/lib/">
+        <include name="**/*.jar"/>
+     </fileset>
+    <filelist refid="drools-ant" />
+    <filelist refid="db-driver-jars" />
+  </path>
+
+  <filelist id="db-driver-jars" dir="lib">
+    <file name="mysql-connector-java-5.1.11-bin.jar" />
+  </filelist>
+
+  <filelist id="drools-ant" dir="lib">
+    <file name="drools-ant-5.2.0-SNAPSHOT.jar" />
+  </filelist>
+
+  <taskdef name="migrate" classname="org.drools.contrib.JackrabbitMigrationAntTask"
+    classpathref="migration.classpath" />
+
+  <target name="migraterepo">
+    <record name="migration-log.txt"/>
+    <migrate verbose="true"
+        sourcedir="/Users/tihomir/development/droolsjbpm/jboss-4.2.3.GA/bin/repository/"
+        sourceconfig="/Users/tihomir/development/droolsjbpm/jboss-4.2.3.GA/bin/repository.xml"
+        targetdir="/Users/tihomir/demo-jrmigration/targetrepo/"
+        targetconfig="/Users/tihomir/demo-jrmigration/targetrepo/repository.xml" />
+  </target>
+</project>
