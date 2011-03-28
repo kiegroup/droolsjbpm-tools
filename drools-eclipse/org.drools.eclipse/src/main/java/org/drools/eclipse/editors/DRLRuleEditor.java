@@ -224,14 +224,6 @@ public class DRLRuleEditor extends AbstractRuleEditor {
                     }
                 }
             }
-            // templates
-            List<FactTemplateDescr> templateDescrs = descr.getFactTemplates();
-            templates = new HashMap<String, FactTemplateDescr>(templateDescrs.size());
-            Iterator<FactTemplateDescr> iterator4 = templateDescrs.iterator();
-            while (iterator4.hasNext()) {
-                FactTemplateDescr template = iterator4.next();
-                templates.put(template.getName(), template);
-            }
             // globals
             List<GlobalDescr> globalDescrs = descr.getGlobals();
             globals = new ArrayList<GlobalDescr>();

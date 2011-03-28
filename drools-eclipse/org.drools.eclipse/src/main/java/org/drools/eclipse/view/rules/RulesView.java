@@ -171,21 +171,6 @@ public class RulesView extends ViewPart implements IDoubleClickListener, IResour
                                 droolsElements.add(query);
                             }
                         }
-                        // add templates
-                        List templates = drlInfo.getPackageDescr().getFactTemplates();
-                        for (Iterator iterator = templates.iterator(); iterator.hasNext();) {
-                            FactTemplateDescr templateDescr = (FactTemplateDescr) iterator.next();
-                            Template template = DroolsModelBuilder.addTemplate(
-                                pkg, templateDescr.getName(), file, templateDescr.getStartCharacter(),
-                                templateDescr.getEndCharacter() - templateDescr.getStartCharacter() + 1);
-                            // create link between resource and created rule nodes
-                            List droolsElements = (List) resourcesMap.get(file);
-                            if (droolsElements == null) {
-                                droolsElements = new ArrayList();
-                                resourcesMap.put(file, droolsElements);
-                            }
-                            droolsElements.add(template);
-                        }
                         // add globals
                         List globals = drlInfo.getPackageDescr().getGlobals();
                         for (Iterator iterator = globals.iterator(); iterator.hasNext();) {

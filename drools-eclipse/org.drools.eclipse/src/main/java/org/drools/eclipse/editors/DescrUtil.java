@@ -99,16 +99,6 @@ public final class DescrUtil {
                     }
                 }
             }
-            // fact templates
-            for (Iterator iterator = packageDescr.getFactTemplates().iterator(); iterator.hasNext(); ) {
-                FactTemplateDescr factTemplDescr = (FactTemplateDescr) iterator.next();
-                if (factTemplDescr != null) {
-                    BaseDescr result = getDescr(factTemplDescr, offset);
-                    if (result != null) {
-                        return result;
-                    }
-                }
-            }
             return null;
         } else {
             if (offset < descr.getStartCharacter() || offset > descr.getEndCharacter()) {
