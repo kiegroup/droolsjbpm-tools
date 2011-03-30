@@ -50,7 +50,7 @@ public class JackrabbitMigrationAntTask extends MatchingTask {
                 RepositoryCopier.copy(sourceRepo, targetRepo);
         } catch (Exception e) {
             log(e.getMessage());
-            throw new BuildException(e.getMessage());
+            throw new BuildException(e);
         }
     }
     
