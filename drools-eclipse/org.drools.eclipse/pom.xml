@@ -79,6 +79,7 @@
               <overWriteReleases>true</overWriteReleases>
               <overWriteSnapshots>true</overWriteSnapshots>
               <overWriteIfNewer>true</overWriteIfNewer>
+              <!-- Files .project and .classpath are committed and should not contain version strings -->
               <stripVersion>true</stripVersion>
               <includeScope>test</includeScope>
               <excludeGroupIds>
