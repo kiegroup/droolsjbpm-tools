@@ -30,6 +30,7 @@ import java.util.StringTokenizer;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
@@ -54,7 +55,9 @@ import org.guvnor.tools.views.model.ResourceHistoryEntry;
  * A set of utilities for dealing with (local) Guvnor metadata.
  */
 public class GuvnorMetadataUtils {
-    /**
+    
+    private static final QualifiedName CONTROLLED_PROJECT_PROPERTY = new QualifiedName(Activator.PLUGIN_ID,"guvnorControlled");
+	/**
      * Finds the local Guvnor metadata file associated with a given resource.
      * @param resource The resource to locate metadata for.
      * @return The metadata file for the given resource, null if metadata is not found.
@@ -134,6 +137,13 @@ public class GuvnorMetadataUtils {
         return res;
     }
 
+    private static void setProjectPropertyForControlledResource(IFile selectedFile) throws Exception{
+        IProject project = selectedFile.getProject();
+        String value = project.getPersistentProperty(CONTROLLED_PROJECT_PROPERTY);
+        if(value == null){
+            project.setPersistentProperty(CONTROLLED_PROJECT_PROPERTY, "true");
+        }
+    }
     /**
      * Commits changes to Guvnor.
      * @param selectedFile The Guvnor controlled file with pending changes
@@ -214,6 +224,9 @@ public class GuvnorMetadataUtils {
     }
 
     public static GuvnorMetadataProps loadGuvnorMetadata(IFile mdFile) throws Exception {
+    	
+        setProjectPropertyForControlledResource(mdFile);
+    	
         if(!mdFile.isTeamPrivateMember()){
             mdFile.setTeamPrivateMember(true);
             mdFile.setDerived(true);

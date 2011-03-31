@@ -162,6 +162,18 @@
             label="%action.popup.update"
             menubarPath="org.guvnor.tools.popupmenu/group1">
       </action>
+      <visibility>
+         <or>
+            <systemProperty
+                  name="org.guvnor.tools.repositoryExist"
+                  value="true">
+            </systemProperty>
+            <objectState
+                  name="projectPersistentProperty"
+                  value="org.drools.guvnor.guvnorControlled=true">
+            </objectState>
+         </or>
+      </visibility>
    </objectContribution>
   </extension>
   

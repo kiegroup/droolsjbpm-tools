@@ -35,6 +35,7 @@ import org.eclipse.core.runtime.Platform;
 public class GuvnorLocationManager {
 
     private static final String REP_CACHE_NAME = ".replist"; //$NON-NLS-1$
+    private static final String HAS_REPOSITORY_PROPERTY = "org.guvnor.tools.repositoryExist";
 
     private ArrayList<GuvnorRepository> repList = new ArrayList<GuvnorRepository>();
 
@@ -44,11 +45,21 @@ public class GuvnorLocationManager {
     GuvnorLocationManager() {
         try {
             load();
+            updateSystemProperty();
         } catch (Exception e) {
             Activator.getDefault().writeLog(IStatus.ERROR, e.getMessage(), e);
         }
     }
 
+    private void updateSystemProperty(){
+        if(getRepositories().size() > 0){
+            System.setProperty(HAS_REPOSITORY_PROPERTY, "true");
+        }
+        else{
+            System.setProperty(HAS_REPOSITORY_PROPERTY, "false");
+        }
+    }
+    
     public void addRespository(String location) throws Exception {
         addRepository(new GuvnorRepository(location));
     }
@@ -61,6 +72,7 @@ public class GuvnorLocationManager {
         notifyListeners(IRepositorySetListener.REP_ADDED);
         try {
             commit();
+            updateSystemProperty();
         } catch (Exception e) {
             Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e, true);
         }
@@ -82,6 +94,7 @@ public class GuvnorLocationManager {
             Activator.getLocationManager().removeRepository(theRep.getLocation());
             notifyListeners(IRepositorySetListener.REP_ADDED);
             commit();
+            updateSystemProperty();
         } catch (Exception e) {
             Activator.getDefault().displayError(IStatus.ERROR, e.getMessage(), e, true);
         }
