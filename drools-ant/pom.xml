@@ -9,10 +9,10 @@
     <version>5.2.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.drools</groupId><!-- TODO rename groupId, artifactId, name and description -->
   <artifactId>drools-ant</artifactId>
 
-  <name>Drools, jBMN and Guvnor Ant tasks</name>
+  <name>Drools, jBPM and Guvnor ANT tasks</name>
+  <description>ANT tasks for Drools, jBPM and Guvnor</description>
 
   <build>
     <plugins>

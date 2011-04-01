@@ -9,7 +9,6 @@
     <version>5.2.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.drools</groupId><!-- TODO rename groupId, artifactId, name and description -->
   <artifactId>drools-eclipse</artifactId>
   <packaging>pom</packaging>
   
@@ -18,8 +17,8 @@
     To use these Eclipse plugins in production, use the download site linked on:
     http://www.jboss.org/drools/downloads
     
-    To use these Eclipse plugins locally in development,
-    see the description of the module org.drools.updatesite.
+    To use these Eclipse plugins locally during development,
+    see the pom description of the module org.drools.updatesite.
   </description>
   
   <properties>
