@@ -71,7 +71,7 @@ public class DroolsClasspathContainer implements IClasspathContainer {
             for (int i = 0; i < jarNames.length; i++) {
                 Path path = new Path(jarNames[i]);
                 if (internalAPI != 0) {
-                    if (jarNames[i].contains("drools-api")) {
+                    if (jarNames[i].contains("knowledge-api")) {
                         list.add(JavaCore.newLibraryEntry(path, path, null));
                     } else {
                         IAccessRule[] accessRules = new IAccessRule[1];

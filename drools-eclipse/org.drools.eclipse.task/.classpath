@@ -7,7 +7,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/slf4j-api.jar" sourcepath="org.drools.eclipse.tasksrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/slf4j-jdk14.jar" sourcepath="org.drools.eclipse.tasksrc.zip"/>
 	<classpathentry kind="lib" path="lib/jbpm-human-task.jar"/>
-	<classpathentry kind="lib" path="lib/drools-api.jar"/>
+	<classpathentry kind="lib" path="lib/knowledge-api.jar"/>
 	<classpathentry kind="lib" path="lib/drools-core.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
