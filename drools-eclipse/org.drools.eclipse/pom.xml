@@ -68,8 +68,6 @@
         <executions>
           <execution>
             <id>copy-dependencies</id>
-            <!-- TODO The first build fails during compilation because it has an empty lib directory -->
-            <!-- TODO Vote for https://issues.sonatype.org/browse/TYCHO-577 -->
             <phase>generate-resources</phase>
             <goals>
               <goal>copy-dependencies</goal>

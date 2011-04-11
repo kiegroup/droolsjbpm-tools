@@ -69,7 +69,6 @@
         <executions>
           <execution>
             <id>copy-dependencies</id>
-            <!-- TODO if the lib directory is empty tycho crashes because it does dep resolving before this phase -->
             <phase>generate-resources</phase>
             <goals>
               <goal>copy-dependencies</goal>
