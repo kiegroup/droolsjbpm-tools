@@ -47,4 +47,18 @@
     <module>drools-eclipse</module>
   </modules>
 
+  <profiles>
+    <profile>
+      <id>fullProfile</id>
+      <activation>
+        <property>
+          <name>full</name>
+        </property>
+      </activation>
+      <modules>
+        <module>droolsjbpm-tools-distribution</module>
+      </modules>
+    </profile>
+  </profiles>
+
 </project>
