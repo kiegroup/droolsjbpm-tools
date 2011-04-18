@@ -1,5 +1,5 @@
-Welcome to Drools and jBPM integration
-======================================
+Welcome to Drools and jBPM tools
+================================
 
 Sources
 -------
