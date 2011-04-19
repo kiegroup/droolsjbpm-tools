@@ -29,4 +29,9 @@ public class MockBusinessRuleProvider implements Service, BusinessRuleProvider {
         return null;
 
     }
+
+    public boolean hasDSLSentences() {
+        return false;
+    }
+
 }
