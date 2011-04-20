@@ -98,7 +98,6 @@
         <version>${tycho.version}</version>
         <executions>
           <execution>
-            <id>plugin-source</id>
             <goals>
               <goal>plugin-source</goal>
             </goals>
