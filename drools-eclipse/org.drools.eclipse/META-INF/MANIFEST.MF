@@ -50,3 +50,4 @@ Bundle-ClassPath: .,
  lib/jbpm-flow.jar,
  lib/jbpm-flow-builder.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Export-Package: org.drools.eclipse.util
