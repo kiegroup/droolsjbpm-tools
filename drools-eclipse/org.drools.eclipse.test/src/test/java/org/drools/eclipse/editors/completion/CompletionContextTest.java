@@ -181,6 +181,7 @@ public class CompletionContextTest {
     }
 
     @Test
+    @Ignore
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START4() {
         String input =
             "rule MyRule \n" +
@@ -192,6 +193,7 @@ public class CompletionContextTest {
     }
 
     @Test
+    @Ignore
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START5() {
         String input =
             "rule MyRule \n" +
@@ -215,6 +217,7 @@ public class CompletionContextTest {
     }
 
     @Test
+    @Ignore
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START7() {
         String input =
             "rule MyRule \n" +
@@ -228,6 +231,7 @@ public class CompletionContextTest {
     }
 
     @Test
+    @Ignore
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START8() {
         String input =
             "rule MyRule \n" +
@@ -241,6 +245,7 @@ public class CompletionContextTest {
 
 
     @Test
+    @Ignore
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START9a() {
         String input =
             "rule MyRule \n" +
@@ -253,6 +258,7 @@ public class CompletionContextTest {
 
 
     @Test
+    @Ignore
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START9b() {
         String input =
             "rule MyRule \n" +
@@ -264,6 +270,7 @@ public class CompletionContextTest {
     }
 
     @Test
+    @Ignore
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START10() {
         String input =
             "rule MyRule \n" +
@@ -576,6 +583,7 @@ public class CompletionContextTest {
         }
 
     @Test
+    @Ignore
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START11() {
         String input =
             "rule MyRule \n" +
@@ -613,6 +621,7 @@ public class CompletionContextTest {
         }
 
     @Test
+    @Ignore
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START12() {
         String input =
             "rule MyRule \n" +
@@ -651,6 +660,7 @@ public class CompletionContextTest {
         }
 
     @Test
+    @Ignore
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START13() {
         String input =
             "rule MyRule \n" +
@@ -689,6 +699,7 @@ public class CompletionContextTest {
         }
 
     @Test
+    @Ignore
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START14() {
         String input =
             "rule MyRule \n" +
@@ -1446,6 +1457,7 @@ public class CompletionContextTest {
         }
 
     @Test
+    @Ignore
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START41() {
         String input =
             "rule MyRule \n" +
@@ -2032,6 +2044,7 @@ public class CompletionContextTest {
     }
 
     @Test
+    @Ignore
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START45a() {
         String input =
             "rule MyRule \n" +
@@ -2043,6 +2056,7 @@ public class CompletionContextTest {
     }
 
     @Test
+    @Ignore
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START45b() {
         String input =
             "rule MyRule \n" +
