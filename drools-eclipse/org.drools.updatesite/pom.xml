@@ -21,7 +21,7 @@
     - Open the menu "Help", menu item "Install new software..."
     - Click on the button "Add..." to add a new software site.
     - Fill in the name "drools local update site"
-    - Click on the button "Local..." and select "drools/drools-eclipse/org.drools.updatesite/target/site/"
+    - Click on the button "Local..." and select "droolsjbpm-tools/drools-eclipse/org.drools.updatesite/target/site/"
     - Select all the plugins. Click the buttons "Next" and "Finish".
   </description>
 
