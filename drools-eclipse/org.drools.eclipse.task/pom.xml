@@ -80,6 +80,15 @@
               <overWriteIfNewer>true</overWriteIfNewer>
               <stripVersion>true</stripVersion>
               <includeScope>test</includeScope>
+              <!-- Keep in sync with MANIFEST.MF's Bundle-ClassPath -->
+              <includeArtifactIds>
+                knowledge-api,
+                drools-core,
+                mina-core,
+                slf4j-api,
+                slf4j-jdk14,
+                jbpm-human-task
+              </includeArtifactIds>
             </configuration>
           </execution>
         </executions>

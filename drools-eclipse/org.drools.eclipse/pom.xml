@@ -80,12 +80,26 @@
               <!-- Files .project and .classpath are committed and should not contain version strings -->
               <stripVersion>true</stripVersion>
               <includeScope>test</includeScope>
-              <excludeGroupIds>
-                org.eclipse.jdt.core.compiler
-              </excludeGroupIds>
-              <excludeArtifactIds>
-                org.eclipse.ui
-              </excludeArtifactIds>
+              <!-- Keep in sync with MANIFEST.MF's Bundle-ClassPath -->
+              <includeArtifactIds>
+                knowledge-api,
+                drools-core,
+                drools-compiler,
+                droolsjbpm-ide-common,
+                drools-decisiontables,
+                drools-jsr94,
+                jsr94,
+                junit,
+                drools-templates,
+                mvel2,
+                jbpm-bpmn2,
+                antlr-runtime,
+                jxl,
+                xpp3_min,
+                xstream,
+                jbpm-flow,
+                jbpm-flow-builder
+              </includeArtifactIds>
             </configuration>
           </execution>
         </executions>
