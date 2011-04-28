@@ -1,4 +1,4 @@
-package org.drools.contrib;
+package org.drools.ide.common;
 
 import org.drools.Service;
 import org.drools.compiler.BusinessRuleProvider;
@@ -8,11 +8,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
-public class MockBusinessRuleProvider implements Service, BusinessRuleProvider {
-
-
-    public MockBusinessRuleProvider() {
-    }
+public class BusinessRuleProviderDefaultImpl implements Service, BusinessRuleProvider {
 
     public Reader getKnowledgeReader(Resource ruleResource) throws IOException {
         if (ruleResource != null) {
