@@ -182,7 +182,7 @@ public class DroolsRuntimeDialog extends Dialog {
 
         if (selectedDirectory != null) {
             DroolsRuntimeManager.createDefaultRuntime(selectedDirectory);
-            nameText.setText("Drools 5.2.0 runtime");
+            nameText.setText("Drools 5.3.0 runtime");
             pathText.setText(selectedDirectory);
         }
     }
