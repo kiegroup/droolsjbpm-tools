@@ -29,17 +29,19 @@ import java.util.regex.Matcher;
 
 import org.drools.base.ClassTypeResolver;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.PackageRegistry;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.drools.eclipse.DRLInfo;
+import org.drools.eclipse.DRLInfo.RuleInfo;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
-import org.drools.eclipse.DRLInfo.RuleInfo;
 import org.drools.eclipse.editors.AbstractRuleEditor;
 import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.lang.Location;
 import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FieldTemplateDescr;
 import org.drools.lang.descr.GlobalDescr;
+import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.builder.dialect.mvel.MVELConsequenceBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.runtime.rule.RuleContext;
@@ -54,6 +56,7 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IFileEditorInput;
+import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.CompiledExpression;
 import org.mvel2.compiler.ExpressionCompiler;
@@ -1209,12 +1212,17 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                                       String qualifiedName,
                                                       MVELDialect dialect) {
 
-        final ParserContext context = new ParserContext( dialect.getImports(),
+        //Lookup ParserConfiguration to retrieve imports and package imports
+        PackageRegistry packageRegistry = dialect.getPackageRegistry();
+        MVELDialectRuntimeData data = (MVELDialectRuntimeData) packageRegistry.getDialectRuntimeRegistry().getDialectData( dialect.getId() );
+        ParserConfiguration pconf = data.getParserConfiguration();
+
+        final ParserContext context = new ParserContext( pconf.getImports(),
                                                          null,
                                                          qualifiedName );
 
-        if (dialect.getPackgeImports() != null) {
-            for ( Iterator it = dialect.getPackgeImports().iterator(); it.hasNext(); ) {
+        if ( pconf.getPackageImports() != null ) {
+            for ( Iterator it = pconf.getPackageImports().iterator(); it.hasNext(); ) {
                 String packageImport = (String) it.next();
                 context.addPackageImport( packageImport );
             }
