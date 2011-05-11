@@ -124,7 +124,7 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
         droolsGenerateCombo = new Combo(subPanel, SWT.READ_ONLY);
         droolsGenerateCombo.add("Drools 4.x");
         droolsGenerateCombo.add("Drools 5.0.x");
-        droolsGenerateCombo.add("Drools 5.1.x");
+        droolsGenerateCombo.add("Drools 5.1 or above");
         droolsGenerateCombo.addSelectionListener(new SelectionListener() {
             public void widgetDefaultSelected(SelectionEvent e) {
                 generationType = droolsGenerateCombo.getText();
