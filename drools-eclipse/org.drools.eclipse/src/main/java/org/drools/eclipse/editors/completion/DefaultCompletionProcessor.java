@@ -428,20 +428,6 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
         return Collections.EMPTY_MAP;
     }
 
-    protected Set getTemplates() {
-        if ( getEditor() instanceof DRLRuleEditor ) {
-            return ((DRLRuleEditor) getEditor()).getTemplates();
-        }
-        return Collections.EMPTY_SET;
-    }
-
-    protected FactTemplateDescr getTemplate(String name) {
-        if ( getEditor() instanceof DRLRuleEditor ) {
-            return ((DRLRuleEditor) getEditor()).getTemplate( name );
-        }
-        return null;
-    }
-
     protected List<GlobalDescr> getGlobals() {
         if ( getEditor() instanceof DRLRuleEditor ) {
             return ((DRLRuleEditor) getEditor()).getGlobals();
