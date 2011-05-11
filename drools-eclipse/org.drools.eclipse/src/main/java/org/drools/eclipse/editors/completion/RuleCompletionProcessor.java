@@ -305,28 +305,11 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                         list.add( p );
                     }
                 }
-                iterator = getTemplates().iterator();
-                while ( iterator.hasNext() ) {
-                    String name = (String) iterator.next();
-                    RuleCompletionProposal p = new RuleCompletionProposal( documentOffset - prefix.length(),
-                                                                           prefix.length(),
-                                                                           name,
-                                                                           name + "(  )",
-                                                                           name.length() + 2 );
-                    p.setPriority( -1 );
-                    p.setImage( CLASS_ICON );
-                    list.add( p );
-                }
                 break;
             case Location.LOCATION_LHS_INSIDE_CONDITION_START :
                 String className = (String) location.getProperty( Location.LOCATION_PROPERTY_CLASS_NAME );
                 String propertyName = (String) location.getProperty( Location.LOCATION_PROPERTY_PROPERTY_NAME );
                 if ( className != null ) {
-                    boolean isTemplate = addFactTemplatePropertyProposals( documentOffset,
-                                                                           prefix,
-                                                                           className,
-                                                                           list );
-                    if ( !isTemplate ) {
                         ClassTypeResolver resolver = new ClassTypeResolver( getUniqueImports(),
                                                                             ProjectClassLoader.getProjectClassLoader( getEditor() ) );
                         try {
@@ -389,7 +372,6 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                         } catch ( ClassNotFoundException exc ) {
                             // Do nothing
                         }
-                    }
                 }
                 break;
             case Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR :
@@ -701,30 +683,6 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
     private String getPropertyClass(String className,
                                     String propertyName) {
         if ( className != null && propertyName != null ) {
-            FactTemplateDescr template = getTemplate( className );
-            if ( template != null ) {
-                Iterator iterator = template.getFields().iterator();
-                while ( iterator.hasNext() ) {
-                    FieldTemplateDescr field = (FieldTemplateDescr) iterator.next();
-                    if ( propertyName.equals( field.getName() ) ) {
-                        String type = field.getClassType();
-                        if ( isPrimitiveType( type ) ) {
-                            return type;
-                        }
-                        ClassTypeResolver resolver = new ClassTypeResolver( getUniqueImports(),
-                                                                            ProjectClassLoader.getProjectClassLoader( getEditor() ) );
-                        try {
-                            Class clazz = resolver.resolveType( type );
-                            if ( clazz != null ) {
-                                return clazz.getName();
-                            }
-                        } catch ( ClassNotFoundException exc ) {
-                            DroolsEclipsePlugin.log( exc );
-                        }
-                    }
-                }
-                // if not found, return null
-            } else {
                 String[] nestedProperties = propertyName.split( "\\." );
                 String currentClass = className;
                 for ( int i = 0; i < nestedProperties.length; i++ ) {
@@ -733,7 +691,6 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                                            simplePropertyName );
                 }
                 return currentClass;
-            }
         }
         return null;
     }
@@ -1475,28 +1432,6 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                               "dialect \"mvel\"",
                                               "dialect \"mvel\" ",
                                               DROOLS_ICON ) );
-    }
-
-    private boolean addFactTemplatePropertyProposals(int documentOffset,
-                                                     String prefix,
-                                                     String templateName,
-                                                     List list) {
-        FactTemplateDescr descr = getTemplate( templateName );
-        if ( descr == null ) {
-            return false;
-        }
-        Iterator iterator = descr.getFields().iterator();
-        while ( iterator.hasNext() ) {
-            FieldTemplateDescr field = (FieldTemplateDescr) iterator.next();
-            String fieldName = field.getName();
-            RuleCompletionProposal p = new RuleCompletionProposal( documentOffset - prefix.length(),
-                                                                   prefix.length(),
-                                                                   fieldName,
-                                                                   fieldName + " " );
-            p.setImage( METHOD_ICON );
-            list.add( p );
-        }
-        return true;
     }
 
     /*

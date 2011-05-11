@@ -55,7 +55,6 @@ public class DRLRuleEditor extends AbstractRuleEditor {
 
     protected List<String> imports;
     protected List<String> functions;
-    protected Map<String, FactTemplateDescr> templates;
     protected List<GlobalDescr> globals;
     protected String packageName;
     protected List<String> classesInPackage;
@@ -78,25 +77,11 @@ public class DRLRuleEditor extends AbstractRuleEditor {
         return functions;
     }
 
-    public Set<String> getTemplates() {
-        if (templates == null) {
-            loadImportsAndFunctions();
-        }
-        return templates.keySet();
-    }
-
     public Map<String, String> getAttributes() {
         if ( attributes == null ) {
             loadImportsAndFunctions();
         }
         return attributes;
-    }
-
-    public FactTemplateDescr getTemplate(String name) {
-        if (templates == null) {
-            loadImportsAndFunctions();
-        }
-        return templates.get(name);
     }
 
     public List<GlobalDescr> getGlobals() {
@@ -262,7 +247,6 @@ public class DRLRuleEditor extends AbstractRuleEditor {
         // remove cached content
         imports = null;
         functions = null;
-        templates = null;
         globals = null;
         packageName = null;
         classesInPackage = null;
