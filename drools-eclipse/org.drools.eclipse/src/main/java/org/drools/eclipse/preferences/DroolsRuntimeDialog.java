@@ -57,6 +57,7 @@ public class DroolsRuntimeDialog extends Dialog {
         super(parent);
         setBlockOnOpen(true);
         this.runtimes = runtimes;
+        setShellStyle(getShellStyle() | SWT.RESIZE);
     }
     
     protected Control createDialogArea(Composite parent) {
