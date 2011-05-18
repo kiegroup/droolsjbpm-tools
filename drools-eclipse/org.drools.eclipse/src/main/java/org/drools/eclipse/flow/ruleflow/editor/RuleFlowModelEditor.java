@@ -188,7 +188,7 @@ public class RuleFlowModelEditor extends GenericModelEditor {
             PackageBuilderConfiguration configuration = new PackageBuilderConfiguration();
             SemanticModules modules = configuration.getSemanticModules();
             modules.addSemanticModule(new ProcessSemanticModule());
-            XmlProcessReader xmlReader = new XmlProcessReader( modules );
+            XmlProcessReader xmlReader = new XmlProcessReader( modules, Thread.currentThread().getContextClassLoader() );
 
             //Migrate v4 ruleflows to v5
             Reader reader = null;

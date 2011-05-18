@@ -208,7 +208,7 @@ public class BPMNModelEditor extends GenericModelEditor {
             semanticModules.addSemanticModule(new BPMNSemanticModule());
     	    semanticModules.addSemanticModule(new BPMNExtensionsSemanticModule());
             semanticModules.addSemanticModule(new BPMNDISemanticModule());
-            XmlProcessReader xmlReader = new XmlProcessReader(semanticModules);
+            XmlProcessReader xmlReader = new XmlProcessReader(semanticModules, Thread.currentThread().getContextClassLoader());
 
             try
             {

@@ -69,7 +69,7 @@ public class ConvertToBPMN2ProcessAction implements IObjectActionDelegate {
             PackageBuilderConfiguration configuration = new PackageBuilderConfiguration();
             SemanticModules modules = configuration.getSemanticModules();
             modules.addSemanticModule(new ProcessSemanticModule());
-            XmlProcessReader xmlReader = new XmlProcessReader( modules );
+            XmlProcessReader xmlReader = new XmlProcessReader( modules, Thread.currentThread().getContextClassLoader() );
             String xml = RuleFlowMigrator.convertReaderToString(isr);
             Reader reader = new StringReader(xml);
             List<Process> processes = xmlReader.read(reader);

@@ -520,7 +520,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                 modules.addSemanticModule( new BPMNDISemanticModule() );
                 modules.addSemanticModule( new ProcessSemanticModule() );
                 
-                XmlProcessReader xmlReader = new XmlProcessReader( modules );
+                XmlProcessReader xmlReader = new XmlProcessReader( modules, Thread.currentThread().getContextClassLoader() );
                 List<org.drools.definition.process.Process> processes = 
                     (List<org.drools.definition.process.Process>) xmlReader.read( new StringReader( input ) );
                 if (processes != null) {
