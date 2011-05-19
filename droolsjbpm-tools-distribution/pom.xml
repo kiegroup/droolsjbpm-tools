@@ -49,7 +49,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-ant</artifactId>
-      <version>${project.version}</version>
+      <version>${droolsjbpm-tools.version}</version>
       <classifier>sources</classifier>
     </dependency>
     
@@ -57,25 +57,25 @@
       <groupId>org.drools</groupId>
       <artifactId>org.drools.updatesite</artifactId>
       <type>zip</type>
-      <version>${project.version}</version>
+      <version>${droolsjbpm-tools.version}</version>
       <classifier>assembly</classifier>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>org.drools.eclipse</artifactId>
-      <version>${project.version}</version>
+      <version>${droolsjbpm-tools.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>org.drools.eclipse.task</artifactId>
-      <version>${project.version}</version>
+      <version>${droolsjbpm-tools.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>org.guvnor.tools</artifactId>
-      <version>${project.version}</version>
+      <version>${droolsjbpm-tools.version}</version>
       <classifier>sources</classifier>
     </dependency>
   </dependencies>
