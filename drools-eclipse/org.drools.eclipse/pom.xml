@@ -13,6 +13,7 @@
   <packaging>eclipse-plugin</packaging>
 
   <name>Drools :: Eclipse :: Base</name>
+  <description>Drools Eclipse plugin</description>
 
   <build>
     <plugins>

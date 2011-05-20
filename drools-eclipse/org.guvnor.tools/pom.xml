@@ -13,6 +13,7 @@
   <packaging>eclipse-plugin</packaging>
 
   <name>Drools :: Eclipse :: Guvnor tools</name>
+  <description>Guvnor Eclipse plugin</description>
 
   <dependencies>
 
