@@ -653,7 +653,7 @@ public class FactPatternWidget extends Widget {
         for ( int i = 0; i < ops.length; i++ ) {
             String op = ops[i];
             box.add( HumanReadable.getOperatorDisplayName( op ) );
-            if ( op.equals( con.operator ) ) {
+            if ( op.equals( con.getOperator() ) ) {
                 box.select( i );
             }
         }
@@ -662,7 +662,7 @@ public class FactPatternWidget extends Widget {
         box.setLayoutData( gridData );
         box.addModifyListener( new ModifyListener() {
             public void modifyText(ModifyEvent e) {
-                con.operator = HumanReadable.getOperatorName( box.getText() );
+                con.setOperator( HumanReadable.getOperatorName( box.getText() ) );
                 getModeller().setDirty( true );
 
             }
