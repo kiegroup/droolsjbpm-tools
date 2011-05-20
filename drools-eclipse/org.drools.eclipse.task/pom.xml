@@ -13,6 +13,7 @@
   <packaging>eclipse-plugin</packaging>
 
   <name>Drools :: Eclipse :: Task</name>
+  <description>jBPM Eclipse plugin</description>
 
   <build>
     <plugins>

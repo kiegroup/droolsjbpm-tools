@@ -13,5 +13,6 @@
   <packaging>eclipse-test-plugin</packaging>
 
   <name>Drools :: Eclipse :: Base test</name>
+  <description>Drools Eclipse plugin test</description>
 
 </project>

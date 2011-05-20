@@ -13,5 +13,6 @@
   <packaging>eclipse-feature</packaging>
 
   <name>Drools :: Eclipse :: Base feature</name>
+  <description>Drools Eclipse plugin feature</description>
 
 </project>
