@@ -16,43 +16,21 @@
 
 package org.drools.contrib;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.MatchingTask;
+import org.apache.tools.ant.types.Environment;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.RuntimeDroolsException;
-import org.drools.builder.DecisionTableConfiguration;
-import org.drools.builder.DecisionTableInputType;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
+import org.drools.*;
+import org.drools.builder.*;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.core.util.DroolsStreamUtils;
 import org.drools.decisiontable.InputType;
 import org.drools.decisiontable.SpreadsheetCompiler;
 import org.drools.definition.KnowledgePackage;
@@ -63,8 +41,11 @@ import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
 import org.drools.lang.dsl.DefaultExpanderResolver;
-import org.drools.rule.Package;
-import org.drools.core.util.DroolsStreamUtils;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * An ant task to allow rulebase compilation and serialization during a build.
@@ -623,6 +604,12 @@ public class DroolsCompilerAntTask extends MatchingTask {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
                 .newKnowledgeBuilder(conf);
         return kbuilder;
+    }
+
+    public void addConfiguredSysproperty(Environment.Variable sysp) {
+        String syspString = sysp.getContent();
+        getProject().log("sysproperty added: " + syspString, Project.MSG_DEBUG);
+        System.setProperty(sysp.getKey(), sysp.getValue());
     }
 
     public void setBinformat(String binformat) {
