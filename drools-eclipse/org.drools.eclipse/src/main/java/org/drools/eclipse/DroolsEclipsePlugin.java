@@ -65,6 +65,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
+import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 import org.jbpm.compiler.ProcessBuilderImpl;
 import org.jbpm.compiler.xml.ProcessSemanticModule;
@@ -518,6 +519,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                 SemanticModules modules = configuration.getSemanticModules();
                 modules.addSemanticModule( new BPMNSemanticModule() );
                 modules.addSemanticModule( new BPMNDISemanticModule() );
+                modules.addSemanticModule( new BPMNExtensionsSemanticModule() );
                 modules.addSemanticModule( new ProcessSemanticModule() );
                 
                 XmlProcessReader xmlReader = new XmlProcessReader( modules, Thread.currentThread().getContextClassLoader() );
