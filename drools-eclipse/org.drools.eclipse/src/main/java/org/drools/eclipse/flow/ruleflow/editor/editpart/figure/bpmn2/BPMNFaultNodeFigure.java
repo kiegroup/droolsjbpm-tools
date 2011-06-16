@@ -26,7 +26,7 @@ import org.eclipse.swt.graphics.Image;
 public class BPMNFaultNodeFigure extends AbstractElementFigure {
     
     private static final Image icon = ImageDescriptor.createFromURL(
-        DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/large/intermediate_error.png")).createImage();
+        DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/large/end_error.png")).createImage();
         
     public BPMNFaultNodeFigure() {
         setSize(48, 48);

@@ -25,7 +25,7 @@ import org.eclipse.swt.graphics.Image;
 public class BPMNTimerNodeFigure extends AbstractElementFigure {
     
     private static final Image ICON = ImageDescriptor.createFromURL(
-        DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/large/intermediate_empty.png")).createImage();
+        DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/large/intermediate_timer.png")).createImage();
     
     public BPMNTimerNodeFigure() {
         setSize(48, 48);
