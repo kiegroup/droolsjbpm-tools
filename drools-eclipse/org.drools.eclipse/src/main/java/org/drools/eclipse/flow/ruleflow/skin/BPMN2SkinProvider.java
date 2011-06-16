@@ -174,8 +174,8 @@ public class BPMN2SkinProvider implements SkinProvider {
                 "Create a new Timer Event",
                 TimerWrapper.class,
                 new SimpleWrapperFactory(TimerWrapper.class, "Timer"),
-                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/intermediate_event_empty.png")),
-                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/intermediate_event_empty.png"))
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/intermediate_event_timer.png")),
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/intermediate_event_timer.png"))
             );
             entries.add(combined);
         }
@@ -186,20 +186,20 @@ public class BPMN2SkinProvider implements SkinProvider {
                 "Create a new Error Event",
                 FaultNodeWrapper.class,
                 new SimpleWrapperFactory(FaultNodeWrapper.class, "Error"),
-                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/intermediate_event_error.png")),
-                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/intermediate_event_error.png"))
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/end_event_error.png")),
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/end_event_error.png"))
             );
             entries.add(combined);
         }
                           
         if (flowNodes.charAt(8) == '1') {
             combined = new CombinedTemplateCreationEntry(
-                "Message Event",
-                "Create a new Message Event",
+                "Signal Event",
+                "Create a new Signal Event",
                 EventNodeWrapper.class,
-                new SimpleWrapperFactory(EventNodeWrapper.class, "Message"),
-                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/intermediate_event_message.png")),
-                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/intermediate_event_message.png"))
+                new SimpleWrapperFactory(EventNodeWrapper.class, "Signal"),
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/intermediate_event_signal.png")),
+                ImageDescriptor.createFromURL(DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/bpmn2/intermediate_event_signal.png"))
             );
             entries.add(combined);
         }
