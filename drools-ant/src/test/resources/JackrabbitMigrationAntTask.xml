@@ -13,7 +13,7 @@
   </filelist>
 
   <filelist id="drools-ant" dir="lib">
-    <file name="drools-ant-5.2.0-SNAPSHOT.jar" />
+    <file name="drools-ant-5.2.0.Final.jar" />
   </filelist>
 
   <taskdef name="migrate" classname="org.drools.contrib.JackrabbitMigrationAntTask"
