@@ -2,7 +2,7 @@
 <feature
       id="org.drools.eclipse.task.feature"
       label="JBoss Drools Task"
-      version="5.2.0.Final"
+      version="5.2.1.Final"
       provider-name="JBoss by Red Hat">
 
    <description url="http://www.jboss.org/drools/">
@@ -36,7 +36,7 @@ and limitations under the License.
          id="org.drools.eclipse.task"
          download-size="0"
          install-size="0"
-         version="5.2.0.Final"
+         version="5.2.1.Final"
          unpack="false"/>
 
 </feature>

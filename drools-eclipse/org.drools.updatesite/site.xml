@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
   <!-- TODO use <category-def> -->
-  <feature url="features/org.drools.eclipse.feature_5.2.0.Final.jar" id="org.drools.eclipse.feature" version="5.2.0.Final"/>
-  <feature url="features/org.drools.eclipse.task.feature_5.2.0.jar" id="org.drools.eclipse.task.feature" version="5.2.0.Final"/>
-  <feature url="features/org.guvnor.tools.feature_5.2.0.Final.jar" id="org.guvnor.tools.feature" version="5.2.0.Final"/>
+  <feature url="features/org.drools.eclipse.feature_5.2.1.Final.jar" id="org.drools.eclipse.feature" version="5.2.1.Final"/>
+  <feature url="features/org.drools.eclipse.task.feature_5.2.0.jar" id="org.drools.eclipse.task.feature" version="5.2.1.Final"/>
+  <feature url="features/org.guvnor.tools.feature_5.2.1.Final.jar" id="org.guvnor.tools.feature" version="5.2.1.Final"/>
 </site>
