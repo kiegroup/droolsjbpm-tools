@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.core.util.DateUtils;
+
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
 import org.drools.ide.common.client.modeldriven.ui.ConstraintValueEditorHelper;
@@ -82,7 +83,7 @@ public abstract class DSLSentenceWidget extends Widget {
         this.sentence = sentence;
         completions = modeller.getSuggestionCompletionEngine();
 
-        Composite lastRow = makeWidgets( this.sentence.sentence );
+        Composite lastRow = makeWidgets( this.sentence.getDefinition() );
         addDeleteAction( lastRow );
         toolkit.paintBordersFor( parent );
     }
@@ -118,7 +119,8 @@ public abstract class DSLSentenceWidget extends Widget {
      * This will take a DSL line item, and split it into widget thingamies for
      * displaying. One day, if this is too complex, this will have to be done on
      * the server side.
-     * @return 
+     * 
+     * @return
      */
     public Composite makeWidgets(String dslLine) {
 
@@ -282,52 +284,32 @@ public abstract class DSLSentenceWidget extends Widget {
                                 variableDef );
     }
 
+    /**
+     * This will go through the widgets and extract the values
+     */
     protected void updateSentence() {
-        String newSentence = "";
-        for ( Iterator iter = widgets.iterator(); iter.hasNext(); ) {
+        List<String> dslValues = new ArrayList<String>();
+        for ( Iterator<ModelWidget> iter = widgets.iterator(); iter.hasNext(); ) {
             ModelWidget wid = (ModelWidget) iter.next();
-            if ( wid instanceof LabelWidget ) {
-                newSentence = newSentence + ((LabelWidget) wid).getText();
-            } else if ( wid instanceof FieldEditor ) {
+            if ( wid instanceof FieldEditor ) {
                 FieldEditor editor = (FieldEditor) wid;
-
-                String varString = editor.getText();
-                String restriction = editor.getRestriction();
-                if ( !restriction.equals( "" ) ) {
-                    varString = varString + ":" + restriction;
-                }
-
-                newSentence = newSentence + " {" + varString + "} ";
+                dslValues.add( editor.getText().trim() );
             } else if ( wid instanceof DSLDropDown ) {
-
-                // Add the meta-data back to the field so that is shows up as a
-                // dropdown when refreshed from repo
                 DSLDropDown drop = (DSLDropDown) wid;
-                Combo box = (Combo) drop.getControl();
-                String type = drop.getType();
-                String factAndField = drop.getFactAndField();
+                dslValues.add( drop.getSelectedValue() );
 
-                String key = ITEM_ + (box.getSelectionIndex() + 1);
-
-                Object keyval = box.getData( key );
-
-                newSentence = newSentence + "{" + keyval + ":" + type + ":" + factAndField + "} ";
             } else if ( wid instanceof DSLCheckBox ) {
-
                 DSLCheckBox check = (DSLCheckBox) wid;
-                String checkValue = check.getCheckedValue();
-                newSentence = newSentence + "{" + checkValue + ":" + check.getType() + ":" + checkValue + "} ";
+                dslValues.add( check.getCheckedValue() );
+
             } else if ( wid instanceof DSLDateSelector ) {
                 DSLDateSelector dateSel = (DSLDateSelector) wid;
                 String dateString = dateSel.getDateString();
-                String format = dateSel.getJavascriptFormat();
-                newSentence = newSentence + "{" + dateString + ":" + dateSel.getType() + ":" + format + "} ";
-            } else if ( wid instanceof NewLine ) {
-                newSentence = newSentence + "\\n";
+                dslValues.add( dateString );
             }
 
         }
-        this.sentence.sentence = newSentence.trim();
+        this.sentence.setValues( dslValues );
     }
 
     class LabelWidget
@@ -422,16 +404,6 @@ public abstract class DSLSentenceWidget extends Widget {
             this.regex = regex;
         }
 
-        public String getRestriction() {
-            return this.regex;
-        }
-
-        public boolean isValid() {
-            boolean result = true;
-            if ( !regex.equals( "" ) ) result = this.control.getText().matches( this.regex );
-
-            return result;
-        }
     }
 
     class DSLDropDown
@@ -514,21 +486,10 @@ public abstract class DSLSentenceWidget extends Widget {
             return resultWidget;
         }
 
-        public String getType() {
-            return type;
+        public String getSelectedValue() {
+            return resultWidget.getText();
         }
 
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        public String getFactAndField() {
-            return factAndField;
-        }
-
-        public void setFactAndField(String factAndField) {
-            this.factAndField = factAndField;
-        }
     }
 
     class DSLCheckBox
@@ -731,14 +692,6 @@ public abstract class DSLSentenceWidget extends Widget {
             return control;
         }
 
-        public String getType() {
-            return DATE_TAG;
-        }
-
-        public String getJavascriptFormat() {
-            return this.javascriptFormat;
-        }
-
         public String getDateString() {
             Date value = new Date();
             try {
@@ -755,14 +708,6 @@ public abstract class DSLSentenceWidget extends Widget {
             else result = varName;
 
             return result;
-        }
-
-        public String getVarName() {
-            return varName;
-        }
-
-        public void setVarName(String varName) {
-            this.varName = varName;
         }
 
     }
