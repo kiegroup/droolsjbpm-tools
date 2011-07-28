@@ -11,7 +11,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.eclipse.compare,
- org.eclipse.webdav
+ org.guvnor.eclipse.webdav
 Export-Package: org.guvnor.tools,
  org.guvnor.tools.actions,
  org.guvnor.tools.perspectives,

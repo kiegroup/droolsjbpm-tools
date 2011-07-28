@@ -9,8 +9,8 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>org.eclipse.webdav</artifactId>
-  <version>3.0.101</version><!-- TODO the version should clearly show that it is a fork -->
+  <!-- Forked from org.eclipse.webdav -->
+  <artifactId>org.guvnor.eclipse.webdav</artifactId>
   <packaging>eclipse-plugin</packaging>
 
   <name>Drools :: Eclipse :: Webdav for Guvnor tools</name>

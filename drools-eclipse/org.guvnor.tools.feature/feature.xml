@@ -37,10 +37,10 @@ and limitations under the License.
    </requires>
 
    <plugin
-         id="org.eclipse.webdav"
+         id="org.guvnor.eclipse.webdav"
          download-size="0"
          install-size="0"
-         version="3.0.101"
+         version="5.3.0.qualifier"
          unpack="false"/>
 
    <plugin

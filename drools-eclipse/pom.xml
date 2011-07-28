@@ -31,9 +31,7 @@
     <module>org.drools.eclipse.test</module>
     <module>org.drools.eclipse.task</module>
     <module>org.drools.eclipse.task.feature</module>
-    <!-- webdav is disabled because it's version is fixed on 3.0.101 and no newer versions are being released -->
-    <!-- Because that version is already released, it is impossible to release as-is -->
-    <!--<module>org.eclipse.webdav</module>-->
+    <module>org.guvnor.eclipse.webdav</module>
     <module>org.guvnor.tools</module>
     <module>org.guvnor.tools.feature</module>
     <module>org.guvnor.tools.test</module> 
