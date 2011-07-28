@@ -118,7 +118,7 @@ public class AddNewActionDialog extends RuleDialog {
 
         factsCombo.add( heading );
 
-        List boundFacts = modeller.getModel().getBoundFacts();
+        List boundFacts = modeller.getModel().getLHSBoundFacts();
 
         for ( int i = 0; i < boundFacts.size(); i++ ) {
             factsCombo.add( (String) boundFacts.get( i ) );
@@ -150,7 +150,7 @@ public class AddNewActionDialog extends RuleDialog {
                                             SWT.READ_ONLY );
         factsCombo.add( heading );
 
-        List boundFacts = modeller.getModel().getBoundFacts();
+        List boundFacts = modeller.getModel().getLHSBoundFacts();
 
         for ( int i = 0; i < boundFacts.size(); i++ ) {
             factsCombo.add( (String) boundFacts.get( i ) );
@@ -276,7 +276,7 @@ public class AddNewActionDialog extends RuleDialog {
                                                  SWT.READ_ONLY );
         globalVarsCombo.add( heading );
 
-        List boundFacts = modeller.getModel().getBoundFacts();
+        List boundFacts = modeller.getModel().getLHSBoundFacts();
 
         //adding globals
         String[] globals = modeller.getSuggestionCompletionEngine().getGlobalVariables();

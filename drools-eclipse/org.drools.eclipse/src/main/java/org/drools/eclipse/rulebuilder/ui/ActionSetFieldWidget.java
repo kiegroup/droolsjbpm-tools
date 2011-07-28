@@ -59,7 +59,7 @@ public class ActionSetFieldWidget extends Widget {
                     .getFieldCompletionsForGlobalVariable(set.variable);
             this.variableClass = (String) getCompletion().getGlobalVariable(set.variable);
         } else {
-            FactPattern pattern = rule.getBoundFact(set.variable);
+            FactPattern pattern = rule.getLHSBoundFact(set.variable);
             this.fieldCompletions = getCompletion().getFieldCompletions(
                     pattern.getFactType());
             this.isBoundFact = true;
