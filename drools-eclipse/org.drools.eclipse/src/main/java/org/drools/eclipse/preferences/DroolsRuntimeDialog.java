@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.drools.eclipse.util.DroolsRuntime;
 import org.drools.eclipse.util.DroolsRuntimeManager;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
@@ -183,7 +184,8 @@ public class DroolsRuntimeDialog extends Dialog {
 
         if (selectedDirectory != null) {
             DroolsRuntimeManager.createDefaultRuntime(selectedDirectory);
-            nameText.setText("Drools 5.3.0 runtime");
+            String version = Platform.getBundle("org.drools.eclipse").getVersion().toString();
+            nameText.setText("Drools " + version + " runtime");
             pathText.setText(selectedDirectory);
         }
     }
