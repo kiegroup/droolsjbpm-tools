@@ -42,6 +42,30 @@
     <url>https://github.com/droolsjbpm/droolsjbpm-tools</url>
   </scm>
 
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <inherited>false</inherited>
+        <configuration>
+          <tasks>
+            <echo message="Changing version from ${oldVersion} to ${newVersion}"/>
+            <replaceregexp match="&lt;version&gt;${oldVersion}&lt;/version&gt;"
+                           replace="&lt;version&gt;${newVersion}&lt;/version&gt;"
+                           byline="true">
+              <fileset dir="${basedir}">
+                <include name="pom.xml"/>
+                <include name="drools-ant/pom.xml"/>
+                <include name="drools-eclipse/pom.xml"/>
+                <include name="droolsjbpm-tools-distribution/pom.xml"/>
+              </fileset>
+            </replaceregexp>
+          </tasks>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
   <modules>
     <module>drools-ant</module>
   </modules>
