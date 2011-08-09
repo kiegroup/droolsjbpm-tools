@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-  <feature url="org.drools.eclipse.feature_5.3.0.Beta1" id="org.drools.eclipse.feature" version="5.3.0.Beta1">
+  <feature url="org.drools.eclipse.feature_5.3.0.qualifier" id="org.drools.eclipse.feature" version="5.3.0.qualifier">
     <category name="droolsjbpm"/>
   </feature>
-  <feature url="org.drools.eclipse.task.feature_5.3.0.Beta1" id="org.drools.eclipse.task.feature" version="5.3.0.Beta1">
+  <feature url="org.drools.eclipse.task.feature_5.3.0.qualifier" id="org.drools.eclipse.task.feature" version="5.3.0.qualifier">
     <category name="droolsjbpm"/>
   </feature>
-  <feature url="org.guvnor.tools.feature_5.3.0.Beta1" id="org.guvnor.tools.feature" version="5.3.0.Beta1">
+  <feature url="org.guvnor.tools.feature_5.3.0.qualifier" id="org.guvnor.tools.feature" version="5.3.0.qualifier">
     <category name="droolsjbpm"/>
   </feature>
   <category-def name="droolsjbpm" label="Drools and jBPM">
