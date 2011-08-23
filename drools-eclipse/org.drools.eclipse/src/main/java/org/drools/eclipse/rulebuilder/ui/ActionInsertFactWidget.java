@@ -152,8 +152,8 @@ public class ActionInsertFactWidget extends Widget {
                              final ActionFieldValue val) {
         String fieldName = val.field;
         DropDownData enums = modeller.getSuggestionCompletionEngine().getEnums( fact.factType,
-                                                                                fact.fieldValues,
-                                                                                val.field );
+                                                                                val.field,
+                                                                                fact.fieldValues );
         boolean found = false;
         if ( enums != null && enums.fixedList.length > 0 ) {
             String[] list = enums.fixedList;
