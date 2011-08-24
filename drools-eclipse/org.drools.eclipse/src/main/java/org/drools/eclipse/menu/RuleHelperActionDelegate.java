@@ -71,8 +71,8 @@ public class RuleHelperActionDelegate
         addDTWizard( menu,
                       shell );
         
-        addGuidedEditorWizard( menu,
-                               shell );
+//        addGuidedEditorWizard( menu,
+//                               shell );
         
         return menu;
     }
