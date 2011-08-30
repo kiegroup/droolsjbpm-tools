@@ -288,28 +288,32 @@ public abstract class DSLSentenceWidget extends Widget {
      * This will go through the widgets and extract the values
      */
     protected void updateSentence() {
-        List<String> dslValues = new ArrayList<String>();
+        int iVariable = 0;
         for ( Iterator<ModelWidget> iter = widgets.iterator(); iter.hasNext(); ) {
             ModelWidget wid = (ModelWidget) iter.next();
             if ( wid instanceof FieldEditor ) {
                 FieldEditor editor = (FieldEditor) wid;
-                dslValues.add( editor.getText().trim() );
+                sentence.getValues().set( iVariable++,
+                                          editor.getText().trim() );
+
             } else if ( wid instanceof DSLDropDown ) {
                 DSLDropDown drop = (DSLDropDown) wid;
-                dslValues.add( drop.getSelectedValue() );
+                sentence.getValues().set( iVariable++,
+                                          drop.getSelectedValue() );
 
             } else if ( wid instanceof DSLCheckBox ) {
                 DSLCheckBox check = (DSLCheckBox) wid;
-                dslValues.add( check.getCheckedValue() );
+                sentence.getValues().set( iVariable++,
+                                          check.getCheckedValue().trim() );
 
             } else if ( wid instanceof DSLDateSelector ) {
                 DSLDateSelector dateSel = (DSLDateSelector) wid;
                 String dateString = dateSel.getDateString();
-                dslValues.add( dateString );
+                sentence.getValues().set( iVariable++,
+                                          dateString );
             }
 
         }
-        this.sentence.setValues( dslValues );
     }
 
     class LabelWidget
