@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="org.jbpm.eclipse.new"
+            name="jBPM"/>
+      <wizard
+            category="org.jbpm.eclipse.new"
+            class="org.jbpm.eclipse.wizard.project.NewJBPMProjectWizard"
+            id="org.jbpm.eclipse.new.project"
+            name="jBPM project"
+            icon="icons/jbpm.gif"
+            project= "true">
+         <description>This wizard creates a new jBPM project.</description>
+      </wizard>
+   </extension>
+   <extension point="org.eclipse.jdt.core.classpathContainerInitializer">
+       <classpathContainerInitializer class="org.jbpm.eclipse.util.JBPMClasspathContainerInitializer" id="JBPM" />
+   </extension>
+   <extension point = "org.eclipse.ui.preferencePages">
+      <page id="org.jbpm.eclipse.preferences.JBPMPreferencePage"
+            class="org.jbpm.eclipse.preferences.JBPMPreferencePage"
+            name="jBPM">
+      </page>
+      <page name="Installed jBPM Runtimes"
+            category="org.jbpm.eclipse.preferences.JBPMPreferencePage"
+            class="org.jbpm.eclipse.preferences.JBPMRuntimesPreferencePage"
+            id="oorg.jbpm.eclipse.preferences.JBPMRuntimesPreferencePage">
+      </page>
+   </extension>
+   <extension point="org.eclipse.ui.propertyPages">
+      <page name="jBPM"
+            class="org.jbpm.eclipse.preferences.JBPMProjectPreferencePage"
+            id="org.jbpm.eclipse.preferences.JBPMProjectPreferencePage">
+         <enabledWhen>
+		     <adapt type="org.eclipse.core.resources.IProject">
+		          <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.jdt.core.javanature"/>
+		     </adapt>      
+         </enabledWhen>
+      </page>
+   </extension>
+   <extension point = "org.eclipse.ui.popupMenus">
+      <objectContribution
+           objectClass="org.eclipse.jdt.core.IJavaProject"
+           id="org.jbpm.eclipse.action.ConvertToJBPMProject">
+	    <action id="org.jbpm.eclipse.action.ConvertToJBPMProjectAction"
+	       label="Convert to jBPM Project"
+	       menubarPath="org.eclipse.ui.projectConfigure/additions"
+	       class="org.jbpm.eclipse.action.ConvertToJBPMProjectAction"
+           definitionId="org.jbpm.eclipse.action.ConvertToJBPMProjectAction"
+	       icon="icons/jbpm.gif"
+           enablesFor="1">
+	    </action>
+      </objectContribution>
+      <objectContribution
+           objectClass="org.eclipse.jdt.core.IJavaProject"
+           id="org.drools.eclipse.action.ImportWorkItems">
+        <action id="ImportWorkItemsAction"
+           label="Import jBPM services ..."
+           icon="icons/jbpm.gif"
+           menubarPath="org.eclipse.ui.projectConfigure/additions"
+           class="org.jbpm.eclipse.action.ImportWorkItemsAction"
+           definitionId="org.jbpm.eclipse.action.ImportWorkItemsAction"
+           enablesFor="1">
+        </action>
+      </objectContribution>
+   </extension>
+   <extension-point id="runtimeRecognizer"
+                    name="jBPM Runtime Recognizer"
+                    schema="schema/runtimeRecognizer.exsd"/>
+</plugin>

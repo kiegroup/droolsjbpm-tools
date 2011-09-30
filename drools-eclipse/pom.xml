@@ -35,6 +35,10 @@
     <module>org.guvnor.tools</module>
     <module>org.guvnor.tools.feature</module>
     <module>org.guvnor.tools.test</module> 
+    <module>org.jbpm.eclipse</module>
+    <module>org.jbpm.eclipse.feature</module>
+    <module>org.jbpm.eclipse.task</module>
+    <module>org.jbpm.eclipse.task.feature</module>
     <module>org.drools.updatesite</module>
   </modules>
 
