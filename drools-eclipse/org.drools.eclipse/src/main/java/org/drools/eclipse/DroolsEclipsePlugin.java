@@ -33,6 +33,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.PackageRegistry;
 import org.drools.core.util.StringUtils;
+import org.drools.definition.process.Node;
 import org.drools.eclipse.DRLInfo.FunctionInfo;
 import org.drools.eclipse.DRLInfo.RuleInfo;
 import org.drools.eclipse.builder.DroolsBuilder;
@@ -71,6 +72,8 @@ import org.jbpm.compiler.ProcessBuilderImpl;
 import org.jbpm.compiler.xml.ProcessSemanticModule;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.process.core.Process;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.workflow.core.node.RuleSetNode;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -368,7 +371,6 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
     public DRLInfo generateParsedResource(String content,
                                           IResource resource,
                                           boolean useCache,
@@ -547,6 +549,23 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 
     public ProcessInfo getProcessInfo(String processId) {
         return processInfosById.get( processId );
+    }
+
+    public Map<ProcessInfo,List<RuleSetNode>> getRuleSetNodeByFlowGroup(String flowGroup) {
+    	Map<ProcessInfo,List<RuleSetNode>> result = new HashMap<ProcessInfo,List<RuleSetNode>>();
+    	for (ProcessInfo processInfo : processInfosById.values()) {
+    		Node[] nodes = ((RuleFlowProcess)processInfo.getProcess()).getNodes();
+    		for (int i = 0; i < nodes.length; i++) {
+    			if(nodes[i] instanceof RuleSetNode)
+    				if(flowGroup.equals(((RuleSetNode)nodes[i]).getRuleFlowGroup())) {
+    					if(!result.containsKey(processInfo))
+    						result.put(processInfo, new ArrayList<RuleSetNode>());
+    					result.get(processInfo).add((RuleSetNode) nodes[i]);
+    				}
+    			
+			}
+		}
+        return result;
     }
     
     public IResource findProcessResource(String processId) {
