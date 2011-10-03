@@ -25,6 +25,9 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
+import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
+import org.eclipse.jface.text.hyperlink.IHyperlinkPresenter;
+import org.eclipse.jface.text.hyperlink.MultipleHyperlinkPresenter;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.reconciler.IReconciler;
@@ -36,6 +39,7 @@ import org.eclipse.jface.text.source.DefaultAnnotationHover;
 import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * Source viewer config wires up the syntax highlighting, partitioning
@@ -135,4 +139,23 @@ public class DRLSourceViewerConfig extends SourceViewerConfiguration {
     public IAnnotationHover getAnnotationHover(ISourceViewer sourceViewer) {
         return new DefaultAnnotationHover();
     }
+    
+    @Override
+    public IHyperlinkDetector[] getHyperlinkDetectors(ISourceViewer sourceViewer) {
+      IHyperlinkDetector[] detectors = super.getHyperlinkDetectors(sourceViewer);
+      if(detectors==null) {
+        detectors = new IHyperlinkDetector[0];
+      }
+
+      IHyperlinkDetector[] drlDetectors = new IHyperlinkDetector[detectors.length + 1];
+      DRLHyperlinkDetector detector =  new DRLHyperlinkDetector(editor);
+      drlDetectors[0] = detector;
+      System.arraycopy(detectors, 0, drlDetectors, 1, detectors.length);
+      
+      return drlDetectors;
+    }
+
+	public IHyperlinkPresenter getHyperlinkPresenter(ISourceViewer sourceViewer) {
+		return new MultipleHyperlinkPresenter(new RGB(0, 0, 255));
+	}
 }
