@@ -579,7 +579,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                     CompilationProblem[] problems = (CompilationProblem[]) functionError.getObject();
                     for ( int j = 0; j < problems.length; j++ ) {
                         markers.add( new DroolsBuildMarker( problems[j].getMessage(),
-                                                            functionError.getErrorLines()[j] ) );
+                                                            functionError.getLines()[j] ) );
                     }
                 } else {
                     markers.add( new DroolsBuildMarker( functionError.getFunctionDescr().getName() + ":" + functionError.getMessage(),
