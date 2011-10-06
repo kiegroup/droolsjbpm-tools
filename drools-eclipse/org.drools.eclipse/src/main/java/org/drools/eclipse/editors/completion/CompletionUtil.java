@@ -22,6 +22,7 @@ import java.io.StringReader;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
+import org.drools.core.util.StringUtils;
 import org.eclipse.jdt.core.Signature;
 
 public class CompletionUtil {
@@ -143,6 +144,35 @@ public class CompletionUtil {
         return -1;
     }
 
+    public static String getPreviousWord(String prefix) {
+        if ( "".equals( prefix ) ) {
+            return prefix;
+        }
+        if ( prefix.charAt( prefix.length() - 1 ) != ' ' ) {
+            return "";
+        } else {
+            char[] c = prefix.toCharArray();
+            int start = 0;
+            int end = 0;
+            for ( int i = c.length - 1; i >= 0; i-- ) {
+                if ( Character.isWhitespace( c[i] ) ) {
+                	if(end >0) {
+                		start = i + 1;
+                    	break;
+                    }
+                } else {
+                	if(end==0) {
+                		end = i + 1;
+                	}
+                }
+            }
+            prefix = prefix.substring( start, end);
+            return prefix;
+        }
+    }
+
+
+
     public static String stripWhiteSpace(String prefix) {
         if ( "".equals( prefix ) ) {
             return prefix;
@@ -163,7 +193,6 @@ public class CompletionUtil {
             return prefix;
         }
     }
-
     /**
      * Attempt to enhance a consequence backtext such that it should compile in MVEL
      * @param backText
