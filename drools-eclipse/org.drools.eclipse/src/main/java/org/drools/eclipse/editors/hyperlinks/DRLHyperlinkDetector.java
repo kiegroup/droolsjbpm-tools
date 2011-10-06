@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.eclipse.editors;
+package org.drools.eclipse.editors.hyperlinks;
 
 import java.util.List;
 import java.util.Map;
@@ -23,6 +23,8 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.eclipse.DRLInfo;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.ProcessInfo;
+import org.drools.eclipse.editors.AbstractRuleEditor;
+import org.drools.eclipse.editors.DescrUtil;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.eclipse.jface.text.IDocument;

@@ -18,6 +18,7 @@ package org.drools.eclipse.editors;
 
 import org.drools.eclipse.editors.completion.DefaultCompletionProcessor;
 import org.drools.eclipse.editors.completion.RuleCompletionProcessor;
+import org.drools.eclipse.editors.hyperlinks.DRLHyperlinkDetector;
 import org.drools.eclipse.editors.scanners.DRLPartionScanner;
 import org.drools.eclipse.editors.scanners.DRLScanner;
 import org.eclipse.core.runtime.NullProgressMonitor;
