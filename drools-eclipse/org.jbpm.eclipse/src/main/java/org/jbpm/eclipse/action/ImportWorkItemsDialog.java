@@ -21,6 +21,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -254,7 +255,7 @@ public class ImportWorkItemsDialog extends Dialog {
     private void getWorkDefinitions() {
     	Map<String, Category> categories = new HashMap<String, Category>();
     	String url = urlText.getText();
-    	if (!url.startsWith("http:") && !url.startsWith("file:")) {
+    	if (!url.startsWith("http") && !url.startsWith("file:")) {
     		url = "file:/" + url;
     	}
     	Map<String, WorkDefinitionImpl> workDefinitions = 
@@ -364,7 +365,7 @@ public class ImportWorkItemsDialog extends Dialog {
     private void importWorkDefinition(WorkDefinitionImpl workDef, IFolder resources, IFolder metaInf, IFile workDefinitionsConfig) throws Exception {
     	String defFile = workDef.getPath() + "/" + workDef.getFile();
     	IFile file = metaInf.getFile(workDef.getFile());
-        InputStream inputstream = ConfFileUtils.getURL(defFile, null, null).openStream();
+        InputStream inputstream = new URL(defFile).openStream();
         if (!file.exists()) {
             file.create(inputstream, true, null);
         } else {
@@ -373,7 +374,7 @@ public class ImportWorkItemsDialog extends Dialog {
         if (workDef.getIcon() != null) {
 	        String iconFile = workDef.getPath() + "/" + workDef.getIcon();
 	    	IFile icon = resources.getFile(workDef.getIcon());
-	        inputstream = ConfFileUtils.getURL(iconFile, null, null).openStream();
+	        inputstream = new URL(iconFile).openStream();
 	        if (!icon.exists()) {
 	        	icon.create(inputstream, true, null);
 	        } else {
@@ -418,8 +419,11 @@ public class ImportWorkItemsDialog extends Dialog {
         				} else {
         					libName = dependency;
         				}
+        				if (libName.startsWith("./")) {
+        					libName = libName.substring(2);
+        				}
         				IFile libFile = lib.getFile(libName);
-        		        inputstream = ConfFileUtils.getURL(workDef.getPath() + "/" + dependency, null, null).openStream();
+        		        inputstream = new URL(workDef.getPath() + "/" + dependency).openStream();
         		        if (!libFile.exists()) {
         		        	libFile.create(inputstream, true, null);
         		        } else {
