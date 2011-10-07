@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.drools.eclipse" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.jbpm.eclipse" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.drools.eclipse" id="runtimeRecognizer" name="Drools Runtime Recognizer"/>
+         <meta.schema plugin="org.jbpm.eclipse" id="runtimeRecognizer" name="jBPM Runtime Recognizer"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
@@ -55,7 +55,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.drools.eclipse.util.DroolsRuntimeRecognizer"/>
+                  <meta.attribute kind="java" basedOn=":org.jbpm.eclipse.util.JBPMRuntimeRecognizer"/>
                </appinfo>
             </annotation>
          </attribute>

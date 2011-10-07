@@ -35,7 +35,7 @@ import org.osgi.framework.BundleContext;
  */
 public class JBPMEclipsePlugin extends AbstractUIPlugin {
 
-    public static final String          PLUGIN_ID                  = "org.jboss.tools.jbpm";
+    public static final String          PLUGIN_ID                  = "org.jbpm.eclipse";
 
     // The shared instance.
     private static JBPMEclipsePlugin    plugin;
@@ -103,7 +103,7 @@ public class JBPMEclipsePlugin extends AbstractUIPlugin {
         ImageRegistry reg = plugin.getImageRegistry();
         ImageDescriptor des = reg.getDescriptor(path);
         if (des == null) {
-            des = AbstractUIPlugin.imageDescriptorFromPlugin("org.jboss.tools.jbpm", path);
+            des = AbstractUIPlugin.imageDescriptorFromPlugin("org.jbpm.eclipse", path);
             reg.put(path, des);
         }
         return des;

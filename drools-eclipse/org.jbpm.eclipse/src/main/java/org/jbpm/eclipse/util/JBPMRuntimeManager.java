@@ -37,7 +37,7 @@ import org.jbpm.eclipse.preferences.JBPMConstants;
 
 public class JBPMRuntimeManager {
 	
-	private static final String JBPM_RUNTIME_RECOGNIZER = "org.jboss.tools.jbpm.runtimeRecognizer";
+	private static final String JBPM_RUNTIME_RECOGNIZER = "org.jbpm.eclipse.runtimeRecognizer";
 
 	public static void createDefaultRuntime(String location) {
 		List<String> jars = new ArrayList<String>();
@@ -123,7 +123,7 @@ public class JBPMRuntimeManager {
 
 	private static String getJBPMLocation() {
         try {
-            return FileLocator.toFileURL(Platform.getBundle("org.jboss.tools.jbpm").getEntry("/")).getFile().toString();
+            return FileLocator.toFileURL(Platform.getBundle("org.jbpm.eclipse").getEntry("/")).getFile().toString();
         } catch (IOException e) {
             JBPMEclipsePlugin.log(e);
         }

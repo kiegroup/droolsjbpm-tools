@@ -35,8 +35,8 @@ import org.jbpm.eclipse.util.JBPMRuntimeManager;
 
 public class JBPMProjectPreferencePage extends PropertyAndPreferencePage {
 
-	public static final String PREF_ID= "org.jboss.tools.jbpm.preferences.JBPMRuntimesPreferencePage";
-	public static final String PROP_ID= "org.jboss.tools.jbpm.preferences.JBPMProjectPreferencePage";
+	public static final String PREF_ID= "org.jbpm.eclipse.preferences.JBPMRuntimesPreferencePage";
+	public static final String PROP_ID= "org.jbpm.eclipse.preferences.JBPMProjectPreferencePage";
 
 	private Combo jBPMRuntimeCombo;
 	

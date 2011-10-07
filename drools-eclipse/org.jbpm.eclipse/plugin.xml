@@ -27,7 +27,7 @@
       <page name="Installed jBPM Runtimes"
             category="org.jbpm.eclipse.preferences.JBPMPreferencePage"
             class="org.jbpm.eclipse.preferences.JBPMRuntimesPreferencePage"
-            id="oorg.jbpm.eclipse.preferences.JBPMRuntimesPreferencePage">
+            id="org.jbpm.eclipse.preferences.JBPMRuntimesPreferencePage">
       </page>
    </extension>
    <extension point="org.eclipse.ui.propertyPages">
@@ -56,7 +56,7 @@
       </objectContribution>
       <objectContribution
            objectClass="org.eclipse.jdt.core.IJavaProject"
-           id="org.drools.eclipse.action.ImportWorkItems">
+           id="org.jbpm.eclipse.action.ImportWorkItems">
         <action id="ImportWorkItemsAction"
            label="Import jBPM services ..."
            icon="icons/jbpm.gif"
