@@ -145,7 +145,7 @@ public class ImportWorkItemsDialog extends Dialog {
             		if (selected instanceof WorkDefinitionImpl) {
             			String docs = ((WorkDefinitionImpl) selected).getDocumentation();
             			if (docs != null) {
-            				documentation.setUrl("file://" + ((WorkDefinitionImpl) selected).getPath() + "/" + docs);
+            				documentation.setUrl(((WorkDefinitionImpl) selected).getPath() + "/" + docs);
             			} else {
             				documentation.setText("");
             			}
@@ -253,7 +253,13 @@ public class ImportWorkItemsDialog extends Dialog {
 
     private void getWorkDefinitions() {
     	Map<String, Category> categories = new HashMap<String, Category>();
-    	for (WorkDefinitionImpl workDef: WorkItemRepository.getWorkDefinitions(urlText.getText()).values()) {
+    	String url = urlText.getText();
+    	if (!url.startsWith("http:") && !url.startsWith("file:")) {
+    		url = "file:/" + url;
+    	}
+    	Map<String, WorkDefinitionImpl> workDefinitions = 
+    		WorkItemRepository.getWorkDefinitions(url);
+    	for (WorkDefinitionImpl workDef: workDefinitions.values()) {
     		String c = workDef.getCategory();
     		if (c == null) {
     			c = "Other";
