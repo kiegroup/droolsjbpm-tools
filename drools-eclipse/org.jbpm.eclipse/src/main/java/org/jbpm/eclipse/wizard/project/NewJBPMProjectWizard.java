@@ -232,6 +232,10 @@ public class NewJBPMProjectWizard extends BasicNewResourceWizard {
         javaCommand.setBuilderName("org.eclipse.jdt.core.javabuilder");
         newCommands[commands.length] = javaCommand;
         
+        ICommand droolsCommand = description.newCommand();
+        droolsCommand.setBuilderName("org.drools.eclipse.droolsbuilder");
+        newCommands[commands.length + 1] = droolsCommand;
+        
         description.setBuildSpec(newCommands);
         project.getProject().setDescription(description, monitor);
     }
