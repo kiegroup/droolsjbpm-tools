@@ -225,7 +225,7 @@ public class NewJBPMProjectWizard extends BasicNewResourceWizard {
     private void addJavaBuilder(IJavaProject project, IProgressMonitor monitor) throws CoreException {
         IProjectDescription description = project.getProject().getDescription();
         ICommand[] commands = description.getBuildSpec();
-        ICommand[] newCommands = new ICommand[commands.length + 1];
+        ICommand[] newCommands = new ICommand[commands.length + 2];
         System.arraycopy(commands, 0, newCommands, 0, commands.length);
 
         ICommand javaCommand = description.newCommand();
