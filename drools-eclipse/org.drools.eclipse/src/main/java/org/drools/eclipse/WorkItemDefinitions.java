@@ -71,7 +71,14 @@ public final class WorkItemDefinitions {
                         workDefinition.setName( (String) workDefinitionMap.get( "name" ) );
                         workDefinition.setDisplayName( (String) workDefinitionMap.get( "displayName" ) );
                         workDefinition.setIcon( (String) workDefinitionMap.get( "icon" ) );
-                        workDefinition.setCustomEditor( (String) workDefinitionMap.get( "customEditor" ) );
+                        String customEditor = (String) workDefinitionMap.get( "eclipse:customEditor" );
+                        if (customEditor == null) {
+                        	customEditor = (String) workDefinitionMap.get( "customEditor" );
+                        }
+                        if (customEditor == null) {
+                        	customEditor = "org.drools.eclipse.flow.common.editor.editpart.work.SampleCustomEditor";
+                        }
+                        workDefinition.setCustomEditor( customEditor );
                         Set<ParameterDefinition> parameters = new HashSet<ParameterDefinition>();
                         Map<String, DataType> parameterMap = (Map<String, DataType>) workDefinitionMap.get( "parameters" );
                         if ( parameterMap != null ) {

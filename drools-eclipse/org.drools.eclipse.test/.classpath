@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="lib" path="target/org.drools.eclipse.test-5.2.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="target/work/configuration/org.eclipse.osgi/bundles/27/1/.cp/junit.jar"/>
+	<classpathentry kind="lib" path="target/work/configuration/org.eclipse.osgi/bundles/84/1/.cp/jars/surefire-api-2.4.3.jar"/>
+	<classpathentry kind="lib" path="target/work/configuration/org.eclipse.osgi/bundles/84/1/.cp/jars/surefire-booter-2.4.3.jar"/>
+	<classpathentry kind="lib" path="target/work/configuration/org.eclipse.osgi/bundles/85/1/.cp/jars/surefire-junit4-2.4.3.jar"/>
+	<classpathentry kind="lib" path="target/work/configuration/org.eclipse.osgi/bundles/86/1/.cp/lib/antlr-runtime.jar"/>
+	<classpathentry kind="lib" path="target/work/configuration/org.eclipse.osgi/bundles/86/1/.cp/lib/drools-api.jar"/>
+	<classpathentry kind="lib" path="target/work/configuration/org.eclipse.osgi/bundles/86/1/.cp/lib/drools-compiler.jar"/>
+	<classpathentry kind="lib" path="target/work/configuration/org.eclipse.osgi/bundles/86/1/.cp/lib/drools-core.jar"/>
+	<classpathentry kind="lib" path="target/work/configuration/org.eclipse.osgi/bundles/86/1/.cp/lib/drools-decisiontables.jar"/>
+	<classpathentry kind="lib" path="target/work/configuration/org.eclipse.osgi/bundles/86/1/.cp/lib/drools-jsr94.jar"/>
+	<classpathentry kind="lib" path="target/work/configuration/org.eclipse.osgi/bundles/86/1/.cp/lib/drools-templates.jar"/>
+	<classpathentry kind="lib" path="target/work/configuration/org.eclipse.osgi/bundles/86/1/.cp/lib/droolsjbpm-ide-common.jar"/>
+	<classpathentry kind="lib" path="target/work/configuration/org.eclipse.osgi/bundles/86/1/.cp/lib/jbpm-bpmn2.jar"/>
+	<classpathentry kind="lib" path="target/work/configuration/org.eclipse.osgi/bundles/86/1/.cp/lib/jbpm-flow-builder.jar"/>
+	<classpathentry kind="lib" path="target/work/configuration/org.eclipse.osgi/bundles/86/1/.cp/lib/jbpm-flow.jar"/>
+	<classpathentry kind="lib" path="target/work/configuration/org.eclipse.osgi/bundles/86/1/.cp/lib/jsr94.jar"/>
+	<classpathentry kind="lib" path="target/work/configuration/org.eclipse.osgi/bundles/86/1/.cp/lib/junit.jar"/>
+	<classpathentry kind="lib" path="target/work/configuration/org.eclipse.osgi/bundles/86/1/.cp/lib/jxl.jar"/>
+	<classpathentry kind="lib" path="target/work/configuration/org.eclipse.osgi/bundles/86/1/.cp/lib/mvel2.jar"/>
+	<classpathentry kind="lib" path="target/work/configuration/org.eclipse.osgi/bundles/86/1/.cp/lib/xpp3_min.jar"/>
+	<classpathentry kind="lib" path="target/work/configuration/org.eclipse.osgi/bundles/86/1/.cp/lib/xstream.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

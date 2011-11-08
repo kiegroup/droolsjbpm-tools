@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" id="_PQdzoM-rEd-xCJtU6N_r3Q">
+  <bpmn2:process id="com.sample.bpmn.hello" name="HelloWorld">
+    <bpmn2:startEvent id="_UVGyMM-rEd-xCJtU6N_r3Q">
+      <bpmn2:outgoing>_YHxykM-rEd-xCJtU6N_r3Q</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:scriptTask id="_WTS9MM-rEd-xCJtU6N_r3Q" name="HelloWorld">
+      <bpmn2:incoming>_YHxykM-rEd-xCJtU6N_r3Q</bpmn2:incoming>
+      <bpmn2:outgoing>_YqVtEM-rEd-xCJtU6N_r3Q</bpmn2:outgoing>
+      <bpmn2:script>System.out.println(&quot;Hello World&quot;);</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:endEvent id="_XkHr4M-rEd-xCJtU6N_r3Q">
+      <bpmn2:incoming>_YqVtEM-rEd-xCJtU6N_r3Q</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_YHxykM-rEd-xCJtU6N_r3Q" sourceRef="_UVGyMM-rEd-xCJtU6N_r3Q" targetRef="_WTS9MM-rEd-xCJtU6N_r3Q"/>
+    <bpmn2:sequenceFlow id="_YqVtEM-rEd-xCJtU6N_r3Q" sourceRef="_WTS9MM-rEd-xCJtU6N_r3Q" targetRef="_XkHr4M-rEd-xCJtU6N_r3Q"/>
+  </bpmn2:process>
+</bpmn2:definitions>

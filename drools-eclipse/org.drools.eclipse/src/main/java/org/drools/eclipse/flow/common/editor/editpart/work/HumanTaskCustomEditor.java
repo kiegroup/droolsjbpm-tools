@@ -39,6 +39,7 @@ public class HumanTaskCustomEditor extends EditBeanDialog<Work> implements WorkE
 
     private Text nameText;
     private Text actorText;
+    private Text groupText;
     private Text commentText;
     private Text priorityText;
     private Button skippableButton;
@@ -80,6 +81,16 @@ public class HumanTaskCustomEditor extends EditBeanDialog<Work> implements WorkE
         actorText.setLayoutData(gridData);
         String value = (String) work.getParameter("ActorId");
         actorText.setText(value == null ? "" : value);
+        
+        label = new Label(composite, SWT.NONE);
+        label.setText("Group(s): ");
+        groupText = new Text(composite, SWT.NONE);
+        gridData = new GridData();
+        gridData.grabExcessHorizontalSpace = true;
+        gridData.horizontalAlignment = GridData.FILL;
+        groupText.setLayoutData(gridData);
+        value = (String) work.getParameter("GroupId");
+        groupText.setText(value == null ? "" : value);
         
         label = new Label(composite, SWT.NONE);
         label.setText("Comment: ");
@@ -131,6 +142,7 @@ public class HumanTaskCustomEditor extends EditBeanDialog<Work> implements WorkE
         work.setName("Human Task");
         work.setParameter("TaskName", nameText.getText());
         work.setParameter("ActorId", actorText.getText());
+        work.setParameter("GroupId", groupText.getText());
         work.setParameter("Comment", commentText.getText());
         work.setParameter("Priority", priorityText.getText());
         work.setParameter("Skippable", skippableButton.getSelection() + "");

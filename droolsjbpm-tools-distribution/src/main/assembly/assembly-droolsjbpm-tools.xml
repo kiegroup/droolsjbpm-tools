@@ -45,6 +45,7 @@
     <dependencySet>
       <includes>
         <include>org.drools:*:jar:sources</include>
+        <include>org.jbpm:*:jar:sources</include>
       </includes>
       <outputDirectory>sources</outputDirectory>
       <unpack>false</unpack>

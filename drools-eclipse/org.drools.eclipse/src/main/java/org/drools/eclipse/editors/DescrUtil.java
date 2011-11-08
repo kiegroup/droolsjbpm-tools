@@ -20,7 +20,6 @@ import java.util.Iterator;
 
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.FunctionImportDescr;
 import org.drools.lang.descr.GlobalDescr;
@@ -103,6 +102,19 @@ public final class DescrUtil {
         } else {
             if (offset < descr.getStartCharacter() || offset > descr.getEndCharacter()) {
                 return null;
+            }
+            if(descr instanceof RuleDescr) {
+                RuleDescr ruleDescr = (RuleDescr) descr;
+                // rules attributes
+                for (Iterator iterator = ruleDescr.getAttributes().values().iterator(); iterator.hasNext(); ) {
+                	 AttributeDescr attributeDescr = (AttributeDescr) iterator.next();
+                     if (attributeDescr != null) {
+                         BaseDescr result = getDescr(attributeDescr, offset);
+                         if (result != null) {
+                             return result;
+                         }
+                     }
+                }
             }
             // TODO: select subDescr if possible
             return descr;
