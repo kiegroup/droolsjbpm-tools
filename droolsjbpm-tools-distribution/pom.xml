@@ -67,6 +67,16 @@
       <classifier>sources</classifier>
     </dependency>
     <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>org.jbpm.eclipse</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>org.jbpm.eclipse.task</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>org.drools.updatesite</artifactId>
       <type>zip</type>
