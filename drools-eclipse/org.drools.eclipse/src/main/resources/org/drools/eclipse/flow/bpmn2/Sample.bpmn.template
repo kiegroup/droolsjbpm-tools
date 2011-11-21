@@ -3,9 +3,9 @@
              targetNamespace="http://www.jboss.org/drools"
              typeLanguage="http://www.java.com/javaTypes"
              expressionLanguage="http://www.mvel.org/2.0"
-             xmlns="http://schema.omg.org/spec/BPMN/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
              xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-             xs:schemaLocation="http://schema.omg.org/spec/BPMN/2.0 BPMN20.xsd"
+             xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
              xmlns:g="http://www.jboss.org/drools/flow/gpd"
              xmlns:tns="http://www.jboss.org/drools">
 
