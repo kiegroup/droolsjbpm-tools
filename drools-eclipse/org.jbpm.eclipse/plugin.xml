@@ -15,6 +15,14 @@
             project= "true">
          <description>This wizard creates a new jBPM project.</description>
       </wizard>
+      <wizard
+            id = "org.jbpm.eclipse.new.bpmn2process"
+            name = "BPMN2 Process"
+            class="org.jbpm.eclipse.wizard.process.NewBPMN2ProcessWizard"
+            category="org.jbpm.eclipse.new"
+            icon="icons/jbpm.gif">
+         <description>A wizard that creates a new BPMN2 process.</description>
+      </wizard>
    </extension>
    <extension point="org.eclipse.jdt.core.classpathContainerInitializer">
        <classpathContainerInitializer class="org.jbpm.eclipse.util.JBPMClasspathContainerInitializer" id="JBPM" />
@@ -70,4 +78,13 @@
    <extension-point id="runtimeRecognizer"
                     name="jBPM Runtime Recognizer"
                     schema="schema/runtimeRecognizer.exsd"/>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+         name="jBPM"
+         icon="icons/jbpm.gif"
+         class="org.jbpm.eclipse.JBPMPerspective"
+         id="org.jbpm.eclipse.JBPMPerspective">
+      </perspective>
+   </extension>
 </plugin>
