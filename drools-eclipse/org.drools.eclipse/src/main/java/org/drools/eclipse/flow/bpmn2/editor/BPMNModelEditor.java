@@ -93,7 +93,8 @@ public class BPMNModelEditor extends GenericModelEditor {
         start.setParent(result);
         IFile file = ((IFileEditorInput)getEditorInput()).getFile();
         String name = file.getName();
-        result.setName(name.substring(0, name.length() - 3));
+        result.setName(name.substring(0, name.length() - 5));
+        result.setId("com.sample.process");
         return result;
     }
     
