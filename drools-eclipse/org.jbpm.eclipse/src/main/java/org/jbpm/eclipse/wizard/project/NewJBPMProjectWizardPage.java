@@ -24,13 +24,18 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 
 public class NewJBPMProjectWizardPage extends WizardPage {
 
+	private Button simpleProcessButton;
+	private Button advancedProcessButton;
 	private Button addSampleProcessButton;
 	private Button addSampleJavaProcessCodeButton;
+	private Button addSampleJUnitTestCodeButton;
 	private boolean addSampleJavaProcessCode = true;
-	private boolean addSampleProcess = true;
+	private boolean addSampleJUnit = true;
+	private String typeOfExample = "simple";
 	
 	public NewJBPMProjectWizardPage() {
 		super("extendedNewProjectPage");
@@ -52,15 +57,56 @@ public class NewJBPMProjectWizardPage extends WizardPage {
 	}
 	
 	private void createControls(Composite parent) {
-		addSampleProcessButton = createCheckBox(parent,
-			"Add a sample HelloWorld process file to this project.");
-		addSampleProcessButton.setSelection(addSampleProcess);
+		Label label = new Label(parent, SWT.LEFT);
+		label.setText("I want to create:");
+		simpleProcessButton = createRadioButton(parent,
+			"a simple hello world process");
+		simpleProcessButton.setSelection(true);
+		simpleProcessButton.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// do nothing
+			}
+			public void widgetSelected(SelectionEvent e) {
+				if (((Button) e.widget).getSelection()) {
+					typeOfExample = "simple";
+				}
+			}
+		});
+		advancedProcessButton = createRadioButton(parent,
+			"a more advanced process including human tasks and persistence");
+		advancedProcessButton.setSelection(false);
+		advancedProcessButton.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// do nothing
+			}
+			public void widgetSelected(SelectionEvent e) {
+				if (((Button) e.widget).getSelection()) {
+					typeOfExample = "advanced";
+				}
+			}
+		});
+		addSampleProcessButton = createRadioButton(parent,
+			"an empty project");
+		addSampleProcessButton.setSelection(false);
 		addSampleProcessButton.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) {
 				// do nothing
 			}
 			public void widgetSelected(SelectionEvent e) {
-				addSampleProcess = ((Button) e.widget).getSelection();
+				if (((Button) e.widget).getSelection()) {
+					typeOfExample = "none";
+				}
+			}
+		});
+		addSampleJUnitTestCodeButton = createCheckBox(parent,
+			"Add a sample JUnit test for the HelloWorld process.");
+		addSampleJUnitTestCodeButton.setSelection(addSampleJUnit);
+		addSampleJUnitTestCodeButton.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// do nothing
+			}
+			public void widgetSelected(SelectionEvent e) {
+				addSampleJUnit = ((Button) e.widget).getSelection();
 			}
 		});
 		addSampleJavaProcessCodeButton = createCheckBox(parent,
@@ -74,7 +120,6 @@ public class NewJBPMProjectWizardPage extends WizardPage {
 				addSampleJavaProcessCode = ((Button) e.widget).getSelection();
 			}
 		});
-
 	}
 
 	private Button createCheckBox(Composite group, String label) {
@@ -85,11 +130,23 @@ public class NewJBPMProjectWizardPage extends WizardPage {
         return button;
     }
 	
-	public boolean createProcessFile() {
-		return addSampleProcess;
+	private Button createRadioButton(Composite group, String label) {
+        Button button = new Button(group, SWT.RADIO | SWT.LEFT);
+        button.setText(label);
+        GridData data = new GridData();
+        button.setLayoutData(data);
+        return button;
+    }
+	
+	public String getExampleType() {
+		return typeOfExample;
 	}
 	
 	public boolean createJavaProcessFile() {
 		return addSampleJavaProcessCode;
+	}
+
+	public boolean createJUnitFile() {
+		return addSampleJUnit;
 	}
 }
