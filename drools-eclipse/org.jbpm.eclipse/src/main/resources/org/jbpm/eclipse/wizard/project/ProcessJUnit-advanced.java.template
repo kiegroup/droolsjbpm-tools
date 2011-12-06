@@ -7,6 +7,7 @@ import org.drools.runtime.process.ProcessInstance;
 import org.jbpm.task.TaskService;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.test.JbpmJUnitTestCase;
+import org.junit.Test;
 
 /**
  * This is a sample file to launch a process.
@@ -18,6 +19,7 @@ public class ProcessTest extends JbpmJUnitTestCase {
 		setPersistence(true);
 	}
 
+	@Test
 	public void testProcess() {
 		StatefulKnowledgeSession ksession = createKnowledgeSession("sample.bpmn");
 		TaskService taskService = getTaskService(ksession);
