@@ -96,6 +96,7 @@
                 jbpm-bpmn2,
                 antlr-runtime,
                 jxl,
+                xmlpull,
                 xpp3_min,
                 xstream,
                 jbpm-flow,
