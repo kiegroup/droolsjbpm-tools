@@ -2,7 +2,7 @@
 <feature
       id="org.guvnor.tools.feature"
       label="JBoss Drools Guvnor"
-      version="5.3.1.Final"
+      version="5.3.2.qualifier"
       provider-name="JBoss by Red Hat">
 
    <description url="http://www.jboss.org/drools/">
@@ -40,14 +40,14 @@ and limitations under the License.
          id="org.guvnor.eclipse.webdav"
          download-size="0"
          install-size="0"
-         version="5.3.1.Final"
+         version="5.3.2.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.guvnor.tools"
          download-size="0"
          install-size="0"
-         version="5.3.1.Final"
+         version="5.3.2.qualifier"
          unpack="false"/>
 
 </feature>
