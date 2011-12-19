@@ -63,6 +63,7 @@
               <!-- Keep in sync with MANIFEST.MF's Bundle-ClassPath -->
               <includeArtifactIds>
                 knowledge-api,
+                knowledge-internal-api,
                 drools-core,
                 drools-compiler,
                 jbpm-flow,
@@ -86,6 +87,10 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>knowledge-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>knowledge-internal-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>

@@ -10,6 +10,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: .,
  lib/knowledge-api.jar,
+ lib/knowledge-internal-api.jar,
  lib/drools-core.jar,
  lib/mina-core.jar,
  lib/slf4j-api.jar,
