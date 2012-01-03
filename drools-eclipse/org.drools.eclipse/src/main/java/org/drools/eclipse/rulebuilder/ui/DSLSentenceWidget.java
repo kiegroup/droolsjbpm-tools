@@ -27,6 +27,7 @@ import org.drools.core.util.DateUtils;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
+import org.drools.ide.common.client.modeldriven.brl.DSLVariableValue;
 import org.drools.ide.common.client.modeldriven.ui.ConstraintValueEditorHelper;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -294,23 +295,23 @@ public abstract class DSLSentenceWidget extends Widget {
             if ( wid instanceof FieldEditor ) {
                 FieldEditor editor = (FieldEditor) wid;
                 sentence.getValues().set( iVariable++,
-                                          editor.getText().trim() );
+                                          new DSLVariableValue(editor.getText().trim()) );
 
             } else if ( wid instanceof DSLDropDown ) {
                 DSLDropDown drop = (DSLDropDown) wid;
                 sentence.getValues().set( iVariable++,
-                                          drop.getSelectedValue() );
+                                          new DSLVariableValue(drop.getSelectedValue()) );
 
             } else if ( wid instanceof DSLCheckBox ) {
                 DSLCheckBox check = (DSLCheckBox) wid;
                 sentence.getValues().set( iVariable++,
-                                          check.getCheckedValue().trim() );
+                                          new DSLVariableValue(check.getCheckedValue().trim()) );
 
             } else if ( wid instanceof DSLDateSelector ) {
                 DSLDateSelector dateSel = (DSLDateSelector) wid;
                 String dateString = dateSel.getDateString();
                 sentence.getValues().set( iVariable++,
-                                          dateString );
+                                          new DSLVariableValue(dateString) );
             }
 
         }
