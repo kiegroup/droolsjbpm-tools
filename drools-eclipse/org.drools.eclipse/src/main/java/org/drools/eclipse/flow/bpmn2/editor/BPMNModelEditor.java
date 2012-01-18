@@ -177,7 +177,7 @@ public class BPMNModelEditor extends GenericModelEditor {
     }
     
     protected void writeModel(OutputStream os, boolean includeGraphics) throws IOException {
-        OutputStreamWriter writer = new OutputStreamWriter(os, "UTF8");
+        OutputStreamWriter writer = new OutputStreamWriter(os, "UTF-8");
         try {
             RuleFlowProcess process = getRuleFlowModel().getRuleFlowProcess();
             XmlBPMNProcessDumper dumper = XmlBPMNProcessDumper.INSTANCE;
@@ -204,7 +204,7 @@ public class BPMNModelEditor extends GenericModelEditor {
     protected void createModel(InputStream is) {
         try
         {
-            InputStreamReader isr = new InputStreamReader(is, "UTF8");
+            InputStreamReader isr = new InputStreamReader(is, "UTF-8");
             SemanticModules semanticModules = new SemanticModules();
             semanticModules.addSemanticModule(new BPMNSemanticModule());
     	    semanticModules.addSemanticModule(new BPMNExtensionsSemanticModule());
