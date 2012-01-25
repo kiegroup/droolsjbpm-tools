@@ -49,20 +49,23 @@ public class SubProcessWrapper extends StateBasedNodeWrapper {
     protected void initDescriptors() {
         super.initDescriptors();
         IPropertyDescriptor[] oldDescriptors = descriptors;
-        descriptors = new IPropertyDescriptor[oldDescriptors.length + 7];
+        boolean fullProps = isFullProperties();
+        descriptors = new IPropertyDescriptor[oldDescriptors.length + (fullProps ? 7 : 6)];
         System.arraycopy(oldDescriptors, 0, descriptors, 0, oldDescriptors.length);
-        descriptors[descriptors.length - 7] = getOnEntryPropertyDescriptor();
-        descriptors[descriptors.length - 6] = getOnExitPropertyDescriptor();
-        descriptors[descriptors.length - 5] = 
-            new SubProcessParameterInMappingPropertyDescriptor(PARAMETER_IN_MAPPING, "Parameter In Mapping", getSubProcessNode());
+        if (fullProps) {
+	        descriptors[descriptors.length - 7] = 
+	            new ComboBoxPropertyDescriptor(WAIT_FOR_COMPLETION, "Wait for completion", new String[] {"true", "false"});
+        }
+        descriptors[descriptors.length - 6] = getOnEntryPropertyDescriptor();
+        descriptors[descriptors.length - 5] = getOnExitPropertyDescriptor();
         descriptors[descriptors.length - 4] = 
-            new SubProcessParameterOutMappingPropertyDescriptor(PARAMETER_OUT_MAPPING, "Parameter Out Mapping", getSubProcessNode());
+            new SubProcessParameterInMappingPropertyDescriptor(PARAMETER_IN_MAPPING, "Parameter In Mapping", getSubProcessNode());
         descriptors[descriptors.length - 3] = 
-            new ComboBoxPropertyDescriptor(INDEPENDENT, "Independent", new String[] {"true", "false"});
+            new SubProcessParameterOutMappingPropertyDescriptor(PARAMETER_OUT_MAPPING, "Parameter Out Mapping", getSubProcessNode());
         descriptors[descriptors.length - 2] = 
-            new TextPropertyDescriptor(PROCESS_ID, "ProcessId");
+            new ComboBoxPropertyDescriptor(INDEPENDENT, "Independent", new String[] {"true", "false"});
         descriptors[descriptors.length - 1] = 
-            new ComboBoxPropertyDescriptor(WAIT_FOR_COMPLETION, "Wait for completion", new String[] {"true", "false"});
+            new TextPropertyDescriptor(PROCESS_ID, "ProcessId");
     }
     
     public SubProcessNode getSubProcessNode() {

@@ -256,7 +256,7 @@ public class ImportWorkItemsDialog extends Dialog {
     	Map<String, Category> categories = new HashMap<String, Category>();
     	String url = urlText.getText();
     	if (!url.startsWith("http") && !url.startsWith("file:")) {
-    		url = "file:/" + url;
+    		url = "file:///" + url;
     	}
     	Map<String, WorkDefinitionImpl> workDefinitions = 
     		WorkItemRepository.getWorkDefinitions(url);

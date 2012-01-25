@@ -18,10 +18,13 @@ package org.drools.eclipse.flow.ruleflow.core;
 
 import java.util.Map;
 
+import org.drools.definition.process.NodeContainer;
 import org.drools.eclipse.flow.ruleflow.view.property.timers.TimersPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.jbpm.process.core.timer.Timer;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.DroolsAction;
+import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.WorkflowProcess;
 import org.jbpm.workflow.core.node.StateBasedNode;
 
@@ -38,11 +41,15 @@ public class StateBasedNodeWrapper extends ExtendedNodeWrapper {
     }
 
     protected void initDescriptors() {
-        descriptors = new IPropertyDescriptor[AbstractNodeWrapper.DESCRIPTORS.length + 1];
-        System.arraycopy(AbstractNodeWrapper.DESCRIPTORS, 0, descriptors, 0, AbstractNodeWrapper.DESCRIPTORS.length);
-        descriptors[descriptors.length - 1] = 
-            new TimersPropertyDescriptor(TIMERS, "Timers", getStateBasedNode(),
-                (WorkflowProcess) getParent().getProcessWrapper().getProcess());
+    	if (isFullProperties()) {
+	        descriptors = new IPropertyDescriptor[AbstractNodeWrapper.DESCRIPTORS.length + 1];
+	        System.arraycopy(AbstractNodeWrapper.DESCRIPTORS, 0, descriptors, 0, AbstractNodeWrapper.DESCRIPTORS.length);
+	        descriptors[descriptors.length - 1] = 
+	            new TimersPropertyDescriptor(TIMERS, "Timers", getStateBasedNode(),
+	                (WorkflowProcess) getParent().getProcessWrapper().getProcess());
+    	} else {
+    		descriptors = AbstractNodeWrapper.DESCRIPTORS;
+    	}
     }
 
     public IPropertyDescriptor[] getPropertyDescriptors() {
