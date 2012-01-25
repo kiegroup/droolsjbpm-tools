@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.definition.process.NodeContainer;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.eclipse.flow.ruleflow.view.property.workitem.WorkItemParameterMappingPropertyDescriptor;
@@ -32,6 +33,7 @@ import org.drools.process.core.impl.WorkImpl;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.WorkItemNode;
 
@@ -95,17 +97,20 @@ public class WorkItemWrapper extends StateBasedNodeWrapper {
         super.initDescriptors();
         Set<ParameterDefinition> parameters = workDefinition.getParameters();
         IPropertyDescriptor[] oldDescriptors = descriptors;
-        descriptors = new IPropertyDescriptor[oldDescriptors.length + parameters.size() + 5];
+        boolean fullProps = isFullProperties();
+        descriptors = new IPropertyDescriptor[oldDescriptors.length + parameters.size() + (fullProps ? 5 : 4)];
         System.arraycopy(oldDescriptors, 0, descriptors, 0, oldDescriptors.length);
         int i = 0;
         for (ParameterDefinition def: parameters) {
             descriptors[oldDescriptors.length + (i++)] = 
                 new TextPropertyDescriptor(def.getName(), def.getName());
         }
-        descriptors[descriptors.length - 5] = getOnEntryPropertyDescriptor();
-        descriptors[descriptors.length - 4] = getOnExitPropertyDescriptor();
-        descriptors[descriptors.length - 3] = 
-            new ComboBoxPropertyDescriptor(WAIT_FOR_COMPLETION, "Wait for completion", new String[] {"true", "false"});
+        if (fullProps) {
+	        descriptors[descriptors.length - 5] = 
+	            new ComboBoxPropertyDescriptor(WAIT_FOR_COMPLETION, "Wait for completion", new String[] {"true", "false"});
+        }
+        descriptors[descriptors.length - 4] = getOnEntryPropertyDescriptor();
+        descriptors[descriptors.length - 3] = getOnExitPropertyDescriptor();
         descriptors[descriptors.length - 2] = 
             new WorkItemParameterMappingPropertyDescriptor(PARAMETER_MAPPING, "Parameter Mapping", getWorkItemNode());
         descriptors[descriptors.length - 1] = 

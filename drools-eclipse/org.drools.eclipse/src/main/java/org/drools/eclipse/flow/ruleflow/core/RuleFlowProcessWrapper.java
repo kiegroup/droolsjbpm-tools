@@ -37,6 +37,11 @@ public class RuleFlowProcessWrapper extends ProcessWrapper {
         return new RuleFlowProcess();
     }
 
+    public boolean isFullProperties() {
+    	// not full properties for BPMN2 process, which is set to autocomplete = true
+    	return !getRuleFlowProcess().isAutoComplete();
+    }
+    
     protected void internalAddElement(ElementWrapper element) {
         Node node = ((NodeWrapper) element).getNode();
         long id = 0;

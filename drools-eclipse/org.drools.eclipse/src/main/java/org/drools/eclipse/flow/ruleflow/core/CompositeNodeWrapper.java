@@ -19,6 +19,7 @@ package org.drools.eclipse.flow.ruleflow.core;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.definition.process.NodeContainer;
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementContainerElementWrapper;
@@ -29,6 +30,7 @@ import org.drools.eclipse.flow.ruleflow.view.property.timers.TimersPropertyDescr
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.jbpm.process.core.timer.Timer;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.WorkflowProcess;
@@ -51,6 +53,20 @@ public abstract class CompositeNodeWrapper extends ElementContainerElementWrappe
     
     public Node getNode() {
         return (Node) getElement();
+    }
+    
+    public boolean isFullProperties() {
+    	Node node = getNode();
+    	NodeContainer container = node.getNodeContainer();
+    	while (!(container instanceof RuleFlowProcess)) {
+    		if (container instanceof Node) {
+    			container = ((Node) container).getNodeContainer();
+    		} else {
+    			return false;
+    		}
+    	}
+    	// not full properties for BPMN2 process, which is set to autocomplete = true
+    	return !((RuleFlowProcess) container).isAutoComplete();
     }
     
     public String getId() {

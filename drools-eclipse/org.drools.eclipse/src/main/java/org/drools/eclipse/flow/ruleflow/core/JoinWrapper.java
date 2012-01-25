@@ -39,7 +39,6 @@ public class JoinWrapper extends AbstractNodeWrapper {
     public JoinWrapper() {
         setNode(new Join());
         getJoin().setName("Join");
-        setDescriptors();
     }
     
     public Join getJoin() {
@@ -54,11 +53,19 @@ public class JoinWrapper extends AbstractNodeWrapper {
     private void setDescriptors() {
         descriptors = new IPropertyDescriptor[AbstractNodeWrapper.DESCRIPTORS.length + 1];
         System.arraycopy(AbstractNodeWrapper.DESCRIPTORS, 0, descriptors, 0, AbstractNodeWrapper.DESCRIPTORS.length);
-        descriptors[descriptors.length - 1] = 
-            new ComboBoxPropertyDescriptor(TYPE, "Type", new String[] { "", "AND", "XOR", "Discriminator", "n-of-m" });
+        if (isFullProperties()) {
+	        descriptors[descriptors.length - 1] = 
+	            new ComboBoxPropertyDescriptor(TYPE, "Type", new String[] { "", "AND", "XOR", "Discriminator", "n-of-m" });
+        } else {
+        	descriptors[descriptors.length - 1] = 
+	            new ComboBoxPropertyDescriptor(TYPE, "Type", new String[] { "", "AND", "XOR" });
+        }
     }
 
     public IPropertyDescriptor[] getPropertyDescriptors() {
+    	if (descriptors == null) {
+    		setDescriptors();
+    	}
         if (getParent() != null && (getJoin().getType() == Join.TYPE_N_OF_M)) {
             IPropertyDescriptor[] result = new IPropertyDescriptor[descriptors.length + 1];
             System.arraycopy(descriptors, 0, result, 0, descriptors.length);

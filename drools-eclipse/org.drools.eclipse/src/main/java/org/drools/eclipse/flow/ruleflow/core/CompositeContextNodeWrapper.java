@@ -64,17 +64,20 @@ public class CompositeContextNodeWrapper extends CompositeNodeWrapper {
     }
 
     private void initPropertyDescriptors() {
-        descriptors = new IPropertyDescriptor[DefaultElementWrapper.DESCRIPTORS.length + 4];
+    	boolean fullProps = isFullProperties();
+        descriptors = new IPropertyDescriptor[DefaultElementWrapper.DESCRIPTORS.length + (fullProps ? 4 : 1)];
         System.arraycopy(DefaultElementWrapper.DESCRIPTORS, 0, descriptors, 0, DefaultElementWrapper.DESCRIPTORS.length);
-        descriptors[descriptors.length - 4] = 
-            new TextPropertyDescriptor(START_NODE, "StartNodeId");
-        descriptors[descriptors.length - 3] = 
-            new TextPropertyDescriptor(END_NODE, "EndNodeId");
-        descriptors[descriptors.length - 2] = 
-            new ListPropertyDescriptor(VARIABLES, "Variables", VariableListCellEditor.class);
+        if (fullProps) {
+	        descriptors[descriptors.length - 4] = 
+	            new TextPropertyDescriptor(START_NODE, "StartNodeId");
+	        descriptors[descriptors.length - 3] = 
+	            new TextPropertyDescriptor(END_NODE, "EndNodeId");
+	        descriptors[descriptors.length - 2] = 
+	            new ExceptionHandlersPropertyDescriptor(EXCEPTION_HANDLERS,
+	                "Exception Handlers", getProcessWrapper().getProcess());
+        }
         descriptors[descriptors.length - 1] = 
-            new ExceptionHandlersPropertyDescriptor(EXCEPTION_HANDLERS,
-                "Exception Handlers", getProcessWrapper().getProcess());
+            new ListPropertyDescriptor(VARIABLES, "Variables", VariableListCellEditor.class);
     }
     
     public CompositeContextNode getCompositeContextNode() {

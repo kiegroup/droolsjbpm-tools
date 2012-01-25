@@ -37,16 +37,16 @@ public class ForEachNodeWrapper extends CompositeNodeWrapper {
     private static IPropertyDescriptor[] descriptors;
 
     static {
-        descriptors = new IPropertyDescriptor[DefaultElementWrapper.DESCRIPTORS.length + 4];
+        descriptors = new IPropertyDescriptor[DefaultElementWrapper.DESCRIPTORS.length + 2];
         System.arraycopy(DefaultElementWrapper.DESCRIPTORS, 0, descriptors, 0, DefaultElementWrapper.DESCRIPTORS.length);
-        descriptors[descriptors.length - 4] = 
-            new TextPropertyDescriptor(VARIABLE_NAME, "Variable Name");
-        descriptors[descriptors.length - 3] = 
-            new TextPropertyDescriptor(COLLECTION_EXPRESSION, "CollectionExpression");
         descriptors[descriptors.length - 2] = 
-            new TextPropertyDescriptor(START_NODE, "StartNodeId");
+            new TextPropertyDescriptor(VARIABLE_NAME, "Variable Name");
         descriptors[descriptors.length - 1] = 
-            new TextPropertyDescriptor(END_NODE, "EndNodeId");
+            new TextPropertyDescriptor(COLLECTION_EXPRESSION, "CollectionExpression");
+//        descriptors[descriptors.length - 2] = 
+//            new TextPropertyDescriptor(START_NODE, "StartNodeId");
+//        descriptors[descriptors.length - 1] = 
+//            new TextPropertyDescriptor(END_NODE, "EndNodeId");
     }
     
     public ForEachNodeWrapper() {

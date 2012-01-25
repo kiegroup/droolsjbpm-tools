@@ -116,7 +116,7 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
     }
     
     public Integer getRouterLayout() {
-        Integer routerLayout = (Integer) process.getMetaData("routerLayout");
+        Integer routerLayout = (Integer) process.getMetaData().get("routerLayout");
         if (routerLayout == null) {
             return ROUTER_LAYOUT_MANUAL;
         }
@@ -194,19 +194,35 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
     }
 
     public void initPropertyDescriptors() {
-        descriptors = new IPropertyDescriptor[] {
-            new TextPropertyDescriptor(NAME, "Name"),
-            new TextPropertyDescriptor(VERSION, "Version"),
-            new TextPropertyDescriptor(ID, "Id"),
-            new TextPropertyDescriptor(PACKAGE_NAME, "Package"),
-            new ComboBoxPropertyDescriptor(ROUTER_LAYOUT, "Connection Layout", 
-                new String[] { "Manual", "Manhattan", "Shortest Path" }),
-            new ListPropertyDescriptor(VARIABLES, "Variables", VariableListCellEditor.class),
-            new ListPropertyDescriptor(SWIMLANES, "Swimlanes",
-                SwimlanesCellEditor.class),
-            new ExceptionHandlersPropertyDescriptor(EXCEPTION_HANDLERS,
-                "Exception Handlers", process),
-        };
+    	if (isFullProperties()) {
+	        descriptors = new IPropertyDescriptor[] {
+	            new TextPropertyDescriptor(NAME, "Name"),
+	            new TextPropertyDescriptor(VERSION, "Version"),
+	            new TextPropertyDescriptor(ID, "Id"),
+	            new TextPropertyDescriptor(PACKAGE_NAME, "Package"),
+	            new ComboBoxPropertyDescriptor(ROUTER_LAYOUT, "Connection Layout", 
+	                new String[] { "Manual", "Manhattan", "Shortest Path" }),
+	            new ListPropertyDescriptor(VARIABLES, "Variables", VariableListCellEditor.class),
+	            new ListPropertyDescriptor(SWIMLANES, "Swimlanes",
+	                SwimlanesCellEditor.class),
+	            new ExceptionHandlersPropertyDescriptor(EXCEPTION_HANDLERS,
+	                "Exception Handlers", process),
+	        };
+    	} else {
+    		descriptors = new IPropertyDescriptor[] {
+	            new TextPropertyDescriptor(NAME, "Name"),
+	            new TextPropertyDescriptor(VERSION, "Version"),
+	            new TextPropertyDescriptor(ID, "Id"),
+	            new TextPropertyDescriptor(PACKAGE_NAME, "Package"),
+	            new ListPropertyDescriptor(VARIABLES, "Variables", VariableListCellEditor.class),
+	            new ListPropertyDescriptor(SWIMLANES, "Swimlanes",
+	                SwimlanesCellEditor.class),
+	        };
+    	}
+    }
+    
+    public boolean isFullProperties() {
+    	return true;
     }
     
     public Object getPropertyValue(Object id) {

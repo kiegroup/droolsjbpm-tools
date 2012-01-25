@@ -19,6 +19,7 @@ package org.drools.eclipse.flow.ruleflow.core;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.definition.process.NodeContainer;
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
@@ -27,6 +28,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.NodeImpl;
 
@@ -53,6 +55,20 @@ public abstract class AbstractNodeWrapper extends DefaultElementWrapper implemen
     
     public Node getNode() {
         return (Node) getElement();
+    }
+    
+    public boolean isFullProperties() {
+    	Node node = getNode();
+    	NodeContainer container = node.getNodeContainer();
+    	while (!(container instanceof RuleFlowProcess)) {
+    		if (container instanceof Node) {
+    			container = ((Node) container).getNodeContainer();
+    		} else {
+    			return false;
+    		}
+    	}
+    	// not full properties for BPMN2 process, which is set to autocomplete = true
+    	return !((RuleFlowProcess) container).isAutoComplete();
     }
     
     public String getId() {
