@@ -1,4 +1,4 @@
-#created on: Jul 21, 2006
+//created on: Jul 21, 2006
 package org.drools.test;
 
 import org.drools.contrib.Cheese;
