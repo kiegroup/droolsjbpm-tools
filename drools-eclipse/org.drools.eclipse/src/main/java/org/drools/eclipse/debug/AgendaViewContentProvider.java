@@ -22,6 +22,7 @@ import java.util.List;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.runtime.rule.AgendaGroup;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
@@ -82,10 +83,12 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
     private Object[] getAgendaElements(IJavaObject workingMemoryImpl) throws DebugException {
         List result = new ArrayList();
         IValue agendaGroupObjects = DebugUtil.getValueByExpression("return getAgenda().getAgendaGroups();", workingMemoryImpl);
-        // Drools 4 code
-        IValue focus = DebugUtil.getValueByExpression("return getAgenda().getFocus();", workingMemoryImpl);
-        if (focus == null) {
-            // Drools 5 code
+        IValue focus = null;
+        try {
+            // Drools 4 code
+        	focus = DebugUtil.getValueByExpression("return getAgenda().getFocus();", workingMemoryImpl);
+        } catch (RuntimeException e) {
+        	// Drools 5 code
             focus = DebugUtil.getValueByExpression("return getAgenda().getFocusName();", workingMemoryImpl);
         }
         if (agendaGroupObjects instanceof IJavaArray) {
