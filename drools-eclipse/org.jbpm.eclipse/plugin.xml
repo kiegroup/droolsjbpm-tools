@@ -74,6 +74,30 @@
            enablesFor="1">
         </action>
       </objectContribution>
+      <objectContribution
+           objectClass="org.eclipse.core.resources.IFile" nameFilter="*.bpmn"
+           id="org.jbpm.eclipse.action.GenerateBPMN2JUnitTests">
+        <action id="GenerateBPMN2JUnitTests"
+           label="Generate jBPM JUnit Tests"
+           icon="icons/jbpm.gif"
+           menubarPath="additions"
+           class="org.jbpm.eclipse.action.GenerateBPMN2JUnitTests"
+           definitionId="org.jbpm.eclipse.action.GenerateBPMN2JUnitTests"
+           enablesFor="1">
+        </action>
+      </objectContribution>
+      <objectContribution
+           objectClass="org.eclipse.core.resources.IFile" nameFilter="*.bpmn"
+           id="org.jbpm.eclipse.action.GenerateForms">
+        <action id="GeneratejBPMForms"
+           label="Generate jBPM Forms"
+           icon="icons/jbpm.gif"
+           menubarPath="additions"
+           class="org.jbpm.eclipse.action.GenerateForms"
+           definitionId="org.jbpm.eclipse.action.GenerateForms"
+           enablesFor="1">
+        </action>
+      </objectContribution>
    </extension>
    <extension-point id="runtimeRecognizer"
                     name="jBPM Runtime Recognizer"
