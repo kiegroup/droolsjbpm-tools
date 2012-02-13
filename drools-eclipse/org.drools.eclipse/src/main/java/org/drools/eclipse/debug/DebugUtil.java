@@ -116,9 +116,8 @@ public class DebugUtil {
             return evaluationBlock.evaluate(expression);
 
         } catch (CoreException e) {
-            DroolsEclipsePlugin.log(e);
+            throw new RuntimeException("Could not evaluate expression", e);
         }
-        return null;
     }
 
     /**
