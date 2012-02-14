@@ -119,7 +119,7 @@ public class GenerateForms implements IObjectActionDelegate {
             		for (Map.Entry<String, String> entry: node.getOutMappings().entrySet()) {
             			if (task.getOutputParams().get(entry.getKey()) == null) {
             				VariableScope variableScope = (VariableScope) node.resolveContext(VariableScope.VARIABLE_SCOPE, entry.getValue());
-            	        	if (variableScope != null) {
+            	        	if (variableScope != null && !"outcome".equals(entry.getKey())) {
             	        		task.getOutputParams().put(entry.getKey(), variableScope.findVariable(entry.getValue()).getType().getStringType());
             	        	}
             			}
@@ -138,19 +138,19 @@ public class GenerateForms implements IObjectActionDelegate {
 	                        		"<h2>" + task.getTaskName() + "</h2>\n" +
 	                        		"<hr>\n" +
 	                        		"<#if task.descriptions[0]??>\n" +
-	                        		"Description: ${task.descriptions[0].text}\n" +
+	                        		"Description: ${task.descriptions[0].text}<BR/>\n" +
 	                        		"</#if>\n";
 	                        	for (String input: task.getInputParams().keySet()) {
-	                        		output += input + ": ${" + input + "}\n"; 
+	                        		output += input + ": ${" + input + "}<BR/>\n"; 
 	                        	}
 	                        	output +=
 	                        		"<form action=\"complete\" method=\"POST\" enctype=\"multipart/form-data\">\n";
 	                        	for (String outputP: task.getOutputParams().keySet()) {
-	                        		output += outputP + ": <input type=\"text\" name=\"" + outputP + "\" />\n"; 
+	                        		output += outputP + ": <input type=\"text\" name=\"" + outputP + "\" /><BR/>\n"; 
 	                        	}
 	                        	output +=
 	                        		"<BR/>\n" +
-	                        		"<input type=\"submit\" name=\"outcome\" value=\"Complete\">\n" +
+	                        		"<input type=\"submit\" name=\"outcome\" value=\"Complete\"/>\n" +
 	                        		"</form>\n" +
 	                        		"</body>\n" +
 	                        		"</html>";
@@ -170,11 +170,11 @@ public class GenerateForms implements IObjectActionDelegate {
                         		"<form action=\"complete\" method=\"POST\" enctype=\"multipart/form-data\">\n";
                         	for (Variable variable: process.getVariableScope().getVariables()) {
                         		if ("String".equals(variable.getType().getStringType())) {
-                        			output += variable.getName() + ": <input type=\"text\" name=\"" + variable.getName() + "\" />\n";
+                        			output += variable.getName() + ": <input type=\"text\" name=\"" + variable.getName() + "\" /><BR/>\n";
                         		}
                         	}
                         	output +=
-                        		"<input type=\"submit\" value=\"Complete\">\n" +
+                        		"<input type=\"submit\" value=\"Complete\"/>\n" +
                         		"</form>\n" +
                         		"</body>\n" +
                         		"</html>";

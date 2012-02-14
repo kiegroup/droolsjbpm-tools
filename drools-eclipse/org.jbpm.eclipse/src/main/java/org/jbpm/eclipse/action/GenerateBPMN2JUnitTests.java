@@ -4,8 +4,10 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.definition.process.Connection;
@@ -42,6 +44,7 @@ import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.Split;
+import org.jbpm.workflow.core.node.WorkItemNode;
 
 public class GenerateBPMN2JUnitTests implements IObjectActionDelegate {
 
@@ -116,6 +119,7 @@ public class GenerateBPMN2JUnitTests implements IObjectActionDelegate {
                         	String output = 
                         		"package " + pName + ";\n" +
                 				"\n" +
+                				"import java.util.ArrayList;\n" +
                 				"import java.util.HashMap;\n" +
                 				"import java.util.List;\n" +
                 				"import java.util.Map;\n" +
@@ -144,6 +148,11 @@ public class GenerateBPMN2JUnitTests implements IObjectActionDelegate {
 	                        		"	@Test\n" +
 	                        		"    public void test" + entry.getKey() + "() {\n" +
 	                        		"        StatefulKnowledgeSession ksession = createKnowledgeSession(\"" + file.getName() + "\");\n";
+	                        	Set<String> serviceTasks = new HashSet<String>();
+	                        	containsServiceTasks(serviceTasks, process);
+	                        	for (String service: serviceTasks) {
+	                        		output += "        ksession.getWorkItemManager().registerWorkItemHandler(\"" + service + "\", handler);\n";
+	                        	}
 	                        	if (containsHumanTasks) {
 	                        		output += "        TaskService taskService = getTaskService(ksession);\n";
 	                        	}
@@ -213,11 +222,31 @@ public class GenerateBPMN2JUnitTests implements IObjectActionDelegate {
     	} else if (currentNode instanceof HumanTaskNode) {
     		HumanTaskNode taskNode = (HumanTaskNode) currentNode;
     		String actorId = (String) taskNode.getWork().getParameter("ActorId");
-    		actorId = actorId.split(",")[0];
+    		if (actorId == null) {
+    			actorId = "";
+    		}
+    		String groupId = (String) taskNode.getWork().getParameter("GroupId");
+    		if (groupId == null) {
+    			groupId = "";
+    		}
+    		String[] actorIds = new String[0];
+    		if (actorId.trim().length() > 0) {
+    			actorIds = actorId.split(","); 
+    		}
+    		String[] groupIds = new String[0];
+    		if (groupId.trim().length() > 0) {
+    			groupIds = groupId.split(",");
+    		}
+    		actorId = actorIds.length > 0 ? actorIds[0] : "";
     		testCode += 
     			"        // execute task\n" +
-    			"        List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner(\"" + actorId + "\", \"en-UK\");\n" +
-    			"        TaskSummary task = list.get(0);\n" +
+    			"        List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner(\"" + actorId + "\", new ArrayList<String>(), \"en-UK\");\n" +
+    			"        TaskSummary task = list.get(0);\n";
+    		if (actorIds.length > 1 || groupIds.length > 0) {
+    			testCode +=
+        			"        taskService.claim(task.getId(), \"" + actorId + "\", new ArrayList<String>());\n";
+    		}
+    		testCode +=
     			"        taskService.start(task.getId(), \"" + actorId + "\");\n" +
 				"        Map<String, Object> results = new HashMap<String, Object>();\n" +
 				"        // add results here\n";
@@ -233,6 +262,11 @@ public class GenerateBPMN2JUnitTests implements IObjectActionDelegate {
     		testCode +=
     			"        taskService.completeWithResults(task.getId(), \"" + actorId + "\", results);\n" +
     			"\n";
+    		processNodes(name, ((NodeImpl) currentNode).getTo().getTo(), testCode, cases);
+    	} else if (currentNode instanceof WorkItemNode) {
+    		WorkItemNode taskNode = (WorkItemNode) currentNode;
+    		testCode += 
+    			"        // if necessary, complete request for service task \"" + taskNode.getWork().getName() + "\"\n";
     		processNodes(name, ((NodeImpl) currentNode).getTo().getTo(), testCode, cases);
     	} else if (currentNode instanceof NodeImpl) {
     		processNodes(name, ((NodeImpl) currentNode).getTo().getTo(), testCode, cases);
@@ -251,5 +285,16 @@ public class GenerateBPMN2JUnitTests implements IObjectActionDelegate {
     		}
     	}
     	return false;
+    }
+
+    private void containsServiceTasks(Set<String> result, NodeContainer c) {
+    	for (Node node: c.getNodes()) {
+    		if (node instanceof WorkItemNode && !(node instanceof HumanTaskNode)) {
+    			result.add(((WorkItemNode) node).getWork().getName());
+    		}
+    		if (node instanceof NodeContainer) {
+    			containsServiceTasks(result, (NodeContainer) c);
+    		}
+    	}
     }
 }
