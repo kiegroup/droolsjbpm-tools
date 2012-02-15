@@ -146,7 +146,8 @@ public class HumanTaskCustomEditor extends EditBeanDialog<Work> implements WorkE
         work.setParameter("Comment", commentText.getText());
         work.setParameter("Priority", priorityText.getText());
         work.setParameter("Skippable", skippableButton.getSelection() + "");
-        work.setParameter("Content", contentText.getText());
+        String content = contentText.getText();
+        work.setParameter("Content", content.trim().length() == 0 ? null : content);
         work.setParameterDefinitions(((Work) value).getParameterDefinitions());
         return work;
     }
