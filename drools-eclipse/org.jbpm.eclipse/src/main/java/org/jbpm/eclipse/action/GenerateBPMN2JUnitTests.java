@@ -126,6 +126,7 @@ public class GenerateBPMN2JUnitTests implements IObjectActionDelegate {
                         		"\n" +
                         		"import org.drools.runtime.StatefulKnowledgeSession;\n" +
                         		"import org.drools.runtime.process.ProcessInstance;\n" +
+                        		"import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;\n" +
                         		"import org.jbpm.task.TaskService;\n" +
                         		"import org.jbpm.task.query.TaskSummary;\n" +
                         		"import org.jbpm.test.JbpmJUnitTestCase;\n" +
@@ -151,7 +152,7 @@ public class GenerateBPMN2JUnitTests implements IObjectActionDelegate {
 	                        	Set<String> serviceTasks = new HashSet<String>();
 	                        	containsServiceTasks(serviceTasks, process);
 	                        	for (String service: serviceTasks) {
-	                        		output += "        ksession.getWorkItemManager().registerWorkItemHandler(\"" + service + "\", handler);\n";
+	                        		output += "        ksession.getWorkItemManager().registerWorkItemHandler(\"" + service + "\", new SystemOutWorkItemHandler());\n";
 	                        	}
 	                        	if (containsHumanTasks) {
 	                        		output += "        TaskService taskService = getTaskService(ksession);\n";
@@ -240,14 +241,15 @@ public class GenerateBPMN2JUnitTests implements IObjectActionDelegate {
     		actorId = actorIds.length > 0 ? actorIds[0] : "";
     		testCode += 
     			"        // execute task\n" +
-    			"        List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner(\"" + actorId + "\", new ArrayList<String>(), \"en-UK\");\n" +
+    			"        String actorId = \"" + actorId + "\";\n" +
+    			"        List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner(actorId, new ArrayList<String>(), \"en-UK\");\n" +
     			"        TaskSummary task = list.get(0);\n";
     		if (actorIds.length > 1 || groupIds.length > 0) {
     			testCode +=
-        			"        taskService.claim(task.getId(), \"" + actorId + "\", new ArrayList<String>());\n";
+        			"        taskService.claim(task.getId(), actorId, new ArrayList<String>());\n";
     		}
     		testCode +=
-    			"        taskService.start(task.getId(), \"" + actorId + "\");\n" +
+    			"        taskService.start(task.getId(), actorId);\n" +
 				"        Map<String, Object> results = new HashMap<String, Object>();\n" +
 				"        // add results here\n";
     		for (Map.Entry<String, String> entry: taskNode.getOutMappings().entrySet()) {
@@ -260,7 +262,7 @@ public class GenerateBPMN2JUnitTests implements IObjectActionDelegate {
     				"        // results.put(\"" + entry.getKey() + "\", value);" + (type == null ? "" : " // type " + type) + "\n";
     		}
     		testCode +=
-    			"        taskService.completeWithResults(task.getId(), \"" + actorId + "\", results);\n" +
+    			"        taskService.completeWithResults(task.getId(), actorId, results);\n" +
     			"\n";
     		processNodes(name, ((NodeImpl) currentNode).getTo().getTo(), testCode, cases);
     	} else if (currentNode instanceof WorkItemNode) {

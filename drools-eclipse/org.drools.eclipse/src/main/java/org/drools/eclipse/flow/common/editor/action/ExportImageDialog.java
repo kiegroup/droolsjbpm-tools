@@ -160,7 +160,7 @@ public class ExportImageDialog extends TitleAreaDialog {
             if (index != -1) {
                 fileName = fileName.substring(0, index);
             }
-            fileName += ".png";
+            fileName += "-image.png";
             resourceGroup.setResource(fileName);
         } else if (originalName != null) {
             resourceGroup.setResource(originalName);
