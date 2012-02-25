@@ -158,7 +158,8 @@ public class ConstraintValueEditor {
             enums = DropDownData.create(new String[]{"true", "false"});
         }else
         {
-            enums = modeller.getSuggestionCompletionEngine().getEnums( pattern,
+            enums = modeller.getSuggestionCompletionEngine().getEnums( pattern.getFactType(),
+                                                                       pattern.constraintList,
                                                                        fieldName );
         }
         if ( enums != null && enums.fixedList.length > 0 ) {
