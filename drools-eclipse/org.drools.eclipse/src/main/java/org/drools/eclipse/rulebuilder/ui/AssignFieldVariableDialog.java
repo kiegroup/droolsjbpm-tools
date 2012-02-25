@@ -106,7 +106,8 @@ public class AssignFieldVariableDialog extends RuleDialog {
                     return;
                 }
 
-                pattern.addConstraint( new SingleFieldConstraint( fName,
+                pattern.addConstraint( new SingleFieldConstraint( pattern.getFactType(),
+                                                                  fName,
                                                                   ((String) combo.getData( fName )),
                                                                   con ) );
                 modeller.setDirty( true );
