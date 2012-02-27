@@ -473,15 +473,13 @@ public class RepositoryView extends ViewPart {
     }
 
     private void doubleClick(TreeObject node) {
-        if (node.getNodeType() == TreeObject.Type.PACKAGE
-            || node.getNodeType() == TreeObject.Type.REPOSITORY) {
+        if (node instanceof TreeParent) {
             if (viewer.getExpandedState(node)) {
                 viewer.collapseToLevel(node, 1);
             } else {
                 viewer.expandToLevel(node, 1);
             }
-        }
-        if (node.getNodeType() == TreeObject.Type.RESOURCE) {
+        } else {
 
             try {
                 String contents = getResourceContents(node);

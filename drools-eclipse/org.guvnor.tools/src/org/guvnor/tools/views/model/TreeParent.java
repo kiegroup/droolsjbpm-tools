@@ -19,6 +19,7 @@ package org.guvnor.tools.views.model;
 import java.net.ConnectException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
@@ -91,9 +92,9 @@ public class TreeParent extends TreeObject implements IDeferredWorkbenchAdapter 
                 }
                 monitor.done();
             }
-            if (node.getNodeType() == Type.REPOSITORY
-               || node.getNodeType() == Type.PACKAGE) {
-                   listDirectory(node, collector, monitor);
+            if (EnumSet.of(Type.REPOSITORY, Type.GLOBALS, Type.PACKAGES, Type.SNAPSHOTS, Type.PACKAGE,
+                    Type.SNAPSHOT_PACKAGE).contains(node.getNodeType())) {
+                listDirectory(node, collector, monitor);
             }
         }
 
@@ -135,7 +136,29 @@ public class TreeParent extends TreeObject implements IDeferredWorkbenchAdapter 
                         ResourceProperties resProps = listing.get(s);
                         TreeObject o = null;
                         if (resProps.isDirectory()) {
-                            o = new TreeParent(s, Type.PACKAGE);
+                            Type childType;
+                            switch (getNodeType()) {
+                            case REPOSITORY:
+                                if (s.startsWith("snapshot")) {
+                                    childType = Type.SNAPSHOTS;
+                                } else if (s.startsWith("packages")) {
+                                    childType = Type.PACKAGES;
+                                } else if (s.startsWith("globalarea")) {
+                                    childType = Type.GLOBALS;
+                                } else {
+                                    childType = Type.PACKAGE;
+                                }
+                                break;
+                            case SNAPSHOTS:
+                                childType = Type.SNAPSHOT_PACKAGE;
+                                break;
+                            case SNAPSHOT_PACKAGE:
+                                childType = Type.SNAPSHOT;
+                                break;
+                            default:
+                                childType = Type.PACKAGE;
+                            }
+                            o = new TreeParent(s, childType);
                         } else {
                             o = new TreeObject(s, Type.RESOURCE);
                         }

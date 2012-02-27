@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -139,6 +140,19 @@ public class Activator extends AbstractUIPlugin {
         });
     }
 
+    @Override
+    protected void initializeImageRegistry(ImageRegistry reg) {
+        super.initializeImageRegistry(reg);
+        reg.put(IMG_GUVCONTROLLED, loadImageDescriptor(IMG_GUVCONTROLLED));
+        reg.put(IMG_GUVLOCADD, loadImageDescriptor(IMG_GUVLOCADD));
+        reg.put(IMG_GUVCONTROLLED, loadImageDescriptor(IMG_GUVREPWIZBAN));
+        reg.put(IMG_GUVREP, loadImageDescriptor(IMG_GUVREP));
+        reg.put(IMG_GUVPACK, loadImageDescriptor(IMG_GUVPACK));
+        reg.put(IMG_GUVFOLDER, loadImageDescriptor(IMG_GUVFOLDER));
+        reg.put(IMG_GUVSNAPPACK, loadImageDescriptor(IMG_GUVSNAPPACK));
+        reg.put(IMG_GUVSNAPSHOT, loadImageDescriptor(IMG_GUVSNAPSHOT));
+    }
+
     /**
      * Returns an image descriptor for the image file at the given
      * plug-in relative path
@@ -147,11 +161,12 @@ public class Activator extends AbstractUIPlugin {
      * @return the image descriptor
      */
     public static ImageDescriptor getImageDescriptor(String id) {
-        ImageDescriptor img = getCachedImageDescriptor(id);
-        if (img == null) {
-            img = loadImageDescriptor(id);
+        ImageDescriptor retVal = getDefault().getImageRegistry().getDescriptor(id);
+        if (retVal == null) {
+            retVal = loadImageDescriptor(id);
+            getDefault().getImageRegistry().put(id, retVal);
         }
-        return img;
+        return retVal;
     }
 
     private static ImageDescriptor loadImageDescriptor(String id) {
@@ -166,36 +181,14 @@ public class Activator extends AbstractUIPlugin {
         }
     }
 
-    private static ImageDescriptor getCachedImageDescriptor(String id) {
-        ImageDescriptor img = null;
-        if (id.equals(IMG_GUVCONTROLLED)) {
-            if (GUVCONTROLLED_IMG == null) {
-                GUVCONTROLLED_IMG = loadImageDescriptor(IMG_GUVCONTROLLED);
-            }
-            img = GUVCONTROLLED_IMG;
-        }
-        if (id.equals(IMG_GUVLOCADD)) {
-            if (GUVLOCADD_IMG == null) {
-                GUVLOCADD_IMG = loadImageDescriptor(IMG_GUVLOCADD);
-            }
-            img = GUVLOCADD_IMG;
-        }
-        if (id.equals(IMG_GUVREPWIZBAN)) {
-            if (GUVREPWIZBAN_IMG == null) {
-                GUVREPWIZBAN_IMG = loadImageDescriptor(IMG_GUVREPWIZBAN);
-            }
-            img = GUVREPWIZBAN_IMG;
-        }
-        return img;
-    }
-
-    private static ImageDescriptor GUVCONTROLLED_IMG;
-    private static ImageDescriptor GUVLOCADD_IMG;
-    private static ImageDescriptor GUVREPWIZBAN_IMG;
-
     public static final String IMG_GUVCONTROLLED         = "guvnor_controlled.gif"; //$NON-NLS-1$
     public static final String IMG_GUVLOCADD             = "guvnor_rep_add.gif"; //$NON-NLS-1$
     public static final String IMG_GUVREPWIZBAN         = "guvnor_rep_wizban.gif"; //$NON-NLS-1$
+    public static final String IMG_GUVREP         = "guvnor_rep.gif"; //$NON-NLS-1$
+    public static final String IMG_GUVPACK         = "package.gif"; //$NON-NLS-1$
+    public static final String IMG_GUVFOLDER         = "chart_organisation.gif"; //$NON-NLS-1$
+    public static final String IMG_GUVSNAPPACK         = "snapshot_small.gif"; //$NON-NLS-1$
+    public static final String IMG_GUVSNAPSHOT         = "details.gif"; //$NON-NLS-1$
 
     public boolean useDebugHttpClient() {
         return Boolean.parseBoolean(Platform.getDebugOption("org.guvnor.tools/debugHttpClient")); //$NON-NLS-1$

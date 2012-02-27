@@ -41,6 +41,7 @@ import org.guvnor.tools.utils.PlatformUtils;
 import org.guvnor.tools.views.RepositoryContentProvider;
 import org.guvnor.tools.views.RepositoryLabelProvider;
 import org.guvnor.tools.views.model.TreeObject;
+import org.guvnor.tools.views.model.TreeParent;
 
 /**
  * Wizard page for selecting resources in Guvnor.
@@ -95,8 +96,7 @@ public class SelectGuvnorResourcesPage extends WizardPage {
     }
 
     private void doubleClick(TreeObject node) {
-        if (node.getNodeType() == TreeObject.Type.PACKAGE
-            || node.getNodeType() == TreeObject.Type.REPOSITORY) {
+        if (node instanceof TreeParent) {
             if (viewer.getExpandedState(node)) {
                 viewer.collapseToLevel(node, 1);
             } else {
