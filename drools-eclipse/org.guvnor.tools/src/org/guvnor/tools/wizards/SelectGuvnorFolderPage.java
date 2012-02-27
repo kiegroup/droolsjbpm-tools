@@ -36,6 +36,7 @@ import org.guvnor.tools.utils.PlatformUtils;
 import org.guvnor.tools.views.RepositoryContentProvider;
 import org.guvnor.tools.views.RepositoryLabelProvider;
 import org.guvnor.tools.views.model.TreeObject;
+import org.guvnor.tools.views.model.TreeObject.Type;
 import org.guvnor.tools.views.model.TreeParent;
 
 /**
@@ -143,8 +144,7 @@ public class SelectGuvnorFolderPage extends WizardPage {
         GuvWizardModel model = ((IGuvnorWizard)super.getWizard()).getModel();
         if (selection.getFirstElement() instanceof TreeParent) {
             TreeParent node = (TreeParent)selection.getFirstElement();
-            if (node.getNodeType() == TreeObject.Type.PACKAGE
-               || node.getNodeType() == TreeObject.Type.REPOSITORY) {
+            if (node.getNodeType() != Type.NONE) {
                 viewer.expandToLevel(node, 1);
                 String base = node.getFullPath().endsWith("/")?node.getFullPath():node.getFullPath() + "/"; //$NON-NLS-1$ //$NON-NLS-2$
                 model.setTargetLocation(base);

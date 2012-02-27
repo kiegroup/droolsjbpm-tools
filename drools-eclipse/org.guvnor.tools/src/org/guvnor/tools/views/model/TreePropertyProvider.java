@@ -55,7 +55,7 @@ public class TreePropertyProvider implements IPropertySource {
             if (node.getNodeType() == TreeObject.Type.REPOSITORY) {
                 return Messages.getString("prop.rep.value"); //$NON-NLS-1$
             }
-            if (node.getNodeType() == TreeObject.Type.PACKAGE) {
+            if (node.getResourceProps().isDirectory()) {
                 return Messages.getString("prop.dir.value"); //$NON-NLS-1$
             }
             if (node.getNodeType() == TreeObject.Type.RESOURCE) {
