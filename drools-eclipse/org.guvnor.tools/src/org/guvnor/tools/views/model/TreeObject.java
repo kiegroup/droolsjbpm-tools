@@ -31,7 +31,12 @@ public class TreeObject implements IAdaptable {
     public enum Type {
         NONE,
         REPOSITORY,
+        GLOBALS,
+        PACKAGES,
+        SNAPSHOTS,
         PACKAGE,
+        SNAPSHOT_PACKAGE,
+        SNAPSHOT,
         RESOURCE
     }
 
@@ -63,7 +68,7 @@ public class TreeObject implements IAdaptable {
 
     private TreePropertyProvider propProvider;
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public Object getAdapter(Class adapter) {
         if (adapter == IPropertySource.class) {
             if (propProvider == null) {
