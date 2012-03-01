@@ -20,12 +20,19 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.drools.builder.CompositeKnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderError;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
@@ -37,11 +44,13 @@ import org.drools.definition.process.Node;
 import org.drools.eclipse.DRLInfo.FunctionInfo;
 import org.drools.eclipse.DRLInfo.RuleInfo;
 import org.drools.eclipse.builder.DroolsBuilder;
+import org.drools.eclipse.builder.ResourceDescr;
 import org.drools.eclipse.builder.Util;
 import org.drools.eclipse.dsl.editor.DSLAdapter;
 import org.drools.eclipse.editors.AbstractRuleEditor;
 import org.drools.eclipse.preferences.IDroolsConstants;
 import org.drools.eclipse.util.ProjectClassLoader;
+import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
@@ -263,18 +272,124 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
         store.setDefault( IDroolsConstants.FLOW_NODES, 
                           "1111111111111" );
     }
+    
+    public List<DRLInfo> parseResources(List<ResourceDescr> resources) {
+    	List<ResourceDescr> toBeCompiled = new ArrayList<ResourceDescr>();
+    	List<DRLInfo> infos = new ArrayList<DRLInfo>();
+    	
+    	for (ResourceDescr resourceDescr : resources) {
+	        DRLInfo result = getExistingInfoForResource(resourceDescr.getResource(), true);
+	        if ( result != null ) {
+	        	infos.add(result);
+	        } else {
+	        	toBeCompiled.add(resourceDescr);
+	        }
+    	}
+
+    	infos.addAll(buildResources(toBeCompiled));
+    	return infos;
+    }
+    
+    private List<DRLInfo> buildResources(List<ResourceDescr> resources) {
+    	if (resources.isEmpty()) return Collections.emptyList();
+
+        ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+        
+        try {
+        	Map<Resource, ResourceDescr> resourceMap = new HashMap<Resource, ResourceDescr>();
+        	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(getBuilderConfiguration(resources));
+            CompositeKnowledgeBuilder compositeKBuilder = kbuilder.batch();
+            for (ResourceDescr resourceDescr : resources) {
+            	Resource resource = resourceDescr.getContentAsDroolsResource();
+            	resourceMap.put(resource, resourceDescr);
+            	compositeKBuilder.add(resource, resourceDescr.getType());
+            }
+            compositeKBuilder.build();
+            
+            if ( !kbuilder.hasErrors() ) {
+            	return Collections.emptyList();
+            }
+
+            List<DRLInfo> infos = new ArrayList<DRLInfo>();
+            PackageBuilder packageBuilder = ((KnowledgeBuilderImpl)kbuilder).getPackageBuilder();
+
+            Map<Resource, DRLInfo> infoMap = new HashMap<Resource, DRLInfo>();
+    		for (KnowledgeBuilderError error : (Collection<KnowledgeBuilderError>)kbuilder.getErrors()) {
+    			if (!(error instanceof DroolsError)) {
+    				continue;
+    			}
+    			Resource resource = error.getResource();
+    			if (resource == null) {
+    				throw new RuntimeException("Unknown resource for error: " + error);
+    			}
+    			
+    			final DroolsError droolsError = (DroolsError)error;
+    			String pkgName = droolsError.getNamespace();
+    			List<PackageDescr> packageDescrs = packageBuilder.getPackageDescrs(pkgName);
+    			PackageDescr packageDescr = packageDescrs != null && !packageDescrs.isEmpty() ? packageDescrs.get(0) : null;
+    			
+    			DRLInfo info = infoMap.get(resource);
+    			if (info == null) {
+    				info = new DRLInfo( "",
+                            packageDescr,
+                            new ArrayList<DroolsError>() {{
+                            	add(droolsError);
+                            }},
+                            packageBuilder.getPackageRegistry( packageDescr.getNamespace() ).getDialectCompiletimeRegistry() );
+    				info.setResource(resourceMap.get(resource).getResource());
+    				infoMap.put(resource, info);
+    			} else {
+    				info.addError(droolsError);
+    			}
+            }
+    		infos.addAll(infoMap.values());
+
+    		return infos;
+        } catch ( CoreException e ) {
+            log( e );
+        } finally {
+            Thread.currentThread().setContextClassLoader( oldLoader );
+        }
+        
+        return Collections.emptyList();
+    }
+    
+    private PackageBuilderConfiguration getBuilderConfiguration(List<ResourceDescr> resources) throws CoreException {
+        ClassLoader newLoader = DroolsBuilder.class.getClassLoader();
+        IResource firstResource = resources.get(0).getResource();
+        String level = null;
+        if ( firstResource.getProject().getNature( "org.eclipse.jdt.core.javanature" ) != null ) {
+            IJavaProject project = JavaCore.create( firstResource.getProject() );
+            newLoader = ProjectClassLoader.getProjectClassLoader( project );
+            level = project.getOption( JavaCore.COMPILER_COMPLIANCE, true );
+        }
+
+        Thread.currentThread().setContextClassLoader( newLoader );
+        PackageBuilderConfiguration builderConfiguration = new PackageBuilderConfiguration();
+        builderConfiguration.getClassLoader().addClassLoader( newLoader );
+        if ( level != null ) {
+            JavaDialectConfiguration javaConf = (JavaDialectConfiguration) builderConfiguration.getDialectConfiguration( "java" );
+            javaConf.setJavaLanguageLevel( level );
+        }
+        return builderConfiguration;
+    }
 
     public DRLInfo parseResource(IResource resource,
                                  boolean compile) throws DroolsParserException {
-        DRLInfo result = (DRLInfo) compiledRules.get( resource );
-        if ( result == null && !compile ) {
-            result = (DRLInfo) parsedRules.get( resource );
-        }
+        DRLInfo result = getExistingInfoForResource(resource, compile);
         if ( result != null ) {
             return result;
         }
         return generateParsedResource( resource,
                                        compile );
+    }
+    
+    private DRLInfo getExistingInfoForResource(IResource resource, boolean compile) {
+        DRLInfo result = (DRLInfo) compiledRules.get( resource );
+        if ( result == null && !compile ) {
+            result = (DRLInfo) parsedRules.get( resource );
+        }
+        return result;
     }
 
     public DRLInfo parseResource(AbstractRuleEditor editor,
@@ -376,10 +491,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                                           boolean useCache,
                                           boolean compile) throws DroolsParserException {
         useCache = useCache && useCachePreference;
-        DrlParser parser = new DrlParser();
         try {
-            Reader dslReader = DSLAdapter.getDSLContent( content,
-                                                         resource );
             ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
             ClassLoader newLoader = DroolsBuilder.class.getClassLoader();
             String level = null;
@@ -387,8 +499,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
             if ( resource != null && resource.getProject().getNature( "org.eclipse.jdt.core.javanature" ) != null ) {
                 IJavaProject project = JavaCore.create( resource.getProject() );
                 newLoader = ProjectClassLoader.getProjectClassLoader( project );
-                level = project.getOption( JavaCore.COMPILER_COMPLIANCE,
-                                           true );
+                level = project.getOption( JavaCore.COMPILER_COMPLIANCE, true );
             }
             try {
                 Thread.currentThread().setContextClassLoader( newLoader );
@@ -397,7 +508,6 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                     JavaDialectConfiguration javaConf = (JavaDialectConfiguration) builder_configuration.getDialectConfiguration( "java" );
                     javaConf.setJavaLanguageLevel( level );
                 }
-                builder_configuration.getClassLoader().addClassLoader( newLoader );
 
                 // first parse the source
                 PackageDescr packageDescr = null;
@@ -410,7 +520,9 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                     }
                 }
 
+                DrlParser parser = new DrlParser();
                 if ( packageDescr == null ) {
+                    Reader dslReader = DSLAdapter.getDSLContent( content, resource );
                     if ( dslReader != null ) {
                         packageDescr = parser.parse( true, content, dslReader );
                     } else {

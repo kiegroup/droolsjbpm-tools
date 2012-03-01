@@ -21,11 +21,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.antlr.runtime.RecognitionException;
+import org.drools.builder.KnowledgeBuilderResult;
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.DroolsError;
@@ -78,6 +80,8 @@ import org.eclipse.jdt.core.JavaModelException;
 public class DroolsBuilder extends IncrementalProjectBuilder {
 
     public static final String BUILDER_ID = "org.drools.eclipse.droolsbuilder";
+    
+    private static final boolean USE_BATCH_COMPILATION = true;
 
     protected IProject[] build(int kind,
                                Map args,
@@ -135,12 +139,19 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                 }
             }
         }
-        getProject().accept( new DroolsBuildVisitor() );
+        
+        if (USE_BATCH_COMPILATION) {
+        	DroolsBatchBuildVisitor batchBuildVisitor = new DroolsBatchBuildVisitor();
+        	getProject().accept( batchBuildVisitor );
+        	batchBuildVisitor.build();
+        } else {
+        	getProject().accept( new DroolsBuildVisitor() );
+        }
     }
 
     protected void incrementalBuild(IResourceDelta delta,
                                     IProgressMonitor monitor) throws CoreException {
-        boolean buildAll = DroolsEclipsePlugin.getDefault().getPreferenceStore().getBoolean( IDroolsConstants.BUILD_ALL );
+        boolean buildAll = USE_BATCH_COMPILATION || DroolsEclipsePlugin.getDefault().getPreferenceStore().getBoolean( IDroolsConstants.BUILD_ALL );
         if ( buildAll ) {
             // to make sure that all rules are checked when a java file is changed
             fullBuild( monitor );
@@ -149,6 +160,38 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         }
     }
 
+    private class DroolsBatchBuildVisitor implements IResourceVisitor {
+    	private final List<ResourceDescr> resourceDescrs = new ArrayList<ResourceDescr>();
+    	
+		public boolean visit(IResource resource) throws CoreException {
+	        try {
+	            if ( isInOutputDirectory(resource) ) {
+	                return false;
+	            }
+	        } catch ( JavaModelException e ) {
+	            // do nothing
+	        }
+	        if ( !exists(resource) ) {
+	            return false;
+	        }
+
+	        ResourceDescr resourceDescr = ResourceDescr.createResourceDescr(resource);
+			if (resourceDescr != null) {
+	            removeProblemsFor(resource);
+	            DroolsEclipsePlugin.getDefault().invalidateResource(resource);
+				resourceDescrs.add(resourceDescr);
+			}
+			return true;
+		}
+		
+		public void build() {
+			List<DRLInfo> drlInfos = DroolsEclipsePlugin.getDefault().parseResources(resourceDescrs);
+			for (DRLInfo drlInfo : drlInfos) {
+				appendMarkers(drlInfo);
+			}
+		}
+    }
+    
     private class DroolsBuildVisitor
         implements
         IResourceVisitor {
@@ -166,6 +209,23 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                                   false );
         }
     }
+    
+    private boolean isInOutputDirectory(IResource res) throws JavaModelException {
+        IJavaProject project = JavaCore.create( res.getProject() );
+        // exclude files that are located in the output directory,
+        // unless the output directory is the same as the project location
+        return !project.getOutputLocation().equals( project.getPath() )
+                && project.getOutputLocation().isPrefixOf( res.getFullPath() );
+    }
+    
+    private boolean exists(IResource res) {
+        if ( !res.exists() ) {
+            removeProblemsFor( res );
+            DroolsEclipsePlugin.getDefault().invalidateResource( res );
+            return false;
+        }
+        return true;
+    }
 
     protected boolean parseResource(IResource res,
                                     boolean clean) {
@@ -174,20 +234,14 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             if ( ".guvnorinfo".equals( res.getName() ) ) {
                 return false;
             }
-            IJavaProject project = JavaCore.create( res.getProject() );
-            // exclude files that are located in the output directory,
-            // unless the ouput directory is the same as the project location
-            if ( !project.getOutputLocation().equals( project.getPath() )
-                    && project.getOutputLocation().isPrefixOf( res.getFullPath() ) ) {
+            if ( isInOutputDirectory(res) ) {
                 return false;
             }
         } catch ( JavaModelException e ) {
             // do nothing
         }
 
-        if ( !res.exists() ) {
-            removeProblemsFor( res );
-            DroolsEclipsePlugin.getDefault().invalidateResource( res );
+        if ( !exists(res) ) {
             return false;
         }
 
@@ -200,13 +254,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                 if ( clean ) {
                     DroolsEclipsePlugin.getDefault().invalidateResource( res );
                 }
-                DroolsBuildMarker[] markers = parseDRLFile( (IFile) res,
-                                                            new String( Util.getResourceContentsAsCharArray( (IFile) res ) ) );
-                for ( int i = 0; i < markers.length; i++ ) {
-                    createMarker( res,
-                                  markers[i].getText(),
-                                  markers[i].getLine() );
-                }
+                appendMarkers( res, parseDRLFile( (IFile) res ) );
             } catch ( Throwable t ) {
                 DroolsEclipsePlugin.log( t );
                 createMarker( res,
@@ -220,12 +268,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                 if ( clean ) {
                     DroolsEclipsePlugin.getDefault().invalidateResource( res );
                 }
-                DroolsBuildMarker[] markers = parseXLSFile( (IFile) res );
-                for ( int i = 0; i < markers.length; i++ ) {
-                    createMarker( res,
-                                  markers[i].getText(),
-                                  markers[i].getLine() );
-                }
+                appendMarkers( res, parseXLSFile( (IFile) res ) );
             } catch ( Throwable t ) {
                 createMarker( res,
                               t.getMessage(),
@@ -238,12 +281,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                 if ( clean ) {
                     DroolsEclipsePlugin.getDefault().invalidateResource( res );
                 }
-                DroolsBuildMarker[] markers = parseCSVFile( (IFile) res );
-                for ( int i = 0; i < markers.length; i++ ) {
-                    createMarker( res,
-                                  markers[i].getText(),
-                                  markers[i].getLine() );
-                }
+                appendMarkers( res, parseCSVFile( (IFile) res ) );
             } catch ( Throwable t ) {
                 createMarker( res,
                               t.getMessage(),
@@ -256,12 +294,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                 if ( clean ) {
                     DroolsEclipsePlugin.getDefault().invalidateResource( res );
                 }
-                DroolsBuildMarker[] markers = parseBRLFile( (IFile) res );
-                for ( int i = 0; i < markers.length; i++ ) {
-                    createMarker( res,
-                                  markers[i].getText(),
-                                  markers[i].getLine() );
-                }
+                appendMarkers( res, parseBRLFile( (IFile) res ) );
             } catch ( Throwable t ) {
                 createMarker( res,
                               t.getMessage(),
@@ -274,13 +307,8 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                 if ( clean ) {
                     DroolsEclipsePlugin.getDefault().invalidateResource( res );
                 }
-                DroolsBuildMarker[] markers = parseRuleFlowFile( (IFile) res );
-                for ( int i = 0; i < markers.length; i++ ) {
-                    createMarker( res,
-                                  markers[i].getText(),
-                                  markers[i].getLine() );
-                }
-            } catch ( Throwable t ) {
+                appendMarkers( res, parseRuleFlowFile( (IFile) res ) );
+           } catch ( Throwable t ) {
                 createMarker( res,
                               t.getMessage(),
                               -1 );
@@ -293,13 +321,8 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                 if ( clean ) {
                     DroolsEclipsePlugin.getDefault().invalidateResource( res );
                 }
-                DroolsBuildMarker[] markers = parseRuleFlowFile( (IFile) res );
-                for ( int i = 0; i < markers.length; i++ ) {
-                    createMarker( res,
-                                  markers[i].getText(),
-                                  markers[i].getLine() );
-                }
-            } catch ( Throwable t ) {
+                appendMarkers( res, parseRuleFlowFile( (IFile) res ) );
+           } catch ( Throwable t ) {
                 createMarker( res,
                               t.getMessage(),
                               -1 );
@@ -309,51 +332,32 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
 
         return true;
     }
-
-    private DroolsBuildMarker[] parseDRLFile(IFile file,
-                                             String content) {
-        List markers = new ArrayList();
-        try {
-            DRLInfo drlInfo =
-                    DroolsEclipsePlugin.getDefault().parseResource( file,
-                                                                    true );
-            //parser errors
-            markParseErrors( markers,
-                             drlInfo.getParserErrors() );
-            markOtherErrors( markers,
-                             drlInfo.getBuilderErrors() );
-        } catch ( DroolsParserException e ) {
-            // we have an error thrown from DrlParser
-            Throwable cause = e.getCause();
-            if ( cause instanceof RecognitionException ) {
-                RecognitionException recogErr = (RecognitionException) cause;
-                markers.add( new DroolsBuildMarker( recogErr.getMessage(),
-                                                    recogErr.line ) ); //flick back the line number
-            }
-        } catch ( Exception t ) {
-            String message = t.getMessage();
-            if ( message == null || message.trim().equals( "" ) ) {
-                message = "Error: " + t.getClass().getName();
-            }
-            markers.add( new DroolsBuildMarker( message ) );
+    
+    private void appendMarkers(DRLInfo drlInfo) {
+    	List<DroolsBuildMarker> markers = new ArrayList<DroolsBuildMarker>();
+        markParseErrors( markers, drlInfo.getParserErrors() );
+        markOtherErrors( markers, drlInfo.getBuilderErrors() );
+        appendMarkers(drlInfo.getResource(), markers);
+    }
+    
+    private void appendMarkers(IResource res, List<DroolsBuildMarker> markers) {
+        for ( DroolsBuildMarker marker : markers ) {
+            createMarker( res, marker.getText(), marker.getLine() );
         }
-        return (DroolsBuildMarker[]) markers.toArray( new DroolsBuildMarker[markers.size()] );
+    }
+    
+    private interface ResourceParser {
+    	DRLInfo parseResource() throws DroolsParserException, DecisionTableParseException, CoreException, IOException;
     }
 
-    private DroolsBuildMarker[] parseXLSFile(IFile file) {
-        List markers = new ArrayList();
+    private List<DroolsBuildMarker> parseResource(ResourceParser resourceParser) {
+        List<DroolsBuildMarker> markers = new ArrayList<DroolsBuildMarker>();
         try {
-            SpreadsheetCompiler converter = new SpreadsheetCompiler();
-            String drl = converter.compile( file.getContents(),
-                                            InputType.XLS );
-            DRLInfo drlInfo =
-                    DroolsEclipsePlugin.getDefault().parseXLSResource( drl,
-                                                                       file );
-            // parser errors
-            markParseErrors( markers,
-                             drlInfo.getParserErrors() );
-            markOtherErrors( markers,
-                             drlInfo.getBuilderErrors() );
+            DRLInfo drlInfo = resourceParser.parseResource();
+
+            //parser errors
+            markParseErrors( markers, drlInfo.getParserErrors() );
+            markOtherErrors( markers, drlInfo.getBuilderErrors() );
         } catch ( DroolsParserException e ) {
             // we have an error thrown from DrlParser
             Throwable cause = e.getCause();
@@ -366,123 +370,77 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             if ( !"No RuleTable's were found in spreadsheet.".equals( e.getMessage() ) ) {
                 throw e;
             }
-        } catch ( Exception t ) {
+       } catch ( Exception t ) {
             String message = t.getMessage();
             if ( message == null || message.trim().equals( "" ) ) {
                 message = "Error: " + t.getClass().getName();
             }
             markers.add( new DroolsBuildMarker( message ) );
         }
-        return (DroolsBuildMarker[]) markers.toArray( new DroolsBuildMarker[markers.size()] );
+        return markers;
+    }
+    
+    private List<DroolsBuildMarker> parseDRLFile(final IFile file) {
+    	return parseResource(new ResourceParser() {
+    		public DRLInfo parseResource() throws DroolsParserException {
+    			return DroolsEclipsePlugin.getDefault().parseResource( file, true );
+    		}
+    	});
     }
 
-    private DroolsBuildMarker[] parseCSVFile(IFile file) {
-        List markers = new ArrayList();
-        try {
-            SpreadsheetCompiler converter = new SpreadsheetCompiler();
-            String drl = converter.compile( file.getContents(),
-                                            InputType.CSV );
-            DRLInfo drlInfo =
-                    DroolsEclipsePlugin.getDefault().parseXLSResource( drl,
-                                                                       file );
-            // parser errors
-            markParseErrors( markers,
-                             drlInfo.getParserErrors() );
-            markOtherErrors( markers,
-                             drlInfo.getBuilderErrors() );
-        } catch ( DroolsParserException e ) {
-            // we have an error thrown from DrlParser
-            Throwable cause = e.getCause();
-            if ( cause instanceof RecognitionException ) {
-                RecognitionException recogErr = (RecognitionException) cause;
-                markers.add( new DroolsBuildMarker( recogErr.getMessage(),
-                                                    recogErr.line ) ); //flick back the line number
-            }
-        } catch ( Exception t ) {
-            String message = t.getMessage();
-            if ( message == null || message.trim().equals( "" ) ) {
-                message = "Error: " + t.getClass().getName();
-            }
-            markers.add( new DroolsBuildMarker( message ) );
-        }
-        return (DroolsBuildMarker[]) markers.toArray( new DroolsBuildMarker[markers.size()] );
+    private List<DroolsBuildMarker> parseXLSFile(final IFile file) {
+    	return parseResource(new ResourceParser() {
+    		public DRLInfo parseResource() throws DroolsParserException, DecisionTableParseException, CoreException {
+                SpreadsheetCompiler converter = new SpreadsheetCompiler();
+                String drl = converter.compile( file.getContents(), InputType.XLS );
+                return DroolsEclipsePlugin.getDefault().parseXLSResource( drl, file );
+    		}
+    	});
     }
 
-    private DroolsBuildMarker[] parseBRLFile(IFile file) {
-        List markers = new ArrayList();
-        try {
-            String brl = convertToString( file.getContents() );
-            RuleModel model = BRXMLPersistence.getInstance().unmarshal( brl );
-            String drl = BRDRLPersistence.getInstance().marshal( model );
-
-            // TODO pass this through DSL converter in case brl is based on dsl
-
-            DRLInfo drlInfo =
-                    DroolsEclipsePlugin.getDefault().parseBRLResource( drl,
-                                                                       file );
-            // parser errors
-            markParseErrors( markers,
-                             drlInfo.getParserErrors() );
-            markOtherErrors( markers,
-                             drlInfo.getBuilderErrors() );
-        } catch ( DroolsParserException e ) {
-            // we have an error thrown from DrlParser
-            Throwable cause = e.getCause();
-            if ( cause instanceof RecognitionException ) {
-                RecognitionException recogErr = (RecognitionException) cause;
-                markers.add( new DroolsBuildMarker( recogErr.getMessage(),
-                                                    recogErr.line ) ); //flick back the line number
-            }
-        } catch ( Exception t ) {
-            String message = t.getMessage();
-            if ( message == null || message.trim().equals( "" ) ) {
-                message = "Error: " + t.getClass().getName();
-            }
-            markers.add( new DroolsBuildMarker( message ) );
-        }
-        return (DroolsBuildMarker[]) markers.toArray( new DroolsBuildMarker[markers.size()] );
+    private List<DroolsBuildMarker> parseCSVFile(final IFile file) {
+    	return parseResource(new ResourceParser() {
+    		public DRLInfo parseResource() throws DroolsParserException, CoreException {
+                SpreadsheetCompiler converter = new SpreadsheetCompiler();
+                String drl = converter.compile( file.getContents(), InputType.CSV );
+                return DroolsEclipsePlugin.getDefault().parseXLSResource( drl, file );
+    		}
+    	});
     }
 
-    private DroolsBuildMarker[] parseGDSTFile(IFile file) {
-        List markers = new ArrayList();
-        try {
-            String gdst = convertToString( file.getContents() );
-            GuidedDecisionTable52 dt = GuidedDTXMLPersistence.getInstance().unmarshal( gdst );
-            String drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
+    private List<DroolsBuildMarker> parseBRLFile(final IFile file) {
+    	return parseResource(new ResourceParser() {
+    		public DRLInfo parseResource() throws DroolsParserException, CoreException, IOException {
+                String brl = convertToString( file.getContents() );
+                RuleModel model = BRXMLPersistence.getInstance().unmarshal( brl );
+                String drl = BRDRLPersistence.getInstance().marshal( model );
 
-            // TODO pass this through DSL converter in case brl is based on dsl
+                // TODO pass this through DSL converter in case brl is based on dsl
 
-            DRLInfo drlInfo =
-                    DroolsEclipsePlugin.getDefault().parseGDSTResource( drl,
-                                                                        file );
-            // parser errors
-            markParseErrors( markers,
-                             drlInfo.getParserErrors() );
-            markOtherErrors( markers,
-                             drlInfo.getBuilderErrors() );
-        } catch ( DroolsParserException e ) {
-            // we have an error thrown from DrlParser
-            Throwable cause = e.getCause();
-            if ( cause instanceof RecognitionException ) {
-                RecognitionException recogErr = (RecognitionException) cause;
-                markers.add( new DroolsBuildMarker( recogErr.getMessage(),
-                                                    recogErr.line ) ); //flick back the line number
-            }
-        } catch ( Exception t ) {
-            String message = t.getMessage();
-            if ( message == null || message.trim().equals( "" ) ) {
-                message = "Error: " + t.getClass().getName();
-            }
-            markers.add( new DroolsBuildMarker( message ) );
-        }
-        return (DroolsBuildMarker[]) markers.toArray( new DroolsBuildMarker[markers.size()] );
+                return DroolsEclipsePlugin.getDefault().parseBRLResource( drl, file );
+    		}
+    	});
     }
 
-    protected DroolsBuildMarker[] parseRuleFlowFile(IFile file) {
+    private List<DroolsBuildMarker> parseGDSTFile(final IFile file) {
+    	return parseResource(new ResourceParser() {
+    		public DRLInfo parseResource() throws DroolsParserException, CoreException, IOException {
+                String gdst = convertToString( file.getContents() );
+                GuidedDecisionTable52 dt = GuidedDTXMLPersistence.getInstance().unmarshal( gdst );
+                String drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
+
+                // TODO pass this through DSL converter in case brl is based on dsl
+
+                return DroolsEclipsePlugin.getDefault().parseGDSTResource( drl, file );
+    		}
+    	});
+    }
+
+    protected List<DroolsBuildMarker> parseRuleFlowFile(IFile file) {
+        List<DroolsBuildMarker> markers = new ArrayList<DroolsBuildMarker>();
         if ( !file.exists() ) {
-            return new DroolsBuildMarker[0];
+            return markers;
         }
-        List markers = new ArrayList();
         try {
             String input = convertToString( file.getContents() );
             ProcessInfo processInfo =
@@ -500,7 +458,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             }
             markers.add( new DroolsBuildMarker( message ) );
         }
-        return (DroolsBuildMarker[]) markers.toArray( new DroolsBuildMarker[markers.size()] );
+        return markers;
     }
 
     protected static String convertToString(final InputStream inputStream) throws IOException {
@@ -520,14 +478,19 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
      * This will create markers for parse errors. Parse errors mean that antlr
      * has picked up some major typos in the input source.
      */
-    protected void markParseErrors(List markers,
-                                   List parserErrors) {
-        for ( Iterator iter = parserErrors.iterator(); iter.hasNext(); ) {
+    protected void markParseErrors(List<DroolsBuildMarker> markers,
+                                   List<DroolsError> parserErrors) {
+        for ( Iterator<DroolsError> iter = parserErrors.iterator(); iter.hasNext(); ) {
             Object error = iter.next();
             if ( error instanceof ParserError ) {
                 ParserError err = (ParserError) error;
                 markers.add( new DroolsBuildMarker( err.getMessage(),
                                                     err.getRow() ) );
+            } else if ( error instanceof KnowledgeBuilderResult ) {
+            	KnowledgeBuilderResult res = (KnowledgeBuilderResult)error;
+            	int[] errorLines = res.getLines();
+                markers.add( new DroolsBuildMarker( res.getMessage(),
+                									errorLines != null && errorLines.length > 0 ? errorLines[0] : -1 ) );
             } else if ( error instanceof ExpanderException ) {
                 ExpanderException exc = (ExpanderException) error;
                 // TODO line mapping is incorrect
@@ -542,7 +505,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
     /**
      * This will create markers for build errors that happen AFTER parsing.
      */
-    private void markOtherErrors(List markers,
+    private void markOtherErrors(List<DroolsBuildMarker> markers,
                                         DroolsError[] buildErrors) {
         // TODO are there warnings too?
         for ( int i = 0; i < buildErrors.length; i++ ) {
@@ -642,7 +605,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
 
     private IProject[] getRequiredProjects(IProject project) {
         IJavaProject javaProject = JavaCore.create( project );
-        List projects = new ArrayList();
+        List<IProject> projects = new ArrayList<IProject>();
         try {
             IClasspathEntry[] entries = javaProject.getResolvedClasspath( true );
             for ( int i = 0, l = entries.length; i < l; i++ ) {

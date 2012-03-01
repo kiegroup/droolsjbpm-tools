@@ -30,14 +30,15 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.DialectRuntimeRegistry;
 import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
+import org.eclipse.core.resources.IResource;
 
 public class DRLInfo {
 
     private static final DroolsError[] EMPTY_DROOLS_ERROR_ARRAY = new DroolsError[0];
     private static final List<DroolsError> EMPTY_LIST = Collections.unmodifiableList(new ArrayList<DroolsError>());
 
-    private String sourcePathName;
-    private PackageDescr packageDescr;
+    private final String sourcePathName;
+    private final PackageDescr packageDescr;
     private List<DroolsError> parserErrors;
     private Package compiledPackage;
     private DroolsError[] builderErrors;
@@ -45,6 +46,8 @@ public class DRLInfo {
     private transient RuleInfo[] ruleInfos;
     private transient FunctionInfo[] functionInfos;
     private DialectCompiletimeRegistry dialectRegistry;
+    
+    private IResource resource;
 
     public DRLInfo(String sourcePathName, PackageDescr packageDescr, List<DroolsError> parserErrors, DialectCompiletimeRegistry dialectRegistry) {
         if (sourcePathName == null) {
@@ -52,8 +55,7 @@ public class DRLInfo {
         }
         this.sourcePathName = sourcePathName;
         this.packageDescr = packageDescr;
-        this.parserErrors =
-            parserErrors == null ? EMPTY_LIST : Collections.unmodifiableList(parserErrors);
+        this.parserErrors = parserErrors;
         this.builderErrors = EMPTY_DROOLS_ERROR_ARRAY;
         this.dialectRegistry = dialectRegistry;
     }
@@ -78,6 +80,10 @@ public class DRLInfo {
 
     public List<DroolsError> getParserErrors() {
         return parserErrors;
+    }
+    
+    public void addError(DroolsError error) {
+    	parserErrors.add(error);
     }
 
     public Package getPackage() {
@@ -128,6 +134,14 @@ public class DRLInfo {
 
     public DialectCompiletimeRegistry getDialectRegistry() {
         return dialectRegistry;
+    }
+    
+    public IResource getResource() {
+    	return resource;
+    }
+    
+    public void setResource(IResource resource) {
+    	this.resource = resource;
     }
 
     public class RuleInfo {
