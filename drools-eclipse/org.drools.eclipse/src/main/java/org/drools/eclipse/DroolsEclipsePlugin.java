@@ -326,7 +326,10 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
     			final DroolsError droolsError = (DroolsError)error;
     			String pkgName = droolsError.getNamespace();
     			List<PackageDescr> packageDescrs = packageBuilder.getPackageDescrs(pkgName);
-    			PackageDescr packageDescr = packageDescrs != null && !packageDescrs.isEmpty() ? packageDescrs.get(0) : null;
+    			if (packageDescrs == null || packageDescrs.isEmpty()) {
+    				continue;
+    			}
+    			PackageDescr packageDescr = packageDescrs.get(0);
     			
     			DRLInfo info = infoMap.get(resource);
     			if (info == null) {

@@ -6,7 +6,6 @@ import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 
 public class ResourceDescr {
 
@@ -30,7 +29,8 @@ public class ResourceDescr {
 		
 		try {
 			descr.content = new String( Util.getResourceContentsAsCharArray( file ) );
-		} catch (CoreException e) {
+			descr.droolsResource = ResourceFactory.newByteArrayResource(descr.content.getBytes());
+		} catch (Exception e) {
 			DroolsEclipsePlugin.log( e );
 			return null;
 		}
@@ -51,9 +51,6 @@ public class ResourceDescr {
 	}
 
 	public Resource getContentAsDroolsResource() {
-		if (droolsResource == null) {
-			droolsResource = ResourceFactory.newByteArrayResource(content.getBytes());
-		}
 		return droolsResource;
 	}
 	
