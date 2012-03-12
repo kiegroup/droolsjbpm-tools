@@ -72,6 +72,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
  * Automatically syntax checks .drl files and adds possible errors or warnings
@@ -81,8 +82,6 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
 
     public static final String BUILDER_ID = "org.drools.eclipse.droolsbuilder";
     
-    private static final boolean USE_BATCH_COMPILATION = true;
-
     protected IProject[] build(int kind,
                                Map args,
                                IProgressMonitor monitor)
@@ -140,7 +139,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             }
         }
         
-        if (USE_BATCH_COMPILATION) {
+        if (DroolsEclipsePlugin.getDefault().getPreferenceStore().getBoolean( IDroolsConstants.CROSS_BUILD )) {
         	DroolsBatchBuildVisitor batchBuildVisitor = new DroolsBatchBuildVisitor();
         	getProject().accept( batchBuildVisitor );
         	batchBuildVisitor.build();
@@ -151,8 +150,9 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
 
     protected void incrementalBuild(IResourceDelta delta,
                                     IProgressMonitor monitor) throws CoreException {
-        boolean buildAll = USE_BATCH_COMPILATION || DroolsEclipsePlugin.getDefault().getPreferenceStore().getBoolean( IDroolsConstants.BUILD_ALL );
-        if ( buildAll ) {
+    	IPreferenceStore store = DroolsEclipsePlugin.getDefault().getPreferenceStore();
+        boolean fullBuild = store.getBoolean( IDroolsConstants.CROSS_BUILD ) || store.getBoolean( IDroolsConstants.BUILD_ALL );
+        if ( fullBuild ) {
             // to make sure that all rules are checked when a java file is changed
             fullBuild( monitor );
         } else {

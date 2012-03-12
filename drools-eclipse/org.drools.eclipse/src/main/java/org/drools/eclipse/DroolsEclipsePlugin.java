@@ -257,6 +257,8 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
     protected void initializeDefaultPreferences(IPreferenceStore store) {
         store.setDefault( IDroolsConstants.BUILD_ALL,
                           false );
+        store.setDefault( IDroolsConstants.CROSS_BUILD,
+        				  false );
         store.setDefault( IDroolsConstants.EDITOR_FOLDING,
                           true );
         store.setDefault( IDroolsConstants.CACHE_PARSED_RULES,

@@ -33,6 +33,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public class DroolsPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
     private Button buildAllCheckBox;
+    private Button crossBuildCheckBox;
     private Button collapseEditorCheckBox;
     private Button cacheParsedRulesCheckBox;
     private Combo processSkinCombo;
@@ -47,6 +48,8 @@ public class DroolsPreferencePage extends PreferencePage implements IWorkbenchPr
         
         buildAllCheckBox = createCheckBox(composite,
             "Automatically reparse all rules if a Java resource is changed.");
+        crossBuildCheckBox = createCheckBox(composite,
+            "Allow cross references in DRL files.");
         collapseEditorCheckBox = createCheckBox(composite,
             "Use code folding in DRL editor.");
         cacheParsedRulesCheckBox = createCheckBox(composite,
@@ -86,6 +89,7 @@ public class DroolsPreferencePage extends PreferencePage implements IWorkbenchPr
     private void initializeDefaults() {
         IPreferenceStore store = getPreferenceStore();
         buildAllCheckBox.setSelection(store.getDefaultBoolean(IDroolsConstants.BUILD_ALL));
+        crossBuildCheckBox.setSelection(store.getDefaultBoolean(IDroolsConstants.CROSS_BUILD));
         collapseEditorCheckBox.setSelection(store.getDefaultBoolean(IDroolsConstants.EDITOR_FOLDING));
         cacheParsedRulesCheckBox.setSelection(store.getDefaultBoolean(IDroolsConstants.CACHE_PARSED_RULES));
         String skin = store.getDefaultString(IDroolsConstants.SKIN);
@@ -101,6 +105,7 @@ public class DroolsPreferencePage extends PreferencePage implements IWorkbenchPr
     private void initializeValues() {
         IPreferenceStore store = getPreferenceStore();
         buildAllCheckBox.setSelection(store.getBoolean(IDroolsConstants.BUILD_ALL));
+        crossBuildCheckBox.setSelection(store.getBoolean(IDroolsConstants.CROSS_BUILD));
         collapseEditorCheckBox.setSelection(store.getBoolean(IDroolsConstants.EDITOR_FOLDING));
         cacheParsedRulesCheckBox.setSelection(store.getBoolean(IDroolsConstants.CACHE_PARSED_RULES));
         String skin = store.getString(IDroolsConstants.SKIN);
@@ -130,6 +135,7 @@ public class DroolsPreferencePage extends PreferencePage implements IWorkbenchPr
     private void storeValues() {
         IPreferenceStore store = getPreferenceStore();
         store.setValue(IDroolsConstants.BUILD_ALL, buildAllCheckBox.getSelection());
+        store.setValue(IDroolsConstants.CROSS_BUILD, crossBuildCheckBox.getSelection());
         store.setValue(IDroolsConstants.EDITOR_FOLDING, collapseEditorCheckBox.getSelection());
         store.setValue(IDroolsConstants.CACHE_PARSED_RULES, cacheParsedRulesCheckBox.getSelection());
         store.setValue(IDroolsConstants.SKIN,
