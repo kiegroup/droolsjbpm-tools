@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Export-Package: org.eclipse.webdav,org.eclipse.webdav.client,org.eclip
+ se.webdav.dom,org.eclipse.webdav.http.client,org.eclipse.webdav.inter
+ nal.authentication;x-internal:=true,org.eclipse.webdav.internal.kerne
+ l;x-internal:=true,org.eclipse.webdav.internal.kernel.utils;x-interna
+ l:=true,org.eclipse.webdav.internal.utils;x-internal:=true
+Bundle-Vendor: %providerName
+Bundle-ClassPath: .
+Bundle-Version: 3.0.101
+Bundle-Localization: plugin
+Bundle-Name: %pluginName
+Bundle-ManifestVersion: 2
+Import-Package: javax.xml.parsers,javax.xml.transform,org.w3c.dom,org.
+ xml.sax
+Bundle-SymbolicName: org.eclipse.webdav
+Bundle-RequiredExecutionEnvironment: J2SE-1.4,CDC-1.0/Foundation-1.0,J
+ 2SE-1.3
+
