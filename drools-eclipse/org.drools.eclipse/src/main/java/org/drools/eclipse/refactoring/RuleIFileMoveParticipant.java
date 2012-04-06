@@ -16,10 +16,6 @@
 
 package org.drools.eclipse.refactoring;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -81,7 +77,7 @@ public class RuleIFileMoveParticipant extends MoveParticipant {
         for (IFile drlFile : drlProjectDetector.detect(file.getProject())) {
 
             content = refactoringContent.getIFileContent(drlFile);
-            if (content==null && (content = readFile(drlFile))==null)
+            if (content==null && (content = FileUtil.readFile(drlFile))==null)
                 continue;
 
             String toReplace = currentName + "." + className;
@@ -147,29 +143,6 @@ public class RuleIFileMoveParticipant extends MoveParticipant {
             }
         }
         return false;
-    }
-
-    private String readFile(IFile file) throws CoreException {
-        InputStream inputStream = file.getContents();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        StringBuilder sb = new StringBuilder();
-        String buffer = null;
-        try {
-            while ((buffer = reader.readLine()) != null)
-                sb.append(buffer + "\n");
-        }
-        catch (IOException e) {
-            return null;
-        }
-        finally {
-            try {
-                inputStream.close();
-            }
-            catch (IOException e) {
-                // Nothing
-            }
-        }
-        return sb.toString();
     }
 
     @SuppressWarnings("unchecked")
