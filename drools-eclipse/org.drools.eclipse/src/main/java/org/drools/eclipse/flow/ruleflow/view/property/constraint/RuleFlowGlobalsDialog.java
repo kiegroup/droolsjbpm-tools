@@ -112,7 +112,7 @@ public class RuleFlowGlobalsDialog extends Dialog {
     }
 
     private String getProcessImports() {
-        String result = "# define your globals here: e.g. global java.util.List myList\n";
+        String result = "// define your globals here: e.g. global java.util.List myList\n";
         Map<String, String> globals = ((org.jbpm.process.core.Process) process).getGlobals();
         if (globals != null) {
             for (Map.Entry<String, String> entry: globals.entrySet()) {
