@@ -116,7 +116,7 @@ public class RuleFlowImportsDialog extends Dialog {
     }
 
     private String getProcessImports() {
-        String result = "# define your imports here: e.g. import com.sample.MyClass\n";
+        String result = "// define your imports here: e.g. import com.sample.MyClass\n";
         List<String> imports = ((Process) process).getImports();
         if (imports != null) {
             for (String importString: imports) {
