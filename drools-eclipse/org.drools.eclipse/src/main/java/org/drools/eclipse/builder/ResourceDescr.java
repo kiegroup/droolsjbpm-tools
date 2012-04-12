@@ -29,17 +29,24 @@ public class ResourceDescr {
 		
 		try {
 			descr.content = new String( Util.getResourceContentsAsCharArray( file ) );
-			descr.droolsResource = ResourceFactory.newByteArrayResource(descr.content.getBytes());
+			descr.droolsResource = ResourceFactory.newInputStreamResource( file.getContents() );
 		} catch (Exception e) {
 			DroolsEclipsePlugin.log( e );
 			return null;
 		}
-		
 		return descr;
 	}
 
 	public IResource getResource() {
 		return resource;
+	}
+	
+	public String getName() {
+		return resource.getName();
+	}
+	
+	public String getSourcePathName() {
+		return resource.getFullPath().removeFirstSegments(1).toString();
 	}
 
 	public ResourceType getType() {

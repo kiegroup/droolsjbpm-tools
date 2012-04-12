@@ -49,7 +49,10 @@ public class DRLInfo {
     
     private IResource resource;
 
-    public DRLInfo(String sourcePathName, PackageDescr packageDescr, List<DroolsError> parserErrors, DialectCompiletimeRegistry dialectRegistry) {
+    public DRLInfo( String sourcePathName, 
+    				PackageDescr packageDescr, 
+    				List<DroolsError> parserErrors, 
+    				DialectCompiletimeRegistry dialectRegistry ) {
         if (sourcePathName == null) {
             throw new IllegalArgumentException("Invalid sourcePathName " + sourcePathName);
         }
@@ -60,7 +63,12 @@ public class DRLInfo {
         this.dialectRegistry = dialectRegistry;
     }
 
-    public DRLInfo(String pathName, PackageDescr packageDescr, List<DroolsError> parserErrors, Package compiledPackage, DroolsError[] builderErrors, DialectCompiletimeRegistry dialectRegistry) {
+    public DRLInfo( String pathName, 
+    				PackageDescr packageDescr, 
+    				List<DroolsError> parserErrors, 
+    				Package compiledPackage, 
+    				DroolsError[] builderErrors, 
+    				DialectCompiletimeRegistry dialectRegistry ) {
         this(pathName, packageDescr, parserErrors, dialectRegistry);
         if (compiledPackage == null) {
             throw new IllegalArgumentException("Null package");

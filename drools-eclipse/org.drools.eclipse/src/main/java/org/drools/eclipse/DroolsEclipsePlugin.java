@@ -52,9 +52,19 @@ import org.drools.eclipse.preferences.IDroolsConstants;
 import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
+import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.EnumDeclarationDescr;
+import org.drools.lang.descr.FunctionDescr;
+import org.drools.lang.descr.FunctionImportDescr;
+import org.drools.lang.descr.GlobalDescr;
+import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.template.parser.DecisionTableParseException;
 import org.drools.xml.SemanticModules;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -299,57 +309,25 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
         
         try {
         	Map<Resource, ResourceDescr> resourceMap = new HashMap<Resource, ResourceDescr>();
-        	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(getBuilderConfiguration(resources));
-            CompositeKnowledgeBuilder compositeKBuilder = kbuilder.batch();
-            for (ResourceDescr resourceDescr : resources) {
-            	Resource resource = resourceDescr.getContentAsDroolsResource();
-            	resourceMap.put(resource, resourceDescr);
-            	compositeKBuilder.add(resource, resourceDescr.getType());
-            }
-            compositeKBuilder.build();
-            
-            if ( !kbuilder.hasErrors() ) {
-            	return Collections.emptyList();
-            }
+        	KnowledgeBuilder kbuilder = compositeBuild(resources, resourceMap);
 
-            List<DRLInfo> infos = new ArrayList<DRLInfo>();
             PackageBuilder packageBuilder = ((KnowledgeBuilderImpl)kbuilder).getPackageBuilder();
-
-            Map<Resource, DRLInfo> infoMap = new HashMap<Resource, DRLInfo>();
-    		for (KnowledgeBuilderError error : (Collection<KnowledgeBuilderError>)kbuilder.getErrors()) {
-    			if (!(error instanceof DroolsError)) {
-    				continue;
-    			}
-    			Resource resource = error.getResource();
-    			if (resource == null) {
-    				throw new RuntimeException("Unknown resource for error: " + error);
-    			}
-    			
-    			final DroolsError droolsError = (DroolsError)error;
-    			String pkgName = droolsError.getNamespace();
-    			List<PackageDescr> packageDescrs = packageBuilder.getPackageDescrs(pkgName);
-    			if (packageDescrs == null || packageDescrs.isEmpty()) {
-    				continue;
-    			}
-    			PackageDescr packageDescr = packageDescrs.get(0);
-    			
-    			DRLInfo info = infoMap.get(resource);
-    			if (info == null) {
-    				info = new DRLInfo( "",
-                            packageDescr,
-                            new ArrayList<DroolsError>() {{
-                            	add(droolsError);
-                            }},
-                            packageBuilder.getPackageRegistry( packageDescr.getNamespace() ).getDialectCompiletimeRegistry() );
-    				info.setResource(resourceMap.get(resource).getResource());
-    				infoMap.put(resource, info);
-    			} else {
-    				info.addError(droolsError);
-    			}
-            }
-    		infos.addAll(infoMap.values());
-
-    		return infos;
+            Map<IResource, DRLInfo> infoMap = collectDRLInfo(resourceMap, packageBuilder);
+    		collectErrors(resourceMap, kbuilder, packageBuilder, infoMap);
+    		
+    		for (DRLInfo drlInfo : infoMap.values()) {
+                RuleInfo[] ruleInfos = drlInfo.getRuleInfos();
+                for ( RuleInfo ruleInfo : drlInfo.getRuleInfos() ) {
+                    ruleInfoByClassNameMap.put( ruleInfo.getClassName(), ruleInfo );
+                }
+                for ( FunctionInfo functionInfo : drlInfo.getFunctionInfos() ) {
+                    functionInfoByClassNameMap.put( functionInfo.getClassName(), functionInfo );
+                }
+    		}
+    		
+    		compiledRules = infoMap;
+    		
+    		return new ArrayList<DRLInfo>(infoMap.values());
         } catch ( CoreException e ) {
             log( e );
         } finally {
@@ -357,6 +335,128 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
         }
         
         return Collections.emptyList();
+    }
+
+	private KnowledgeBuilder compositeBuild(List<ResourceDescr> resources, Map<Resource, ResourceDescr> resourceMap) throws CoreException {
+		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(getBuilderConfiguration(resources));
+		CompositeKnowledgeBuilder compositeKBuilder = kbuilder.batch();
+		for (ResourceDescr resourceDescr : resources) {
+			Resource resource = resourceDescr.getContentAsDroolsResource();
+			resourceMap.put(resource, resourceDescr);
+			compositeKBuilder.add(resource, resourceDescr.getType());
+		}
+		try {
+			compositeKBuilder.build();
+		} catch (DecisionTableParseException dtpe) {
+			// swallow
+		}
+		return kbuilder;
+	}
+
+	private Map<IResource, DRLInfo> collectDRLInfo( Map<Resource, ResourceDescr> resourceMap,
+													PackageBuilder packageBuilder) {
+		Map<IResource, DRLInfo> infoMap = new HashMap<IResource, DRLInfo>();
+
+		for (Map.Entry<Resource, PackageDescr> entry : groupPackageDescrByResource(packageBuilder).entrySet()) {
+			ResourceDescr resourceDescr = resourceMap.get(entry.getKey());
+			if (resourceDescr == null) {
+				continue;
+			}
+			PackageDescr packageDescr = entry.getValue();
+
+			DRLInfo info = new DRLInfo( resourceDescr.getSourcePathName(),
+		            packageDescr,
+		            new ArrayList<DroolsError>(),
+		            packageBuilder.getPackageRegistry(packageDescr.getNamespace()).getPackage(),
+		            new DroolsError[0],
+		            packageBuilder.getPackageRegistry( packageDescr.getNamespace() ).getDialectCompiletimeRegistry() );
+
+			info.setResource(resourceDescr.getResource());
+			infoMap.put(resourceDescr.getResource(), info);
+		}
+		return infoMap;
+	}
+
+	private void collectErrors( Map<Resource, ResourceDescr> resourceMap, 
+								KnowledgeBuilder kbuilder, 
+								PackageBuilder packageBuilder,
+								Map<IResource, DRLInfo> infoMap) {
+		for (KnowledgeBuilderError error : (Collection<KnowledgeBuilderError>)kbuilder.getErrors()) {
+			if (!(error instanceof DroolsError)) {
+				continue;
+			}
+			Resource resource = error.getResource();
+			if (resource == null) {
+				continue;
+			}
+			ResourceDescr resourceDescr = resourceMap.get(resource);
+			
+			final DroolsError droolsError = (DroolsError)error;
+			String pkgName = droolsError.getNamespace();
+			List<PackageDescr> packageDescrs = packageBuilder.getPackageDescrs(pkgName);
+			if (packageDescrs == null || packageDescrs.isEmpty()) {
+				continue;
+			}
+			PackageDescr packageDescr = packageDescrs.get(0);
+			
+			DRLInfo info = infoMap.get(resourceDescr.getResource());
+			if (info == null) {
+				info = new DRLInfo( resourceDescr.getResource().getName(),
+		                packageDescr,
+		                new ArrayList<DroolsError>() {{
+		                	add(droolsError);
+		                }},
+		                packageBuilder.getPackageRegistry( packageDescr.getNamespace() ).getDialectCompiletimeRegistry() );
+				info.setResource(resourceDescr.getResource());
+				infoMap.put(resourceDescr.getResource(), info);
+			} else {
+				info.addError(droolsError);
+			}
+		}
+	}
+    
+    private Map<Resource, PackageDescr> groupPackageDescrByResource(PackageBuilder packageBuilder) {
+    	Map<Resource, PackageDescr> map = new HashMap<Resource, PackageDescr>();
+    	for (String pkgName : packageBuilder.getPackageNames()) {
+    		for (PackageDescr pkgDescr : packageBuilder.getPackageDescrs(pkgName)) {
+    			for (ImportDescr importDescr : pkgDescr.getImports()) {
+    				getPkgDescr(map, importDescr, pkgName).addImport(importDescr);
+    			}
+    			for (FunctionImportDescr function : pkgDescr.getFunctionImports()) {
+    				getPkgDescr(map, function, pkgName).addFunctionImport(function);
+    			}
+    			for (AttributeDescr attribute : pkgDescr.getAttributes()) {
+    				getPkgDescr(map, attribute, pkgName).addAttribute(attribute);
+    			}
+    			for (GlobalDescr global : pkgDescr.getGlobals()) {
+    				getPkgDescr(map, global, pkgName).addGlobal(global);
+    			}
+    			for (FunctionDescr function : pkgDescr.getFunctions()) {
+    				getPkgDescr(map, function, pkgName).addFunction(function);
+    			}
+    			for (TypeDeclarationDescr type : pkgDescr.getTypeDeclarations()) {
+    				getPkgDescr(map, type, pkgName).addTypeDeclaration(type);
+    			}
+    			for (RuleDescr rule : pkgDescr.getRules()) {
+    				getPkgDescr(map, rule, pkgName).addRule(rule);
+    			}
+    			for (EnumDeclarationDescr enumDescr : pkgDescr.getEnumDeclarations()) {
+    				getPkgDescr(map, enumDescr, pkgName).addEnumDeclaration(enumDescr);
+    			}
+    		}
+    	}
+    	return map;
+    }
+    
+    private PackageDescr getPkgDescr(Map<Resource, PackageDescr> map, BaseDescr descr, String pkgName) {
+    	Resource resource = descr.getResource();
+		PackageDescr resourceDescr = map.get(resource);
+		if (resourceDescr == null) {
+			resourceDescr = new PackageDescr();
+			resourceDescr.setNamespace(pkgName);
+			map.put(resource, resourceDescr);
+		}
+		return resourceDescr;
     }
     
     private PackageBuilderConfiguration getBuilderConfiguration(List<ResourceDescr> resources) throws CoreException {
