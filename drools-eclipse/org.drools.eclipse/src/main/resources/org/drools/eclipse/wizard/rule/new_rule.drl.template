@@ -1,11 +1,11 @@
-#created on: $date$
+//created on: $date$
 $package$
 rule "A stand alone rule"
 
     when
-        #conditions
+        //conditions
     then
-        #actions
+        //actions
 
 end
 
