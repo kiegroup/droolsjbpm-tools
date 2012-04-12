@@ -16,6 +16,10 @@
 
 package org.drools.eclipse.preferences;
 
+import org.drools.eclipse.DroolsEclipsePlugin;
+import org.eclipse.jdt.core.compiler.IProblem;
+import org.eclipse.jdt.core.IAccessRule;
+
 public interface IDroolsConstants {
 
     String BUILD_ALL = "Drools.BuildAll";
@@ -30,4 +34,41 @@ public interface IDroolsConstants {
     String INTERNAL_API = "Drools.InternalAPI";
     String FLOW_NODES = "Drools.FlowNodes";
 
+    public enum InternalApiChoice {
+    	ACCESSIBLE("Accessible"), NOT_ACCESSIBLE("Not Accessible"), DISCOURAGED("Discouraged");
+    	
+    	private String text;
+    	
+    	private InternalApiChoice(String text) {
+    		this.text = text;
+    	}
+    	
+    	public String toString() {
+    		return text;
+    	}
+    	
+    	public static InternalApiChoice valueAt(int pos) {
+    		for (InternalApiChoice choice : values()) {
+    			if (choice.ordinal() == pos) {
+    				return choice;
+    			}
+    		}
+    		return null;
+    	}
+    	
+    	public static InternalApiChoice getPreferenceChoice() {
+    		return valueAt(DroolsEclipsePlugin.getDefault().getPreferenceStore().getInt(IDroolsConstants.INTERNAL_API));
+    	}
+    	
+    	public int getAccessRule() {
+    		switch (this) {
+    			case NOT_ACCESSIBLE:
+    				return IAccessRule.K_NON_ACCESSIBLE;
+    			case DISCOURAGED:
+    				return IAccessRule.K_DISCOURAGED;
+    			default:
+    				return IAccessRule.K_ACCESSIBLE;
+    		}
+    	}
+    }
 }

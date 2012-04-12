@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.preferences.IDroolsConstants;
+import org.drools.eclipse.preferences.IDroolsConstants.InternalApiChoice;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IAccessRule;
@@ -63,22 +64,19 @@ public class DroolsClasspathContainer implements IClasspathContainer {
     }
 
     private IClasspathEntry[] createDroolsLibraryEntries(IJavaProject project) {
-        int internalAPI = DroolsEclipsePlugin.getDefault()
-            .getPluginPreferences().getInt(IDroolsConstants.INTERNAL_API);
+        InternalApiChoice internalAPI = InternalApiChoice.getPreferenceChoice();
         String[] jarNames = getJarNames(project);
         List<IClasspathEntry> list = new ArrayList<IClasspathEntry>();
         if (jarNames != null) {
             for (int i = 0; i < jarNames.length; i++) {
                 Path path = new Path(jarNames[i]);
-                if (internalAPI != 0) {
-                    if (jarNames[i].contains("knowledge-api")) {
-                        list.add(JavaCore.newLibraryEntry(path, path, null));
-                    } else {
-                        IAccessRule[] accessRules = new IAccessRule[1];
-                        accessRules[0] = new ClasspathAccessRule(new Path("**"), internalAPI);
-                        list.add(JavaCore.newLibraryEntry(
-                            path, path, null, accessRules, ClasspathEntry.NO_EXTRA_ATTRIBUTES, false));
-                    }
+                if (jarNames[i].contains("knowledge-api")) {
+                    list.add(JavaCore.newLibraryEntry(path, path, null));
+                } else {
+                    IAccessRule[] accessRules = new IAccessRule[1];
+                    accessRules[0] = new ClasspathAccessRule(new Path("**"), internalAPI.getAccessRule());
+                    list.add(JavaCore.newLibraryEntry(
+                        path, path, null, accessRules, ClasspathEntry.NO_EXTRA_ATTRIBUTES, false));
                 }
             }
         }

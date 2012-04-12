@@ -17,6 +17,7 @@
 package org.drools.eclipse.preferences;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
+import org.drools.eclipse.preferences.IDroolsConstants.InternalApiChoice;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
@@ -61,10 +62,11 @@ public class DroolsPreferencePage extends PreferencePage implements IWorkbenchPr
             "Allow the customization of process nodes.");
         label = new Label(composite, SWT.NONE);
         label.setText("Internal Drools classes are: ");
+
         internalAPICombo = new Combo(composite, SWT.LEFT);
-        internalAPICombo.add("Accessible");
-        internalAPICombo.add("Not accessible");
-        internalAPICombo.add("Discouraged");
+        for (InternalApiChoice choice : InternalApiChoice.values()) {
+            internalAPICombo.add(choice.toString());
+        }
         initializeValues();
 
         return composite;
