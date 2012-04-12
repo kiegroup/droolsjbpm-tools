@@ -316,7 +316,6 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
     		collectErrors(resourceMap, kbuilder, packageBuilder, infoMap);
     		
     		for (DRLInfo drlInfo : infoMap.values()) {
-                RuleInfo[] ruleInfos = drlInfo.getRuleInfos();
                 for ( RuleInfo ruleInfo : drlInfo.getRuleInfos() ) {
                     ruleInfoByClassNameMap.put( ruleInfo.getClassName(), ruleInfo );
                 }
