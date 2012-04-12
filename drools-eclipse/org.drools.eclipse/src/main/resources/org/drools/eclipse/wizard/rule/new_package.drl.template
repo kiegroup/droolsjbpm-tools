@@ -1,10 +1,10 @@
-#created on: $date$
+//created on: $date$
 $package$
-#list any import classes here.
+//list any import classes here.
 
 $expander$
 
-#declare any global variables here
+//declare any global variables here
 
 $functions$
 
@@ -12,17 +12,17 @@ $functions$
 rule "Your First Rule"
 
     when
-        #conditions
+        //conditions
     then
-        #actions
+        //actions
 
 end
 
 rule "Your Second Rule"
-    #include attributes such as "salience" here...
+    //include attributes such as "salience" here...
     when
-        #conditions
+        //conditions
     then
-        #actions
+        //actions
 
 end
