@@ -20,10 +20,21 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.drools.compiler.DroolsParserException;
+import org.drools.eclipse.DRLInfo;
+import org.drools.eclipse.DroolsEclipsePlugin;
+import org.drools.eclipse.DRLInfo.PatternInfo;
+import org.drools.lang.descr.ImportDescr;
+import org.drools.lang.descr.RuleDescr;
+import org.drools.rule.GroupElement;
+import org.drools.rule.Rule;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IPackageDeclaration;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.corext.refactoring.rename.JavaRenameProcessor;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.CompositeChange;
@@ -44,14 +55,16 @@ public class RuleIFileRenameParticipant extends RenameParticipant {
     public static final String NAME = "Rule File Rename Refactoring";
 
     private DRLProjectDetector drlProjectDetector = new DRLProjectDetector();
-    private Matcher matcher;
 
     private RefactoringProcessor processor;
     private List<IFile> drlFiles;
     private IFile file;
     private String newName;
     private String currentName;
-
+    private String packageName;
+    private String className;
+    private Pattern classPattern;
+    
     @Override
     public RefactoringStatus checkConditions(IProgressMonitor pm, CheckConditionsContext context) throws OperationCanceledException {
         RefactoringStatus status = new RefactoringStatus();
@@ -62,38 +75,83 @@ public class RuleIFileRenameParticipant extends RenameParticipant {
 
     @Override
     public Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
-        CompositeChange changes = null;
-        String content;
-        changes = new CompositeChange("Reorganize DRL " + currentName + " Type ");
+        CompositeChange changes = new CompositeChange("Reorganize DRL " + currentName + " Type ");
         drlFiles = drlProjectDetector.detect(file.getProject());
-        Pattern pattern = Pattern.compile("(?<=[\\(\\.\\s])" + currentName + "(?=[\\(\\r\\n\\s])");
+        classPattern = Pattern.compile("(?<=\\W)" + currentName + "(?=\\W)");
         for (IFile drlFile : drlFiles) {
-
-            if ((content = FileUtil.readFile(drlFile))==null)
-                return null;
-
-            matcher = pattern.matcher(content);
-
-            TextFileChange change = new TextFileChange(drlFile.getName(), drlFile);
-            MultiTextEdit mte = new MultiTextEdit();
-            change.setEdit(mte);
-            while (matcher.find()) {
-                ReplaceEdit replace = new ReplaceEdit(matcher.start(), currentName.length(), newName);
-                mte.addChild(replace);
-            }
-            if (change.getEdit().getChildrenSize() > 0)
+        	TextFileChange change = createChangesForFile(drlFile);
+            if ( change != null && change.getEdit().getChildrenSize() > 0 ) {
                 changes.add(change);
+            }
         }
-        if (changes.getChildren().length==0)
-            return null;
-        return (changes.getChildren().length > 0)?changes:null;
+        
+        if (changes.getChildren().length == 0) {
+        	return null;
+        }
+        DroolsEclipsePlugin.getDefault().setForceFullBuild();
+        return changes;
     }
 
+	private TextFileChange createChangesForFile(IFile drlFile) throws CoreException {
+		DRLInfo drlInfo = null;
+		try {
+			drlInfo = DroolsEclipsePlugin.getDefault().parseResource( drlFile, false );
+		} catch (DroolsParserException e) { }
+		if ( drlInfo == null ) {
+			return null;
+		}
+
+		String content = FileUtil.readFile(drlFile);
+		if ( content == null ) {
+		    return null;
+		}
+		
+		TextFileChange change = new TextFileChange(drlFile.getName(), drlFile);
+		MultiTextEdit mte = new MultiTextEdit();
+		change.setEdit(mte);
+		
+		boolean isImported = false;
+		for (ImportDescr importDescr : drlInfo.getPackageDescr().getImports()) {
+			isImported |= importDescr.getTarget().equals(className) || importDescr.getTarget().equals(packageName + ".*");
+			addReplace(mte, importDescr.getTarget(), content, importDescr.getStartCharacter(), importDescr.getEndCharacter());
+		}
+		if (!isImported) {
+			return change;
+		}
+
+		for (DRLInfo.RuleInfo ruleInfo : drlInfo.getRuleInfos()) {
+			List<PatternInfo> patternInfos = ruleInfo.getPatternInfos();
+			if (patternInfos != null) {
+				for (DRLInfo.PatternInfo patternInfo : patternInfos) {
+					addReplace(mte, patternInfo.getPatternTypeName(), content, patternInfo.getStart(), patternInfo.getEnd());
+				}
+				addReplace(mte, className, content, ruleInfo.getConsequenceStart(), ruleInfo.getConsequenceEnd());
+			} else {
+				addReplace(mte, className, content, ruleInfo.getRuleStart(), ruleInfo.getRuleEnd());
+			}
+		}
+
+		for (DRLInfo.FunctionInfo functionInfo : drlInfo.getFunctionInfos()) {
+			addReplace(mte, className, content, functionInfo.getFunctionStart(), functionInfo.getFunctionEnd());
+		}
+		
+		return change;
+	}
+	
+	private void addReplace(MultiTextEdit mte, String descrClassName, String content, int start, int end) {
+		if (className.equals(descrClassName)) {
+			String text = content.substring(start-1, end+1);
+			Matcher matcher = classPattern.matcher(text);
+			while (matcher.find()) {
+				mte.addChild(new ReplaceEdit(matcher.start() + start - 1, currentName.length(), newName));
+			}
+		}
+	}
+	
     @Override
     public String getName() {
         return NAME;
     }
-
 
     @Override
     protected boolean initialize(Object element) {
@@ -104,9 +162,19 @@ public class RuleIFileRenameParticipant extends RenameParticipant {
                     this.processor = getProcessor();
                     this.file = file;
                     if (this.processor instanceof JavaRenameProcessor) {
-                        newName = ((JavaRenameProcessor)processor).getNewElementName().replace(".java", "");
-                        currentName = ((JavaRenameProcessor)processor).getCurrentElementName();
-                        return true;
+                    	JavaRenameProcessor javaProcessor = (JavaRenameProcessor)processor;
+                    	newName = javaProcessor.getNewElementName().replace(".java", "");
+                        currentName = javaProcessor.getCurrentElementName();
+
+                    	try {
+                        	ICompilationUnit compilationUnit = (ICompilationUnit)javaProcessor.getElements()[0];
+							packageName = compilationUnit.getPackageDeclarations()[0].getElementName();
+							className = packageName + "." + currentName;
+						} catch (Exception e) {
+							return false;
+						}
+                        
+                    	return true;
                     }
                 }
             }

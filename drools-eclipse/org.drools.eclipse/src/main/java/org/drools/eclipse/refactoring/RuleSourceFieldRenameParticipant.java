@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.drools.compiler.DroolsParserException;
+import org.drools.eclipse.DRLInfo;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -99,6 +102,7 @@ public class RuleSourceFieldRenameParticipant extends RenameParticipant {
         CompositeChange changes = null;
         String content;
         changes = new CompositeChange("Fix " + currentName + " field on DRL files");
+        Pattern pattern = Pattern.compile(FIELD_NAME.replaceAll("FIELD_NAME", currentName));
         IFile file = getSourceFieldIFile();
         String typeName = sourceField.getParent().getElementName();
         if (file!=null) {
@@ -113,7 +117,6 @@ public class RuleSourceFieldRenameParticipant extends RenameParticipant {
                 change.setEdit(mte);
 
                 // rename the field name
-                Pattern pattern = Pattern.compile(FIELD_NAME.replaceAll("FIELD_NAME", currentName));
                 Matcher matcher = pattern.matcher(content);
                 while (matcher.find()) {
                 	if (isFieldInRightType(content, typeName, matcher.start())) {

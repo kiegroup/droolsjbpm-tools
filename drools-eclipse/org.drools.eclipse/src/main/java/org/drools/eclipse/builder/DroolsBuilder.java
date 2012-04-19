@@ -152,6 +152,11 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                                     IProgressMonitor monitor) throws CoreException {
     	IPreferenceStore store = DroolsEclipsePlugin.getDefault().getPreferenceStore();
         boolean fullBuild = store.getBoolean( IDroolsConstants.CROSS_BUILD ) || store.getBoolean( IDroolsConstants.BUILD_ALL );
+        
+        if ( !fullBuild ) {
+        	fullBuild = DroolsEclipsePlugin.getDefault().resetForceFullBuild();
+        }
+        
         if ( fullBuild ) {
             // to make sure that all rules are checked when a java file is changed
             fullBuild( monitor );

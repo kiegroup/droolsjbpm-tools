@@ -20,16 +20,25 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.base.ClassObjectType;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.DroolsError;
 import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.DialectRuntimeRegistry;
+import org.drools.rule.GroupElement;
 import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
+import org.drools.rule.Pattern;
+import org.drools.rule.Rule;
+import org.drools.rule.RuleConditionElement;
+import org.drools.spi.ObjectType;
 import org.eclipse.core.resources.IResource;
 
 public class DRLInfo {
@@ -115,7 +124,7 @@ public class DRLInfo {
             List<RuleInfo> ruleInfosList = new ArrayList<RuleInfo>();
             if (packageDescr != null) {
                 for (RuleDescr ruleDescr: packageDescr.getRules()) {
-                    RuleInfo ruleInfo = new RuleInfo(ruleDescr);
+                    RuleInfo ruleInfo = new RuleInfo(packageDescr, compiledPackage, ruleDescr, dialectRegistry, sourcePathName);
                     ruleInfosList.add(ruleInfo);
                 }
             }
@@ -152,25 +161,36 @@ public class DRLInfo {
     	this.resource = resource;
     }
 
-    public class RuleInfo {
+    public static class RuleInfo {
 
+        private final PackageDescr packageDescr;
+        private final Package compiledPackage;
         private final RuleDescr ruleDescr;
+        private final DialectCompiletimeRegistry dialectRegistry;
+        private final String sourcePathName;
+        
         // cached entries
         private transient String className;
         private transient int consequenceJavaLineNumber = -1;
+        private transient List<PatternInfo> patternInfos = null;
+        private transient int endPatternsCharacter = -1;
 
-        public RuleInfo(RuleDescr ruleDescr) {
+        public RuleInfo(PackageDescr packageDescr, Package compiledPackage, RuleDescr ruleDescr, DialectCompiletimeRegistry dialectRegistry, String sourcePathName) {
             if (ruleDescr == null) {
                 throw new IllegalArgumentException("Null ruleDescr");
             }
+            this.packageDescr = packageDescr;
+            this.compiledPackage = compiledPackage;
             this.ruleDescr = ruleDescr;
+            this.dialectRegistry = dialectRegistry;
+            this.sourcePathName = sourcePathName;
         }
 
         public String getDialectName() {
             String dialectName = null;
             dialectName = ruleDescr.getAttributes().get("dialect").getValue();
             if (dialectName == null && packageDescr != null) {
-                for (AttributeDescr attribute: DRLInfo.this.packageDescr.getAttributes()) {
+                for (AttributeDescr attribute: packageDescr.getAttributes()) {
                     if ("dialect".equals(attribute.getName())) {
                         dialectName = (String) attribute.getValue();
                         break;
@@ -185,11 +205,11 @@ public class DRLInfo {
             if (dialectName == null) {
                 return null;
             }
-            return DRLInfo.this.dialectRegistry.getDialect(dialectName);
+            return dialectRegistry.getDialect(dialectName);
         }
 
         public String getSourcePathName() {
-            return DRLInfo.this.getSourcePathName();
+            return sourcePathName;
         }
 
         public String getClassName() {
@@ -203,7 +223,23 @@ public class DRLInfo {
             }
             return className;
         }
+        
+        public int getConsequenceStart() {
+        	return endPatternsCharacter + 5;
+        }
 
+        public int getConsequenceEnd() {
+        	return getRuleEnd();
+        }
+        
+        public int getRuleStart() {
+        	return ruleDescr.getStartCharacter() + 5;
+        }
+
+        public int getRuleEnd() {
+        	return ruleDescr.getEndCharacter() - 4;
+        }
+        
         public int getDrlLineNumber() {
             return ruleDescr.getLine();
         }
@@ -226,12 +262,75 @@ public class DRLInfo {
             return consequenceJavaLineNumber;
         }
 
+        public boolean isCompiled() {
+            return compiledPackage != null;
+        }
+
         public String getPackageName() {
             return packageDescr == null ? null : packageDescr.getName();
         }
 
         public String getRuleName() {
             return ruleDescr.getName();
+        }
+        
+        public Rule getRule() {
+        	return compiledPackage.getRule(getRuleName());
+        }
+        
+        public List<PatternInfo> getPatternInfos() {
+        	if (patternInfos == null && isCompiled()) {
+        		patternInfos = findPatternInfos();
+        	}
+        	return patternInfos;
+        }
+        
+        private List<PatternInfo> findPatternInfos() {
+        	List<PatternInfo> patternInfos = new ArrayList<PatternInfo>();
+        	traversePatternTree(patternInfos, getRule().getLhs().getChildren(), ruleDescr.getLhs().getDescrs());
+        	return patternInfos;
+        }
+        
+        private void traversePatternTree(List<PatternInfo> patternInfos, List<RuleConditionElement> ruleElements, List<BaseDescr> lhsDescrs) {
+        	if (ruleElements.size() != lhsDescrs.size()) {
+        		throw new RuntimeException("Cannot traverse pattern tree");
+        	}
+        	for (int i = 0; i < ruleElements.size(); i++) {
+        		RuleConditionElement ruleElement = ruleElements.get(i);
+        		BaseDescr lhsDescr = lhsDescrs.get(i);
+        		
+        		if (ruleElement instanceof Pattern && lhsDescr instanceof PatternDescr) {
+        			patternInfos.add(new PatternInfo((PatternDescr)lhsDescr, (Pattern)ruleElement));
+        			endPatternsCharacter = Math.max(endPatternsCharacter, ((PatternDescr)lhsDescr).getEndCharacter());
+        		} else if (ruleElement instanceof GroupElement && lhsDescr instanceof ConditionalElementDescr) {
+        			traversePatternTree(patternInfos, ((GroupElement)ruleElement).getChildren(), (List<BaseDescr>)((ConditionalElementDescr)lhsDescr).getDescrs());
+        		} else {
+            		throw new RuntimeException("Cannot traverse pattern tree");
+        		}
+        	}
+        }
+    }
+    
+    public static class PatternInfo {
+        private final PatternDescr patternDescr;
+        private final Pattern pattern;
+        
+        private PatternInfo(PatternDescr patternDescr, Pattern pattern) {
+        	this.patternDescr = patternDescr;
+        	this.pattern = pattern;
+        }
+    	
+        public String getPatternTypeName() {
+        	ObjectType objectType = pattern.getObjectType();
+        	return objectType instanceof ClassObjectType ? ((ClassObjectType)objectType).getClassType().getName() : "";
+        }
+        
+        public int getStart() {
+        	return patternDescr.getStartCharacter();
+        }
+        
+        public int getEnd() {
+        	return patternDescr.getEndCharacter();
         }
     }
 
@@ -240,7 +339,7 @@ public class DRLInfo {
             List<FunctionInfo> functionInfosList = new ArrayList<FunctionInfo>();
             if (packageDescr != null) {
                 for (FunctionDescr functionDescr: packageDescr.getFunctions()) {
-                    FunctionInfo functionInfo = new FunctionInfo(functionDescr);
+                    FunctionInfo functionInfo = new FunctionInfo(packageDescr, compiledPackage, functionDescr, sourcePathName);
                     functionInfosList.add(functionInfo);
                 }
             }
@@ -264,22 +363,29 @@ public class DRLInfo {
         return result;
     }
 
-    public class FunctionInfo {
+    public static class FunctionInfo {
 
-        private FunctionDescr functionDescr;
+        private final PackageDescr packageDescr;
+        private final Package compiledPackage;
+        private final FunctionDescr functionDescr;
+        private final String sourcePathName;
+
         // cached entries
         private transient String className;
         private transient int javaLineNumber = -1;
 
-        public FunctionInfo(FunctionDescr functionDescr) {
+        public FunctionInfo(PackageDescr packageDescr, Package compiledPackage, FunctionDescr functionDescr, String sourcePathName) {
             if (functionDescr == null) {
                 throw new IllegalArgumentException("Null functionDescr");
             }
+            this.packageDescr = packageDescr;
+            this.compiledPackage = compiledPackage;
             this.functionDescr = functionDescr;
+            this.sourcePathName = sourcePathName;
         }
 
         public String getSourcePathName() {
-            return DRLInfo.this.getSourcePathName();
+            return sourcePathName;
         }
 
         public String getClassName() {
@@ -313,6 +419,18 @@ public class DRLInfo {
 
         public String getFunctionName() {
             return functionDescr.getName();
+        }
+
+        public int getFunctionStart() {
+        	return functionDescr.getStartCharacter() + 8;
+        }
+
+        public int getFunctionEnd() {
+        	return functionDescr.getEndCharacter() - 1;
+        }
+
+        public boolean isCompiled() {
+            return compiledPackage != null;
         }
     }
 
