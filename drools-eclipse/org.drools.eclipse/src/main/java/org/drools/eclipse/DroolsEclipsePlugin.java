@@ -119,6 +119,8 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
     private boolean                     useCachePreference;
 
     private FormColors                  ruleBuilderFormColors;
+    
+    private boolean 					forceFullBuild;
 
     /**
      * The constructor.
@@ -832,7 +834,17 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
         return ruleBuilderFormColors;
     }
 
-    private class MyResourceVisitor
+    public boolean resetForceFullBuild() {
+    	boolean isFullBuild = forceFullBuild;
+    	forceFullBuild = false;
+		return isFullBuild;
+	}
+
+	public void setForceFullBuild() {
+		forceFullBuild = true;
+	}
+
+	private class MyResourceVisitor
         implements
         IResourceVisitor {
         private IResource packageDef;
