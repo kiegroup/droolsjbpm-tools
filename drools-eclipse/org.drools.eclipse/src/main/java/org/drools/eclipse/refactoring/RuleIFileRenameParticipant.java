@@ -16,10 +16,6 @@
 
 package org.drools.eclipse.refactoring;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,6 +24,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.internal.corext.refactoring.rename.JavaRenameProcessor;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.CompositeChange;
@@ -55,6 +52,8 @@ public class RuleIFileRenameParticipant extends RenameParticipant {
     private IFile file;
     private String newName;
     private String currentName;
+    private String packageName;
+    private String className;
 
     @Override
     public RefactoringStatus checkConditions(IProgressMonitor pm, CheckConditionsContext context) throws OperationCanceledException {
@@ -70,12 +69,19 @@ public class RuleIFileRenameParticipant extends RenameParticipant {
         String content;
         changes = new CompositeChange("Reorganize DRL " + currentName + " Type ");
         drlFiles = drlProjectDetector.detect(file.getProject());
+        Pattern pattern = Pattern.compile("(?<=\\.|\\s)" + currentName + "(?=\\(|\\r\\n|\\s)");
+        Pattern packageImportPattern = Pattern.compile("import[\\s]+" + packageName + "\\.*");
+        Pattern classImportPattern = Pattern.compile("import[\\s]+" + className);
+        
         for (IFile drlFile : drlFiles) {
 
-            if ((content = readFile(drlFile))==null)
+            if ((content = FileUtil.readFile(drlFile))==null)
                 return null;
+            
+            if (!packageImportPattern.matcher(content).find() && !classImportPattern.matcher(content).find()) {
+            	return null;
+            }
 
-            Pattern pattern = Pattern.compile("(?<=\\.|\\s)" + currentName + "(?=\\(|\\n|\\s)");
             matcher = pattern.matcher(content);
 
             TextFileChange change = new TextFileChange(drlFile.getName(), drlFile);
@@ -98,7 +104,6 @@ public class RuleIFileRenameParticipant extends RenameParticipant {
         return NAME;
     }
 
-
     @Override
     protected boolean initialize(Object element) {
         if (element instanceof IFile) {
@@ -108,8 +113,18 @@ public class RuleIFileRenameParticipant extends RenameParticipant {
                     this.processor = getProcessor();
                     this.file = file;
                     if (this.processor instanceof JavaRenameProcessor) {
-                        newName = ((JavaRenameProcessor)processor).getNewElementName().replace(".java", "");
-                        currentName = ((JavaRenameProcessor)processor).getCurrentElementName();
+                    	JavaRenameProcessor javaProcessor = (JavaRenameProcessor)processor;
+                        newName = javaProcessor.getNewElementName().replace(".java", "");
+                        currentName = javaProcessor.getCurrentElementName();
+
+                        try {
+                            ICompilationUnit compilationUnit = (ICompilationUnit)javaProcessor.getElements()[0];
+                            packageName = compilationUnit.getPackageDeclarations()[0].getElementName();
+                            className = packageName + "." + currentName;
+                        } catch (Exception e) {
+                        	return false;
+                        }
+                        
                         return true;
                     }
                 }
@@ -117,28 +132,4 @@ public class RuleIFileRenameParticipant extends RenameParticipant {
         }
         return false;
     }
-
-    private String readFile(IFile file) throws CoreException {
-        InputStream inputStream = file.getContents();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        StringBuilder sb = new StringBuilder();
-        String buffer = null;
-        try {
-            while ((buffer = reader.readLine()) != null)
-                sb.append(buffer + "\n");
-        }
-        catch (IOException e) {
-            return null;
-        }
-        finally {
-            try {
-                inputStream.close();
-            }
-            catch (IOException e) {
-                // Nothing
-            }
-        }
-        return sb.toString();
-    }
-
 }

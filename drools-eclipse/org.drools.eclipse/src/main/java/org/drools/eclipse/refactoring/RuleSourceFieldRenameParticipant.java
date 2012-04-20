@@ -16,10 +16,6 @@
 
 package org.drools.eclipse.refactoring;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -53,13 +49,12 @@ public class RuleSourceFieldRenameParticipant extends RenameParticipant {
 
     public static final String NAME = "Rule Source Field Rename Refactoring";
 
-    private static final String FIELD_NAME = "(?<=:\\s)FIELD_NAME|FIELD_NAME(?=\\s=)";
+    private static final String FIELD_NAME = "(?<=[!\\(:\\s])FIELD_NAME(?=[\\s=\\),\\.<>!])";
     private static final String VARIABLE_ASSIGNED = "[\\w]*(?=\\s*:\\s*TYPE\\s*\\()";
     private static final String GETTER_NAME = "(?<=VARIABLE_NAME\\.)CURRENT_GETTER_NAME(?=\\s*\\()";
     private static final String SETTER_NAME = "(?<=VARIABLE_NAME\\.)CURRENT_SETTER_NAME(?=\\s*\\()";
 
     private DRLProjectDetector drlProjectDetector = new DRLProjectDetector();
-    private Matcher matcher;
 
     private RefactoringProcessor processor;
     private List<IFile> drlFiles;
@@ -79,11 +74,11 @@ public class RuleSourceFieldRenameParticipant extends RenameParticipant {
             // if at least one file have a reference to the renamed field => apply refactoring
             for (IFile drlFile : drlFiles) {
 
-                if ((content = readFile(drlFile))==null)
+                if ((content = FileUtil.readFile(drlFile))==null)
                     return null;
 
                 Pattern pattern = Pattern.compile("(?<=:\\s)" + currentName + "|" + currentName + "(?=\\s=)");
-                matcher = pattern.matcher(content);
+                Matcher matcher = pattern.matcher(content);
 
                 if (matcher.find()) {
                     RenameFieldProcessor renameFieldProcessor = (RenameFieldProcessor)processor;
@@ -106,11 +101,15 @@ public class RuleSourceFieldRenameParticipant extends RenameParticipant {
         changes = new CompositeChange("Fix " + currentName + " field on DRL files");
         IFile file = getSourceFieldIFile();
         String typeName = sourceField.getParent().getElementName();
+
+        Pattern fieldPattern = Pattern.compile(FIELD_NAME.replaceAll("FIELD_NAME", currentName));
+        Pattern typePattern = Pattern.compile(VARIABLE_ASSIGNED.replace("TYPE", typeName));
+
         if (file!=null) {
             RenameFieldProcessor renameFieldProcessor = (RenameFieldProcessor)processor;
             for (IFile drlFile : drlFiles) {
 
-                if ((content = readFile(drlFile))==null)
+                if ((content = FileUtil.readFile(drlFile))==null)
                     return null;
 
                 TextFileChange change = new TextFileChange(drlFile.getName(), drlFile);
@@ -118,16 +117,16 @@ public class RuleSourceFieldRenameParticipant extends RenameParticipant {
                 change.setEdit(mte);
 
                 // rename the field name
-                Pattern pattern = Pattern.compile(FIELD_NAME.replaceAll("FIELD_NAME", currentName));
-                matcher = pattern.matcher(content);
+                Matcher matcher = fieldPattern.matcher(content);
                 while (matcher.find()) {
-                    ReplaceEdit replace = new ReplaceEdit(matcher.start(), currentName.length(), newName);
-                    mte.addChild(replace);
+                	if (isFieldInRightType(content, typeName, matcher.start())) {
+                		ReplaceEdit replace = new ReplaceEdit(matcher.start(), currentName.length(), newName);
+                		mte.addChild(replace);
+                	}
                 }
 
                 // search all the variables of the type to replace the getters/setters
-                pattern = Pattern.compile(VARIABLE_ASSIGNED.replace("TYPE", typeName));
-                matcher = pattern.matcher(content);
+                matcher = typePattern.matcher(content);
                 while (matcher.find()) {
                     if (matcher.group().length() > 0) {
                         String variableNameAssigned = matcher.group();
@@ -152,6 +151,36 @@ public class RuleSourceFieldRenameParticipant extends RenameParticipant {
             }
         }
         return (changes.getChildren().length > 0)?changes:null;
+    }
+    
+    private boolean isFieldInRightType(String content, String typeName, int offset) {
+    	int lastTypeOccurence = content.lastIndexOf(typeName, offset);
+    	if (lastTypeOccurence < 0) {
+    		return false;
+    	}
+    	
+    	int typeConstraintsStart = content.indexOf('(', lastTypeOccurence);
+    	if (typeConstraintsStart < 0 || typeConstraintsStart > offset) {
+    		return false;
+    	}
+    	
+    	String s = content.substring(lastTypeOccurence, typeConstraintsStart);
+    	if (s.indexOf("global") >= 0 || s.indexOf("function") >= 0) {
+    		return false;
+    	}
+    	
+    	int parenthesisCounter = 1;
+    	int typeConstraintsEnd = typeConstraintsStart+1;
+    	while (parenthesisCounter != 0 && typeConstraintsEnd < content.length()) {
+    		if (content.charAt(typeConstraintsEnd) == '(') {
+    			parenthesisCounter++;
+    		} else if (content.charAt(typeConstraintsEnd) == ')') {
+    			parenthesisCounter--;
+    		}
+    		typeConstraintsEnd++;	
+    	}
+    	
+    	return typeConstraintsEnd < content.length() && typeConstraintsEnd > offset;
     }
 
     private void createFieldRenameChanges(MultiTextEdit mte, String content, String regexp, String currentName, String newName) {
@@ -205,28 +234,4 @@ public class RuleSourceFieldRenameParticipant extends RenameParticipant {
         }
         return false;
     }
-
-    private String readFile(IFile file) throws CoreException {
-        InputStream inputStream = file.getContents();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        StringBuilder sb = new StringBuilder();
-        String buffer = null;
-        try {
-            while ((buffer = reader.readLine()) != null)
-                sb.append(buffer + "\n");
-        }
-        catch (IOException e) {
-            return null;
-        }
-        finally {
-            try {
-                inputStream.close();
-            }
-            catch (IOException e) {
-                // Nothing
-            }
-        }
-        return sb.toString();
-    }
-
 }
