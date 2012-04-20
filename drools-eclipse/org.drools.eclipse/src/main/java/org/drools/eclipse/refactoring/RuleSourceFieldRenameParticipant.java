@@ -21,9 +21,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.compiler.DroolsParserException;
-import org.drools.eclipse.DRLInfo;
-import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -102,9 +99,12 @@ public class RuleSourceFieldRenameParticipant extends RenameParticipant {
         CompositeChange changes = null;
         String content;
         changes = new CompositeChange("Fix " + currentName + " field on DRL files");
-        Pattern pattern = Pattern.compile(FIELD_NAME.replaceAll("FIELD_NAME", currentName));
         IFile file = getSourceFieldIFile();
         String typeName = sourceField.getParent().getElementName();
+
+        Pattern fieldPattern = Pattern.compile(FIELD_NAME.replaceAll("FIELD_NAME", currentName));
+        Pattern typePattern = Pattern.compile(VARIABLE_ASSIGNED.replace("TYPE", typeName));
+
         if (file!=null) {
             RenameFieldProcessor renameFieldProcessor = (RenameFieldProcessor)processor;
             for (IFile drlFile : drlFiles) {
@@ -117,7 +117,7 @@ public class RuleSourceFieldRenameParticipant extends RenameParticipant {
                 change.setEdit(mte);
 
                 // rename the field name
-                Matcher matcher = pattern.matcher(content);
+                Matcher matcher = fieldPattern.matcher(content);
                 while (matcher.find()) {
                 	if (isFieldInRightType(content, typeName, matcher.start())) {
                 		ReplaceEdit replace = new ReplaceEdit(matcher.start(), currentName.length(), newName);
@@ -126,8 +126,7 @@ public class RuleSourceFieldRenameParticipant extends RenameParticipant {
                 }
 
                 // search all the variables of the type to replace the getters/setters
-                pattern = Pattern.compile(VARIABLE_ASSIGNED.replace("TYPE", typeName));
-                matcher = pattern.matcher(content);
+                matcher = typePattern.matcher(content);
                 while (matcher.find()) {
                     if (matcher.group().length() > 0) {
                         String variableNameAssigned = matcher.group();
@@ -161,7 +160,12 @@ public class RuleSourceFieldRenameParticipant extends RenameParticipant {
     	}
     	
     	int typeConstraintsStart = content.indexOf('(', lastTypeOccurence);
-    	if (typeConstraintsStart > offset) {
+    	if (typeConstraintsStart < 0 || typeConstraintsStart > offset) {
+    		return false;
+    	}
+    	
+    	String s = content.substring(lastTypeOccurence, typeConstraintsStart);
+    	if (s.indexOf("global") >= 0 || s.indexOf("function") >= 0) {
     		return false;
     	}
     	
