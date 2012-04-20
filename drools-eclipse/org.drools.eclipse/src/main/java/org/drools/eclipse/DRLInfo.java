@@ -278,6 +278,10 @@ public class DRLInfo {
         	return compiledPackage.getRule(getRuleName());
         }
         
+        public String toString() {
+        	return ruleDescr.toString();
+        }
+        
         public List<PatternInfo> getPatternInfos() {
         	if (patternInfos == null && isCompiled()) {
         		patternInfos = findPatternInfos();
@@ -331,6 +335,10 @@ public class DRLInfo {
         
         public int getEnd() {
         	return patternDescr.getEndCharacter();
+        }
+        
+        public String toString() {
+        	return patternDescr.toString();
         }
     }
 
