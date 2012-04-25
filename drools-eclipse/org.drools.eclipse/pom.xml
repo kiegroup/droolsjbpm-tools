@@ -87,6 +87,7 @@
                 knowledge-internal-api,
                 drools-core,
                 drools-compiler,
+                guvnor-api,
                 droolsjbpm-ide-common,
                 drools-decisiontables,
                 drools-jsr94,
