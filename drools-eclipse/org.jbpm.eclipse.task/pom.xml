@@ -67,7 +67,9 @@
                 mina-core,
                 slf4j-api,
                 slf4j-jdk14,
-                jbpm-human-task
+                jbpm-human-task,
+                hornetq-core,
+                netty
               </includeArtifactIds>
             </configuration>
           </execution>
@@ -154,23 +156,17 @@
           <artifactId>commons-collections</artifactId>
         </exclusion>
 
-        <exclusion>
-          <groupId>org.hornetq</groupId>
-          <artifactId>hornetq-core</artifactId>
-        </exclusion>
-
-        <exclusion>
-          <groupId>org.hornetq</groupId>
-          <artifactId>hornetq-transports</artifactId>
-        </exclusion>
-
-        <exclusion>
-          <groupId>org.jboss.netty</groupId>
-          <artifactId>netty</artifactId>
-        </exclusion>
-
       </exclusions>
     </dependency>
+    <dependency>
+		<groupId>org.hornetq</groupId>
+		<artifactId>hornetq-core</artifactId>
+    </dependency>
+	<dependency>
+		<groupId>org.jboss.netty</groupId>
+		<artifactId>netty</artifactId>
+		<version>3.2.0.Final</version>
+	</dependency>
 
   </dependencies>
 
