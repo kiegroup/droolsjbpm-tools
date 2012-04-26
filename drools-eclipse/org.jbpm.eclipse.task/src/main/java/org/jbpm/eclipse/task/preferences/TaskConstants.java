@@ -21,5 +21,6 @@ public interface TaskConstants {
     String SERVER_IP_ADDRESS = "ServerIPAddress";
     String SERVER_PORT = "ServerPort";
     String LANGUAGE = "Language";
+    String TRANSPORT = "Transport";
 
 }

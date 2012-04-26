@@ -14,5 +14,7 @@ Bundle-ClassPath: .,
  lib/mina-core.jar,
  lib/slf4j-api.jar,
  lib/slf4j-jdk14.jar,
- lib/jbpm-human-task.jar
+ lib/jbpm-human-task.jar,
+ lib/hornetq-core.jar,
+ lib/netty.jar
 Bundle-Vendor: JBoss by Red Hat

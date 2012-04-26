@@ -69,6 +69,8 @@ import org.jbpm.task.Status;
 import org.jbpm.task.User;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.TaskClient;
+import org.jbpm.task.service.hornetq.HornetQTaskClientConnector;
+import org.jbpm.task.service.hornetq.HornetQTaskClientHandler;
 import org.jbpm.task.service.mina.MinaTaskClientConnector;
 import org.jbpm.task.service.mina.MinaTaskClientHandler;
 
@@ -106,6 +108,7 @@ public class TaskView extends ViewPart {
     private String ipAddress = "127.0.0.1";
     private int port = 9123;
     private String language = "en-UK";
+    private int transport = 0;
 
     private Text userNameText;
     private Table table;
@@ -179,6 +182,7 @@ public class TaskView extends ViewPart {
         ipAddress = preferenceStore.getString(TaskConstants.SERVER_IP_ADDRESS);
         port = preferenceStore.getInt(TaskConstants.SERVER_PORT);
         language = preferenceStore.getString(TaskConstants.LANGUAGE);
+        transport = preferenceStore.getInt(TaskConstants.TRANSPORT);
         preferenceStore.addPropertyChangeListener(new IPropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent event) {
                 if (TaskConstants.SERVER_IP_ADDRESS.equals(event.getProperty())) {
@@ -187,6 +191,8 @@ public class TaskView extends ViewPart {
                     port = (Integer) event.getNewValue();
                 } else if (TaskConstants.LANGUAGE.equals(event.getProperty())) {
                     language = (String) event.getNewValue();
+                } else if (TaskConstants.TRANSPORT.equals(event.getProperty())) {
+                    transport = (Integer) event.getNewValue();
                 }
             }
         });
@@ -687,12 +693,23 @@ public class TaskView extends ViewPart {
     }
 
     private TaskClient getTaskClient() {
-        if (client == null) {
-            client = new TaskClient(new MinaTaskClientConnector("client 1",
-                new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
+
+    	if (client == null) {
+        	String transportType = "unknown";
+        	if (transport == 0) {
+        		transportType = "Apache Mina";
+	            client = new TaskClient(new MinaTaskClientConnector("client 1",
+	                new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
+	            
+        	} else if (transport == 1) {
+        		transportType = "HornetQ";
+	            client = new TaskClient(new HornetQTaskClientConnector("client 1",
+	                new HornetQTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
+	            
+        	}
             boolean connected = client.connect(ipAddress, port);
             if (!connected) {
-                showMessage("Could not connect to task server: " + ipAddress + " [port " + port + "]");
+                showMessage("Could not connect to task server: " + ipAddress + " [port " + port + "] transport " + transportType);
                 client = null;
             }
         }

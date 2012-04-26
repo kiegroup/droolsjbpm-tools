@@ -20,6 +20,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -33,11 +34,13 @@ public class TaskPreferencePage extends PreferencePage implements IWorkbenchPref
     private Text ipAddressText;
     private Text portText;
     private Text languageText;
+    private Combo transportType;
 
     protected Control createContents(Composite parent) {
         ipAddressText = createText(parent, "IP address");
         portText = createText(parent, "Port");
         languageText = createText(parent, "Language");
+        transportType = createCombo(parent, "Transport");
         initializeValues();
         return new Composite(parent, SWT.NULL);
     }
@@ -47,6 +50,15 @@ public class TaskPreferencePage extends PreferencePage implements IWorkbenchPref
         label.setText(labelText);
         Text text = new Text(group, SWT.NONE);
         return text;
+    }
+    
+    private Combo createCombo(Composite group, String labelText) {
+        Label label = new Label(group, SWT.NONE);
+        label.setText(labelText);
+        Combo combo = new Combo(group, SWT.NONE);
+        combo.add("mina", 0);
+        combo.add("hornetq", 1);
+        return combo;
     }
 
     protected IPreferenceStore doGetPreferenceStore() {
@@ -58,6 +70,7 @@ public class TaskPreferencePage extends PreferencePage implements IWorkbenchPref
         ipAddressText.setText(store.getDefaultString(TaskConstants.SERVER_IP_ADDRESS));
         portText.setText(store.getDefaultInt(TaskConstants.SERVER_PORT) + "");
         languageText.setText(store.getDefaultString(TaskConstants.LANGUAGE));
+        transportType.select(store.getInt(TaskConstants.TRANSPORT));
     }
 
     private void initializeValues() {
@@ -65,6 +78,7 @@ public class TaskPreferencePage extends PreferencePage implements IWorkbenchPref
         ipAddressText.setText(store.getString(TaskConstants.SERVER_IP_ADDRESS));
         portText.setText(store.getInt(TaskConstants.SERVER_PORT) + "");
         languageText.setText(store.getString(TaskConstants.LANGUAGE));
+        transportType.select(store.getInt(TaskConstants.TRANSPORT));
     }
 
     protected void performDefaults() {
@@ -85,6 +99,7 @@ public class TaskPreferencePage extends PreferencePage implements IWorkbenchPref
             store.setValue(TaskConstants.SERVER_IP_ADDRESS, ipAddressText.getText());
             store.setValue(TaskConstants.SERVER_PORT, port);
             store.setValue(TaskConstants.LANGUAGE, languageText.getText());
+            store.setValue(TaskConstants.TRANSPORT, transportType.getSelectionIndex());
         } catch (NumberFormatException e) {
             showMessage("Could not convert port, should be an integer value.");
         }
