@@ -716,7 +716,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
     }
 
     public ProcessInfo parseProcess(String input,
-                                    IResource resource) {
+                                    IResource resource) throws Exception {
         try {
             ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
             ClassLoader newLoader = this.getClass().getClassLoader();
@@ -761,6 +761,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
             }
         } catch ( Exception e ) {
             log( e );
+            throw e;
         }
         return null;
     }
