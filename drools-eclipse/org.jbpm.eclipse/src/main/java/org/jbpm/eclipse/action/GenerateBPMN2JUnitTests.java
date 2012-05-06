@@ -25,6 +25,7 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -41,9 +42,18 @@ import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.impl.NodeImpl;
+import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.EndNode;
+import org.jbpm.workflow.core.node.EventNode;
+import org.jbpm.workflow.core.node.FaultNode;
+import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.HumanTaskNode;
+import org.jbpm.workflow.core.node.Join;
+import org.jbpm.workflow.core.node.RuleSetNode;
 import org.jbpm.workflow.core.node.Split;
+import org.jbpm.workflow.core.node.StartNode;
+import org.jbpm.workflow.core.node.SubProcessNode;
+import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 
 public class GenerateBPMN2JUnitTests implements IObjectActionDelegate {
@@ -143,7 +153,15 @@ public class GenerateBPMN2JUnitTests implements IObjectActionDelegate {
                 					"\n";
                         	}
                         	Map<String, String> cases = new HashMap<String, String>();
-                        	processNodes("", process.getStart(), "", cases);
+                        	Map<String, String> ongoingCases = new HashMap<String, String>();
+                        	boolean done = processNodes("", process.getStart(), "", cases, ongoingCases);
+                        	if (!done) {
+                        		if (ongoingCases.size() == 1) {
+                        			cases.put("Implicit", ongoingCases.values().iterator().next());
+                        		} else {
+                        			throw new IllegalArgumentException("Could not create implicit case: " + ongoingCases.size());
+                        		}
+                        	}
                         	for (Map.Entry<String, String> entry: cases.entrySet()) {
 	                        	output +=
 	                        		"	@Test\n" +
@@ -183,6 +201,7 @@ public class GenerateBPMN2JUnitTests implements IObjectActionDelegate {
                             packageFragment.createCompilationUnit(fileName + ".java", output, true, monitor);
                         } catch (Exception e) {
                             e.printStackTrace();
+                            MessageDialog.openError(null, "Error", e.getMessage());
                         }
                     }
                 };
@@ -198,28 +217,53 @@ public class GenerateBPMN2JUnitTests implements IObjectActionDelegate {
         }
     }
     
-    private static void processNodes(String name, Node currentNode, String testCode, Map<String, String> cases) {
+    private static boolean processNodes(String name, Node currentNode, String testCode, Map<String, String> cases, Map<String, String> ongoingCases) {
     	if (currentNode instanceof Split) {
     		Split split = (Split) currentNode;
     		switch (split.getType()) {
     			case Split.TYPE_AND:
+    				boolean done = false;
+    				String startTestCode = testCode;
+    				int counter = 1;
     				for (Connection c: split.getDefaultOutgoingConnections()) {
-    					processNodes(name, c.getTo(), testCode, cases);
+    					if (processNodes(name + counter++, c.getTo(), startTestCode, cases, ongoingCases)) {
+    						done = true;
+    					}
     				}
-    				return;
+    				if (!done) {
+        				String implicitCompleteTestCode = startTestCode;
+    					for (String ongoingCase: ongoingCases.values()) {
+							implicitCompleteTestCode += ongoingCase.substring(startTestCode.length(), ongoingCase.length());
+    					}
+    					ongoingCases.clear();
+    					ongoingCases.put(name, implicitCompleteTestCode);
+    				}
+    				return done;
     			case Split.TYPE_XOR:
     			case Split.TYPE_OR:
     				int i = 1;
+    				done = true;
     				for (Connection c: split.getDefaultOutgoingConnections()) {
     					String newTestCode = testCode +
     						"        // please make sure that the following constraint is selected to node " + c.getTo().getName() + ":\n" +
 							"        // " + split.getConstraint(c).getConstraint() + "\n";
-    					processNodes(name + "Constraint" + i++, c.getTo(), newTestCode, cases);
+    					if (!processNodes(name + "Constraint" + i++, c.getTo(), newTestCode, cases, ongoingCases)) {
+    						done = false;
+    					}
     				}
-    				return;
+    				return done;
+    			default:
+    				throw new IllegalArgumentException("Unknown split type " + split.getType());
     		}
     	} else if (currentNode instanceof EndNode) {
-    		cases.put(name, testCode);
+    		EndNode endNode = (EndNode) currentNode;
+    		if (endNode.isTerminate()) {
+    			cases.put(name, testCode);
+    			return true;
+    		} else {
+    			ongoingCases.put(name, testCode);
+    			return false;
+    		}
     	} else if (currentNode instanceof HumanTaskNode) {
     		HumanTaskNode taskNode = (HumanTaskNode) currentNode;
     		String actorId = (String) taskNode.getWork().getParameter("ActorId");
@@ -264,15 +308,115 @@ public class GenerateBPMN2JUnitTests implements IObjectActionDelegate {
     		testCode +=
     			"        taskService.completeWithResults(task.getId(), actorId, results);\n" +
     			"\n";
-    		processNodes(name, ((NodeImpl) currentNode).getTo().getTo(), testCode, cases);
+    		return processNodes(name, ((NodeImpl) currentNode).getTo().getTo(), testCode, cases, ongoingCases);
     	} else if (currentNode instanceof WorkItemNode) {
     		WorkItemNode taskNode = (WorkItemNode) currentNode;
     		testCode += 
     			"        // if necessary, complete request for service task \"" + taskNode.getWork().getName() + "\"\n";
-    		processNodes(name, ((NodeImpl) currentNode).getTo().getTo(), testCode, cases);
+    		return processNodes(name, ((NodeImpl) currentNode).getTo().getTo(), testCode, cases, ongoingCases);
+    	} else if (currentNode instanceof EventNode) {
+    		EventNode eventNode = (EventNode) currentNode;
+    		testCode += 
+    			"        ksession.signalEvent(\"" + eventNode.getType() + "\", null, processInstance.getId());\n";
+    		return processNodes(name, ((NodeImpl) currentNode).getTo().getTo(), testCode, cases, ongoingCases);
+    	} else if (currentNode instanceof TimerNode) {
+    		testCode += 
+    			"        // wait for timer to expire\n" +
+    		    "        // for example, try { Thread.sleep(delay); } catch (Exception e) { /* Do nothing */ }";
+    		// TODO simulation time
+    		return processNodes(name, ((NodeImpl) currentNode).getTo().getTo(), testCode, cases, ongoingCases);
+    	} else if (currentNode instanceof ForEachNode) {
+    		CompositeNode compositeNode = ((ForEachNode) currentNode).getCompositeNode();
+    		testCode += 
+    			"        // --> triggering each element in the collection:\n";
+    		boolean done = true;
+        	for (Node node: compositeNode.getNodes()) {
+	    		if (node instanceof StartNode) {
+	    			StartNode startNode = (StartNode) node;
+	    			if (startNode.getTriggers() == null || startNode.getTriggers().isEmpty()) {
+	    				done = processNodes(name, startNode.getTo().getTo(), testCode, cases, ongoingCases);
+	    				break;
+	    			}
+	    		}
+        	}
+        	if (done) {
+        		for (Map.Entry<String, String> c: cases.entrySet()) {
+        			if (c.getKey().startsWith(name)) {
+        				cases.put(c.getKey(), c.getValue() +
+    	        			"        // <-- do this for one element in the collection:\n");
+        			}
+        		}
+        		return true;
+        	} else {
+        		if (ongoingCases.size() == 1) {
+        			testCode = ongoingCases.values().iterator().next() +
+    					"        // <-- do this for each element in the collection:\n";
+        			return processNodes(name + "Implicit", ((NodeImpl) currentNode).getTo().getTo(), testCode, cases, ongoingCases);
+        		} else {
+        			throw new IllegalArgumentException("Could not create implicit case: " + ongoingCases.size());
+        		}
+        	}
+    	} else if (currentNode instanceof CompositeNode) {
+    		CompositeNode compositeNode = (CompositeNode) currentNode;
+    		boolean done = true;
+        	for (Node node: compositeNode.getNodes()) {
+	    		if (node instanceof StartNode) {
+	    			StartNode startNode = (StartNode) node;
+	    			if (startNode.getTriggers() == null || startNode.getTriggers().isEmpty()) {
+	    				done = processNodes(name, startNode.getTo().getTo(), testCode, cases, ongoingCases);
+	    				break;
+	    			}
+	    		}
+        	}
+        	if (done) {
+        		return true;
+        	} else {
+        		if (ongoingCases.size() == 1) {
+        			return processNodes(name + "Implicit", ((NodeImpl) currentNode).getTo().getTo(), ongoingCases.values().iterator().next(), cases, ongoingCases);
+        		} else {
+        			throw new IllegalArgumentException("Could not create implicit case: " + ongoingCases.size());
+        		}
+        	}
+    	} else if (currentNode instanceof RuleSetNode) {
+    		testCode += 
+    			"        ksession.fireAllRules();\n";
+    		return processNodes(name, ((NodeImpl) currentNode).getTo().getTo(), testCode, cases, ongoingCases);
+    	} else if (currentNode instanceof SubProcessNode) {
+    		SubProcessNode subProcessNode = (SubProcessNode) currentNode;
+    		if (subProcessNode.isWaitForCompletion()) {
+	    		testCode += 
+        			"        // invoking subprocess " + subProcessNode.getProcessId() + ", if necessary make sure it is completed\n";
+    		}
+    		return processNodes(name, ((NodeImpl) currentNode).getTo().getTo(), testCode, cases, ongoingCases);
+    	} else if (currentNode instanceof FaultNode) {
+    		FaultNode faultNode = (FaultNode) currentNode;
+    		testCode += 
+    			"        // handle fault " + faultNode.getFaultName() + " if necessary\n";
+    		return true;
+    	} else if (currentNode instanceof Join) {
+    		// TODO looping
+    		Join join = (Join) currentNode;
+    		switch (join.getType()) {
+				case Join.TYPE_AND:
+					// TODO: cannot just call processNodes as this will add it to the cases if an end is reached, 
+					// while it should also still include the work that is necessary to complete the other branches					
+		    		// processNodes(name, ((NodeImpl) currentNode).getTo().getTo(), testCode, cases, ongoingCases);
+		    		// TODO: this isn't 100% correct, as a join should only wait for the other incoming connections,
+		    		// not all other non-terminating connections, but not doing this would make test ignore the other
+		    		// branches of the divering parallel gateway
+		    		// return false;
+					throw new IllegalArgumentException("Generation of tests that include a convering parallel gateway is not yet supported");
+				case Join.TYPE_XOR:
+		    		return processNodes(name, ((NodeImpl) currentNode).getTo().getTo(), testCode, cases, ongoingCases);
+				default:
+					throw new IllegalArgumentException("Unknown join type " + join.getType());
+			}
     	} else if (currentNode instanceof NodeImpl) {
-    		processNodes(name, ((NodeImpl) currentNode).getTo().getTo(), testCode, cases);
+    		return processNodes(name, ((NodeImpl) currentNode).getTo().getTo(), testCode, cases, ongoingCases);
+    	} else {
+    		throw new IllegalArgumentException("Unknown node " + currentNode);
     	}
+    	
     }
 
     private static boolean containsHumanTasks(NodeContainer c) {
@@ -295,7 +439,7 @@ public class GenerateBPMN2JUnitTests implements IObjectActionDelegate {
     			result.add(((WorkItemNode) node).getWork().getName());
     		}
     		if (node instanceof NodeContainer) {
-    			containsServiceTasks(result, (NodeContainer) c);
+    			containsServiceTasks(result, (NodeContainer) node);
     		}
     	}
     }
