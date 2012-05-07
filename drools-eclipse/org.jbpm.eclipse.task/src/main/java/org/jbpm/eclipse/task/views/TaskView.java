@@ -476,6 +476,18 @@ public class TaskView extends ViewPart {
             tableViewer.setInput(new ArrayList<TaskSummary>());
             tableViewer.refresh();
             tableViewer.setSelection(null);
+        } catch (Exception e) {
+            showMessage("Exception during refresh: " + e.getMessage());
+            e.printStackTrace();
+            try {
+                client.disconnect();
+            } catch (Exception exc) {
+                exc.printStackTrace();
+            }
+            this.client = null;
+            tableViewer.setInput(new ArrayList<TaskSummary>());
+            tableViewer.refresh();
+            tableViewer.setSelection(null);
         }
     }
 
