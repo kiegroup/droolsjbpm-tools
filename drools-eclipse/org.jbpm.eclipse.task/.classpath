@@ -6,8 +6,13 @@
 	<classpathentry exported="true" kind="lib" path="lib/mina-core.jar" sourcepath="org.jbpm.eclipse.tasksrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/slf4j-api.jar" sourcepath="org.jbpm.eclipse.tasksrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/slf4j-jdk14.jar" sourcepath="org.jbpm.eclipse.tasksrc.zip"/>
-	<classpathentry kind="lib" path="lib/jbpm-human-task.jar"/>
 	<classpathentry kind="lib" path="lib/knowledge-api.jar"/>
 	<classpathentry kind="lib" path="lib/drools-core.jar"/>
+	<classpathentry kind="lib" path="lib/hornetq-core.jar"/>
+	<classpathentry kind="lib" path="lib/jbpm-human-task-core.jar"/>
+	<classpathentry kind="lib" path="lib/jbpm-human-task-hornetq.jar"/>
+	<classpathentry kind="lib" path="lib/jbpm-human-task-mina.jar"/>
+	<classpathentry kind="lib" path="lib/knowledge-internal-api.jar"/>
+	<classpathentry kind="lib" path="lib/netty.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
