@@ -710,12 +710,12 @@ public class TaskView extends ViewPart {
         	String transportType = "unknown";
         	if (transport == 0) {
         		transportType = "Apache Mina";
-	            client = new TaskClient(new MinaTaskClientConnector("client 1",
+	            client = new TaskClient(new MinaTaskClientConnector("Eclipse-Mina",
 	                new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
 	            
         	} else if (transport == 1) {
         		transportType = "HornetQ";
-	            client = new TaskClient(new HornetQTaskClientConnector("client 1",
+	            client = new TaskClient(new HornetQTaskClientConnector("Eclipse-HornetQ",
 	                new HornetQTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
 	            
         	}
