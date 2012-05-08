@@ -21,5 +21,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/xstream.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jbpm-flow.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jbpm-flow-builder.jar"/>
+	<classpathentry kind="lib" path="lib/guvnor-api.jar"/>
+	<classpathentry kind="lib" path="lib/knowledge-internal-api.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
