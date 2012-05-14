@@ -29,8 +29,10 @@ import org.eclipse.swt.graphics.Point;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.Ignore;
 import static org.junit.Assert.*;
 
+@Ignore
 public class RuleCompletionProcessorTest {
 
     class MockCompletionProposal
