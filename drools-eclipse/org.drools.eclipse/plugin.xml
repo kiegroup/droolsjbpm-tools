@@ -122,6 +122,14 @@
             icon= "icons/drools.gif">
          <description>This wizard creates a new Rule project.</description>
       </wizard>
+      <wizard
+            id = "org.drools.eclipse.wizards.new.knowledgebase"
+            name = "Knowledge Base"
+            class= "org.drools.eclipse.wizard.knowledgebase.NewKnowledgeBaseWizard"
+            category= "org.drools.eclipse.new"
+            icon= "icons/drools.gif">
+         <description>This wizard creates a new Rule project.</description>
+      </wizard>      
       <category
             id="org.drools.eclipse.new"
             name="Drools"/>

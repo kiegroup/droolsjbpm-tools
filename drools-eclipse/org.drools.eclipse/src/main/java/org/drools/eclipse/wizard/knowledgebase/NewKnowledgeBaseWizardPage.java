@@ -165,30 +165,13 @@ public class NewKnowledgeBaseWizardPage extends WizardPage {
                         if ( res.getProject().hasNature( JavaCore.NATURE_ID ) ) {
                             project = JavaCore.create( res.getProject() );
                             folder = (IFolder) res;
-                            //viewer.setSelection( selection, true );    
                         }
                     } catch ( CoreException e ) {
                         // swallow as project selection will just be null, and user can select a project manually.
                     }
                 }
             }
-        } );
-
-        //        viewer.addSelectionListener( new SelectionListener() {
-        //                    
-        //                    @Override
-        //                    public void widgetSelected(SelectionEvent arg0) {
-        //                        TreeItem item = tree.getSelection()[0];
-        //                        project = map.get(  item.getText() );
-        //                        
-        //                    }
-        //                    
-        //                    @Override
-        //                    public void widgetDefaultSelected(SelectionEvent arg0) {
-        //                        TreeItem item = tree.getSelection()[0];
-        //                        project = map.get(  item.getText() );
-        //                    }
-        //                } );       
+        } );      
     }
 
     /**
@@ -367,8 +350,7 @@ public class NewKnowledgeBaseWizardPage extends WizardPage {
         try {
             createFolder( targetFolder );
         } catch ( CoreException e2 ) {
-            // TODO Auto-generated catch block
-            e2.printStackTrace();
+            DroolsEclipsePlugin.log( e2 );
         }
 
         try {
@@ -376,9 +358,9 @@ public class NewKnowledgeBaseWizardPage extends WizardPage {
             updateKprojectProperties( kbaseName.getText() );
             createKBaseProperties( kbaseName.getText(), targetFolder );
         } catch ( IOException e1 ) {
-            e1.printStackTrace();
+            DroolsEclipsePlugin.log( e1 );
         } catch ( CoreException e1 ) {
-            e1.printStackTrace();
+            DroolsEclipsePlugin.log( e1 );
         }
 
         IPackageFragmentRoot root = project.getPackageFragmentRoot( targetFolder );
@@ -393,7 +375,7 @@ public class NewKnowledgeBaseWizardPage extends WizardPage {
 
             project.setRawClasspath( newEntries, null );
         } catch ( JavaModelException e ) {
-            e.printStackTrace();
+            DroolsEclipsePlugin.log( e );
             return false;
         }
 
