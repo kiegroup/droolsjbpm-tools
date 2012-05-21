@@ -101,7 +101,6 @@ public class NewKnowledgeBaseWizardPage extends WizardPage {
         resourceManager = new LocalResourceManager( JFaceResources.getResources() );
     }
 
-    @Override
     public void createControl(Composite parent) {
         Composite composite = new Composite( parent, SWT.NULL );
         composite.setFont( parent.getFont() );

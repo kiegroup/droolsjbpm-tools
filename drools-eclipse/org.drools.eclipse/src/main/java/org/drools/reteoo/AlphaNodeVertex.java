@@ -17,7 +17,7 @@
 package org.drools.reteoo;
 
 import org.drools.base.ClassFieldReader;
-import org.drools.rule.LiteralConstraint;
+import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Constraint;
 import org.drools.spi.InternalReadAccessor;
@@ -48,13 +48,9 @@ public class AlphaNodeVertex extends BaseVertex {
      */
     public String getHtml() {
         AlphaNodeFieldConstraint constraint = this.node.getConstraint();
-        if (constraint instanceof LiteralConstraint) {
-            LiteralConstraint literalConstraint = (LiteralConstraint) constraint;
-            InternalReadAccessor accessor = literalConstraint.getFieldExtractor();
-            if (accessor instanceof ClassFieldReader) {
-                ClassFieldReader classFieldReader = (ClassFieldReader) accessor;
-                return NODE_NAME + "<BR/>field : " + classFieldReader.getFieldName() + "<BR/>evaluator : " + literalConstraint.getEvaluator() + "<BR/>value :  " + literalConstraint.getField();
-            }
+        if (constraint instanceof MvelConstraint) {
+        	MvelConstraint mvelConstraint = (MvelConstraint) constraint;
+            return NODE_NAME + "<BR/>expression : " + mvelConstraint.toString();
         }
         return NODE_NAME + "<BR/>";
     }
@@ -81,9 +77,9 @@ public class AlphaNodeVertex extends BaseVertex {
      */
     public String getFieldName() {
         AlphaNodeFieldConstraint constraint = this.node.getConstraint();
-        if (constraint instanceof LiteralConstraint) {
-            LiteralConstraint literalConstraint = (LiteralConstraint) constraint;
-            InternalReadAccessor accessor = literalConstraint.getFieldExtractor();
+        if (constraint instanceof MvelConstraint) {
+        	MvelConstraint mvelConstraint = (MvelConstraint) constraint;
+            InternalReadAccessor accessor = mvelConstraint.getFieldExtractor();
             if (accessor instanceof ClassFieldReader) {
                 return ((ClassFieldReader) accessor).getFieldName();
             }
@@ -98,9 +94,9 @@ public class AlphaNodeVertex extends BaseVertex {
      */
     public String getEvaluator() {
         AlphaNodeFieldConstraint constraint = this.node.getConstraint();
-        if (constraint instanceof LiteralConstraint) {
-            LiteralConstraint literalConstraint = (LiteralConstraint) constraint;
-            return literalConstraint.getEvaluator().toString();
+        if (constraint instanceof MvelConstraint) {
+        	MvelConstraint mvelConstraint = (MvelConstraint) constraint;
+            return mvelConstraint.toString();
         }
         return null;
     }
@@ -112,9 +108,9 @@ public class AlphaNodeVertex extends BaseVertex {
      */
     public String getValue() {
         AlphaNodeFieldConstraint constraint = this.node.getConstraint();
-        if (constraint instanceof LiteralConstraint) {
-            LiteralConstraint literalConstraint = (LiteralConstraint) constraint;
-            return literalConstraint.getField().toString();
+        if (constraint instanceof MvelConstraint) {
+        	MvelConstraint mvelConstraint = (MvelConstraint) constraint;
+            return mvelConstraint.getField().toString();
         }
         return null;
     }
