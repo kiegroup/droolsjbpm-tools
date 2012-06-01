@@ -117,52 +117,54 @@ public class BPMNModelEditor extends GenericModelEditor {
                 ClassLoader newLoader = ProjectClassLoader.getProjectClassLoader(javaProject);
                 try {
                     Thread.currentThread().setContextClassLoader(newLoader);
-                    PaletteDrawer drawer = (PaletteDrawer) getPaletteRoot().getChildren().get(2);
-                    List entries = new ArrayList();
-                    try {
-                        for (final WorkDefinition workDefinition: WorkItemDefinitions.getWorkDefinitions(file).values()) {
-                            final String label;
-                            String description = workDefinition.getName();
-                            String icon = null;
-                            if (workDefinition instanceof WorkDefinitionExtension) {
-                                WorkDefinitionExtension extension = (WorkDefinitionExtension) workDefinition;
-                                label = extension.getDisplayName();
-                                description = extension.getExplanationText();
-                                icon = extension.getIcon();
-                            } else {
-                                label = workDefinition.getName();
-                            }
-
-                            URL iconUrl = null;
-                            if (icon != null) {
-                                iconUrl = newLoader.getResource(icon);
-                            }
-                            if (iconUrl == null) {
-                                iconUrl = DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/action.gif");
-                            }
-                            CombinedTemplateCreationEntry combined = new CombinedTemplateCreationEntry(
-                                label,
-                                description,
-                                WorkItemWrapper.class,
-                                new SimpleFactory(WorkItemWrapper.class) {
-                                    public Object getNewObject() {
-                                        WorkItemWrapper workItemWrapper = (WorkItemWrapper) super.getNewObject();
-                                        workItemWrapper.setName(label);
-                                        workItemWrapper.setWorkDefinition(workDefinition);
-                                        return workItemWrapper;
-                                    }
-                                },
-                                ImageDescriptor.createFromURL(iconUrl),
-                                ImageDescriptor.createFromURL(iconUrl)
-                            );
-                            entries.add(combined);
-                        }
-                    } catch (Throwable t) {
-                        DroolsEclipsePlugin.log(t);
-                        MessageDialog.openError(
-                            getSite().getShell(), "Parsing work item definitions", t.getMessage());
+                    if (getPaletteRoot().getChildren().size() > 2) {
+	                    PaletteDrawer drawer = (PaletteDrawer) getPaletteRoot().getChildren().get(2);
+	                    List entries = new ArrayList();
+	                    try {
+	                        for (final WorkDefinition workDefinition: WorkItemDefinitions.getWorkDefinitions(file).values()) {
+	                            final String label;
+	                            String description = workDefinition.getName();
+	                            String icon = null;
+	                            if (workDefinition instanceof WorkDefinitionExtension) {
+	                                WorkDefinitionExtension extension = (WorkDefinitionExtension) workDefinition;
+	                                label = extension.getDisplayName();
+	                                description = extension.getExplanationText();
+	                                icon = extension.getIcon();
+	                            } else {
+	                                label = workDefinition.getName();
+	                            }
+	
+	                            URL iconUrl = null;
+	                            if (icon != null) {
+	                                iconUrl = newLoader.getResource(icon);
+	                            }
+	                            if (iconUrl == null) {
+	                                iconUrl = DroolsEclipsePlugin.getDefault().getBundle().getEntry("icons/action.gif");
+	                            }
+	                            CombinedTemplateCreationEntry combined = new CombinedTemplateCreationEntry(
+	                                label,
+	                                description,
+	                                WorkItemWrapper.class,
+	                                new SimpleFactory(WorkItemWrapper.class) {
+	                                    public Object getNewObject() {
+	                                        WorkItemWrapper workItemWrapper = (WorkItemWrapper) super.getNewObject();
+	                                        workItemWrapper.setName(label);
+	                                        workItemWrapper.setWorkDefinition(workDefinition);
+	                                        return workItemWrapper;
+	                                    }
+	                                },
+	                                ImageDescriptor.createFromURL(iconUrl),
+	                                ImageDescriptor.createFromURL(iconUrl)
+	                            );
+	                            entries.add(combined);
+	                        }
+	                    } catch (Throwable t) {
+	                        DroolsEclipsePlugin.log(t);
+	                        MessageDialog.openError(
+	                            getSite().getShell(), "Parsing work item definitions", t.getMessage());
+	                    }
+	                    drawer.setChildren(entries);
                     }
-                    drawer.setChildren(entries);
                 } finally {
                     Thread.currentThread().setContextClassLoader(oldLoader);
                 }
