@@ -157,6 +157,7 @@ public class CompletionContextTest {
     }
 
     @Test
+    @Ignore
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START2() {
         String input =
             "rule MyRule \n" +
@@ -169,6 +170,7 @@ public class CompletionContextTest {
     }
 
     @Test
+    @Ignore
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START3() {
         String input =
             "rule MyRule \n" +
@@ -1969,6 +1971,7 @@ public class CompletionContextTest {
         }
 
     @Test
+    @Ignore
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START32() {
         String input =
             "rule MyRule \n" +
