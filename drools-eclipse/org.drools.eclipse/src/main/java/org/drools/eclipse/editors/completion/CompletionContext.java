@@ -17,6 +17,7 @@
 package org.drools.eclipse.editors.completion;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -27,7 +28,6 @@ import org.drools.lang.DRLLexer;
 import org.drools.lang.DRLParser;
 import org.drools.lang.DroolsEditorType;
 import org.drools.lang.DroolsToken;
-import org.drools.lang.DroolsTreeAdaptor;
 import org.drools.lang.Location;
 
 /**
@@ -102,10 +102,10 @@ public class CompletionContext {
                     }
                 }
                 String propertyName = null;
-                if (locationIndex + 1 < parserList.size()) {
+                if (index + 1 < parserList.size()) {
                     propertyName = "";
                 }
-                int i = locationIndex + 1;
+                int i = index + 1;
                 while (i < parserList.size()) {
                     Object o = parserList.get(i++);
                     if (o instanceof DroolsToken) {
@@ -495,14 +495,31 @@ public class CompletionContext {
 
     private void deriveLocation() {
         location = -1;
-        int i = 0;
-        for (Object object : parserList) {
-            if (object instanceof Integer) {
-                location = (Integer) object;
-                locationIndex = i;
-            }
-            i++;
-        }
+//        boolean foundToken = false;
+        int i = parserList.size() - 1;
+        final Iterator<Object> iterator = parserList.descendingIterator();
+        while (iterator.hasNext()) {
+			 final Object object = iterator.next();
+			 if (object instanceof Integer) {
+				 location = (Integer) object;
+                 locationIndex = i;
+    			 i--;
+    			 break;
+			 } //else if (object instanceof DroolsToken) {
+//				 foundToken = true;
+//			 }
+			 i--;
+		}
+//        if (!foundToken){
+//        	while(iterator.hasNext()){
+//        		final Object object = iterator.next();
+//   			 	if (object instanceof DroolsToken) {
+//   			 		locationIndex = i - 1;
+//   			 		break;
+//   			 	}
+//   			 	i--;
+//        	}
+//        }
     }
 
     private DRLParser getParser(final String text) {
