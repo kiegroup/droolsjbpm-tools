@@ -2,7 +2,7 @@
 <feature
       id="org.drools.eclipse.task.feature"
       label="JBoss Drools Task"
-      version="5.3.2.qualifier"
+      version="5.3.2.Final"
       provider-name="JBoss by Red Hat">
 
    <description url="http://www.jboss.org/drools/">
@@ -32,7 +32,7 @@ Raleigh NC 27606 USA.
          id="org.drools.eclipse.task"
          download-size="0"
          install-size="0"
-         version="5.3.2.qualifier"
+         version="5.3.2.Final"
          unpack="false"/>
 
 </feature>
