@@ -488,34 +488,17 @@ public class CompletionContext {
         return -1;
     }
 
-    private void deriveLocation() {
-        location = -1;
-//        boolean foundToken = false;
-        int i = parserList.size() - 1;
-        final Iterator<Object> iterator = parserList.descendingIterator();
-        while (iterator.hasNext()) {
-			 final Object object = iterator.next();
-			 if (object instanceof Integer) {
-				 location = (Integer) object;
-                 locationIndex = i;
-    			 i--;
-    			 break;
-			 } //else if (object instanceof DroolsToken) {
-//				 foundToken = true;
-//			 }
-			 i--;
-		}
-//        if (!foundToken){
-//        	while(iterator.hasNext()){
-//        		final Object object = iterator.next();
-//   			 	if (object instanceof DroolsToken) {
-//   			 		locationIndex = i - 1;
-//   			 		break;
-//   			 	}
-//   			 	i--;
-//        	}
-//        }
-    }
+	private void deriveLocation() {
+	    location = -1;
+	    int i = 0;
+	    for (Object object : parserList) {
+	        if (object instanceof Integer) {
+	            location = (Integer) object;
+	            locationIndex = i;
+	        }
+	        i++;
+	    }
+	}
 
     private DRLParser getParser(final String text) {
         DRLParser parser = new DRLParser(new CommonTokenStream(new DRLLexer(
