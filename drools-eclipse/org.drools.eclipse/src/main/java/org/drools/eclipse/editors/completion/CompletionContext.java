@@ -124,7 +124,7 @@ public class CompletionContext {
                     }
                 }
                 propertyName = null;
-                index = findToken(Location.LOCATION_LHS_INSIDE_CONDITION_START, locationIndex);
+                index = findTokenBack(Location.LOCATION_LHS_INSIDE_CONDITION_START, locationIndex);
                 if (index != -1) {
                     if (index + 1 < locationIndex) {
                         propertyName = "";
@@ -148,8 +148,9 @@ public class CompletionContext {
                 break;
             case Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT:
                 int index1 = findToken("(", Location.LOCATION_LHS_INSIDE_CONDITION_START, locationIndex);
-                int index2 = findToken(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR, locationIndex);
-                int index3 = findToken(Location.LOCATION_LHS_INSIDE_CONDITION_START, locationIndex);
+                int index2 = findTokenBack(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR, locationIndex);
+                int index3 = findTokenBack(Location.LOCATION_LHS_INSIDE_CONDITION_START, locationIndex);
+                int index4 = findTokenBack(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT, locationIndex);
                 if (index1 != -1 && index2 != -1) {
                     Object o = parserList.get(index1 - 1);
                     if (o instanceof DroolsToken) {
@@ -163,11 +164,14 @@ public class CompletionContext {
                     if (o instanceof DroolsToken) {
                         operator += ((DroolsToken) o).getText();
                     }
+                    if (index4 != -1 && i >= index4 ){
+                    	break;
+                    }
                     if (i < locationIndex - 1) {
                         operator += " ";
                     }
                 }
-                location.setProperty(Location.LOCATION_PROPERTY_OPERATOR, operator);
+                location.setProperty(Location.LOCATION_PROPERTY_OPERATOR, operator.trim());
                 propertyName = null;
                 if (index1 != -1) {
                     if (index3 + 1 < locationIndex - 1) {
@@ -202,14 +206,14 @@ public class CompletionContext {
                 break;
             case Location.LOCATION_LHS_INSIDE_EVAL:
                 String eval = "";
-                i = locationIndex + 2;
+                i = locationIndex + 1;
                 while (i < parserList.size()) {
                     Object o = parserList.get(i++);
                     if (o instanceof DroolsToken) {
                         eval += ((DroolsToken) o).getText();
                     }
                 }
-                location.setProperty(Location.LOCATION_EVAL_CONTENT, eval);
+                location.setProperty(Location.LOCATION_EVAL_CONTENT, eval.trim());
                 break;
             case Location.LOCATION_LHS_FROM:
                 String from = null;
@@ -233,27 +237,21 @@ public class CompletionContext {
                     if (o instanceof DroolsToken) {
                         from += ((DroolsToken) o).getText();
                     }
-                    if (i < parserList.size()) {
-                        from += " ";
-                    }
                 }
                 location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT, from);
                 break;
             case Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE:
                 from = "";
-                index = findToken(Location.LOCATION_LHS_FROM_ACCUMULATE_INIT_INSIDE, locationIndex);
-                index2 = findToken(Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION, locationIndex);
+                index = findTokenBack(Location.LOCATION_LHS_FROM_ACCUMULATE_INIT_INSIDE, locationIndex);
+                index2 = findTokenBack(Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION, locationIndex);
                 if (index != -1 && index2 != -1) {
-                    for (i = index + 1; i < index2 - 2; i++) {
+                    for (i = index + 1; i < index2 - 3; i++) {
                         Object o = parserList.get(i);
                         if (o instanceof DroolsToken) {
                             from += ((DroolsToken) o).getText();
                         }
-                        if (i < index2 - 3) {
-                            from += " ";
-                        }
                     }
-                    location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT, from);
+                    location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT, from.trim());
                 }
                 from = "";
                 i = locationIndex + 1;
@@ -262,39 +260,30 @@ public class CompletionContext {
                     if (o instanceof DroolsToken) {
                         from += ((DroolsToken) o).getText();
                     }
-                    if (i < parserList.size()) {
-                        from += " ";
-                    }
                 }
                 location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT, from);
                 break;
             case Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE:
                 from = "";
-                index = findToken(Location.LOCATION_LHS_FROM_ACCUMULATE_INIT_INSIDE, locationIndex);
-                index2 = findToken(Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION, locationIndex);
-                index3 = findToken(Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE, locationIndex);
-                int index4 = findToken(Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE, locationIndex);
+                index = findTokenBack(Location.LOCATION_LHS_FROM_ACCUMULATE_INIT_INSIDE, locationIndex);
+                index2 = findTokenBack(Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION, locationIndex);
+                index3 = findTokenBack(Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE, locationIndex);
+                index4 = findTokenBack(Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT, locationIndex);
                 if (index != -1 && index2 != -1) {
-                    for (i = index + 1; i < index2 - 2; i++) {
+                    for (i = index + 1; i < index2 - 3; i++) {
                         Object o = parserList.get(i);
                         if (o instanceof DroolsToken) {
                             from += ((DroolsToken) o).getText();
                         }
-                        if (i < index2 - 3) {
-                            from += " ";
-                        }
                     }
-                    location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT, from);
+                    location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT, from.trim());
                 }
                 from = "";
                 if (index3 != -1 && index4 != -1) {
-                    for (i = index3 + 1; i < index4 - 2; i++) {
+                    for (i = index3 + 1; i < index4 - 3; i++) {
                         Object o = parserList.get(i);
                         if (o instanceof DroolsToken) {
                             from += ((DroolsToken) o).getText();
-                        }
-                        if (i < index4 - 3) {
-                            from += " ";
                         }
                     }
                     location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT, from);
@@ -305,9 +294,6 @@ public class CompletionContext {
                     Object o = parserList.get(i++);
                     if (o instanceof DroolsToken) {
                         from += ((DroolsToken) o).getText();
-                    }
-                    if (i < parserList.size()) {
-                        from += " ";
                     }
                 }
                 location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_RESULT_CONTENT, from);
@@ -342,7 +328,7 @@ public class CompletionContext {
                 break;
             case Location.LOCATION_RULE_HEADER_KEYWORD:
                 header = "";
-                index = findToken(Location.LOCATION_RULE_HEADER, locationIndex);
+                index = findTokenBack(Location.LOCATION_RULE_HEADER, locationIndex);
                 if (index != -1) {
                     for (i = index + 1; i < locationIndex; i++) {
                         Object o = parserList.get(i);
@@ -351,20 +337,14 @@ public class CompletionContext {
                         }
                     }
                 }
-                if (locationIndex + 1 < parserList.size()) {
-                    header += " ";
-                }
                 i = locationIndex + 1;
                 while (i < parserList.size()) {
                     Object o = parserList.get(i++);
                     if (o instanceof DroolsToken) {
                         header += ((DroolsToken) o).getText();
                     }
-                    if (i != parserList.size()) {
-                        header += " ";
-                    }
                 }
-                location.setProperty(Location.LOCATION_HEADER_CONTENT, header);
+                location.setProperty(Location.LOCATION_HEADER_CONTENT, header.trim());
                 break;
         }
         return location;
@@ -400,7 +380,7 @@ public class CompletionContext {
         for (Object o: parserList) {
             if (o instanceof DroolsToken) {
                 DroolsToken token = (DroolsToken) o;
-                if (DroolsEditorType.IDENTIFIER_VARIABLE.equals(token.getEditorType())) {
+                if (DroolsEditorType.IDENTIFIER_VARIABLE.equals(token.getEditorType()) || DroolsEditorType.IDENTIFIER_PATTERN.equals(token.getEditorType())) {
                     String variableName = token.getText();
                     if (lastLocation == Location.LOCATION_LHS_BEGIN_OF_CONDITION) {
                         int j = i + 2;
@@ -419,7 +399,7 @@ public class CompletionContext {
                             }
                         }
                     } else if (lastLocation == Location.LOCATION_LHS_INSIDE_CONDITION_START) {
-                        int index = findToken(Location.LOCATION_LHS_BEGIN_OF_CONDITION, i);
+                        int index = findTokenBack(Location.LOCATION_LHS_BEGIN_OF_CONDITION, i);
                         int j = index + 3;
                         String className = "";
                         while (j < i) {
@@ -466,12 +446,15 @@ public class CompletionContext {
             Object o = parserList.get(index);
             if (o instanceof DroolsToken) {
                 if ("(".equals(((DroolsToken) o).getText())) {
-                    o = parserList.get(index + 1);
-                    if (o instanceof Integer) {
-                        if (integer == (Integer) o) {
-                            return index;
-                        }
-                    }
+                	if (getNextInteger(index) == integer){
+                		return index;
+                	}
+//                    o = parserList.get(index + 1);
+//                    if (o instanceof Integer) {
+//                        if (integer == (Integer) o) {
+//                            return index;
+//                        }
+//                    }
                 }
             }
             index--;
@@ -479,7 +462,7 @@ public class CompletionContext {
         return -1;
     }
 
-    private int findToken(int token, int location) {
+    private int findTokenBack(int token, int location) {
         int index = location - 1;
         while (index >= 0) {
             Object o = parserList.get(index);
@@ -489,6 +472,18 @@ public class CompletionContext {
                 }
             }
             index--;
+        }
+        return -1;
+    }
+
+    private int getNextInteger(int location) {
+        int index = location;
+        while (index >= 0) {
+            Object o = parserList.get(index);
+            if (o instanceof Integer) {
+                return (Integer) o; 
+            }
+            index++;
         }
         return -1;
     }
