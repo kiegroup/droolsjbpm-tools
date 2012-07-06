@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: jBPM Eclipse Task Plug-in
 Bundle-SymbolicName: org.jbpm.eclipse.task; singleton:=true
-Bundle-Version: 5.3.3.Final
+Bundle-Version: 5.3.4.qualifier
 Bundle-Activator: org.jbpm.eclipse.task.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime

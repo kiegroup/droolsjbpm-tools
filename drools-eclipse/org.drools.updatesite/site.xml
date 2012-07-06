@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-  <feature url="org.drools.eclipse.feature_5.3.3.Final" id="org.drools.eclipse.feature" version="5.3.3.Final">
+  <feature url="org.drools.eclipse.feature_5.3.4.qualifier" id="org.drools.eclipse.feature" version="5.3.4.qualifier">
     <category name="droolsjbpm"/>
   </feature>
-  <feature url="org.drools.eclipse.task.feature_5.3.3.Final" id="org.drools.eclipse.task.feature" version="5.3.3.Final">
+  <feature url="org.drools.eclipse.task.feature_5.3.4.qualifier" id="org.drools.eclipse.task.feature" version="5.3.4.qualifier">
     <category name="droolsjbpm"/>
   </feature>
-  <feature url="org.guvnor.tools.feature_5.3.3.Final" id="org.guvnor.tools.feature" version="5.3.3.Final">
+  <feature url="org.guvnor.tools.feature_5.3.4.qualifier" id="org.guvnor.tools.feature" version="5.3.4.qualifier">
     <category name="droolsjbpm"/>
   </feature>
-  <feature url="org.jbpm.eclipse.feature_5.3.3.Final" id="org.jbpm.eclipse.feature" version="5.3.3.Final">
+  <feature url="org.jbpm.eclipse.feature_5.3.4.qualifier" id="org.jbpm.eclipse.feature" version="5.3.4.qualifier">
     <category name="droolsjbpm"/>
   </feature>
-  <feature url="org.jbpm.eclipse.task.feature_5.3.3.Final" id="org.jbpm.eclipse.task.feature" version="5.3.3.Final">
+  <feature url="org.jbpm.eclipse.task.feature_5.3.4.qualifier" id="org.jbpm.eclipse.task.feature" version="5.3.4.qualifier">
     <category name="droolsjbpm"/>
   </feature>
   <category-def name="droolsjbpm" label="Drools and jBPM">
