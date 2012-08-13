@@ -56,9 +56,11 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IFileEditorInput;
+import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.CompiledExpression;
+import org.mvel2.compiler.ExecutableStatement;
 import org.mvel2.compiler.ExpressionCompiler;
 import org.mvel2.compiler.PropertyVerifier;
 
@@ -1070,17 +1072,16 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
     class MvelContext {
         private CompiledExpression expression;
-        private ParserContext      initialContext;
+        private ParserContext      parserContext;
         private Class              returnedType;
         private boolean            staticFlag;
 
         public ParserContext getContext() {
-            if ( getExpression() != null ) {
-                if ( getExpression().getParserContext() != null ) {
-                    return getExpression().getParserContext();
-                }
-            }
-            return getInitialContext();
+            return parserContext;
+        }
+
+        void setContext(ParserContext parserContext) {
+            this.parserContext = parserContext;
         }
 
         void setExpression(CompiledExpression expression) {
@@ -1089,14 +1090,6 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
         CompiledExpression getExpression() {
             return expression;
-        }
-
-        void setInitialContext(ParserContext initialContext) {
-            this.initialContext = initialContext;
-        }
-
-        ParserContext getInitialContext() {
-            return initialContext;
         }
 
         void setReturnedType(Class returnedType) {
@@ -1120,7 +1113,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                               DRLInfo drlInfo,
                                               String mvel) {
 
-        String macroMvel = processMacros( mvel );
+        String expr = processMacros( mvel );
 
         String name = context.getRuleName();
         RuleInfo currentRule = getCurrentRule( drlInfo,
@@ -1131,16 +1124,11 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                                              qName,
                                                              dialect );
         MvelContext mCon = new MvelContext();
-        mCon.setInitialContext( initialContext );
+        mCon.setContext( initialContext );
 
         try {
-            ExpressionCompiler compiler = new ExpressionCompiler( macroMvel );
-            CompiledExpression expression = compiler.compile( initialContext );
-            mCon.setExpression( expression );
-
-            ParserContext compilationContext = compiler.getParserContextState();
-
-            Class lastType = expression.getKnownEgressType();
+        	ExecutableStatement stmt = (ExecutableStatement) MVEL.compileExpression(expr, initialContext);
+            Class lastType = stmt.getKnownEgressType();
 
             //Statics expression may return Class as an egress type
             if ( lastType != null && "java.lang.Class".equals( lastType.getName() ) ) {
@@ -1150,8 +1138,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
             if ( lastType == null || "java.lang.Object".equals( lastType.getName() ) || "java.lang.Class".equals( lastType.getName() ) ) {
                 // attempt to use the property verifier to get
                 // a better type  resolution (a recommend by cbrock, though egress gives consistent results)
-                lastType = new PropertyVerifier( macroMvel,
-                                                 compilationContext ).analyze();
+                lastType = new PropertyVerifier( expr, initialContext ).analyze();
             }
 
             if ( lastType == null ) {
