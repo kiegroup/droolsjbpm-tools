@@ -13,9 +13,7 @@ Export-Package: org.eclipse.webdav,
  org.eclipse.webdav.internal.kernel;x-internal:=true,
  org.eclipse.webdav.internal.kernel.utils;x-internal:=true,
  org.eclipse.webdav.internal.utils;x-internal:=true
-Bundle-RequiredExecutionEnvironment: J2SE-1.4,
- CDC-1.0/Foundation-1.0,
- J2SE-1.3
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: javax.xml.parsers,
  javax.xml.transform,
  org.w3c.dom,
