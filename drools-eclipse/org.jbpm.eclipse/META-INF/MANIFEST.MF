@@ -26,6 +26,7 @@ Bundle-ClassPath: .,
  lib/junit.jar,
  lib/mvel2.jar,
  lib/antlr-runtime.jar,
- lib/xstream.jar
+ lib/xstream.jar,
+ lib/slf4j-api.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.jbpm.eclipse

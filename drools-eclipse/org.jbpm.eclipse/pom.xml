@@ -74,7 +74,8 @@
                 mvel2,
                 antlr-runtime,
                 xpp3_min,
-                xstream
+                xstream,
+                slf4j-api
               </includeArtifactIds>
             </configuration>
           </execution>

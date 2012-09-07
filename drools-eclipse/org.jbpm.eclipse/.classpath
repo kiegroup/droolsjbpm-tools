@@ -10,9 +10,11 @@
 	<classpathentry exported="true" kind="lib" path="lib/jbpm-flow.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jbpm-flow-builder.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jbpm-bam.jar"/>
-    <classpathentry exported="true" kind="lib" path="lib/jbpm-bpmn2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jbpm-bpmn2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/mvel2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/antlr-runtime.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xstream.jar"/>
+	<classpathentry kind="lib" path="lib/knowledge-internal-api.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
