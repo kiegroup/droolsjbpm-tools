@@ -102,6 +102,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
      * IF a new kbase entry is detected, all it's files are added, and it's added to the dirtyKbases
      * @param currentProject
      */
+/*
     void updateKBaseTracker(IProject currentProject) {
         IFile ifile = currentProject.getFile( "kbasePaths.properties" );
 
@@ -173,7 +174,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             }
         }
     }
-
+*/
     void getAllKBaseFilesFromDisk(Set files,
                           IFolder folder,
                           IProject currentProject) {
@@ -337,7 +338,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             return new IProject[0];
         }
 
-        updateKBaseTracker( currentProject );
+//        updateKBaseTracker( currentProject );
 
         try {
             if ( monitor != null && monitor.isCanceled() ) throw new OperationCanceledException();
@@ -360,7 +361,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             marker.setAttribute( IMarker.SEVERITY,
                                  IMarker.SEVERITY_ERROR );
         }
-
+/*
         if ( dirtyKbases != null && !dirtyKbases.isEmpty() ) {
             for ( String kbaseName : dirtyKbases ) {
                 try {
@@ -371,7 +372,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             }
             dirtyKbases.clear();
         }
-
+*/
         return getRequiredProjects( currentProject );
     }
 
@@ -441,7 +442,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             if ( !exists( resource ) ) {
                 return false;
             } else {
-                addKbaseFile( resource );
+//                addKbaseFile( resource );
             }
 
             ResourceDescr resourceDescr = ResourceDescr.createResourceDescr( resource );
@@ -506,14 +507,14 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                 }
             }
 
-            removeKbaseFile( res );
+//            removeKbaseFile( res );
             removeProblemsFor( res );
             DroolsEclipsePlugin.getDefault().invalidateResource( res );
             return false;
         }
         return true;
     }
-
+/*
     void removeKbaseFile(IResource res) {
         // If the resource is from a deleted classpath entry, the kbasePaths will not exist, and this does nothing
         for ( Entry<String, IPath> entry : kbases.entrySet() ) {
@@ -548,7 +549,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             }
         }
     }
-
+*/
     protected boolean parseResource(IResource res,
                                     boolean clean) {
         try {
@@ -566,7 +567,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         if ( !exists( res ) ) {
             return false;
         } else {
-            addKbaseFile( res );
+//            addKbaseFile( res );
         }
 
         if ( res instanceof IFile
