@@ -17,7 +17,6 @@
 package org.jbpm.eclipse.task;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.jbpm.eclipse.task.preferences.TaskConstants;
 import org.osgi.framework.BundleContext;
@@ -26,9 +25,6 @@ import org.osgi.framework.BundleContext;
  * The activator class controls the plug-in life cycle
  */
 public class Activator extends AbstractUIPlugin {
-
-    // The plug-in ID
-    public static final String PLUGIN_ID = "org.drools.eclipse.task";
 
     // The shared instance
     private static Activator plugin;
@@ -48,10 +44,6 @@ public class Activator extends AbstractUIPlugin {
 
     public static Activator getDefault() {
         return plugin;
-    }
-
-    public static ImageDescriptor getImageDescriptor(String path) {
-        return imageDescriptorFromPlugin(PLUGIN_ID, path);
     }
 
     protected void initializeDefaultPreferences(IPreferenceStore store) {
