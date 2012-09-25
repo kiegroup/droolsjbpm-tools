@@ -58,11 +58,6 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>org.drools.eclipse.task</artifactId>
-      <classifier>sources</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
       <artifactId>org.guvnor.tools</artifactId>
       <classifier>sources</classifier>
     </dependency>
