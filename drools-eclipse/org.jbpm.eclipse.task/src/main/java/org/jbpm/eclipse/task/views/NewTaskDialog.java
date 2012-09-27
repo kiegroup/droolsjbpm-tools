@@ -55,6 +55,7 @@ public class NewTaskDialog extends Dialog {
     private Text priorityText;
     private Button skippableButton;
     private Text contentText;
+    private Text localeText;
 
     public NewTaskDialog(Shell shell) {
         super(shell);
@@ -133,6 +134,17 @@ public class NewTaskDialog extends Dialog {
         gridData.verticalAlignment = GridData.FILL;
         contentText.setLayoutData(gridData);
         
+        label = new Label(composite, SWT.NONE);
+        label.setText("Locale: ");
+        localeText = new Text(composite, SWT.MULTI);
+        gridData = new GridData();
+        gridData.grabExcessHorizontalSpace = true;
+        gridData.grabExcessVerticalSpace = true;
+        gridData.horizontalAlignment = GridData.FILL;
+        gridData.verticalAlignment = GridData.FILL;
+        localeText.setLayoutData(gridData);
+        localeText.setText("en-UK");
+        
         return composite;
     }
 
@@ -145,17 +157,21 @@ public class NewTaskDialog extends Dialog {
 
     private void createTask() {
         task = new Task();
+        String locale = localeText.getText();
+        if (locale == null || locale.length() == 0) {
+        	locale = "en-UK";
+        }
         String taskName = nameText.getText();
         List<I18NText> names = new ArrayList<I18NText>();
-        names.add(new I18NText("en-UK", taskName));
+        names.add(new I18NText(locale, taskName));
         task.setNames(names);
         String subject = subjectText.getText();
         List<I18NText> subjects = new ArrayList<I18NText>();
-        subjects.add(new I18NText("en-UK", subject));
+        subjects.add(new I18NText(locale, subject));
         task.setSubjects(subjects);
         String comment = commentText.getText();
         List<I18NText> descriptions = new ArrayList<I18NText>();
-        descriptions.add(new I18NText("en-UK", comment));
+        descriptions.add(new I18NText(locale, comment));
         task.setDescriptions(descriptions);
         String priority = priorityText.getText();
         priorityText.addModifyListener(new ModifyListener() {
