@@ -74,6 +74,7 @@ public class HumanTaskCustomEditor extends EditBeanDialog<Work> implements WorkE
     private Text priorityText;
     private Button skippableButton;
     private Text contentText;
+    private Text localeText;
     
     private List<Reassignment> reassignments = new ArrayList<Reassignment>();
     private List<Notification> notifications = new ArrayList<Notification>();
@@ -196,6 +197,16 @@ public class HumanTaskCustomEditor extends EditBeanDialog<Work> implements WorkE
 		contentText.setLayoutData(gridData);
 		value = (String) work.getParameter("Content");
 		contentText.setText(value == null ? "" : value.toString());
+		
+		label = new Label(container, SWT.NONE);
+		label.setText("Locale: ");
+		localeText = new Text(container, SWT.NONE);
+		gridData = new GridData();
+		gridData.grabExcessHorizontalSpace = true;
+		gridData.horizontalAlignment = GridData.FILL;
+		localeText.setLayoutData(gridData);
+		value = (String) work.getParameter("Locale");
+		localeText.setText(value == null ? "en-UK" : value.toString());
 	}
 
 	private void createReassignmentTab(TabFolder tabFolder) {
@@ -653,6 +664,7 @@ public class HumanTaskCustomEditor extends EditBeanDialog<Work> implements WorkE
         work.setParameter("Skippable", skippableButton.getSelection() + "");
         String content = contentText.getText();
         work.setParameter("Content", content.trim().length() == 0 ? null : content);
+        work.setParameter("Locale", localeText.getText());
         
         // process reassignment
         if (!reassignments.isEmpty()) {
