@@ -148,6 +148,10 @@ public class DRLSourceViewerConfig extends SourceViewerConfiguration {
         detectors = new IHyperlinkDetector[0];
       }
 
+      if(editor==null) {
+        return detectors;
+      }
+      
       IHyperlinkDetector[] drlDetectors = new IHyperlinkDetector[detectors.length + 1];
       DRLHyperlinkDetector detector =  new DRLHyperlinkDetector(editor);
       drlDetectors[0] = detector;

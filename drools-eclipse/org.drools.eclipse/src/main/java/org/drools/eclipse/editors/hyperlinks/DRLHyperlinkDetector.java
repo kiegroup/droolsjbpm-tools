@@ -19,17 +19,17 @@ package org.drools.eclipse.editors.hyperlinks;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.DroolsParserException;
-import org.drools.eclipse.DRLInfo;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.ProcessInfo;
 import org.drools.eclipse.editors.AbstractRuleEditor;
-import org.drools.eclipse.editors.DescrUtil;
+import org.drools.eclipse.editors.DRLRuleEditor;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.jbpm.workflow.core.node.RuleSetNode;
@@ -39,28 +39,31 @@ import org.jbpm.workflow.core.node.RuleSetNode;
  */
 public class DRLHyperlinkDetector implements IHyperlinkDetector {
 
-	private AbstractRuleEditor editor;
+	private DRLRuleEditor editor;
 
 	public DRLHyperlinkDetector(final AbstractRuleEditor editor) {
-		this.editor = editor;
+		this.editor = (DRLRuleEditor) editor.getAdapter(DRLRuleEditor.class);
 	}
 
 	public IHyperlink[] detectHyperlinks(ITextViewer textViewer, final IRegion region, boolean canShowMultipleHyperlinks) {
-	if (region == null || textViewer == null) {
+		if (region == null || textViewer == null) {
+			return null;
+		}
+	
+		IDocument document = textViewer.getDocument();
+		if (document == null) {
+			return null;
+		}		
+		
+		final BaseDescr descr = editor.getDescr(region.getOffset());
+		if(descr instanceof AttributeDescr) {	
+			return createHyperlinks((AttributeDescr) descr);
+		} else if(descr instanceof PatternDescr) {
+			return createHyperlinks((PatternDescr) descr, region);
+		}
+		
 		return null;
 	}
-
-	IDocument document = textViewer.getDocument();
-	if (document == null) {
-		return null;
-	}
-
-	final BaseDescr descr = getDescr(region.getOffset());
-	if(descr instanceof AttributeDescr) {	
-		return createHyperlinks((AttributeDescr) descr);
-	}	
-	return null;
-}
 	
 	protected IHyperlink[] createHyperlinks(AttributeDescr descr) {
 		if(((AttributeDescr)descr).getName().equals("ruleflow-group")) {
@@ -77,14 +80,22 @@ public class DRLHyperlinkDetector implements IHyperlinkDetector {
 		return null;
 	}
 	
-	private BaseDescr getDescr(int offset) {
-		try {
-			DRLInfo info = DroolsEclipsePlugin.getDefault().parseResource(
-					editor, true, false);
-			return DescrUtil.getDescr(info.getPackageDescr(), offset);
-		} catch (DroolsParserException exc) {
-			return null;
+	protected IHyperlink[] createHyperlinks(PatternDescr descr, IRegion region) {
+		int start = descr.getStartCharacter();
+		if(descr.getIdentifier()!=null) {
+			String source = editor.getContent().substring(descr.getStartCharacter() + descr.getIdentifier().length(), descr.getEndCharacter());
+			start = start + descr.getIdentifier().length() + source.indexOf(descr.getObjectType());
 		}
+		int end = start + descr.getObjectType().length();
+		if (region.getOffset() >= start && region.getOffset() <= end)  {
+			for (String type : editor.getImports()){
+				if(descr.getObjectType().equals(type.substring(type.lastIndexOf('.')+1))) {
+					
+					return new IHyperlink[] { new ObjectTypeHyperlinkDetector(descr,editor.getResource().getProject(), type, new Region(start, descr.getObjectType().length()))};		
+				}
+			}		
+		} 
+		return null;
 	}
 
 }
