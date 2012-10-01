@@ -71,7 +71,8 @@
                 jbpm-human-task-hornetq,
                 jbpm-human-task-mina,
                 hornetq-core,
-                netty
+                netty,
+                hibernate-jpa-2.0-api
               </includeArtifactIds>
             </configuration>
           </execution>
@@ -103,8 +104,8 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.persistence</groupId>
-      <artifactId>persistence-api</artifactId>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.0-api</artifactId>
     </dependency>
     
     <dependency>
