@@ -19,5 +19,6 @@ Bundle-ClassPath: .,
  lib/jbpm-human-task-hornetq.jar,
  lib/jbpm-human-task-mina.jar,
  lib/hornetq-core.jar,
- lib/netty.jar
+ lib/netty.jar,
+ lib/hibernate-jpa-2.0-api.jar
 Bundle-Vendor: JBoss by Red Hat
