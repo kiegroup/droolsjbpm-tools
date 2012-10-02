@@ -786,6 +786,21 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 		}
         return result;
     }
+
+    public List<String> getAllRuleFlowGroup() {
+    	List<String> result = new ArrayList<String>();
+    	for (ProcessInfo processInfo : processInfosById.values()) {
+    		Node[] nodes = ((RuleFlowProcess)processInfo.getProcess()).getNodes();
+    		for (int i = 0; i < nodes.length; i++) {
+    			if(nodes[i] instanceof RuleSetNode) {
+    				String ruleFlowGroup = ((RuleSetNode)nodes[i]).getRuleFlowGroup();
+    				if(!result.contains(ruleFlowGroup))
+    					result.add(ruleFlowGroup);
+    			}    			
+			}
+		}
+        return result;
+    }
     
     public IResource findProcessResource(String processId) {
         if (processId == null) {
