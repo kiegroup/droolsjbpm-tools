@@ -30,6 +30,7 @@ import java.util.regex.Matcher;
 import org.drools.base.ClassTypeResolver;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.PackageRegistry;
+import org.drools.core.util.StringUtils;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.drools.eclipse.DRLInfo;
 import org.drools.eclipse.DRLInfo.RuleInfo;
@@ -108,6 +109,11 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                         documentOffset,
                                         prefix,
                                         backText );
+            } else if ( location.getType() == Location.LOCATION_RULE_HEADER_KEYWORD ) {
+                addRuleHeaderKeywordProposals( list,
+                        documentOffset,
+                        prefix,
+                        backText );
             } else if ( location.getType() == Location.LOCATION_RHS ) {
                 addRHSCompletionProposals( list,
                                            documentOffset,
@@ -1421,6 +1427,24 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                               DROOLS_ICON ) );
     }
 
+
+
+    private void addRuleHeaderKeywordProposals(List list,
+                                        int documentOffset,
+                                        String prefix,
+                                        String backText) {
+    	String string = CompletionUtil.getPreviousWord(backText.substring(0, backText.length() - prefix.length()));
+    	if("ruleflow-group".equals(string)) {
+    		for (String ruleFlowGroup : DroolsEclipsePlugin.getDefault().getAllRuleFlowGroup()) {
+    			list.add( new RuleCompletionProposal( documentOffset - prefix.length(),
+                                              prefix.length(),
+                                              "\""+ruleFlowGroup+"\"",
+                                              "\""+ruleFlowGroup+"\"",
+                                              DROOLS_ICON ) );
+    		}
+    	}
+    }
+    
     /*
      * Filters accessor method proposals to replace them with their mvel expression equivalent
      * For instance a completion for getStatus() would be replaced by a completion for status

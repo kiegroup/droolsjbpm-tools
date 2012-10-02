@@ -20,8 +20,8 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -785,6 +785,25 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 			}
 		}
         return result;
+    }
+
+    public List<String> getAllRuleFlowGroup() {
+    	List<String> result = new ArrayList<String>();
+    	for (ProcessInfo processInfo : processInfosById.values()) {
+    		Node[] nodes = ((RuleFlowProcess)processInfo.getProcess()).getNodes();
+    		for (int i = 0; i < nodes.length; i++) {
+    			if(nodes[i] instanceof RuleSetNode) {
+    				String ruleFlowGroup = ((RuleSetNode)nodes[i]).getRuleFlowGroup();
+    				if(!result.contains(ruleFlowGroup))
+    					result.add(ruleFlowGroup);
+    			}    			
+			}
+		}
+        return result;
+    }
+
+    public Collection<DRLInfo> getAllDRLInfo() {
+    	return parsedRules.values();
     }
     
     public IResource findProcessResource(String processId) {

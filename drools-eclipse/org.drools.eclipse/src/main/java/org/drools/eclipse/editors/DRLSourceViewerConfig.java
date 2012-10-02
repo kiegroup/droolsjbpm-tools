@@ -18,6 +18,7 @@ package org.drools.eclipse.editors;
 
 import org.drools.eclipse.editors.completion.DefaultCompletionProcessor;
 import org.drools.eclipse.editors.completion.RuleCompletionProcessor;
+import org.drools.eclipse.editors.hyperlinks.DRLHyperlinkDetector;
 import org.drools.eclipse.editors.scanners.DRLPartionScanner;
 import org.drools.eclipse.editors.scanners.DRLScanner;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -147,6 +148,10 @@ public class DRLSourceViewerConfig extends SourceViewerConfiguration {
         detectors = new IHyperlinkDetector[0];
       }
 
+      if(editor==null) {
+        return detectors;
+      }
+      
       IHyperlinkDetector[] drlDetectors = new IHyperlinkDetector[detectors.length + 1];
       DRLHyperlinkDetector detector =  new DRLHyperlinkDetector(editor);
       drlDetectors[0] = detector;

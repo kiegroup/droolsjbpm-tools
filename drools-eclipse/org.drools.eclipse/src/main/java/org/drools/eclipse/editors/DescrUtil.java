@@ -16,15 +16,17 @@
 
 package org.drools.eclipse.editors;
 
-import java.util.Iterator;
-
+import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.FunctionImportDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
 
 /**
@@ -39,9 +41,8 @@ public final class DescrUtil {
         if (descr instanceof PackageDescr) {
             PackageDescr packageDescr = (PackageDescr) descr;
             // rules
-            for (Iterator iterator = packageDescr.getRules().iterator(); iterator.hasNext(); ) {
-                RuleDescr ruleDescr = (RuleDescr) iterator.next();
-                if (ruleDescr != null) {
+            for (RuleDescr ruleDescr : packageDescr.getRules()) {
+	            if (ruleDescr != null) {
                     BaseDescr result = getDescr(ruleDescr, offset);
                     if (result != null) {
                         return result;
@@ -49,8 +50,7 @@ public final class DescrUtil {
                 }
             }
             // imports
-            for (Iterator iterator = packageDescr.getImports().iterator(); iterator.hasNext(); ) {
-                ImportDescr importDescr = (ImportDescr) iterator.next();
+            for (ImportDescr importDescr : packageDescr.getImports()) {
                 if (importDescr != null) {
                     BaseDescr result = getDescr(importDescr, offset);
                     if (result != null) {
@@ -59,9 +59,8 @@ public final class DescrUtil {
                 }
             }
             // function imports
-            for (Iterator iterator = packageDescr.getFunctionImports().iterator(); iterator.hasNext(); ) {
-                FunctionImportDescr functionImportDescr = (FunctionImportDescr) iterator.next();
-                if (functionImportDescr != null) {
+            for (FunctionImportDescr functionImportDescr : packageDescr.getFunctionImports()) {
+				if (functionImportDescr != null) {
                     BaseDescr result = getDescr(functionImportDescr, offset);
                     if (result != null) {
                         return result;
@@ -69,9 +68,8 @@ public final class DescrUtil {
                 }
             }
             // functions
-            for (Iterator iterator = packageDescr.getFunctions().iterator(); iterator.hasNext(); ) {
-                FunctionDescr functionDescr = (FunctionDescr) iterator.next();
-                if (functionDescr != null) {
+            for (FunctionDescr functionDescr : packageDescr.getFunctions()) {
+			   if (functionDescr != null) {
                     BaseDescr result = getDescr(functionDescr, offset);
                     if (result != null) {
                         return result;
@@ -79,9 +77,8 @@ public final class DescrUtil {
                 }
             }
             // attributes
-            for (Iterator iterator = packageDescr.getAttributes().iterator(); iterator.hasNext(); ) {
-                AttributeDescr attributeDescr = (AttributeDescr) iterator.next();
-                if (attributeDescr != null) {
+            for (AttributeDescr attributeDescr : packageDescr.getAttributes()) {
+			   if (attributeDescr != null) {
                     BaseDescr result = getDescr(attributeDescr, offset);
                     if (result != null) {
                         return result;
@@ -89,9 +86,8 @@ public final class DescrUtil {
                 }
             }
             // globals
-            for (Iterator iterator = packageDescr.getGlobals().iterator(); iterator.hasNext(); ) {
-                GlobalDescr globalDescr = (GlobalDescr) iterator.next();
-                if (globalDescr != null) {
+            for (GlobalDescr globalDescr : packageDescr.getGlobals()) {
+			   if (globalDescr != null) {
                     BaseDescr result = getDescr(globalDescr, offset);
                     if (result != null) {
                         return result;
@@ -106,8 +102,7 @@ public final class DescrUtil {
             if(descr instanceof RuleDescr) {
                 RuleDescr ruleDescr = (RuleDescr) descr;
                 // rules attributes
-                for (Iterator iterator = ruleDescr.getAttributes().values().iterator(); iterator.hasNext(); ) {
-                	 AttributeDescr attributeDescr = (AttributeDescr) iterator.next();
+                for (AttributeDescr attributeDescr : ruleDescr.getAttributes().values()) {
                      if (attributeDescr != null) {
                          BaseDescr result = getDescr(attributeDescr, offset);
                          if (result != null) {
@@ -115,7 +110,58 @@ public final class DescrUtil {
                          }
                      }
                 }
-            }
+	            // rules annotations    
+                for (AnnotationDescr annotationDescr : ruleDescr.getAnnotations().values()) {
+				    if (annotationDescr != null) {
+	                    BaseDescr result = getDescr(annotationDescr, offset);
+	                    if (result != null) {
+	                        return result;
+	                    }
+	                }
+	            }
+	            // rules Lhs                
+	            AndDescr andDescr =ruleDescr.getLhs();
+	            if (andDescr != null) {
+	                BaseDescr result = getDescr(andDescr, offset);
+	                if (result != null) {
+	                    return result;
+	                }
+	            }
+	        // AndDescr descrs
+	        } else if(descr instanceof AndDescr) {
+	        	AndDescr andDescr = (AndDescr) descr;
+	        	for (BaseDescr baseDescr : andDescr.getDescrs()) {
+					 if (baseDescr != null) {
+	                     BaseDescr result = getDescr(baseDescr, offset);
+	                     if (result != null) {
+	                         return result;
+	                     }
+	                 }
+	            }
+	        // PatternDescr descrs
+	         } else if(descr instanceof PatternDescr) {
+	        	PatternDescr patternDescr = (PatternDescr) descr;
+	        	for (BaseDescr baseDescr : patternDescr.getDescrs()) {
+					 if (baseDescr != null) {
+	                     BaseDescr result = getDescr(baseDescr, offset);
+	                     if (result != null) {
+	                         return result;
+	                     }
+	                 }
+	            }
+	        // ConditionalElementDescr descrs
+	        } else if(descr instanceof ConditionalElementDescr){
+	        	ConditionalElementDescr conditionalElementDescr = (ConditionalElementDescr) descr;
+	        	for (BaseDescr baseDescr : conditionalElementDescr.getDescrs()) {
+					 if (baseDescr != null) {
+	                     BaseDescr result = getDescr(baseDescr, offset);
+	                     if (result != null) {
+	                         return result;
+	                     }
+	                 }
+	            }
+	        } 
+            
             // TODO: select subDescr if possible
             return descr;
         }

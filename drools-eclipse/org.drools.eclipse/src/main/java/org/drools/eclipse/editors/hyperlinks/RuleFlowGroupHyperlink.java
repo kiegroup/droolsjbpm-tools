@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.eclipse.editors;
+package org.drools.eclipse.editors.hyperlinks;
 
 import java.util.ArrayList;
 import java.util.List;
