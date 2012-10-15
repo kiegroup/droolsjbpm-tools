@@ -2,7 +2,7 @@
 <feature
       id="org.jbpm.eclipse.task.feature"
       label="JBoss jBPM Task"
-      version="5.5.0.qualifier"
+      version="6.0.0.qualifier"
       provider-name="JBoss by Red Hat">
 
    <description url="http://www.jboss.org/jbpm/">
@@ -32,7 +32,7 @@ Raleigh NC 27606 USA.
          id="org.jbpm.eclipse.task"
          download-size="0"
          install-size="0"
-         version="5.5.0.qualifier"
+         version="6.0.0.qualifier"
          unpack="false"/>
 
 </feature>
