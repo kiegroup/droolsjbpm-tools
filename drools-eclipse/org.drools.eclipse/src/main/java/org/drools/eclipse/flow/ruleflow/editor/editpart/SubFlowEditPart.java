@@ -60,15 +60,16 @@ public class SubFlowEditPart extends ElementEditPart {
     
     protected void doubleClicked() {
         super.doubleClicked();
-        String processId = ((SubProcessWrapper) getElementWrapper()).getSubProcessNode().getProcessId();
-        IResource resource = DroolsEclipsePlugin.getDefault().findProcessResource(processId);
-        if (resource != null) {
-            try {
-                OpenTypeAction.findTypeInWorkspace(resource.getFullPath().toString());
-            } catch (Throwable t) {
-                DroolsEclipsePlugin.log(t);
-            }
-        }
+// disabling this for now since it no longer works for Eclipse Juno        
+//        String processId = ((SubProcessWrapper) getElementWrapper()).getSubProcessNode().getProcessId();
+//        IResource resource = DroolsEclipsePlugin.getDefault().findProcessResource(processId);
+//        if (resource != null) {
+//            try {
+//                OpenTypeAction.findTypeInWorkspace(resource.getFullPath().toString());
+//            } catch (Throwable t) {
+//                DroolsEclipsePlugin.log(t);
+//            }
+//        }
     }
     
     public static class SubFlowNodeFigure extends AbstractElementFigure {
