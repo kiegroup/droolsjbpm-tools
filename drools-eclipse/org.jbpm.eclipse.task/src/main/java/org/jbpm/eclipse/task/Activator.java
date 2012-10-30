@@ -56,7 +56,7 @@ public class Activator extends AbstractUIPlugin {
 
     protected void initializeDefaultPreferences(IPreferenceStore store) {
         store.setDefault( TaskConstants.SERVER_IP_ADDRESS, "127.0.0.1");
-        store.setDefault( TaskConstants.SERVER_PORT, 5446 );
+        store.setDefault( TaskConstants.SERVER_PORT, 5153 );
         store.setDefault( TaskConstants.LANGUAGE, "en-UK" );
         store.setDefault( TaskConstants.TRANSPORT, 1 );
     }
