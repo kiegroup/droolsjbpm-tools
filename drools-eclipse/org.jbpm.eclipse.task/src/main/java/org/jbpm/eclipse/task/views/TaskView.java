@@ -106,7 +106,7 @@ public class TaskView extends ViewPart {
     }
 
     private String ipAddress = "127.0.0.1";
-    private int port = 5445;
+    private int port = 5153;
     private String language = "en-UK";
     private int transport = 1;
 
