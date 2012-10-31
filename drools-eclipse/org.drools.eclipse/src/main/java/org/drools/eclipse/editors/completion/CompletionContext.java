@@ -501,7 +501,9 @@ public class CompletionContext {
 
     private DRLParser getParser(final String text) {
     	// TODO: support different language levels
-        return buildParser(text, LanguageLevelOption.DRL5);
+    	DRLParser parser = buildParser(text, LanguageLevelOption.DRL5);
+    	parser.enableEditorInterface();
+    	return parser;
     }
 
 }
