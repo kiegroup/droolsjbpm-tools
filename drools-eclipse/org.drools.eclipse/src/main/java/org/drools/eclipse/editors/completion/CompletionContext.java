@@ -17,18 +17,17 @@
 package org.drools.eclipse.editors.completion;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.drools.lang.DRLLexer;
 import org.drools.lang.DRLParser;
 import org.drools.lang.DroolsEditorType;
 import org.drools.lang.DroolsToken;
 import org.drools.lang.Location;
+import org.drools.builder.conf.LanguageLevelOption;
+
+import static org.drools.compiler.DRLFactory.buildParser;
 
 /**
  * A utility class that invokes the DRLParser on some partial drl text, and
@@ -501,10 +500,8 @@ public class CompletionContext {
 	}
 
     private DRLParser getParser(final String text) {
-        DRLParser parser = new DRLParser(new CommonTokenStream(new DRLLexer(
-                new ANTLRStringStream(text))));
-        parser.enableEditorInterface();
-        return parser;
+    	// TODO: support different language levels
+        return buildParser(text, LanguageLevelOption.DRL5);
     }
 
 }
