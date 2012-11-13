@@ -68,4 +68,14 @@ public class DroolsLaunchConfigurationDelegate extends JavaLaunchDelegate {
         return runner;
     }
 
+    public String getVMArguments(ILaunchConfiguration configuration) throws CoreException {
+    	String vmargs = super.getVMArguments(configuration);
+    	if (vmargs == null) {
+    		vmargs = "";
+    	}
+    	// Disable use of UUID when generating rule names. This needs to be disabled for debug breakpoints to work.
+    	vmargs += " -Ddrools.generateUniqueJavaRuleName=false";
+    	return vmargs;
+    }
+
 }

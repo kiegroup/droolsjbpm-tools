@@ -147,7 +147,8 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                 }
             }
         } );
-
+        // Disable use of UUID when generating rule names. This needs to be disabled for debug breakpoints to work.
+        System.setProperty("drools.generateUniqueJavaRuleName", "false");
     }
 
     public void clearCache() {
