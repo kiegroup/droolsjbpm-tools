@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.definition.process.NodeContainer;
+import org.kie.definition.process.NodeContainer;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.eclipse.flow.ruleflow.view.property.workitem.WorkItemParameterMappingPropertyDescriptor;

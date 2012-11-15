@@ -16,7 +16,7 @@
 
 package org.drools.eclipse.flow.common.editor.core;
 
-import org.drools.definition.process.Process;
+import org.kie.definition.process.Process;
 import org.eclipse.jdt.core.IJavaProject;
 
 public interface ProcessWrapperBuilder {

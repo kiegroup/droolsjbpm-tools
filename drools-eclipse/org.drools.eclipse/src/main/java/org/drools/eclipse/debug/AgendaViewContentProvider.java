@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.reteoo.ReteooStatefulSession;
-import org.drools.runtime.rule.AgendaGroup;
+import org.kie.runtime.rule.AgendaGroup;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IValue;

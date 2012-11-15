@@ -357,7 +357,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
             }
             if (useDrools) {
                 javaTextWithParams.append( "org.drools.spi.KnowledgeHelper drools;" );
-                javaTextWithParams.append( "org.drools.runtime.rule.RuleContext kcontext;" );
+                javaTextWithParams.append( "org.kie.runtime.rule.RuleContext kcontext;" );
             }
             if (useContext) {
                 javaTextWithParams.append( "org.drools.spi.ProcessContext context;" );

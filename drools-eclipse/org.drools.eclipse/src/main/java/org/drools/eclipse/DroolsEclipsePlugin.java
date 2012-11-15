@@ -28,10 +28,10 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.drools.builder.CompositeKnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderError;
-import org.drools.builder.KnowledgeBuilderFactory;
+import org.kie.builder.CompositeKnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderError;
+import org.kie.builder.KnowledgeBuilderFactory;
 import org.drools.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
@@ -40,7 +40,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.PackageRegistry;
 import org.drools.core.util.StringUtils;
-import org.drools.definition.process.Node;
+import org.kie.definition.process.Node;
 import org.drools.eclipse.DRLInfo.FunctionInfo;
 import org.drools.eclipse.DRLInfo.RuleInfo;
 import org.drools.eclipse.builder.DroolsBuilder;
@@ -50,8 +50,8 @@ import org.drools.eclipse.dsl.editor.DSLAdapter;
 import org.drools.eclipse.editors.AbstractRuleEditor;
 import org.drools.eclipse.preferences.IDroolsConstants;
 import org.drools.eclipse.util.ProjectClassLoader;
-import org.drools.io.Resource;
-import org.drools.io.ResourceFactory;
+import org.kie.io.Resource;
+import org.kie.io.ResourceFactory;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.EnumDeclarationDescr;
@@ -743,10 +743,10 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                 modules.addSemanticModule( new ProcessSemanticModule() );
                 
                 XmlProcessReader xmlReader = new XmlProcessReader( modules, Thread.currentThread().getContextClassLoader() );
-                List<org.drools.definition.process.Process> processes = 
-                    (List<org.drools.definition.process.Process>) xmlReader.read( new StringReader( input ) );
+                List<org.kie.definition.process.Process> processes =
+                    (List<org.kie.definition.process.Process>) xmlReader.read( new StringReader( input ) );
                 if (processes != null) {
-                    for (org.drools.definition.process.Process process: processes) {
+                    for (org.kie.definition.process.Process process: processes) {
                         if ( process != null ) {
                             return parseProcess( (Process) process,
                                                  resource,

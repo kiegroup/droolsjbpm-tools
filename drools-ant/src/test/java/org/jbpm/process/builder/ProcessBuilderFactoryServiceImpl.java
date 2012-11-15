@@ -1,7 +1,7 @@
 package org.jbpm.process.builder;
 
 import org.drools.compiler.*;
-import org.drools.io.Resource;
+import org.kie.io.Resource;
 import org.drools.rule.*;
 import org.drools.rule.Package;
 

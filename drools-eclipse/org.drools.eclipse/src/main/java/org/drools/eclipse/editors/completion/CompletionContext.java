@@ -25,7 +25,7 @@ import org.drools.lang.DRLParser;
 import org.drools.lang.DroolsEditorType;
 import org.drools.lang.DroolsToken;
 import org.drools.lang.Location;
-import org.drools.builder.conf.LanguageLevelOption;
+import org.kie.builder.conf.LanguageLevelOption;
 
 import static org.drools.compiler.DRLFactory.buildParser;
 

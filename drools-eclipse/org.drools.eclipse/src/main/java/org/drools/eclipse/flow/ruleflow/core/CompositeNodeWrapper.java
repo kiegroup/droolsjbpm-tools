@@ -19,7 +19,7 @@ package org.drools.eclipse.flow.ruleflow.core;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.definition.process.NodeContainer;
+import org.kie.definition.process.NodeContainer;
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementContainerElementWrapper;

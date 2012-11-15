@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.definition.process.Process;
+import org.kie.definition.process.Process;
 import org.drools.eclipse.flow.common.view.property.ListPropertyDescriptor;
 import org.drools.eclipse.flow.ruleflow.view.property.exceptionHandler.ExceptionHandlersPropertyDescriptor;
 import org.drools.eclipse.flow.ruleflow.view.property.swimlane.SwimlanesCellEditor;

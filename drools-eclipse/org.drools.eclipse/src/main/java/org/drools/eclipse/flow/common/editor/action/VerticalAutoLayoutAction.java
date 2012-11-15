@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.definition.process.Connection;
-import org.drools.definition.process.WorkflowProcess;
+import org.kie.definition.process.Connection;
+import org.kie.definition.process.WorkflowProcess;
 import org.drools.eclipse.flow.common.editor.GenericModelEditor;
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ProcessWrapper;
@@ -70,7 +70,7 @@ public class VerticalAutoLayoutAction extends ActionDelegate implements IEditorA
     protected DirectedGraph createDirectedGraph(Map<Long, Node> mapping) {
         DirectedGraph graph = new DirectedGraph();
         WorkflowProcess process = (WorkflowProcess) ((ProcessWrapper) ((GenericModelEditor) editor).getModel()).getProcess();
-        for (org.drools.definition.process.Node processNode: process.getNodes()) {
+        for (org.kie.definition.process.Node processNode: process.getNodes()) {
             Node node = new Node();
             Integer width = (Integer) processNode.getMetaData("width");
             Integer height = (Integer) processNode.getMetaData("height");
@@ -84,7 +84,7 @@ public class VerticalAutoLayoutAction extends ActionDelegate implements IEditorA
             graph.nodes.add(node);
             mapping.put(processNode.getId(), node);
         }
-        for (org.drools.definition.process.Node processNode: process.getNodes()) {
+        for (org.kie.definition.process.Node processNode: process.getNodes()) {
             for (List<Connection> connections: processNode.getIncomingConnections().values()) {
                 for (Connection connection: connections) {
                     Node source = mapping.get(connection.getFrom().getId());

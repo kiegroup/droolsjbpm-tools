@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.definition.process.Process;
+import org.kie.definition.process.Process;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.WorkItemDefinitions;
 import org.drools.eclipse.flow.common.editor.GenericModelEditor;

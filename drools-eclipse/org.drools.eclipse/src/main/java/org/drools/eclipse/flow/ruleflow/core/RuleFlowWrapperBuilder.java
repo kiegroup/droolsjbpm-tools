@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.definition.process.Connection;
-import org.drools.definition.process.Node;
-import org.drools.definition.process.Process;
+import org.kie.definition.process.Connection;
+import org.kie.definition.process.Node;
+import org.kie.definition.process.Process;
 import org.drools.eclipse.WorkItemDefinitions;
 import org.drools.eclipse.flow.common.editor.core.ElementContainer;
 import org.drools.eclipse.flow.common.editor.core.ProcessWrapper;

@@ -32,7 +32,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.base.MapGlobalResolver;
 import org.drools.compiler.PackageBuilder;
 import org.drools.reteoo.ReteooStatefulSession;
-import org.drools.runtime.rule.Activation;
+import org.kie.runtime.rule.Activation;
 import org.drools.spi.AgendaGroup;
 
 /**

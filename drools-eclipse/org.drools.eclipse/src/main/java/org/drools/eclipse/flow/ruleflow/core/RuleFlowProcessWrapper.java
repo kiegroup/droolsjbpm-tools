@@ -16,8 +16,8 @@
 
 package org.drools.eclipse.flow.ruleflow.core;
 
-import org.drools.definition.process.Node;
-import org.drools.definition.process.Process;
+import org.kie.definition.process.Node;
+import org.kie.definition.process.Process;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ProcessWrapper;
 import org.jbpm.ruleflow.core.RuleFlowProcess;

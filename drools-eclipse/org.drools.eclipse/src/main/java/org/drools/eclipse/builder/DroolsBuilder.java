@@ -34,7 +34,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.antlr.runtime.RecognitionException;
-import org.drools.builder.KnowledgeBuilderResult;
+import org.kie.builder.KnowledgeBuilderResult;
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.DroolsError;

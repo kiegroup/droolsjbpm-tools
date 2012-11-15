@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.definition.process.Connection;
+import org.kie.definition.process.Connection;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;

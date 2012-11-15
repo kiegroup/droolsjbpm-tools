@@ -1,8 +1,8 @@
 package org.drools.ide.common;
 
-import org.drools.Service;
+import org.kie.Service;
 import org.drools.compiler.BusinessRuleProvider;
-import org.drools.io.Resource;
+import org.kie.io.Resource;
 
 import java.io.IOException;
 import java.io.Reader;

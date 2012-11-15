@@ -44,7 +44,7 @@ import org.drools.lang.descr.GlobalDescr;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.builder.dialect.mvel.MVELConsequenceBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
-import org.drools.runtime.rule.RuleContext;
+import org.kie.runtime.rule.RuleContext;
 import org.drools.spi.KnowledgeHelper;
 import org.eclipse.jdt.core.CompletionProposal;
 import org.eclipse.jdt.core.IJavaElement;

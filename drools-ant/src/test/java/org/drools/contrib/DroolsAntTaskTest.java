@@ -20,10 +20,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.apache.tools.ant.BuildException;
-import org.drools.KnowledgeBase;
+import org.kie.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.core.util.DroolsStreamUtils;
-import org.drools.definition.KnowledgePackage;
+import org.kie.definition.KnowledgePackage;
 import org.drools.rule.Package;
 import org.junit.Before;
 import org.junit.Test;

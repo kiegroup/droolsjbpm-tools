@@ -19,7 +19,7 @@ package org.drools.eclipse;
 import java.util.List;
 
 import org.drools.compiler.DroolsError;
-import org.drools.definition.process.Process;
+import org.kie.definition.process.Process;
 
 public class ProcessInfo {
     

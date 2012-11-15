@@ -18,7 +18,7 @@ package org.drools.eclipse.flow.ruleflow.core;
 
 import java.util.Map;
 
-import org.drools.definition.process.NodeContainer;
+import org.kie.definition.process.NodeContainer;
 import org.drools.eclipse.flow.ruleflow.view.property.timers.TimersPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.jbpm.process.core.timer.Timer;

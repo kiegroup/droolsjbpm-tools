@@ -18,7 +18,7 @@ package org.drools.eclipse.flow.ruleflow.view.property.exceptionHandler;
 
 import java.util.Map;
 
-import org.drools.definition.process.Process;
+import org.kie.definition.process.Process;
 import org.drools.eclipse.flow.common.view.property.BeanDialogCellEditor;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
 import org.eclipse.swt.widgets.Composite;
