@@ -83,8 +83,8 @@
               <includeScope>test</includeScope>
               <!-- Keep in sync with MANIFEST.MF's Bundle-ClassPath -->
               <includeArtifactIds>
-                knowledge-api,
-                knowledge-internal-api,
+                kie-api,
+                kie-internal,
                 drools-core,
                 drools-compiler,
                 guvnor-api,
@@ -114,12 +114,12 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>knowledge-api</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>knowledge-internal-api</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-internal</artifactId>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
