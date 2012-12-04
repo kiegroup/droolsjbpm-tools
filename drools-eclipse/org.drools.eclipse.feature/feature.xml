@@ -2,7 +2,7 @@
 <feature
       id="org.drools.eclipse.feature"
       label="JBoss Drools Core"
-      version="6.0.0.qualifier"
+      version="6.0.0.Alpha3"
       provider-name="JBoss by Red Hat">
 
    <description url="http://www.jboss.org/drools/">
@@ -49,7 +49,7 @@ Raleigh NC 27606 USA.
          id="org.drools.eclipse"
          download-size="0"
          install-size="0"
-         version="6.0.0.qualifier"
+         version="6.0.0.Alpha3"
          unpack="false"/>
 
 </feature>
