@@ -1,14 +1,15 @@
 package org.jbpm.process.builder;
 
-import org.drools.compiler.*;
-import org.kie.io.Resource;
-import org.drools.rule.*;
-import org.drools.rule.Package;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Collections;
 import java.util.List;
+
+import org.drools.compiler.DroolsError;
+import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.ProcessBuilderFactoryService;
+import org.kie.io.Resource;
 
 public class ProcessBuilderFactoryServiceImpl implements ProcessBuilderFactoryService {
 

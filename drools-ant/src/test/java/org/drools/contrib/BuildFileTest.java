@@ -16,14 +16,14 @@
 
 package org.drools.contrib;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.PrintStream;
 import java.net.URL;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.BuildException;

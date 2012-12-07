@@ -9,14 +9,14 @@ import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.taskdefs.MatchingTask;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
-import org.kie.builder.ResourceType;
 import org.drools.compiler.DroolsParserException;
-import org.kie.io.ResourceFactory;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.VerifierReportWriter;
 import org.drools.verifier.report.VerifierReportWriterFactory;
+import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 
 public class DroolsVerifierAntTask extends MatchingTask {
 

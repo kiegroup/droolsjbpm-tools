@@ -1,12 +1,12 @@
 package org.drools.ide.common;
 
-import org.kie.Service;
-import org.drools.compiler.BusinessRuleProvider;
-import org.kie.io.Resource;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+
+import org.drools.compiler.BusinessRuleProvider;
+import org.kie.Service;
+import org.kie.io.Resource;
 
 public class BusinessRuleProviderDefaultImpl implements Service, BusinessRuleProvider {
 

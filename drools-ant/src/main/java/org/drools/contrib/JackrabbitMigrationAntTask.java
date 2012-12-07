@@ -1,9 +1,6 @@
 package org.drools.contrib;
 
 import java.io.File;
-import java.io.IOException;
-
-import javax.jcr.RepositoryException;
 
 import org.apache.jackrabbit.core.RepositoryCopier;
 import org.apache.jackrabbit.core.config.RepositoryConfig;

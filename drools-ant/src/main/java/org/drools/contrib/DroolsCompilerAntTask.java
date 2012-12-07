@@ -16,6 +16,21 @@
 
 package org.drools.contrib;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -34,26 +49,21 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.decisiontable.InputType;
 import org.drools.decisiontable.SpreadsheetCompiler;
+import org.drools.lang.Expander;
+import org.drools.lang.dsl.DSLMappingFile;
+import org.drools.lang.dsl.DSLTokenizedMappingFile;
+import org.drools.lang.dsl.DefaultExpander;
+import org.drools.lang.dsl.DefaultExpanderResolver;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.DecisionTableConfiguration;
 import org.kie.builder.DecisionTableInputType;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.definition.KnowledgePackage;
 import org.kie.definition.rule.Rule;
 import org.kie.io.ResourceFactory;
-import org.drools.lang.Expander;
-import org.drools.lang.dsl.DSLMappingFile;
-import org.drools.lang.dsl.DSLTokenizedMappingFile;
-import org.drools.lang.dsl.DefaultExpander;
-import org.drools.lang.dsl.DefaultExpanderResolver;
-
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
+import org.kie.io.ResourceType;
 
 /**
  * An ant task to allow rulebase compilation and serialization during a build.

@@ -16,19 +16,20 @@
 
 package org.drools.contrib;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.apache.tools.ant.BuildException;
-import org.kie.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.core.util.DroolsStreamUtils;
-import org.kie.definition.KnowledgePackage;
 import org.drools.rule.Package;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.kie.KnowledgeBase;
+import org.kie.definition.KnowledgePackage;
 
 /**
  * DroolsAntTask test case
