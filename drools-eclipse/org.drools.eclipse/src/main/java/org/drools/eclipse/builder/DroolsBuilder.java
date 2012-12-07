@@ -23,18 +23,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
 import org.antlr.runtime.RecognitionException;
-import org.kie.builder.KnowledgeBuilderResult;
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.DroolsError;
@@ -83,6 +78,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.kie.builder.KnowledgeBuilderResult;
 
 /**
  * Automatically syntax checks .drl files and adds possible errors or warnings

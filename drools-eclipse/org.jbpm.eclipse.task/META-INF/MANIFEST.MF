@@ -9,8 +9,8 @@ Require-Bundle: org.eclipse.ui,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: .,
- lib/knowledge-api.jar,
- lib/knowledge-internal-api.jar,
+ lib/kie-api.jar,
+ lib/kie-internal.jar,
  lib/drools-core.jar,
  lib/mina-core.jar,
  lib/slf4j-api.jar,

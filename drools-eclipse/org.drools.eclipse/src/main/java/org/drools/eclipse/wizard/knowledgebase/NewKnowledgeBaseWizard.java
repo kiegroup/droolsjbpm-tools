@@ -1,7 +1,6 @@
 package org.drools.eclipse.wizard.knowledgebase;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
-import org.drools.eclipse.wizard.rule.NewRulePackagePage;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;

@@ -8,7 +8,6 @@ import java.io.StringReader;
 import java.util.List;
 
 import org.drools.compiler.PackageBuilderConfiguration;
-import org.kie.definition.process.Process;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.xml.SemanticModules;
 import org.eclipse.core.internal.resources.File;
@@ -30,6 +29,7 @@ import org.jbpm.compiler.xml.ProcessSemanticModule;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.compiler.xml.processes.RuleFlowMigrator;
 import org.jbpm.workflow.core.WorkflowProcess;
+import org.kie.definition.process.Process;
 
 public class ConvertToBPMN2ProcessAction implements IObjectActionDelegate {
 

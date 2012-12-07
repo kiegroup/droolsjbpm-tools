@@ -16,24 +16,23 @@
 
 package org.drools.eclipse.debug;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.base.MapGlobalResolver;
 import org.drools.compiler.PackageBuilder;
 import org.drools.reteoo.ReteooStatefulSession;
-import org.kie.runtime.rule.Activation;
 import org.drools.spi.AgendaGroup;
+import org.junit.Test;
+import org.kie.runtime.rule.Match;
 
 /**
  *
@@ -100,7 +99,7 @@ public class DebugViewsTest {
         assertEquals("MAIN", agendaGroups[0].getName());
         assertEquals(1, agendaGroups[0].getActivations().length);
 
-        Activation activation = agendaGroups[0].getActivations()[0];
+        Match activation = agendaGroups[0].getActivations()[0];
         assertEquals("ActivationCreator", activation.getRule().getName());
         Entry[] parameters = session.getActivationParameters(
             ((org.drools.spi.Activation) activation).getActivationNumber());

@@ -1,11 +1,11 @@
 package org.drools.eclipse.builder;
 
-import org.kie.builder.ResourceType;
 import org.drools.eclipse.DroolsEclipsePlugin;
-import org.kie.io.Resource;
-import org.kie.io.ResourceFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.kie.io.Resource;
+import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 
 public class ResourceDescr {
 

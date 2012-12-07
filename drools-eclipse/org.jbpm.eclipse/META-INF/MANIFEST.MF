@@ -15,8 +15,8 @@ Require-Bundle: org.eclipse.core.runtime,
 Eclipse-LazyStart: true
 Eclipse-BuddyPolicy: registered
 Bundle-ClassPath: .,
- lib/knowledge-api.jar,
- lib/knowledge-internal-api.jar,
+ lib/kie-api.jar,
+ lib/kie-internal.jar,
  lib/drools-core.jar,
  lib/drools-compiler.jar,
  lib/jbpm-flow.jar,

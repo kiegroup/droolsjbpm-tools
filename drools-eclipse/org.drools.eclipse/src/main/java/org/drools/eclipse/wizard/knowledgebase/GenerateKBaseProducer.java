@@ -1,6 +1,5 @@
 package org.drools.eclipse.wizard.knowledgebase;
 
-import java.io.InputStream;
 
 public class GenerateKBaseProducer {
     public static String generateQualifier(String pkgName, String kbaseName) {

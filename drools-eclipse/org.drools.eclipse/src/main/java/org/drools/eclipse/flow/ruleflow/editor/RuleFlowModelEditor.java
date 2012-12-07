@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.PackageBuilderConfiguration;
-import org.kie.definition.process.Process;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.WorkItemDefinitions;
 import org.drools.eclipse.flow.common.editor.GenericModelEditor;
@@ -58,6 +57,7 @@ import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.compiler.xml.XmlRuleFlowProcessDumper;
 import org.jbpm.compiler.xml.processes.RuleFlowMigrator;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.kie.definition.process.Process;
 
 /**
  * Graphical editor for a RuleFlow.

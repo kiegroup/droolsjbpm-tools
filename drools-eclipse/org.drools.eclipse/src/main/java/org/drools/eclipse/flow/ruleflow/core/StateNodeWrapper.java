@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.kie.definition.process.Connection;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.eclipse.flow.ruleflow.view.property.constraint.StateConstraintsPropertyDescriptor;
@@ -31,6 +30,7 @@ import org.jbpm.workflow.core.WorkflowProcess;
 import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.StateNode;
+import org.kie.definition.process.Connection;
 
 /**
  * Wrapper for a milestone node.

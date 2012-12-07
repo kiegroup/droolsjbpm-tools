@@ -16,6 +16,8 @@
 
 package org.drools.eclipse.editors.completion;
 
+import static org.drools.compiler.DRLFactory.buildParser;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -26,8 +28,6 @@ import org.drools.lang.DroolsEditorType;
 import org.drools.lang.DroolsToken;
 import org.drools.lang.Location;
 import org.kie.builder.conf.LanguageLevelOption;
-
-import static org.drools.compiler.DRLFactory.buildParser;
 
 /**
  * A utility class that invokes the DRLParser on some partial drl text, and

@@ -17,7 +17,6 @@
 package org.drools.eclipse.preferences;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
-import org.eclipse.jdt.core.compiler.IProblem;
 import org.eclipse.jdt.core.IAccessRule;
 
 public interface IDroolsConstants {

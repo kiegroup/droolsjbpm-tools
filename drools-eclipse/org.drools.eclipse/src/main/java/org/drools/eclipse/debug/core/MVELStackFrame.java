@@ -22,11 +22,11 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DRLInfo.RuleInfo;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.debug.DebugUtil;
 import org.drools.eclipse.debug.VariableWrapper;
-import org.eclipse.debug.core.DebugEvent; 
+import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IDebugTarget;

@@ -19,8 +19,6 @@ package org.drools.eclipse.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.eclipse.DroolsEclipsePlugin;
-import org.drools.eclipse.preferences.IDroolsConstants;
 import org.drools.eclipse.preferences.IDroolsConstants.InternalApiChoice;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;

@@ -20,8 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.definition.process.Connection;
-import org.kie.definition.process.WorkflowProcess;
 import org.drools.eclipse.flow.common.editor.GenericModelEditor;
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ProcessWrapper;
@@ -35,6 +33,8 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.actions.ActionDelegate;
+import org.kie.definition.process.Connection;
+import org.kie.definition.process.WorkflowProcess;
 
 /**
  * Action for auto layouting a RuleFlow.

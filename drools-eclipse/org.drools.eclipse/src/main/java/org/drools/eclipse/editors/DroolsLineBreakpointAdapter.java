@@ -17,9 +17,9 @@
 package org.drools.eclipse.editors;
 
 import org.drools.eclipse.DRLInfo;
-import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DRLInfo.FunctionInfo;
 import org.drools.eclipse.DRLInfo.RuleInfo;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.debug.core.DroolsLineBreakpoint;
 import org.drools.eclipse.debug.core.IDroolsDebugConstants;
 import org.eclipse.core.resources.IResource;

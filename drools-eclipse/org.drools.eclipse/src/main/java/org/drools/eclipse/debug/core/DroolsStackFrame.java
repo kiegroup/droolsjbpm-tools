@@ -19,9 +19,9 @@ package org.drools.eclipse.debug.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DRLInfo.FunctionInfo;
 import org.drools.eclipse.DRLInfo.RuleInfo;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.jdt.debug.core.IJavaVariable;

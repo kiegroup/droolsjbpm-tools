@@ -25,8 +25,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.definition.process.Node;
-import org.kie.definition.process.Process;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.WorkItemDefinitions;
 import org.drools.eclipse.flow.common.editor.GenericModelEditor;
@@ -69,6 +67,8 @@ import org.jbpm.workflow.core.node.Join;
 import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.TimerNode;
+import org.kie.definition.process.Node;
+import org.kie.definition.process.Process;
 
 /**
  * Graphical editor for a RuleFlow.

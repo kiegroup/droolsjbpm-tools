@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.definition.process.Process;
 import org.drools.eclipse.flow.common.view.property.ListPropertyDescriptor;
 import org.drools.eclipse.flow.ruleflow.view.property.exceptionHandler.ExceptionHandlersPropertyDescriptor;
 import org.drools.eclipse.flow.ruleflow.view.property.swimlane.SwimlanesCellEditor;
@@ -40,6 +39,7 @@ import org.jbpm.process.core.context.swimlane.Swimlane;
 import org.jbpm.process.core.context.swimlane.SwimlaneContext;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.kie.definition.process.Process;
 
 /**
  * A wrapper for process element.

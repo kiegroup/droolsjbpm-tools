@@ -16,12 +16,12 @@
 
 package org.drools.eclipse.flow.ruleflow.view.property.exceptionHandler;
 
-import org.kie.definition.process.Process;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
 import org.drools.eclipse.flow.common.view.property.EditMapDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.jbpm.process.core.context.exception.ActionExceptionHandler;
 import org.jbpm.workflow.core.WorkflowProcess;
+import org.kie.definition.process.Process;
 
 /**
  * Dialog for editing exception handlers.

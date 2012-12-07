@@ -38,13 +38,10 @@ import org.drools.eclipse.DroolsPluginImages;
 import org.drools.eclipse.editors.AbstractRuleEditor;
 import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.lang.Location;
-import org.drools.lang.descr.FactTemplateDescr;
-import org.drools.lang.descr.FieldTemplateDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.builder.dialect.mvel.MVELConsequenceBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
-import org.kie.runtime.rule.RuleContext;
 import org.drools.spi.KnowledgeHelper;
 import org.eclipse.jdt.core.CompletionProposal;
 import org.eclipse.jdt.core.IJavaElement;
@@ -56,12 +53,12 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IFileEditorInput;
+import org.kie.runtime.rule.RuleContext;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.CompiledExpression;
 import org.mvel2.compiler.ExecutableStatement;
-import org.mvel2.compiler.ExpressionCompiler;
 import org.mvel2.compiler.PropertyVerifier;
 
 /**

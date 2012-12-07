@@ -20,9 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.eclipse.DRLInfo;
-import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DRLInfo.FunctionInfo;
 import org.drools.eclipse.DRLInfo.RuleInfo;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;

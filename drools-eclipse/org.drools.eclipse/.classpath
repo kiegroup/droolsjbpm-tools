@@ -4,7 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry including="**/*.java" kind="src" path="src/main/java"/>
 	<classpathentry excluding="**/*.java" kind="src" path="src/main/resources"/>
-	<classpathentry exported="true" kind="lib" path="lib/knowledge-api.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/drools-core.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/drools-compiler.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/droolsjbpm-ide-common.jar"/>
@@ -21,8 +20,9 @@
 	<classpathentry exported="true" kind="lib" path="lib/xstream.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jbpm-flow.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jbpm-flow-builder.jar"/>
-	<classpathentry kind="lib" path="lib/guvnor-api.jar"/>
-	<classpathentry kind="lib" path="lib/knowledge-internal-api.jar"/>
-	<classpathentry kind="lib" path="lib/slf4j-api.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/guvnor-api.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/slf4j-api.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/kie-api.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/kie-internal.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

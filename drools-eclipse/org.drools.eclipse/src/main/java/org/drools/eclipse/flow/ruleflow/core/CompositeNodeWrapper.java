@@ -19,7 +19,6 @@ package org.drools.eclipse.flow.ruleflow.core;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.definition.process.NodeContainer;
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementContainerElementWrapper;
@@ -36,6 +35,7 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.WorkflowProcess;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.node.CompositeNode;
+import org.kie.definition.process.NodeContainer;
 
 public abstract class CompositeNodeWrapper extends ElementContainerElementWrapper implements NodeWrapper {
 

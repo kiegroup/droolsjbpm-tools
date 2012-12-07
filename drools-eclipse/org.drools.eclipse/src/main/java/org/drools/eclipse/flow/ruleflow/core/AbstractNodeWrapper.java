@@ -19,7 +19,6 @@ package org.drools.eclipse.flow.ruleflow.core;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.definition.process.NodeContainer;
 import org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
@@ -31,6 +30,7 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.NodeImpl;
+import org.kie.definition.process.NodeContainer;
 
 /**
  * Wrapper for a node.

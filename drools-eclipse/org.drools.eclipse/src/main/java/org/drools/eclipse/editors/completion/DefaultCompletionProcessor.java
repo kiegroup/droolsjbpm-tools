@@ -33,7 +33,6 @@ import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
 import org.drools.eclipse.editors.AbstractRuleEditor;
 import org.drools.eclipse.editors.DRLRuleEditor;
-import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.rule.builder.dialect.java.KnowledgeHelperFixer;
 import org.eclipse.core.resources.IProject;

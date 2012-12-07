@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.drools.compiler.DroolsParserException;
 import org.drools.eclipse.DRLInfo;
@@ -29,7 +28,6 @@ import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.debug.core.IDroolsDebugConstants;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.FunctionImportDescr;
 import org.drools.lang.descr.GlobalDescr;

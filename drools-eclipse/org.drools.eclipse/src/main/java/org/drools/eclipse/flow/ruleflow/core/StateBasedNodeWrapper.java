@@ -18,13 +18,10 @@ package org.drools.eclipse.flow.ruleflow.core;
 
 import java.util.Map;
 
-import org.kie.definition.process.NodeContainer;
 import org.drools.eclipse.flow.ruleflow.view.property.timers.TimersPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.jbpm.process.core.timer.Timer;
-import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.DroolsAction;
-import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.WorkflowProcess;
 import org.jbpm.workflow.core.node.StateBasedNode;
 

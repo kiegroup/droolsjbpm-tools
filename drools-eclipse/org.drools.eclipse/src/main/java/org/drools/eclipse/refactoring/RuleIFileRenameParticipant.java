@@ -22,8 +22,8 @@ import java.util.regex.Pattern;
 
 import org.drools.compiler.DroolsParserException;
 import org.drools.eclipse.DRLInfo;
-import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DRLInfo.PatternInfo;
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.lang.descr.ImportDescr;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
