@@ -35,9 +35,13 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
@@ -65,7 +69,7 @@ public class HumanTaskCustomEditor extends EditBeanDialog<Work> implements WorkE
 	private static final String ATTRIBUTES_SEPARATOR_ESCAPED = "\\|";
 	private static final String KEY_VALUE_SEPARATOR = ":";
 	
-	private static final String[] KNOWN_KEYS = {"users", "groups", "from", "tousers", "togroups", "replyto", "subject","body"};
+	private static final String[] KNOWN_KEYS = {"users", "groups", "from", "tousers", "togroups", "replyTo", "subject","body"};
 
     private Text nameText;
     private Text actorText;
@@ -97,15 +101,36 @@ public class HumanTaskCustomEditor extends EditBeanDialog<Work> implements WorkE
         return new Point(460, 660);
     }
     
-    protected Control createDialogArea(Composite parent) {
-        Composite composite = (Composite) super.createDialogArea(parent);
+    protected Control createDialogArea(final Composite parent) {
+        final Composite composite = (Composite) super.createDialogArea(parent);
         GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 2;
         
         composite.setLayout(gridLayout);
+        final ScrolledComposite scroll = new ScrolledComposite(composite, SWT.V_SCROLL | SWT.BORDER);
+        scroll.setLayout(new FillLayout());
         
-        final TabFolder tabFolder = new TabFolder(composite, SWT.NONE);
+        final TabFolder tabFolder = new TabFolder(scroll, SWT.NONE);
+        tabFolder.addControlListener(new ControlAdapter(){
+        	public void controlResized( ControlEvent e ) {
+	        	tabFolder.setSize(parent.getSize().x, parent.getSize().y);
+        	}
+        });
         
+        scroll.setContent(tabFolder);
+        parent.addControlListener(new ControlAdapter(){
+        	public void controlResized( ControlEvent e ) {
+	        	tabFolder.setSize(parent.getSize().x, parent.getSize().y);
+        	}
+        });
+        scroll.setAlwaysShowScrollBars(true);
+        scroll.setExpandVertical(true);
+        scroll.setExpandHorizontal(true);
+        scroll.addControlListener(new ControlAdapter(){
+        	public void controlResized( ControlEvent e ) {
+	        	scroll.setMinHeight(parent.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);	        	
+        	}
+        });
         createGeneralTab(tabFolder);
         createReassignmentTab(tabFolder);
         createNotificationTab(tabFolder);
@@ -114,11 +139,12 @@ public class HumanTaskCustomEditor extends EditBeanDialog<Work> implements WorkE
         return composite;
     }
     
-    private void createGeneralTab(TabFolder tabFolder) {
+    private void createGeneralTab(final TabFolder tabFolder) {
     	final TabItem headersTabItem = new TabItem(tabFolder, SWT.NONE);
         headersTabItem.setText("General");
-
-        final Composite container = new Composite(tabFolder, SWT.NONE);
+        
+        final Composite container = new Composite(tabFolder, SWT.NONE);        
+        
         final GridLayout gridLayout = new GridLayout();
         gridLayout.horizontalSpacing = 2;
         container.setLayout(gridLayout);
