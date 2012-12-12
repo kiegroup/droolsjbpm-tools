@@ -72,8 +72,8 @@ public class VerticalAutoLayoutAction extends ActionDelegate implements IEditorA
         WorkflowProcess process = (WorkflowProcess) ((ProcessWrapper) ((GenericModelEditor) editor).getModel()).getProcess();
         for (org.kie.definition.process.Node processNode: process.getNodes()) {
             Node node = new Node();
-            Integer width = (Integer) processNode.getMetaData("width");
-            Integer height = (Integer) processNode.getMetaData("height");
+            Integer width = (Integer) processNode.getMetaData().get("width");
+            Integer height = (Integer) processNode.getMetaData().get("height");
             if (width == null || width <= 0) {
                 width = 80;
             }

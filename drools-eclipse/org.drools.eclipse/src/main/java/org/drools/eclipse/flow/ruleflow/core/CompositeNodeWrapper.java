@@ -93,10 +93,10 @@ public abstract class CompositeNodeWrapper extends ElementContainerElementWrappe
     
     public Rectangle internalGetConstraint() {
         Node node = getNode();
-        Integer x = (Integer) node.getMetaData("x");
-        Integer y = (Integer) node.getMetaData("y");
-        Integer width = (Integer) node.getMetaData("width");
-        Integer height = (Integer) node.getMetaData("height");
+        Integer x = (Integer) node.getMetaData().get("x");
+        Integer y = (Integer) node.getMetaData().get("y");
+        Integer width = (Integer) node.getMetaData().get("width");
+        Integer height = (Integer) node.getMetaData().get("height");
         return new Rectangle(
             x == null ? 0 : x,
             y == null ? 0 : y,

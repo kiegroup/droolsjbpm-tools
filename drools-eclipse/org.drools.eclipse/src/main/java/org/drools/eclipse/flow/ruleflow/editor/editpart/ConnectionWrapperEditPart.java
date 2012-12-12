@@ -40,7 +40,7 @@ public class ConnectionWrapperEditPart extends ElementConnectionEditPart {
     protected IFigure createFigure() {
         Connection result = (Connection) super.createFigure();
         // add connection label
-        String label = (String) getConnectionWrapper().getConnection().getMetaData("label");
+        String label = (String) getConnectionWrapper().getConnection().getMetaData().get("label");
         if (label != null) {
             ConnectionEndpointLocator sourceEndpointLocator = new ConnectionEndpointLocator(result, true);
             sourceEndpointLocator.setVDistance(15);
@@ -52,7 +52,7 @@ public class ConnectionWrapperEditPart extends ElementConnectionEditPart {
     
     protected void refreshLabel() {
         super.refreshLabel();
-        String label = (String) getConnectionWrapper().getConnection().getMetaData("label");
+        String label = (String) getConnectionWrapper().getConnection().getMetaData().get("label");
         if (sourceLabel != null) {
             sourceLabel.setText(label == null ? "" : label);
         } else if (label != null) {
