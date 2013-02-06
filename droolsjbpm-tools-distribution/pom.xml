@@ -44,15 +44,6 @@
     <!-- Binaries and sources -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-ant</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-ant</artifactId>
-      <classifier>sources</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
       <artifactId>org.drools.eclipse</artifactId>
       <classifier>sources</classifier>
     </dependency>
