@@ -29,16 +29,4 @@
 		<nature>org.eclipse.pde.PluginNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>xpp3_min-1.1.4c.jar</name>
-			<type>1</type>
-			<location>/NotBackedUp/.m2/repository/xpp3/xpp3_min/1.1.4c/xpp3_min-1.1.4c.jar</location>
-		</link>
-		<link>
-			<name>xstream-1.3.1.jar</name>
-			<type>1</type>
-			<location>/NotBackedUp/.m2/repository/com/thoughtworks/xstream/xstream/1.3.1/xstream-1.3.1.jar</location>
-		</link>
-	</linkedResources>
 </projectDescription>
