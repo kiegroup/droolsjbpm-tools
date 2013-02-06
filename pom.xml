@@ -45,7 +45,7 @@
   </scm>
 
   <modules>
-    <module>drools-ant</module>
+    <!-- None! -->
   </modules>
 
   <profiles>
