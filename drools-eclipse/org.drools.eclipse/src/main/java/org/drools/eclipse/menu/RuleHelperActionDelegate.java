@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.eclipse.rulebuilder.wizards.NewBrlFileWizard;
 import org.drools.eclipse.wizard.decisiontable.NewDTFileWizard;
 import org.drools.eclipse.wizard.dsl.NewDSLFileWizard;
 import org.drools.eclipse.wizard.project.NewDroolsProjectWizard;
@@ -70,9 +69,6 @@ public class RuleHelperActionDelegate
         
         addDTWizard( menu,
                       shell );
-        
-//        addGuidedEditorWizard( menu,
-//                               shell );
         
         return menu;
     }
@@ -146,24 +142,6 @@ public class RuleHelperActionDelegate
         });
     }
     
-    private void addGuidedEditorWizard(Menu menu,
-                                       final Shell shell) {
-        MenuItem dsl = new MenuItem( menu,
-                                     SWT.NONE );
-        dsl.setText( "New Business Rule (using the guided editor)" );
-        dsl.addSelectionListener( new SelectionListener() {
-
-            public void widgetSelected(SelectionEvent e) {
-                NewBrlFileWizard wizard = new NewBrlFileWizard();
-                launchWizard( shell,
-                              wizard );
-            }
-
-            public void widgetDefaultSelected(SelectionEvent e) {
-            }
-        } );
-    }
-
     private void launchWizard(Shell shell,
                               INewWizard wizard) {
         wizard.init( workbench,

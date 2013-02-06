@@ -6,7 +6,6 @@
 	<classpathentry excluding="**/*.java" kind="src" path="src/main/resources"/>
 	<classpathentry exported="true" kind="lib" path="lib/drools-core.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/drools-compiler.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/droolsjbpm-ide-common.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/drools-decisiontables.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/drools-jsr94.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jsr94.jar"/>
@@ -20,7 +19,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/xstream.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jbpm-flow.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jbpm-flow-builder.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/guvnor-api.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/slf4j-api.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/kie-api.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/kie-internal.jar"/>

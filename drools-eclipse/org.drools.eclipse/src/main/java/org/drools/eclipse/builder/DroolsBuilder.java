@@ -49,12 +49,6 @@ import org.drools.eclipse.ProcessInfo;
 import org.drools.eclipse.preferences.IDroolsConstants;
 import org.drools.eclipse.util.DroolsRuntimeManager;
 import org.drools.eclipse.wizard.project.NewDroolsProjectWizard;
-import org.drools.ide.common.client.modeldriven.brl.RuleModel;
-import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-import org.drools.ide.common.server.util.BRDRLPersistence;
-import org.drools.ide.common.server.util.BRXMLPersistence;
-import org.drools.ide.common.server.util.GuidedDTDRLPersistence;
-import org.drools.ide.common.server.util.GuidedDTXMLPersistence;
 import org.drools.lang.ExpanderException;
 import org.drools.template.parser.DecisionTableParseException;
 import org.eclipse.core.resources.IFile;
@@ -609,19 +603,6 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                               -1 );
             }
             return false;
-        } else if ( res instanceof IFile && "brl".equals( res.getFileExtension() ) ) {
-            removeProblemsFor( res );
-            try {
-                if ( clean ) {
-                    DroolsEclipsePlugin.getDefault().invalidateResource( res );
-                }
-                appendMarkers( res, parseBRLFile( (IFile) res ) );
-            } catch ( Throwable t ) {
-                createMarker( res,
-                              t.getMessage(),
-                              -1 );
-            }
-            return false;
         } else if ( res instanceof IFile && "rf".equals( res.getFileExtension() ) ) {
             removeProblemsFor( res );
             try {
@@ -732,38 +713,6 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                 SpreadsheetCompiler converter = new SpreadsheetCompiler();
                 String drl = converter.compile( file.getContents(), InputType.CSV );
                 return DroolsEclipsePlugin.getDefault().parseXLSResource( drl, file );
-            }
-        } );
-    }
-
-    private List<DroolsBuildMarker> parseBRLFile(final IFile file) {
-        return parseResource( new ResourceParser() {
-            public DRLInfo parseResource() throws DroolsParserException,
-                                          CoreException,
-                                          IOException {
-                String brl = convertToString( file.getContents() );
-                RuleModel model = BRXMLPersistence.getInstance().unmarshal( brl );
-                String drl = BRDRLPersistence.getInstance().marshal( model );
-
-                // TODO pass this through DSL converter in case brl is based on dsl
-
-                return DroolsEclipsePlugin.getDefault().parseBRLResource( drl, file );
-            }
-        } );
-    }
-
-    private List<DroolsBuildMarker> parseGDSTFile(final IFile file) {
-        return parseResource( new ResourceParser() {
-            public DRLInfo parseResource() throws DroolsParserException,
-                                          CoreException,
-                                          IOException {
-                String gdst = convertToString( file.getContents() );
-                GuidedDecisionTable52 dt = GuidedDTXMLPersistence.getInstance().unmarshal( gdst );
-                String drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
-
-                // TODO pass this through DSL converter in case brl is based on dsl
-
-                return DroolsEclipsePlugin.getDefault().parseGDSTResource( drl, file );
             }
         } );
     }
