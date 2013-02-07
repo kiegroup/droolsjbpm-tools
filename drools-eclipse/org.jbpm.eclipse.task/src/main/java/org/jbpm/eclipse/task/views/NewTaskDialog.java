@@ -55,6 +55,7 @@ public class NewTaskDialog extends Dialog {
     private Text priorityText;
     private Button skippableButton;
     private Text contentText;
+    private Text createdByText;
     private Text localeText;
 
     public NewTaskDialog(Shell shell) {
@@ -133,6 +134,14 @@ public class NewTaskDialog extends Dialog {
         gridData.horizontalAlignment = GridData.FILL;
         gridData.verticalAlignment = GridData.FILL;
         contentText.setLayoutData(gridData);
+        
+        label = new Label(composite, SWT.NONE);
+        label.setText("Created by: ");
+        createdByText = new Text(composite, SWT.NONE);
+        gridData = new GridData();
+        gridData.grabExcessHorizontalSpace = true;
+        gridData.horizontalAlignment = GridData.FILL;
+        createdByText.setLayoutData(gridData);
         
         label = new Label(composite, SWT.NONE);
         label.setText("Locale: ");
@@ -222,6 +231,11 @@ public class NewTaskDialog extends Dialog {
         content = new ContentData();
         content.setContent(contentString.getBytes());
         content.setAccessType(AccessType.Inline);
+        
+        String createdBy = createdByText.getText();
+        if (createdBy != null && createdBy.length() > 0) {
+        	task.getTaskData().setCreatedBy(new User(createdBy.trim()));
+        }
     }
 
     public Task getTask() {
