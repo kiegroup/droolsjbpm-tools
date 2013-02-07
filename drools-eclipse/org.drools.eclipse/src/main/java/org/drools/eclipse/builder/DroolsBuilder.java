@@ -82,243 +82,6 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
 
     public static final String       BUILDER_ID = "org.drools.eclipse.droolsbuilder";
 
-    private Map<String, IPath>       kbases;
-    private Map<IPath, String>       kbasePaths;
-    private Map<String, Set<String>> kbaseFiles;
-    private Set<String>              dirtyKbases;
-
-    /**
-     * Keeps kbasePath map in sync with kbasePaths.properties.
-     * IF a new kbase entry is detected, all it's files are added, and it's added to the dirtyKbases
-     * @param currentProject
-     */
-/*
-    void updateKBaseTracker(IProject currentProject) {
-        IFile ifile = currentProject.getFile( "kbasePaths.properties" );
-
-        Properties props = new Properties();
-        if ( ifile.exists() ) {
-            InputStream is = null;
-            try {
-                is = ifile.getContents();
-                props.load( is );
-            } catch ( IOException e ) {
-                DroolsEclipsePlugin.log( e );
-            } catch ( CoreException e ) {
-                DroolsEclipsePlugin.log( e );
-            } finally {
-                if ( is != null ) {
-                    try {
-                        is.close();
-                    } catch ( IOException e ) {
-                        DroolsEclipsePlugin.log( e );
-                    }
-                }
-            }
-        }
-
-        if ( kbaseFiles == null ) {
-            kbaseFiles = new HashMap<String, Set<String>>();
-        }
-        
-        Set<String> orphaned = null;
-        if ( kbases != null ) {
-            orphaned = new HashSet();
-            orphaned.addAll( kbases.keySet() );
-        }
-
-        for ( Entry<Object, Object> entry : props.entrySet() ) {
-            // strip "kbase." from key name, to provide actual kbase name
-            String kbaseName = ((String) entry.getKey()).substring( 6 );
-            String kbasePath = (String) entry.getValue();
-
-            if ( kbases == null ) {
-                kbases = new HashMap<String, IPath>();
-                kbasePaths = new HashMap<IPath, String>();
-            }
-
-            if ( orphaned != null ) {
-                orphaned.remove( kbaseName );
-            }
-            if ( !kbases.containsKey( kbaseName ) ) {
-                if ( dirtyKbases == null ) {
-                    dirtyKbases = new HashSet<String>();
-                }
-                dirtyKbases.add( kbaseName );
-
-                IPath path =  currentProject.getFolder( new Path( kbasePath ) ).getProjectRelativePath();
-                kbases.put( kbaseName, path );
-                kbasePaths.put(path, kbaseName );
-                Set<String> files = new HashSet<String>();
-                getAllKBaseFilesFromDisk( files, currentProject.getFolder( path ), currentProject );
-                kbaseFiles.put( kbaseName, files );
-            }
-        }
-        
-        if ( orphaned != null && !orphaned.isEmpty() ) {
-            // clean up deleted kbase entries
-            for ( String kbaseName : orphaned ) {
-                dirtyKbases.remove( kbaseName );
-                kbasePaths.remove( kbases.remove( kbaseName ) );
-                kbaseFiles.remove( kbaseName );
-            }
-        }
-    }
-*/
-    void getAllKBaseFilesFromDisk(Set files,
-                          IFolder folder,
-                          IProject currentProject) {
-        try {
-            for ( IResource res : folder.members() ) {
-                if ( res instanceof IFolder ) {
-                    getAllKBaseFilesFromDisk( files, (IFolder) res, currentProject );
-                } else if ( res instanceof IFile ) {
-                    files.add( ((IFile) res).getProjectRelativePath().toString() );
-                }
-            }
-        } catch ( CoreException e ) {
-            DroolsEclipsePlugin.log( e );
-        }
-    }
-
-    public void writeAllKBaseFilesToProperties(String kbaseName,
-                                               IProject currentProject) throws IOException,
-                                                                       CoreException {
-        IFolder ifolder = currentProject.getFolder( kbases.get( kbaseName ) );// kbaseFolder.getFile( kbaseName + ".properties" );
-
-        IFile ifile = ifolder.getFile( kbaseName + ".properties" );
-
-        Properties props = new Properties();
-        if ( ifile.exists() ) {
-            InputStream is = null;
-            try {
-                is = ifile.getContents();
-                props.load( is );
-            } catch ( IOException e ) {
-                DroolsEclipsePlugin.log( e );
-            } catch ( CoreException e ) {
-                DroolsEclipsePlugin.log( e );
-            } finally {
-                if ( is != null ) {
-                    try {
-                        is.close();
-                    } catch ( IOException e ) {
-                        DroolsEclipsePlugin.log( e );
-                    }
-                }
-            }
-        }
-
-        StringBuilder sbuilder = new StringBuilder();
-        boolean first = true;
-        for ( String file : kbaseFiles.get( kbaseName ) ) {
-            if ( file.equals( ifile.getProjectRelativePath().toString() ) ) {
-                continue;
-            }
-            if ( !first ) {
-                sbuilder.append( ", " );
-            }
-            IFile res = currentProject.getFile( new Path( file ) );
-            sbuilder.append( res.getFullPath().makeRelativeTo( ifolder.getFullPath() ).toString() );
-            first = false;
-        }
-
-        props.setProperty( "files", sbuilder.toString() );
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        props.store( baos, null );
-        baos.close();
-
-        if ( ifile.exists() ) {
-            ifile.setContents( new ByteArrayInputStream( baos.toByteArray() ), true, true, null );
-        } else {
-            ifile.create( new ByteArrayInputStream( baos.toByteArray() ), true, null );
-        }
-    }
-
-    public void removeKBaseFromKBasePathsProperties(IProject currentProject,
-                                                    String kbaseName,
-                                                    IPath path) throws IOException,
-                                                               CoreException {
-        IFile ifile = currentProject.getFile( "kbasePaths.properties" );
-
-        Properties props = new Properties();
-        if ( ifile.exists() ) {
-            InputStream is = null;
-            try {
-                is = ifile.getContents();
-                props.load( is );
-            } finally {
-                if ( is != null ) {
-                    is.close();
-                }
-            }
-        }
-        
-        if ( props.remove( "kbase." + kbaseName ) != null ) {
-            removeKBaseFromKProjectProperties( currentProject, kbaseName );
-            
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            props.store( baos, null );
-            baos.close();
-
-            if ( ifile.exists() ) {
-                ifile.setContents( new ByteArrayInputStream( baos.toByteArray() ), true, true, null );
-            } else {
-                ifile.create( new ByteArrayInputStream( baos.toByteArray() ), true, null );
-            }            
-        }
-    }
-
-    public void removeKBaseFromKProjectProperties(IProject currentProject,
-                                                  String kbaseName) throws IOException,
-                                                                   CoreException {
-        IFolder ifolder = currentProject.getProject().getFolder( "src" );
-        IFile ifile = ifolder.getFile( "kproject.properties" );
-
-        Properties props = new Properties();
-        if ( ifile.exists() ) {
-            InputStream is = null;
-            try {
-                is = ifile.getContents();
-                props.load( is );
-            } finally {
-                if ( is != null ) {
-                    is.close();
-                }
-            }
-        }
-
-        String kbaseEntries = props.getProperty( "kbaseEntries", "" );
-
-        String[] strEntries = kbaseEntries.split( "," );
-        StringBuilder sbuilder = new StringBuilder();
-
-        boolean first = true;
-        for ( String strEntry : strEntries ) {
-            if ( strEntry.trim().equals( kbaseName ) ) {
-                continue;
-            }
-            if ( !first ) {
-                sbuilder.append( ", " );
-            }
-            sbuilder.append( strEntry );
-            first = false;
-        }
-
-        props.setProperty( "kbaseEntries", sbuilder.toString() );
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        props.store( baos, null );
-        baos.close();
-
-        if ( ifile.exists() ) {
-            ifile.setContents( new ByteArrayInputStream( baos.toByteArray() ), true, true, null );
-        } else {
-            ifile.create( new ByteArrayInputStream( baos.toByteArray() ), true, null );
-        }
-    }
-
     protected IProject[] build(int kind,
                                Map args,
                                IProgressMonitor monitor)
@@ -327,8 +90,6 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         if ( currentProject == null || !currentProject.isAccessible() ) {
             return new IProject[0];
         }
-
-//        updateKBaseTracker( currentProject );
 
         try {
             if ( monitor != null && monitor.isCanceled() ) throw new OperationCanceledException();
@@ -351,18 +112,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             marker.setAttribute( IMarker.SEVERITY,
                                  IMarker.SEVERITY_ERROR );
         }
-/*
-        if ( dirtyKbases != null && !dirtyKbases.isEmpty() ) {
-            for ( String kbaseName : dirtyKbases ) {
-                try {
-                    writeAllKBaseFilesToProperties( kbaseName, currentProject );
-                } catch ( IOException e ) {
-                    DroolsEclipsePlugin.log( e );
-                }
-            }
-            dirtyKbases.clear();
-        }
-*/
+
         return getRequiredProjects( currentProject );
     }
 
@@ -480,66 +230,13 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
 
     private boolean exists(IResource res) {
         if ( !res.exists() ) {
-            if ( res instanceof IFolder ) {
-                    IPath path = ((IFolder)res).getProjectRelativePath();
-                    if ( kbasePaths.containsKey( path ) ) {               
-                    String kbaseName = kbasePaths.remove( path );
-                    try {
-                        removeKBaseFromKBasePathsProperties(getProject(), kbaseName, path);
-                    } catch ( IOException e ) {
-                        DroolsEclipsePlugin.log( e );
-                    } catch ( CoreException e ) {
-                        DroolsEclipsePlugin.log( e );
-                    }
-                    dirtyKbases.remove( kbaseName );
-                    kbases.remove( kbaseName );
-                    kbaseFiles.remove( kbaseName );   
-                }
-            }
-
-//            removeKbaseFile( res );
             removeProblemsFor( res );
             DroolsEclipsePlugin.getDefault().invalidateResource( res );
             return false;
         }
         return true;
     }
-/*
-    void removeKbaseFile(IResource res) {
-        // If the resource is from a deleted classpath entry, the kbasePaths will not exist, and this does nothing
-        for ( Entry<String, IPath> entry : kbases.entrySet() ) {
-            if ( res.getProjectRelativePath().matchingFirstSegments( entry.getValue() ) == entry.getValue().segmentCount() ) {
-                if ( kbaseFiles.get( entry.getKey() ).remove( res.getProjectRelativePath().toString() ) ) {
-                    if ( dirtyKbases == null ) {
-                        dirtyKbases = new HashSet<String>();
-                    }
-                    dirtyKbases.add( entry.getKey() );
-                }
-            }
-        }
-    }
 
-    void addKbaseFile(IResource res) {
-        if ( !(res instanceof IFile) ) {
-            return;
-        }
-        for ( Entry<String, IPath> entry : kbases.entrySet() ) {
-            //            System.out.println( res.getProjectRelativePath() );
-            //            System.out.println( res.getProjectRelativePath().matchingFirstSegments(entry.getValue()) );
-            //            System.out.println( entry.getValue().matchingFirstSegments( res.getProjectRelativePath() ) );
-            //            System.out.println( entry.getValue().segmentCount() );
-            //System.out.println()
-            if ( res.getProjectRelativePath().matchingFirstSegments( entry.getValue() ) == entry.getValue().segmentCount() ) {
-                if ( kbaseFiles.get( entry.getKey() ).add( res.getProjectRelativePath().toString() ) ) {
-                    if ( dirtyKbases == null ) {
-                        dirtyKbases = new HashSet<String>();
-                    }
-                    dirtyKbases.add( entry.getKey() );
-                }
-            }
-        }
-    }
-*/
     protected boolean parseResource(IResource res,
                                     boolean clean) {
         try {
@@ -556,8 +253,6 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
 
         if ( !exists( res ) ) {
             return false;
-        } else {
-//            addKbaseFile( res );
         }
 
         if ( res instanceof IFile
