@@ -57,7 +57,6 @@
 	       label="Convert to jBPM Project"
 	       menubarPath="org.eclipse.ui.projectConfigure/additions"
 	       class="org.jbpm.eclipse.action.ConvertToJBPMProjectAction"
-           definitionId="org.jbpm.eclipse.action.ConvertToJBPMProjectAction"
 	       icon="icons/jbpm.gif"
            enablesFor="1">
 	    </action>
@@ -70,7 +69,6 @@
            icon="icons/jbpm.gif"
            menubarPath="org.eclipse.ui.projectConfigure/additions"
            class="org.jbpm.eclipse.action.ImportWorkItemsAction"
-           definitionId="org.jbpm.eclipse.action.ImportWorkItemsAction"
            enablesFor="1">
         </action>
       </objectContribution>
@@ -82,7 +80,6 @@
            icon="icons/jbpm.gif"
            menubarPath="additions"
            class="org.jbpm.eclipse.action.GenerateBPMN2JUnitTests"
-           definitionId="org.jbpm.eclipse.action.GenerateBPMN2JUnitTests"
            enablesFor="1">
         </action>
       </objectContribution>
@@ -94,7 +91,6 @@
            icon="icons/jbpm.gif"
            menubarPath="additions"
            class="org.jbpm.eclipse.action.GenerateForms"
-           definitionId="org.jbpm.eclipse.action.GenerateForms"
            enablesFor="1">
         </action>
       </objectContribution>
@@ -106,7 +102,6 @@
            icon="icons/jbpm.gif"
            menubarPath="additions"
            class="org.jbpm.eclipse.action.GenerateBPMN2JUnitTests"
-           definitionId="org.jbpm.eclipse.action.GenerateBPMN2JUnitTests"
            enablesFor="1">
         </action>
       </objectContribution>
@@ -118,7 +113,6 @@
            icon="icons/jbpm.gif"
            menubarPath="additions"
            class="org.jbpm.eclipse.action.GenerateForms"
-           definitionId="org.jbpm.eclipse.action.GenerateForms"
            enablesFor="1">
         </action>
       </objectContribution>
