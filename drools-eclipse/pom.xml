@@ -22,7 +22,11 @@
   </description>
   
   <properties>
-    <tycho.version>0.15.0</tycho.version>
+    <!-- use 0.16.0 in order to be able to generate source plugins/features; see org.jboss.tools.runtime.drools.detector.feature/pom.xml for an example of this 
+        See also http://wiki.eclipse.org/Minerva#Source for steps required to make your plugins/features able to generate source bundles
+        Don't forget to add source features to your update site's site.xml (packaging=eclipse-update-site, deprecated) or category.xml (packaging=eclipse-repository)
+    -->
+    <tycho.version>0.16.0</tycho.version>
   </properties>
 
   <modules>
@@ -37,16 +41,30 @@
     <module>org.jbpm.eclipse.feature</module>
     <module>org.jbpm.eclipse.task</module>
     <module>org.jbpm.eclipse.task.feature</module>
+    <module>org.jboss.tools.runtime.drools.detector</module>
+    <module>org.jboss.tools.runtime.drools.detector.feature</module>
     <module>org.drools.updatesite</module>
   </modules>
 
   <repositories>
+    <!-- Indigo is Eclipse 3.7.2, used for building JBoss Tools 3.3 / JBDS 5 -->
     <repository>
-      <id>eclipse-helios</id><!-- helios is 3.6 -->
+      <id>jbosstools-indigo-target-platform</id>
       <layout>p2</layout>
-      <!-- TODO switch to jboss mirror, but that gives weird output (PARTIAL IU: org.eclipse.team.svn ...)-->
-      <!--<url>http://download.jboss.org/jbosstools/updates/helios/</url>-->
-      <url>http://download.eclipse.org/releases/helios</url>
+      <url>http://download.jboss.org/jbosstools/updates/target-platform_3.3.indigo.SR2a/latest/</url>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <!-- JBoss Tools 3.3 (Indigo) site needed to resolve org.jboss.tools.runtime.core.model, on which org.jboss.tools.runtime.drools.detector depends -->
+    <repository>
+      <id>jbosstools-indigo-stable-release</id>
+      <layout>p2</layout>
+      <url>http://download.jboss.org/jbosstools/updates/stable/indigo/</url>
       <releases>
         <enabled>true</enabled>
         <updatePolicy>never</updatePolicy>

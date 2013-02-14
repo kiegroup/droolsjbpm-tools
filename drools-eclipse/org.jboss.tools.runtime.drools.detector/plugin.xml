@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+	<extension
+         point="org.jboss.tools.runtime.core.runtimeDetectors">
+    	<runtimeDetector
+    		id="org.jboss.tools.runtime.handlers.DroolsHandler"
+    		name="Drools"
+       		class="org.jboss.tools.runtime.handlers.DroolsHandler"
+       		preferenceId="org.drools.eclipse.preferences.DroolsRuntimesPreferencePage"
+       		priority="300"/>
+	</extension>
+	
+</plugin>
