@@ -20,7 +20,7 @@
 	
 	<build>
 		<plugins>
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.eclipse.tycho.extras</groupId>
 				<artifactId>tycho-source-feature-plugin</artifactId>
 				<version>${tycho.version}</version>
@@ -47,7 +47,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin> -->
 		</plugins>
 	</build>
 </project>
