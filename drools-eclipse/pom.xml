@@ -47,30 +47,28 @@
   </modules>
 
   <repositories>
-    <!-- Indigo is Eclipse 4.2, used for building JBoss Tools 4 / JBDS 6 -->
+    <!-- Indigo is Eclipse 3.7.2, used for building JBoss Tools 3.3 / JBDS 5 -->
     <repository>
-      <id>jbosstools-indigo-target-platform</id>
+      <id>jbosstools-3.3-target-platform</id>
       <layout>p2</layout>
-      <url>http://download.jboss.org/jbosstools/updates/juno/</url>
+      <url>http://download.jboss.org/jbosstools/updates/target-platform_3.3.indigo.SR2a/latest/</url>
       <releases>
         <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
       </releases>
       <snapshots>
-        <enabled>false</enabled>
+        <enabled>true</enabled>
       </snapshots>
     </repository>
-    <!-- JBoss Tools 4.0 (Juno) site needed to resolve org.jboss.tools.runtime.core.model, on which org.jboss.tools.runtime.drools.detector depends -->
+    <!-- JBoss Tools 3.3 (Indigo) site needed to resolve org.jboss.tools.runtime.core.model, on which org.jboss.tools.runtime.drools.detector depends -->
     <repository>
-      <id>jbosstools-indigo-stable-release</id>
+      <id>jbosstools-3.3-release</id>
       <layout>p2</layout>
-      <url>http://download.jboss.org/jbosstools/updates/stable/juno/</url>
+      <url>http://download.jboss.org/jbosstools/updates/stable/indigo/</url>
       <releases>
         <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
       </releases>
       <snapshots>
-        <enabled>false</enabled>
+        <enabled>true</enabled>
       </snapshots>
     </repository>
   </repositories>
