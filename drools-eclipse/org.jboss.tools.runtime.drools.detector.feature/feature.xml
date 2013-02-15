@@ -19,7 +19,8 @@
    </license>
 
    <requires>
-      <import plugin="org.jboss.tools.runtime.core" />
+      <import feature="org.jboss.tools.runtime.core.feature"/>
+      <import feature="org.jboss.tools.common.core.feature"/>
    </requires>
 
    <plugin
