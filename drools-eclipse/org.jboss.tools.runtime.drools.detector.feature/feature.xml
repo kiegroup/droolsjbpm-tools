@@ -18,6 +18,10 @@
       %license
    </license>
 
+   <requires>
+      <import plugin="org.jboss.tools.runtime.core" />
+   </requires>
+
    <plugin
          id="org.jboss.tools.runtime.drools.detector"
          download-size="0"
