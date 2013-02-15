@@ -19,9 +19,9 @@
    <feature url="features/org.jboss.tools.runtime.drools.detector.feature_0.0.0.jar" id="org.jboss.tools.runtime.drools.detector.feature" version="0.0.0">
       <category name="droolsjbpm"/>
    </feature>
-   <feature url="features/org.jboss.tools.runtime.drools.detector.feature.source_0.0.0.jar" id="org.jboss.tools.runtime.drools.detector.feature.source" version="0.0.0">
+   <!-- <feature url="features/org.jboss.tools.runtime.drools.detector.feature.source_0.0.0.jar" id="org.jboss.tools.runtime.drools.detector.feature.source" version="0.0.0">
       <category name="droolsjbpm"/>
-   </feature>
+   </feature> -->
   <category-def name="droolsjbpm" label="Drools and jBPM">
     <description>
       Drools and jBPM plugins for Eclipse.
