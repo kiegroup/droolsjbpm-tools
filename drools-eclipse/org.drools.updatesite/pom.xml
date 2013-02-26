@@ -1,28 +1,98 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-eclipse</artifactId>
+        <version>6.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>org.drools.updatesite</artifactId>
+    <packaging>eclipse-repository</packaging>
 
-  <parent>
-    <groupId>org.drools</groupId>
-    <artifactId>drools-eclipse</artifactId>
-    <version>6.0.0-SNAPSHOT</version>
-  </parent>
+    <name>Drools :: Eclipse :: Update site</name>
 
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>org.drools.updatesite</artifactId>
-  <packaging>eclipse-update-site</packaging>
+    <description>
+      To use this update site locally:
+      - Build the drools project with maven (including the eclipse stuff).
+      - Open Eclipse.
+      - Open the menu "Help", menu item "Install new software..."
+      - Click on the button "Add..." to add a new software site.
+      - Fill in the name "drools local update site"
+      - Click on the button "Local..." and select "droolsjbpm-tools/drools-eclipse/org.drools.updatesite/target/repository/"
+      - Select all the features. Click the buttons "Next" and "Finish".
+    </description>
 
-  <name>Drools :: Eclipse :: Update site</name>
+    <properties>
+      <update.site.name>Drools ${project.version} Update Site</update.site.name>
+      <update.site.description>Nightly Build</update.site.description>
+      <update.site.version>${project.version}</update.site.version>
+      <target.eclipse.version>4.2 (Juno)</target.eclipse.version>
+      <siteTemplateFolder>siteTemplateFolder</siteTemplateFolder>
+    </properties>
 
-  <description>
-    To use this update site locally:
-    - Build the drools project with maven (including the eclipse stuff).
-    - Open Eclipse.
-    - Open the menu "Help", menu item "Install new software..."
-    - Click on the button "Add..." to add a new software site.
-    - Fill in the name "drools local update site"
-    - Click on the button "Local..." and select "droolsjbpm-tools/drools-eclipse/org.drools.updatesite/target/site/"
-    - Select all the plugins. Click the buttons "Next" and "Finish".
-  </description>
-
+    <build>
+      <plugins>
+      <!-- because clean is called after building the site, we have to disable it here or 
+           else the resulting update site is an non-existant target/ folder ~nickboldt -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>2.4.1</version>
+        <configuration><skip>true</skip></configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <id>cleanup</id>
+            <phase>install</phase>
+              <goals>
+                <goal>run</goal>
+              </goals>
+              <configuration>
+                <target>
+                  <property name="project.build.outputDir" value="${basedir}/target" />
+                  <echo>Clean out unnecessary files from ${basedir}/target</echo>
+                  <delete includeemptydirs="true" deleteonexit="true" quiet="true" failonerror="false">
+                    <fileset dir="${project.build.outputDir}" includes="antrun/**, failsafe-reports/**, targetPlatformRepository/**, p2agent/**, maven-archiver/**, surefire/**"/>
+                    <fileset dir="${project.build.outputDir}" includes="p2content.xml, p2artifacts.xml, local-artifacts.properties, local-artifacts.properties, *-tests.jar"/>
+                  </delete>
+                </target>
+              </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.jboss.tools.tycho-plugins</groupId>
+        <artifactId>repository-utils</artifactId>
+        <version>0.16.0.CR1</version>
+        <executions>
+          <execution>
+            <id>generate-facade</id>
+            <phase>package</phase>
+            <goals>
+              <goal>generate-repository-facade</goal>
+            </goals>
+            <configuration>
+              <associateSites>
+                <associateSite>http://download.jboss.org/jbosstools/updates/juno/integration-stack/</associateSite>
+                <associateSite>http://download.jboss.org/jbosstools/updates/juno/</associateSite>
+                <associateSite>http://download.jboss.org/jbosstools/updates/stable/juno/</associateSite>
+              </associateSites>
+              <siteTemplateFolder>${siteTemplateFolder}</siteTemplateFolder>
+              <symbols>
+                <update.site.name>${update.site.name}</update.site.name>
+                <update.site.description>${update.site.description}</update.site.description>
+                <update.site.version>${update.site.version}</update.site.version>
+                <target.eclipse.version>${target.eclipse.version}</target.eclipse.version>
+              </symbols>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
