@@ -9,7 +9,6 @@
 	</parent>
 	<groupId>org.jboss.tools.runtime.plugins</groupId>
 	<artifactId>org.jboss.tools.runtime.drools.detector</artifactId>
-	<version>1.4.0-SNAPSHOT</version>
 
 	<packaging>eclipse-plugin</packaging>
 </project>
