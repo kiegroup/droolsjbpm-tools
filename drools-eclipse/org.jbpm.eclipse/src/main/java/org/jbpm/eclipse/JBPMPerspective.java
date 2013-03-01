@@ -38,7 +38,7 @@ public class JBPMPerspective implements IPerspectiveFactory {
         outputfolder.addView(IPageLayout.ID_PROBLEM_VIEW);
         outputfolder.addView("org.jbpm.eclipse.task.views.TaskView");
         outputfolder.addView("org.drools.eclipse.debug.AuditView");
-        outputfolder.addView("org.guvnor.tools.views.RepositoryView");
+//        outputfolder.addView("org.guvnor.tools.views.RepositoryView");
         outputfolder.addPlaceholder(JavaUI.ID_JAVADOC_VIEW);
         outputfolder.addPlaceholder(JavaUI.ID_SOURCE_VIEW);
         outputfolder.addPlaceholder(IPageLayout.ID_BOOKMARKS);
