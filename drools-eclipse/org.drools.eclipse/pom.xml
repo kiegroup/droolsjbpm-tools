@@ -97,7 +97,7 @@
                 mvel2,
                 jbpm-bpmn2,
                 antlr-runtime,
-                jxl,
+                poi-ooxml,
                 xmlpull,
                 xpp3_min,
                 xstream,

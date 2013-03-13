@@ -13,7 +13,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/mvel2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jbpm-bpmn2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/antlr-runtime.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jxl.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlpull.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xpp3_min.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xstream.jar"/>
@@ -22,5 +21,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/slf4j-api.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/kie-api.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/kie-internal.jar"/>
+	<classpathentry kind="lib" path="lib/poi-ooxml.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
