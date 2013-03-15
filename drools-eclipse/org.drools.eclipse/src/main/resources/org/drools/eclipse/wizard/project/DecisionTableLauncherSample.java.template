@@ -2,8 +2,8 @@ package com.sample;
 
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
-import org.drools.builder.DecisionTableConfiguration;
-import org.drools.builder.DecisionTableInputType;
+import org.drools.core.builder.DecisionTableConfiguration;
+import org.drools.core.builder.DecisionTableInputType;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderError;
 import org.kie.builder.KnowledgeBuilderErrors;
