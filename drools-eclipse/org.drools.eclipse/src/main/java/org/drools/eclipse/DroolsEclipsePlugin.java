@@ -29,12 +29,12 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.drools.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.DrlParser;
-import org.drools.compiler.DroolsError;
-import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.compiler.PackageRegistry;
+import org.drools.compiler.compiler.DrlParser;
+import org.drools.compiler.compiler.DroolsError;
+import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.core.util.StringUtils;
 import org.drools.eclipse.DRLInfo.FunctionInfo;
 import org.drools.eclipse.DRLInfo.RuleInfo;

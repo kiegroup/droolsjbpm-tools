@@ -19,7 +19,7 @@ package org.drools.eclipse.editors;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.eclipse.DRLInfo;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.ProcessInfo;

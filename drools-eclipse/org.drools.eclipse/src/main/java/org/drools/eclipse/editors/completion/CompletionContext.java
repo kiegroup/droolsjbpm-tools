@@ -16,7 +16,7 @@
 
 package org.drools.eclipse.editors.completion;
 
-import static org.drools.compiler.DRLFactory.buildParser;
+import static org.drools.compiler.compiler.DRLFactory.buildParser;
 
 import java.util.HashMap;
 import java.util.LinkedList;

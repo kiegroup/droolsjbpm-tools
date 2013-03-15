@@ -16,8 +16,6 @@
 
 package org.drools.eclipse.builder;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -26,21 +24,19 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
 
 import org.antlr.runtime.RecognitionException;
 import org.drools.commons.jci.problems.CompilationProblem;
-import org.drools.compiler.DescrBuildError;
-import org.drools.compiler.DroolsError;
-import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.FactTemplateError;
-import org.drools.compiler.FieldTemplateError;
-import org.drools.compiler.FunctionError;
-import org.drools.compiler.GlobalError;
-import org.drools.compiler.ImportError;
-import org.drools.compiler.ParserError;
-import org.drools.compiler.RuleBuildError;
+import org.drools.compiler.compiler.DescrBuildError;
+import org.drools.compiler.compiler.DroolsError;
+import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.compiler.compiler.FactTemplateError;
+import org.drools.compiler.compiler.FieldTemplateError;
+import org.drools.compiler.compiler.FunctionError;
+import org.drools.compiler.compiler.GlobalError;
+import org.drools.compiler.compiler.ImportError;
+import org.drools.compiler.compiler.ParserError;
+import org.drools.compiler.compiler.RuleBuildError;
 import org.drools.decisiontable.InputType;
 import org.drools.decisiontable.SpreadsheetCompiler;
 import org.drools.eclipse.DRLInfo;

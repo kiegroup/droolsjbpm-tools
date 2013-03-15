@@ -28,8 +28,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 
 import org.drools.base.ClassTypeResolver;
-import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.compiler.PackageRegistry;
+import org.drools.compiler.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.drools.eclipse.DRLInfo;
 import org.drools.eclipse.DRLInfo.RuleInfo;

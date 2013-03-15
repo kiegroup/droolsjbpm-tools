@@ -9,8 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.PackageBuilderConfiguration;
-import org.kie.definition.process.Connection;
+import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.kie.definition.process.Node;
 import org.kie.definition.process.NodeContainer;
 import org.kie.definition.process.Process;
@@ -40,10 +39,7 @@ import org.jbpm.eclipse.JBPMEclipsePlugin;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
-import org.jbpm.workflow.core.impl.NodeImpl;
-import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.HumanTaskNode;
-import org.jbpm.workflow.core.node.Split;
 
 public class GenerateForms implements IObjectActionDelegate {
 

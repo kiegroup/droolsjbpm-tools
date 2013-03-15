@@ -7,7 +7,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.List;
 
-import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.xml.SemanticModules;
 import org.eclipse.core.internal.resources.File;

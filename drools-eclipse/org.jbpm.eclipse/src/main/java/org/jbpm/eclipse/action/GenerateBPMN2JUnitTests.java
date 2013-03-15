@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.kie.definition.process.Connection;
 import org.kie.definition.process.Node;
 import org.kie.definition.process.NodeContainer;
