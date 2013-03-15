@@ -16,7 +16,7 @@
 
 package org.drools.reteoo;
 
-import org.drools.base.ClassFieldReader;
+import org.drools.core.base.ClassFieldReader;
 import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Constraint;

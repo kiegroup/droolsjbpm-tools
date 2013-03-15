@@ -27,7 +27,7 @@ import java.util.Map.Entry;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
-import org.drools.base.MapGlobalResolver;
+import org.drools.core.base.MapGlobalResolver;
 import org.drools.compiler.PackageBuilder;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.spi.AgendaGroup;

@@ -96,11 +96,11 @@ public class DroolsDebugTarget extends JDIDebugTarget {
                     //getBreakpoints().add( breakpoint );
                     //super.breakpointAdded(breakpoint);
 
-                    Iterator handleriter = getVM().classesByName( "org.drools.base.mvel.MVELDebugHandler" ).iterator();
+                    Iterator handleriter = getVM().classesByName( "org.drools.core.base.mvel.MVELDebugHandler" ).iterator();
                     if ( !handleriter.hasNext() ) {
                         // Create class prepare request to add breakpoint after MVELDebugHanlder is loaded
                         ClassPrepareRequest req = getEventRequestManager().createClassPrepareRequest();
-                        req.addClassFilter( "org.drools.base.mvel.MVELDebugHandler" );
+                        req.addClassFilter( "org.drools.core.base.mvel.MVELDebugHandler" );
                         req.setSuspendPolicy( EventRequest.SUSPEND_ALL );
 
                         addJDIEventListener(new IJDIEventListener() {
@@ -678,7 +678,7 @@ public class DroolsDebugTarget extends JDIDebugTarget {
             if ( manager != null ) {
                 try {
                     ClassPrepareRequest req = manager.createClassPrepareRequest();
-                    req.addClassFilter( "org.drools.base.mvel.MVELDebugHandler" );
+                    req.addClassFilter( "org.drools.core.base.mvel.MVELDebugHandler" );
                     req.setSuspendPolicy( EventRequest.SUSPEND_ALL );
                     addJDIEventListener( MVELTraceHandler.this,
                                          req );
@@ -854,7 +854,7 @@ public class DroolsDebugTarget extends JDIDebugTarget {
             return; // No need to install breakpoints that are this much broken
         }
 
-        Iterator handleriter = getVM().classesByName( "org.drools.base.mvel.MVELDebugHandler" ).iterator();
+        Iterator handleriter = getVM().classesByName( "org.drools.core.base.mvel.MVELDebugHandler" ).iterator();
         Object debugHandlerClass = handleriter.next();
 
         int line;
@@ -910,7 +910,7 @@ public class DroolsDebugTarget extends JDIDebugTarget {
 
     private void removeRemoteBreakpoint(DroolsLineBreakpoint d,
                                         IMarkerDelta delta) {
-        Iterator handleriter = getVM().classesByName( "org.drools.base.mvel.MVELDebugHandler" ).iterator();
+        Iterator handleriter = getVM().classesByName( "org.drools.core.base.mvel.MVELDebugHandler" ).iterator();
         Object debugHandlerClass = handleriter.next();
 
         int line;

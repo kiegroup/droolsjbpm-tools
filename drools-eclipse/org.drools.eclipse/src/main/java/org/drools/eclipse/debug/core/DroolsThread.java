@@ -109,7 +109,7 @@ public class DroolsThread extends JDIThread {
                                                                         StackFrame currentFrame) {
         DroolsStackFrame customFrame;
         Location loc = currentFrame.location();
-        if ( loc.declaringType().name().equals( "org.drools.base.mvel.MVELDebugHandler" ) && loc.method().name().equals( "onBreak" ) ) {
+        if ( loc.declaringType().name().equals( "org.drools.core.base.mvel.MVELDebugHandler" ) && loc.method().name().equals( "onBreak" ) ) {
             customFrame = new MVELStackFrame( thread,
                                               currentFrame,
                                               depth );
@@ -167,7 +167,7 @@ public class DroolsThread extends JDIThread {
             return false;
         }
 
-        Iterator handleriter = getVM().classesByName( "org.drools.base.mvel.MVELDebugHandler" ).iterator();
+        Iterator handleriter = getVM().classesByName( "org.drools.core.base.mvel.MVELDebugHandler" ).iterator();
         Object debugHandlerClass = handleriter.next();
 
         int line = step_over;

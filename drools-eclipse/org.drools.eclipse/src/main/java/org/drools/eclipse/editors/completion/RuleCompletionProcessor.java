@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 
-import org.drools.base.ClassTypeResolver;
+import org.drools.core.base.ClassTypeResolver;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.core.util.asm.ClassFieldInspector;

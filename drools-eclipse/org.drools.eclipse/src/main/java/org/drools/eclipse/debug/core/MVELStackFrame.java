@@ -102,7 +102,7 @@ public class MVELStackFrame extends DroolsStackFrame {
             List<IVariable> result = new ArrayList<IVariable>( 0 );
 
             Method method = getUnderlyingMethod(); // onBreak
-            ReferenceType declaringType = method.declaringType(); // org.drools.base.mvel.MVELDebugHandler
+            ReferenceType declaringType = method.declaringType(); // org.drools.core.base.mvel.MVELDebugHandler
 
             try {
                 Object var = method.variables().get( 0 );
@@ -315,7 +315,7 @@ public class MVELStackFrame extends DroolsStackFrame {
 
         //frame arg
         Method method = getUnderlyingMethod(); // onBreak
-        //ReferenceType declaringType = method.declaringType(); // org.drools.base.mvel.MVELDebugHandler
+        //ReferenceType declaringType = method.declaringType(); // org.drools.core.base.mvel.MVELDebugHandler
 
         LocalVariable var = (LocalVariable) method.variables().get( 0 );//frame
 

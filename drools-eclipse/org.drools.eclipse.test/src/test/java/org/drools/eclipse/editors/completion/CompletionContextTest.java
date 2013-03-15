@@ -23,7 +23,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.base.evaluators.EvaluatorRegistry;
+import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.drools.lang.Location;
 
 /**
