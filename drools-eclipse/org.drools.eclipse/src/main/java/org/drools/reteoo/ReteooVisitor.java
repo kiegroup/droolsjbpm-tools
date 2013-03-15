@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.common.BaseNode;
+import org.drools.core.common.BaseNode;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ReflectiveVisitor;
 import org.drools.eclipse.editors.rete.model.Connection;
