@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.antlr.runtime.RecognitionException;
-import org.drools.commons.jci.problems.CompilationProblem;
+import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.DroolsParserException;
