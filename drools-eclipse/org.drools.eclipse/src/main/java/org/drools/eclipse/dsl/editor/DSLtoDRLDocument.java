@@ -18,9 +18,9 @@ package org.drools.eclipse.dsl.editor;
 
 import java.io.Reader;
 
-import org.drools.lang.dsl.DSLMappingFile;
-import org.drools.lang.dsl.DSLTokenizedMappingFile;
-import org.drools.lang.dsl.DefaultExpander;
+import org.drools.compiler.lang.dsl.DSLMappingFile;
+import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
+import org.drools.compiler.lang.dsl.DefaultExpander;
 import org.eclipse.jface.text.IDocument;
 
 public class DSLtoDRLDocument extends TransformedDocument {

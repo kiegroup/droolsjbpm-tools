@@ -16,7 +16,7 @@
 
 package org.drools.eclipse.dsl.editor;
 
-import org.drools.lang.dsl.DSLMappingEntry;
+import org.drools.compiler.lang.dsl.DSLMappingEntry;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 

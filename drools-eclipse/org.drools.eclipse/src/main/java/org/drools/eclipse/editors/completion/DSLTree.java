@@ -27,9 +27,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.drools.lang.dsl.DSLMapping;
-import org.drools.lang.dsl.DSLMappingEntry;
-import org.drools.lang.dsl.DSLMappingEntry.Section;
+import org.drools.compiler.lang.dsl.DSLMapping;
+import org.drools.compiler.lang.dsl.DSLMappingEntry;
+import org.drools.compiler.lang.dsl.DSLMappingEntry.Section;
 
 public class DSLTree {
 

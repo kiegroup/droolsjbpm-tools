@@ -16,8 +16,8 @@
 
 package org.drools.eclipse.dsl.editor;
 
-import org.drools.lang.dsl.DSLMappingEntry;
-import org.drools.lang.dsl.DSLMappingEntry.Section;
+import org.drools.compiler.lang.dsl.DSLMappingEntry;
+import org.drools.compiler.lang.dsl.DSLMappingEntry.Section;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;

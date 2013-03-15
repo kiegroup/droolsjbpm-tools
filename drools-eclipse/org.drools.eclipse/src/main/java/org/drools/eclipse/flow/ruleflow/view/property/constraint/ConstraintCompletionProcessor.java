@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.drools.eclipse.editors.DRLRuleEditor;
 import org.drools.eclipse.editors.completion.RuleCompletionProcessor;
-import org.drools.lang.descr.GlobalDescr;
+import org.drools.compiler.lang.descr.GlobalDescr;
 import org.drools.process.core.datatype.DataType;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;

@@ -27,11 +27,11 @@ import java.util.List;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.builder.IDroolsModelMarker;
-import org.drools.lang.dsl.AntlrDSLMappingEntry;
-import org.drools.lang.dsl.DSLMappingEntry;
-import org.drools.lang.dsl.DSLMappingFile;
-import org.drools.lang.dsl.DSLTokenizedMappingFile;
-import org.drools.lang.dsl.MappingError;
+import org.drools.compiler.lang.dsl.AntlrDSLMappingEntry;
+import org.drools.compiler.lang.dsl.DSLMappingEntry;
+import org.drools.compiler.lang.dsl.DSLMappingFile;
+import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
+import org.drools.compiler.lang.dsl.MappingError;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;

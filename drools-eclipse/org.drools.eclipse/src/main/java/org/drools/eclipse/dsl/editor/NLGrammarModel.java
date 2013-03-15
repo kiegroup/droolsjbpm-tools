@@ -19,7 +19,7 @@ package org.drools.eclipse.dsl.editor;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.drools.lang.dsl.DefaultDSLMapping;
+import org.drools.compiler.lang.dsl.DefaultDSLMapping;
 
 /**
  * This extends the compilers DSL grammar implementation to provide

@@ -23,10 +23,10 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.drools.lang.DRLParser;
-import org.drools.lang.DroolsEditorType;
-import org.drools.lang.DroolsToken;
-import org.drools.lang.Location;
+import org.drools.compiler.lang.DRLParser;
+import org.drools.compiler.lang.DroolsEditorType;
+import org.drools.compiler.lang.DroolsToken;
+import org.drools.compiler.lang.Location;
 import org.kie.builder.conf.LanguageLevelOption;
 
 /**

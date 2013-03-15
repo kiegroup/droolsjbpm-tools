@@ -29,7 +29,7 @@ import org.drools.eclipse.dsl.editor.DSLRuleEditor;
 import org.drools.eclipse.editors.AbstractRuleEditor;
 import org.drools.eclipse.editors.completion.RuleCompletionProcessor;
 import org.drools.eclipse.editors.completion.RuleCompletionProposal;
-import org.drools.lang.Location;
+import org.drools.compiler.lang.Location;
 import org.eclipse.swt.graphics.Image;
 
 /**

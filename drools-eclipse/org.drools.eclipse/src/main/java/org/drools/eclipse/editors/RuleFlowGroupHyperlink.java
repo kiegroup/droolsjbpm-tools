@@ -23,7 +23,7 @@ import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.ProcessInfo;
 import org.drools.eclipse.flow.bpmn2.editor.BPMNModelEditor;
 import org.drools.eclipse.flow.ruleflow.core.RuleSetNodeWrapper;
-import org.drools.lang.descr.AttributeDescr;
+import org.drools.compiler.lang.descr.AttributeDescr;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.gef.EditPart;

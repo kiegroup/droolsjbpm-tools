@@ -16,7 +16,7 @@
 
 package org.drools.eclipse.dsl.editor;
 
-import org.drools.lang.dsl.DSLMappingEntry;
+import org.drools.compiler.lang.dsl.DSLMappingEntry;
 
 /**
  * Used to keep the view up to date with changes in mappings.

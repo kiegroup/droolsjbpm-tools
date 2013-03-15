@@ -19,9 +19,9 @@ package org.drools.eclipse.dsl.editor;
 import java.io.Reader;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
-import org.drools.lang.dsl.DSLMappingFile;
-import org.drools.lang.dsl.DSLTokenizedMappingFile;
-import org.drools.lang.dsl.DefaultExpander;
+import org.drools.compiler.lang.dsl.DSLMappingFile;
+import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
+import org.drools.compiler.lang.dsl.DefaultExpander;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
