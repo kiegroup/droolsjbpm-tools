@@ -34,7 +34,7 @@ import org.drools.eclipse.DroolsPluginImages;
 import org.drools.eclipse.editors.AbstractRuleEditor;
 import org.drools.eclipse.editors.DRLRuleEditor;
 import org.drools.compiler.lang.descr.GlobalDescr;
-import org.drools.rule.builder.dialect.java.KnowledgeHelperFixer;
+import org.drools.compiler.rule.builder.dialect.java.KnowledgeHelperFixer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.CompletionContext;
 import org.eclipse.jdt.core.CompletionProposal;
