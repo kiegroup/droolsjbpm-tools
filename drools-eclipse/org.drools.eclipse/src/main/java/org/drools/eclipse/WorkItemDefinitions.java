@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.RuleBaseConfiguration;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.core.process.core.ParameterDefinition;
 import org.drools.core.process.core.WorkDefinition;
