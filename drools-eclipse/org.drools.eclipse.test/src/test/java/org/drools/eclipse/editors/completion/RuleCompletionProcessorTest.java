@@ -23,7 +23,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.drools.rule.builder.dialect.java.KnowledgeHelperFixer;
+import org.drools.core.rule.builder.dialect.java.KnowledgeHelperFixer;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;

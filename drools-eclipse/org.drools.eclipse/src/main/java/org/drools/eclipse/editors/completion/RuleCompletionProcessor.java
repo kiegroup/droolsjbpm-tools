@@ -39,7 +39,7 @@ import org.drools.eclipse.editors.AbstractRuleEditor;
 import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.compiler.lang.Location;
 import org.drools.compiler.lang.descr.GlobalDescr;
-import org.drools.rule.MVELDialectRuntimeData;
+import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELConsequenceBuilder;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.core.spi.KnowledgeHelper;

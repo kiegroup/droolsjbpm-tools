@@ -24,8 +24,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -46,7 +44,7 @@ import org.drools.reteoo.ReteVertex;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooVisitor;
 import org.drools.reteoo.RuleTerminalNodeVertex;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 
 /**
  * 

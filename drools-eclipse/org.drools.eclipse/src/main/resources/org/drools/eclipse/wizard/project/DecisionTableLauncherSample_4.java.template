@@ -24,7 +24,7 @@ import org.drools.WorkingMemory;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.decisiontable.InputType;
 import org.drools.decisiontable.SpreadsheetCompiler;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 
 public class DecisionTableTest {
 

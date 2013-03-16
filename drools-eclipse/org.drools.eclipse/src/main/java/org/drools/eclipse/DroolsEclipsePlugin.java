@@ -55,7 +55,7 @@ import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.template.parser.DecisionTableParseException;
 import org.drools.xml.SemanticModules;

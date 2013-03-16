@@ -33,7 +33,7 @@ import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.reteoo.BaseVertex;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooVisitor;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.draw2d.ColorConstants;
