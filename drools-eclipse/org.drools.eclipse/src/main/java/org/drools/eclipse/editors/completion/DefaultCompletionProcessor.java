@@ -355,11 +355,11 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
                 javaTextWithParams.append( entry.getValue() + " " + entry.getKey() + ";\n" );
             }
             if (useDrools) {
-                javaTextWithParams.append( "org.drools.spi.KnowledgeHelper drools;" );
+                javaTextWithParams.append( "KnowledgeHelper drools;" );
                 javaTextWithParams.append( "org.kie.runtime.rule.RuleContext kcontext;" );
             }
             if (useContext) {
-                javaTextWithParams.append( "org.drools.spi.ProcessContext context;" );
+                javaTextWithParams.append( "ProcessContext context;" );
                 javaTextWithParams.append( "org.drools.runtime.process.ProcessContext kcontext;" );
             }
             javaTextWithParams.append( javaText );

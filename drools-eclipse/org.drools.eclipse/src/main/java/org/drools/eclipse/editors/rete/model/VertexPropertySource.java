@@ -37,7 +37,7 @@ import org.drools.reteoo.QueryTerminalNodeVertex;
 import org.drools.reteoo.ReteVertex;
 import org.drools.reteoo.RightInputAdapterNodeVertex;
 import org.drools.reteoo.RuleTerminalNodeVertex;
-import org.drools.spi.Constraint;
+import org.drools.core.spi.Constraint;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;

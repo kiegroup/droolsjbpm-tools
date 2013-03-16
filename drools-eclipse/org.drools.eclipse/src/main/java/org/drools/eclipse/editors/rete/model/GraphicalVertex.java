@@ -19,7 +19,7 @@ package org.drools.eclipse.editors.rete.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.spi.Constraint;
+import org.drools.core.spi.Constraint;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;

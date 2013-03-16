@@ -16,7 +16,7 @@
 
 package org.drools.reteoo;
 
-import org.drools.spi.Constraint;
+import org.drools.core.spi.Constraint;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Color;
 

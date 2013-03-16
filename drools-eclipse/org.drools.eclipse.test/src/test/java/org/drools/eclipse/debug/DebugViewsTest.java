@@ -30,7 +30,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.compiler.PackageBuilder;
 import org.drools.reteoo.ReteooStatefulSession;
-import org.drools.spi.AgendaGroup;
+import org.drools.core.spi.AgendaGroup;
 import org.junit.Test;
 import org.kie.runtime.rule.Match;
 
@@ -102,7 +102,7 @@ public class DebugViewsTest {
         Match activation = agendaGroups[0].getActivations()[0];
         assertEquals("ActivationCreator", activation.getRule().getName());
         Entry[] parameters = session.getActivationParameters(
-            ((org.drools.spi.Activation) activation).getActivationNumber());
+            ((org.drools.core.spi.Activation) activation).getActivationNumber());
         assertEquals(1, parameters.length);
         assertEquals("o", parameters[0].getKey());
         assertEquals("String1", parameters[0].getValue());

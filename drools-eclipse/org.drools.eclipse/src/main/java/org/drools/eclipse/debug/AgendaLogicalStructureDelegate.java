@@ -51,7 +51,7 @@ public class AgendaLogicalStructureDelegate implements ILogicalStructureTypeDele
             IJavaClassType classType = (IJavaClassType) type;
             IJavaInterfaceType[] interfaceTypes = classType.getAllInterfaces();
             for ( int i = 0; i < interfaceTypes.length; i++ ) {
-                if ("org.drools.spi.Activation".equals(interfaceTypes[i].getName())) {
+                if ("Activation".equals(interfaceTypes[i].getName())) {
                     return true;
                 }
             }

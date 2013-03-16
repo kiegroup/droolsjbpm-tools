@@ -18,9 +18,9 @@ package org.drools.reteoo;
 
 import org.drools.core.base.ClassFieldReader;
 import org.drools.rule.constraint.MvelConstraint;
-import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.spi.Constraint;
-import org.drools.spi.InternalReadAccessor;
+import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.spi.Constraint;
+import org.drools.core.spi.InternalReadAccessor;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Color;
 

@@ -38,7 +38,7 @@ import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.rule.RuleConditionElement;
-import org.drools.spi.ObjectType;
+import org.drools.core.spi.ObjectType;
 import org.eclipse.core.resources.IResource;
 
 public class DRLInfo {
