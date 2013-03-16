@@ -5,7 +5,7 @@ import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.ResourceType;
 import org.kie.io.ResourceFactory;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.core.runtime.StatefulKnowledgeSession;
 
 /**
  * This is a sample file to launch a process.

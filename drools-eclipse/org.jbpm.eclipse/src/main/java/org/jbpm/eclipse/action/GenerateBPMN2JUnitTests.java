@@ -134,8 +134,8 @@ public class GenerateBPMN2JUnitTests implements IObjectActionDelegate {
                 				"import java.util.List;\n" +
                 				"import java.util.Map;\n" +
                         		"\n" +
-                        		"import org.drools.runtime.StatefulKnowledgeSession;\n" +
-                        		"import org.drools.runtime.process.ProcessInstance;\n" +
+                        		"import org.drools.core.runtime.StatefulKnowledgeSession;\n" +
+                        		"import org.drools.core.runtime.process.ProcessInstance;\n" +
                         		"import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;\n" +
                         		"import org.jbpm.task.TaskService;\n" +
                         		"import org.jbpm.task.query.TaskSummary;\n" +

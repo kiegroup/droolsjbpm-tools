@@ -7,7 +7,7 @@ import org.kie.builder.ResourceType;
 import org.kie.io.ResourceFactory;
 import org.kie.logger.KnowledgeRuntimeLogger;
 import org.kie.logger.KnowledgeRuntimeLoggerFactory;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.core.runtime.StatefulKnowledgeSession;
 
 /**
  * This is a sample file to launch a process.

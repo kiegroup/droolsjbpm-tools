@@ -360,7 +360,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
             }
             if (useContext) {
                 javaTextWithParams.append( "ProcessContext context;" );
-                javaTextWithParams.append( "org.drools.runtime.process.ProcessContext kcontext;" );
+                javaTextWithParams.append( "org.drools.core.runtime.process.ProcessContext kcontext;" );
             }
             javaTextWithParams.append( javaText );
             String jtext = javaTextWithParams.toString();
