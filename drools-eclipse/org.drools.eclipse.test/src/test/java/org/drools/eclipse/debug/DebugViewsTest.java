@@ -25,10 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseFactory;
 import org.drools.core.base.MapGlobalResolver;
-import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.reteoo.ReteooStatefulSession;
 import org.drools.core.spi.AgendaGroup;
 import org.junit.Test;

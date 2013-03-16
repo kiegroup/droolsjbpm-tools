@@ -27,23 +27,23 @@ import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.PackageIntegrationException;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.compiler.DrlParser;
-import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.PackageBuilder;
+import org.drools.core.PackageIntegrationException;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseFactory;
+import org.drools.compiler.compiler.DrlParser;
+import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.eclipse.editors.rete.model.ReteGraph;
-import org.drools.lang.descr.PackageDescr;
-import org.drools.core.reteoo.AlphaNodeVertex;
-import org.drools.core.reteoo.BaseVertex;
-import org.drools.core.reteoo.EntryPointNodeVertex;
-import org.drools.core.reteoo.LeftInputAdapterNodeVertex;
-import org.drools.core.reteoo.ObjectTypeNodeVertex;
-import org.drools.core.reteoo.ReteVertex;
+import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.eclipse.reteoo.AlphaNodeVertex;
+import org.drools.eclipse.reteoo.BaseVertex;
+import org.drools.eclipse.reteoo.EntryPointNodeVertex;
+import org.drools.eclipse.reteoo.LeftInputAdapterNodeVertex;
+import org.drools.eclipse.reteoo.ObjectTypeNodeVertex;
+import org.drools.eclipse.reteoo.ReteVertex;
 import org.drools.core.reteoo.ReteooRuleBase;
-import org.drools.core.reteoo.ReteooVisitor;
-import org.drools.core.reteoo.RuleTerminalNodeVertex;
+import org.drools.eclipse.reteoo.ReteooVisitor;
+import org.drools.eclipse.reteoo.RuleTerminalNodeVertex;
 import org.drools.core.rule.Package;
 
 /**

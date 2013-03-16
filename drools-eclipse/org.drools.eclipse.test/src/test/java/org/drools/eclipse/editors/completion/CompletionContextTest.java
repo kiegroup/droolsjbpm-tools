@@ -24,7 +24,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.core.base.evaluators.EvaluatorRegistry;
-import org.drools.lang.Location;
+import org.drools.compiler.lang.Location;
 
 /**
  * Test to check the location determination when doing code completion inside
