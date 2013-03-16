@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.eclipse.DroolsEclipsePlugin;
-import org.drools.xml.SemanticModules;
+import org.drools.core.xml.SemanticModules;
 import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspace;

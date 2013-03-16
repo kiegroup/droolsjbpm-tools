@@ -13,7 +13,7 @@ import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.kie.definition.process.Node;
 import org.kie.definition.process.NodeContainer;
 import org.kie.definition.process.Process;
-import org.drools.xml.SemanticModules;
+import org.drools.core.xml.SemanticModules;
 import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;

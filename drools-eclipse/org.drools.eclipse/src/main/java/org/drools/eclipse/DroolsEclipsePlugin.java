@@ -58,7 +58,7 @@ import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.core.rule.Package;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.template.parser.DecisionTableParseException;
-import org.drools.xml.SemanticModules;
+import org.drools.core.xml.SemanticModules;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;

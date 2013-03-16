@@ -39,7 +39,7 @@ import org.drools.eclipse.flow.ruleflow.editor.editpart.RuleFlowEditPartFactory;
 import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.core.process.core.WorkDefinition;
 import org.drools.core.process.core.WorkDefinitionExtension;
-import org.drools.xml.SemanticModules;
+import org.drools.core.xml.SemanticModules;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPartFactory;
