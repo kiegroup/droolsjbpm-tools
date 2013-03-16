@@ -17,8 +17,8 @@
 package org.drools.eclipse.flow.common.view.datatype.editor.impl;
 
 import org.drools.eclipse.flow.common.view.datatype.editor.Editor;
-import org.drools.process.core.datatype.DataType;
-import org.drools.process.core.datatype.impl.type.BooleanDataType;
+import org.drools.core.process.core.datatype.DataType;
+import org.drools.core.process.core.datatype.impl.type.BooleanDataType;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Combo;

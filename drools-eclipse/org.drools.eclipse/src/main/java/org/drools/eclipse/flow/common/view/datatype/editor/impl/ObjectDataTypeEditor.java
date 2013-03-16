@@ -21,8 +21,8 @@ import java.util.List;
 
 import org.drools.eclipse.flow.common.view.datatype.editor.DataTypeEditor;
 import org.drools.eclipse.flow.common.view.datatype.editor.Editor;
-import org.drools.process.core.datatype.DataType;
-import org.drools.process.core.datatype.impl.type.ObjectDataType;
+import org.drools.core.process.core.datatype.DataType;
+import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;

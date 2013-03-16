@@ -16,7 +16,7 @@
 
 package org.drools.eclipse.flow.common.view.datatype.editor;
 
-import org.drools.process.core.datatype.DataType;
+import org.drools.core.process.core.datatype.DataType;
 
 /**
  * An editor for a datatype.

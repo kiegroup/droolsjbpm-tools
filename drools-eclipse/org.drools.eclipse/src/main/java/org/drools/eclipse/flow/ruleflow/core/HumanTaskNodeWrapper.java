@@ -20,12 +20,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.drools.eclipse.flow.common.editor.editpart.work.HumanTaskCustomEditor;
-import org.drools.process.core.ParameterDefinition;
-import org.drools.process.core.WorkDefinition;
-import org.drools.process.core.datatype.impl.type.StringDataType;
-import org.drools.process.core.impl.ParameterDefinitionImpl;
-import org.drools.process.core.impl.WorkDefinitionExtensionImpl;
-import org.drools.process.core.impl.WorkDefinitionImpl;
+import org.drools.core.process.core.ParameterDefinition;
+import org.drools.core.process.core.WorkDefinition;
+import org.drools.core.process.core.datatype.impl.type.StringDataType;
+import org.drools.core.process.core.impl.ParameterDefinitionImpl;
+import org.drools.core.process.core.impl.WorkDefinitionExtensionImpl;
+import org.drools.core.process.core.impl.WorkDefinitionImpl;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 import org.jbpm.workflow.core.node.HumanTaskNode;

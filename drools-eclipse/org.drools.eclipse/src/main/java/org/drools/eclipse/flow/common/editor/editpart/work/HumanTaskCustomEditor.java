@@ -21,10 +21,10 @@ import java.util.List;
 import java.util.Properties;
 
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.process.core.Work;
-import org.drools.process.core.WorkDefinition;
-import org.drools.process.core.WorkEditor;
-import org.drools.process.core.impl.WorkImpl;
+import org.drools.core.process.core.Work;
+import org.drools.core.process.core.WorkDefinition;
+import org.drools.core.process.core.WorkEditor;
+import org.drools.core.process.core.impl.WorkImpl;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;

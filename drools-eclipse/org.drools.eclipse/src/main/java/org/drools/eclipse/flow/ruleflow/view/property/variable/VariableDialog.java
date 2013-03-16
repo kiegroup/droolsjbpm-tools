@@ -22,7 +22,7 @@ import org.drools.eclipse.flow.common.view.datatype.editor.impl.DataTypeCombo;
 import org.drools.eclipse.flow.common.view.datatype.editor.impl.DataTypeEditorComposite;
 import org.drools.eclipse.flow.common.view.datatype.editor.impl.EditorComposite;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.process.core.datatype.DataType;
+import org.drools.core.process.core.datatype.DataType;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
