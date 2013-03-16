@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-package org.drools.reteoo;
+package org.drools.eclipse.reteoo;
 
-import org.drools.core.spi.Constraint;
+import org.drools.reteoo.AccumulateNode;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Color;
 
 /**
- * Wraps {@link JoinNode} and adds visual extras like color information
+ * Wraps {@link org.drools.reteoo.AccumulateNode} and adds visual extras like color information
  */
-public class JoinNodeVertex extends BaseVertex {
-
-    private static final String NODE_NAME = "JoinNode";
-
-    private final JoinNode      node;
+public class AccumulateNodeVertex extends BaseVertex {
+    
+    private static final String NODE_NAME = "AccumulateNode";
+    
+    private final AccumulateNode node;
 
     /**
      * Constructor
      * 
      * @param node node to be wrapped
      */
-    public JoinNodeVertex(final JoinNode node) {
+    public AccumulateNodeVertex(final AccumulateNode node) {
         super();
         this.node = node;
     }
@@ -43,7 +43,7 @@ public class JoinNodeVertex extends BaseVertex {
      * @see org.drools.reteoo.BaseNodeVertex#getHtml()
      */
     public String getHtml() {
-        return NODE_NAME + "<BR/>" + dumpConstraints( this.node.getConstraints() );
+        return NODE_NAME+" : " + this.node.getId() + " : Shared count=" + this.node.getSinkPropagator().size();
     }
 
     /* (non-Javadoc)
@@ -57,25 +57,16 @@ public class JoinNodeVertex extends BaseVertex {
      * @see org.drools.reteoo.BaseNodeVertex#getFillColor()
      */
     public Color getFillColor() {
-        return ColorConstants.green;
-    }
-
-    /**
-     * Node constraints
-     * 
-     * @return array of constraints
-     */
-    public Constraint[] getConstraints() {
-        return node.getConstraints();
+        return ColorConstants.lightGreen;
     }
 
     /**
      * Node ID
      * 
-     * @return node id
+     * @return id
      */
     public int getId() {
-        return node.getId();
+        return this.node.getId();
     }
 
 }

@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package org.drools.reteoo;
+package org.drools.eclipse.reteoo;
 
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.Constraint;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.reteoo.AlphaNode;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Color;
 
 /**
- * Wraps {@link AlphaNode} and adds visual extras like color information
+ * Wraps {@link org.drools.reteoo.AlphaNode} and adds visual extras like color information
  */
 public class AlphaNodeVertex extends BaseVertex {
 

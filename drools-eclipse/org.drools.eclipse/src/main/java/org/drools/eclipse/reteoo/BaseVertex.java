@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.reteoo;
+package org.drools.eclipse.reteoo;
 
 import org.drools.eclipse.editors.rete.model.GraphicalVertex;
 

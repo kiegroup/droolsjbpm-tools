@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.reteoo.BaseVertex;
+import org.drools.eclipse.reteoo.BaseVertex;
 
 /**
  * Rete graph containing a set of vertices that form the graph itself.

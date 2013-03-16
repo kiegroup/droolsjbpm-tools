@@ -19,7 +19,7 @@ package org.drools.eclipse.editors.rete.part;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.editors.rete.model.Connection;
 import org.drools.eclipse.editors.rete.model.ReteGraph;
-import org.drools.reteoo.BaseVertex;
+import org.drools.eclipse.reteoo.BaseVertex;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
 

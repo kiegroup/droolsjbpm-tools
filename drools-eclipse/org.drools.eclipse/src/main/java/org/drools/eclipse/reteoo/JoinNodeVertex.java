@@ -14,27 +14,28 @@
  * limitations under the License.
  */
 
-package org.drools.reteoo;
+package org.drools.eclipse.reteoo;
 
-import org.drools.core.spi.ObjectType;
+import org.drools.core.spi.Constraint;
+import org.drools.reteoo.JoinNode;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Color;
 
 /**
- * Wraps {@link ObjectTypeNode} and adds visual extras like color information
+ * Wraps {@link org.drools.reteoo.JoinNode} and adds visual extras like color information
  */
-public class ObjectTypeNodeVertex extends BaseVertex {
+public class JoinNodeVertex extends BaseVertex {
 
-    private static final String  NODE_NAME = "ObjectTypeNode";
+    private static final String NODE_NAME = "JoinNode";
 
-    private final ObjectTypeNode node;
+    private final JoinNode node;
 
     /**
      * Constructor
      * 
      * @param node node to be wrapped
      */
-    public ObjectTypeNodeVertex(final ObjectTypeNode node) {
+    public JoinNodeVertex(final JoinNode node) {
         super();
         this.node = node;
     }
@@ -43,7 +44,7 @@ public class ObjectTypeNodeVertex extends BaseVertex {
      * @see org.drools.reteoo.BaseNodeVertex#getHtml()
      */
     public String getHtml() {
-        return NODE_NAME + " : " + this.node.getObjectType();
+        return NODE_NAME + "<BR/>" + dumpConstraints( this.node.getConstraints() );
     }
 
     /* (non-Javadoc)
@@ -57,19 +58,25 @@ public class ObjectTypeNodeVertex extends BaseVertex {
      * @see org.drools.reteoo.BaseNodeVertex#getFillColor()
      */
     public Color getFillColor() {
-        return ColorConstants.red;
+        return ColorConstants.green;
     }
 
     /**
-     * {@link ObjectType} as {@link String}
+     * Node constraints
      * 
-     * @return object type as string
+     * @return array of constraints
      */
-    public String getObjectType() {
-        return node.getObjectType().toString();
+    public Constraint[] getConstraints() {
+        return node.getConstraints();
     }
-    
-    public String getExpirationOffset() {
-        return String.valueOf( node.getExpirationOffset() );
+
+    /**
+     * Node ID
+     * 
+     * @return node id
+     */
+    public int getId() {
+        return node.getId();
     }
+
 }

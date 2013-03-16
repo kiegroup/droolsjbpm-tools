@@ -24,7 +24,7 @@ import org.drools.eclipse.editors.rete.figure.VertexFigure;
 import org.drools.eclipse.editors.rete.model.GraphicalVertex;
 import org.drools.eclipse.editors.rete.model.ModelElement;
 import org.drools.eclipse.editors.rete.model.VertexPropertySource;
-import org.drools.reteoo.BaseVertex;
+import org.drools.eclipse.reteoo.BaseVertex;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.EllipseAnchor;
 import org.eclipse.draw2d.IFigure;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.reteoo;
+package org.drools.eclipse.reteoo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +27,11 @@ import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ReflectiveVisitor;
 import org.drools.eclipse.editors.rete.model.Connection;
 import org.drools.eclipse.editors.rete.model.ReteGraph;
+import org.drools.reteoo.EntryPointNode;
+import org.drools.reteoo.LeftTupleSource;
+import org.drools.reteoo.ObjectSource;
+import org.drools.reteoo.Rete;
+import org.drools.reteoo.ReteooRuleBase;
 
 /**
  * Produces a graph in GraphViz DOT format.
@@ -118,9 +123,9 @@ public class ReteooVisitor extends ReflectiveVisitor {
             List list = null;
             if ( node instanceof EntryPointNode ) {
                 list = new ArrayList( ((EntryPointNode) node).getObjectTypeNodes().values() );
-            } else if ( node instanceof ObjectSource ) {
+            } else if ( node instanceof ObjectSource) {
                 list = Arrays.asList( ((ObjectSource) node).getSinkPropagator().getSinks() );
-            } else if ( node instanceof LeftTupleSource ) {
+            } else if ( node instanceof LeftTupleSource) {
                 list = Arrays.asList( ((LeftTupleSource) node).getSinkPropagator().getSinks() );
             }
 

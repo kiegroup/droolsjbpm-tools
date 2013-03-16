@@ -14,26 +14,28 @@
  * limitations under the License.
  */
 
-package org.drools.reteoo;
+package org.drools.eclipse.reteoo;
 
+import org.drools.core.spi.ObjectType;
+import org.drools.reteoo.ObjectTypeNode;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Color;
 
 /**
- * Wraps {@link LeftInputAdapterNode} and adds visual extras like color information
+ * Wraps {@link org.drools.reteoo.ObjectTypeNode} and adds visual extras like color information
  */
-public class LeftInputAdapterNodeVertex extends BaseVertex {
+public class ObjectTypeNodeVertex extends BaseVertex {
 
-    private static final String        NODE_NAME = "LeftInputAdapterNode";
+    private static final String  NODE_NAME = "ObjectTypeNode";
 
-    private final LeftInputAdapterNode node;
+    private final ObjectTypeNode node;
 
     /**
      * Constructor
      * 
      * @param node node to be wrapped
      */
-    public LeftInputAdapterNodeVertex(final LeftInputAdapterNode node) {
+    public ObjectTypeNodeVertex(final ObjectTypeNode node) {
         super();
         this.node = node;
     }
@@ -42,21 +44,33 @@ public class LeftInputAdapterNodeVertex extends BaseVertex {
      * @see org.drools.reteoo.BaseNodeVertex#getHtml()
      */
     public String getHtml() {
-        return NODE_NAME;
+        return NODE_NAME + " : " + this.node.getObjectType();
     }
 
     /* (non-Javadoc)
      * @see org.drools.eclipse.editors.rete.model.BaseVertex#toString()
      */
     public String toString() {
-        return this.node.toString();
+        return NODE_NAME;
     }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNodeVertex#getFillColor()
      */
     public Color getFillColor() {
-        return ColorConstants.yellow;
+        return ColorConstants.red;
     }
 
+    /**
+     * {@link ObjectType} as {@link String}
+     * 
+     * @return object type as string
+     */
+    public String getObjectType() {
+        return node.getObjectType().toString();
+    }
+    
+    public String getExpirationOffset() {
+        return String.valueOf( node.getExpirationOffset() );
+    }
 }

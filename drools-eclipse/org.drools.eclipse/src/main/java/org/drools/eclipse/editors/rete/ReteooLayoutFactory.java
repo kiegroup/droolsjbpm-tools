@@ -23,7 +23,7 @@ import java.util.Set;
 
 import org.drools.eclipse.editors.rete.model.Connection;
 import org.drools.eclipse.editors.rete.model.ReteGraph;
-import org.drools.reteoo.BaseVertex;
+import org.drools.eclipse.reteoo.BaseVertex;
 import org.eclipse.draw2d.geometry.Point;
 
 /**

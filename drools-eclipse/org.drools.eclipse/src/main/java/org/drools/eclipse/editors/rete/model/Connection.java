@@ -16,7 +16,7 @@
 
 package org.drools.eclipse.editors.rete.model;
 
-import org.drools.reteoo.BaseVertex;
+import org.drools.eclipse.reteoo.BaseVertex;
 
 /**
  * A connection between two distinct vertices.

@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-package org.drools.reteoo;
+package org.drools.eclipse.reteoo;
 
+import org.drools.reteoo.FromNode;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Color;
 
 /**
- * Wraps {@link Rete} and adds visual extras like color information
+ * Wraps {@link org.drools.reteoo.FromNode} and adds visual extras like color information
  */
-public class ReteVertex extends BaseVertex {
-    
-    private static final String NODE_NAME = "Rete";
-    
-    private final Rete node;
+public class FromNodeVertex extends BaseVertex {
+
+    private static final String NODE_NAME = "FromNode";
+
+    private final FromNode node;
 
     /**
      * Constructor
      * 
      * @param node node to be wrapped
      */
-    public ReteVertex(final Rete node) {
+    public FromNodeVertex(final FromNode node) {
         super();
         this.node = node;
     }
@@ -42,7 +43,7 @@ public class ReteVertex extends BaseVertex {
      * @see org.drools.reteoo.BaseNodeVertex#getHtml()
      */
     public String getHtml() {
-        return NODE_NAME+" : " + this.node.getId();
+        return NODE_NAME + " : " + this.node.getId() + " : Shared count=" + this.node.getSinkPropagator().size();
     }
 
     /* (non-Javadoc)
@@ -52,20 +53,20 @@ public class ReteVertex extends BaseVertex {
         return NODE_NAME;
     }
 
-    /**
-     * Node ID
-     * 
-     * @return node id
-     */
-    public int getId() {
-        return node.getId();
-    }
-
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNodeVertex#getFillColor()
      */
     public Color getFillColor() {
-        return ColorConstants.white;
+        return ColorConstants.lightBlue;
+    }
+
+    /**
+     * Node ID
+     * 
+     * @return id
+     */
+    public int getId() {
+        return this.node.getId();
     }
 
 }

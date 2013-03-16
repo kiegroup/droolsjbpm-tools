@@ -14,37 +14,59 @@
  * limitations under the License.
  */
 
-package org.drools.reteoo;
+package org.drools.eclipse.reteoo;
 
+import org.drools.reteoo.PropagationQueuingNode;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Color;
 
 /**
- * Wraps {@link RightInputAdapterNode} and adds visual extras like color information
+ * Wraps {@link org.drools.reteoo.ObjectTypeNode} and adds visual extras like color information
  */
-public class RightInputAdapterNodeVertex extends BaseVertex {
+public class PropagationQueuingNodeVertex extends BaseVertex {
 
-    private static final String NODE_NAME = "RightInputAdapterNode";
+    private static final String NODE_NAME = "PropagationQueingNode";
+
+    private final PropagationQueuingNode node;
 
     /**
      * Constructor
      * 
      * @param node node to be wrapped
      */
-    public RightInputAdapterNodeVertex(final RightInputAdapterNode node) {
+    public PropagationQueuingNodeVertex(final PropagationQueuingNode node) {
         super();
+        this.node = node;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.reteoo.BaseNodeVertex#getHtml()
+     */
     public String getHtml() {
         return NODE_NAME;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.eclipse.editors.rete.model.BaseVertex#toString()
+     */
     public String toString() {
         return NODE_NAME;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.reteoo.BaseNodeVertex#getFillColor()
+     */
     public Color getFillColor() {
-        return ColorConstants.orange;
+        return ColorConstants.darkBlue;
+    }
+
+    /**
+     * Node ID
+     * 
+     * @return node id
+     */
+    public int getId() {
+        return node.getId();
     }
 
 }

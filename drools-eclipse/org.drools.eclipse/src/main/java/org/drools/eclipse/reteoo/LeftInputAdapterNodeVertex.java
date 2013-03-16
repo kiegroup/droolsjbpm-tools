@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-package org.drools.reteoo;
+package org.drools.eclipse.reteoo;
 
+import org.drools.reteoo.LeftInputAdapterNode;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Color;
 
 /**
- * Wraps {@link QueryTerminalNode} and adds visual extras like color information
+ * Wraps {@link org.drools.reteoo.LeftInputAdapterNode} and adds visual extras like color information
  */
-public class QueryTerminalNodeVertex extends BaseVertex {
-    
-    private static final String NODE_NAME = "QueryTerminalNode";
-    
-    private final QueryTerminalNode node;
+public class LeftInputAdapterNodeVertex extends BaseVertex {
+
+    private static final String        NODE_NAME = "LeftInputAdapterNode";
+
+    private final LeftInputAdapterNode node;
 
     /**
      * Constructor
      * 
      * @param node node to be wrapped
      */
-    public QueryTerminalNodeVertex(final QueryTerminalNode node) {
+    public LeftInputAdapterNodeVertex(final LeftInputAdapterNode node) {
         super();
         this.node = node;
     }
@@ -42,37 +43,21 @@ public class QueryTerminalNodeVertex extends BaseVertex {
      * @see org.drools.reteoo.BaseNodeVertex#getHtml()
      */
     public String getHtml() {
-        return NODE_NAME+" : " + this.node.getId() + " : " + this.node.getRule();
+        return NODE_NAME;
     }
 
     /* (non-Javadoc)
      * @see org.drools.eclipse.editors.rete.model.BaseVertex#toString()
      */
     public String toString() {
-        return NODE_NAME;
+        return this.node.toString();
     }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNodeVertex#getFillColor()
      */
     public Color getFillColor() {
-        return ColorConstants.darkGray;
-    }
-
-    /**
-     * Node ID
-     * 
-     * @return id
-     */
-    public int getId() {
-        return this.node.getId();
-    }
-
-    /**
-     * @return
-     */
-    public String getQueryName() {
-        return node.getRule().getName();
+        return ColorConstants.yellow;
     }
 
 }

@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-package org.drools.reteoo;
+package org.drools.eclipse.reteoo;
 
+import org.drools.reteoo.ExistsNode;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Color;
 
 /**
- * Wraps {@link TerminalNode} and adds visual extras like color information
+ * Wraps {@link org.drools.reteoo.ExistsNode} and adds visual extras like color information
  */
-public class RuleTerminalNodeVertex extends BaseVertex {
-    
-    private static final String NODE_NAME = "TerminalNode";
-    
-    private final RuleTerminalNode node;
+public class ExistsNodeVertex extends BaseVertex {
+
+    private static final String NODE_NAME = "ExistsNode";
+
+    private final ExistsNode node;
 
     /**
      * Constructor
      * 
      * @param node node to be wrapped
      */
-    public RuleTerminalNodeVertex(final RuleTerminalNode node) {
+    public ExistsNodeVertex(final ExistsNode node) {
         super();
         this.node = node;
     }
@@ -42,7 +43,7 @@ public class RuleTerminalNodeVertex extends BaseVertex {
      * @see org.drools.reteoo.BaseNodeVertex#getHtml()
      */
     public String getHtml() {
-        return NODE_NAME+" : " + this.node.getId() + " : " + this.node.getRule();
+        return NODE_NAME + " : " + this.node.getId() + " : Shared count=" + this.node.getSinkPropagator().size();
     }
 
     /* (non-Javadoc)
@@ -56,7 +57,7 @@ public class RuleTerminalNodeVertex extends BaseVertex {
      * @see org.drools.reteoo.BaseNodeVertex#getFillColor()
      */
     public Color getFillColor() {
-        return ColorConstants.darkGray;
+        return ColorConstants.cyan;
     }
 
     /**
@@ -66,13 +67,6 @@ public class RuleTerminalNodeVertex extends BaseVertex {
      */
     public int getId() {
         return this.node.getId();
-    }
-
-    /**
-     * @return
-     */
-    public String getRuleName() {
-        return node.getRule().getName();
     }
 
 }

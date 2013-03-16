@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-package org.drools.reteoo;
+package org.drools.eclipse.reteoo;
 
+import org.drools.reteoo.EntryPointNode;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Color;
 
 /**
- * Wraps {@link ObjectTypeNode} and adds visual extras like color information
+ * Wraps {@link org.drools.reteoo.ObjectTypeNode} and adds visual extras like color information
  */
-public class PropagationQueuingNodeVertex extends BaseVertex {
+public class EntryPointNodeVertex extends BaseVertex {
 
-    private static final String NODE_NAME = "PropagationQueingNode";
+    private static final String NODE_NAME = "EntryPointNode";
 
-    private final PropagationQueuingNode node;
+    private final EntryPointNode node;
 
     /**
      * Constructor
      * 
      * @param node node to be wrapped
      */
-    public PropagationQueuingNodeVertex(final PropagationQueuingNode node) {
+    public EntryPointNodeVertex(final EntryPointNode node) {
         super();
         this.node = node;
     }
@@ -42,21 +43,21 @@ public class PropagationQueuingNodeVertex extends BaseVertex {
      * @see org.drools.reteoo.BaseNodeVertex#getHtml()
      */
     public String getHtml() {
-        return NODE_NAME;
+        return NODE_NAME + ":" + node.getEntryPoint();
     }
 
     /* (non-Javadoc)
      * @see org.drools.eclipse.editors.rete.model.BaseVertex#toString()
      */
     public String toString() {
-        return NODE_NAME;
+        return NODE_NAME + ":" + node.getEntryPoint();
     }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNodeVertex#getFillColor()
      */
     public Color getFillColor() {
-        return ColorConstants.darkBlue;
+        return ColorConstants.darkGreen;
     }
 
     /**
@@ -66,6 +67,10 @@ public class PropagationQueuingNodeVertex extends BaseVertex {
      */
     public int getId() {
         return node.getId();
+    }
+    
+    public String getEntryPointName() {
+        return node.getEntryPoint().toString();
     }
 
 }

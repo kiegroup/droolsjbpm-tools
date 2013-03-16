@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.drools.reteoo.BaseVertex;
+import org.drools.eclipse.reteoo.BaseVertex;
 
 /**
  * Represents one row in rete graph

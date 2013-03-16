@@ -14,25 +14,27 @@
  * limitations under the License.
  */
 
-package org.drools.reteoo;
+package org.drools.eclipse.reteoo;
 
+import org.drools.reteoo.NotNode;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Color;
 
 /**
- * Wraps {@link EvalConditionNode} and adds visual extras like color information
+ * Wraps {@link org.drools.reteoo.NotNode} and adds visual extras like color information
  */
-public class EvalConditionNodeVertex extends BaseVertex {
+public class NotNodeVertex extends BaseVertex {
     
-    private static final String     NODE_NAME = "EvalConditionNode";
-    private final EvalConditionNode node;
+    private static final String NODE_NAME = "NotNode";
+    
+    private final NotNode node;
 
     /**
      * Constructor
      * 
      * @param node node to be wrapped
      */
-    public EvalConditionNodeVertex(final EvalConditionNode node) {
+    public NotNodeVertex(final NotNode node) {
         super();
         this.node = node;
     }
@@ -41,7 +43,7 @@ public class EvalConditionNodeVertex extends BaseVertex {
      * @see org.drools.reteoo.BaseNodeVertex#getHtml()
      */
     public String getHtml() {
-        return NODE_NAME + " : " + this.node.getId();
+        return NODE_NAME+" : " + this.node.getId();
     }
 
     /* (non-Javadoc)
@@ -49,6 +51,13 @@ public class EvalConditionNodeVertex extends BaseVertex {
      */
     public String toString() {
         return NODE_NAME;
+    }
+
+    /* (non-Javadoc)
+     * @see org.drools.reteoo.BaseNodeVertex#getFillColor()
+     */
+    public Color getFillColor() {
+        return ColorConstants.cyan;
     }
 
     /**
@@ -60,10 +69,4 @@ public class EvalConditionNodeVertex extends BaseVertex {
         return node.getId();
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.BaseNodeVertex#getFillColor()
-     */
-    public Color getFillColor() {
-        return ColorConstants.white;
-    }
 }

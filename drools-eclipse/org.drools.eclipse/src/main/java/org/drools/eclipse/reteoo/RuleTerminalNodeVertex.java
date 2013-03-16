@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-package org.drools.reteoo;
+package org.drools.eclipse.reteoo;
 
+import org.drools.reteoo.RuleTerminalNode;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Color;
 
 /**
- * Wraps {@link ObjectTypeNode} and adds visual extras like color information
+ * Wraps {@link org.drools.reteoo.TerminalNode} and adds visual extras like color information
  */
-public class EntryPointNodeVertex extends BaseVertex {
-
-    private static final String NODE_NAME = "EntryPointNode";
-
-    private final EntryPointNode node;
+public class RuleTerminalNodeVertex extends BaseVertex {
+    
+    private static final String NODE_NAME = "TerminalNode";
+    
+    private final RuleTerminalNode node;
 
     /**
      * Constructor
      * 
      * @param node node to be wrapped
      */
-    public EntryPointNodeVertex(final EntryPointNode node) {
+    public RuleTerminalNodeVertex(final RuleTerminalNode node) {
         super();
         this.node = node;
     }
@@ -42,34 +43,37 @@ public class EntryPointNodeVertex extends BaseVertex {
      * @see org.drools.reteoo.BaseNodeVertex#getHtml()
      */
     public String getHtml() {
-        return NODE_NAME + ":" + node.getEntryPoint();
+        return NODE_NAME+" : " + this.node.getId() + " : " + this.node.getRule();
     }
 
     /* (non-Javadoc)
      * @see org.drools.eclipse.editors.rete.model.BaseVertex#toString()
      */
     public String toString() {
-        return NODE_NAME + ":" + node.getEntryPoint();
+        return NODE_NAME;
     }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNodeVertex#getFillColor()
      */
     public Color getFillColor() {
-        return ColorConstants.darkGreen;
+        return ColorConstants.darkGray;
     }
 
     /**
      * Node ID
      * 
-     * @return node id
+     * @return id
      */
     public int getId() {
-        return node.getId();
+        return this.node.getId();
     }
-    
-    public String getEntryPointName() {
-        return node.getEntryPoint().toString();
+
+    /**
+     * @return
+     */
+    public String getRuleName() {
+        return node.getRule().getName();
     }
 
 }

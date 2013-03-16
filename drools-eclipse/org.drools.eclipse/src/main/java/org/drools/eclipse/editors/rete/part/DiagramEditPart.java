@@ -23,7 +23,7 @@ import java.util.List;
 import org.drools.eclipse.editors.rete.commands.NodeSetConstraintCommand;
 import org.drools.eclipse.editors.rete.model.ModelElement;
 import org.drools.eclipse.editors.rete.model.ReteGraph;
-import org.drools.reteoo.BaseVertex;
+import org.drools.eclipse.reteoo.BaseVertex;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.FreeformLayout;
