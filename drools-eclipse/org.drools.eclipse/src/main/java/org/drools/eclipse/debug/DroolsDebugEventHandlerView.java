@@ -89,7 +89,7 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
                 if (value != null && value instanceof IJavaObject) {
                     if ("org.drools.reteoo.ReteooStatefulSession".equals(variable.getValue().getReferenceTypeName())) {
                         input = value;
-                    } else if ("org.drools.impl.StatefulKnowledgeSessionImpl".equals(variable.getValue().getReferenceTypeName())) {
+                    } else if ("org.drools.core.impl.StatefulKnowledgeSessionImpl".equals(variable.getValue().getReferenceTypeName())) {
                         IJavaFieldVariable sessionVar = ((IJavaObject) value).getField("session", false);
                         if (sessionVar != null) {
                             input = sessionVar.getValue();
@@ -117,7 +117,7 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
                                 if ((stackObj != null)
                                         && (stackObj.getJavaType() != null)
                                         && ("org.drools.reteoo.ReteooStatefulSession".equals(stackObj.getJavaType().getName())
-                                                || "org.drools.impl.StatefulKnowledgeSessionImpl".equals(stackObj.getJavaType().getName()))) {
+                                                || "org.drools.core.impl.StatefulKnowledgeSessionImpl".equals(stackObj.getJavaType().getName()))) {
                                     input = stackObj;
                                     break;
                                 }
