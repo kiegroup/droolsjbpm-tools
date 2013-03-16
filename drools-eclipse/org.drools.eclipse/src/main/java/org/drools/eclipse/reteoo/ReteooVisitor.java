@@ -27,11 +27,11 @@ import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ReflectiveVisitor;
 import org.drools.eclipse.editors.rete.model.Connection;
 import org.drools.eclipse.editors.rete.model.ReteGraph;
-import org.drools.reteoo.EntryPointNode;
-import org.drools.reteoo.LeftTupleSource;
-import org.drools.reteoo.ObjectSource;
-import org.drools.reteoo.Rete;
-import org.drools.reteoo.ReteooRuleBase;
+import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.LeftTupleSource;
+import org.drools.core.reteoo.ObjectSource;
+import org.drools.core.reteoo.Rete;
+import org.drools.core.reteoo.ReteooRuleBase;
 
 /**
  * Produces a graph in GraphViz DOT format.
@@ -41,7 +41,7 @@ import org.drools.reteoo.ReteooRuleBase;
  */
 public class ReteooVisitor extends ReflectiveVisitor {
 
-    private static final String PACKAGE_NAME = "org.drools.reteoo.";
+    private static final String PACKAGE_NAME = "org.drools.core.reteoo.";
 
     /**
      * Keeps track of visited JoinNode DOT IDs. This mapping allows the visitor

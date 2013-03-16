@@ -35,15 +35,15 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.eclipse.editors.rete.model.ReteGraph;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.reteoo.AlphaNodeVertex;
-import org.drools.reteoo.BaseVertex;
-import org.drools.reteoo.EntryPointNodeVertex;
-import org.drools.reteoo.LeftInputAdapterNodeVertex;
-import org.drools.reteoo.ObjectTypeNodeVertex;
-import org.drools.reteoo.ReteVertex;
-import org.drools.reteoo.ReteooRuleBase;
-import org.drools.reteoo.ReteooVisitor;
-import org.drools.reteoo.RuleTerminalNodeVertex;
+import org.drools.core.reteoo.AlphaNodeVertex;
+import org.drools.core.reteoo.BaseVertex;
+import org.drools.core.reteoo.EntryPointNodeVertex;
+import org.drools.core.reteoo.LeftInputAdapterNodeVertex;
+import org.drools.core.reteoo.ObjectTypeNodeVertex;
+import org.drools.core.reteoo.ReteVertex;
+import org.drools.core.reteoo.ReteooRuleBase;
+import org.drools.core.reteoo.ReteooVisitor;
+import org.drools.core.reteoo.RuleTerminalNodeVertex;
 import org.drools.core.rule.Package;
 
 /**
@@ -54,13 +54,13 @@ import org.drools.core.rule.Package;
  * It is using following components:
  * {@link Row},
  * {@link RowList},
- * org.drools.reteoo.*Vertex,
+ * org.drools.core.reteoo.*Vertex,
  * org.drools.ide.editors.rete.model.*
  */
 public class ReteooLayoutFactoryTest {
 
     /**
-     * Test method for {@link org.drools.eclipse.editors.rete.ReteooLayoutFactory#calculateReteRows(org.drools.reteoo.BaseVertex)}.
+     * Test method for {@link org.drools.eclipse.editors.rete.ReteooLayoutFactory#calculateReteRows(org.drools.core.reteoo.BaseVertex)}.
      * @throws IOException 
      * @throws DroolsParserException 
      * @throws PackageIntegrationException 

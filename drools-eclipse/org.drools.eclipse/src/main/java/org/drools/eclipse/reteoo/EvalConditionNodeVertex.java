@@ -16,12 +16,12 @@
 
 package org.drools.eclipse.reteoo;
 
-import org.drools.reteoo.EvalConditionNode;
+import org.drools.core.reteoo.EvalConditionNode;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Color;
 
 /**
- * Wraps {@link org.drools.reteoo.EvalConditionNode} and adds visual extras like color information
+ * Wraps {@link org.drools.core.reteoo.EvalConditionNode} and adds visual extras like color information
  */
 public class EvalConditionNodeVertex extends BaseVertex {
     
@@ -39,7 +39,7 @@ public class EvalConditionNodeVertex extends BaseVertex {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.BaseNodeVertex#getHtml()
+     * @see org.drools.core.reteoo.BaseNodeVertex#getHtml()
      */
     public String getHtml() {
         return NODE_NAME + " : " + this.node.getId();
@@ -62,7 +62,7 @@ public class EvalConditionNodeVertex extends BaseVertex {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.BaseNodeVertex#getFillColor()
+     * @see org.drools.core.reteoo.BaseNodeVertex#getFillColor()
      */
     public Color getFillColor() {
         return ColorConstants.white;

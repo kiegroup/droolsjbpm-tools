@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
-import org.drools.reteoo.ReteooStatefulSession;
+import org.drools.core.reteoo.ReteooStatefulSession;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
@@ -49,7 +49,7 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
         try {
             Object[] variables = null;
             if (obj != null && obj instanceof IJavaObject
-                    && "org.drools.reteoo.ReteooStatefulSession".equals(
+                    && "org.drools.core.reteoo.ReteooStatefulSession".equals(
                         ((IJavaObject) obj).getReferenceTypeName())) {
                 variables = getAgendaElements((IJavaObject) obj);
             } else if (obj instanceof IVariable) {

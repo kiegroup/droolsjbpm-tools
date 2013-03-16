@@ -23,7 +23,7 @@ import org.drools.eclipse.editors.rete.model.GraphicalVertex;
  * and ReteooVisitor.
  * 
  * It's not good to have {@link GraphicalVertex} dependency in
- * org.drools.reteoo package. 
+ * org.drools.core.reteoo package.
  */
 abstract public class BaseVertex extends GraphicalVertex {
 

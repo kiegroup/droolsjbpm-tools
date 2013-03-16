@@ -16,12 +16,12 @@
 
 package org.drools.eclipse.reteoo;
 
-import org.drools.reteoo.NotNode;
+import org.drools.core.reteoo.NotNode;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Color;
 
 /**
- * Wraps {@link org.drools.reteoo.NotNode} and adds visual extras like color information
+ * Wraps {@link org.drools.core.reteoo.NotNode} and adds visual extras like color information
  */
 public class NotNodeVertex extends BaseVertex {
     
@@ -40,7 +40,7 @@ public class NotNodeVertex extends BaseVertex {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.BaseNodeVertex#getHtml()
+     * @see org.drools.core.reteoo.BaseNodeVertex#getHtml()
      */
     public String getHtml() {
         return NODE_NAME+" : " + this.node.getId();
@@ -54,7 +54,7 @@ public class NotNodeVertex extends BaseVertex {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.BaseNodeVertex#getFillColor()
+     * @see org.drools.core.reteoo.BaseNodeVertex#getFillColor()
      */
     public Color getFillColor() {
         return ColorConstants.cyan;

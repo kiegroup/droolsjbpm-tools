@@ -17,12 +17,12 @@
 package org.drools.eclipse.reteoo;
 
 import org.drools.core.spi.Constraint;
-import org.drools.reteoo.JoinNode;
+import org.drools.core.reteoo.JoinNode;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Color;
 
 /**
- * Wraps {@link org.drools.reteoo.JoinNode} and adds visual extras like color information
+ * Wraps {@link org.drools.core.reteoo.JoinNode} and adds visual extras like color information
  */
 public class JoinNodeVertex extends BaseVertex {
 
@@ -41,7 +41,7 @@ public class JoinNodeVertex extends BaseVertex {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.BaseNodeVertex#getHtml()
+     * @see org.drools.core.reteoo.BaseNodeVertex#getHtml()
      */
     public String getHtml() {
         return NODE_NAME + "<BR/>" + dumpConstraints( this.node.getConstraints() );
@@ -55,7 +55,7 @@ public class JoinNodeVertex extends BaseVertex {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.BaseNodeVertex#getFillColor()
+     * @see org.drools.core.reteoo.BaseNodeVertex#getFillColor()
      */
     public Color getFillColor() {
         return ColorConstants.green;

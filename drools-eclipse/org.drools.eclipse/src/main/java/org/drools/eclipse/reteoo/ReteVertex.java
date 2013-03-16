@@ -16,12 +16,12 @@
 
 package org.drools.eclipse.reteoo;
 
-import org.drools.reteoo.Rete;
+import org.drools.core.reteoo.Rete;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Color;
 
 /**
- * Wraps {@link org.drools.reteoo.Rete} and adds visual extras like color information
+ * Wraps {@link org.drools.core.reteoo.Rete} and adds visual extras like color information
  */
 public class ReteVertex extends BaseVertex {
     
@@ -40,7 +40,7 @@ public class ReteVertex extends BaseVertex {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.BaseNodeVertex#getHtml()
+     * @see org.drools.core.reteoo.BaseNodeVertex#getHtml()
      */
     public String getHtml() {
         return NODE_NAME+" : " + this.node.getId();
@@ -63,7 +63,7 @@ public class ReteVertex extends BaseVertex {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.BaseNodeVertex#getFillColor()
+     * @see org.drools.core.reteoo.BaseNodeVertex#getFillColor()
      */
     public Color getFillColor() {
         return ColorConstants.white;

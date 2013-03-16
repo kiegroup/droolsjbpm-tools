@@ -29,7 +29,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.compiler.PackageBuilder;
-import org.drools.reteoo.ReteooStatefulSession;
+import org.drools.core.reteoo.ReteooStatefulSession;
 import org.drools.core.spi.AgendaGroup;
 import org.junit.Test;
 import org.kie.runtime.rule.Match;

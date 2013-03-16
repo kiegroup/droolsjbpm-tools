@@ -31,7 +31,7 @@ import org.drools.eclipse.editors.rete.model.ReteGraph;
 import org.drools.eclipse.editors.rete.part.VertexEditPartFactory;
 import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.eclipse.reteoo.BaseVertex;
-import org.drools.reteoo.ReteooRuleBase;
+import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.eclipse.reteoo.ReteooVisitor;
 import org.drools.core.rule.Package;
 import org.eclipse.core.resources.IResource;

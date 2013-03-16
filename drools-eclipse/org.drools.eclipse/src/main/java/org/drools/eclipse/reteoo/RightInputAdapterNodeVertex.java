@@ -16,12 +16,12 @@
 
 package org.drools.eclipse.reteoo;
 
-import org.drools.reteoo.RightInputAdapterNode;
+import org.drools.core.reteoo.RightInputAdapterNode;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Color;
 
 /**
- * Wraps {@link org.drools.reteoo.RightInputAdapterNode} and adds visual extras like color information
+ * Wraps {@link org.drools.core.reteoo.RightInputAdapterNode} and adds visual extras like color information
  */
 public class RightInputAdapterNodeVertex extends BaseVertex {
 

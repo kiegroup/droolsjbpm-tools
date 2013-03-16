@@ -16,12 +16,12 @@
 
 package org.drools.eclipse.reteoo;
 
-import org.drools.reteoo.LeftInputAdapterNode;
+import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Color;
 
 /**
- * Wraps {@link org.drools.reteoo.LeftInputAdapterNode} and adds visual extras like color information
+ * Wraps {@link org.drools.core.reteoo.LeftInputAdapterNode} and adds visual extras like color information
  */
 public class LeftInputAdapterNodeVertex extends BaseVertex {
 
@@ -40,7 +40,7 @@ public class LeftInputAdapterNodeVertex extends BaseVertex {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.BaseNodeVertex#getHtml()
+     * @see org.drools.core.reteoo.BaseNodeVertex#getHtml()
      */
     public String getHtml() {
         return NODE_NAME;
@@ -54,7 +54,7 @@ public class LeftInputAdapterNodeVertex extends BaseVertex {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.BaseNodeVertex#getFillColor()
+     * @see org.drools.core.reteoo.BaseNodeVertex#getFillColor()
      */
     public Color getFillColor() {
         return ColorConstants.yellow;
