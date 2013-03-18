@@ -68,7 +68,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.kie.builder.KnowledgeBuilderResult;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 
 /**
  * Automatically syntax checks .drl files and adds possible errors or warnings
@@ -458,7 +458,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                 ParserError err = (ParserError) error;
                 markers.add( new DroolsBuildMarker( err.getMessage(),
                                                     err.getRow() ) );
-            } else if ( error instanceof KnowledgeBuilderResult ) {
+            } else if ( error instanceof KnowledgeBuilderResult) {
                 KnowledgeBuilderResult res = (KnowledgeBuilderResult) error;
                 int[] errorLines = res.getLines();
                 markers.add( new DroolsBuildMarker( res.getMessage(),

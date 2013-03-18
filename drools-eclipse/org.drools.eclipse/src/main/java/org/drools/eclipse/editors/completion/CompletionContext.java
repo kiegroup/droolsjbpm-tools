@@ -27,7 +27,7 @@ import org.drools.compiler.lang.DRLParser;
 import org.drools.compiler.lang.DroolsEditorType;
 import org.drools.compiler.lang.DroolsToken;
 import org.drools.compiler.lang.Location;
-import org.kie.builder.conf.LanguageLevelOption;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 /**
  * A utility class that invokes the DRLParser on some partial drl text, and
