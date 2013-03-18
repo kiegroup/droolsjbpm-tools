@@ -32,7 +32,7 @@ import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.reteoo.ReteooStatefulSession;
 import org.drools.core.spi.AgendaGroup;
 import org.junit.Test;
-import org.kie.runtime.rule.Match;
+import org.kie.api.runtime.rule.Match;
 
 /**
  *

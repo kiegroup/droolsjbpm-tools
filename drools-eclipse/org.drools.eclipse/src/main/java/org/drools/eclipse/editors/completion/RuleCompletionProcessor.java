@@ -53,7 +53,7 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IFileEditorInput;
-import org.kie.runtime.rule.RuleContext;
+import org.kie.api.runtime.rule.RuleContext;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;

@@ -28,7 +28,7 @@ import org.eclipse.jdt.debug.core.IJavaArray;
 import org.eclipse.jdt.debug.core.IJavaObject;
 import org.eclipse.jdt.debug.core.IJavaValue;
 import org.eclipse.jdt.debug.core.IJavaVariable;
-import org.kie.runtime.rule.AgendaGroup;
+import org.kie.api.runtime.rule.AgendaGroup;
 
 /**
  * The Agenda View content provider.
