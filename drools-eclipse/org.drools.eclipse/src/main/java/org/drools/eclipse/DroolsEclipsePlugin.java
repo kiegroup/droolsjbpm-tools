@@ -92,7 +92,7 @@ import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.definition.process.Node;
 import org.kie.io.Resource;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.osgi.framework.BundleContext;
 
 /**

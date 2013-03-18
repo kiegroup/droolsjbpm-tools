@@ -4,7 +4,7 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.builder.ResourceType;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.drools.core.runtime.StatefulKnowledgeSession;
 import org.jbpm.test.JBPMHelper;
 
