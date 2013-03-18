@@ -33,8 +33,8 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.actions.ActionDelegate;
-import org.kie.definition.process.Connection;
-import org.kie.definition.process.WorkflowProcess;
+import org.kie.api.definition.process.Connection;
+import org.kie.api.definition.process.WorkflowProcess;
 
 /**
  * Action for auto layouting a RuleFlow.
@@ -70,7 +70,7 @@ public class VerticalAutoLayoutAction extends ActionDelegate implements IEditorA
     protected DirectedGraph createDirectedGraph(Map<Long, Node> mapping) {
         DirectedGraph graph = new DirectedGraph();
         WorkflowProcess process = (WorkflowProcess) ((ProcessWrapper) ((GenericModelEditor) editor).getModel()).getProcess();
-        for (org.kie.definition.process.Node processNode: process.getNodes()) {
+        for (org.kie.api.definition.process.Node processNode: process.getNodes()) {
             Node node = new Node();
             Integer width = (Integer) processNode.getMetaData().get("width");
             Integer height = (Integer) processNode.getMetaData().get("height");
@@ -84,7 +84,7 @@ public class VerticalAutoLayoutAction extends ActionDelegate implements IEditorA
             graph.nodes.add(node);
             mapping.put(processNode.getId(), node);
         }
-        for (org.kie.definition.process.Node processNode: process.getNodes()) {
+        for (org.kie.api.definition.process.Node processNode: process.getNodes()) {
             for (List<Connection> connections: processNode.getIncomingConnections().values()) {
                 for (Connection connection: connections) {
                     Node source = mapping.get(connection.getFrom().getId());

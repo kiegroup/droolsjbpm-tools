@@ -21,7 +21,7 @@ import org.drools.eclipse.flow.common.view.property.EditMapDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.jbpm.process.core.context.exception.ActionExceptionHandler;
 import org.jbpm.workflow.core.WorkflowProcess;
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Process;
 
 /**
  * Dialog for editing exception handlers.

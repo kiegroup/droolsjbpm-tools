@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
-import org.kie.definition.process.Node;
-import org.kie.definition.process.NodeContainer;
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Node;
+import org.kie.api.definition.process.NodeContainer;
+import org.kie.api.definition.process.Process;
 import org.drools.core.xml.SemanticModules;
 import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.resources.IFile;

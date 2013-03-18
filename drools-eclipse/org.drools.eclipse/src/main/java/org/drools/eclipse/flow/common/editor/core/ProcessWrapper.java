@@ -39,7 +39,7 @@ import org.jbpm.process.core.context.swimlane.Swimlane;
 import org.jbpm.process.core.context.swimlane.SwimlaneContext;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Process;
 
 /**
  * A wrapper for process element.

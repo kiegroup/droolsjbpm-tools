@@ -32,7 +32,7 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.WorkflowProcess;
 import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.node.Split;
-import org.kie.definition.process.Connection;
+import org.kie.api.definition.process.Connection;
 
 /**
  * Wrapper for a split node.

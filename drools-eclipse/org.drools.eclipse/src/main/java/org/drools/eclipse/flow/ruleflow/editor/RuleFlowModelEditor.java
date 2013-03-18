@@ -57,7 +57,7 @@ import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.compiler.xml.XmlRuleFlowProcessDumper;
 import org.jbpm.compiler.xml.processes.RuleFlowMigrator;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Process;
 
 /**
  * Graphical editor for a RuleFlow.

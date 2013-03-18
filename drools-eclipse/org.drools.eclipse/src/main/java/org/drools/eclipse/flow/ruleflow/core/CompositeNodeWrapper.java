@@ -35,7 +35,7 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.WorkflowProcess;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.node.CompositeNode;
-import org.kie.definition.process.NodeContainer;
+import org.kie.api.definition.process.NodeContainer;
 
 public abstract class CompositeNodeWrapper extends ElementContainerElementWrapper implements NodeWrapper {
 

@@ -90,7 +90,7 @@ import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.definition.process.Node;
+import org.kie.api.definition.process.Node;
 import org.kie.io.Resource;
 import org.kie.internal.io.ResourceFactory;
 import org.osgi.framework.BundleContext;
@@ -743,10 +743,10 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                 modules.addSemanticModule( new ProcessSemanticModule() );
                 
                 XmlProcessReader xmlReader = new XmlProcessReader( modules, Thread.currentThread().getContextClassLoader() );
-                List<org.kie.definition.process.Process> processes =
-                    (List<org.kie.definition.process.Process>) xmlReader.read( new StringReader( input ) );
+                List<org.kie.api.definition.process.Process> processes =
+                    (List<org.kie.api.definition.process.Process>) xmlReader.read( new StringReader( input ) );
                 if (processes != null) {
-                    for (org.kie.definition.process.Process process: processes) {
+                    for (org.kie.api.definition.process.Process process: processes) {
                         if ( process != null ) {
                             return parseProcess( (Process) process,
                                                  resource,

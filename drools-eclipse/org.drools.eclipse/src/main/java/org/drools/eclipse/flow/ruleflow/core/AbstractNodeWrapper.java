@@ -30,7 +30,7 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.NodeImpl;
-import org.kie.definition.process.NodeContainer;
+import org.kie.api.definition.process.NodeContainer;
 
 /**
  * Wrapper for a node.

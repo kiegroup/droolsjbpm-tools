@@ -29,7 +29,7 @@ import org.jbpm.compiler.xml.ProcessSemanticModule;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.compiler.xml.processes.RuleFlowMigrator;
 import org.jbpm.workflow.core.WorkflowProcess;
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Process;
 
 public class ConvertToBPMN2ProcessAction implements IObjectActionDelegate {
 
