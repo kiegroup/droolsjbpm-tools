@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
@@ -38,6 +40,67 @@ import org.eclipse.core.runtime.Platform;
 public class DroolsRuntimeManager {
 
     private static final String DROOLS_RUNTIME_RECOGNIZER = "org.drools.eclipse.runtimeRecognizer";
+
+    private static DroolsRuntimeManager manager;
+    public static DroolsRuntimeManager getDefault() {
+    	if( manager == null )
+    		manager = new DroolsRuntimeManager();
+    	return manager;
+    }
+    
+    private ArrayList<IDroolsRuntimeManagerListener> listeners = new ArrayList<IDroolsRuntimeManagerListener>();
+    /**
+     * Add a listener to this model
+     */
+    public void addListener(IDroolsRuntimeManagerListener listener) {
+    	listeners.add(listener);
+    }
+    
+    /**
+     * Remove a listener from this model
+     */
+    public void removeListener(IDroolsRuntimeManagerListener listener) {
+    	listeners.remove(listener);
+    }
+    
+    
+    public void addRuntime(DroolsRuntime rt) {
+    	ArrayList<DroolsRuntime> list = new ArrayList<DroolsRuntime>();
+    	list.addAll(Arrays.asList(getDroolsRuntimes()));
+    	list.add(rt);
+    	setDroolsRuntimesInternal(list.toArray(new DroolsRuntime[list.size()]));
+    	fireRuntimeAdded(rt);
+    }
+
+    
+    public void removeRuntime(DroolsRuntime rt) {
+    	ArrayList<DroolsRuntime> list = new ArrayList<DroolsRuntime>();
+    	list.addAll(Arrays.asList(getDroolsRuntimes()));
+    	list.remove(rt);
+    	setDroolsRuntimesInternal(list.toArray(new DroolsRuntime[list.size()]));
+    	fireRuntimeRemoved(rt);
+    }
+
+    private void fireRuntimeAdded(DroolsRuntime rt) {
+    	Iterator<IDroolsRuntimeManagerListener> it = listeners.iterator();
+    	while(it.hasNext()) {
+    		it.next().runtimeAdded(rt);
+    	}
+    }
+
+    private void fireRuntimeRemoved(DroolsRuntime rt) {
+    	Iterator<IDroolsRuntimeManagerListener> it = listeners.iterator();
+    	while(it.hasNext()) {
+    		it.next().runtimeRemoved(rt);
+    	}
+    }
+
+    private void fireRuntimesChanged() {
+    	Iterator<IDroolsRuntimeManagerListener> it = listeners.iterator();
+    	while(it.hasNext()) {
+    		it.next().runtimesChanged(getDroolsRuntimes());
+    	}
+    }
 
     public static void createDefaultRuntime(String location) {
         List<String> jars = new ArrayList<String>();
@@ -190,10 +253,16 @@ public class DroolsRuntimeManager {
     }
 
     public static void setDroolsRuntimes(DroolsRuntime[] runtimes) {
-        DroolsEclipsePlugin.getDefault().getPreferenceStore().setValue(IDroolsConstants.DROOLS_RUNTIMES,
-            DroolsRuntimeManager.generateString(runtimes));
+    	setDroolsRuntimesInternal(runtimes);
+    	getDefault().fireRuntimesChanged();
     }
 
+    private static void setDroolsRuntimesInternal(DroolsRuntime[] runtimes) {
+        DroolsEclipsePlugin.getDefault().getPreferenceStore().setValue(IDroolsConstants.DROOLS_RUNTIMES,
+        DroolsRuntimeManager.generateString(runtimes));
+    }
+
+    
     public static DroolsRuntime getDroolsRuntime(String name) {
         DroolsRuntime[] runtimes = getDroolsRuntimes();
         for (DroolsRuntime runtime: runtimes) {
