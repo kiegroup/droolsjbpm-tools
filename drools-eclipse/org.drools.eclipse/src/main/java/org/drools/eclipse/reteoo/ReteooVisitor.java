@@ -41,7 +41,7 @@ import org.drools.core.reteoo.ReteooRuleBase;
  */
 public class ReteooVisitor extends ReflectiveVisitor {
 
-    private static final String PACKAGE_NAME = "org.drools.core.reteoo.";
+    private static final String PACKAGE_NAME = "org.drools.reteoo.";
 
     /**
      * Keeps track of visited JoinNode DOT IDs. This mapping allows the visitor
