@@ -136,6 +136,10 @@ public class DroolsHandler extends AbstractRuntimeDetectorDelegate {
             if (version != null) {
                 version = version.substring(0, 3);
                 String name = getDroolsRuntimeName(DROOLS_PREFIX + version);
+                DroolsRuntime found = getRuntimeForLocation(root.getAbsolutePath());
+                if( found != null) {
+                	name = found.getName();
+                }
                 return new RuntimeDefinition(name, version, DROOLS,
                         root.getAbsoluteFile());
             }
