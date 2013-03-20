@@ -29,16 +29,17 @@ import org.jboss.tools.runtime.core.model.RuntimeDefinition;
 
 public class DroolsHandler extends AbstractRuntimeDetectorDelegate {
 
+	private static final String DROOLS_PREFIX = "Drools "; // NON-NLS-1$
+	private static final String DROOLS_PREFIX_HYPHEN = DROOLS_PREFIX + " - "; // NON-NLS-1$
+	
     private static final String DROOLS = "DROOLS"; // NON-NLS-1$
     private static final String SOA_P = "SOA-P"; //$NON-NLS-1$
 
     @Override
-    public void initializeRuntimes(List<RuntimeDefinition>
-serverDefinitions) {
+    public void initializeRuntimes(List<RuntimeDefinition> serverDefinitions) {
         DroolsRuntime[] existingRuntimes = DroolsRuntimeManager
                 .getDroolsRuntimes();
-        List<DroolsRuntime> droolsRuntimes = new
-ArrayList<DroolsRuntime>();
+        List<DroolsRuntime> droolsRuntimes = new ArrayList<DroolsRuntime>();
         if (existingRuntimes != null) {
             for (DroolsRuntime runtime : existingRuntimes) {
                 droolsRuntimes.add(runtime);
@@ -46,36 +47,34 @@ ArrayList<DroolsRuntime>();
         }
         initializeInternal(serverDefinitions, droolsRuntimes);
         if (droolsRuntimes.size() > 0) {
-            DroolsRuntime[] dra = droolsRuntimes.toArray(new
-DroolsRuntime[0]);
+            DroolsRuntime[] dra = droolsRuntimes.toArray(new DroolsRuntime[0]);
             DroolsRuntimeManager.setDroolsRuntimes(dra);
         }
 
     }
 
-    private void initializeInternal(List<RuntimeDefinition>
-serverDefinitions,
+    private void initializeInternal(List<RuntimeDefinition> serverDefinitions,
             List<DroolsRuntime> droolsRuntimes) {
         for (RuntimeDefinition serverDefinition : serverDefinitions) {
             String type = serverDefinition.getType();
-            if (serverDefinition.isEnabled() &&
-!droolsExists(serverDefinition)) {
+            if (serverDefinition.isEnabled() && !droolsExists(serverDefinition)) {
                 if (DROOLS.equals(type)) {
                     File droolsRoot = serverDefinition.getLocation();
-//$NON-NLS-1$
                     if (droolsRoot.isDirectory()) {
                         DroolsRuntime runtime = new DroolsRuntime();
-                        runtime.setName("Drools " +
-serverDefinition.getVersion() + " - " + serverDefinition.getName());
-//$NON-NLS-1$
-runtime.setPath(droolsRoot.getAbsolutePath());
-DroolsRuntimeManager.recognizeJars(runtime);
+                        boolean startsWithDrools = serverDefinition.getName().startsWith(DROOLS_PREFIX); 
+                        String newName =   startsWithDrools ?  serverDefinition.getName() : 
+                        	DROOLS_PREFIX + serverDefinition.getName();
+                        runtime.setName(newName);
+
+                        runtime.setPath(droolsRoot.getAbsolutePath());
+                        DroolsRuntimeManager.recognizeJars(runtime);
                         runtime.setDefault(true);
                         droolsRuntimes.add(runtime);
                     }
                 }
             }
-initializeInternal(serverDefinition.getIncludedRuntimeDefinitions(),
+            initializeInternal(serverDefinition.getIncludedRuntimeDefinitions(),
                     droolsRuntimes);
         }
     }
@@ -84,19 +83,37 @@ initializeInternal(serverDefinition.getIncludedRuntimeDefinitions(),
      * @param serverDefinition
      * @return
      */
-    private static boolean droolsExists(RuntimeDefinition
-serverDefinition) {
-        DroolsRuntime[] droolsRuntimes = DroolsRuntimeManager
-                .getDroolsRuntimes();
+    private static boolean droolsExists(RuntimeDefinition serverDefinition) {
+    	return getRuntimeForLocation(serverDefinition.getLocation().getAbsolutePath()) != null;
+    }
+    
+    private static DroolsRuntime getRuntimeForLocation(String loc) {
+        DroolsRuntime[] droolsRuntimes = DroolsRuntimeManager.getDroolsRuntimes();
         for (DroolsRuntime dr : droolsRuntimes) {
             String location = dr.getPath();
-            if (location != null
-&& location.equals(serverDefinition.getLocation()
-                            .getAbsolutePath())) {
-                return true;
+            if (location != null && location.equals(loc)) {
+                return dr;
             }
         }
-        return false;
+        return null;
+    }
+    
+    private boolean droolsRuntimeNameExists(String name) {
+        DroolsRuntime[] droolsRuntimes = DroolsRuntimeManager.getDroolsRuntimes();
+    	for( int i = 0; i < droolsRuntimes.length; i++ ) {
+    		if( droolsRuntimes[i].getName().equals(name))
+    			return true;
+    	}
+    	return false;
+    }
+    
+    private String getDroolsRuntimeName(String prefix) {
+    	if( !droolsRuntimeNameExists(prefix))
+    		return prefix;
+    	int count = 1;
+    	while(droolsRuntimeNameExists(prefix + " (" + count + ")"))
+    		count++;
+    	return prefix + " (" + count + ")";
     }
 
     @Override
@@ -108,8 +125,7 @@ serverDefinition) {
         String[] files = root.list(new FilenameFilter() {
 
             public boolean accept(File dir, String name) {
-                if (name.startsWith("drools-api") &&
-name.endsWith(".jar")) {
+                if (name.startsWith("drools-api") && name.endsWith(".jar")) {
                     return true;
                 }
                 return false;
@@ -119,8 +135,8 @@ name.endsWith(".jar")) {
             String version = getImplementationVersion(root, files[0]);
             if (version != null) {
                 version = version.substring(0, 3);
-                return new RuntimeDefinition(root.getName(), version,
-DROOLS,
+                String name = getDroolsRuntimeName(DROOLS_PREFIX + version);
+                return new RuntimeDefinition(name, version, DROOLS,
                         root.getAbsoluteFile());
             }
         }
@@ -134,10 +150,8 @@ DROOLS,
         }
         try {
             JarFile jar = new JarFile(jarFile);
-            Attributes attributes =
-jar.getManifest().getMainAttributes();
-            String version =
-attributes.getValue("Implementation-Version");
+            Attributes attributes = jar.getManifest().getMainAttributes();
+            String version = attributes.getValue("Implementation-Version");
             return version;
         } catch (IOException e) {
             return null;
@@ -146,8 +160,7 @@ attributes.getValue("Implementation-Version");
 
     @Override
     public boolean exists(RuntimeDefinition serverDefinition) {
-        if (serverDefinition == null || serverDefinition.getLocation()
-== null) {
+        if (serverDefinition == null || serverDefinition.getLocation() == null) {
             return false;
         }
         return droolsExists(serverDefinition);
@@ -161,12 +174,11 @@ attributes.getValue("Implementation-Version");
         }
         File droolsRoot = serverDefinition.getLocation(); //$NON-NLS-1$
         if (droolsRoot.isDirectory()) {
-            String name = "Drools - " + serverDefinition.getName();
-//$NON-NLS-1$
+            String name = DROOLS_PREFIX_HYPHEN + serverDefinition.getName(); //$NON-NLS-1$
             RuntimeDefinition sd = new RuntimeDefinition(name,
                     serverDefinition.getVersion(), DROOLS, droolsRoot);
             sd.setParent(serverDefinition);
-serverDefinition.getIncludedRuntimeDefinitions().add(sd);
+            serverDefinition.getIncludedRuntimeDefinitions().add(sd);
         }
     }
 
