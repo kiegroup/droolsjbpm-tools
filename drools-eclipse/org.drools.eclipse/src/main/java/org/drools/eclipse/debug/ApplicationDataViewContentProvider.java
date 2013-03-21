@@ -46,8 +46,11 @@ public class ApplicationDataViewContentProvider extends DroolsDebugViewContentPr
         try {
             IVariable[] variables = null;
             if (obj != null && obj instanceof IJavaObject
-                    && "org.drools.core.reteoo.ReteooStatefulSession".equals(
-                        ((IJavaObject) obj).getReferenceTypeName())) {
+                    && ("org.drools.core.reteoo.ReteooStatefulSession".equals(
+                        ((IJavaObject) obj).getReferenceTypeName()) ||
+                        // for backwards compatibility
+                        "org.drools.reteoo.ReteooStatefulSession".equals(
+                            ((IJavaObject) obj).getReferenceTypeName()))) {
                 variables = getApplicationDataElements((IJavaObject) obj);
             } else if (obj instanceof IVariable) {
                 if (view.isShowLogicalStructure()) {
@@ -71,7 +74,13 @@ public class ApplicationDataViewContentProvider extends DroolsDebugViewContentPr
     }
     
     private IVariable[] getApplicationDataElements(IJavaObject stackObj) throws DebugException {
-        IValue objects = DebugUtil.getValueByExpression("return ((org.drools.core.base.MapGlobalResolver) getGlobalResolver()).getGlobals();", stackObj);
+        IValue objects = null;
+        try {
+        	objects = DebugUtil.getValueByExpression("return ((org.drools.core.base.MapGlobalResolver) getGlobalResolver()).getGlobals();", stackObj);
+        } catch (RuntimeException e) {
+        	// backwards compatibility
+        	objects = DebugUtil.getValueByExpression("return ((org.drools.base.MapGlobalResolver) getGlobalResolver()).getGlobals();", stackObj);
+        }
         if (objects instanceof IJavaArray) {
             IJavaArray array = (IJavaArray) objects;
             List result = new ArrayList();

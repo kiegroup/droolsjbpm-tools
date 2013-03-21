@@ -49,8 +49,11 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
         try {
             Object[] variables = null;
             if (obj != null && obj instanceof IJavaObject
-                    && "org.drools.core.reteoo.ReteooStatefulSession".equals(
-                        ((IJavaObject) obj).getReferenceTypeName())) {
+                    && ("org.drools.core.reteoo.ReteooStatefulSession".equals(
+                        ((IJavaObject) obj).getReferenceTypeName()) ||
+	                    // for backwards compatibility
+	                    "org.drools.reteoo.ReteooStatefulSession".equals(
+	                        ((IJavaObject) obj).getReferenceTypeName()))) {
                 variables = getAgendaElements((IJavaObject) obj);
             } else if (obj instanceof IVariable) {
                 if (view.isShowLogicalStructure()) {

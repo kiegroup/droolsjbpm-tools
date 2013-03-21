@@ -87,9 +87,12 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
             try {
                 IValue value = ((IVariable) context).getValue();
                 if (value != null && value instanceof IJavaObject) {
-                    if ("org.drools.core.reteoo.ReteooStatefulSession".equals(variable.getValue().getReferenceTypeName())) {
+                    if ("org.drools.core.reteoo.ReteooStatefulSession".equals(variable.getValue().getReferenceTypeName()) ||
+                    		// for backwards compatibility
+                    		"org.drools.reteoo.ReteooStatefulSession".equals(variable.getValue().getReferenceTypeName())) {
                         input = value;
-                    } else if ("org.drools.core.impl.StatefulKnowledgeSessionImpl".equals(variable.getValue().getReferenceTypeName())) {
+                    } else if ("org.drools.core.impl.StatefulKnowledgeSessionImpl".equals(variable.getValue().getReferenceTypeName())
+                    		|| "org.drools.impl.StatefulKnowledgeSessionImpl".equals(variable.getValue().getReferenceTypeName())) {
                         IJavaFieldVariable sessionVar = ((IJavaObject) value).getField("session", false);
                         if (sessionVar != null) {
                             input = sessionVar.getValue();
@@ -117,6 +120,7 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
                                 if ((stackObj != null)
                                         && (stackObj.getJavaType() != null)
                                         && ("org.drools.core.reteoo.ReteooStatefulSession".equals(stackObj.getJavaType().getName())
+                                        		|| "org.drools.reteoo.ReteooStatefulSession".equals(stackObj.getJavaType().getName())
                                                 || "org.drools.core.impl.StatefulKnowledgeSessionImpl".equals(stackObj.getJavaType().getName()))) {
                                     input = stackObj;
                                     break;

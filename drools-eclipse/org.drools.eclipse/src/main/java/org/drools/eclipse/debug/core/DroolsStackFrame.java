@@ -33,7 +33,8 @@ import com.sun.jdi.StackFrame;
 public class DroolsStackFrame  extends JDIStackFrame {
     protected static final String HANDLE_SUFIX = "__Handle__";
     protected static final String DROOLS_VAR_NAME = "drools";
-    private static final String CONSEQUENCE_SIGNATURE = "(Lorg/drools/core/spi/KnowledgeHelper";
+    private static final String CONSEQUENCE_SIGNATURE6 = "(Lorg/drools/core/spi/KnowledgeHelper";
+    private static final String CONSEQUENCE_SIGNATURE5 = "(Lorg/drools/spi/KnowledgeHelper";
     
     public DroolsStackFrame(JDIThread thread, StackFrame frame, int depth) {
         super(thread, frame, depth);
@@ -42,7 +43,8 @@ public class DroolsStackFrame  extends JDIStackFrame {
     public boolean isExecutingRule() {
         try {
             if ( ("defaultConsequence".equals( getMethodName() ) || "consequence".equals( getMethodName() ) ) 
-                    && getSignature().startsWith( CONSEQUENCE_SIGNATURE ) ) {
+                    && (getSignature().startsWith( CONSEQUENCE_SIGNATURE6 ) 
+                    		|| getSignature().startsWith( CONSEQUENCE_SIGNATURE5 ))) {
                 return true;
             }
         } catch ( DebugException exc ) {
@@ -57,7 +59,8 @@ public class DroolsStackFrame  extends JDIStackFrame {
             String signature = getSignature();
             String type = getDeclaringTypeName();
             if ( ("defaultConsequence".equals( methodName ) || "consequence".equals( methodName ) )
-                    && signature.startsWith( CONSEQUENCE_SIGNATURE ) ) {
+                    && ( signature.startsWith( CONSEQUENCE_SIGNATURE6 ) 
+                    		|| signature.startsWith( CONSEQUENCE_SIGNATURE5 ) )) {
                 return DroolsEclipsePlugin.getDefault().getRuleInfoByClass( type );
             }
 
