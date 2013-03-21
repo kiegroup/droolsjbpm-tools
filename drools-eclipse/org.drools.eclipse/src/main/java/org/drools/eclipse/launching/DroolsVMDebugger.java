@@ -19,6 +19,7 @@ package org.drools.eclipse.launching;
 import java.io.File;
 import java.io.IOException;
 import java.io.InterruptedIOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -192,8 +193,9 @@ public class DroolsVMDebugger extends StandardVMDebugger {
                     p.destroy();
                     return;
                 }
-
-                IProcess process= newProcess(launch, p, renderProcessLabel(cmdLine), getDefaultProcessMap());
+                java.util.Date date= new java.util.Date();
+                Timestamp ts = new Timestamp(date.getTime());
+                IProcess process= newProcess(launch, p, renderProcessLabel(cmdLine, ts.toString()), getDefaultProcessMap());
                 process.setAttribute(IProcess.ATTR_CMDLINE, renderCommandLineInternal(cmdLine));
                 subMonitor.worked(1);
                 subMonitor.subTask(LaunchingMessages.StandardVMDebugger_Establishing_debug_connection____5);
