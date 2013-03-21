@@ -18,6 +18,7 @@ package org.drools.eclipse.preferences;
 
 import org.drools.eclipse.util.DroolsRuntime;
 import org.drools.eclipse.util.DroolsRuntimeManager;
+import org.drools.eclipse.util.IDroolsRuntimeManagerListener;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -27,11 +28,13 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-public class DroolsRuntimesPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
+public class DroolsRuntimesPreferencePage extends PreferencePage 
+	implements IWorkbenchPreferencePage, IDroolsRuntimeManagerListener {
 
     private DroolsRuntimesBlock droolsRuntimesBlock;
 
@@ -42,9 +45,18 @@ public class DroolsRuntimesPreferencePage extends PreferencePage implements IWor
     public void init(IWorkbench workbench) {
     }
 
+    public void dispose() {
+    	DroolsRuntimeManager.getDefault().removeListener(this);
+    }    
+    
+    public void createControl(Composite parent){
+        super.createControl(parent);
+        getDefaultsButton().setVisible(false);
+        DroolsRuntimeManager.getDefault().addListener(this);
+    }
+
     protected Control createContents(Composite ancestor) {
         initializeDialogUnits(ancestor);
-        noDefaultAndApplyButton();
         GridLayout layout= new GridLayout();
         layout.numColumns= 1;
         layout.marginHeight = 0;
@@ -105,5 +117,21 @@ public class DroolsRuntimesPreferencePage extends PreferencePage implements IWor
         DroolsRuntimeManager.setDroolsRuntimes(droolsRuntimesBlock.getDroolsRuntimes());
         return super.performOk();
     }
+
+	public void runtimeAdded(DroolsRuntime rt) {
+		droolsRuntimesBlock.setDroolsRuntimes(DroolsRuntimeManager.getDroolsRuntimes());
+	}
+
+	public void runtimeRemoved(DroolsRuntime rt) {
+		droolsRuntimesBlock.setDroolsRuntimes(DroolsRuntimeManager.getDroolsRuntimes());
+	}
+
+	public void runtimesChanged(DroolsRuntime[] newList) {
+		Display.getDefault().asyncExec(new Runnable() { 
+			public void run() {
+				droolsRuntimesBlock.setDroolsRuntimes(DroolsRuntimeManager.getDroolsRuntimes());
+			}
+		});
+	}
 
 }

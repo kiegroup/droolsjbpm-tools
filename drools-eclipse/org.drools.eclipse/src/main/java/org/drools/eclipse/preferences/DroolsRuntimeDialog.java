@@ -77,7 +77,7 @@ public class DroolsRuntimeDialog extends Dialog {
         
         Label nameLabel = new Label(composite, SWT.NONE);
         nameLabel.setText("Name: ");
-        nameText = new Text(composite, SWT.NONE);
+        nameText = new Text(composite, SWT.SINGLE | SWT.BORDER);
         nameText.setText(runtime == null || runtime.getName() == null ? "" : runtime.getName());
         nameText.addListener(SWT.Modify, textModifyListener);
         gridData = new GridData();
@@ -88,7 +88,7 @@ public class DroolsRuntimeDialog extends Dialog {
 
         label = new Label(composite, SWT.NONE);
         label.setText("Path: ");
-        pathText = new Text(composite, SWT.NONE);
+        pathText = new Text(composite, SWT.SINGLE | SWT.BORDER);
         pathText.setText(runtime == null || runtime.getPath() == null ? "" : runtime.getPath());
         pathText.addListener(SWT.Modify, textModifyListener);
         gridData = new GridData();
