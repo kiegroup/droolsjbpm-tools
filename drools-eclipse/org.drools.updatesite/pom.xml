@@ -30,16 +30,28 @@
     <target.eclipse.version>4.2 (Juno)</target.eclipse.version>
     <siteTemplateFolder>siteTemplateFolder</siteTemplateFolder>
   </properties>
-
   <build>
     <plugins>
-      <!-- because clean is called after building the site, we have to disable it here or 
-           else the resulting update site is an non-existant target/ folder ~nickboldt -->
+      <!-- Suppress calling source-plugin for an update site build because it will cause clean to fire and delete the target/ folder AFTER producing the update site ~nickboldt -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-clean-plugin</artifactId>
-        <version>2.4.1</version>
-        <configuration><skip>true</skip></configuration>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>jar</id>
+            <goals>
+              <goal>never</goal>
+            </goals>
+            <phase>never</phase>
+          </execution>
+          <execution>
+            <id>test-jar</id>
+            <phase>never</phase>
+            <goals>
+              <goal>never</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.jboss.tools.tycho-plugins</groupId>
