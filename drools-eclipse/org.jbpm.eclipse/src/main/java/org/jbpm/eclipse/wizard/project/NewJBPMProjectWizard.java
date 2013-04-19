@@ -310,9 +310,6 @@ public class NewJBPMProjectWizard extends BasicNewResourceWizard {
     		String exampleType = extraPage.getExampleType();
 	    	if (!"none".equals(exampleType)) {
 	    		createProcess(project, monitor, exampleType);
-		    	if (extraPage.createJavaProcessFile()) {
-		    		createProcessSampleLauncher(project, exampleType, monitor);
-		    	}
 		    	if (extraPage.createJUnitFile()) {
 		    		createProcessSampleJUnit(project, exampleType, monitor);
 		    	}
@@ -338,42 +335,17 @@ public class NewJBPMProjectWizard extends BasicNewResourceWizard {
     }
 
     /**
-     * Create the sample process launcher file.
-     */
-    private void createProcessSampleLauncher(IJavaProject project, String exampleType, IProgressMonitor monitor)
-            throws JavaModelException, IOException, CoreException {
-        
-        String s = "org/jbpm/eclipse/wizard/project/ProcessLauncher-" + exampleType + ".java.template";
-        IFolder folder = project.getProject().getFolder("src/main/java");
-        IPackageFragmentRoot packageFragmentRoot = project
-                .getPackageFragmentRoot(folder);
-        IPackageFragment packageFragment = packageFragmentRoot
-                .createPackageFragment("com.sample", true, monitor);
-        InputStream inputstream = getClass().getClassLoader()
-                .getResourceAsStream(s);
-        packageFragment.createCompilationUnit("ProcessMain.java", new String(
-                readStream(inputstream)), true, monitor);
-        if ("advanced".equals(exampleType)) {
-        	folder = project.getProject().getFolder("src/main/resources/META-INF");
-        	createFolder(folder, null);
-            inputstream = getClass().getClassLoader().getResourceAsStream(
-            	"org/jbpm/eclipse/wizard/project/ProcessLauncher-advanced-persistence.xml.template");
-            IFile file = folder.getFile("persistence.xml");
-            if (!file.exists()) {
-                file.create(inputstream, true, monitor);
-            } else {
-                file.setContents(inputstream, true, false, monitor);
-            }
-        }
-    }
-
-    /**
      * Create the sample process junit test file.
      */
     private void createProcessSampleJUnit(IJavaProject project, String exampleType, IProgressMonitor monitor)
             throws JavaModelException, IOException {
-        
-        String s = "org/jbpm/eclipse/wizard/project/ProcessJUnit-" + exampleType + ".java.template";
+    	String s = "org/jbpm/eclipse/wizard/project/ProcessJUnit-" + exampleType + ".java";
+    	String generationType = runtimePage.getGenerationType();
+        if (NewJBPMProjectRuntimeWizardPage.JBPM5.equals(generationType)) {        
+        	s += ".v5.template";
+        } else {
+        	s += ".template";
+        }
         IFolder folder = project.getProject().getFolder("src/main/java");
         IPackageFragmentRoot packageFragmentRoot = project
                 .getPackageFragmentRoot(folder);

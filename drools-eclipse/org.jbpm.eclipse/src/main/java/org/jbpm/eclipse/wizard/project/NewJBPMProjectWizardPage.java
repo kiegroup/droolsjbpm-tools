@@ -31,9 +31,7 @@ public class NewJBPMProjectWizardPage extends WizardPage {
 	private Button simpleProcessButton;
 	private Button advancedProcessButton;
 	private Button addSampleProcessButton;
-	private Button addSampleJavaProcessCodeButton;
 	private Button addSampleJUnitTestCodeButton;
-	private boolean addSampleJavaProcessCode = true;
 	private boolean addSampleJUnit = true;
 	private String typeOfExample = "simple";
 	
@@ -109,17 +107,6 @@ public class NewJBPMProjectWizardPage extends WizardPage {
 				addSampleJUnit = ((Button) e.widget).getSelection();
 			}
 		});
-		addSampleJavaProcessCodeButton = createCheckBox(parent,
-			"Add a sample Java class for loading and executing the HelloWorld process.");
-		addSampleJavaProcessCodeButton.setSelection(addSampleJavaProcessCode);
-		addSampleJavaProcessCodeButton.addSelectionListener(new SelectionListener() {
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// do nothing
-			}
-			public void widgetSelected(SelectionEvent e) {
-				addSampleJavaProcessCode = ((Button) e.widget).getSelection();
-			}
-		});
 	}
 
 	private Button createCheckBox(Composite group, String label) {
@@ -142,10 +129,6 @@ public class NewJBPMProjectWizardPage extends WizardPage {
 		return typeOfExample;
 	}
 	
-	public boolean createJavaProcessFile() {
-		return addSampleJavaProcessCode;
-	}
-
 	public boolean createJUnitFile() {
 		return addSampleJUnit;
 	}

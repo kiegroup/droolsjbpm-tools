@@ -2,12 +2,12 @@ package com.sample;
 
 import java.util.List;
 
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.process.ProcessInstance;
+import org.jbpm.task.TaskService;
+import org.jbpm.task.query.TaskSummary;
 import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.Test;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.task.api.TaskService;
-import org.kie.internal.task.api.model.TaskSummary;
 
 /**
  * This is a sample file to launch a process.
@@ -21,8 +21,8 @@ public class ProcessTest extends JbpmJUnitTestCase {
 
 	@Test
 	public void testProcess() {
-		KieSession ksession = createKnowledgeSession("sample.bpmn");
-		TaskService taskService = getTaskService();
+		StatefulKnowledgeSession ksession = createKnowledgeSession("sample.bpmn");
+		TaskService taskService = getTaskService(ksession);
 		
 		ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.hello");
 

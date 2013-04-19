@@ -36,10 +36,15 @@ import org.jbpm.eclipse.util.JBPMRuntimeManager;
 
 public class NewJBPMProjectRuntimeWizardPage extends WizardPage {
 
-	private boolean isDefaultRuntime = true;
+    public static final String JBPM5 = "jBPM 5";
+    public static final String JBPM6 = "jBPM 6";
+
+    private boolean isDefaultRuntime = true;
 	private String selectedRuntime;
+    private String generationType = JBPM6;
 	private Button projectSpecificRuntime;
 	private Combo jBPMRuntimeCombo;
+    private Combo jbpmGenerateCombo;
 	
 	public NewJBPMProjectRuntimeWizardPage() {
 		super("extendedNewProjectRuntimePage");
@@ -113,6 +118,26 @@ public class NewJBPMProjectRuntimeWizardPage extends WizardPage {
         gridData.horizontalSpan = 2;
         subPanel.setLayoutData(gridData);
         
+        Label generateLabel = new Label(subPanel, SWT.NONE);
+        generateLabel.setText("Generate code compatible with: ");
+        jbpmGenerateCombo = new Combo(subPanel, SWT.READ_ONLY);
+        jbpmGenerateCombo.add("jBPM 5");
+        jbpmGenerateCombo.add("jBPM 6 or above");
+        jbpmGenerateCombo.addSelectionListener(new SelectionListener() {
+            public void widgetDefaultSelected(SelectionEvent e) {
+                generationType = jbpmGenerateCombo.getText();
+            }
+            public void widgetSelected(SelectionEvent e) {
+                generationType = jbpmGenerateCombo.getText();
+            }
+        });
+        jbpmGenerateCombo.select(1);
+        generationType = JBPM6;
+        gridData = new GridData();
+        gridData.grabExcessHorizontalSpace = true;
+        gridData.horizontalAlignment = GridData.FILL;
+        jbpmGenerateCombo.setLayoutData(gridData);
+        
         setMessage(null);
         setPageComplete(runtimes.length > 0);
         setControl(composite);
@@ -170,4 +195,9 @@ public class NewJBPMProjectRuntimeWizardPage extends WizardPage {
 		}
 		return JBPMRuntimeManager.getJBPMRuntime(selectedRuntime);
 	}
+
+	public String getGenerationType() {
+        return generationType;
+    }
+
 }
