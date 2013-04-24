@@ -60,6 +60,7 @@ public class GenerateBPMN2JUnitTests implements IObjectActionDelegate {
 
     private IFile file;
     private IWorkbenchPart targetPart;
+    private boolean firstHumanTask = true;
     
     public void setActivePart(IAction action, IWorkbenchPart targetPart) {
         this.targetPart = targetPart;
@@ -89,6 +90,7 @@ public class GenerateBPMN2JUnitTests implements IObjectActionDelegate {
     }
 
     public void generateJUnitTests() {
+    	firstHumanTask = true;
         try {
             final IJavaProject javaProject = JavaCore.create(file.getProject());
             if (javaProject == null || !javaProject.exists()) {
@@ -134,13 +136,15 @@ public class GenerateBPMN2JUnitTests implements IObjectActionDelegate {
                 				"import java.util.List;\n" +
                 				"import java.util.Map;\n" +
                         		"\n" +
-                        		"import org.drools.core.runtime.StatefulKnowledgeSession;\n" +
-                        		"import org.drools.core.runtime.process.ProcessInstance;\n" +
                         		"import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;\n" +
-                        		"import org.jbpm.task.TaskService;\n" +
-                        		"import org.jbpm.task.query.TaskSummary;\n" +
                         		"import org.jbpm.test.JbpmJUnitTestCase;\n" +
+                        		"\n" +
                         		"import org.junit.Test;\n" +
+                        		"\n" +
+                        		"import org.kie.api.runtime.KieSession;\n" +
+                        		"import org.kie.api.runtime.process.ProcessInstance;\n" +
+                        		"import org.kie.api.task.TaskService;\n" +
+                        		"import org.kie.api.task.model.TaskSummary;\n" +
                         		"\n" +
                         		"public class " + fileName + " extends JbpmJUnitTestCase {\n" +
                         		"\n";
@@ -166,14 +170,14 @@ public class GenerateBPMN2JUnitTests implements IObjectActionDelegate {
 	                        	output +=
 	                        		"	@Test\n" +
 	                        		"    public void test" + entry.getKey() + "() {\n" +
-	                        		"        StatefulKnowledgeSession ksession = createKnowledgeSession(\"" + file.getName() + "\");\n";
+	                        		"        KieSession ksession = createKnowledgeSession(\"" + file.getName() + "\");\n";
 	                        	Set<String> serviceTasks = new HashSet<String>();
 	                        	containsServiceTasks(serviceTasks, process);
 	                        	for (String service: serviceTasks) {
 	                        		output += "        ksession.getWorkItemManager().registerWorkItemHandler(\"" + service + "\", new SystemOutWorkItemHandler());\n";
 	                        	}
 	                        	if (containsHumanTasks) {
-	                        		output += "        TaskService taskService = getTaskService(ksession);\n";
+	                        		output += "        TaskService taskService = getTaskService();\n";
 	                        	}
 	                        	List<Variable> variables = process.getVariableScope().getVariables();
 	                        	if (variables != null && variables.size() > 0) {
@@ -217,7 +221,7 @@ public class GenerateBPMN2JUnitTests implements IObjectActionDelegate {
         }
     }
     
-    private static boolean processNodes(String name, Node currentNode, String testCode, Map<String, String> cases, Map<String, String> ongoingCases) {
+    private boolean processNodes(String name, Node currentNode, String testCode, Map<String, String> cases, Map<String, String> ongoingCases) {
     	if (currentNode instanceof Split) {
     		Split split = (Split) currentNode;
     		switch (split.getType()) {
@@ -283,19 +287,35 @@ public class GenerateBPMN2JUnitTests implements IObjectActionDelegate {
     			groupIds = groupId.split(",");
     		}
     		actorId = actorIds.length > 0 ? actorIds[0] : "";
-    		testCode += 
-    			"        // execute task\n" +
-    			"        String actorId = \"" + actorId + "\";\n" +
-    			"        List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner(actorId, new ArrayList<String>(), \"en-UK\");\n" +
-    			"        TaskSummary task = list.get(0);\n";
+    		if (firstHumanTask) {
+	    		testCode += 
+	    			"        // execute task\n" +
+	    			"        String actorId = \"" + actorId + "\";\n" +
+	    			"        List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner(actorId, \"en-UK\");\n" +
+	    			"        TaskSummary task = list.get(0);\n";
+    		} else {
+	    		testCode += 
+	    			"        // execute task\n" +
+	    			"        actorId = \"" + actorId + "\";\n" +
+	    			"        list = taskService.getTasksAssignedAsPotentialOwner(actorId, \"en-UK\");\n" +
+	    			"        task = list.get(0);\n";
+    		}
     		if (actorIds.length > 1 || groupIds.length > 0) {
     			testCode +=
-        			"        taskService.claim(task.getId(), actorId, new ArrayList<String>());\n";
+        			"        taskService.claim(task.getId(), actorId);\n";
     		}
-    		testCode +=
-    			"        taskService.start(task.getId(), actorId);\n" +
-				"        Map<String, Object> results = new HashMap<String, Object>();\n" +
-				"        // add results here\n";
+    		if (firstHumanTask) {
+	    		testCode +=
+	    			"        taskService.start(task.getId(), actorId);\n" +
+					"        Map<String, Object> results = new HashMap<String, Object>();\n" +
+					"        // add results here\n";
+	    		firstHumanTask = false;
+    		} else {
+	    		testCode +=
+	    			"        taskService.start(task.getId(), actorId);\n" +
+					"        results = new HashMap<String, Object>();\n" +
+					"        // add results here\n";
+    		}
     		for (Map.Entry<String, String> entry: taskNode.getOutMappings().entrySet()) {
     			String type = null;
     			VariableScope variableScope = (VariableScope) taskNode.resolveContext(VariableScope.VARIABLE_SCOPE, entry.getValue());
@@ -306,7 +326,7 @@ public class GenerateBPMN2JUnitTests implements IObjectActionDelegate {
     				"        // results.put(\"" + entry.getKey() + "\", value);" + (type == null ? "" : " // type " + type) + "\n";
     		}
     		testCode +=
-    			"        taskService.completeWithResults(task.getId(), actorId, results);\n" +
+    			"        taskService.complete(task.getId(), actorId, results);\n" +
     			"\n";
     		return processNodes(name, ((NodeImpl) currentNode).getTo().getTo(), testCode, cases, ongoingCases);
     	} else if (currentNode instanceof WorkItemNode) {
