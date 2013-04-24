@@ -31,7 +31,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.util.ConfFileUtils;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -146,12 +145,18 @@ public class ImportWorkItemsDialog extends Dialog {
             		if (selected instanceof WorkDefinitionImpl) {
             			String docs = ((WorkDefinitionImpl) selected).getDocumentation();
             			if (docs != null) {
-            				documentation.setUrl(((WorkDefinitionImpl) selected).getPath() + "/" + docs);
+            				if (documentation != null) {
+            					documentation.setUrl(((WorkDefinitionImpl) selected).getPath() + "/" + docs);
+            				}
             			} else {
-            				documentation.setText("");
+            				if (documentation != null) {
+            					documentation.setText("");
+            				}
             			}
             		} else {
-            			documentation.setText("");
+        				if (documentation != null) {
+        					documentation.setText("");
+        				}
             		}
             	}
             }
