@@ -56,7 +56,7 @@ public class DroolsPreferencePage extends PreferencePage implements IWorkbenchPr
         cacheParsedRulesCheckBox = createCheckBox(composite,
             "When parsing rules, always cache the result for future use. Warning: when disabled, debugging of rules will not work.");
         Label label = new Label(composite, SWT.NONE);
-        label.setText("Preferred process skin: ");
+        label.setText("Preferred process skin:");
         processSkinCombo = new Combo(composite, SWT.LEFT | SWT.READ_ONLY );
         processSkinCombo.add("default");
         processSkinCombo.add("BPMN");
@@ -64,7 +64,7 @@ public class DroolsPreferencePage extends PreferencePage implements IWorkbenchPr
         allowNodeCustomizationCheckBox = createCheckBox(composite,
             "Allow the customization of process nodes.");
         label = new Label(composite, SWT.NONE);
-        label.setText("Internal Drools classes are: ");
+        label.setText("Internal Drools classes are:");
 
         internalAPICombo = new Combo(composite, SWT.LEFT);
         for (InternalApiChoice choice : InternalApiChoice.values()) {

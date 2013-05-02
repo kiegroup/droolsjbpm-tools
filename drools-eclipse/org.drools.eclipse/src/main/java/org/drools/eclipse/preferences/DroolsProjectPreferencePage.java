@@ -51,7 +51,7 @@ public class DroolsProjectPreferencePage extends PropertyAndPreferencePage {
         composite.setLayout(gridLayout);
         
         Label nameLabel = new Label(composite, SWT.NONE);
-        nameLabel.setText("Drools Runtime: ");
+        nameLabel.setText("Drools Runtime:");
         droolsRuntimeCombo = new Combo(composite, SWT.LEFT);
         DroolsRuntime[] runtimes = DroolsRuntimeManager.getDroolsRuntimes();
         int selection = -1;

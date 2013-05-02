@@ -80,7 +80,7 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
         projectSpecificRuntime.setLayoutData(gridData);
         
         Label nameLabel = new Label(composite, SWT.NONE);
-        nameLabel.setText("Drools Runtime: ");
+        nameLabel.setText("Drools Runtime:");
         droolsRuntimeCombo = new Combo(composite, SWT.READ_ONLY);
         droolsRuntimeCombo.setEnabled(false);
         droolsRuntimeCombo.addSelectionListener(new SelectionListener() {
@@ -120,7 +120,7 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
         subPanel.setLayoutData(gridData);
 
         Label generateLabel = new Label(subPanel, SWT.NONE);
-        generateLabel.setText("Generate code compatible with: ");
+        generateLabel.setText("Generate code compatible with:");
         droolsGenerateCombo = new Combo(subPanel, SWT.READ_ONLY);
         droolsGenerateCombo.add("Drools 4.x");
         droolsGenerateCombo.add("Drools 5.0.x");
