@@ -76,7 +76,7 @@ public class DroolsRuntimeDialog extends Dialog {
         label.setLayoutData(gridData);
         
         Label nameLabel = new Label(composite, SWT.NONE);
-        nameLabel.setText("Name: ");
+        nameLabel.setText("Name:");
         nameText = new Text(composite, SWT.SINGLE | SWT.BORDER);
         nameText.setText(runtime == null || runtime.getName() == null ? "" : runtime.getName());
         nameText.addListener(SWT.Modify, textModifyListener);
@@ -87,7 +87,7 @@ public class DroolsRuntimeDialog extends Dialog {
         nameText.setLayoutData(gridData);
 
         label = new Label(composite, SWT.NONE);
-        label.setText("Path: ");
+        label.setText("Path:");
         pathText = new Text(composite, SWT.SINGLE | SWT.BORDER);
         pathText.setText(runtime == null || runtime.getPath() == null ? "" : runtime.getPath());
         pathText.addListener(SWT.Modify, textModifyListener);
@@ -96,7 +96,7 @@ public class DroolsRuntimeDialog extends Dialog {
         gridData.horizontalAlignment = GridData.FILL;
         pathText.setLayoutData(gridData);
         Button selectButton = new Button(composite, SWT.PUSH | SWT.LEFT);
-        selectButton.setText("Browse ...");
+        selectButton.setText("Browse...");
         gridData = new GridData();
         selectButton.setLayoutData(gridData);
         selectButton.addSelectionListener(new SelectionListener() {
@@ -108,7 +108,7 @@ public class DroolsRuntimeDialog extends Dialog {
         });
 
         Button createButton = new Button(composite, SWT.PUSH | SWT.LEFT);
-        createButton.setText("Create a new Drools 5 Runtime ...");
+        createButton.setText("Create a new Drools 5 Runtime...");
         gridData = new GridData();
         gridData.horizontalSpan = 2;
         createButton.setLayoutData(gridData);
