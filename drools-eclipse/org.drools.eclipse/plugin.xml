@@ -592,6 +592,7 @@
 
    <extension-point id="processExtension" name="Process Extension" schema="schema/processExtension.exsd"/>
    <extension-point id="runtimeRecognizer" name="Drools Runtime Recognizer" schema="schema/runtimeRecognizer.exsd"/>
+   <extension-point id="nodeWapperFactoryExtension" name="NodeWrapper Factory Extension" schema="schema/nodeWapperFactoryExtension.exsd"/>
 
    <extension
          point="org.drools.eclipse.processExtension">
