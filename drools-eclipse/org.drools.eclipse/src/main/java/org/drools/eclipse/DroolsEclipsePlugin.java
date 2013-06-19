@@ -472,7 +472,6 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 
         Thread.currentThread().setContextClassLoader( newLoader );
         PackageBuilderConfiguration builderConfiguration = new PackageBuilderConfiguration();
-        builderConfiguration.getClassLoader().addClassLoader( newLoader );
         if ( level != null ) {
             JavaDialectConfiguration javaConf = (JavaDialectConfiguration) builderConfiguration.getDialectConfiguration( "java" );
             javaConf.setJavaLanguageLevel( level );
@@ -734,7 +733,6 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                     JavaDialectConfiguration javaConf = (JavaDialectConfiguration) configuration.getDialectConfiguration( "java" );
                     javaConf.setJavaLanguageLevel( level );
                 }
-                configuration.getClassLoader().addClassLoader( newLoader );
                 
                 SemanticModules modules = configuration.getSemanticModules();
                 modules.addSemanticModule( new BPMNSemanticModule() );
