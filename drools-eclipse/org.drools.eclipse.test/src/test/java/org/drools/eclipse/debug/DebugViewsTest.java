@@ -31,6 +31,7 @@ import org.drools.core.base.MapGlobalResolver;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.reteoo.ReteooStatefulSession;
 import org.drools.core.spi.AgendaGroup;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.rule.Match;
 
@@ -81,7 +82,7 @@ public class DebugViewsTest {
      * VIEWS (which are using reflection)
      */
     
-    @Test
+    @Test @Ignore
     public void testAgendaView() throws Exception {
         Reader source = new InputStreamReader(DebugViewsTest.class.getResourceAsStream("/debug.drl"));
         PackageBuilder builder = new PackageBuilder();
