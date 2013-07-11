@@ -251,78 +251,83 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             return false;
         }
 
-        if ( res instanceof IFile
-             && ("drl".equals( res.getFileExtension() )
-                 || "dslr".equals( res.getFileExtension() )
-                 || ".package".equals( res.getName() )) ) {
-            removeProblemsFor( res );
-            try {
-                if ( clean ) {
-                    DroolsEclipsePlugin.getDefault().invalidateResource( res );
-                }
-                appendMarkers( res, parseDRLFile( (IFile) res ) );
-            } catch ( Throwable t ) {
-                DroolsEclipsePlugin.log( t );
-                createMarker( res,
-                              t.getMessage(),
-                              -1 );
-            }
-            return false;
-        } else if ( res instanceof IFile && "xls".equals( res.getFileExtension() ) ) {
-            removeProblemsFor( res );
-            try {
-                if ( clean ) {
-                    DroolsEclipsePlugin.getDefault().invalidateResource( res );
-                }
-                appendMarkers( res, parseXLSFile( (IFile) res ) );
-            } catch ( Throwable t ) {
-                createMarker( res,
-                              t.getMessage(),
-                              -1 );
-            }
-            return false;
-        } else if ( res instanceof IFile && "csv".equals( res.getFileExtension() ) ) {
-            removeProblemsFor( res );
-            try {
-                if ( clean ) {
-                    DroolsEclipsePlugin.getDefault().invalidateResource( res );
-                }
-                appendMarkers( res, parseCSVFile( (IFile) res ) );
-            } catch ( Throwable t ) {
-                createMarker( res,
-                              t.getMessage(),
-                              -1 );
-            }
-            return false;
-        } else if ( res instanceof IFile && "rf".equals( res.getFileExtension() ) ) {
-            removeProblemsFor( res );
-            try {
-                if ( clean ) {
-                    DroolsEclipsePlugin.getDefault().invalidateResource( res );
-                }
-                appendMarkers( res, parseRuleFlowFile( (IFile) res ) );
-            } catch ( Throwable t ) {
-                createMarker( res,
-                              t.getMessage(),
-                              -1 );
-            }
-            return false;
-        } else if ( res instanceof IFile && ("bpmn".equals( res.getFileExtension() )
-                    || "bpmn2".equals( res.getFileExtension() )) ) {
-            removeProblemsFor( res );
-            try {
-                if ( clean ) {
-                    DroolsEclipsePlugin.getDefault().invalidateResource( res );
-                }
-                appendMarkers( res, parseRuleFlowFile( (IFile) res ) );
-            } catch ( Throwable t ) {
-                createMarker( res,
-                              t.getMessage(),
-                              -1 );
-            }
-            return false;
+        if ( res instanceof IFile) {
+        	String fileExtension = res.getFileExtension();
+	        if ( "drl".equals( fileExtension )
+                 || "gdrl".equals( fileExtension )
+                 || "rdrl".equals( fileExtension )
+                 || "dslr".equals( fileExtension )
+                 || "rdslr".equals( fileExtension )
+                 || ".package".equals( res.getName() ) ) {
+	            removeProblemsFor( res );
+	            try {
+	                if ( clean ) {
+	                    DroolsEclipsePlugin.getDefault().invalidateResource( res );
+	                }
+	                appendMarkers( res, parseDRLFile( (IFile) res ) );
+	            } catch ( Throwable t ) {
+	                DroolsEclipsePlugin.log( t );
+	                createMarker( res,
+	                              t.getMessage(),
+	                              -1 );
+	            }
+	            return false;
+	        } else if ( "xls".equals( fileExtension ) ) {
+	            removeProblemsFor( res );
+	            try {
+	                if ( clean ) {
+	                    DroolsEclipsePlugin.getDefault().invalidateResource( res );
+	                }
+	                appendMarkers( res, parseXLSFile( (IFile) res ) );
+	            } catch ( Throwable t ) {
+	                createMarker( res,
+	                              t.getMessage(),
+	                              -1 );
+	            }
+	            return false;
+	        } else if ( "csv".equals( fileExtension ) ) {
+	            removeProblemsFor( res );
+	            try {
+	                if ( clean ) {
+	                    DroolsEclipsePlugin.getDefault().invalidateResource( res );
+	                }
+	                appendMarkers( res, parseCSVFile( (IFile) res ) );
+	            } catch ( Throwable t ) {
+	                createMarker( res,
+	                              t.getMessage(),
+	                              -1 );
+	            }
+	            return false;
+	        } else if ( "rf".equals( fileExtension ) ) {
+	            removeProblemsFor( res );
+	            try {
+	                if ( clean ) {
+	                    DroolsEclipsePlugin.getDefault().invalidateResource( res );
+	                }
+	                appendMarkers( res, parseRuleFlowFile( (IFile) res ) );
+	            } catch ( Throwable t ) {
+	                createMarker( res,
+	                              t.getMessage(),
+	                              -1 );
+	            }
+	            return false;
+	        } else if ( "bpmn".equals( fileExtension )
+	                    || "bpmn2".equals( fileExtension ) ) {
+	            removeProblemsFor( res );
+	            try {
+	                if ( clean ) {
+	                    DroolsEclipsePlugin.getDefault().invalidateResource( res );
+	                }
+	                appendMarkers( res, parseRuleFlowFile( (IFile) res ) );
+	            } catch ( Throwable t ) {
+	                createMarker( res,
+	                              t.getMessage(),
+	                              -1 );
+	            }
+	            return false;
+	        }
         }
-
+        
         return true;
     }
 
