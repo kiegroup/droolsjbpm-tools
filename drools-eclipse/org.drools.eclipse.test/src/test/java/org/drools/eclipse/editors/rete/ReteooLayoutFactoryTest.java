@@ -166,7 +166,7 @@ public class ReteooLayoutFactoryTest {
         String drl = streamToString( is );
 
         DrlParser parser = new DrlParser();
-        PackageDescr packageDescr = parser.parse(drl);
+        PackageDescr packageDescr = parser.parse(null, drl);
         PackageBuilder builder = new PackageBuilder();
         builder.addPackage(packageDescr);
         Package pkg = builder.getPackage();

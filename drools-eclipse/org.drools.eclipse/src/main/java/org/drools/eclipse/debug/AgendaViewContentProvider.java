@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
-import org.drools.core.reteoo.ReteooStatefulSession;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
@@ -74,12 +73,6 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
             DroolsEclipsePlugin.log(e);
             return new Object[0];
         }
-    }
-    
-    private void testDebugExpression() {
-        ReteooStatefulSession session = null;
-        AgendaGroup[] agendaGroups = session.getAgenda().getAgendaGroups();
-        String focus = session.getAgenda().getFocusName();
     }
     
     private Object[] getAgendaElements(IJavaObject workingMemoryImpl) throws DebugException {

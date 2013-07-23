@@ -27,9 +27,10 @@ import java.util.Map.Entry;
 
 import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseFactory;
+import org.drools.core.StatefulSession;
 import org.drools.core.base.MapGlobalResolver;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.core.reteoo.ReteooStatefulSession;
 import org.drools.core.spi.AgendaGroup;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -56,7 +57,7 @@ public class DebugViewsTest {
         builder.addPackageFromDrl(source);
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage(builder.getPackage());
-        ReteooStatefulSession session = (ReteooStatefulSession) ruleBase.newStatefulSession();
+        StatefulSession session = ruleBase.newStatefulSession();
         session.setGlobal("s", "String");
         List list = new ArrayList();
         list.add("Value");
@@ -89,7 +90,7 @@ public class DebugViewsTest {
         builder.addPackageFromDrl(source);
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage(builder.getPackage());
-        ReteooStatefulSession session = (ReteooStatefulSession) ruleBase.newStatefulSession();
+        AbstractWorkingMemory session = (AbstractWorkingMemory) ruleBase.newStatefulSession();
         List list = new ArrayList();
         session.setGlobal("list", list);
         session.insert("String1");
@@ -118,7 +119,7 @@ public class DebugViewsTest {
     @Test
     public void testWorkingMemoryView() throws Exception {
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ReteooStatefulSession session = (ReteooStatefulSession) ruleBase.newStatefulSession();
+        AbstractWorkingMemory session = (AbstractWorkingMemory) ruleBase.newStatefulSession();
         session.insert("Test1");
         session.insert("Test2");
         Object[] objects = session.iterateObjectsToList().toArray();
