@@ -53,4 +53,5 @@ Bundle-ClassPath: .,
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.drools.eclipse.flow.common.editor.core,
  org.drools.eclipse.flow.ruleflow.core,
- org.drools.eclipse.util
+ org.drools.eclipse.util,
+ org.jbpm.process.core.context.variable
