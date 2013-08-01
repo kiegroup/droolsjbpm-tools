@@ -97,13 +97,15 @@
                 mvel2,
                 jbpm-bpmn2,
                 antlr-runtime,
+                poi,
                 poi-ooxml,
                 xmlpull,
                 xpp3_min,
                 xstream,
                 jbpm-flow,
                 jbpm-flow-builder,
-                slf4j-api
+                slf4j-api,
+                protobuf-java
               </includeArtifactIds>
             </configuration>
           </execution>

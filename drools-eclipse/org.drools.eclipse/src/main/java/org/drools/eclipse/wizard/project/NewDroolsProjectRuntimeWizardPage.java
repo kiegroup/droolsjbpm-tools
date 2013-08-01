@@ -30,22 +30,31 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 
 public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
 
     public static final String DROOLS4 = "Drools 4.x";
     public static final String DROOLS5 = "Drools 5.0.x";
-    public static final String DROOLS5_1 = "Drools 5.1.x";
+    public static final String DROOLS5_1 = "Drools 5.1.x or above";
+    public static final String DROOLS6 = "Drools 6.0.x";
 
     private boolean isDefaultRuntime = true;
     private String selectedRuntime;
-    private String generationType = DROOLS5_1;
+    private String generationType = DROOLS6;
     private Button projectSpecificRuntime;
     private Combo droolsRuntimeCombo;
     private Combo droolsGenerateCombo;
+    
+    private Composite gavPanel;
+    private String groupId = "";
+    private String artifactId = "";
+    private String version = "";
 
     public NewDroolsProjectRuntimeWizardPage() {
         super("extendedNewProjectRuntimePage");
@@ -122,27 +131,79 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
         Label generateLabel = new Label(subPanel, SWT.NONE);
         generateLabel.setText("Generate code compatible with:");
         droolsGenerateCombo = new Combo(subPanel, SWT.READ_ONLY);
-        droolsGenerateCombo.add("Drools 4.x");
-        droolsGenerateCombo.add("Drools 5.0.x");
-        droolsGenerateCombo.add("Drools 5.1 or above");
+        droolsGenerateCombo.add(DROOLS4);
+        droolsGenerateCombo.add(DROOLS5);
+        droolsGenerateCombo.add(DROOLS5_1);
+        droolsGenerateCombo.add(DROOLS6);
         droolsGenerateCombo.addSelectionListener(new SelectionListener() {
             public void widgetDefaultSelected(SelectionEvent e) {
                 generationType = droolsGenerateCombo.getText();
+            	gavPanel.setVisible(getGenerationType().equals(DROOLS6));
+            	setComplete();
             }
             public void widgetSelected(SelectionEvent e) {
                 generationType = droolsGenerateCombo.getText();
+            	gavPanel.setVisible(getGenerationType().equals(DROOLS6));
+            	setComplete();
             }
         });
-        droolsGenerateCombo.select(1);
-        generationType = DROOLS5;
+        droolsGenerateCombo.select(3);
+        setPageComplete(false);
+        generationType = DROOLS6;
         gridData = new GridData();
         gridData.grabExcessHorizontalSpace = true;
         gridData.horizontalAlignment = GridData.FILL;
         droolsGenerateCombo.setLayoutData(gridData);
         
+        gavPanel = new Composite(composite, SWT.NONE);
+        gridLayout = new GridLayout();
+        gridLayout.numColumns = 2;
+        gavPanel.setLayout(gridLayout);
+        gridData = new GridData(GridData.FILL_HORIZONTAL);
+        gridData.grabExcessHorizontalSpace = true;
+        gridData.horizontalAlignment = GridData.FILL;
+        gridData.horizontalSpan = 2;
+        gavPanel.setLayoutData(gridData);
+        
+        Label groupLabel = new Label(gavPanel, SWT.NONE);
+        groupLabel.setText("GroupId: ");
+        final Text groupField = new Text(gavPanel, SWT.BORDER);
+        groupField.addListener(SWT.Modify, new Listener() {
+        	public void handleEvent(Event event) {
+        		groupId = groupField.getText();
+        		setComplete();
+        	}       	
+        });
+        Label artifactLabel = new Label(gavPanel, SWT.NONE);
+        artifactLabel.setText("ArtifactId: ");
+        final Text artifactField = new Text(gavPanel, SWT.BORDER);
+        artifactField.addListener(SWT.Modify, new Listener() {
+        	public void handleEvent(Event event) {
+        		artifactId = artifactField.getText();
+        		setComplete();
+        	}       	
+        });
+        Label versionLabel = new Label(gavPanel, SWT.NONE);
+        versionLabel.setText("Version: ");
+        final Text versionField = new Text(gavPanel, SWT.BORDER);
+        versionField.addListener(SWT.Modify, new Listener() {
+        	public void handleEvent(Event event) {
+        		version = versionField.getText();
+        		setComplete();
+        	}       	
+        });
+
         setMessage(null);
-        setPageComplete(runtimes.length > 0);
+        setPageComplete(runtimes.length > 0 && isComplete());
         setControl(composite);
+    }
+    
+    private void setComplete() {
+        setPageComplete(isComplete());
+    }
+    
+    private boolean isComplete() {
+    	return !getGenerationType().equals(DROOLS6) || (getGroupId().length() > 0 && getArtifactId().length() > 0 && getVersion().length() > 0);
     }
 
     private Button createCheckBox(Composite group, String label) {
@@ -202,4 +263,15 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
         return generationType;
     }
 
+    public String getGroupId() {
+    	return groupId;
+    }
+
+    public String getArtifactId() {
+    	return artifactId;
+    }
+
+    public String getVersion() {
+    	return version;
+    }
 }
