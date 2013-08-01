@@ -108,7 +108,7 @@ public class DroolsRuntimeDialog extends Dialog {
         });
 
         Button createButton = new Button(composite, SWT.PUSH | SWT.LEFT);
-        createButton.setText("Create a new Drools 5 Runtime...");
+        createButton.setText("Create a new Drools 6 Runtime...");
         gridData = new GridData();
         gridData.horizontalSpan = 2;
         createButton.setLayoutData(gridData);
@@ -179,7 +179,7 @@ public class DroolsRuntimeDialog extends Dialog {
 
     private void createRuntime() {
         DirectoryDialog dialog = new DirectoryDialog(getShell());
-        dialog.setMessage("Select the new Drools 5 runtime directory.");
+        dialog.setMessage("Select the new Drools 6 runtime directory.");
         String selectedDirectory = dialog.open();
 
         if (selectedDirectory != null) {
