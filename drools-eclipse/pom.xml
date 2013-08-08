@@ -22,7 +22,7 @@
   </description>
   
   <properties>
-    <tycho.version>0.16.0</tycho.version>
+    <version.org.eclipse.tycho>0.16.0</version.org.eclipse.tycho>
   </properties>
 
   <modules>
@@ -44,13 +44,13 @@
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-maven-plugin</artifactId>
-        <version>${tycho.version}</version>
+        <version>${version.org.eclipse.tycho}</version>
         <extensions>true</extensions>
       </plugin>
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>target-platform-configuration</artifactId>
-        <version>${tycho.version}</version>
+        <version>${version.org.eclipse.tycho}</version>
         <configuration>
         <resolver>p2</resolver>
         <ignoreTychoRepositories>true</ignoreTychoRepositories>
@@ -103,12 +103,12 @@
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-surefire-plugin</artifactId>
-        <version>${tycho.version}</version>
+        <version>${version.org.eclipse.tycho}</version>
       </plugin>
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-packaging-plugin</artifactId>
-        <version>${tycho.version}</version>
+        <version>${version.org.eclipse.tycho}</version>
         <configuration>
           <archiveSite>true</archiveSite>
           <environments>
@@ -148,7 +148,7 @@
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-source-plugin</artifactId>
-        <version>${tycho.version}</version>
+        <version>${version.org.eclipse.tycho}</version>
         <executions>
           <execution>
             <goals>
@@ -160,7 +160,7 @@
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-versions-plugin</artifactId>
-        <version>${tycho.version}</version>
+        <version>${version.org.eclipse.tycho}</version>
       </plugin>
     </plugins>
   </build>
