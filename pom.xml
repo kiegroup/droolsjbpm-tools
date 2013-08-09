@@ -45,7 +45,7 @@
   </scm>
 
   <modules>
-    <!-- None! -->
+    <module>drools-eclipse</module>
   </modules>
 
   <profiles>
@@ -58,17 +58,6 @@
       </activation>
       <modules>
         <module>droolsjbpm-tools-distribution</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>notSoaProfile</id>
-      <activation>
-        <property>
-          <name>!soa</name>
-        </property>
-      </activation>
-      <modules>
-        <module>drools-eclipse</module>
       </modules>
     </profile>
   </profiles>
