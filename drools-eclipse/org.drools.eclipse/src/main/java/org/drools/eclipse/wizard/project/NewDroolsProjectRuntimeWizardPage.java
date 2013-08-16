@@ -166,7 +166,7 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
         gavPanel.setLayoutData(gridData);
         
         Label groupLabel = new Label(gavPanel, SWT.NONE);
-        groupLabel.setText("GroupId: ");
+        groupLabel.setText("GroupId:");
         final Text groupField = new Text(gavPanel, SWT.BORDER);
         groupField.addListener(SWT.Modify, new Listener() {
         	public void handleEvent(Event event) {
@@ -175,7 +175,7 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
         	}       	
         });
         Label artifactLabel = new Label(gavPanel, SWT.NONE);
-        artifactLabel.setText("ArtifactId: ");
+        artifactLabel.setText("ArtifactId:");
         final Text artifactField = new Text(gavPanel, SWT.BORDER);
         artifactField.addListener(SWT.Modify, new Listener() {
         	public void handleEvent(Event event) {
@@ -184,7 +184,7 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
         	}       	
         });
         Label versionLabel = new Label(gavPanel, SWT.NONE);
-        versionLabel.setText("Version: ");
+        versionLabel.setText("Version:");
         final Text versionField = new Text(gavPanel, SWT.BORDER);
         versionField.addListener(SWT.Modify, new Listener() {
         	public void handleEvent(Event event) {
