@@ -51,7 +51,7 @@ public class WorkingMemoryViewContentProvider extends DroolsDebugViewContentProv
         try {
             IVariable[] variables = null;
             if (obj != null && obj instanceof IJavaObject
-                    && "org.drools.core.reteoo.ReteooStatefulSession".equals(
+                    && "org.drools.core.common.AbstractWorkingMemory".equals(
                         ((IJavaObject) obj).getReferenceTypeName()) ||
                         // for backwards compatibility
                         "org.drools.reteoo.ReteooStatefulSession".equals(
