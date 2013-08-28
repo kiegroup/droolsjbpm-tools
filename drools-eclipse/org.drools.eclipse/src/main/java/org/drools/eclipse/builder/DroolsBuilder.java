@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +46,7 @@ import org.drools.eclipse.ProcessInfo;
 import org.drools.eclipse.preferences.IDroolsConstants;
 import org.drools.eclipse.util.DroolsRuntimeManager;
 import org.drools.eclipse.wizard.project.NewDroolsProjectWizard;
+import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.compiler.lang.ExpanderException;
 import org.drools.template.parser.DecisionTableParseException;
 import org.eclipse.core.resources.IFile;
@@ -68,7 +70,13 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Message;
+import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.internal.io.ResourceFactory;
 
 /**
  * Automatically syntax checks .drl files and adds possible errors or warnings
@@ -77,6 +85,8 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 public class DroolsBuilder extends IncrementalProjectBuilder {
 
     public static final String       BUILDER_ID = "org.drools.eclipse.droolsbuilder";
+
+    private boolean isKieProject = false;
 
     protected IProject[] build(int kind,
                                Map args,
@@ -136,19 +146,16 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             }
         }
 
-        if ( DroolsEclipsePlugin.getDefault().getPreferenceStore().getBoolean( IDroolsConstants.CROSS_BUILD ) ) {
-            DroolsBatchBuildVisitor batchBuildVisitor = new DroolsBatchBuildVisitor();
-            getProject().accept( batchBuildVisitor );
-            batchBuildVisitor.build();
-        } else {
-            getProject().accept( new DroolsBuildVisitor() );
-        }
+        isKieProject = false;
+        DroolsBuilderVisitor droolsBuilderVisitor = new DroolsBuilderVisitor();
+        getProject().accept( droolsBuilderVisitor );
+        droolsBuilderVisitor.build();
     }
 
     protected void incrementalBuild(IResourceDelta delta,
                                     IProgressMonitor monitor) throws CoreException {
         IPreferenceStore store = DroolsEclipsePlugin.getDefault().getPreferenceStore();
-        boolean fullBuild = store.getBoolean( IDroolsConstants.CROSS_BUILD ) || store.getBoolean( IDroolsConstants.BUILD_ALL );
+        boolean fullBuild = store.getBoolean( IDroolsConstants.CROSS_BUILD ) || store.getBoolean( IDroolsConstants.BUILD_ALL ) || isKieProject;
 
         if ( !fullBuild ) {
             fullBuild = DroolsEclipsePlugin.getDefault().resetForceFullBuild();
@@ -162,49 +169,85 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         }
     }
 
-    private class DroolsBatchBuildVisitor
-            implements
-            IResourceVisitor {
-        private final List<ResourceDescr> resourceDescrs = new ArrayList<ResourceDescr>();
-
+    private class DroolsBuilderVisitor
+		    implements
+		    IResourceVisitor {
+    	
+        private final List<IResource> resources = new ArrayList<IResource>();
+        
         public boolean visit(IResource resource) throws CoreException {
-            try {
-                if ( isInOutputDirectory( resource ) ) {
-                    return false;
-                }
-            } catch ( JavaModelException e ) {
-                // do nothing
-            }
-            if ( !exists( resource ) ) {
+            if ( isInOutputDirectory( resource ) || !exists( resource ) ) {
                 return false;
-            } else {
-//                addKbaseFile( resource );
             }
-
-            ResourceDescr resourceDescr = ResourceDescr.createResourceDescr( resource );
-            if ( resourceDescr != null ) {
-                removeProblemsFor( resource );
-                DroolsEclipsePlugin.getDefault().invalidateResource( resource );
-                resourceDescrs.add( resourceDescr );
+            if ( resource instanceof IFile) {
+            	isKieProject |= resource.getProjectRelativePath().toString().endsWith(KieModuleModelImpl.KMODULE_JAR_PATH);
+            	resources.add(resource);
             }
             return true;
         }
+        
+        public void build() throws CoreException {
+        	if (isKieProject) {
+        		doBuildKieProject();
+        	} else if ( DroolsEclipsePlugin.getDefault().getPreferenceStore().getBoolean( IDroolsConstants.CROSS_BUILD ) ) {
+            	doBatchBuild();
+            } else {
+            	doBuild();
+            }
+        }
 
-        public void build() {
+        private void doBuildKieProject() throws CoreException {
+        	KieServices ks = KieServices.Factory.get();
+        	KieFileSystem kfs = ks.newKieFileSystem();
+        	
+        	Map<String, IResource> resourcesMap = new HashMap<String, IResource>(); 
+        	for (IResource resource : resources) {
+        		String resourcePath = resource.getProjectRelativePath().toString();
+                if ( ResourceType.determineResourceType( resource.getName() ) != null ) {
+                    removeProblemsFor( resource );
+                    kfs.write(resourcePath, ResourceFactory.newInputStreamResource( ((IFile) resource).getContents() ));
+                    resourcesMap.put(resourcePath, resource);
+                } else if ( resourcePath.endsWith(KieModuleModelImpl.KMODULE_JAR_PATH) ) {
+                	kfs.writeKModuleXML(new String( Util.getResourceContentsAsCharArray( (IFile)resource ) ));
+                }
+        	}
+        	
+        	KieBuilder kieBuilder = ks.newKieBuilder(kfs);
+        	List<Message> messages = kieBuilder.buildAll().getResults().getMessages();
+        	for (Message message : messages) {
+        		IResource resource = resourcesMap.get(message.getPath());
+        		if (resource == null) {
+        			resource = resourcesMap.get("src/main/resources/" + message.getPath());
+        		}
+        		if (resource != null) {
+        			createMarker(resource, message.getText(), message.getLine());
+        		}
+        	}
+    	}
+        
+        private void doBuild() {
+        	for (IResource resource : resources) {
+        		parseResource( resource, true );
+        	}
+    	}
+
+        private void doBatchBuild() {
+        	List<ResourceDescr> resourceDescrs = new ArrayList<ResourceDescr>();
+        	
+        	for (IResource resource : resources) {
+                ResourceDescr resourceDescr = ResourceDescr.createResourceDescr( resource );
+                if ( resourceDescr != null ) {
+                    removeProblemsFor( resource );
+                    DroolsEclipsePlugin.getDefault().invalidateResource( resource );
+                    resourceDescrs.add( resourceDescr );
+                }
+        	}
+        	
             List<DRLInfo> drlInfos = DroolsEclipsePlugin.getDefault().parseResources( resourceDescrs );
             for ( DRLInfo drlInfo : drlInfos ) {
                 appendMarkers( drlInfo );
             }
-        }
-    }
-
-    private class DroolsBuildVisitor
-            implements
-            IResourceVisitor {
-        public boolean visit(IResource res) {
-            return parseResource( res,
-                                  true );
-        }
+    	}
     }
 
     private class DroolsBuildDeltaVisitor
@@ -224,7 +267,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
                && project.getOutputLocation().isPrefixOf( res.getFullPath() );
     }
 
-    private boolean exists(IResource res) {
+	private boolean exists(IResource res) {
         if ( !res.exists() ) {
             removeProblemsFor( res );
             DroolsEclipsePlugin.getDefault().invalidateResource( res );

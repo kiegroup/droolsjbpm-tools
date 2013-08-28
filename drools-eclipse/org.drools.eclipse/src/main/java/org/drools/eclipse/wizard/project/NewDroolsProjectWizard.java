@@ -510,17 +510,17 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
     	sb.append("<kmodule xmlns=\"http://jboss.org/kie/6.0.0/kmodule\">\n");
     	
         if (extraPage.createJavaRuleFile() || extraPage.createRuleFile()) {
-        	sb.append("    <kbase name=\"rules\">\n");
+        	sb.append("    <kbase name=\"rules\" packages=\"rules\">\n");
         	sb.append("        <ksession name=\"ksession-rules\"/>\n");
         	sb.append("    </kbase>\n");
         }
         if (extraPage.createDecisionTableFile() || extraPage.createJavaDecisionTableFile()) {
-        	sb.append("    <kbase name=\"dtables\">\n");
+        	sb.append("    <kbase name=\"dtables\" packages=\"dtables\">\n");
         	sb.append("        <ksession name=\"ksession-dtables\"/>\n");
         	sb.append("    </kbase>\n");
         }
         if (extraPage.createRuleFlowFile() || extraPage.createJavaRuleFlowFile()) {
-        	sb.append("    <kbase name=\"process\">\n");
+        	sb.append("    <kbase name=\"process\" packages=\"process\">\n");
         	sb.append("        <ksession name=\"ksession-process\"/>\n");
         	sb.append("    </kbase>\n");
         }

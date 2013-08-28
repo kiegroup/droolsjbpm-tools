@@ -1,5 +1,6 @@
 package org.drools.eclipse.builder;
 
+import org.drools.core.command.GetSessionClockCommand;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -46,7 +47,7 @@ public class ResourceDescr {
 	}
 	
 	public String getSourcePathName() {
-		return resource.getFullPath().removeFirstSegments(1).toString();
+		return resource.getProjectRelativePath().toString();
 	}
 
 	public ResourceType getType() {
