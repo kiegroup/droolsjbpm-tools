@@ -80,12 +80,6 @@ public class DroolsRuntimesPreferencePage extends PreferencePage
         droolsRuntimesBlock.createControl(ancestor);
         DroolsRuntime[] runtimes = DroolsRuntimeManager.getDroolsRuntimes();
         droolsRuntimesBlock.setDroolsRuntimes(runtimes);
-        for (DroolsRuntime runtime: runtimes) {
-            if (runtime.isDefault()) {
-                droolsRuntimesBlock.setDefaultDroolsRuntime(runtime);
-                break;
-            }
-        }
         if (droolsRuntimesBlock.getDefaultDroolsRuntime() == null) {
             setErrorMessage("Select a default Drools Runtime");
         }
