@@ -47,6 +47,7 @@ import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.SocketUtil;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
+import org.eclipse.osgi.util.NLS;
 
 import com.sun.jdi.VirtualMachine;
 import com.sun.jdi.connect.Connector;
@@ -195,7 +196,9 @@ public class DroolsVMDebugger extends StandardVMDebugger {
                 }
                 java.util.Date date= new java.util.Date();
                 Timestamp ts = new Timestamp(date.getTime());
-                IProcess process= newProcess(launch, p, renderProcessLabel(cmdLine), getDefaultProcessMap());
+                String format= LaunchingMessages.StandardVMRunner__0____1___2; 
+        		String label = NLS.bind(format, new String[] { cmdLine[0], ts.toString() });
+                IProcess process= newProcess(launch, p, label, getDefaultProcessMap());
                 process.setAttribute(IProcess.ATTR_CMDLINE, renderCommandLineInternal(cmdLine));
                 subMonitor.worked(1);
                 subMonitor.subTask(LaunchingMessages.StandardVMDebugger_Establishing_debug_connection____5);
