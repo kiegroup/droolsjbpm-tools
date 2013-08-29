@@ -29,6 +29,7 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class RuleCompletionProcessorTest {
@@ -74,7 +75,7 @@ public class RuleCompletionProcessorTest {
 
     }
 
-    @Test
+    @Ignore @Test
     public void testContainsProposal() {
         Collection proposals = new ArrayList();
 
@@ -92,7 +93,7 @@ public class RuleCompletionProcessorTest {
                                                                "getNoName" ) );
     }
 
-    @Test
+    @Ignore @Test
     public void testAddAllNewProposals() {
         ArrayList proposals = new ArrayList();
         MockCompletionProposal c = new MockCompletionProposal( "getName() Object - MyObject" );
