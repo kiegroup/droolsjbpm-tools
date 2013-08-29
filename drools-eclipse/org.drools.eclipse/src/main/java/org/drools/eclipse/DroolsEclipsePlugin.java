@@ -608,7 +608,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
             }
             try {
                 Thread.currentThread().setContextClassLoader( newLoader );
-                PackageBuilderConfiguration builder_configuration = new PackageBuilderConfiguration();
+                PackageBuilderConfiguration builder_configuration = new PackageBuilderConfiguration(newLoader);
                 if ( level != null ) {
                     JavaDialectConfiguration javaConf = (JavaDialectConfiguration) builder_configuration.getDialectConfiguration( "java" );
                     javaConf.setJavaLanguageLevel( level );
