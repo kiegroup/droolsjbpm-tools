@@ -240,6 +240,12 @@ public class DroolsRuntimesBlock implements ISelectionProvider {
             droolsRuntimes.add(runtimes[i]);
         }
         droolsRuntimesList.setInput(droolsRuntimes);
+        for (DroolsRuntime runtime: runtimes) {
+            if (runtime.isDefault()) {
+                setDefaultDroolsRuntime(runtime);
+                break;
+            }
+        }
         droolsRuntimesList.refresh();
     }
 
