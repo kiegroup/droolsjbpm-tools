@@ -195,7 +195,7 @@ public class DroolsVMDebugger extends StandardVMDebugger {
                 }
                 java.util.Date date= new java.util.Date();
                 Timestamp ts = new Timestamp(date.getTime());
-                IProcess process= newProcess(launch, p, renderProcessLabel(cmdLine), getDefaultProcessMap());
+                IProcess process= newProcess(launch, p, renderProcessLabel(cmdLine, ts.toString()), getDefaultProcessMap());
                 process.setAttribute(IProcess.ATTR_CMDLINE, renderCommandLineInternal(cmdLine));
                 subMonitor.worked(1);
                 subMonitor.subTask(LaunchingMessages.StandardVMDebugger_Establishing_debug_connection____5);
