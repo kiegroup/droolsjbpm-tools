@@ -68,7 +68,7 @@ public class ProcessEditPart extends AbstractGraphicalEditPart implements ModelL
         installEditPolicy(EditPolicy.COMPONENT_ROLE, new RootComponentEditPolicy());
     }
 
-    protected List getModelChildren() {
+    protected List<ElementWrapper> getModelChildren() {
         return getProcessWrapper().getElements();
     }
     
@@ -94,7 +94,7 @@ public class ProcessEditPart extends AbstractGraphicalEditPart implements ModelL
         }
     }
     
-    public Object getAdapter(Class adapter) {
+    public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
         if (adapter == SnapToHelper.class) {
             Boolean val = (Boolean) getViewer().getProperty(SnapToGrid.PROPERTY_GRID_ENABLED);
             if (val != null && val.booleanValue()) {
@@ -124,8 +124,8 @@ public class ProcessEditPart extends AbstractGraphicalEditPart implements ModelL
     }
     
     public boolean setTableModelBounds() {
-        List tableParts = getChildren();
-        for (Iterator iter = tableParts.iterator(); iter.hasNext(); ) {
+        List<ElementEditPart> tableParts = getChildren();
+        for (Iterator<ElementEditPart> iter = tableParts.iterator(); iter.hasNext(); ) {
             ElementEditPart elementEditPart = (ElementEditPart) iter.next();
             ElementFigure elementFigure = (ElementFigure) elementEditPart.getFigure();
             if (elementFigure == null) {
@@ -136,5 +136,11 @@ public class ProcessEditPart extends AbstractGraphicalEditPart implements ModelL
             elementWrapper.setConstraint(constraint);
         }
         return true;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<ElementEditPart> getChildren() {
+        return super.getChildren();
     }
 }

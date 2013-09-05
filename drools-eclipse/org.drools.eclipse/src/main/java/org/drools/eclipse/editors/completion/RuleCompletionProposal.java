@@ -141,11 +141,8 @@ public class RuleCompletionProposal
     }
 
     //TODO:fixme now that we mix JDT and own proposals, comparison is all wrong, resulting in wrong ordering of mixed proposals (such as with mvel
-    public static class RuleCompletionProposalComparator
-        implements
-        Comparator {
-        public int compare(Object arg0,
-                           Object arg1) {
+    public static class RuleCompletionProposalComparator implements Comparator<ICompletionProposal> {
+        public int compare(ICompletionProposal arg0, ICompletionProposal arg1) {
             if ( arg0 instanceof RuleCompletionProposal ) {
                 if ( arg1 instanceof RuleCompletionProposal ) {
                     RuleCompletionProposal prop0 = (RuleCompletionProposal) arg0;

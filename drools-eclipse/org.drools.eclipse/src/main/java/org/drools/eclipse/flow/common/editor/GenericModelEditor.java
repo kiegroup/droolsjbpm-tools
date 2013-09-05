@@ -97,6 +97,7 @@ public abstract class GenericModelEditor extends GraphicalEditorWithPalette { //
         return model;
     }
 
+    @SuppressWarnings("unchecked")
     protected void createActions() {
         super.createActions();
         ActionRegistry registry = getActionRegistry();
@@ -336,7 +337,7 @@ public abstract class GenericModelEditor extends GraphicalEditorWithPalette { //
 
     protected abstract void createModel(InputStream is);
 
-    public Object getAdapter(Class type) {
+    public Object getAdapter(@SuppressWarnings("rawtypes") Class type) {
         if (type == IContentOutlinePage.class) {
             return getOverviewOutlinePage();
         }

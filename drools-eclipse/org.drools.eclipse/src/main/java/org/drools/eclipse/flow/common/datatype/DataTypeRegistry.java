@@ -28,10 +28,10 @@ public interface DataTypeRegistry {
     /**
      * Returns all registered data types.
      */
-    Set getDataTypes();
+    Set<IDataTypeInfo> getDataTypes();
     
-    void registerDataType(Class type, DataTypeFactory dataTypeFactory, String name,
-        Class valueEditorClass, Class dataTypeEditorClass);
+    void registerDataType(Class<?> type, DataTypeFactory dataTypeFactory, String name,
+        Class<?> valueEditorClass, Class<?> dataTypeEditorClass);
     
     /**
      * Returns the data type info of the data type with the given type
@@ -39,13 +39,13 @@ public interface DataTypeRegistry {
      * @return the data type info
      * @throws IllegalArgumentException if the data type info of this type cannot be found
      */
-    IDataTypeInfo getDataTypeInfo(Class type);
+    IDataTypeInfo getDataTypeInfo(Class<?> type);
     
     interface IDataTypeInfo {
-        Class getType();
+        Class<?> getType();
         DataTypeFactory getDataTypeFactory();
         String getName();
-        Class getDataTypeEditorClass();
-        Class getValueEditorClass();
+        Class<?> getDataTypeEditorClass();
+        Class<?> getValueEditorClass();
     }
 }

@@ -66,14 +66,14 @@ public class Keywords {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 
-            List list = new ArrayList();
+            List<String> list = new ArrayList<String>();
 
             String line = null;
             while ((line = reader.readLine()) != null) {
                if (!line.startsWith( "#" ))  list.add( line );
             }
 
-            return (String[]) list.toArray( new String[list.size()] );
+            return list.toArray( new String[list.size()] );
         }
         catch ( IOException e ) {
             throw new IllegalArgumentException("Could not load keywords for editor.");

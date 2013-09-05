@@ -26,6 +26,7 @@ import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IBreakpoint;
+import org.eclipse.jdt.debug.core.IJavaStackFrame;
 import org.eclipse.jdt.internal.debug.core.model.JDIDebugModelMessages;
 import org.eclipse.jdt.internal.debug.core.model.JDIDebugTarget;
 import org.eclipse.jdt.internal.debug.core.model.JDIStackFrame;
@@ -52,14 +53,14 @@ public class DroolsThread extends JDIThread {
                thread );
     }
 
-    protected synchronized List computeStackFrames(boolean refreshChildren) throws DebugException {
-        List fStackFrames = getInternalfStackFrames();
+    protected synchronized List<IJavaStackFrame> computeStackFrames(boolean refreshChildren) throws DebugException {
+        List<IJavaStackFrame> fStackFrames = getInternalfStackFrames();
 
         if ( isSuspended() ) {
             if ( isTerminated() ) {
                 fStackFrames.clear();
             } else if ( refreshChildren ) {
-                List frames = getInternalUnderlyingFrames();
+                List<StackFrame> frames = getInternalUnderlyingFrames();
                 int oldSize = fStackFrames.size();
                 int newSize = frames.size();
                 int discard = oldSize - newSize; // number of old frames to discard, if any
@@ -99,7 +100,7 @@ public class DroolsThread extends JDIThread {
             }
             setInternalfRefreshChildren( false );
         } else {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         return fStackFrames;
     }
@@ -153,9 +154,7 @@ public class DroolsThread extends JDIThread {
             getUnderlyingThread().resume();
         } catch ( RuntimeException e ) {
             //stepEnd();
-            targetRequestFailed( MessageFormat.format( JDIDebugModelMessages.JDIThread_exception_stepping,
-                                                       new String[]{e.toString()} ),
-                                 e );
+            targetRequestFailed(MessageFormat.format(JDIDebugModelMessages.JDIThread_exception_stepping, e.toString()), e);
         }
 
     }
@@ -167,14 +166,14 @@ public class DroolsThread extends JDIThread {
             return false;
         }
 
-        Iterator handleriter = getVM().classesByName( "org.drools.core.base.mvel.MVELDebugHandler" ).iterator();
+        Iterator<ReferenceType> handleriter = getVM().classesByName( "org.drools.core.base.mvel.MVELDebugHandler" ).iterator();
         Object debugHandlerClass = handleriter.next();
 
         int line = step_over;
 
         ReferenceType refType = (ReferenceType) debugHandlerClass;
-        Method m = (Method) refType.methodsByName( "setOnBreakReturn" ).iterator().next();
-        List args = new ArrayList();
+        Method m = refType.methodsByName( "setOnBreakReturn" ).iterator().next();
+        List<IntegerValue> args = new ArrayList<IntegerValue>();
         IntegerValue lineVal = getVM().mirrorOf( line );
         //ObjectReference realVal = val.getUnderlyingObject();
         args.add( lineVal );
@@ -233,27 +232,27 @@ public class DroolsThread extends JDIThread {
         }
     }
 
-    public List getInternalfStackFrames() {
+    @SuppressWarnings("unchecked")
+    public List<IJavaStackFrame> getInternalfStackFrames() {
         try {
             java.lang.reflect.Field field = JDIThread.class.getDeclaredField( "fStackFrames" );
 
             field.setAccessible( true );
 
-            return (List) field.get( this );
+            return (List<IJavaStackFrame>) field.get(this);
         } catch ( Exception e ) {
             return null;
         }
     }
 
-    private List getInternalUnderlyingFrames() throws DebugException {
+    @SuppressWarnings("unchecked")
+    private List<StackFrame> getInternalUnderlyingFrames() throws DebugException {
         try {
-            java.lang.reflect.Method method = JDIThread.class.getDeclaredMethod( "getUnderlyingFrames",
-                                                                                 null );
+            java.lang.reflect.Method method = JDIThread.class.getDeclaredMethod("getUnderlyingFrames");
 
             method.setAccessible( true );
 
-            return (List) method.invoke( this,
-                                         null );
+            return (List<StackFrame>) method.invoke(this);
         } catch ( Exception e ) {
             return null;
         }

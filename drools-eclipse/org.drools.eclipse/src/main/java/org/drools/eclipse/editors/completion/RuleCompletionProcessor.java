@@ -24,12 +24,19 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Matcher;
 
-import org.drools.core.base.ClassTypeResolver;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.compiler.lang.Location;
+import org.drools.compiler.lang.descr.GlobalDescr;
+import org.drools.compiler.rule.builder.dialect.mvel.MVELConsequenceBuilder;
+import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
+import org.drools.core.base.ClassTypeResolver;
+import org.drools.core.rule.MVELDialectRuntimeData;
+import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.drools.eclipse.DRLInfo;
 import org.drools.eclipse.DRLInfo.RuleInfo;
@@ -37,12 +44,6 @@ import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
 import org.drools.eclipse.editors.AbstractRuleEditor;
 import org.drools.eclipse.util.ProjectClassLoader;
-import org.drools.compiler.lang.Location;
-import org.drools.compiler.lang.descr.GlobalDescr;
-import org.drools.core.rule.MVELDialectRuntimeData;
-import org.drools.compiler.rule.builder.dialect.mvel.MVELConsequenceBuilder;
-import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
-import org.drools.core.spi.KnowledgeHelper;
 import org.eclipse.jdt.core.CompletionProposal;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.internal.ui.text.java.JavaCompletionProposal;
@@ -82,10 +83,9 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         super( editor );
     }
 
-    protected List getCompletionProposals(ITextViewer viewer,
-                                          int documentOffset) {
+    protected List<ICompletionProposal> getCompletionProposals(ITextViewer viewer, int documentOffset) {
         try {
-            final List list = new ArrayList();
+            final List<ICompletionProposal> list = new ArrayList<ICompletionProposal>();
             IDocument doc = viewer.getDocument();
 
             String backText = readBackwards( documentOffset,
@@ -120,8 +120,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                            backText );
             }
 
-            filterProposalsOnPrefix( prefix,
-                                     list );
+            filterProposalsOnPrefix(prefix, list);
             return list;
         } catch ( Throwable t ) {
             DroolsEclipsePlugin.log( t );
@@ -129,7 +128,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         return null;
     }
 
-    protected void addRHSCompletionProposals(List list,
+    protected void addRHSCompletionProposals(List<ICompletionProposal> list,
                                              int documentOffset,
                                              String prefix,
                                              String backText,
@@ -207,7 +206,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         return false;
     }
 
-    protected void addLHSCompletionProposals(List<RuleCompletionProposal> list,
+    protected void addLHSCompletionProposals(List<ICompletionProposal> list,
                                              int documentOffset,
                                              Location location,
                                              String prefix,
@@ -331,7 +330,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                                                                    "this" );
                             p.setImage( METHOD_ICON );
                             list.add( p );
-                            Class clazz = resolver.resolveType( currentClass );
+                            Class<?> clazz = resolver.resolveType( currentClass );
                             if ( clazz != null ) {
                                 if ( Map.class.isAssignableFrom( clazz ) ) {
                                     p = new RuleCompletionProposal( documentOffset - prefix.length(),
@@ -343,17 +342,17 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                     list.add( p );
                                 }
                                 ClassFieldInspector inspector = new ClassFieldInspector( clazz );
-                                Map types = inspector.getFieldTypes();
-                                Iterator iterator2 = inspector.getFieldNames().keySet().iterator();
+                                Map<String, Class<?>> types = inspector.getFieldTypes();
+                                Iterator<String> iterator2 = inspector.getFieldNames().keySet().iterator();
                                 while ( iterator2.hasNext() ) {
-                                    String name = (String) iterator2.next();
+                                    String name = iterator2.next();
                                     p = new RuleCompletionProposal( documentOffset - prefix.length(),
                                                                     prefix.length(),
                                                                     name,
                                                                     name + " " );
                                     p.setImage( METHOD_ICON );
                                     list.add( p );
-                                    Class type = (Class) types.get( name );
+                                    Class<?> type = types.get( name );
                                     if ( type != null && Map.class.isAssignableFrom( type ) ) {
                                         name += "['']";
                                         p = new RuleCompletionProposal( documentOffset - prefix.length(),
@@ -544,13 +543,13 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                                       2,
                                                       DROOLS_ICON ) );
                 // add parameters with possibly matching type
-                Map result = new HashMap();
+                Map<String, String> result = new HashMap<String, String>();
                 addRuleParameters( result, context.getRuleParameters() );
-                Iterator iterator2 = result.entrySet().iterator();
+                Iterator<Entry<String, String>> iterator2 = result.entrySet().iterator();
                 while ( iterator2.hasNext() ) {
-                    Map.Entry entry = (Map.Entry) iterator2.next();
-                    String paramName = (String) entry.getKey();
-                    String paramType = (String) entry.getValue();
+                    Entry<String, String> entry = iterator2.next();
+                    String paramName = entry.getKey();
+                    String paramType = entry.getValue();
                     if ( isSubtypeOf( paramType,
                                       type ) ) {
                         RuleCompletionProposal proposal = new RuleCompletionProposal( documentOffset - prefix.length(),
@@ -614,9 +613,8 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                                           DROOLS_ICON ) );
                     PackageBuilderConfiguration config = new PackageBuilderConfiguration( ProjectClassLoader.getProjectClassLoader( getEditor() ),
                                                                                           null );
-                    Map accumulateFunctions = config.getAccumulateFunctionsMap();
-                    for ( iterator2 = accumulateFunctions.keySet().iterator(); iterator2.hasNext(); ) {
-                        String accumulateFunction = (String) iterator2.next();
+                    Map<String, String> accumulateFunctions = config.getAccumulateFunctionsMap();
+                    for (String accumulateFunction : accumulateFunctions.keySet()) {
                         list.add( new RuleCompletionProposal( documentOffset - prefix.length(),
                                                               prefix.length(),
                                                               "accumulate " + accumulateFunction,
@@ -632,10 +630,10 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                                           DROOLS_ICON ) );
                     // add all functions
                     if ( "".equals( fromText ) ) {
-                        List functions = getFunctions();
+                        List<String> functions = getFunctions();
                         iterator = functions.iterator();
                         while ( iterator.hasNext() ) {
-                            String name = (String) iterator.next() + "()";
+                            String name = iterator.next() + "()";
                             prop = new RuleCompletionProposal( documentOffset - prefix.length(),
                                                                prefix.length(),
                                                                name,
@@ -706,9 +704,9 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         ClassTypeResolver resolver = new ClassTypeResolver( getUniqueImports(),
                                                             ProjectClassLoader.getProjectClassLoader( getEditor() ) );
         try {
-            Class clazz = resolver.resolveType( className );
+            Class<?> clazz = resolver.resolveType( className );
             if ( clazz != null ) {
-                Class clazzz = (Class) new ClassFieldInspector( clazz ).getFieldTypes().get( propertyName );
+                Class<?> clazzz = new ClassFieldInspector( clazz ).getFieldTypes().get( propertyName );
                 if ( clazzz != null ) {
                     return clazzz.getName();
                 }
@@ -721,13 +719,12 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         return "java.lang.Object";
     }
 
-    private Map getRuleParameters(String backText) {
-        Map result = new HashMap();
+    private Map<String, String> getRuleParameters(String backText) {
+        Map<String, String> result = new HashMap<String, String>();
         // add globals
-        List globals = getGlobals();
+        List<GlobalDescr> globals = getGlobals();
         if ( globals != null ) {
-            for ( Iterator iterator = globals.iterator(); iterator.hasNext(); ) {
-                GlobalDescr global = (GlobalDescr) iterator.next();
+            for (GlobalDescr global : globals) {
                 result.put( global.getIdentifier(),
                             global.getType() );
             }
@@ -789,8 +786,8 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         ClassTypeResolver resolver = new ClassTypeResolver( getUniqueImports(),
                                                             ProjectClassLoader.getProjectClassLoader( getEditor() ) );
         try {
-            Class clazz1 = resolver.resolveType( class1 );
-            Class clazz2 = resolver.resolveType( class2 );
+            Class<?> clazz1 = resolver.resolveType( class1 );
+            Class<?> clazz2 = resolver.resolveType( class2 );
             if ( clazz1 == null || clazz2 == null ) {
                 return false;
             }
@@ -825,15 +822,13 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         return null;
     }
 
-    private void addRHSFunctionCompletionProposals(List list,
-                                                   int documentOffset,
-                                                   String prefix) {
-        Iterator iterator;
+    private void addRHSFunctionCompletionProposals(List<ICompletionProposal> list, int documentOffset, String prefix) {
+        Iterator<String> iterator;
         RuleCompletionProposal prop;
-        List functions = getFunctions();
+        List<String> functions = getFunctions();
         iterator = functions.iterator();
         while ( iterator.hasNext() ) {
-            String name = (String) iterator.next() + "()";
+            String name = iterator.next() + "()";
             prop = new RuleCompletionProposal( documentOffset - prefix.length(),
                                                prefix.length(),
                                                name,
@@ -845,9 +840,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         }
     }
 
-    private void addRHSKeywordCompletionProposals(List list,
-                                                  int documentOffset,
-                                                  String prefix) {
+    private void addRHSKeywordCompletionProposals(List<ICompletionProposal> list, int documentOffset, String prefix) {
         RuleCompletionProposal prop = new RuleCompletionProposal( documentOffset - prefix.length(),
                                                                   prefix.length(),
                                                                   "update",
@@ -878,7 +871,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         list.add( prop );
     }
 
-    private void addRHSJavaCompletionProposals(List list,
+    private void addRHSJavaCompletionProposals(List<ICompletionProposal> list,
                                                int documentOffset,
                                                String prefix,
                                                String backText,
@@ -889,14 +882,14 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                                  getRuleParameters( backText ) ) );
     }
 
-    private void addRHSMvelCompletionProposals(List list,
+    private void addRHSMvelCompletionProposals(List<ICompletionProposal> list,
                                                final int documentOffset,
                                                String prefix,
                                                String backText,
                                                String consequence,
                                                boolean expressionStart) {
 
-        Collection mvelCompletionProposals = getMvelCompletionProposals( consequence,
+        Collection<ICompletionProposal> mvelCompletionProposals = getMvelCompletionProposals( consequence,
                                                                          documentOffset,
                                                                          prefix,
                                                                          getRuleParameters( backText ),
@@ -905,14 +898,14 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         list.addAll( mvelCompletionProposals );
     }
 
-    private Collection getMvelCompletionProposals(final String consequenceBackText,
+    private Collection<ICompletionProposal> getMvelCompletionProposals(final String consequenceBackText,
                                                   final int documentOffset,
                                                   final String prefix,
-                                                  Map params,
+                                                  Map<String, String> params,
                                                   String ruleBackText,
                                                   boolean startOfExpression) {
 
-        final Set proposals = new HashSet();
+        final Set<ICompletionProposal> proposals = new HashSet<ICompletionProposal>();
 
         if (!(getEditor().getEditorInput() instanceof IFileEditorInput)) {
             return proposals;
@@ -943,8 +936,10 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                                                      previousExpression );
 
             // attempt to compile and analyze the last and last inner expression, using as inputs the previous expression inputs and vars
-            Map variables = previousExprContext.getContext().getVariables();
-            Map inputs = previousExprContext.getContext().getInputs();
+            @SuppressWarnings("rawtypes")
+            Map<String, Class> variables = previousExprContext.getContext().getVariables();
+            @SuppressWarnings("rawtypes")
+            Map<String, Class> inputs = previousExprContext.getContext().getInputs();
             inputs.putAll( variables );
 
             //last inner expression
@@ -992,9 +987,9 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                                                    drlInfo,
                                                                    modifyVar );
 
-                Class modVarType = modVarContext.getReturnedType();
+                Class<?> modVarType = modVarContext.getReturnedType();
 
-                Collection modVarComps = getMvelInstanceCompletionsFromJDT( documentOffset,
+                Collection<ICompletionProposal> modVarComps = getMvelInstanceCompletionsFromJDT( documentOffset,
                                                                             "",
                                                                             params,
                                                                             modVarType,
@@ -1032,7 +1027,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                 prefix,
                                 lastInnerExprContext.getContext().getInputs() );
 
-            Collection jdtProps = getJavaCompletionProposals( documentOffset,
+            Collection<ICompletionProposal> jdtProps = getJavaCompletionProposals( documentOffset,
                                                               prefix,
                                                               prefix,
                                                               params );
@@ -1042,24 +1037,23 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         } catch ( Throwable e ) {
             DroolsEclipsePlugin.log( e );
         }
-        Set uniqueProposals = new HashSet();
+        Set<ICompletionProposal> uniqueProposals = new HashSet<ICompletionProposal>();
         addAllNewProposals( uniqueProposals,
                             proposals );
         return uniqueProposals;
     }
     
-    private Map getResolvedMvelInputs(Map params) {
-        ClassTypeResolver resolver = new ClassTypeResolver( getUniqueImports(),
-                                                            ProjectClassLoader.getProjectClassLoader( getEditor() ) );
+    @SuppressWarnings("rawtypes")
+    private Map<String, Class> getResolvedMvelInputs(Map<String, String> params) {
+        ClassTypeResolver resolver = new ClassTypeResolver(getUniqueImports(),
+                ProjectClassLoader.getProjectClassLoader(getEditor()));
 
-        Map resolved = new HashMap();
-        for ( Iterator iter = params.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            String inputType = (String) entry.getValue();
+        Map<String, Class> resolved = new HashMap<String, Class>();
+        for (Entry<String, String> entry : params.entrySet()) {
+            String inputType = entry.getValue();
             try {
-                Class type = resolver.resolveType( inputType );
-                resolved.put( entry.getKey(),
-                              type );
+                Class<?> type = resolver.resolveType( inputType );
+                resolved.put( entry.getKey(), type );
             } catch ( ClassNotFoundException e ) {
                 DroolsEclipsePlugin.log( e );
             }
@@ -1070,7 +1064,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
     class MvelContext {
         private CompiledExpression expression;
         private ParserContext      parserContext;
-        private Class              returnedType;
+        private Class<?>              returnedType;
         private boolean            staticFlag;
 
         public ParserContext getContext() {
@@ -1089,11 +1083,11 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
             return expression;
         }
 
-        void setReturnedType(Class returnedType) {
+        void setReturnedType(Class<?> returnedType) {
             this.returnedType = returnedType;
         }
 
-        Class getReturnedType() {
+        Class<?> getReturnedType() {
             return returnedType;
         }
 
@@ -1106,7 +1100,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         }
     }
 
-    private MvelContext analyzeMvelExpression(Map params,
+    private MvelContext analyzeMvelExpression(@SuppressWarnings("rawtypes") Map<String, Class> params,
                                               DRLInfo drlInfo,
                                               String mvel) {
 
@@ -1125,7 +1119,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
         try {
         	ExecutableStatement stmt = (ExecutableStatement) MVEL.compileExpression(expr, initialContext);
-            Class lastType = stmt.getKnownEgressType();
+            Class<?> lastType = stmt.getKnownEgressType();
 
             //Statics expression may return Class as an egress type
             if ( lastType != null && "java.lang.Class".equals( lastType.getName() ) ) {
@@ -1149,7 +1143,8 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         return mCon;
     }
 
-    private static ParserContext createInitialContext(Map params,
+    @SuppressWarnings("unchecked")
+    private static ParserContext createInitialContext(@SuppressWarnings("rawtypes") Map<String, Class> params,
                                                       String qualifiedName,
                                                       MVELDialect dialect) {
 
@@ -1163,8 +1158,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                                          qualifiedName );
 
         if ( pconf.getPackageImports() != null ) {
-            for ( Iterator it = pconf.getPackageImports().iterator(); it.hasNext(); ) {
-                String packageImport = (String) it.next();
+            for (String packageImport : pconf.getPackageImports()) {
                 context.addPackageImport( packageImport );
             }
         }
@@ -1172,17 +1166,14 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
 
         context.setInterceptors( dialect.getInterceptors() );
         context.setInputs( params );
-        context.addInput( "drools",
-                          KnowledgeHelper.class );
-        context.addInput( "kcontext",
-                          RuleContext.class );
+        context.addInput("drools", KnowledgeHelper.class);
+        context.addInput("kcontext", RuleContext.class);
         context.setCompiled( true );
         return context;
     }
 
     public static String processMacros(String mvel) {
-        MVELConsequenceBuilder builder = new MVELConsequenceBuilder();
-        String macrosProcessedCompilableConsequence = builder.processMacros( mvel.trim() );
+        String macrosProcessedCompilableConsequence = MVELConsequenceBuilder.processMacros( mvel.trim() );
         return macrosProcessedCompilableConsequence;
     }
 
@@ -1202,10 +1193,10 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
     /*
      * Completions for object instance members
      */
-    private Collection getMvelInstanceCompletionsFromJDT(final int documentOffset,
+    private Collection<ICompletionProposal> getMvelInstanceCompletionsFromJDT(final int documentOffset,
                                                          final String prefix,
-                                                         Map params,
-                                                         Class lastType,
+                                                         Map<String, String> params,
+                                                         Class<?> lastType,
                                                          boolean settersOnly) {
         if ( lastType == null ) {
             lastType = Object.class;
@@ -1216,27 +1207,22 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         final String syntheticVarName = "mvdrlofc";
 
         String javaText = "\n" + lastType.getPackage().getName() + "." + CompletionUtil.getSimpleClassName( lastType ) + " " + syntheticVarName + ";\n" + syntheticVarName + ".";
-        final List list1 = new ArrayList();
-        requestJavaCompletionProposals( javaText,
-                                        prefix,
-                                        documentOffset,
-                                        params,
-                                        list1 );
+        final List<ICompletionProposal> list1 = new ArrayList<ICompletionProposal>();
+        requestJavaCompletionProposals(javaText, prefix, documentOffset, params, list1);
 
-        final List list = list1;
+        final List<ICompletionProposal> list = list1;
 
-        Collection mvelList = RuleCompletionProcessor.mvelifyProposals( list,
-                                                                        settersOnly );
+        Collection<ICompletionProposal> mvelList = RuleCompletionProcessor.mvelifyProposals(list, settersOnly);
         return mvelList;
     }
 
     /*
      * Completions for static Class members
      */
-    private Collection getMvelClassCompletionsFromJDT(final int documentOffset,
+    private Collection<ICompletionProposal> getMvelClassCompletionsFromJDT(final int documentOffset,
                                                       final String prefix,
-                                                      Map params,
-                                                      Class lastType) {
+                                                      Map<String, String> params,
+                                                      Class<?> lastType) {
         if ( lastType == null ) {
             lastType = Object.class;
         }
@@ -1245,28 +1231,22 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         //ideally the variable name should be inferred from the last member of the expression
 
         String javaText = "\n" + CompletionUtil.getSimpleClassName( lastType ) + ".";
-        final List list1 = new ArrayList();
-        requestJavaCompletionProposals( javaText,
-                                        prefix,
-                                        documentOffset,
-                                        params,
-                                        list1 );
-        final List list = list1;
-        Collection mvelList = RuleCompletionProcessor.mvelifyProposals( list,
-                                                                        false );
+        final List<ICompletionProposal> list1 = new ArrayList<ICompletionProposal>();
+        requestJavaCompletionProposals(javaText, prefix, documentOffset, params, list1);
+        final List<ICompletionProposal> list = list1;
+        Collection<ICompletionProposal> mvelList = RuleCompletionProcessor.mvelifyProposals(list, false);
         return mvelList;
     }
 
-    private static void addMvelCompletions(final Collection proposals,
+    @SuppressWarnings("rawtypes")
+    private static void addMvelCompletions(final Collection<ICompletionProposal> proposals,
                                     int documentOffset,
                                     String prefix,
-                                    Map inputs) {
-        Set newProposals = new HashSet();
-        for ( Iterator iter = inputs.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            String prop = (String) entry.getKey();
-
-            Class type = (Class) entry.getValue();
+                                    Map<String, Class> inputs) {
+        Set<ICompletionProposal> newProposals = new HashSet<ICompletionProposal>();
+        for (Entry<String, Class> entry : inputs.entrySet()) {
+            String prop = entry.getKey();
+            Class<?> type = entry.getValue();
             String display = prop + "  " + CompletionUtil.getSimpleClassName( type );
 
             RuleCompletionProposal rcp = new RuleCompletionProposal( documentOffset - prefix.length(),
@@ -1276,20 +1256,17 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
             rcp.setImage( DefaultCompletionProcessor.VARIABLE_ICON );
             newProposals.add( rcp );
         }
-        addAllNewProposals( proposals,
-                            newProposals );
+        addAllNewProposals(proposals, newProposals);
     }
 
-    public static void addAllNewProposals(final Collection proposals,
-                                          final Collection newProposals) {
-        for ( Iterator iter = newProposals.iterator(); iter.hasNext(); ) {
-            ICompletionProposal newProp = (ICompletionProposal) iter.next();
+    public static void addAllNewProposals(final Collection<ICompletionProposal> proposals,
+                                          final Collection<ICompletionProposal> newProposals) {
+        for (ICompletionProposal newProp : newProposals) {
             String displayString = newProp.getDisplayString();
 
             //JBRULES-1134 do not add completions if they already exist
-            if ( !containsProposal( proposals,
-                                    displayString ) ) {
-                proposals.add( newProp );
+            if (!containsProposal(proposals, displayString)) {
+                proposals.add(newProp);
             }
         }
     }
@@ -1301,10 +1278,8 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
      * @return true if the collection contains a proposal which matches the new Proposal.
      * The match is based on the first token based on a space split
      */
-    public static boolean containsProposal(final Collection proposals,
-                                           String newProposal) {
-        for ( Iterator iter = proposals.iterator(); iter.hasNext(); ) {
-            ICompletionProposal prop = (ICompletionProposal) iter.next();
+    public static boolean containsProposal(final Collection<ICompletionProposal> proposals, String newProposal) {
+        for (ICompletionProposal prop : proposals) {
             String displayString = prop.getDisplayString();
             String[] existings = displayString.split( " " );
             if ( existings.length == 0 ) {
@@ -1339,7 +1314,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         }
     }
 
-    private void addRuleHeaderProposals(List list,
+    private void addRuleHeaderProposals(List<ICompletionProposal> list,
                                         int documentOffset,
                                         String prefix,
                                         String backText) {
@@ -1423,24 +1398,17 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
      * For instance a completion for getStatus() would be replaced by a completion for status
      * when asking for stters only, then only setters or writable fields will be returned
      */
-    public static Collection mvelifyProposals(List list,
-                                              boolean settersOnly) {
-        final Collection set = new HashSet();
+    public static Collection<ICompletionProposal> mvelifyProposals(List<ICompletionProposal> list, boolean settersOnly) {
+        final Collection<ICompletionProposal> set = new HashSet<ICompletionProposal>();
 
-        for ( Iterator iter = list.iterator(); iter.hasNext(); ) {
-            Object o = iter.next();
+        for (ICompletionProposal o : list) {
             if ( o instanceof JavaMethodCompletionProposal ) {
                 //methods
-                processJavaMethodCompletionProposal( list,
-                                                     settersOnly,
-                                                     set,
-                                                     o );
+                processJavaMethodCompletionProposal(list, settersOnly, set, o);
 
             } else if ( o instanceof JavaCompletionProposal ) {
                 //fields
-                processesJavaCompletionProposal( settersOnly,
-                                                 set,
-                                                 o );
+                processesJavaCompletionProposal(settersOnly, set, o);
             } else if ( !settersOnly ) {
                 set.add( o );
             }
@@ -1449,8 +1417,8 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
     }
 
     private static void processesJavaCompletionProposal(boolean settersOnly,
-                                                        final Collection set,
-                                                        Object o) {
+                                                        final Collection<ICompletionProposal> set,
+                                                        ICompletionProposal o) {
         if ( settersOnly ) {
             JavaCompletionProposal jcp = (JavaCompletionProposal) o;
             //TODO: FIXME: this is very fragile as it uses reflection to access the private completion field.
@@ -1467,15 +1435,14 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         }
     }
 
-    private static void processJavaMethodCompletionProposal(List list,
+    private static void processJavaMethodCompletionProposal(List<ICompletionProposal> list,
                                                             boolean settersOnly,
-                                                            final Collection set,
-                                                            Object o) {
+                                                            final Collection<ICompletionProposal> set,
+                                                            ICompletionProposal o) {
         LazyJavaCompletionProposal javaProposal = (LazyJavaCompletionProposal) o;
         //TODO: FIXME: this is very fragile as it uses reflection to access the private completion field.
         //Yet this is needed to do mvel filtering based on the method signtures, IF we use the richer JDT completion
-        Object field = ReflectionUtils.getField( o,
-                                                 "fProposal" );
+        Object field = ReflectionUtils.getField(o, "fProposal");
         if ( field != null && field instanceof CompletionProposal ) {
             CompletionProposal proposal = (CompletionProposal) field;
 

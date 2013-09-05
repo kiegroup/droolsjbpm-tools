@@ -24,7 +24,7 @@ public class ReflectionUtils {
     }
 
     public static Object getField(Object instance, String name) {
-        Class clazz = instance.getClass();
+        Class<?> clazz = instance.getClass();
 
         do {
             Field[] fields = clazz.getDeclaredFields();

@@ -16,17 +16,21 @@
 
 package org.drools.eclipse.flow.ruleflow.view.property.constraint;
 
+import java.util.Map;
+
 import org.drools.eclipse.flow.common.view.property.BeanDialogCellEditor;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.WorkflowProcess;
+import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.node.Split;
 
 /**
  * Cell editor for constraints.
  */
-public class ConstraintListCellEditor extends BeanDialogCellEditor {
+public class ConstraintListCellEditor extends BeanDialogCellEditor<Map<ConnectionRef, Constraint>> {
 
     private WorkflowProcess process;
     private Split split;
@@ -37,7 +41,7 @@ public class ConstraintListCellEditor extends BeanDialogCellEditor {
         this.split = split;
     }
 
-    protected EditBeanDialog createDialog(Shell shell) {
+    protected EditBeanDialog<Map<ConnectionRef, Constraint>> createDialog(Shell shell) {
         return new ConstraintListDialog(shell, process, split);
     }
     

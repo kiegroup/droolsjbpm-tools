@@ -42,12 +42,12 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
     }
 
     public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int documentOffset) {
-        List proposals = getCompletionProposals(viewer, documentOffset);
+        List<ICompletionProposal> proposals = getCompletionProposals(viewer, documentOffset);
         if (proposals == null) {
             return new ICompletionProposal[0];
         }
         Collections.sort(proposals, new RuleCompletionProposal.RuleCompletionProposalComparator());
-        return (ICompletionProposal[]) proposals.toArray(new ICompletionProposal[proposals.size()]);
+        return proposals.toArray(new ICompletionProposal[proposals.size()]);
     }
 
     /**
@@ -57,17 +57,17 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
      * @param documentOffset
      * @return
      */
-    protected abstract List getCompletionProposals(ITextViewer viewer, int documentOffset);
+    protected abstract List<ICompletionProposal> getCompletionProposals(ITextViewer viewer, int documentOffset);
 
     /**
      *  Filter out the proposals whose content does not start with the given prefix.
      */
-    protected static void filterProposalsOnPrefix(String prefix, List props) {
+    protected static void filterProposalsOnPrefix(String prefix, List<ICompletionProposal> props) {
         if ( prefix != null && prefix.trim().length() > 0 ) {
-            Iterator iterator = props.iterator();
+            Iterator<ICompletionProposal> iterator = props.iterator();
             String prefixLc = prefix.toLowerCase();
             while ( iterator.hasNext() ) {
-                ICompletionProposal item = (ICompletionProposal) iterator.next();
+                ICompletionProposal item = iterator.next();
                 String content = item.getDisplayString().toLowerCase();
                 if ( !content.toLowerCase().startsWith( prefixLc ) ) {
                     iterator.remove();

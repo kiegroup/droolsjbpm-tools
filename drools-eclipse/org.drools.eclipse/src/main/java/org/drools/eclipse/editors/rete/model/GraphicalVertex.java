@@ -90,9 +90,9 @@ abstract public class GraphicalVertex extends ModelElement {
     private final static Dimension       size                    = new Dimension( 16,
                                                                                   16 );
     /** List of outgoing Connections. */
-    private List                         sourceConnections       = new ArrayList();
+    private List<Connection>             sourceConnections       = new ArrayList<Connection>();
     /** List of incoming Connections. */
-    private List                         targetConnections       = new ArrayList();
+    private List<Connection>             targetConnections       = new ArrayList<Connection>();
 
     /**
      * HTML formatted representation of this node
@@ -176,15 +176,15 @@ abstract public class GraphicalVertex extends ModelElement {
     /**
      * Return a List of outgoing Connections.
      */
-    public List getSourceConnections() {
-        return new ArrayList( sourceConnections );
+    public List<Connection> getSourceConnections() {
+        return new ArrayList<Connection>( sourceConnections );
     }
 
     /**
      * Return a List of incoming Connections.
      */
-    public List getTargetConnections() {
-        return new ArrayList( targetConnections );
+    public List<Connection> getTargetConnections() {
+        return new ArrayList<Connection>( targetConnections );
     }
 
     /**

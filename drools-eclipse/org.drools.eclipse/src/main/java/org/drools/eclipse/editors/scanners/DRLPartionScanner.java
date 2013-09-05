@@ -51,7 +51,7 @@ public class DRLPartionScanner extends RuleBasedPartitionScanner {
     }
 
     private void initialise() {
-        List rules = new ArrayList();
+        List<IPredicateRule> rules = new ArrayList<IPredicateRule>();
 
         // rules
         IToken rulePartition = new Token(RULE_PART_CONTENT);
@@ -63,6 +63,6 @@ public class DRLPartionScanner extends RuleBasedPartitionScanner {
         IToken comment = new Token(RULE_COMMENT);
         rules.add( new MultiLineRule("/*", "*/", comment, (char) 0, true));
 
-        setPredicateRules((IPredicateRule[]) rules.toArray(new IPredicateRule[rules.size()]));
+        setPredicateRules(rules.toArray(new IPredicateRule[rules.size()]));
     }
 }

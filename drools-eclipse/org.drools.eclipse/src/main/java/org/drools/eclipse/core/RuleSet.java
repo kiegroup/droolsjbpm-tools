@@ -24,14 +24,14 @@ import java.util.Map;
  */
 public class RuleSet extends DroolsElement {
 
-    private Map packages = new HashMap();
+    private Map<String, Package> packages = new HashMap<String, Package>();
 
     RuleSet() {
         super(null);
     }
 
     public Package getPackage(String packageName) {
-        return (Package) packages.get(packageName);
+        return packages.get(packageName);
     }
 
     public int getType() {
@@ -39,7 +39,7 @@ public class RuleSet extends DroolsElement {
     }
 
     public DroolsElement[] getChildren() {
-        return (DroolsElement[]) packages.values().toArray(
+        return packages.values().toArray(
             new DroolsElement[packages.size()]);
     }
 

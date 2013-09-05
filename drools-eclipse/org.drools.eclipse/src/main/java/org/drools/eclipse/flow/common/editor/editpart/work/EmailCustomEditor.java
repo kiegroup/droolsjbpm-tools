@@ -20,12 +20,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.drools.eclipse.DroolsEclipsePlugin;
-import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
 import org.drools.core.process.core.Work;
 import org.drools.core.process.core.WorkDefinition;
 import org.drools.core.process.core.WorkEditor;
 import org.drools.core.process.core.impl.WorkImpl;
+import org.drools.eclipse.DroolsEclipsePlugin;
+import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
@@ -56,7 +56,7 @@ import org.eclipse.swt.widgets.Text;
 /**
  * Custom Work editor for email work item.
  */
-public class EmailCustomEditor extends EditBeanDialog implements WorkEditor {
+public class EmailCustomEditor extends EditBeanDialog<Work> implements WorkEditor {
 
     private List<Recipient> recipients = new ArrayList<Recipient>();
     private Text fromText;
@@ -233,9 +233,9 @@ public class EmailCustomEditor extends EditBeanDialog implements WorkEditor {
         bodyText.setLayoutData(gd_bodyText);
     }
 
-    protected Object updateValue(Object value) {
+    protected Work updateValue(Work value) {
         Work work = new WorkImpl();
-        work.setName(((Work) value).getName());
+        work.setName(value.getName());
         work.setParameter("From", fromText.getText());
         String to = "";
         for (int i = 0; i < recipients.size(); i++) {
@@ -247,12 +247,12 @@ public class EmailCustomEditor extends EditBeanDialog implements WorkEditor {
         work.setParameter("To", to);
         work.setParameter("Subject", subjectText.getText());
         work.setParameter("Body", bodyText.getText());
-        work.setParameterDefinitions(((Work) value).getParameterDefinitions());
+        work.setParameterDefinitions(value.getParameterDefinitions());
         return work;
     }
 
     public Work getWork() {
-        return (Work) getValue();
+        return getValue();
     }
 
     public void setWork(Work work) {

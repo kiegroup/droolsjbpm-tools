@@ -27,7 +27,6 @@ import org.eclipse.jdt.debug.core.IJavaArray;
 import org.eclipse.jdt.debug.core.IJavaObject;
 import org.eclipse.jdt.debug.core.IJavaValue;
 import org.eclipse.jdt.debug.core.IJavaVariable;
-import org.kie.api.runtime.rule.AgendaGroup;
 
 /**
  * The Agenda View content provider.
@@ -56,7 +55,7 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
                 variables = getAgendaElements((IJavaObject) obj);
             } else if (obj instanceof IVariable) {
                 if (view.isShowLogicalStructure()) {
-                    IValue value = getLogicalValue(((IVariable) obj).getValue(), new ArrayList());
+                    IValue value = getLogicalValue(((IVariable) obj).getValue(), new ArrayList<String>());
                     variables = value.getVariables();
                 }
                 if (variables == null) {
@@ -76,7 +75,7 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
     }
     
     private Object[] getAgendaElements(IJavaObject workingMemoryImpl) throws DebugException {
-        List result = new ArrayList();
+        List<MyVariableWrapper> result = new ArrayList<MyVariableWrapper>();
         IValue agendaGroupObjects = DebugUtil.getValueByExpression("return getAgenda().getAgendaGroups();", workingMemoryImpl);
         IValue focus = null;
         try {
@@ -92,7 +91,7 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
             for (int i = 0; i < agendaGroupValueArray.length; i++) {
                 IJavaValue agendaGroup = agendaGroupValueArray[i];
                 String name = "";
-                List activationsResult = new ArrayList();
+                List<VariableWrapper> activationsResult = new ArrayList<VariableWrapper>();
                 IVariable[] agendaGroupVarArray = agendaGroup.getVariables();
                 for (int j = 0; j < agendaGroupVarArray.length; j++) {
                     IVariable agendaGroupVar = agendaGroupVarArray[j];
@@ -119,7 +118,7 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
                 name = replaceSpaces(name);
                 result.add(new MyVariableWrapper(name + "[" + (active ? "focus" : "nofocus") + "]",
                     new ObjectWrapper((IJavaObject) agendaGroup,
-                        (IJavaVariable[]) activationsResult.toArray(new IJavaVariable[activationsResult.size()]))));
+                        activationsResult.toArray(new IJavaVariable[activationsResult.size()]))));
             }
         }
         return result.toArray(new IVariable[0]);
@@ -144,7 +143,7 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
             IVariable[] result = super.getVariables();
             if (result == null) {
                 try {
-                    List variables = new ArrayList();
+                    List<VariableWrapper> variables = new ArrayList<VariableWrapper>();
                     variables.add(new VariableWrapper("ruleName", (IJavaValue) DebugUtil.getValueByExpression("return getRule().getName();", activation)));
                     String activationId = null;
                     IVariable[] activationVarArray = activation.getVariables();
@@ -176,7 +175,7 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
                                 }
                                 variables.add(new VariableWrapper(key, value));
                             }
-                            result = (IJavaVariable[]) variables.toArray(new IJavaVariable[variables.size()]);
+                            result = variables.toArray(new IJavaVariable[variables.size()]);
                         }
                     }
                 } catch (Throwable t) {

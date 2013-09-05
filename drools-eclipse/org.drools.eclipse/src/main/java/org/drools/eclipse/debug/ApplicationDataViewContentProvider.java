@@ -54,7 +54,7 @@ public class ApplicationDataViewContentProvider extends DroolsDebugViewContentPr
                 variables = getApplicationDataElements((IJavaObject) obj);
             } else if (obj instanceof IVariable) {
                 if (view.isShowLogicalStructure()) {
-                    IValue value = getLogicalValue(((IVariable) obj).getValue(), new ArrayList());
+                    IValue value = getLogicalValue(((IVariable) obj).getValue(), new ArrayList<String>());
                     variables = value.getVariables();
                 }
                 if (variables == null) {
@@ -83,7 +83,7 @@ public class ApplicationDataViewContentProvider extends DroolsDebugViewContentPr
         }
         if (objects instanceof IJavaArray) {
             IJavaArray array = (IJavaArray) objects;
-            List result = new ArrayList();
+            List<VariableWrapper> result = new ArrayList<VariableWrapper>();
             IJavaValue[] javaVals = array.getValues();
             for ( int i = 0; i < javaVals.length; i++ ) {
                 IJavaValue mapEntry = javaVals[i];
@@ -101,7 +101,7 @@ public class ApplicationDataViewContentProvider extends DroolsDebugViewContentPr
                 }
                 result.add(new VariableWrapper(key, value));
             }
-            return (IVariable[]) result.toArray(new IVariable[result.size()]);
+            return result.toArray(new IVariable[result.size()]);
         }
         return null;
     }

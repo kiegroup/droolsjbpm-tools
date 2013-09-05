@@ -19,6 +19,7 @@ package org.drools.eclipse.flow.common.editor.editpart;
 import java.util.List;
 
 import org.drools.eclipse.flow.common.editor.core.ElementContainerElementWrapper;
+import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.drools.eclipse.flow.common.editor.core.ModelEvent;
 import org.drools.eclipse.flow.common.editor.editpart.figure.ElementContainerFigure;
 import org.drools.eclipse.flow.common.editor.policy.ElementContainerLayoutEditPolicy;
@@ -53,14 +54,14 @@ public class ElementContainerEditPart extends ElementEditPart {
         }
     }
     
-    public Object getAdapter(Class key) {
+    public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
         if (key == MouseWheelHelper.class) {
             return new ViewportMouseWheelHelper(this);
         }
         return super.getAdapter(key);
     }
     
-    protected List getModelChildren() {
+    protected List<ElementWrapper> getModelChildren() {
         return getElementContainerElementWrapper().getElements();
     }
 

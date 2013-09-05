@@ -110,7 +110,7 @@ public class RuleFlowModelEditor extends GenericModelEditor {
                 try {
                     Thread.currentThread().setContextClassLoader(newLoader);
                     PaletteDrawer drawer = (PaletteDrawer) getPaletteRoot().getChildren().get(2);
-                    List entries = new ArrayList();
+                    List<CombinedTemplateCreationEntry> entries = new ArrayList<CombinedTemplateCreationEntry>();
                     try {
                         for (final WorkDefinition workDefinition: WorkItemDefinitions.getWorkDefinitions(file).values()) {
                             final String label;

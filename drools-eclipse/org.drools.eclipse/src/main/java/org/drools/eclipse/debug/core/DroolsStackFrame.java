@@ -95,14 +95,14 @@ public class DroolsStackFrame  extends JDIStackFrame {
     
     public IVariable[] getVariables() throws DebugException {
         IVariable[] variables = super.getVariables();
-        List result = new ArrayList( (variables.length - 1) / 2 );
+        List<IVariable> result = new ArrayList<IVariable>( (variables.length - 1) / 2 );
         for ( int i = 0; i < variables.length; i++ ) {
             String name = variables[i].getName();
             if ( !(name.equals( DROOLS_VAR_NAME )) && !(name.endsWith( HANDLE_SUFIX )) ) {
                 result.add( variables[i] );
             }
         }
-        variables = (IVariable[]) result.toArray( new IVariable[result.size()] );
+        variables = result.toArray( new IVariable[result.size()] );
 //        System.out.print( "vars" );
 //        for ( IVariable var : variables ) {
 //            System.out.print( var.getName()  + " " );

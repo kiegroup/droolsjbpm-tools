@@ -16,6 +16,8 @@
 
 package org.drools.eclipse.flow.ruleflow.view.property.workitem;
 
+import java.util.Map;
+
 import org.drools.eclipse.flow.common.view.property.BeanDialogCellEditor;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
 import org.eclipse.swt.widgets.Composite;
@@ -25,7 +27,7 @@ import org.jbpm.workflow.core.node.WorkItemNode;
 /**
  * Cell editor for work item result mappings.
  */
-public class WorkItemResultMappingCellEditor extends BeanDialogCellEditor {
+public class WorkItemResultMappingCellEditor extends BeanDialogCellEditor<Map<String, String>> {
 
     private WorkItemNode workItemNode;
     
@@ -34,7 +36,7 @@ public class WorkItemResultMappingCellEditor extends BeanDialogCellEditor {
         this.workItemNode = workItemNode;
     }
 
-    protected EditBeanDialog createDialog(Shell shell) {
+    protected EditBeanDialog<Map<String, String>> createDialog(Shell shell) {
         return new WorkItemResultMappingDialog(shell, workItemNode);
     }
     

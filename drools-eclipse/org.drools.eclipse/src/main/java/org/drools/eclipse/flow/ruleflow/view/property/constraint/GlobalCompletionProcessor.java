@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.compiler.lang.descr.GlobalDescr;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.editors.completion.CompletionUtil;
 import org.drools.eclipse.editors.completion.DefaultCompletionProcessor;
@@ -30,6 +31,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbench;
@@ -60,7 +62,7 @@ public class GlobalCompletionProcessor extends DefaultCompletionProcessor {
         return null;
     }
 
-    protected List getCompletionProposals(ITextViewer viewer,
+    protected List<ICompletionProposal> getCompletionProposals(ITextViewer viewer,
             int documentOffset) {
         try {
             IDocument doc = viewer.getDocument();
@@ -74,12 +76,12 @@ public class GlobalCompletionProcessor extends DefaultCompletionProcessor {
     }
 
     
-    public List getImports() {
-        return Collections.EMPTY_LIST;
+    public List<String> getImports() {
+        return Collections.emptyList();
     }
     
-    public List getGlobals() {
-        return Collections.EMPTY_LIST;
+    public List<GlobalDescr> getGlobals() {
+        return Collections.emptyList();
     }
     
     protected IJavaProject getCurrentJavaProject() {
@@ -97,11 +99,11 @@ public class GlobalCompletionProcessor extends DefaultCompletionProcessor {
         return null;
     }
     
-    protected List getPossibleProposals(ITextViewer viewer,
+    protected List<ICompletionProposal> getPossibleProposals(ITextViewer viewer,
             int documentOffset,
             String backText,
             final String prefix) {
-        List list = new ArrayList();
+        List<ICompletionProposal> list = new ArrayList<ICompletionProposal>();
         list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "global", "global "));
         DefaultCompletionProcessor.filterProposalsOnPrefix(prefix, list);
         return list;

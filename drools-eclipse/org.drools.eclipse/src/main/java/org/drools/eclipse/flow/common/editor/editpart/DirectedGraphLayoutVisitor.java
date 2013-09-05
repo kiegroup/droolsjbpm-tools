@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.drools.eclipse.flow.common.editor.editpart.figure.ElementFigure;
 import org.eclipse.draw2d.AbsoluteBendpoint;
+import org.eclipse.draw2d.Bendpoint;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.draw2d.geometry.Insets;
@@ -33,14 +34,15 @@ import org.eclipse.draw2d.graph.DirectedGraphLayout;
 import org.eclipse.draw2d.graph.Edge;
 import org.eclipse.draw2d.graph.Node;
 import org.eclipse.draw2d.graph.NodeList;
+import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 
 public class DirectedGraphLayoutVisitor {
 
-    private Map partToNodesMap;
+    private Map<AbstractGraphicalEditPart, Object> partToNodesMap;
     private DirectedGraph graph;
 
     public void layoutDiagram(ProcessEditPart diagram) {
-        partToNodesMap = new HashMap();
+        partToNodesMap = new HashMap<AbstractGraphicalEditPart, Object>();
         graph = new DirectedGraph();
         addNodes(diagram);
         if (graph.nodes.size() > 0) {
@@ -57,6 +59,7 @@ public class DirectedGraphLayoutVisitor {
         }
     }
 
+    @SuppressWarnings("unchecked")
     protected void addNodes(ElementEditPart elementEditPart) {
         Node n = new Node(elementEditPart);
         n.width = elementEditPart.getFigure().getPreferredSize(400, 300).width;
@@ -74,13 +77,15 @@ public class DirectedGraphLayoutVisitor {
     }
 
     protected void addEdges(ElementEditPart elementEditPart) {
-        List outgoing = elementEditPart.getSourceConnections();
+        @SuppressWarnings("unchecked")
+        List<ElementConnectionEditPart> outgoing = elementEditPart.getSourceConnections();
         for (int i = 0; i < outgoing.size(); i++) {
-            ElementConnectionEditPart connectionPart = (ElementConnectionEditPart) elementEditPart.getSourceConnections().get(i);
+            ElementConnectionEditPart connectionPart = outgoing.get(i);
             addEdges(connectionPart);
         }
     }
 
+    @SuppressWarnings("unchecked")
     protected void addEdges(ElementConnectionEditPart connectionPart) {
         Node source = (Node) partToNodesMap.get(connectionPart.getSource());
         Node target = (Node) partToNodesMap.get(connectionPart.getTarget());
@@ -122,7 +127,7 @@ public class DirectedGraphLayoutVisitor {
         PolylineConnection conn = (PolylineConnection) connectionPart.getConnectionFigure();
         conn.setTargetDecoration(new PolygonDecoration());
         if (nodes != null) {
-            List bends = new ArrayList();
+            List<Bendpoint> bends = new ArrayList<Bendpoint>();
             for (int i = 0; i < nodes.size(); i++) {
                 Node vn = nodes.getNode(i);
                 int x = vn.x;

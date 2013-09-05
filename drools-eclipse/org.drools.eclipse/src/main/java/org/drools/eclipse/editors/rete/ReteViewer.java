@@ -101,7 +101,7 @@ public class ReteViewer extends GraphicalEditor {
     /* (non-Javadoc)
      * @see org.eclipse.gef.ui.parts.GraphicalEditor#getAdapter(java.lang.Class)
      */
-    public Object getAdapter(Class type) {
+    public Object getAdapter(@SuppressWarnings("rawtypes") Class type) {
 
         if ( type == ZoomManager.class ) return ((ScalableFreeformRootEditPart) getGraphicalViewer().getRootEditPart()).getZoomManager();
         if ( type == GraphicalViewer.class ) return getGraphicalViewer();
@@ -208,7 +208,7 @@ public class ReteViewer extends GraphicalEditor {
         ZoomManager zoomManager = rootEditPart.getZoomManager();
 
         //List<String>
-        List zoomLevels = new ArrayList( 3 );
+        List<String> zoomLevels = new ArrayList<String>(3);
 
         zoomLevels.add( ZoomManager.FIT_ALL );
         zoomLevels.add( ZoomManager.FIT_HEIGHT );
@@ -232,9 +232,9 @@ public class ReteViewer extends GraphicalEditor {
 
         int minx = 0, miny = 0, maxx = 0, x = dim.width;
 
-        final Iterator nodeIter = graph.getChildren().iterator();
+        final Iterator<BaseVertex> nodeIter = graph.getChildren().iterator();
         while ( nodeIter.hasNext() ) {
-            Point loc = ((BaseVertex) (nodeIter.next())).getLocation();
+            Point loc = nodeIter.next().getLocation();
             minx = Math.min( loc.x,
                              minx );
             maxx = Math.max( loc.x,
@@ -246,9 +246,9 @@ public class ReteViewer extends GraphicalEditor {
         int delta = (x - (maxx - minx + 20)) / 2;
         minx = minx - (delta);
 
-        final Iterator nodeIter2 = graph.getChildren().iterator();
+        final Iterator<BaseVertex> nodeIter2 = graph.getChildren().iterator();
         while ( nodeIter2.hasNext() ) {
-            final BaseVertex vertex = (BaseVertex) (nodeIter2.next());
+            final BaseVertex vertex = nodeIter2.next();
             Point loc = vertex.getLocation();
             vertex.setLocation( new Point( loc.x - minx,
                                            loc.y - miny ) );

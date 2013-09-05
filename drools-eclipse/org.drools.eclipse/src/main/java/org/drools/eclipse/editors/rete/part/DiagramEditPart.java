@@ -94,7 +94,7 @@ public class DiagramEditPart extends AbstractGraphicalEditPart
     /* (non-Javadoc)
      * @see org.eclipse.gef.editparts.AbstractEditPart#getModelChildren()
      */
-    protected List getModelChildren() {
+    protected List<BaseVertex> getModelChildren() {
         return getCastedModel().getChildren(); // return a list of nodes
     }
 
@@ -147,7 +147,7 @@ public class DiagramEditPart extends AbstractGraphicalEditPart
     /* (non-Javadoc)
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#getAdapter(java.lang.Class)
      */
-    public Object getAdapter(Class key) {
+    public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
         return super.getAdapter( key );
     }
 

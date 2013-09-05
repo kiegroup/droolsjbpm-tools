@@ -29,14 +29,14 @@ import org.drools.core.process.core.datatype.DataTypeFactory;
  */
 public class DataTypeRegistryImpl implements DataTypeRegistry {
 
-    private Map dataTypes = new HashMap();
+    private Map<Class<?>, DataTypeInfo> dataTypes = new HashMap<Class<?>, DataTypeRegistryImpl.DataTypeInfo>();
     
-    public Set getDataTypes() {
-        return new HashSet(dataTypes.values());
+    public Set<IDataTypeInfo> getDataTypes() {
+        return new HashSet<IDataTypeInfo>(dataTypes.values());
     }
 
-    public void registerDataType(Class type, DataTypeFactory dataTypeFactory, String name,
-            Class valueEditorClass, Class dataTypeEditorClass) {
+    public void registerDataType(Class<?> type, DataTypeFactory dataTypeFactory, String name, Class<?> valueEditorClass,
+            Class<?> dataTypeEditorClass) {
         if (dataTypeFactory == null) {
             throw new NullPointerException("Data type factory may not be null");
         }
@@ -53,8 +53,8 @@ public class DataTypeRegistryImpl implements DataTypeRegistry {
             type, dataTypeFactory, name, valueEditorClass, dataTypeEditorClass));
     }
     
-    public IDataTypeInfo getDataTypeInfo(Class type) {
-        IDataTypeInfo dataTypeInfo = (IDataTypeInfo) dataTypes.get(type);
+    public IDataTypeInfo getDataTypeInfo(Class<?> type) {
+        IDataTypeInfo dataTypeInfo = dataTypes.get(type);
         if (dataTypeInfo == null) {
             throw new IllegalArgumentException("Cannot find data type info with type " + type);
         }
@@ -62,20 +62,20 @@ public class DataTypeRegistryImpl implements DataTypeRegistry {
     }
     
     public class DataTypeInfo implements IDataTypeInfo {
-        private Class type;
+        private Class<?> type;
         private DataTypeFactory dataTypeFactory;
         private String name;
-        private Class valueEditorClass;
-        private Class dataTypeEditorClass;
-        private DataTypeInfo(Class type, DataTypeFactory dataTypeFactory, String name,
-                Class valueEditorClass, Class dataTypeEditorClass) {
+        private Class<?> valueEditorClass;
+        private Class<?> dataTypeEditorClass;
+        private DataTypeInfo(Class<?> type, DataTypeFactory dataTypeFactory, String name,
+                Class<?> valueEditorClass, Class<?> dataTypeEditorClass) {
             this.type = type;
             this.dataTypeFactory = dataTypeFactory;
             this.name = name;
             this.valueEditorClass = valueEditorClass;
             this.dataTypeEditorClass = dataTypeEditorClass;
         }
-        public Class getType() {
+        public Class<?> getType() {
             return type;
         }
         public DataTypeFactory getDataTypeFactory() {
@@ -84,10 +84,10 @@ public class DataTypeRegistryImpl implements DataTypeRegistry {
         public String getName() {
             return name;
         }
-        public Class getValueEditorClass() {
+        public Class<?> getValueEditorClass() {
             return valueEditorClass;
         }
-        public Class getDataTypeEditorClass() {
+        public Class<?> getDataTypeEditorClass() {
             return dataTypeEditorClass;
         }
     }

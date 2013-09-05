@@ -28,7 +28,7 @@ public class AuditViewContentProvider extends DroolsDebugViewContentProvider {
 
     public Object[] getChildren(Object obj) {
         if (obj instanceof List) {
-            return ((List) obj).toArray();
+            return ((List<?>) obj).toArray();
         }
         if (obj instanceof Event) {
             return ((Event) obj).getSubEvents();
