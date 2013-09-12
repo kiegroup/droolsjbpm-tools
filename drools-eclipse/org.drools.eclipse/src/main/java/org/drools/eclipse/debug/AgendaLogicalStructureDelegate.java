@@ -72,7 +72,7 @@ public class AgendaLogicalStructureDelegate implements ILogicalStructureTypeDele
             return null;
         }
         IJavaArray ruleParameters = (IJavaArray) DebugUtil.getValueByExpression("return getRule().getDeclarations();", value);
-        List variables = new ArrayList();
+        List<VariableWrapper> variables = new ArrayList<VariableWrapper>();
         variables.add(new VariableWrapper("ruleName", (IJavaValue) DebugUtil.getValueByExpression("return getRule().getName();", value)));
         
         IJavaValue[] javaValues = ruleParameters.getValues();
@@ -91,6 +91,6 @@ public class AgendaLogicalStructureDelegate implements ILogicalStructureTypeDele
                 }
             }
         }
-        return new ObjectWrapper(javaValue, (IJavaVariable[]) variables.toArray(new IJavaVariable[variables.size()]));
+        return new ObjectWrapper(javaValue, variables.toArray(new IJavaVariable[variables.size()]));
     }
 }

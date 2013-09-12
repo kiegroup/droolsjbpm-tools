@@ -45,7 +45,7 @@ public class ObjectInputStreamWithLoader extends ObjectInputStream {
     /**
      * Make a primitive array class
      */
-    private Class primitiveType(char type) {
+    private Class<?> primitiveType(char type) {
         switch (type) {
             case 'B': return byte.class;
             case 'C': return char.class;
@@ -62,12 +62,12 @@ public class ObjectInputStreamWithLoader extends ObjectInputStream {
     /**
      * Use the given ClassLoader rather than using the system class
      */
-    protected Class resolveClass(ObjectStreamClass classDesc)
+    protected Class<?> resolveClass(ObjectStreamClass classDesc)
             throws IOException, ClassNotFoundException {
         String cname = classDesc.getName();
         if (cname.startsWith("[")) {
             // An array
-            Class component = null;        // component class
+            Class<?> component = null;        // component class
             int dcount;         // dimension
             for (dcount=1; cname.charAt(dcount)=='['; dcount++);
             if (cname.charAt(dcount) == 'L') {

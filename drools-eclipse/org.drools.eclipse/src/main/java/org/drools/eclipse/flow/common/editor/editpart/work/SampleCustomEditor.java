@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Text;
  * Custom Work editor that can handle work definitions that only have
  * String parameters.
  */
-public class SampleCustomEditor extends EditBeanDialog implements WorkEditor {
+public class SampleCustomEditor extends EditBeanDialog<Work> implements WorkEditor {
 
     private WorkDefinition workDefinition;
     private Map<String, Text> texts = new HashMap<String, Text>();
@@ -85,14 +85,14 @@ public class SampleCustomEditor extends EditBeanDialog implements WorkEditor {
         return composite;
     }
     
-    protected Object updateValue(Object value) {
+    protected Work updateValue(Work value) {
         Work work = new WorkImpl();
-        work.setName(((Work) value).getName());
+        work.setName(value.getName());
         for (Map.Entry<String, Text> entry: texts.entrySet()) {
             String text = entry.getValue().getText();
             work.setParameter(entry.getKey(), "".equals(text) ? null : text);
         }
-        work.setParameterDefinitions(((Work) value).getParameterDefinitions());
+        work.setParameterDefinitions(value.getParameterDefinitions());
         return work;
     }
         

@@ -47,7 +47,7 @@ import org.jbpm.workflow.core.node.SubProcessNode;
 /**
  * Dialog for editing work item result mappings.
  */
-public class SubProcessParameterOutMappingDialog extends EditBeanDialog implements FocusListener, MouseListener {
+public class SubProcessParameterOutMappingDialog extends EditBeanDialog<Map<String, String>> implements FocusListener, MouseListener {
 
     private Table table;
     private Button removeButton;
@@ -60,7 +60,7 @@ public class SubProcessParameterOutMappingDialog extends EditBeanDialog implemen
         setValue(subProcessNode.getOutMappings());
     }
 
-    protected Object updateValue(Object value) {
+    protected Map<String, String> updateValue(Map<String, String> value) {
         Map<String, String> mapping = new HashMap<String, String>();
         for (TableItem item: table.getItems()) {
             mapping.put(item.getText(1), item.getText(0));

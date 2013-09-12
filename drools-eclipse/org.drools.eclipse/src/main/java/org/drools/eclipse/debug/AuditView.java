@@ -159,14 +159,14 @@ public class AuditView extends AbstractDebugView {
         Map<String, Event> activationMap = new HashMap<String, Event>();
         Map<Long, Event> objectMap = new HashMap<Long, Event>();
         while (iterator.hasNext()) {
-            LogEvent inEvent = (LogEvent) iterator.next();
+            LogEvent inEvent = iterator.next();
             Event event = new Event(inEvent.getType());
             switch (inEvent.getType()) {
                 case LogEvent.INSERTED:
                     ObjectLogEvent inObjectEvent = (ObjectLogEvent) inEvent;
                     event.setString("Object inserted (" + inObjectEvent.getFactId() + "): " + inObjectEvent.getObjectToString());
                     if (!beforeEvents.isEmpty()) {
-                        ((Event) beforeEvents.peek()).addSubEvent(event);
+                        beforeEvents.peek().addSubEvent(event);
                     } else {
                         events.add(event);
                     }
@@ -178,13 +178,13 @@ public class AuditView extends AbstractDebugView {
                     inObjectEvent = (ObjectLogEvent) inEvent;
                     event.setString("Object updated (" + inObjectEvent.getFactId() + "): " + inObjectEvent.getObjectToString());
                     if (!beforeEvents.isEmpty()) {
-                        ((Event) beforeEvents.peek()).addSubEvent(event);
+                        beforeEvents.peek().addSubEvent(event);
                     } else {
                         events.add(event);
                     }
                     event.addSubEvents(newActivations);
                     newActivations.clear();
-                    Event assertEvent = (Event) objectMap.get(new Long(((ObjectLogEvent) inEvent).getFactId()));
+                    Event assertEvent = objectMap.get(new Long(((ObjectLogEvent) inEvent).getFactId()));
                     if (assertEvent != null) {
                         event.setCauseEvent(assertEvent);
                     }
@@ -193,13 +193,13 @@ public class AuditView extends AbstractDebugView {
                     inObjectEvent = (ObjectLogEvent) inEvent;
                     event.setString("Object removed (" + inObjectEvent.getFactId() + "): " + inObjectEvent.getObjectToString());
                     if (!beforeEvents.isEmpty()) {
-                        ((Event) beforeEvents.peek()).addSubEvent(event);
+                        beforeEvents.peek().addSubEvent(event);
                     } else {
                         events.add(event);
                     }
                     event.addSubEvents(newActivations);
                     newActivations.clear();
-                    assertEvent = (Event) objectMap.get(new Long(((ObjectLogEvent) inEvent).getFactId()));
+                    assertEvent = objectMap.get(new Long(((ObjectLogEvent) inEvent).getFactId()));
                     if (assertEvent != null) {
                         event.setCauseEvent(assertEvent);
                     }
@@ -214,14 +214,14 @@ public class AuditView extends AbstractDebugView {
                     inActivationEvent = (ActivationLogEvent) inEvent;
                     event.setString("Activation cancelled: Rule " + inActivationEvent.getRule() + " " + inActivationEvent.getDeclarations());
                     newActivations.add(event);
-                    event.setCauseEvent((Event) activationMap.get(((ActivationLogEvent) inEvent).getActivationId()));
+                    event.setCauseEvent(activationMap.get(((ActivationLogEvent) inEvent).getActivationId()));
                     break;
                 case LogEvent.BEFORE_ACTIVATION_FIRE:
                     inActivationEvent = (ActivationLogEvent) inEvent;
                     event.setString("Activation executed: Rule " + inActivationEvent.getRule() + " " + inActivationEvent.getDeclarations());
                     events.add(event);
                     beforeEvents.push(event);
-                    event.setCauseEvent((Event) activationMap.get(((ActivationLogEvent) inEvent).getActivationId()));
+                    event.setCauseEvent(activationMap.get(((ActivationLogEvent) inEvent).getActivationId()));
                     break;
                 case LogEvent.AFTER_ACTIVATION_FIRE:
                     beforeEvents.pop();
@@ -230,7 +230,7 @@ public class AuditView extends AbstractDebugView {
                     RuleFlowLogEvent inRuleFlowEvent = (RuleFlowLogEvent) inEvent;
                     event.setString("Process started: " + inRuleFlowEvent.getProcessName() + "[" + inRuleFlowEvent.getProcessId() + "]");
                     if (!beforeEvents.isEmpty()) {
-                        ((Event) beforeEvents.peek()).addSubEvent(event);
+                        beforeEvents.peek().addSubEvent(event);
                     } else {
                         events.add(event);
                     }
@@ -243,7 +243,7 @@ public class AuditView extends AbstractDebugView {
                     inRuleFlowEvent = (RuleFlowLogEvent) inEvent;
                     event.setString("Process completed: " + inRuleFlowEvent.getProcessName() + "[" + inRuleFlowEvent.getProcessId() + "]");
                     if (!beforeEvents.isEmpty()) {
-                        ((Event) beforeEvents.peek()).addSubEvent(event);
+                        beforeEvents.peek().addSubEvent(event);
                     } else {
                         events.add(event);
                     }
@@ -256,7 +256,7 @@ public class AuditView extends AbstractDebugView {
                     RuleFlowNodeLogEvent inRuleFlowNodeEvent = (RuleFlowNodeLogEvent) inEvent;
                     event.setString("Process node triggered: " + inRuleFlowNodeEvent.getNodeName() + " in process " + inRuleFlowNodeEvent.getProcessName() + "[" + inRuleFlowNodeEvent.getProcessId() + "]");
                     if (!beforeEvents.isEmpty()) {
-                        ((Event) beforeEvents.peek()).addSubEvent(event);
+                        beforeEvents.peek().addSubEvent(event);
                     } else {
                         events.add(event);
                     }
@@ -269,7 +269,7 @@ public class AuditView extends AbstractDebugView {
                     RuleFlowGroupLogEvent inRuleFlowGroupEvent = (RuleFlowGroupLogEvent) inEvent;
                     event.setString("RuleFlow Group activated: " + inRuleFlowGroupEvent.getGroupName() + "[size=" + inRuleFlowGroupEvent.getSize() + "]");
                     if (!beforeEvents.isEmpty()) {
-                        ((Event) beforeEvents.peek()).addSubEvent(event);
+                        beforeEvents.peek().addSubEvent(event);
                     } else {
                         events.add(event);
                     }
@@ -282,7 +282,7 @@ public class AuditView extends AbstractDebugView {
                     inRuleFlowGroupEvent = (RuleFlowGroupLogEvent) inEvent;
                     event.setString("RuleFlow Group deactivated: " + inRuleFlowGroupEvent.getGroupName() + "[size=" + inRuleFlowGroupEvent.getSize() + "]");
                     if (!beforeEvents.isEmpty()) {
-                        ((Event) beforeEvents.peek()).addSubEvent(event);
+                        beforeEvents.peek().addSubEvent(event);
                     } else {
                         events.add(event);
                     }
@@ -295,7 +295,7 @@ public class AuditView extends AbstractDebugView {
                     RuleBaseLogEvent ruleBaseEvent = (RuleBaseLogEvent) inEvent;
                     event.setString("Package added: " + ruleBaseEvent.getPackageName());
                     if (!beforeEvents.isEmpty()) {
-                        ((Event) beforeEvents.peek()).addSubEvent(event);
+                        beforeEvents.peek().addSubEvent(event);
                     } else {
                         events.add(event);
                     }
@@ -308,7 +308,7 @@ public class AuditView extends AbstractDebugView {
                     ruleBaseEvent = (RuleBaseLogEvent) inEvent;
                     event.setString("Package removed: " + ruleBaseEvent.getPackageName());
                     if (!beforeEvents.isEmpty()) {
-                        ((Event) beforeEvents.peek()).addSubEvent(event);
+                        beforeEvents.peek().addSubEvent(event);
                     } else {
                         events.add(event);
                     }
@@ -321,7 +321,7 @@ public class AuditView extends AbstractDebugView {
                     ruleBaseEvent = (RuleBaseLogEvent) inEvent;
                     event.setString("Rule added: " + ruleBaseEvent.getRuleName());
                     if (!beforeEvents.isEmpty()) {
-                        ((Event) beforeEvents.peek()).addSubEvent(event);
+                        beforeEvents.peek().addSubEvent(event);
                     } else {
                         events.add(event);
                     }
@@ -329,7 +329,7 @@ public class AuditView extends AbstractDebugView {
                     break;
                 case LogEvent.AFTER_RULE_ADDED:
                     if (!beforeEvents.isEmpty()) {
-                        Event beforeEvent = (Event) beforeEvents.pop();
+                        Event beforeEvent = beforeEvents.pop();
                         beforeEvent.addSubEvents(newActivations);
                         newActivations.clear();
                     }
@@ -338,7 +338,7 @@ public class AuditView extends AbstractDebugView {
                     ruleBaseEvent = (RuleBaseLogEvent) inEvent;
                     event.setString("Rule removed: " + ruleBaseEvent.getRuleName());
                     if (!beforeEvents.isEmpty()) {
-                        ((Event) beforeEvents.peek()).addSubEvent(event);
+                        beforeEvents.peek().addSubEvent(event);
                     } else {
                         events.add(event);
                     }
@@ -346,7 +346,7 @@ public class AuditView extends AbstractDebugView {
                     break;
                 case LogEvent.AFTER_RULE_REMOVED:
                     if (!beforeEvents.isEmpty()) {
-                        Event beforeEvent = (Event) beforeEvents.pop();
+                        Event beforeEvent = beforeEvents.pop();
                         beforeEvent.addSubEvents(newActivations);
                         newActivations.clear();
                     }
@@ -359,16 +359,16 @@ public class AuditView extends AbstractDebugView {
         return events;
     }
     
-    protected List createDrools4EventList(List logEvents) {
-        Iterator iterator = logEvents.iterator();
-        List events = new ArrayList();
+    protected List<Event> createDrools4EventList(List<LogEvent> logEvents) {
+        Iterator<LogEvent> iterator = logEvents.iterator();
+        List<Event> events = new ArrayList<Event>();
         Event currentBeforeActivationEvent = null;
         Event currentBeforePackageEvent = null;
-        List newActivations = new ArrayList();
-        Map activationMap = new HashMap();
-        Map objectMap = new HashMap();
+        List<Event> newActivations = new ArrayList<Event>();
+        Map<String, Event> activationMap = new HashMap<String, Event>();
+        Map<Long, Event> objectMap = new HashMap<Long, Event>();
         while (iterator.hasNext()) {
-            LogEvent inEvent = (LogEvent) iterator.next();
+            LogEvent inEvent = iterator.next();
             Event event = new Event(inEvent.getType());
             switch (inEvent.getType()) {
                 case LogEvent.INSERTED:
@@ -393,7 +393,7 @@ public class AuditView extends AbstractDebugView {
                     }
                     event.addSubEvents(newActivations);
                     newActivations.clear();
-                    Event assertEvent = (Event) objectMap.get(new Long(((ObjectLogEvent) inEvent).getFactId()));
+                    Event assertEvent = objectMap.get(new Long(((ObjectLogEvent) inEvent).getFactId()));
                     if (assertEvent != null) {
                         event.setCauseEvent(assertEvent);
                     }
@@ -408,7 +408,7 @@ public class AuditView extends AbstractDebugView {
                     }
                     event.addSubEvents(newActivations);
                     newActivations.clear();
-                    assertEvent = (Event) objectMap.get(new Long(((ObjectLogEvent) inEvent).getFactId()));
+                    assertEvent = objectMap.get(new Long(((ObjectLogEvent) inEvent).getFactId()));
                     if (assertEvent != null) {
                         event.setCauseEvent(assertEvent);
                     }
@@ -423,14 +423,14 @@ public class AuditView extends AbstractDebugView {
                     inActivationEvent = (ActivationLogEvent) inEvent;
                     event.setString("Activation cancelled: Rule " + inActivationEvent.getRule() + " " + inActivationEvent.getDeclarations());
                     newActivations.add(event);
-                    event.setCauseEvent((Event) activationMap.get(((ActivationLogEvent) inEvent).getActivationId()));
+                    event.setCauseEvent(activationMap.get(((ActivationLogEvent) inEvent).getActivationId()));
                     break;
                 case LogEvent.BEFORE_ACTIVATION_FIRE:
                     inActivationEvent = (ActivationLogEvent) inEvent;
                     event.setString("Activation executed: Rule " + inActivationEvent.getRule() + " " + inActivationEvent.getDeclarations());
                     events.add(event);
                     currentBeforeActivationEvent = event;
-                    event.setCauseEvent((Event) activationMap.get(((ActivationLogEvent) inEvent).getActivationId()));
+                    event.setCauseEvent(activationMap.get(((ActivationLogEvent) inEvent).getActivationId()));
                     break;
                 case LogEvent.AFTER_ACTIVATION_FIRE:
                     currentBeforeActivationEvent = null;

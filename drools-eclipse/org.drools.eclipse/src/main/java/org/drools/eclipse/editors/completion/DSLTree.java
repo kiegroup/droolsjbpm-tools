@@ -23,8 +23,6 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.StringTokenizer;
 
 import org.drools.compiler.lang.dsl.DSLMapping;
@@ -41,8 +39,8 @@ public class DSLTree {
     private Node rootCond = null;
     private Node rootConseq = null;
     private boolean empty = true;
-    private ArrayList suggestions = new ArrayList();
-    private HashMap objToNL = new HashMap();
+    private ArrayList<String> suggestions = new ArrayList<String>();
+    private HashMap<String, String> objToNL = new HashMap<String, String>();
     
     public DSLTree() {
         this.rootCond = new Node("root");
@@ -135,9 +133,7 @@ public class DSLTree {
     }
     
     public void buildTree(DSLMapping mapping) {
-        List entries = mapping.getEntries();
-        for (Iterator iterator = entries.iterator(); iterator.hasNext(); ) {
-            DSLMappingEntry entry = (DSLMappingEntry) iterator.next();
+        for (DSLMappingEntry entry : mapping.getEntries()) {
             Section section = entry.getSection();
             String nl = entry.getMappingKey();
             String objname = entry.getMetaData().getMetaData();
@@ -158,7 +154,7 @@ public class DSLTree {
                 addTokens(tokenz, rootConseq);
             }
         } else {
-            String res = (String)this.objToNL.get(objname);
+            String res = this.objToNL.get(objname);
             StringTokenizer tokenz = new StringTokenizer(nl);
             addTokens(res,tokenz);
         }
@@ -285,9 +281,9 @@ public class DSLTree {
                 this.current = thenode;
             }
         }
-        Collection children = thenode.getChildren();
+        Collection<Node> children = thenode.getChildren();
         Node[] nchild = new Node[children.size()];
-        return (Node[])children.toArray(nchild);
+        return children.toArray(nchild);
     }
 
     /**
@@ -317,9 +313,9 @@ public class DSLTree {
                 this.current = thenode;
             }
         }
-        Collection children = thenode.getChildren();
+        Collection<Node> children = thenode.getChildren();
         Node[] nchild = new Node[children.size()];
-        return (Node[]) children.toArray(nchild);
+        return children.toArray(nchild);
     }
 
     /**
@@ -365,9 +361,9 @@ public class DSLTree {
             return null;
             // thenode = this.rootCond;
         }
-        Collection children = thenode.getChildren();
+        Collection<Node> children = thenode.getChildren();
         Node[] nchild = new Node[children.size()];
-        return (Node[])children.toArray(nchild);
+        return children.toArray(nchild);
     }
     
     /**
@@ -378,7 +374,7 @@ public class DSLTree {
      * @param text
      * @return
      */
-    public ArrayList getConditionChildrenList(String text, boolean addChildren) {
+    public ArrayList<String> getConditionChildrenList(String text, boolean addChildren) {
         Node[] c = getConditionChildren(text);
         this.suggestions.clear();
         for (int idx=0; idx < c.length; idx++) {
@@ -398,7 +394,7 @@ public class DSLTree {
      * @param text
      * @return
      */
-    public ArrayList getConsequenceChildrenList(String text, boolean addChildren) {
+    public ArrayList<String> getConsequenceChildrenList(String text, boolean addChildren) {
         Node[] c = getConsequenceChildren(text);
         this.suggestions.clear();
         for (int idx=0; idx < c.length; idx++) {
@@ -418,7 +414,7 @@ public class DSLTree {
      * @param addChildren
      * @return
      */
-    public ArrayList getChildrenList(String obj, String text, boolean addChildren, boolean firstLine) {
+    public ArrayList<String> getChildrenList(String obj, String text, boolean addChildren, boolean firstLine) {
         Node[] c = getChildren(obj,text);
         this.suggestions.clear();
         if (c != null) {
@@ -433,9 +429,7 @@ public class DSLTree {
         if (text.trim().length() == 0 || this.suggestions.isEmpty()) {
             // in the event the list is empty, we also add
             // the top level nodes
-            Iterator top = this.rootCond.getChildren().iterator();
-            while (top.hasNext()) {
-                Node t = (Node)top.next();
+            for (Node t : rootCond.getChildren()) {
                 if ((!firstLine || t.getToken() != null) && !this.suggestions.contains(t.getToken())) {
                     if (addChildren) {
                         this.addChildToList(t, t.getToken(), this.suggestions);
@@ -455,11 +449,9 @@ public class DSLTree {
      * @param prefix
      * @param list
      */
-    public void addChildToList(Node n, String prefix, ArrayList list) {
+    public void addChildToList(Node n, String prefix, ArrayList<String> list) {
         if (n.getChildren().size() > 0) {
-            Iterator itr = n.getChildren().iterator();
-            while (itr.hasNext()) {
-                Node child = (Node)itr.next();
+            for (Node child : n.getChildren()) {
                 if (prefix != null && "-".equals(child.getToken())) {
                     if (!list.contains(prefix)) {
                         list.add(prefix);
@@ -498,9 +490,7 @@ public class DSLTree {
      */
     public void printTree() {
         System.out.println("ROOT");
-        Iterator itr = this.rootCond.getChildren().iterator();
-        while (itr.hasNext()) {
-            Node n = (Node)itr.next();
+        for (Node n : rootCond.getChildren()) {
             printNode(n);
         }
     }
@@ -512,9 +502,7 @@ public class DSLTree {
     protected void printNode(Node n) {
         printTabs(n.getDepth());
         System.out.println("- \"" + n.getToken() + "\"");
-        Iterator itr = n.getChildren().iterator();
-        while (itr.hasNext()) {
-            Node c = (Node)itr.next();
+        for (Node c : n.getChildren()) {
             printNode(c);
         }
     }

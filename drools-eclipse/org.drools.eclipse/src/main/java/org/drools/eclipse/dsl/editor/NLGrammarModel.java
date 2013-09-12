@@ -29,7 +29,7 @@ public class NLGrammarModel extends DefaultDSLMapping {
     
     private static final long serialVersionUID = 510l;
     
-    private Set changeListeners = new HashSet();
+    private Set<IMappingListViewer> changeListeners = new HashSet<IMappingListViewer>();
 
     /**
      * @param viewer

@@ -59,7 +59,7 @@ public class WorkingMemoryViewContentProvider extends DroolsDebugViewContentProv
                 variables = getWorkingMemoryElements((IJavaObject) obj);
             } else if (obj instanceof IVariable) {
                 if (view.isShowLogicalStructure()) {
-                    IValue value = getLogicalValue(((IVariable) obj).getValue(), new ArrayList());
+                    IValue value = getLogicalValue(((IVariable) obj).getValue(), new ArrayList<String>());
                     variables = value.getVariables();
                 }
                 if (variables == null) {
@@ -82,7 +82,7 @@ public class WorkingMemoryViewContentProvider extends DroolsDebugViewContentProv
         IValue objects = DebugUtil.getValueByExpression("return iterateObjectsToList().toArray();", stackObj);
         if (objects instanceof IJavaArray) {
             IJavaArray array = (IJavaArray) objects;
-            List result = new ArrayList();
+            List<MyJavaVariable> result = new ArrayList<MyJavaVariable>();
             
             IJavaValue[] vals = array.getValues();
             
@@ -104,7 +104,7 @@ public class WorkingMemoryViewContentProvider extends DroolsDebugViewContentProv
 //                }
 //            }
             
-            return (IVariable[]) result.toArray(new IVariable[0]);
+            return result.toArray(new IVariable[0]);
         }
         
         return null;
@@ -210,7 +210,7 @@ public class WorkingMemoryViewContentProvider extends DroolsDebugViewContentProv
             return false;
         }
 
-        public Object getAdapter(Class adapter) {
+        public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
             if (IJavaVariable.class.equals(adapter) ||
                 IJavaModifiers.class.equals(adapter)) {
                 return this;

@@ -416,7 +416,7 @@ public class CompletionUtil {
      * @param cls -- class reference
      * @return Simple name of class
      */
-    public static String getSimpleClassName(Class cls) {
+    public static String getSimpleClassName(Class<?> cls) {
         int lastIndex = cls.getName().lastIndexOf( '$' );
         if ( lastIndex < 0 ) {
             lastIndex = cls.getName().lastIndexOf( '.' );

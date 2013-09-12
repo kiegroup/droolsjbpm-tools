@@ -295,6 +295,7 @@ public class DRLInfo {
         	return patternInfos;
         }
         
+        @SuppressWarnings("unchecked")
         private void traversePatternTree(List<PatternInfo> patternInfos, List<RuleConditionElement> ruleElements, List<BaseDescr> lhsDescrs) {
         	if (ruleElements.size() != lhsDescrs.size()) {
         		throw new RuntimeException("Cannot traverse pattern tree");

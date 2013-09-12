@@ -35,12 +35,12 @@ public class ColorManager {
     public static final RGB KEYWORD = new RGB(150, 0, 0);
     public static final RGB STRING = new RGB(0, 128, 0);
 
-    protected Map colorTable = new HashMap(10);
+    protected Map<RGB, Color> colorTable = new HashMap<RGB, Color>(10);
 
     void dispose() {
-        Iterator e = colorTable.values().iterator();
+        Iterator<Color> e = colorTable.values().iterator();
         while (e.hasNext()) {
-             ((Color) e.next()).dispose();
+             e.next().dispose();
         }
     }
     
@@ -49,7 +49,7 @@ public class ColorManager {
     }
     
     public Color getColor(RGB rgb) {
-        Color color = (Color) colorTable.get(rgb);
+        Color color = colorTable.get(rgb);
         if (color == null) {
             color = new Color(Display.getCurrent(), rgb);
             colorTable.put(rgb, color);

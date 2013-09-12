@@ -61,7 +61,7 @@ public class DRLScanner extends RuleBasedScanner {
         IToken string = new Token(new TextAttribute(STRING_COLOR));
         IToken other = new Token(null);
 
-        List rules = new ArrayList();
+        List<IRule> rules = new ArrayList<IRule>();
 
         rules.add(new EndOfLineRule("//", comment));
         rules.add(new EndOfLineRule("#", comment));

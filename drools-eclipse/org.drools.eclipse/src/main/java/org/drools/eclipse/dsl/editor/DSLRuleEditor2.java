@@ -81,7 +81,7 @@ public class DSLRuleEditor2 extends FormEditor {
         return dslRuleEditor.isSaveAsAllowed();
     }
 
-    public Object getAdapter(Class adapter) {
+    public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
         return dslRuleEditor.getAdapter(adapter);
     }
 

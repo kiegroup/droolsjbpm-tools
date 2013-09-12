@@ -18,7 +18,6 @@ package org.drools.eclipse.core;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -28,15 +27,15 @@ import java.util.Map;
 public class Package extends DroolsElement {
 
     private String packageName;
-    private List rules = new ArrayList();
-    private List functions = new ArrayList();
-    private List expanders = new ArrayList();
-    private List imports = new ArrayList();
-    private List globals = new ArrayList();
-    private List queries = new ArrayList();
-    private List templates = new ArrayList();
-    private List processes = new ArrayList();
-    private Map groups = new HashMap();
+    private List<Rule> rules = new ArrayList<Rule>();
+    private List<Function> functions = new ArrayList<Function>();
+    private List<Expander> expanders = new ArrayList<Expander>();
+    private List<Import> imports = new ArrayList<Import>();
+    private List<Global> globals = new ArrayList<Global>();
+    private List<Query> queries = new ArrayList<Query>();
+    private List<Template> templates = new ArrayList<Template>();
+    private List<Process> processes = new ArrayList<Process>();
+    private Map<Integer, Map<String, RuleGroup>> groups = new HashMap<Integer, Map<String,RuleGroup>>();
 
     private DefaultRuleGroup defaultGroup = null;
 
@@ -60,7 +59,7 @@ public class Package extends DroolsElement {
     }
 
     public DroolsElement[] getChildren() {
-        List children = new ArrayList();
+        List<DroolsElement> children = new ArrayList<DroolsElement>();
         children.addAll(rules);
         children.addAll(queries);
         children.addAll(globals);
@@ -70,7 +69,7 @@ public class Package extends DroolsElement {
         children.addAll(templates);
         children.addAll(processes);
         // }
-        return (DroolsElement[]) children.toArray(new DroolsElement[0]);
+        return children.toArray(new DroolsElement[0]);
     }
 
     public String toString() {
@@ -145,17 +144,17 @@ public class Package extends DroolsElement {
     }
 
     public RuleGroup getGroup(String name, int type) {
-        Map entries = (Map) groups.get(type);
+        Map<String, RuleGroup> entries = groups.get(type);
         if ((entries != null) && (entries.containsKey(name))) {
-            return (RuleGroup) entries.get(name);
+            return entries.get(name);
         }
         return null;
     }
 
     void addGroup(RuleGroup group) {
-        Map entries = (Map) groups.get(group.getType());
+        Map<String, RuleGroup> entries = groups.get(group.getType());
         if (entries == null) {
-            entries = new HashMap();
+            entries = new HashMap<String, RuleGroup>();
             entries.put(group.toString(), group);
             groups.put(group.getType(), entries);
         } else {
@@ -170,19 +169,17 @@ public class Package extends DroolsElement {
     }
 
     void removeGroup(RuleGroup group) {
-        Map entries = (Map) groups.get(group.getType());
+        Map<String, RuleGroup> entries = groups.get(group.getType());
         if (entries.containsValue(group)) {
             entries.remove(group);
         }
     }
 
     public DroolsElement[] getGroups() {
-        List returnedValue = new ArrayList();
-        for (Iterator it = groups.keySet().iterator(); it.hasNext();) {
-            int key = (Integer) it.next();
-            Map entries = (Map) groups.get(key);
+        List<RuleGroup> returnedValue = new ArrayList<RuleGroup>();
+        for (Map<String, RuleGroup> entries : groups.values()) {
             returnedValue.addAll(entries.values());
         }
-        return (DroolsElement[]) returnedValue.toArray(new DroolsElement[0]);
+        return returnedValue.toArray(new DroolsElement[0]);
     }
 }

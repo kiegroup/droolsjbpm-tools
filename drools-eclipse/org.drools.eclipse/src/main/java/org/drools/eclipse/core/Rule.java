@@ -25,7 +25,7 @@ import java.util.Map;
 public class Rule extends DroolsElement {
 
     private final String ruleName;
-    private Map attributes = new HashMap();
+    private Map<String, RuleAttribute> attributes = new HashMap<String, RuleAttribute>();
     private RuleGroup group = null;
     
     Rule(Package parent, String ruleName) {
@@ -54,7 +54,7 @@ public class Rule extends DroolsElement {
     }
 
     public RuleAttribute getAttribute(String attributeName) {
-        return (RuleAttribute) attributes.get(attributeName);
+        return attributes.get(attributeName);
     }
 
     public int getType() {

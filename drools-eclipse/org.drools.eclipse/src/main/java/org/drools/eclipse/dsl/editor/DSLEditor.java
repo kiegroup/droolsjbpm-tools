@@ -22,16 +22,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import org.drools.eclipse.DroolsEclipsePlugin;
-import org.drools.eclipse.builder.IDroolsModelMarker;
 import org.drools.compiler.lang.dsl.AntlrDSLMappingEntry;
 import org.drools.compiler.lang.dsl.DSLMappingEntry;
 import org.drools.compiler.lang.dsl.DSLMappingFile;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.compiler.lang.dsl.MappingError;
+import org.drools.eclipse.DroolsEclipsePlugin;
+import org.drools.eclipse.builder.IDroolsModelMarker;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
@@ -110,16 +109,15 @@ public class DSLEditor extends EditorPart {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void validate(FileEditorInput input) {
         removeProblemsFor( input.getFile() );
-        List errs = new ArrayList();
-        for ( Iterator iter = model.getEntries().iterator(); iter.hasNext(); ) {
-            DSLMappingEntry item = (DSLMappingEntry) iter.next();
+        List<MappingError> errs = new ArrayList<MappingError>();
+        for (DSLMappingEntry item : model.getEntries()) {
             errs.addAll( item.getErrors() );
         }
         if ( errs.size() > 0 ) {
-            for ( Iterator iter = errs.iterator(); iter.hasNext(); ) {
-                MappingError mapEr = (MappingError) iter.next();
+            for (MappingError mapEr : errs) {
                 createMarker( input.getFile(),
                               mapEr.getMessage() + "  From [" + mapEr.getTemplateText() + "]",
                               -1 );

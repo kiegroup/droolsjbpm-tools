@@ -119,7 +119,7 @@ public class BPMNModelEditor extends GenericModelEditor {
                     Thread.currentThread().setContextClassLoader(newLoader);
                     if (getPaletteRoot().getChildren().size() > 2) {
 	                    PaletteDrawer drawer = (PaletteDrawer) getPaletteRoot().getChildren().get(2);
-	                    List entries = new ArrayList();
+	                    List<CombinedTemplateCreationEntry> entries = new ArrayList<CombinedTemplateCreationEntry>();
 	                    try {
 	                        for (final WorkDefinition workDefinition: WorkItemDefinitions.getWorkDefinitions(file).values()) {
 	                            final String label;

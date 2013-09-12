@@ -131,7 +131,7 @@ public class VariableWrapper extends PlatformObject implements IJavaVariable  {
         return false;
     }
 
-    public Object getAdapter(Class adapter) {
+    public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
         if (IJavaVariable.class.equals(adapter) ||
             IJavaModifiers.class.equals(adapter)) {
             return this;

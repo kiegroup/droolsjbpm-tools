@@ -49,6 +49,7 @@ import com.sun.jdi.ReferenceType;
 import com.sun.jdi.StringReference;
 import com.sun.jdi.ThreadReference;
 import com.sun.jdi.VMDisconnectedException;
+import com.sun.jdi.Value;
 import com.sun.jdi.VirtualMachine;
 import com.sun.jdi.event.BreakpointEvent;
 import com.sun.jdi.event.ClassPrepareEvent;
@@ -64,7 +65,7 @@ import com.sun.jdi.request.EventRequestManager;
 
 public class DroolsDebugTarget extends JDIDebugTarget {
 
-    private ArrayList          fThreads;
+    private ArrayList<JDIThread>          fThreads;
     private ThreadStartHandler fThreadStartHandler = null;
     private boolean            fSuspended          = true;
 
@@ -96,7 +97,7 @@ public class DroolsDebugTarget extends JDIDebugTarget {
                     //getBreakpoints().add( breakpoint );
                     //super.breakpointAdded(breakpoint);
 
-                    Iterator handleriter = getVM().classesByName( "org.drools.core.base.mvel.MVELDebugHandler" ).iterator();
+                    Iterator<ReferenceType> handleriter = getVM().classesByName( "org.drools.core.base.mvel.MVELDebugHandler" ).iterator();
                     if ( !handleriter.hasNext() ) {
                         // Create class prepare request to add breakpoint after MVELDebugHanlder is loaded
                         ClassPrepareRequest req = getEventRequestManager().createClassPrepareRequest();
@@ -143,7 +144,7 @@ public class DroolsDebugTarget extends JDIDebugTarget {
     }
 
     protected synchronized void initialize() {
-        setThreadList( new ArrayList( 5 ) );
+        setThreadList( new ArrayList<JDIThread>( 5 ) );
         super.initialize();
     }
 
@@ -167,18 +168,19 @@ public class DroolsDebugTarget extends JDIDebugTarget {
         return jdiThread;
     }
 
-    private Iterator getThreadIterator() {
-        List threadList;
+    @SuppressWarnings("unchecked")
+    private Iterator<JDIThread> getThreadIterator() {
+        List<JDIThread> threadList;
         synchronized ( fThreads ) {
-            threadList = (List) fThreads.clone();
+            threadList = (List<JDIThread>) fThreads.clone();
         }
         return threadList.iterator();
     }
 
     private boolean hasSuspendedThreads() {
-        Iterator it = getThreadIterator();
+        Iterator<JDIThread> it = getThreadIterator();
         while ( it.hasNext() ) {
-            IThread thread = (IThread) it.next();
+            IThread thread = it.next();
             if ( thread.isSuspended() ) return true;
         }
         return false;
@@ -208,9 +210,7 @@ public class DroolsDebugTarget extends JDIDebugTarget {
         } catch ( RuntimeException e ) {
             setSuspended( true );
             fireSuspendEvent( DebugEvent.CLIENT_REQUEST );
-            targetRequestFailed( MessageFormat.format( JDIDebugModelMessages.JDIDebugTarget_exception_resume,
-                                                       new String[]{e.toString()} ),
-                                 e );
+            targetRequestFailed(MessageFormat.format(JDIDebugModelMessages.JDIDebugTarget_exception_resume, e.toString()), e);
         }
     }
 
@@ -222,18 +222,18 @@ public class DroolsDebugTarget extends JDIDebugTarget {
         return fSuspended;
     }
 
-    private void setThreadList(ArrayList threads) {
+    private void setThreadList(ArrayList<JDIThread> threads) {
         fThreads = threads;
     }
 
     public IThread[] getThreads() {
         synchronized ( fThreads ) {
-            return (IThread[]) fThreads.toArray( new IThread[0] );
+            return fThreads.toArray( new IThread[0] );
         }
     }
 
     protected void removeAllThreads() {
-        Iterator itr = getThreadIterator();
+        Iterator<JDIThread> itr = getThreadIterator();
         while ( itr.hasNext() ) {
             DroolsThread child = (DroolsThread) itr.next();
             child.terminated();
@@ -439,9 +439,9 @@ public class DroolsDebugTarget extends JDIDebugTarget {
     }
 
     public boolean isOutOfSynch() throws DebugException {
-        Iterator threads = getThreadIterator();
+        Iterator<JDIThread> threads = getThreadIterator();
         while ( threads.hasNext() ) {
-            JDIThread thread = (JDIThread) threads.next();
+            JDIThread thread = threads.next();
             if ( thread.isOutOfSynch() ) {
                 return true;
             }
@@ -450,9 +450,9 @@ public class DroolsDebugTarget extends JDIDebugTarget {
     }
 
     public boolean mayBeOutOfSynch() {
-        Iterator threads = getThreadIterator();
+        Iterator<JDIThread> threads = getThreadIterator();
         while ( threads.hasNext() ) {
-            JDIThread thread = (JDIThread) threads.next();
+            JDIThread thread = threads.next();
             if ( thread.mayBeOutOfSynch() ) {
                 return true;
             }
@@ -461,9 +461,9 @@ public class DroolsDebugTarget extends JDIDebugTarget {
     }
 
     public JDIThread findThread(ThreadReference tr) {
-        Iterator iter = getThreadIterator();
+        Iterator<JDIThread> iter = getThreadIterator();
         while ( iter.hasNext() ) {
-            JDIThread thread = (JDIThread) iter.next();
+            JDIThread thread = iter.next();
             if ( thread.getUnderlyingThread().equals( tr ) ) return thread;
         }
         return null;
@@ -490,7 +490,7 @@ public class DroolsDebugTarget extends JDIDebugTarget {
 
                 ((JavaBreakpoint) breakpoint).removeFromTarget( this );
                 getBreakpoints().remove( breakpoint );
-                Iterator threads = getThreadIterator();
+                Iterator<JDIThread> threads = getThreadIterator();
                 while ( threads.hasNext() ) {
                     ((DroolsThread) threads.next()).removeCurrentBreakpoint( breakpoint );
                 }
@@ -501,14 +501,14 @@ public class DroolsDebugTarget extends JDIDebugTarget {
     }
 
     protected void suspendThreads() {
-        Iterator threads = getThreadIterator();
+        Iterator<JDIThread> threads = getThreadIterator();
         while ( threads.hasNext() ) {
             ((DroolsThread) threads.next()).suspendedByVM();
         }
     }
 
     protected void resumeThreads() throws DebugException {
-        Iterator threads = getThreadIterator();
+        Iterator<JDIThread> threads = getThreadIterator();
         while ( threads.hasNext() ) {
             ((DroolsThread) threads.next()).resumedByVM();
         }
@@ -536,9 +536,7 @@ public class DroolsDebugTarget extends JDIDebugTarget {
             // normal disconnect handling
             disconnected();
         } catch ( RuntimeException e ) {
-            targetRequestFailed( MessageFormat.format( JDIDebugModelMessages.JDIDebugTarget_exception_disconnecting,
-                                                       new String[]{e.toString()} ),
-                                 e );
+            targetRequestFailed(MessageFormat.format(JDIDebugModelMessages.JDIDebugTarget_exception_disconnecting, e.toString()), e);
         }
 
     }
@@ -575,9 +573,7 @@ public class DroolsDebugTarget extends JDIDebugTarget {
                 disconnected();
             }
         } catch ( RuntimeException e ) {
-            targetRequestFailed( MessageFormat.format( JDIDebugModelMessages.JDIDebugTarget_exception_terminating,
-                                                       new String[]{e.toString()} ),
-                                 e );
+            targetRequestFailed(MessageFormat.format(JDIDebugModelMessages.JDIDebugTarget_exception_terminating, e.toString()), e);
         }
     }
 
@@ -613,7 +609,7 @@ public class DroolsDebugTarget extends JDIDebugTarget {
 
     protected void initializeState() {
 
-        List threads = null;
+        List<ThreadReference> threads = null;
         VirtualMachine vm = getVM();
         if ( vm != null ) {
             try {
@@ -622,9 +618,9 @@ public class DroolsDebugTarget extends JDIDebugTarget {
                 internalError( e );
             }
             if ( threads != null ) {
-                Iterator initialThreads = threads.iterator();
+                Iterator<ThreadReference> initialThreads = threads.iterator();
                 while ( initialThreads.hasNext() ) {
-                    createThread( (ThreadReference) initialThreads.next() );
+                    createThread(initialThreads.next());
                 }
             }
         }
@@ -649,9 +645,7 @@ public class DroolsDebugTarget extends JDIDebugTarget {
         } catch ( RuntimeException e ) {
             setSuspended( false );
             fireResumeEvent( DebugEvent.CLIENT_REQUEST );
-            targetRequestFailed( MessageFormat.format( JDIDebugModelMessages.JDIDebugTarget_exception_suspend,
-                                                       new String[]{e.toString()} ),
-                                 e );
+            targetRequestFailed(MessageFormat.format(JDIDebugModelMessages.JDIDebugTarget_exception_suspend, e.toString()), e);
         }
     }
 
@@ -707,12 +701,12 @@ public class DroolsDebugTarget extends JDIDebugTarget {
 
             // change this to create a breakpoint, as the method enter was too slow
             BreakpointRequest req = null;
-            List list = classType.methodsByName( "onBreak" );
+            List<Method> list = classType.methodsByName( "onBreak" );
             if (  list.size() == 0 ) {
                 throw new IllegalStateException( "MVELDebugHandler.onBreak cannot be found by JDI" );
             }
             
-            Method method = ( Method ) list.get( 0 );
+            Method method = list.get( 0 );
             if (method != null && !method.isNative()) {
                 Location location = method.location();
                 if (location != null && location.codeIndex() != -1) {
@@ -820,7 +814,7 @@ public class DroolsDebugTarget extends JDIDebugTarget {
             return null;
         }
 
-        Iterator iterator = getBreakpoints().iterator();
+        Iterator<IBreakpoint> iterator = getBreakpoints().iterator();
         while ( iterator.hasNext() ) {
             IJavaBreakpoint element = (IJavaBreakpoint) iterator.next();
             if ( element instanceof DroolsLineBreakpoint && ((DroolsLineBreakpoint) element).getDialectName().equals( "mvel" ) ) {
@@ -854,8 +848,8 @@ public class DroolsDebugTarget extends JDIDebugTarget {
             return; // No need to install breakpoints that are this much broken
         }
 
-        Iterator handleriter = getVM().classesByName( "org.drools.core.base.mvel.MVELDebugHandler" ).iterator();
-        Object debugHandlerClass = handleriter.next();
+        Iterator<ReferenceType> handleriter = getVM().classesByName( "org.drools.core.base.mvel.MVELDebugHandler" ).iterator();
+        ReferenceType debugHandlerClass = handleriter.next();
 
         int line;
         String sourceName;
@@ -868,9 +862,9 @@ public class DroolsDebugTarget extends JDIDebugTarget {
             return;
         }
 
-        ReferenceType refType = (ReferenceType) debugHandlerClass;
-        Method m = (Method) refType.methodsByName( "registerBreakpoint" ).iterator().next();
-        List args = new ArrayList();
+        ReferenceType refType = debugHandlerClass;
+        Method m = refType.methodsByName( "registerBreakpoint" ).iterator().next();
+        List<Value> args = new ArrayList<Value>();
         IntegerValue lineVal = getVM().mirrorOf( line );
         StringReference nameVal = getVM().mirrorOf( sourceName );
         JDIObjectValue val = (JDIObjectValue) newValue( sourceName );
@@ -910,8 +904,8 @@ public class DroolsDebugTarget extends JDIDebugTarget {
 
     private void removeRemoteBreakpoint(DroolsLineBreakpoint d,
                                         IMarkerDelta delta) {
-        Iterator handleriter = getVM().classesByName( "org.drools.core.base.mvel.MVELDebugHandler" ).iterator();
-        Object debugHandlerClass = handleriter.next();
+        Iterator<ReferenceType> handleriter = getVM().classesByName( "org.drools.core.base.mvel.MVELDebugHandler" ).iterator();
+        ReferenceType debugHandlerClass = handleriter.next();
 
         int line;
         String sourceName;
@@ -924,9 +918,9 @@ public class DroolsDebugTarget extends JDIDebugTarget {
             return;
         }
 
-        ReferenceType refType = (ReferenceType) debugHandlerClass;
-        Method m = (Method) refType.methodsByName( "removeBreakpoint" ).iterator().next();
-        List args = new ArrayList();
+        ReferenceType refType = debugHandlerClass;
+        Method m = refType.methodsByName( "removeBreakpoint" ).iterator().next();
+        List<Value> args = new ArrayList<Value>();
         IntegerValue lineVal = getVM().mirrorOf( line );
         StringReference nameVal = getVM().mirrorOf( sourceName );
         JDIObjectValue val = (JDIObjectValue) newValue( sourceName );
