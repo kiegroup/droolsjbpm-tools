@@ -18,14 +18,14 @@ package org.drools.eclipse.flow.common.view.datatype.editor.impl;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
+import org.drools.core.process.core.datatype.DataType;
+import org.drools.core.process.core.datatype.impl.type.UndefinedDataType;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.flow.common.datatype.DataTypeRegistry;
 import org.drools.eclipse.flow.common.view.datatype.editor.DataTypeEditor;
-import org.drools.core.process.core.datatype.DataType;
-import org.drools.core.process.core.datatype.impl.type.UndefinedDataType;
+import org.drools.eclipse.flow.common.view.datatype.editor.DataTypeEditor.DataTypeListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Composite;
 public class DataTypeEditorComposite extends Composite implements DataTypeEditor.DataTypeListener {
     private DataTypeRegistry registry;
     private DataTypeEditor dataTypeEditor;
-    private List listeners = new ArrayList();
+    private List<DataTypeListener> listeners = new ArrayList<DataTypeEditor.DataTypeListener>();
    
     public DataTypeEditorComposite(Composite parent, int style, DataTypeRegistry registry) {
         super(parent, style);
@@ -52,7 +52,7 @@ public class DataTypeEditorComposite extends Composite implements DataTypeEditor
             dataTypeEditor.removeListener(this);
             ((Composite) dataTypeEditor).dispose();
             dataTypeEditor = null;
-            Class editorClass = null;
+            Class<?> editorClass = null;
             try {
                 editorClass = registry.getDataTypeInfo(dataType.getClass()).getDataTypeEditorClass();
                 dataTypeEditor = (DataTypeEditor) editorClass.getConstructor(
@@ -107,8 +107,7 @@ public class DataTypeEditorComposite extends Composite implements DataTypeEditor
     
     private void notifyListeners() {
         DataType dataType = getDataType();
-        for (Iterator it = listeners.iterator(); it.hasNext(); ) {
-            DataTypeEditor.DataTypeListener listener = (DataTypeEditor.DataTypeListener) it.next();
+        for (DataTypeEditor.DataTypeListener listener : listeners) {
             listener.dataTypeChanged(dataType);
         }
     }

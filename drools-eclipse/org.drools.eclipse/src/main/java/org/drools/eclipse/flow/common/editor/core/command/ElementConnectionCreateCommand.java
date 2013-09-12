@@ -16,9 +16,6 @@
 
 package org.drools.eclipse.flow.common.editor.core.command;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.eclipse.gef.commands.Command;
@@ -38,9 +35,7 @@ public class ElementConnectionCreateCommand extends Command {
         }
         
         // Check for existence of connection already
-        List connections = source.getOutgoingConnections();
-        for (Iterator it = connections.iterator(); it.hasNext(); ) {
-            ElementConnection conn = (ElementConnection) it.next();
+        for (ElementConnection conn : source.getOutgoingConnections()) {
             if (conn.getTarget().equals(target)) {
                 return false;
             }

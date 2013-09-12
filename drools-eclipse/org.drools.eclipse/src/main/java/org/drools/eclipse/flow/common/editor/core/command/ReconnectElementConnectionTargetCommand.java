@@ -16,9 +16,6 @@
 
 package org.drools.eclipse.flow.common.editor.core.command;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
 import org.drools.eclipse.flow.common.editor.core.ElementWrapper;
 import org.eclipse.gef.commands.Command;
@@ -37,10 +34,8 @@ public class ReconnectElementConnectionTargetCommand extends Command {
     public boolean canExecute() {
         if (connection.getSource().equals(newTarget))
             return false;
-            
-        List connections = newTarget.getIncomingConnections();
-        for (Iterator it = connections.iterator(); it.hasNext(); ) {
-            ElementConnection connection = (ElementConnection) it.next();
+
+        for (ElementConnection connection : newTarget.getIncomingConnections()) {
             if (connection.getSource().equals(source) && !connection.getTarget().equals(oldTarget))
                 return false;
         }

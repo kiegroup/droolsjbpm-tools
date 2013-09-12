@@ -264,7 +264,7 @@ public class RuleFlowConstraintDialog extends Dialog {
                 dialog.create();
                 int code = dialog.open();
                 if (code != CANCEL) {
-                    List imports = dialog.getImports();
+                    List<String> imports = dialog.getImports();
                     ((org.jbpm.process.core.Process) process).setImports(imports);
                     completionProcessor.reset();
                 }
@@ -281,7 +281,7 @@ public class RuleFlowConstraintDialog extends Dialog {
                 dialog.create();
                 int code = dialog.open();
                 if (code != CANCEL) {
-                    Map globals = dialog.getGlobals();
+                    Map<String, String> globals = dialog.getGlobals();
                     ((org.jbpm.process.core.Process) process).setGlobals(globals);
                     completionProcessor.reset();
                 }

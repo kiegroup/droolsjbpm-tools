@@ -118,7 +118,7 @@ public class MVELStackFrame extends DroolsStackFrame {
                 if ( vvv != null && ((ArrayReference) vvv.getUnderlyingObject()).length() > 0 ) {
                     ArrayReference arr = (ArrayReference) vvv.getUnderlyingObject();
 
-                    Iterator varIter = arr.getValues().iterator();
+                    Iterator<Value> varIter = arr.getValues().iterator();
 
                     while ( varIter.hasNext() ) {
                         final String varName = ((StringReference) varIter.next()).value();
@@ -151,14 +151,14 @@ public class MVELStackFrame extends DroolsStackFrame {
                                      }
                                  }
                              } );
-                result = new ArrayList( (vararr.length - 1) / 2 );
+                result = new ArrayList<IVariable>( (vararr.length - 1) / 2 );
                 for ( int i = 0; i < vararr.length; i++ ) {
                     String name = vararr[i].getName();
                     if ( !(name.equals( DROOLS_VAR_NAME )) && !(name.endsWith( HANDLE_SUFIX )) ) {
                         result.add( vararr[i] );
                     }
                 }
-                vararr = (IVariable[]) result.toArray( new IVariable[result.size()] );
+                vararr = result.toArray( new IVariable[result.size()] );
                 
                 ctxCache.setCacheVariables( vararr );
                 return vararr;
@@ -496,7 +496,7 @@ public class MVELStackFrame extends DroolsStackFrame {
                                                              return null;
                                                          }
 
-                                                         public Object getAdapter(Class adapter) {
+                                                         public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
                                                              return null;
                                                          }
 

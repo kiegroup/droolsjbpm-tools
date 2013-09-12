@@ -19,9 +19,9 @@ package org.drools.eclipse.dsl.editor.completion;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Iterator;
 import java.util.List;
 
+import org.drools.compiler.lang.Location;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
 import org.drools.eclipse.dsl.editor.DSLAdapter;
@@ -29,7 +29,7 @@ import org.drools.eclipse.dsl.editor.DSLRuleEditor;
 import org.drools.eclipse.editors.AbstractRuleEditor;
 import org.drools.eclipse.editors.completion.RuleCompletionProcessor;
 import org.drools.eclipse.editors.completion.RuleCompletionProposal;
-import org.drools.compiler.lang.Location;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -48,17 +48,17 @@ public class DSLRuleCompletionProcessor extends RuleCompletionProcessor {
         return (DSLRuleEditor) getEditor();
     }
     
-    protected void addRHSCompletionProposals(List list, int documentOffset, String prefix, String backText,
+    protected void addRHSCompletionProposals(List<ICompletionProposal> list, int documentOffset, String prefix, String backText,
             String conditions, String consequence) {
         // super.addRHSCompletionProposals(list, documentOffset, prefix, backText, conditions, consequence);
         DSLAdapter adapter = getDSLRuleEditor().getDSLAdapter();
         if (adapter != null) {
-            List dslConsequences = adapter.getDSLTree().getConsequenceChildrenList(prefix, true);
+            List<String> dslConsequences = adapter.getDSLTree().getConsequenceChildrenList(prefix, true);
             addDSLProposals(list, documentOffset, prefix, dslConsequences);
         }
     }
 
-    protected void addLHSCompletionProposals(List list, int documentOffset,
+    protected void addLHSCompletionProposals(List<ICompletionProposal> list, int documentOffset,
             Location location, String prefix, String backText) {
         // super.addLHSCompletionProposals(list, documentOffset, location, prefix, backText);
         DSLAdapter adapter = getDSLRuleEditor().getDSLAdapter();
@@ -75,7 +75,7 @@ public class DSLRuleCompletionProcessor extends RuleCompletionProcessor {
             }
             last = last.trim();
             // pass the last string in the backText to getProposals
-            List dslConditions = this.getProposals(adapter, lastobj, last, firstLine);
+            List<String> dslConditions = this.getProposals(adapter, lastobj, last, firstLine);
             // if we couldn't find any matches, we add the list from
             // the DSLAdapter so that there's something
 //            if (dslConditions.size() == 0) {
@@ -85,10 +85,8 @@ public class DSLRuleCompletionProcessor extends RuleCompletionProcessor {
         }
     }
 
-    private void addDSLProposals(final List list, int documentOffset, final String prefix, List dslItems) {
-        Iterator iterator = dslItems.iterator();
-        while (iterator.hasNext()) {
-            String consequence = (String) iterator.next();
+    private void addDSLProposals(final List<ICompletionProposal> list, int documentOffset, final String prefix, List<String> dslItems) {
+        for (String consequence : dslItems) {
             RuleCompletionProposal p = new RuleCompletionProposal(
                 documentOffset - prefix.length(), prefix.length(), consequence);
             p.setImage(DSL_ICON);
@@ -175,7 +173,7 @@ public class DSLRuleCompletionProcessor extends RuleCompletionProcessor {
      * @param last
      * @return
      */
-    protected List getProposals(DSLAdapter adapter, String obj, String last, boolean firstLine) {
+    protected List<String> getProposals(DSLAdapter adapter, String obj, String last, boolean firstLine) {
         if (last.length() == 0) {
             last = " ";
         }

@@ -47,7 +47,7 @@ import org.jbpm.workflow.core.node.WorkItemNode;
 /**
  * Dialog for editing work item result mappings.
  */
-public class WorkItemResultMappingDialog extends EditBeanDialog implements FocusListener, MouseListener {
+public class WorkItemResultMappingDialog extends EditBeanDialog<Map<String, String>> implements FocusListener, MouseListener {
 
     private Table table;
     private Button removeButton;
@@ -60,7 +60,7 @@ public class WorkItemResultMappingDialog extends EditBeanDialog implements Focus
         setValue(workItemNode.getOutMappings());
     }
 
-    protected Object updateValue(Object value) {
+    protected Map<String, String> updateValue(Map<String, String> value) {
         Map<String, String> mapping = new HashMap<String, String>();
         for (TableItem item: table.getItems()) {
             mapping.put(item.getText(1), item.getText(0));

@@ -67,11 +67,9 @@ public class DefaultDataTypeRegistry {
                 EmptyEditor.class, ObjectDataTypeEditor.class);
     }
 
-    public static void registerVariableDataType(Class type,
-            DataTypeFactory dataTypeFactory, String name,
-            Class valueEditorClass, Class dataTypeEditorClass) {
-        variableDataTypeRegistry.registerDataType(type, dataTypeFactory, name,
-                valueEditorClass, dataTypeEditorClass);
+    public static void registerVariableDataType(Class<?> type, DataTypeFactory dataTypeFactory, String name,
+            Class<?> valueEditorClass, Class<?> dataTypeEditorClass) {
+        variableDataTypeRegistry.registerDataType(type, dataTypeFactory, name, valueEditorClass, dataTypeEditorClass);
     }
 
     public static DataTypeRegistry getInstance() {

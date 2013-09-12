@@ -67,6 +67,7 @@ public class VerticalAutoLayoutAction extends ActionDelegate implements IEditorA
         editor.doSave(null);
     }
     
+    @SuppressWarnings("unchecked")
     protected DirectedGraph createDirectedGraph(Map<Long, Node> mapping) {
         DirectedGraph graph = new DirectedGraph();
         WorkflowProcess process = (WorkflowProcess) ((ProcessWrapper) ((GenericModelEditor) editor).getModel()).getProcess();

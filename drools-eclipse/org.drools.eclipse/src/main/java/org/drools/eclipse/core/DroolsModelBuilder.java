@@ -16,8 +16,8 @@
 
 package org.drools.eclipse.core;
 
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IFile;
 
@@ -53,18 +53,14 @@ public class DroolsModelBuilder {
         ruleSet.clear();
     }
 
-    public static Rule addRule(Package pkg, String ruleName, IFile file,
-            int offset, int length, Map attributes) {
+    public static Rule addRule(Package pkg, String ruleName, IFile file, int offset, int length, Map<String, String> attributes) {
         Rule rule = new Rule(pkg, ruleName);
         rule.setFile(file, offset, length);
         if (attributes != null) {
-            for (Iterator iterator = attributes.entrySet().iterator(); iterator
-                    .hasNext();) {
-                Map.Entry entry = (Map.Entry) iterator.next();
-                String attributeKey = (String) entry.getKey();
-                String attributeValue = (String) entry.getValue();
-                RuleAttribute attribute = new RuleAttribute(rule, attributeKey,
-                        attributeValue);
+            for (Entry<String, String> entry : attributes.entrySet()) {
+                String attributeKey = entry.getKey();
+                String attributeValue = entry.getValue();
+                RuleAttribute attribute = new RuleAttribute(rule, attributeKey, attributeValue);
                 attribute.setFile(file, offset, length);
                 rule.addAttribute(attribute);
                 // TODO Create constant for Attribute ??

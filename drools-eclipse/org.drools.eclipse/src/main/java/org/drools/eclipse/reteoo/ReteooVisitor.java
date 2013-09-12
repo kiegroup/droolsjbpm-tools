@@ -23,15 +23,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.common.BaseNode;
+import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.LeftTupleSource;
+import org.drools.core.reteoo.ObjectSource;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.Rete;
+import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ReflectiveVisitor;
 import org.drools.eclipse.editors.rete.model.Connection;
 import org.drools.eclipse.editors.rete.model.ReteGraph;
-import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.reteoo.LeftTupleSource;
-import org.drools.core.reteoo.ObjectSource;
-import org.drools.core.reteoo.Rete;
-import org.drools.core.reteoo.ReteooRuleBase;
 
 /**
  * Produces a graph in GraphViz DOT format.
@@ -49,7 +50,7 @@ public class ReteooVisitor extends ReflectiveVisitor {
      * existing nodes back together. This is vital to the Visitor being able to
      * link two JoinNodeInputs together through their common JoinNode.
      */
-    private final Map           visitedNodes = new HashMap();
+    private final Map<String, BaseVertex> visitedNodes = new HashMap<String, BaseVertex>();
 
     private ReteGraph           graph;
 
@@ -99,12 +100,12 @@ public class ReteooVisitor extends ReflectiveVisitor {
     }
 
     public void visitBaseNode(final BaseNode node) {
-        BaseVertex vertex = (BaseVertex) this.visitedNodes.get( dotId( node ) );
+        BaseVertex vertex = this.visitedNodes.get( dotId( node ) );
         if ( vertex == null ) {
             try {
                 String name = node.getClass().getName();
                 name = name.substring( name.lastIndexOf( '.' ) + 1 ) + "Vertex";
-                final Class clazz = Class.forName( PACKAGE_NAME + name );
+                final Class<?> clazz = Class.forName( PACKAGE_NAME + name );
                 vertex = (BaseVertex) clazz.getConstructor( new Class[]{node.getClass()} ).newInstance( new Object[]{node} );
             } catch ( final Exception e ) {
                 throw new RuntimeException( "problem visiting vertex " + node.getClass().getName(),
@@ -120,9 +121,9 @@ public class ReteooVisitor extends ReflectiveVisitor {
             final BaseVertex oldParentVertex = this.parentVertex;
             this.parentVertex = vertex;
 
-            List list = null;
+            List<?> list = null;
             if ( node instanceof EntryPointNode ) {
-                list = new ArrayList( ((EntryPointNode) node).getObjectTypeNodes().values() );
+                list = new ArrayList<ObjectTypeNode>( ((EntryPointNode) node).getObjectTypeNodes().values() );
             } else if ( node instanceof ObjectSource) {
                 list = Arrays.asList( ((ObjectSource) node).getSinkPropagator().getSinks() );
             } else if ( node instanceof LeftTupleSource) {
@@ -130,7 +131,7 @@ public class ReteooVisitor extends ReflectiveVisitor {
             }
 
             if ( list != null ) {
-                for ( final java.util.Iterator it = list.iterator(); it.hasNext(); ) {
+                for ( final java.util.Iterator<?> it = list.iterator(); it.hasNext(); ) {
                     final Object nextNode = it.next();
                     visitNode( nextNode );
                 }

@@ -33,7 +33,7 @@ public class Row {
     private final int depth;
 
     //List<BaseVertex>
-    private List      vertices;
+    private List<BaseVertex> vertices;
 
     /**
      * Default constructor.
@@ -42,7 +42,7 @@ public class Row {
      */
     public Row(final int depth) {
         super();
-        this.vertices = new ArrayList();
+        this.vertices = new ArrayList<BaseVertex>();
         this.depth = depth;
     }
 
@@ -69,7 +69,7 @@ public class Row {
      * 
      * @return list of vertices with type BaseVertex
      */
-    public List getVertices() {
+    public List<BaseVertex> getVertices() {
         return this.vertices;
     }
 
@@ -92,36 +92,31 @@ public class Row {
      * Optimizing vertices for optimal presentation
      */
     public void optimize() {
-        final List sorted = new ArrayList( this.vertices );
+        final List<BaseVertex> sorted = new ArrayList<BaseVertex>( this.vertices );
 
-        Collections.sort( sorted,
-                          new Comparator() {
-                              public int compare(final Object o1,
-                                                 final Object o2) {
-                                  final BaseVertex v1 = (BaseVertex) o1;
-                                  final BaseVertex v2 = (BaseVertex) o2;
+        Collections.sort(sorted, new Comparator<BaseVertex>() {
+            public int compare(final BaseVertex v1, final BaseVertex v2) {
+                int v1OutDegree = v1.getSourceConnections().size();
+                int v2OutDegree = v2.getSourceConnections().size();
 
-                                  int v1OutDegree = v1.getSourceConnections().size();
-                                  int v2OutDegree = v2.getSourceConnections().size();
+                if (v1OutDegree < v2OutDegree) {
+                    return 1;
+                }
 
-                                  if ( v1OutDegree < v2OutDegree ) {
-                                      return 1;
-                                  }
+                if (v1OutDegree > v2OutDegree) {
+                    return -1;
+                }
 
-                                  if ( v1OutDegree > v2OutDegree ) {
-                                      return -1;
-                                  }
+                return 0;
+            }
+        });
 
-                                  return 0;
-                              }
-                          } );
-
-        final LinkedList optimized = new LinkedList();
+        final LinkedList<BaseVertex> optimized = new LinkedList<BaseVertex>();
 
         boolean front = false;
 
-        for ( final Iterator vertexIter = sorted.iterator(); vertexIter.hasNext(); ) {
-            final BaseVertex vertex = (BaseVertex) vertexIter.next();
+        for ( final Iterator<BaseVertex> vertexIter = sorted.iterator(); vertexIter.hasNext(); ) {
+            final BaseVertex vertex = vertexIter.next();
 
             if ( front ) {
                 optimized.addFirst( vertex );

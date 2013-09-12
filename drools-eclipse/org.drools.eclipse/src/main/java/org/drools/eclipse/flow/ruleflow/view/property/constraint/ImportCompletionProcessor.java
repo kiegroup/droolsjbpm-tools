@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
+import org.drools.compiler.lang.descr.GlobalDescr;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.editors.completion.CompletionUtil;
 import org.drools.eclipse.editors.completion.DefaultCompletionProcessor;
@@ -34,6 +35,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbench;
@@ -64,7 +66,7 @@ public class ImportCompletionProcessor extends DefaultCompletionProcessor {
         return null;
     }
 
-    protected List getCompletionProposals(ITextViewer viewer,
+    protected List<ICompletionProposal> getCompletionProposals(ITextViewer viewer,
             int documentOffset) {
         try {
             IDocument doc = viewer.getDocument();
@@ -72,7 +74,7 @@ public class ImportCompletionProcessor extends DefaultCompletionProcessor {
 
             String prefix = CompletionUtil.stripLastWord(backText);
 
-            List props = null;
+            List<ICompletionProposal> props = null;
             Matcher matcher = IMPORT_PATTERN.matcher(backText);
             if (matcher.matches()) {
                 String classNameStart = backText.substring(backText
@@ -90,12 +92,12 @@ public class ImportCompletionProcessor extends DefaultCompletionProcessor {
     }
 
     
-    public List getImports() {
-        return Collections.EMPTY_LIST;
+    public List<String> getImports() {
+        return Collections.emptyList();
     }
     
-    public List getGlobals() {
-        return Collections.EMPTY_LIST;
+    public List<GlobalDescr> getGlobals() {
+        return Collections.emptyList();
     }
     
     protected IJavaProject getCurrentJavaProject() {
@@ -113,11 +115,11 @@ public class ImportCompletionProcessor extends DefaultCompletionProcessor {
         return null;
     }
     
-    protected List getPossibleProposals(ITextViewer viewer,
+    protected List<ICompletionProposal> getPossibleProposals(ITextViewer viewer,
             int documentOffset,
             String backText,
             final String prefix) {
-        List list = new ArrayList();
+        List<ICompletionProposal> list = new ArrayList<ICompletionProposal>();
         list.add(new RuleCompletionProposal(documentOffset - prefix.length(), prefix.length(), "import", "import "));
         DefaultCompletionProcessor.filterProposalsOnPrefix(prefix, list);
         return list;
@@ -128,18 +130,18 @@ public class ImportCompletionProcessor extends DefaultCompletionProcessor {
      * the overrriden equals in {@link RuleCompletionProposal} to avoid the situation when several
      * accessors can exist for one property. for that case we want to keep only one proposal.
      */
-    protected Collection getJavaMvelCompletionProposals(final int documentOffset,
+    protected Collection<ICompletionProposal> getJavaMvelCompletionProposals(final int documentOffset,
                                                      final String javaText,
                                                      final String prefix,
-                                                     Map params) {
-                                                        final List list = new ArrayList();
+                                                     Map<String, String> params) {
+                                                        final List<ICompletionProposal> list = new ArrayList<ICompletionProposal>();
                                                         requestJavaCompletionProposals( javaText,
                                                                                         prefix,
                                                                                         documentOffset,
                                                                                         params,
                                                                                         list );
                                                     
-                                                        Collection mvelList = RuleCompletionProcessor.mvelifyProposals( list, false );
+                                                        Collection<ICompletionProposal> mvelList = RuleCompletionProcessor.mvelifyProposals( list, false );
                                                         return mvelList;
                                                     }
 }

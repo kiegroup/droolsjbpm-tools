@@ -24,7 +24,7 @@ import java.util.List;
  */
 public abstract class RuleGroup extends DroolsElement {
     private String groupName = null;
-    private List rules = new ArrayList();
+    private List<Rule> rules = new ArrayList<Rule>();
 
     protected RuleGroup(Package parent, Rule rule, String groupName) {
         super(parent);
@@ -34,7 +34,7 @@ public abstract class RuleGroup extends DroolsElement {
     }
 
     public DroolsElement[] getRules() {
-        return (DroolsElement[]) rules.toArray(new DroolsElement[0]);
+        return rules.toArray(new DroolsElement[0]);
     }
 
     @Override

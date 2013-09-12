@@ -52,7 +52,7 @@ public final class DroolsPairMatcher implements ICharacterPairMatcher {
     }
 
     private IRegion searchRight(IDocument document, int offset, char rightChar, char leftChar) throws BadLocationException {
-        Stack stack = new Stack();
+        Stack<Character> stack = new Stack<Character>();
         anchor = ICharacterPairMatcher.LEFT;
         char[] chars = document.get(offset, document.getLength() - offset).toCharArray();
         for (int i = 0; i < chars.length; i++) {
@@ -73,7 +73,7 @@ public final class DroolsPairMatcher implements ICharacterPairMatcher {
 
     private IRegion searchLeft(IDocument document, int offset, char rightChar, char leftChar)
             throws BadLocationException {
-        Stack stack = new Stack();
+        Stack<Character> stack = new Stack<Character>();
         anchor = ICharacterPairMatcher.RIGHT;
         char[] chars = document.get(0, offset - 1).toCharArray();
         for (int i = chars.length - 1; i >= 0; i--) {

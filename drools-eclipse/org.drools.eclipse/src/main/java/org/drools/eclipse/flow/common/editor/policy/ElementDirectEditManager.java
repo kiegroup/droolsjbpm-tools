@@ -29,7 +29,7 @@ public class ElementDirectEditManager extends DirectEditManager {
 
     private ElementWrapper element;
 
-    public ElementDirectEditManager(GraphicalEditPart source, Class editorType,
+    public ElementDirectEditManager(GraphicalEditPart source, Class<?> editorType,
             CellEditorLocator locator) {
         super(source, editorType, locator);
         element = (ElementWrapper) source.getModel();

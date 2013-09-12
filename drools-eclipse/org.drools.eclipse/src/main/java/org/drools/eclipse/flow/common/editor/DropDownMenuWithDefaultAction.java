@@ -41,7 +41,7 @@ public class DropDownMenuWithDefaultAction extends Action
 
     private IAction                 delegate;
 
-    private List                    list;
+    private List<Object> list;
 
     private IPropertyChangeListener enabledListener;
     private SelectionListener       selectionListener;
@@ -51,7 +51,7 @@ public class DropDownMenuWithDefaultAction extends Action
         setMenuCreator( this );
         this.dropDownMenu = null;
         setAction( action );
-        this.list = new ArrayList();
+        this.list = new ArrayList<Object>();
     }
 
     public void dispose() {
@@ -86,7 +86,7 @@ public class DropDownMenuWithDefaultAction extends Action
     }
 
     private void populateMenu() {
-        for ( final Iterator it = this.list.iterator(); it.hasNext(); ) {
+        for ( final Iterator<Object> it = this.list.iterator(); it.hasNext(); ) {
             final Object object = it.next();
             if ( object instanceof IContributionItem ) {
                 final IContributionItem item = (IContributionItem) object;

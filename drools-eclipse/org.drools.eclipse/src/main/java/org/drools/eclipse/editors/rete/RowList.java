@@ -28,14 +28,14 @@ import org.drools.eclipse.reteoo.BaseVertex;
 public class RowList {
 
     // List<Row>
-    private List rows;
+    private List<Row> rows;
 
     /**
      * Default constructor.
      */
     public RowList() {
         super();
-        this.rows = new ArrayList();
+        this.rows = new ArrayList<Row>();
     }
 
     /**
@@ -99,8 +99,8 @@ public class RowList {
     public int getWidth() {
         int width = 0;
 
-        for ( final Iterator rowIter = this.rows.iterator(); rowIter.hasNext(); ) {
-            final Row row = (Row) rowIter.next();
+        for ( final Iterator<Row> rowIter = this.rows.iterator(); rowIter.hasNext(); ) {
+            final Row row = rowIter.next();
             final int rowWidth = row.getWidth();
 
             if ( rowWidth > width ) {
@@ -132,7 +132,7 @@ public class RowList {
             return -1;
         }
 
-        final List rowVertices = get( row ).getVertices();
+        final List<BaseVertex> rowVertices = get( row ).getVertices();
 
         final int numCols = rowVertices.size();
 

@@ -54,13 +54,12 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
      */
     public DroolsLineBreakpoint(IResource resource, int lineNumber)
             throws CoreException {
-        super( resource, "", -1, -1, -1, 0, true,
-            createAttributesMap( lineNumber ), IDroolsDebugConstants.DROOLS_MARKER_TYPE );
+        super(resource, "", -1, -1, -1, 0, true, createAttributesMap(lineNumber), IDroolsDebugConstants.DROOLS_MARKER_TYPE);
         setJavaBreakpointProperties();
     }
 
-    private static Map createAttributesMap(int lineNumber) {
-        Map map = new HashMap();
+    private static Map<String, Object> createAttributesMap(int lineNumber) {
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put( IDroolsDebugConstants.DRL_LINE_NUMBER, new Integer( lineNumber ) );
         return map;
     }
@@ -77,7 +76,7 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
         return getMarker().getAttribute( DIALECT, "Unknown");
     }
 
-    public Map getFileRuleMappings() {
+    public Map<String, Integer> getFileRuleMappings() {
         String packedInfo = getMarker().getAttribute( IDroolsDebugConstants.DRL_RULES, "");
         return unpackRuleMapping( packedInfo );
     }
@@ -173,8 +172,8 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
         return null;
     }
 
-    private final static Map unpackRuleMapping(String input) {
-        Map map = new HashMap();
+    private final static Map<String, Integer> unpackRuleMapping(String input) {
+        Map<String, Integer> map = new HashMap<String, Integer>();
         String[] rules = input.split( "\\;");
         for (int i=0; i<rules.length; i++) {
             if (rules[i].length()>0) {

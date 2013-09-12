@@ -65,7 +65,7 @@ public class DRLReconcilingStrategy implements IReconcilingStrategy {
                     } else {
                         Display.getDefault().asyncExec(new Runnable() {
                             public void run() {
-                                editor.updateFoldingStructure(new ArrayList());
+                                editor.updateFoldingStructure(new ArrayList<Position>());
                             }
                         });
                     }
@@ -112,6 +112,7 @@ public class DRLReconcilingStrategy implements IReconcilingStrategy {
     }
     
     public static void removeAnnotationsFor(IAnnotationModel annotationModel) {
+        @SuppressWarnings("rawtypes")
         Iterator iterator = annotationModel.getAnnotationIterator();
         while (iterator.hasNext()) {
             Annotation annotation = (Annotation) iterator.next();
@@ -123,7 +124,7 @@ public class DRLReconcilingStrategy implements IReconcilingStrategy {
 
     protected void calculateFolding(String input) {
         // TODO replace this parsing by getting this input from the parsed rule file
-        final List positions = new ArrayList();
+        final List<Position> positions = new ArrayList<Position>();
         Matcher matcher = RULE_PATTERN.matcher(input);
         while (matcher.find()) {
             positions.add(new Position(matcher.start(1), matcher.end(1) - matcher.start(1)));

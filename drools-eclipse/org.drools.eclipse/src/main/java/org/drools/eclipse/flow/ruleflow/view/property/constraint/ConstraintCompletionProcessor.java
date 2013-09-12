@@ -94,7 +94,7 @@ public class ConstraintCompletionProcessor extends RuleCompletionProcessor {
         }
     }
     
-    public List getImports() {
+    public List<String> getImports() {
         if (imports == null) {
             loadImports();
         }
@@ -102,12 +102,12 @@ public class ConstraintCompletionProcessor extends RuleCompletionProcessor {
     }
     
     private void loadImports() {
-        this.imports = new ArrayList();
-        List imports = ((org.jbpm.process.core.Process) process).getImports();
+        this.imports = new ArrayList<String>();
+        List<String> imports = ((org.jbpm.process.core.Process) process).getImports();
         if (imports != null) {
-            Iterator iterator = imports.iterator();
+            Iterator<String> iterator = imports.iterator();
             while (iterator.hasNext()) {
-                String importName = (String) iterator.next();
+                String importName = iterator.next();
                 if (importName.endsWith(".*")) {
                     IJavaProject javaProject = getJavaProject();
                     if (javaProject != null) {

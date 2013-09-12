@@ -21,6 +21,7 @@ import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import org.drools.eclipse.editors.rete.figure.VertexFigure;
+import org.drools.eclipse.editors.rete.model.Connection;
 import org.drools.eclipse.editors.rete.model.GraphicalVertex;
 import org.drools.eclipse.editors.rete.model.ModelElement;
 import org.drools.eclipse.editors.rete.model.VertexPropertySource;
@@ -101,7 +102,7 @@ class VertexEditPart extends AbstractGraphicalEditPart
      * (non-Javadoc)
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#getModelSourceConnections()
      */
-    protected List getModelSourceConnections() {
+    protected List<Connection> getModelSourceConnections() {
         return getCastedModel().getSourceConnections();
     }
 
@@ -109,7 +110,7 @@ class VertexEditPart extends AbstractGraphicalEditPart
      * (non-Javadoc)
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#getModelTargetConnections()
      */
-    protected List getModelTargetConnections() {
+    protected List<Connection> getModelTargetConnections() {
         return getCastedModel().getTargetConnections();
     }
 
@@ -173,7 +174,7 @@ class VertexEditPart extends AbstractGraphicalEditPart
     /* (non-Javadoc)
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#getAdapter(java.lang.Class)
      */
-    public Object getAdapter(Class key) {
+    public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
         if ( key == IPropertySource.class ) {
             return propertySource;
         }

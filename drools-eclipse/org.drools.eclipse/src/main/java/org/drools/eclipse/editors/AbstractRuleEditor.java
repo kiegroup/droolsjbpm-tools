@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.ui.actions.ToggleBreakpointAction;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
@@ -102,12 +103,12 @@ public class AbstractRuleEditor extends TextEditor {
         super.configureSourceViewerDecorationSupport(support);
     }
 
-    public void updateFoldingStructure(List positions) {
+    public void updateFoldingStructure(List<Position> positions) {
         if (annotationModel != null) {
             Annotation[] annotations = new Annotation[positions.size()];
             // this will hold the new annotations along
             // with their corresponding positions
-            HashMap newAnnotations = new HashMap();
+            HashMap<Annotation, Position> newAnnotations = new HashMap<Annotation, Position>();
             for (int i = 0; i < positions.size(); i++) {
                 ProjectionAnnotation annotation = new ProjectionAnnotation();
                 newAnnotations.put(annotation, positions.get(i));
@@ -160,7 +161,7 @@ public class AbstractRuleEditor extends TextEditor {
         return null;
     }
 
-    public Object getAdapter(Class adapter) {
+    public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
         if (adapter.equals(IContentOutlinePage.class)) {
             return getContentOutline();
         }

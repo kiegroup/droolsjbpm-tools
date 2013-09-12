@@ -16,6 +16,8 @@
 
 package org.drools.eclipse.flow.ruleflow.view.property.subprocess;
 
+import java.util.Map;
+
 import org.drools.eclipse.flow.common.view.property.BeanDialogCellEditor;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
 import org.eclipse.swt.widgets.Composite;
@@ -25,7 +27,7 @@ import org.jbpm.workflow.core.node.SubProcessNode;
 /**
  * Cell editor for sub process parameter mappings.
  */
-public class SubProcessParameterInMappingCellEditor extends BeanDialogCellEditor {
+public class SubProcessParameterInMappingCellEditor extends BeanDialogCellEditor<Map<String, String>> {
 
     private SubProcessNode subProcessNode;
     
@@ -34,7 +36,7 @@ public class SubProcessParameterInMappingCellEditor extends BeanDialogCellEditor
         this.subProcessNode = subProcessNode;
     }
 
-    protected EditBeanDialog createDialog(Shell shell) {
+    protected EditBeanDialog<Map<String, String>> createDialog(Shell shell) {
         return new SubProcessParameterInMappingDialog(shell, subProcessNode);
     }
     

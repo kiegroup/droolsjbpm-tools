@@ -138,9 +138,9 @@ public class ProcessInstanceViewer extends ViewPart implements ISelectionListene
         
         private void handleNodeInstanceSelection(String nodeId) {
             boolean found = false;
-            Iterator iterator = ((ProcessEditPart) graphicalViewer.getContents()).getChildren().iterator();
+            Iterator<ElementEditPart> iterator = ((ProcessEditPart) graphicalViewer.getContents()).getChildren().iterator();
             while (iterator.hasNext()) {
-                ElementEditPart elementEditPart = (ElementEditPart) iterator.next();
+                ElementEditPart elementEditPart = iterator.next();
                 if (((ElementWrapper) elementEditPart.getModel()).getId().equals(nodeId)) {
                     ((ElementFigure) elementEditPart.getFigure()).setSelected(true);
                     found = true;
@@ -158,7 +158,7 @@ public class ProcessInstanceViewer extends ViewPart implements ISelectionListene
         }
     }
 
-    public void showProcessInstance(String processInstanceId, String processId, List nodeIds, String projectName) {
+    public void showProcessInstance(String processInstanceId, String processId, List<String> nodeIds, String projectName) {
         processInstanceTabItems.put(processInstanceId,
             new ProcessInstanceTabItem(tabFolder, processInstanceId, processId, nodeIds, projectName));
     }

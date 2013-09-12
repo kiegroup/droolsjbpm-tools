@@ -21,17 +21,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.eclipse.DroolsEclipsePlugin;
-import org.drools.eclipse.builder.Util;
-import org.drools.eclipse.editors.completion.DSLTree;
 import org.drools.compiler.lang.dsl.DSLMapping;
 import org.drools.compiler.lang.dsl.DSLMappingEntry;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
+import org.drools.eclipse.DroolsEclipsePlugin;
+import org.drools.eclipse.builder.Util;
+import org.drools.eclipse.editors.completion.DSLTree;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
@@ -51,8 +50,8 @@ public class DSLAdapter {
 
     private String dslConfigName;
     private boolean valid = false;
-    private List conditionProposals = new ArrayList();
-    private List consequenceProposals = new ArrayList();
+    private List<String> conditionProposals = new ArrayList<String>();
+    private List<String> consequenceProposals = new ArrayList<String>();
     private DSLTree dslTree = new DSLTree();
     
     //to dig out the expander, without using the parser.
@@ -126,8 +125,8 @@ public class DSLAdapter {
         file.parseAndLoad(new InputStreamReader(stream));
 
         DSLMapping grammar = file.getMapping();
-        List conditions = grammar.getEntries( DSLMappingEntry.CONDITION );
-        List consequences = grammar.getEntries( DSLMappingEntry.CONSEQUENCE );
+        List<DSLMappingEntry> conditions = grammar.getEntries( DSLMappingEntry.CONDITION );
+        List<DSLMappingEntry> consequences = grammar.getEntries( DSLMappingEntry.CONSEQUENCE );
         
         conditionProposals = buildProposals(conditions);
         consequenceProposals = buildProposals(consequences);
@@ -135,11 +134,9 @@ public class DSLAdapter {
         dslTree.buildTree(grammar);
     }
 
-    private List buildProposals(List suggestions) {
-        List result = new ArrayList(suggestions.size());
-        Iterator iterator = suggestions.iterator();
-        while (iterator.hasNext()) {
-            DSLMappingEntry text = (DSLMappingEntry) iterator.next();
+    private List<String> buildProposals(List<DSLMappingEntry> suggestions) {
+        List<String> result = new ArrayList<String>(suggestions.size());
+        for (DSLMappingEntry text : suggestions) {
             result.add(text.getMappingKey());
         }
         return result;
@@ -208,11 +205,11 @@ public class DSLAdapter {
         return consequenceProposals.size() > 0;
     }
     
-    public List listConditionItems() {
+    public List<String> listConditionItems() {
         return conditionProposals;
     }
     
-    public List listConsequenceItems() {
+    public List<String> listConsequenceItems() {
         return consequenceProposals;
     }
     

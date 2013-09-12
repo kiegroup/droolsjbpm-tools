@@ -38,10 +38,10 @@ import org.eclipse.jface.viewers.Viewer;
  */
 public class DroolsDebugViewContentProvider implements ITreeContentProvider {
     
-    private Map parentCache;
+    private Map<Object, Object> parentCache;
     
     public DroolsDebugViewContentProvider() {
-        parentCache = new HashMap(10);
+        parentCache = new HashMap<Object, Object>(10);
     }
     
     public Object[] getChildren(Object parent) {
@@ -112,9 +112,9 @@ public class DroolsDebugViewContentProvider implements ITreeContentProvider {
         clearCache();
     }
     
-    public List getCachedDecendants(Object parent) {
-        Iterator children = parentCache.keySet().iterator();
-        List cachedChildren = new ArrayList(10);
+    public List<Object> getCachedDecendants(Object parent) {
+        Iterator<Object> children = parentCache.keySet().iterator();
+        List<Object> cachedChildren = new ArrayList<Object>(10);
         while (children.hasNext()) {
             Object child = children.next();
             if (isCachedDecendant(child, parent)) {
@@ -135,7 +135,7 @@ public class DroolsDebugViewContentProvider implements ITreeContentProvider {
         return false;
     }
     
-    protected IValue getLogicalValue(IValue value, List previousStructureIds) {
+    protected IValue getLogicalValue(IValue value, List<String> previousStructureIds) {
         ILogicalStructureType[] types = DebugPlugin.getLogicalStructureTypes(value);
         if (types.length > 0) {
             ILogicalStructureType type = DebugPlugin.getDefaultStructureType(types);

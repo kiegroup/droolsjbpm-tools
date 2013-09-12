@@ -16,8 +16,6 @@
 
 package org.drools.eclipse.editors;
 
-import java.util.Iterator;
-
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.FunctionDescr;
@@ -39,8 +37,7 @@ public final class DescrUtil {
         if (descr instanceof PackageDescr) {
             PackageDescr packageDescr = (PackageDescr) descr;
             // rules
-            for (Iterator iterator = packageDescr.getRules().iterator(); iterator.hasNext(); ) {
-                RuleDescr ruleDescr = (RuleDescr) iterator.next();
+            for (RuleDescr ruleDescr : packageDescr.getRules()) {
                 if (ruleDescr != null) {
                     BaseDescr result = getDescr(ruleDescr, offset);
                     if (result != null) {
@@ -49,8 +46,7 @@ public final class DescrUtil {
                 }
             }
             // imports
-            for (Iterator iterator = packageDescr.getImports().iterator(); iterator.hasNext(); ) {
-                ImportDescr importDescr = (ImportDescr) iterator.next();
+            for (ImportDescr importDescr : packageDescr.getImports()) {
                 if (importDescr != null) {
                     BaseDescr result = getDescr(importDescr, offset);
                     if (result != null) {
@@ -59,8 +55,7 @@ public final class DescrUtil {
                 }
             }
             // function imports
-            for (Iterator iterator = packageDescr.getFunctionImports().iterator(); iterator.hasNext(); ) {
-                FunctionImportDescr functionImportDescr = (FunctionImportDescr) iterator.next();
+            for (FunctionImportDescr functionImportDescr : packageDescr.getFunctionImports()) {
                 if (functionImportDescr != null) {
                     BaseDescr result = getDescr(functionImportDescr, offset);
                     if (result != null) {
@@ -69,8 +64,7 @@ public final class DescrUtil {
                 }
             }
             // functions
-            for (Iterator iterator = packageDescr.getFunctions().iterator(); iterator.hasNext(); ) {
-                FunctionDescr functionDescr = (FunctionDescr) iterator.next();
+            for (FunctionDescr functionDescr : packageDescr.getFunctions()) {
                 if (functionDescr != null) {
                     BaseDescr result = getDescr(functionDescr, offset);
                     if (result != null) {
@@ -79,8 +73,7 @@ public final class DescrUtil {
                 }
             }
             // attributes
-            for (Iterator iterator = packageDescr.getAttributes().iterator(); iterator.hasNext(); ) {
-                AttributeDescr attributeDescr = (AttributeDescr) iterator.next();
+            for (AttributeDescr attributeDescr : packageDescr.getAttributes()) {
                 if (attributeDescr != null) {
                     BaseDescr result = getDescr(attributeDescr, offset);
                     if (result != null) {
@@ -89,8 +82,7 @@ public final class DescrUtil {
                 }
             }
             // globals
-            for (Iterator iterator = packageDescr.getGlobals().iterator(); iterator.hasNext(); ) {
-                GlobalDescr globalDescr = (GlobalDescr) iterator.next();
+            for (GlobalDescr globalDescr : packageDescr.getGlobals()) {
                 if (globalDescr != null) {
                     BaseDescr result = getDescr(globalDescr, offset);
                     if (result != null) {
@@ -106,8 +98,7 @@ public final class DescrUtil {
             if(descr instanceof RuleDescr) {
                 RuleDescr ruleDescr = (RuleDescr) descr;
                 // rules attributes
-                for (Iterator iterator = ruleDescr.getAttributes().values().iterator(); iterator.hasNext(); ) {
-                	 AttributeDescr attributeDescr = (AttributeDescr) iterator.next();
+                for (AttributeDescr attributeDescr : ruleDescr.getAttributes().values()) {
                      if (attributeDescr != null) {
                          BaseDescr result = getDescr(attributeDescr, offset);
                          if (result != null) {

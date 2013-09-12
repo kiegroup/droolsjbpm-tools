@@ -22,10 +22,13 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.compiler.lang.descr.FunctionDescr;
+import org.drools.compiler.lang.descr.GlobalDescr;
+import org.drools.compiler.lang.descr.QueryDescr;
+import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.eclipse.DRLInfo;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.ProcessInfo;
@@ -42,10 +45,6 @@ import org.drools.eclipse.core.ui.DroolsContentProvider;
 import org.drools.eclipse.core.ui.DroolsLabelProvider;
 import org.drools.eclipse.core.ui.DroolsTreeSorter;
 import org.drools.eclipse.core.ui.FilterActionGroup;
-import org.drools.compiler.lang.descr.FunctionDescr;
-import org.drools.compiler.lang.descr.GlobalDescr;
-import org.drools.compiler.lang.descr.QueryDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -79,7 +78,7 @@ public class RulesView extends ViewPart implements IDoubleClickListener, IResour
 
     private final RuleSet ruleSet = DroolsModelBuilder.createRuleSet();
 
-    private Map resourcesMap = new HashMap();
+    private Map<IFile, List<DroolsElement>> resourcesMap = new HashMap<IFile, List<DroolsElement>>();
     private TreeViewer treeViewer;
 
     public void createPartControl(Composite parent) {
@@ -140,9 +139,8 @@ public class RulesView extends ViewPart implements IDoubleClickListener, IResour
                             return false;
                         }
                         // add rules
-                        List rules = drlInfo.getPackageDescr().getRules();
-                        for (Iterator iterator = rules.iterator(); iterator.hasNext();) {
-                            RuleDescr ruleDescr = (RuleDescr) iterator.next();
+                        List<RuleDescr> rules = drlInfo.getPackageDescr().getRules();
+                        for (RuleDescr ruleDescr : rules) {
                             boolean isQuery = ruleDescr instanceof QueryDescr;
                             String ruleName = ruleDescr.getName();
                             if (!isQuery) {
@@ -150,9 +148,9 @@ public class RulesView extends ViewPart implements IDoubleClickListener, IResour
                                     pkg, ruleName, file, ruleDescr.getStartCharacter(),
                                     ruleDescr.getEndCharacter() - ruleDescr.getStartCharacter() + 1, null);
                                 // create link between resource and created rule nodes
-                                List droolsElements = (List) resourcesMap.get(file);
+                                List<DroolsElement> droolsElements = resourcesMap.get(file);
                                 if (droolsElements == null) {
-                                    droolsElements = new ArrayList();
+                                    droolsElements = new ArrayList<DroolsElement>();
                                     resourcesMap.put(file, droolsElements);
                                 }
                                 droolsElements.add(rule);
@@ -161,41 +159,39 @@ public class RulesView extends ViewPart implements IDoubleClickListener, IResour
                                     pkg, ruleName, file, ruleDescr.getStartCharacter(),
                                     ruleDescr.getEndCharacter() - ruleDescr.getStartCharacter() + 1);
                                 // create link between resource and created rule nodes
-                                List droolsElements = (List) resourcesMap.get(file);
+                                List<DroolsElement> droolsElements = resourcesMap.get(file);
                                 if (droolsElements == null) {
-                                    droolsElements = new ArrayList();
+                                    droolsElements = new ArrayList<DroolsElement>();
                                     resourcesMap.put(file, droolsElements);
                                 }
                                 droolsElements.add(query);
                             }
                         }
                         // add globals
-                        List globals = drlInfo.getPackageDescr().getGlobals();
-                        for (Iterator iterator = globals.iterator(); iterator.hasNext();) {
-                            GlobalDescr globalDescr = (GlobalDescr) iterator.next();
+                        List<GlobalDescr> globals = drlInfo.getPackageDescr().getGlobals();
+                        for (GlobalDescr globalDescr : globals) {
                             Global global = DroolsModelBuilder.addGlobal(
                                 pkg, globalDescr.getIdentifier(), file, globalDescr.getStartCharacter(),
                                 globalDescr.getEndCharacter() - globalDescr.getStartCharacter() + 1);
                             // create link between resource and created rule nodes
-                            List droolsElements = (List) resourcesMap.get(file);
+                            List<DroolsElement> droolsElements = resourcesMap.get(file);
                             if (droolsElements == null) {
-                                droolsElements = new ArrayList();
+                                droolsElements = new ArrayList<DroolsElement>();
                                 resourcesMap.put(file, droolsElements);
                             }
                             droolsElements.add(global);
                         }
                         // add functions
-                        List functions = drlInfo.getPackageDescr().getFunctions();
-                        for (Iterator iterator = functions.iterator(); iterator.hasNext();) {
-                            FunctionDescr functionDescr = (FunctionDescr) iterator.next();
+                        List<FunctionDescr> functions = drlInfo.getPackageDescr().getFunctions();
+                        for (FunctionDescr functionDescr : functions) {
                             String functionName = functionDescr.getName();
                             Function function = DroolsModelBuilder.addFunction(
                                 pkg, functionName, file, functionDescr.getStartCharacter(),
                                 functionDescr.getEndCharacter() - functionDescr.getStartCharacter() + 1);
                             // create link between resource and created rule nodes
-                            List droolsElements = (List) resourcesMap.get(file);
+                            List<DroolsElement> droolsElements = resourcesMap.get(file);
                             if (droolsElements == null) {
-                                droolsElements = new ArrayList();
+                                droolsElements = new ArrayList<DroolsElement>();
                                 resourcesMap.put(file, droolsElements);
                             }
                             droolsElements.add(function);
@@ -215,9 +211,9 @@ public class RulesView extends ViewPart implements IDoubleClickListener, IResour
                                 pkg = DroolsModelBuilder.addPackage(ruleSet, packageName, 0, 0);
                             }
                             Process process = DroolsModelBuilder.addProcess(pkg, processInfo.getProcess().getId(), file);
-                            List droolsElements = (List) resourcesMap.get(file);
+                            List<DroolsElement> droolsElements = resourcesMap.get(file);
                             if (droolsElements == null) {
-                                droolsElements = new ArrayList();
+                                droolsElements = new ArrayList<DroolsElement>();
                                 resourcesMap.put(file, droolsElements);
                             }
                             droolsElements.add(process);
@@ -285,10 +281,10 @@ public class RulesView extends ViewPart implements IDoubleClickListener, IResour
     }
 
     private void removeElementsFromResource(IResource resource) {
-        List droolsElements = (List) resourcesMap.get(resource);
+        List<DroolsElement> droolsElements = resourcesMap.get(resource);
         if (droolsElements != null) {
-            for (Iterator iterator = droolsElements.iterator(); iterator.hasNext();) {
-                DroolsModelBuilder.removeElement((DroolsElement) iterator.next());
+            for (DroolsElement droolsElement : droolsElements) {
+                DroolsModelBuilder.removeElement(droolsElement);
             }
             resourcesMap.remove(resource);
         }

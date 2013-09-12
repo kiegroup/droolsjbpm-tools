@@ -126,7 +126,7 @@ public class VertexPropertySource
     protected BaseVertex              vertex                     = null;
 
     // Map<String,NodeValue>
-    private Map                       values                     = new HashMap();
+    private Map<String, NodeValue>                       values                     = new HashMap<String, NodeValue>();
 
     /**
      * Constructor initializing properties from <code>vertex</code>
@@ -141,7 +141,7 @@ public class VertexPropertySource
 
     final private void initProperties(BaseVertex vertex) {
 
-        List descriptorList = new ArrayList();
+        List<IPropertyDescriptor> descriptorList = new ArrayList<IPropertyDescriptor>();
 
         if ( vertex instanceof ExistsNodeVertex ) {
             initExistsNodeProperties( (ExistsNodeVertex) vertex,
@@ -204,12 +204,12 @@ public class VertexPropertySource
                                           values );
         }
 
-        descriptors = (IPropertyDescriptor[]) descriptorList.toArray( new IPropertyDescriptor[0] );
+        descriptors = descriptorList.toArray( new IPropertyDescriptor[0] );
     }
 
     private void initExistsNodeProperties(ExistsNodeVertex vertex,
-                                          List descriptorList,
-                                          Map valueMap) {
+                                          List<IPropertyDescriptor> descriptorList,
+                                          Map<String, NodeValue> valueMap) {
         addProperty( PROP_NAME,
                      VERTEX_EXISTS,
                      descriptorList,
@@ -222,8 +222,8 @@ public class VertexPropertySource
     }
 
     private void initAccumulateNodeProperties(AccumulateNodeVertex vertex,
-                                              List descriptorList,
-                                              Map valueMap) {
+                                              List<IPropertyDescriptor> descriptorList,
+                                              Map<String, NodeValue> valueMap) {
         addProperty( PROP_NAME,
                      VERTEX_ACCUMULATE,
                      descriptorList,
@@ -235,8 +235,8 @@ public class VertexPropertySource
     }
 
     private void initFromNodeProperties(FromNodeVertex vertex,
-                                        List descriptorList,
-                                        Map valueMap) {
+                                        List<IPropertyDescriptor> descriptorList,
+                                        Map<String, NodeValue> valueMap) {
         addProperty( PROP_NAME,
                      VERTEX_FROM,
                      descriptorList,
@@ -248,8 +248,8 @@ public class VertexPropertySource
     }
 
     private void initReteNodeProperties(ReteVertex vertex,
-                                        List descriptorList,
-                                        Map valueMap) {
+                                        List<IPropertyDescriptor> descriptorList,
+                                        Map<String, NodeValue> valueMap) {
         addProperty( PROP_NAME,
                      VERTEX_RETE,
                      descriptorList,
@@ -261,8 +261,8 @@ public class VertexPropertySource
     }
 
     private void initObjectTypeNodeProperties(ObjectTypeNodeVertex vertex,
-                                              List descriptorList,
-                                              Map valueMap) {
+                                              List<IPropertyDescriptor> descriptorList,
+                                              Map<String, NodeValue> valueMap) {
         addProperty( PROP_NAME,
                      VERTEX_OBJECT_TYPE,
                      descriptorList,
@@ -278,8 +278,8 @@ public class VertexPropertySource
     }
 
     private void initAlphaNodeProperties(AlphaNodeVertex vertex,
-                                         List descriptorList,
-                                         Map valueMap) {
+                                         List<IPropertyDescriptor> descriptorList,
+                                         Map<String, NodeValue> valueMap) {
         addProperty( PROP_NAME,
                      VERTEX_ALPHA,
                      descriptorList,
@@ -311,8 +311,8 @@ public class VertexPropertySource
     }
 
     private void initLeftInputAdapterNodeProperties(LeftInputAdapterNodeVertex vertex,
-                                                    List descriptorList,
-                                                    Map valueMap) {
+                                                    List<IPropertyDescriptor> descriptorList,
+                                                    Map<String, NodeValue> valueMap) {
         addProperty( PROP_NAME,
                      VERTEX_LEFT_INPUT_ADAPTER,
                      descriptorList,
@@ -320,8 +320,8 @@ public class VertexPropertySource
 
     }
 
-    private void initRightInputAdapterNodeProperties(List descriptorList,
-                                                     Map valueMap) {
+    private void initRightInputAdapterNodeProperties(List<IPropertyDescriptor> descriptorList,
+                                                     Map<String, NodeValue> valueMap) {
         addProperty( PROP_NAME,
                      VERTEX_RIGHT_INPUT_ADAPTER,
                      descriptorList,
@@ -329,8 +329,8 @@ public class VertexPropertySource
     }
 
     private void initJoinNodeProperties(JoinNodeVertex vertex,
-                                        List descriptorList,
-                                        Map valueMap) {
+                                        List<IPropertyDescriptor> descriptorList,
+                                        Map<String, NodeValue> valueMap) {
 
         addProperty( PROP_NAME,
                      VERTEX_JOIN,
@@ -359,8 +359,8 @@ public class VertexPropertySource
     }
 
     private void initNotNodeProperties(NotNodeVertex vertex,
-                                       List descriptorList,
-                                       Map valueMap) {
+                                       List<IPropertyDescriptor> descriptorList,
+                                       Map<String, NodeValue> valueMap) {
         addProperty( PROP_NAME,
                      VERTEX_NOT,
                      descriptorList,
@@ -372,8 +372,8 @@ public class VertexPropertySource
     }
 
     private void initEvalConditionNodeProperties(EvalConditionNodeVertex vertex,
-                                                 List descriptorList,
-                                                 Map valueMap) {
+                                                 List<IPropertyDescriptor> descriptorList,
+                                                 Map<String, NodeValue> valueMap) {
         addProperty( PROP_NAME,
                      VERTEX_EVAL_CONDITION,
                      descriptorList,
@@ -385,8 +385,8 @@ public class VertexPropertySource
     }
 
     private void initTerminalNodeProperties(RuleTerminalNodeVertex node,
-                                            List descriptorList,
-                                            Map valueMap) {
+                                            List<IPropertyDescriptor> descriptorList,
+                                            Map<String, NodeValue> valueMap) {
 
         addProperty( PROP_NAME,
                      VERTEX_TERMINAL,
@@ -404,8 +404,8 @@ public class VertexPropertySource
     }
 
     private void initQueryTerminalNodeProperties(QueryTerminalNodeVertex node,
-                    List descriptorList,
-                    Map valueMap) {
+                    List<IPropertyDescriptor> descriptorList,
+                    Map<String, NodeValue> valueMap) {
 
         addProperty( PROP_NAME,
                      VERTEX_QUERY_TERMINAL,
@@ -423,8 +423,8 @@ public class VertexPropertySource
     }
 
     private void initPropagationQueuingNodeProperties(PropagationQueuingNodeVertex vertex,
-                                                      List descriptorList,
-                                                      Map valueMap) {
+                                                      List<IPropertyDescriptor> descriptorList,
+                                                      Map<String, NodeValue> valueMap) {
         addProperty( PROP_NAME,
                      VERTEX_PROPAGATION_QUEUING,
                      descriptorList,
@@ -438,8 +438,8 @@ public class VertexPropertySource
     }
 
     private void initEntryPointNodeProperties(EntryPointNodeVertex vertex,
-                                              List descriptorList,
-                                              Map valueMap) {
+                                              List<IPropertyDescriptor> descriptorList,
+                                              Map<String, NodeValue> valueMap) {
         addProperty( PROP_NAME,
                      VERTEX_ENTRY_POINT,
                      descriptorList,
@@ -459,8 +459,8 @@ public class VertexPropertySource
 
     private void addProperty(IPropertyDescriptor field,
                              String value,
-                             List descriptorList,
-                             Map valueMap) {
+                             List<IPropertyDescriptor> descriptorList,
+                             Map<String, NodeValue> valueMap) {
         descriptorList.add( field );
         valueMap.put( field.getId().toString(),
                       new NodeValue( CAT_GENERAL,
@@ -474,8 +474,8 @@ public class VertexPropertySource
 
     private void addOther(IPropertyDescriptor field,
                           String value,
-                          List descriptorList,
-                          Map valueMap) {
+                          List<IPropertyDescriptor> descriptorList,
+                          Map<String, NodeValue> valueMap) {
         descriptorList.add( field );
         valueMap.put( field.getId().toString(),
                       new NodeValue( CAT_OTHER,
@@ -509,7 +509,7 @@ public class VertexPropertySource
      * @return
      */
     public Object getPropertyValue(String propName) {
-        return ((NodeValue) (values.get( propName ))).value;
+        return (values.get( propName )).value;
     }
 
     /* (non-Javadoc)

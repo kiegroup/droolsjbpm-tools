@@ -51,6 +51,7 @@ import org.eclipse.osgi.util.NLS;
 
 import com.sun.jdi.VirtualMachine;
 import com.sun.jdi.connect.Connector;
+import com.sun.jdi.connect.Connector.Argument;
 import com.sun.jdi.connect.IllegalConnectorArgumentsException;
 import com.sun.jdi.connect.ListeningConnector;
 
@@ -60,10 +61,10 @@ public class DroolsVMDebugger extends StandardVMDebugger {
 
         private VirtualMachine fVirtualMachine = null;
         private ListeningConnector fConnector = null;
-        private Map fConnectionMap = null;
+        private Map<String, Argument> fConnectionMap = null;
         private Exception fException = null;
 
-        public ConnectRunnable(ListeningConnector connector, Map map) {
+        public ConnectRunnable(ListeningConnector connector, Map<String, Argument> map) {
             fConnector = connector;
             fConnectionMap = map;
         }
@@ -117,7 +118,7 @@ public class DroolsVMDebugger extends StandardVMDebugger {
 
         String program= constructProgramString(config);
 
-        List arguments= new ArrayList(12);
+        List<String> arguments= new ArrayList<String>(12);
 
         arguments.add(program);
 
@@ -170,7 +171,7 @@ public class DroolsVMDebugger extends StandardVMDebugger {
         if (connector == null) {
             abort(LaunchingMessages.StandardVMDebugger_Couldn__t_find_an_appropriate_debug_connector_2, null, IJavaLaunchConfigurationConstants.ERR_CONNECTOR_NOT_AVAILABLE);
         }
-        Map map= connector.defaultArguments();
+        Map<String, Argument> map= connector.defaultArguments();
 
         specifyArguments(map, port);
         Process p= null;
@@ -344,7 +345,7 @@ public class DroolsVMDebugger extends StandardVMDebugger {
         }
     }
 
-    protected void specifyArguments(Map map, int portNumber) {
+    protected void specifyArguments(Map<String, Argument> map, int portNumber) {
         // XXX: Revisit - allows us to put a quote (") around the classpath
         Connector.IntegerArgument port= (Connector.IntegerArgument) map.get("port"); //$NON-NLS-1$
         port.setValue(portNumber);
@@ -357,9 +358,9 @@ public class DroolsVMDebugger extends StandardVMDebugger {
     }
 
     protected ListeningConnector getConnector() {
-        List connectors= Bootstrap.virtualMachineManager().listeningConnectors();
+        List<ListeningConnector> connectors= Bootstrap.virtualMachineManager().listeningConnectors();
         for (int i= 0; i < connectors.size(); i++) {
-            ListeningConnector c= (ListeningConnector) connectors.get(i);
+            ListeningConnector c= connectors.get(i);
             if ("com.sun.jdi.SocketListen".equals(c.name())) //$NON-NLS-1$
                 return c;
         }

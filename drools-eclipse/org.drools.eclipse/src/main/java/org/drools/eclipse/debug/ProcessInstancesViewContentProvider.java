@@ -26,7 +26,6 @@ import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.jdt.debug.core.IJavaArray;
 import org.eclipse.jdt.debug.core.IJavaObject;
 import org.eclipse.jdt.debug.core.IJavaValue;
-import org.jbpm.process.instance.ProcessInstance;
 
 /**
  * The process instances view content provider.
@@ -55,7 +54,7 @@ public class ProcessInstancesViewContentProvider extends DroolsDebugViewContentP
                 instances = getProcessInstances((IJavaObject) obj);
             } else if (obj instanceof IVariable) {
                 if (view.isShowLogicalStructure()) {
-                    IValue value = getLogicalValue(((IVariable) obj).getValue(), new ArrayList<IVariable>());
+                    IValue value = getLogicalValue(((IVariable) obj).getValue(), new ArrayList<String>());
                     instances = value.getVariables();
                 }
                 if (instances == null) {

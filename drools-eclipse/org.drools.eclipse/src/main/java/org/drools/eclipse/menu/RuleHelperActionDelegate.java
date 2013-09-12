@@ -171,8 +171,8 @@ public class RuleHelperActionDelegate
             return null;
         }
 
-        public Iterator iterator() {
-            return (new ArrayList()).iterator();
+        public Iterator<?> iterator() {
+            return (new ArrayList<Object>()).iterator();
         }
 
         public int size() {
@@ -183,7 +183,7 @@ public class RuleHelperActionDelegate
             return null;
         }
 
-        public List toList() {
+        public List<?> toList() {
             return null;
         }
 

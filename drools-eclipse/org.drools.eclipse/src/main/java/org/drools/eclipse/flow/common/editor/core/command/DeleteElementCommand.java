@@ -17,7 +17,6 @@
 package org.drools.eclipse.flow.common.editor.core.command;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.drools.eclipse.flow.common.editor.core.ElementConnection;
@@ -33,29 +32,25 @@ public class DeleteElementCommand extends Command {
     private ElementWrapper child;
     private ElementContainer parent;
     
-    private List incomingElementWrappers = new ArrayList();
-    private List outgoingElementWrappers = new ArrayList();
-    private List incomingConnections = new ArrayList();
-    private List outgoingConnections = new ArrayList();
+    private List<ElementWrapper> incomingElementWrappers = new ArrayList<ElementWrapper>();
+    private List<ElementWrapper> outgoingElementWrappers = new ArrayList<ElementWrapper>();
+    private List<ElementConnection> incomingConnections = new ArrayList<ElementConnection>();
+    private List<ElementConnection> outgoingConnections = new ArrayList<ElementConnection>();
     
     
     private void deleteConnections(ElementWrapper element) {
-        for (Iterator it = element.getIncomingConnections().iterator(); it.hasNext(); ) {
-            ElementConnection connection = (ElementConnection) it.next();
+        for (ElementConnection connection : element.getIncomingConnections()) {
             incomingElementWrappers.add(connection.getSource());
             incomingConnections.add(connection);
         }
-        for (Iterator it = element.getOutgoingConnections().iterator(); it.hasNext(); ) {
-            ElementConnection connection = (ElementConnection) it.next();
+        for (ElementConnection connection : element.getOutgoingConnections()) {
             outgoingElementWrappers.add(connection.getTarget());
             outgoingConnections.add(connection);
         }
-        for (Iterator it = incomingConnections.iterator(); it.hasNext(); ) {
-            ElementConnection connection = (ElementConnection) it.next();
+        for (ElementConnection connection : incomingConnections) {
             connection.disconnect();
         }
-        for (Iterator it = outgoingConnections.iterator(); it.hasNext(); ) {
-            ElementConnection connection = (ElementConnection) it.next();
+        for (ElementConnection connection : outgoingConnections) {
             connection.disconnect();
         }
     }
@@ -67,15 +62,13 @@ public class DeleteElementCommand extends Command {
 
     private void restoreConnections() {
         int i = 0;
-        for (Iterator it = incomingConnections.iterator(); it.hasNext(); ) {
-            ElementConnection connection = (ElementConnection) it.next();
-            connection.connect((ElementWrapper) incomingElementWrappers.get(i), child);
+        for (ElementConnection connection : incomingConnections) {
+            connection.connect(incomingElementWrappers.get(i), child);
             i++;
         }
         i = 0;
-        for (Iterator it = outgoingConnections.iterator(); it.hasNext(); ) {
-            ElementConnection connection = (ElementConnection) it.next();
-            connection.connect(child, (ElementWrapper) outgoingElementWrappers.get(i));
+        for (ElementConnection connection : outgoingConnections) {
+            connection.connect(child, outgoingElementWrappers.get(i));
             i++;
         }
         incomingConnections.clear();

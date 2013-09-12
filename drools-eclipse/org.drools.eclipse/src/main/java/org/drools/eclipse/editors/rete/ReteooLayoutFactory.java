@@ -47,20 +47,20 @@ public class ReteooLayoutFactory {
 
         int curRow = 0;
 
-        final Set seenVertices = new HashSet();
+        final Set<BaseVertex> seenVertices = new HashSet<BaseVertex>();
         seenVertices.add( root );
 
         while ( curRow < rowList.getDepth() ) {
-            final List rowVertices = rowList.get( curRow ).getVertices();
+            final List<BaseVertex> rowVertices = rowList.get( curRow ).getVertices();
 
-            for ( final Iterator rowNodeIter = rowVertices.iterator(); rowNodeIter.hasNext(); ) {
-                final BaseVertex rowNode = (BaseVertex) rowNodeIter.next();
+            for ( final Iterator<BaseVertex> rowNodeIter = rowVertices.iterator(); rowNodeIter.hasNext(); ) {
+                final BaseVertex rowNode = rowNodeIter.next();
 
-                final List edges = rowNode.getSourceConnections();
+                final List<Connection> edges = rowNode.getSourceConnections();
 
-                for ( final Iterator edgeIter = edges.iterator(); edgeIter.hasNext(); ) {
+                for ( final Iterator<Connection> edgeIter = edges.iterator(); edgeIter.hasNext(); ) {
 
-                    final Connection edge = (Connection) edgeIter.next();
+                    final Connection edge = edgeIter.next();
                     final BaseVertex destNode = edge.getOpposite( rowNode );
 
                     if ( !seenVertices.contains( destNode ) ) {
@@ -113,20 +113,17 @@ public class ReteooLayoutFactory {
             this.rowList = rowList;
             computeSize();
 
-            List vertices = getGraph().getChildren();
-            Iterator iter = vertices.iterator();
-            while ( iter.hasNext() ) {
-                BaseVertex v = (BaseVertex) iter.next();
+            List<BaseVertex> vertices = getGraph().getChildren();
+            for (BaseVertex v : vertices) {
                 initialize_local_vertex( v );
             }
 
         }
 
         private void computeSize() {
-            final List vertices = getGraph().getChildren();
+            final List<BaseVertex> vertices = getGraph().getChildren();
 
-            for ( final Iterator vertexIter = vertices.iterator(); vertexIter.hasNext(); ) {
-                final BaseVertex vertex = (BaseVertex) vertexIter.next();
+            for (final BaseVertex vertex : vertices) {
 
                 final int width = vertex.getSize().width;
                 final int height = vertex.getSize().height;

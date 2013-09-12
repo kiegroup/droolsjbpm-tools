@@ -26,7 +26,7 @@ import org.jbpm.workflow.core.node.MilestoneNode;
 /**
  * Cell editor for milestone constraints.
  */
-public class MilestoneConstraintCellEditor extends BeanDialogCellEditor {
+public class MilestoneConstraintCellEditor extends BeanDialogCellEditor<String> {
 
     private WorkflowProcess process;
     private MilestoneNode milestone;
@@ -37,7 +37,7 @@ public class MilestoneConstraintCellEditor extends BeanDialogCellEditor {
         this.milestone = milestone;
     }
 
-    protected EditBeanDialog createDialog(Shell shell) {
+    protected EditBeanDialog<String> createDialog(Shell shell) {
         return new MilestoneConstraintDialog(shell, process, milestone);
     }
     

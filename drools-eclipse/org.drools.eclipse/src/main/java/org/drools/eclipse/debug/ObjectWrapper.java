@@ -104,7 +104,7 @@ public class ObjectWrapper implements IJavaObject {
         return object.getLaunch();
     }
 
-    public Object getAdapter(Class adapter) {
+    public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
         return object.getAdapter(adapter);
     }
 

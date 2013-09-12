@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.draw2d.geometry.Point;
@@ -136,8 +135,7 @@ public abstract class ElementConnection implements Serializable {
 
     public void notifyListeners(int change) {
         ModelEvent event = new ModelEvent(change);
-        for (Iterator it = listeners.iterator(); it.hasNext(); ) {
-            ModelListener listener = (ModelListener) it.next();
+        for (ModelListener listener : listeners) {
             listener.modelChanged(event);
         }
     }
@@ -145,6 +143,6 @@ public abstract class ElementConnection implements Serializable {
     private void readObject(ObjectInputStream aInputStream)
             throws ClassNotFoundException, IOException {
         aInputStream.defaultReadObject();
-        listeners = new ArrayList();
+        listeners = new ArrayList<ModelListener>();
     }
 }

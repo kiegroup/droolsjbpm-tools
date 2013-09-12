@@ -38,6 +38,8 @@ import org.drools.compiler.compiler.GlobalError;
 import org.drools.compiler.compiler.ImportError;
 import org.drools.compiler.compiler.ParserError;
 import org.drools.compiler.compiler.RuleBuildError;
+import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.compiler.lang.ExpanderException;
 import org.drools.decisiontable.InputType;
 import org.drools.decisiontable.SpreadsheetCompiler;
 import org.drools.eclipse.DRLInfo;
@@ -46,11 +48,8 @@ import org.drools.eclipse.ProcessInfo;
 import org.drools.eclipse.preferences.IDroolsConstants;
 import org.drools.eclipse.util.DroolsRuntimeManager;
 import org.drools.eclipse.wizard.project.NewDroolsProjectWizard;
-import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.compiler.lang.ExpanderException;
 import org.drools.template.parser.DecisionTableParseException;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -61,10 +60,8 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
@@ -88,10 +85,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
 
     private boolean isKieProject = false;
 
-    protected IProject[] build(int kind,
-                               Map args,
-                               IProgressMonitor monitor)
-                                                        throws CoreException {
+    protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
         IProject currentProject = getProject();
         if ( currentProject == null || !currentProject.isAccessible() ) {
             return new IProject[0];
@@ -640,7 +634,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         } catch ( JavaModelException e ) {
             return new IProject[0];
         }
-        return (IProject[]) projects.toArray( new IProject[projects.size()] );
+        return projects.toArray( new IProject[projects.size()] );
     }
 
 }

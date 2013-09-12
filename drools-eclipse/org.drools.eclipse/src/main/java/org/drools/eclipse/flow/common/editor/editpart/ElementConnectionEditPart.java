@@ -26,6 +26,7 @@ import org.drools.eclipse.flow.common.editor.core.ModelListener;
 import org.drools.eclipse.flow.common.editor.policy.ConnectionBendpointEditPolicy;
 import org.drools.eclipse.flow.common.editor.policy.ConnectionEditPolicy;
 import org.eclipse.draw2d.AbsoluteBendpoint;
+import org.eclipse.draw2d.Bendpoint;
 import org.eclipse.draw2d.BendpointConnectionRouter;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PolygonDecoration;
@@ -89,10 +90,10 @@ public abstract class ElementConnectionEditPart extends AbstractConnectionEditPa
     }
     
     protected void refreshBendpoints() {
-        List bendpoints = ((ElementConnection) getModel()).getBendpoints();
-        List constraint = new ArrayList();
+        List<Point> bendpoints = ((ElementConnection) getModel()).getBendpoints();
+        List<Bendpoint> constraint = new ArrayList<Bendpoint>();
         for (int i = 0; i < bendpoints.size(); i++) {
-            constraint.add(new AbsoluteBendpoint((Point) bendpoints.get(i)));
+            constraint.add(new AbsoluteBendpoint(bendpoints.get(i)));
         }
         getConnectionFigure().setRoutingConstraint(constraint);
     }

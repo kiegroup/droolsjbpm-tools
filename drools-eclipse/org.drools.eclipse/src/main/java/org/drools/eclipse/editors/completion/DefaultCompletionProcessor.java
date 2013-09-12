@@ -24,17 +24,18 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.drools.compiler.lang.descr.GlobalDescr;
+import org.drools.compiler.rule.builder.dialect.java.KnowledgeHelperFixer;
 import org.drools.core.util.StringUtils;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
 import org.drools.eclipse.editors.AbstractRuleEditor;
 import org.drools.eclipse.editors.DRLRuleEditor;
-import org.drools.compiler.lang.descr.GlobalDescr;
-import org.drools.compiler.rule.builder.dialect.java.KnowledgeHelperFixer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.CompletionContext;
 import org.eclipse.jdt.core.CompletionProposal;
@@ -51,6 +52,7 @@ import org.eclipse.jdt.ui.text.java.CompletionProposalCollector;
 import org.eclipse.jdt.ui.text.java.IJavaCompletionProposal;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
@@ -83,7 +85,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
         super( editor );
     }
 
-    protected List getCompletionProposals(ITextViewer viewer,
+    protected List<ICompletionProposal> getCompletionProposals(ITextViewer viewer,
                                           int documentOffset) {
         try {
             IDocument doc = viewer.getDocument();
@@ -92,7 +94,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
 
             String prefix = CompletionUtil.stripLastWord( backText );
 
-            List props = null;
+            List<ICompletionProposal> props = null;
             Matcher matcher = IMPORT_PATTERN.matcher( backText );
             if ( matcher.matches() ) {
                 String classNameStart = backText.substring( backText.lastIndexOf( "import" ) + 7 );
@@ -103,7 +105,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
                 matcher = FUNCTION_PATTERN.matcher( backText );
                 if ( matcher.matches() ) {
                     // extract function parameters
-                    Map params = extractParams( matcher.group( 3 ) );
+                    Map<String, String> params = extractParams( matcher.group( 3 ) );
                     // add global parameters
 //                    List globals = getGlobals();
 //                    if ( globals != null ) {
@@ -136,8 +138,8 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
         return null;
     }
 
-    private Map extractParams(String params) {
-        Map result = new HashMap();
+    private Map<String, String> extractParams(String params) {
+        Map<String, String> result = new HashMap<String, String>();
         String[] parameters = StringUtils.split( params,
                                                  "," );
         for ( int i = 0; i < parameters.length; i++ ) {
@@ -163,10 +165,10 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
         return javaProject;
     }
 
-    protected List getAllClassProposals(final String classNameStart,
+    protected List<ICompletionProposal> getAllClassProposals(final String classNameStart,
                                         final int documentOffset,
                                         final String prefix) {
-        List result = new ArrayList();
+        List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         IJavaProject javaProject = getCurrentJavaProject();
         if ( javaProject == null ) {
             return result;
@@ -207,11 +209,11 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
         return result;
     }
 
-    protected List<RuleCompletionProposal> getPossibleProposals(ITextViewer viewer,
+    protected List<ICompletionProposal> getPossibleProposals(ITextViewer viewer,
                                         int documentOffset,
                                         String backText,
                                         final String prefix) {
-        List<RuleCompletionProposal> list = new ArrayList<RuleCompletionProposal>();
+        List<ICompletionProposal> list = new ArrayList<ICompletionProposal>();
         list.add( new RuleCompletionProposal( documentOffset - prefix.length(),
                                               prefix.length(),
                                               "rule",
@@ -260,20 +262,20 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
         return list;
     }
 
-    protected List<RuleCompletionProposal> getJavaCompletionProposals(final int documentOffset,
+    protected List<ICompletionProposal> getJavaCompletionProposals(final int documentOffset,
                                               final String javaText,
                                               final String prefix,
-                                              Map params) {
+                                              Map<String, String> params) {
         return getJavaCompletionProposals(documentOffset, javaText, prefix, params, true, false);
     }
     
-    protected List<RuleCompletionProposal> getJavaCompletionProposals(final int documentOffset,
+    protected List<ICompletionProposal> getJavaCompletionProposals(final int documentOffset,
                                               final String javaText,
                                               final String prefix,
-                                              Map params,
+                                              Map<String, String> params,
                                               boolean useDrools,
                                               boolean useContext) {
-        final List<RuleCompletionProposal> list = new ArrayList<RuleCompletionProposal>();
+        final List<ICompletionProposal> list = new ArrayList<ICompletionProposal>();
         requestJavaCompletionProposals( javaText,
                                         prefix,
                                         documentOffset,
@@ -287,12 +289,11 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
     /*
      * do we already have a completion for that string that would be either a local variable or a field?
      */
-    protected static boolean doesNotContainFieldCompletion(String completion,
-                                                         List completions) {
+    protected static boolean doesNotContainFieldCompletion(String completion, List<ICompletionProposal> completions) {
         if ( completion == null || completion.length() == 0 || completions == null ) {
             return false;
         }
-        for ( Iterator iter = completions.iterator(); iter.hasNext(); ) {
+        for ( Iterator<ICompletionProposal> iter = completions.iterator(); iter.hasNext(); ) {
             Object o = iter.next();
             if ( o instanceof AbstractJavaCompletionProposal ) {
                 AbstractJavaCompletionProposal prop = (AbstractJavaCompletionProposal) o;
@@ -311,16 +312,16 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
     protected void requestJavaCompletionProposals(final String javaText,
                                                   final String prefix,
                                                   final int documentOffset,
-                                                  Map params,
-                                                  Collection results) {
+                                                  Map<String, String> params,
+                                                  Collection<ICompletionProposal> results) {
         requestJavaCompletionProposals(javaText, prefix, documentOffset, params, results, true, false);
     }
 
     protected void requestJavaCompletionProposals(final String javaText,
                                                   final String prefix,
                                                   final int documentOffset,
-                                                  Map params,
-                                                  Collection results,
+                                                  Map<String, String> params,
+                                                  Collection<ICompletionProposal> results,
                                                   boolean useDrools,
                                                   boolean useContext) {
 
@@ -342,14 +343,12 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
 
         try {
             IEvaluationContext evalContext = javaProject.newEvaluationContext();
-            List imports = getImports();
+            List<String> imports = getImports();
             if ( imports != null && imports.size() > 0 ) {
-                evalContext.setImports( (String[]) imports.toArray( new String[imports.size()] ) );
+                evalContext.setImports(imports.toArray(new String[imports.size()]));
             }
             StringBuffer javaTextWithParams = new StringBuffer();
-            Iterator iterator = params.entrySet().iterator();
-            while ( iterator.hasNext() ) {
-                Map.Entry entry = (Map.Entry) iterator.next();
+            for (Entry<String, String> entry : params.entrySet()) {
                 // this does not seem to work, so adding variables manually
                 // evalContext.newVariable((String) entry.getValue(), (String) entry.getKey(), null);
                 javaTextWithParams.append( entry.getValue() + " " + entry.getKey() + ";\n" );
@@ -362,7 +361,7 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
             }
             javaTextWithParams.append( javaText );
             String jtext = javaTextWithParams.toString();
-            String fixedText = new KnowledgeHelperFixer().fix( jtext );
+            String fixedText = KnowledgeHelperFixer.fix(jtext);
 
             evalContext.codeComplete( fixedText,
                                       fixedText.length(),
@@ -402,40 +401,40 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
         if ( getEditor() instanceof DRLRuleEditor ) {
             return ((DRLRuleEditor) getEditor()).getImports();
         }
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
-    protected Set getUniqueImports() {
-        HashSet set = new HashSet();
+    protected Set<String> getUniqueImports() {
+        HashSet<String> set = new HashSet<String>();
         set.addAll( getImports() );
         return set;
     }
 
-    protected List getFunctions() {
+    protected List<String> getFunctions() {
         if ( getEditor() instanceof DRLRuleEditor ) {
             return ((DRLRuleEditor) getEditor()).getFunctions();
         }
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
-    protected Map getAttributes() {
+    protected Map<String, String> getAttributes() {
         if ( getEditor() instanceof DRLRuleEditor ) {
             return ((DRLRuleEditor) getEditor()).getAttributes();
         }
-        return Collections.EMPTY_MAP;
+        return Collections.emptyMap();
     }
 
     protected List<GlobalDescr> getGlobals() {
         if ( getEditor() instanceof DRLRuleEditor ) {
             return ((DRLRuleEditor) getEditor()).getGlobals();
         }
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     protected List<String> getClassesInPackage() {
         if ( getEditor() instanceof DRLRuleEditor ) {
             return ((DRLRuleEditor) getEditor()).getClassesInPackage();
         }
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 }

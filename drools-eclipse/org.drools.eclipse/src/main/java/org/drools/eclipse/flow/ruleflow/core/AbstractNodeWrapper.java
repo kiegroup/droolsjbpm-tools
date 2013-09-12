@@ -149,6 +149,7 @@ public abstract class AbstractNodeWrapper extends DefaultElementWrapper implemen
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void setPropertyValue(Object id, Object value) {
         if (METADATA.equals(id)) {
             ((NodeImpl) getNode()).setMetaData((Map<String, Object>) value);

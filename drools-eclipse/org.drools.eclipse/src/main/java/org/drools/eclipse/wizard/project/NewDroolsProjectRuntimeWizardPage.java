@@ -16,8 +16,6 @@
 
 package org.drools.eclipse.wizard.project;
 
-import java.util.HashMap;
-
 import org.drools.eclipse.preferences.DroolsProjectPreferencePage;
 import org.drools.eclipse.util.DroolsRuntime;
 import org.drools.eclipse.util.DroolsRuntimeManager;
@@ -232,7 +230,7 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
     private void openLink() {
         PreferencesUtil.createPreferenceDialogOn(getShell(),
             DroolsProjectPreferencePage.PREF_ID,
-            new String[] { DroolsProjectPreferencePage.PROP_ID }, new HashMap()).open();
+            new String[] { DroolsProjectPreferencePage.PROP_ID }, null).open();
         droolsRuntimeCombo.removeAll();
         DroolsRuntime[] runtimes = DroolsRuntimeManager.getDroolsRuntimes();
         if (runtimes.length == 0) {

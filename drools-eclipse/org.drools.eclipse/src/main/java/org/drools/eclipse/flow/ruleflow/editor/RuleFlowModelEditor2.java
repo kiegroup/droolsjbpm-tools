@@ -93,7 +93,7 @@ public class RuleFlowModelEditor2 extends FormEditor {
         return editor.isSaveAsAllowed();
     }
     
-    public Object getAdapter(Class adapter) {
+    public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
         return editor.getAdapter(adapter);
     }
 

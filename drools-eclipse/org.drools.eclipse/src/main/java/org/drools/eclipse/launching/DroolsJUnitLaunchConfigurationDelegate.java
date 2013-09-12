@@ -63,7 +63,7 @@ public class DroolsJUnitLaunchConfigurationDelegate extends JUnitLaunchConfigura
         IVMInstall vm = verifyVMInstall(configuration);
         IVMRunner runner = new DroolsVMDebugger(vm);
         if (runner == null) {
-            abort(MessageFormat.format(LaunchingMessages.JavaLocalApplicationLaunchConfigurationDelegate_0, new String[]{vm.getName(), mode}), null, IJavaLaunchConfigurationConstants.ERR_VM_RUNNER_DOES_NOT_EXIST);
+            abort(MessageFormat.format(LaunchingMessages.JavaLocalApplicationLaunchConfigurationDelegate_0, vm.getName(), mode), null, IJavaLaunchConfigurationConstants.ERR_VM_RUNNER_DOES_NOT_EXIST);
         }
         return runner;
     }

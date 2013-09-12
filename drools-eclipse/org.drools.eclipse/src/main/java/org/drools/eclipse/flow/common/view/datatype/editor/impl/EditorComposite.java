@@ -45,7 +45,7 @@ public class EditorComposite extends Composite {
         if (type == null) {
             editor = new EmptyEditor(this);
         } else {
-            Class editorClass = null;
+            Class<?> editorClass = null;
             try {
                 editorClass = registry.getDataTypeInfo(type.getClass()).getValueEditorClass();
                 editor = (Editor) editorClass.getConstructor(

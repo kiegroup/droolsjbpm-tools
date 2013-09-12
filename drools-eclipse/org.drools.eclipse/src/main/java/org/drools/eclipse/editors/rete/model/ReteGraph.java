@@ -17,7 +17,6 @@
 package org.drools.eclipse.editors.rete.model;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.drools.eclipse.reteoo.BaseVertex;
@@ -33,7 +32,7 @@ public class ReteGraph extends ModelElement {
     /** Property ID to use when a child is removed from this diagram. */
     public static final String PROP_CHILD_REMOVED = "ReteGraph.ChildRemoved";
 
-    private List               vertices           = new ArrayList();
+    private List<BaseVertex>     vertices           = new ArrayList<BaseVertex>();
 
     /** 
      * Add new BaseVertex to the graph
@@ -55,7 +54,7 @@ public class ReteGraph extends ModelElement {
     /**
      * Return all Vertices in this graph
      */
-    public List getChildren() {
+    public List<BaseVertex> getChildren() {
         return vertices;
     }
 
@@ -84,10 +83,8 @@ public class ReteGraph extends ModelElement {
         }
     }
 
-    public void addAll(List children) {
-        final Iterator iter = children.iterator();
-        while ( iter.hasNext() ) {
-            BaseVertex vertex = (BaseVertex) iter.next();
+    public void addAll(List<BaseVertex> children) {
+        for (BaseVertex vertex : children) {
             addChild( vertex );
         }
     }

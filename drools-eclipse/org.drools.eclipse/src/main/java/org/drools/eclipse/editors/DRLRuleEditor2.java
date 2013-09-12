@@ -136,7 +136,7 @@ public class DRLRuleEditor2 extends FormEditor {
     /* (non-Javadoc)
      * @see org.eclipse.ui.part.MultiPageEditorPart#getAdapter(java.lang.Class)
      */
-    public Object getAdapter(Class adapter) {
+    public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
         if ( adapter == ZoomManager.class ) {
 
             if ( getActiveEditor() instanceof ReteViewer ) {
