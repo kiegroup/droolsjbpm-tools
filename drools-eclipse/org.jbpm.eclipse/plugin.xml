@@ -16,6 +16,15 @@
          <description>This wizard creates a new jBPM project.</description>
       </wizard>
       <wizard
+            category="org.jbpm.eclipse.new"
+            class="org.jbpm.eclipse.wizard.project.NewJBPMMavenProjectWizard"
+            id="org.jbpm.eclipse.new.maven.project"
+            name="jBPM project (Maven)"
+            icon="icons/jbpm.gif"
+            project= "true">
+         <description>This wizard creates a new jBPM Maven project.</description>
+      </wizard>
+      <wizard
             id = "org.jbpm.eclipse.new.bpmn2process"
             name = "BPMN2 Process"
             class="org.jbpm.eclipse.wizard.process.NewBPMN2ProcessWizard"
