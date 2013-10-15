@@ -345,7 +345,7 @@ public class DroolsVMDebugger extends StandardVMDebugger {
         }
     }
 
-    protected void specifyArguments(Map<String, Argument> map, int portNumber) {
+    protected void specifyArguments(Map map, int portNumber) {
         // XXX: Revisit - allows us to put a quote (") around the classpath
         Connector.IntegerArgument port= (Connector.IntegerArgument) map.get("port"); //$NON-NLS-1$
         port.setValue(portNumber);

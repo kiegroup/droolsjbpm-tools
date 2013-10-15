@@ -172,7 +172,7 @@ public class DroolsThread extends JDIThread {
         int line = step_over;
 
         ReferenceType refType = (ReferenceType) debugHandlerClass;
-        Method m = refType.methodsByName( "setOnBreakReturn" ).iterator().next();
+        Method m = (Method) refType.methodsByName( "setOnBreakReturn" ).iterator().next();
         List<IntegerValue> args = new ArrayList<IntegerValue>();
         IntegerValue lineVal = getVM().mirrorOf( line );
         //ObjectReference realVal = val.getUnderlyingObject();

@@ -863,7 +863,7 @@ public class DroolsDebugTarget extends JDIDebugTarget {
         }
 
         ReferenceType refType = debugHandlerClass;
-        Method m = refType.methodsByName( "registerBreakpoint" ).iterator().next();
+        Method m = (Method) refType.methodsByName( "registerBreakpoint" ).iterator().next();
         List<Value> args = new ArrayList<Value>();
         IntegerValue lineVal = getVM().mirrorOf( line );
         StringReference nameVal = getVM().mirrorOf( sourceName );
@@ -919,7 +919,7 @@ public class DroolsDebugTarget extends JDIDebugTarget {
         }
 
         ReferenceType refType = debugHandlerClass;
-        Method m = refType.methodsByName( "removeBreakpoint" ).iterator().next();
+        Method m = (Method) refType.methodsByName( "removeBreakpoint" ).iterator().next();
         List<Value> args = new ArrayList<Value>();
         IntegerValue lineVal = getVM().mirrorOf( line );
         StringReference nameVal = getVM().mirrorOf( sourceName );
