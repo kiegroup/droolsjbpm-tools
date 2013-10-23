@@ -18,6 +18,7 @@ package org.drools.contrib;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.apache.tools.ant.BuildException;
 import org.drools.KnowledgeBase;
@@ -86,7 +87,7 @@ public class DroolsAntTaskTest extends BuildFileTest {
         RuleBase r1 = (RuleBase) DroolsStreamUtils.streamIn( new FileInputStream( "target/cheese.rules" ) );
 
         assertNotNull( r1 );
-        assertEquals( 1,
+        assertEquals( 2,
                       r1.getPackages().length );
     }
 
@@ -98,7 +99,7 @@ public class DroolsAntTaskTest extends BuildFileTest {
         KnowledgeBase kbase = (KnowledgeBase) DroolsStreamUtils.streamIn( new FileInputStream( "target/cheese.rules" ) );
 
         assertNotNull( kbase );
-        assertEquals( 1,
+        assertEquals( 2,
                       kbase.getKnowledgePackages().size() );
     }
 
