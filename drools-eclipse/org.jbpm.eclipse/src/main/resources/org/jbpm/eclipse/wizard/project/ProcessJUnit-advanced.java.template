@@ -2,9 +2,11 @@ package com.sample;
 
 import java.util.List;
 
-import org.jbpm.test.JbpmJUnitTestCase;
+import org.jbpm.test.JbpmJUnitBaseTestCase;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.TaskSummary;
@@ -12,17 +14,14 @@ import org.kie.api.task.model.TaskSummary;
 /**
  * This is a sample file to launch a process.
  */
-public class ProcessTest extends JbpmJUnitTestCase {
-
-	public ProcessTest() {
-		super(true);
-		setPersistence(true);
-	}
+public class ProcessTest extends JbpmJUnitBaseTestCase {
 
 	@Test
 	public void testProcess() {
-		KieSession ksession = createKnowledgeSession("sample.bpmn");
-		TaskService taskService = getTaskService();
+		RuntimeManager manager = createRuntimeManager("sample.bpmn");
+		RuntimeEngine engine = getRuntimeEngine(null);
+		KieSession ksession = engine.getKieSession();
+		TaskService taskService = engine.getTaskService();
 		
 		ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.hello");
 
@@ -47,7 +46,12 @@ public class ProcessTest extends JbpmJUnitTestCase {
 
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
 		
-		ksession.dispose();
+		manager.disposeRuntimeEngine(engine);
+		manager.close();
 	}
 	
+	public ProcessTest() {
+		super(true, true);
+	}
+
 }
