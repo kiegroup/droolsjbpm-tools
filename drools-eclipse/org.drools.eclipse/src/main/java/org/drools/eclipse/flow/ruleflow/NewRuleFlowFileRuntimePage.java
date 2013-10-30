@@ -29,9 +29,9 @@ import org.eclipse.swt.widgets.Label;
 public class NewRuleFlowFileRuntimePage extends WizardPage {
 
     public static final String DROOLS5 = "Drools 5.0.x";
-    public static final String DROOLS5_1 = "Drools 5.1.x";
+    public static final String DROOLS5_1 = "Drools 5.1.x or higher";
 
-    private String generationType = DROOLS5;
+    private String generationType = DROOLS5_1;
     private Combo droolsGenerateCombo;
 
     public NewRuleFlowFileRuntimePage() {
@@ -49,8 +49,8 @@ public class NewRuleFlowFileRuntimePage extends WizardPage {
         Label generateLabel = new Label(composite, SWT.NONE);
         generateLabel.setText("Generate code compatible with: ");
         droolsGenerateCombo = new Combo(composite, SWT.READ_ONLY);
-        droolsGenerateCombo.add("Drools 5.0.x");
-        droolsGenerateCombo.add("Drools 5.1.x");
+        droolsGenerateCombo.add(DROOLS5);
+        droolsGenerateCombo.add(DROOLS5_1);
         droolsGenerateCombo.addSelectionListener(new SelectionListener() {
             public void widgetDefaultSelected(SelectionEvent e) {
                 generationType = droolsGenerateCombo.getText();
@@ -59,8 +59,8 @@ public class NewRuleFlowFileRuntimePage extends WizardPage {
                 generationType = droolsGenerateCombo.getText();
             }
         });
-        droolsGenerateCombo.select(0);
-        generationType = DROOLS5;
+        droolsGenerateCombo.select(1);
+        generationType = DROOLS5_1;
         GridData gridData = new GridData();
         gridData.grabExcessHorizontalSpace = true;
         gridData.horizontalAlignment = GridData.FILL;
