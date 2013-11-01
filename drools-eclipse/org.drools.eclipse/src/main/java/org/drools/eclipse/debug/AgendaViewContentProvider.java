@@ -48,8 +48,10 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
         try {
             Object[] variables = null;
             if (obj != null && obj instanceof IJavaObject
-                    && ("org.drools.core.reteoo.ReteooStatefulSession".equals(
-                        ((IJavaObject) obj).getReferenceTypeName()) ||
+                    && ("org.drools.core.common.AbstractWorkingMemory".equals(
+                    		((IJavaObject) obj).getReferenceTypeName()) ||
+                        "org.drools.core.reteoo.ReteooStatefulSession".equals(
+                            ((IJavaObject) obj).getReferenceTypeName()) ||
 	                    // for backwards compatibility
 	                    "org.drools.reteoo.ReteooStatefulSession".equals(
 	                        ((IJavaObject) obj).getReferenceTypeName()))) {
@@ -176,8 +178,8 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
                                 }
                                 variables.add(new VariableWrapper(key, value));
                             }
-                            result = (IJavaVariable[]) variables.toArray(new IJavaVariable[variables.size()]);
                         }
+                        result = (IJavaVariable[]) variables.toArray(new IJavaVariable[variables.size()]);
                     }
                 } catch (Throwable t) {
                     DroolsEclipsePlugin.log(t);

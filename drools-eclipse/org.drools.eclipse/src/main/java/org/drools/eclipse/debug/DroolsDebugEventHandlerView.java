@@ -87,7 +87,8 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
             try {
                 IValue value = ((IVariable) context).getValue();
                 if (value != null && value instanceof IJavaObject) {
-                    if ("org.drools.core.reteoo.ReteooStatefulSession".equals(variable.getValue().getReferenceTypeName()) ||
+                    if ("org.drools.core.common.AbstartWorkingMemory".equals(variable.getValue().getReferenceTypeName()) ||
+                    	"org.drools.core.reteoo.ReteooStatefulSession".equals(variable.getValue().getReferenceTypeName()) ||
                     		// for backwards compatibility
                     		"org.drools.reteoo.ReteooStatefulSession".equals(variable.getValue().getReferenceTypeName())) {
                         input = value;
@@ -119,7 +120,8 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
                                 IJavaObject stackObj = ((IJavaStackFrame) frames[i]).getThis();
                                 if ((stackObj != null)
                                         && (stackObj.getJavaType() != null)
-                                        && ("org.drools.core.reteoo.ReteooStatefulSession".equals(stackObj.getJavaType().getName())
+                                        && ("org.drools.core.common.AbstractWorkingMemory".equals(stackObj.getJavaType().getName())
+                                        		|| "org.drools.core.reteoo.ReteooStatefulSession".equals(stackObj.getJavaType().getName())
                                         		|| "org.drools.reteoo.ReteooStatefulSession".equals(stackObj.getJavaType().getName())
                                                 || "org.drools.core.impl.StatefulKnowledgeSessionImpl".equals(stackObj.getJavaType().getName()))) {
                                     input = stackObj;

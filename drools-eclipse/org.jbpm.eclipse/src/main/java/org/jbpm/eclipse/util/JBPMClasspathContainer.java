@@ -28,7 +28,6 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.internal.core.ClasspathAccessRule;
 import org.eclipse.jdt.internal.core.ClasspathEntry;
-import org.jbpm.eclipse.JBPMEclipsePlugin;
 
 public class JBPMClasspathContainer implements IClasspathContainer {
 
@@ -67,7 +66,14 @@ public class JBPMClasspathContainer implements IClasspathContainer {
         if (jarNames != null) {
 	        for (int i = 0; i < jarNames.length; i++) {
 	        	Path path = new Path(jarNames[i]);
-	        	list.add(JavaCore.newLibraryEntry(path, path, null));
+                if (jarNames[i].contains("knowledge-api") || (jarNames[i].contains("kie-api")) || (jarNames[i].contains("jbpm-test"))) {
+                    list.add(JavaCore.newLibraryEntry(path, path, null));
+                } else {
+                    IAccessRule[] accessRules = new IAccessRule[1];
+                    accessRules[0] = new ClasspathAccessRule(new Path("**"), IAccessRule.K_DISCOURAGED);
+                    list.add(JavaCore.newLibraryEntry(
+                        path, path, null, accessRules, ClasspathEntry.NO_EXTRA_ATTRIBUTES, false));
+                }
 	        }
         }
         return (IClasspathEntry[]) list.toArray(new IClasspathEntry[list.size()]);
