@@ -21,9 +21,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.core.spi.Constraint;
 import org.drools.eclipse.reteoo.AccumulateNodeVertex;
 import org.drools.eclipse.reteoo.AlphaNodeVertex;
 import org.drools.eclipse.reteoo.BaseVertex;
+import org.drools.eclipse.reteoo.ConditionalBranchNodeVertex;
 import org.drools.eclipse.reteoo.EntryPointNodeVertex;
 import org.drools.eclipse.reteoo.EvalConditionNodeVertex;
 import org.drools.eclipse.reteoo.ExistsNodeVertex;
@@ -33,11 +35,14 @@ import org.drools.eclipse.reteoo.LeftInputAdapterNodeVertex;
 import org.drools.eclipse.reteoo.NotNodeVertex;
 import org.drools.eclipse.reteoo.ObjectTypeNodeVertex;
 import org.drools.eclipse.reteoo.PropagationQueuingNodeVertex;
+import org.drools.eclipse.reteoo.QueryElementNodeVertex;
+import org.drools.eclipse.reteoo.QueryRiaFixerNodeVertex;
 import org.drools.eclipse.reteoo.QueryTerminalNodeVertex;
 import org.drools.eclipse.reteoo.ReteVertex;
 import org.drools.eclipse.reteoo.RightInputAdapterNodeVertex;
 import org.drools.eclipse.reteoo.RuleTerminalNodeVertex;
-import org.drools.core.spi.Constraint;
+import org.drools.eclipse.reteoo.TimerNodeVertex;
+import org.drools.eclipse.reteoo.WindowNodeVertex;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
@@ -81,6 +86,16 @@ public class VertexPropertySource
     private static final String       VERTEX_ENTRY_POINT         = "Entry Point BaseVertex";
 
     private static final String       VERTEX_PROPAGATION_QUEUING = "Propagation Queuing BaseVertex";
+
+    private static final String       VERTEX_CONDITIONAL_BRANCH = "Conditional Branch BaseVertex";
+
+    private static final String       VERTEX_QUERY_ELEMENT = "Query Element BaseVertex";
+
+    private static final String       VERTEX_QUERY_RIA_FIXER = "Query Ria Fixer BaseVertex";
+
+    private static final String       VERTEX_TIMER = "Timer BaseVertex";
+
+    private static final String       VERTEX_WINDOW = "Window BaseVertex";
 
     private static final String       CONSTRAINT_CAP             = "Constraint";
 
@@ -202,6 +217,16 @@ public class VertexPropertySource
             initEntryPointNodeProperties( (EntryPointNodeVertex) vertex,
                                           descriptorList,
                                           values );
+        } else if ( vertex instanceof ConditionalBranchNodeVertex ) {
+            initConditionalBranchNodeProperties( (ConditionalBranchNodeVertex) vertex, descriptorList, values );
+        } else if ( vertex instanceof QueryElementNodeVertex ) {
+            initQueryElementNodeProperties( (QueryElementNodeVertex) vertex, descriptorList, values );
+        } else if ( vertex instanceof QueryRiaFixerNodeVertex ) {
+            initQueryRiaFixerNodeProperties( (QueryRiaFixerNodeVertex) vertex, descriptorList, values );
+        } else if ( vertex instanceof TimerNodeVertex ) {
+            initTimerNodeProperties( (TimerNodeVertex) vertex, descriptorList, values );
+        } else if ( vertex instanceof WindowNodeVertex ) {
+            initWindowNodeProperties( (WindowNodeVertex) vertex, descriptorList, values );
         }
 
         descriptors = descriptorList.toArray( new IPropertyDescriptor[0] );
@@ -456,6 +481,41 @@ public class VertexPropertySource
                      valueMap );
 
     }
+
+	private void initConditionalBranchNodeProperties(ConditionalBranchNodeVertex vertex,
+			List descriptorList, Map valueMap) {
+		addProperty(PROP_NAME, VERTEX_CONDITIONAL_BRANCH, descriptorList, valueMap);
+		addProperty(PROP_ID, Integer.toString(vertex.getId()), descriptorList,
+				valueMap);
+	}
+
+	private void initQueryElementNodeProperties(QueryElementNodeVertex vertex,
+			List descriptorList, Map valueMap) {
+		addProperty(PROP_NAME, VERTEX_QUERY_ELEMENT, descriptorList, valueMap);
+		addProperty(PROP_ID, Integer.toString(vertex.getId()), descriptorList,
+				valueMap);
+	}
+
+	private void initQueryRiaFixerNodeProperties(QueryRiaFixerNodeVertex vertex,
+			List descriptorList, Map valueMap) {
+		addProperty(PROP_NAME, VERTEX_QUERY_RIA_FIXER, descriptorList, valueMap);
+		addProperty(PROP_ID, Integer.toString(vertex.getId()), descriptorList,
+				valueMap);
+	}
+
+	private void initTimerNodeProperties(TimerNodeVertex vertex,
+			List descriptorList, Map valueMap) {
+		addProperty(PROP_NAME, VERTEX_TIMER, descriptorList, valueMap);
+		addProperty(PROP_ID, Integer.toString(vertex.getId()), descriptorList,
+				valueMap);
+	}
+
+	private void initWindowNodeProperties(WindowNodeVertex vertex,
+			List descriptorList, Map valueMap) {
+		addProperty(PROP_NAME, VERTEX_WINDOW, descriptorList, valueMap);
+		addProperty(PROP_ID, Integer.toString(vertex.getId()), descriptorList,
+				valueMap);
+	}
 
     private void addProperty(IPropertyDescriptor field,
                              String value,
