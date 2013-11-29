@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.antlr.runtime.RecognitionException;
 import org.drools.compiler.commons.jci.problems.CompilationProblem;
+import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.DroolsParserException;
@@ -493,8 +494,8 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
      * has picked up some major typos in the input source.
      */
     protected void markParseErrors(List<DroolsBuildMarker> markers,
-                                   List<DroolsError> parserErrors) {
-        for ( Iterator<DroolsError> iter = parserErrors.iterator(); iter.hasNext(); ) {
+                                   List<BaseKnowledgeBuilderResultImpl> parserErrors) {
+        for ( Iterator<BaseKnowledgeBuilderResultImpl> iter = parserErrors.iterator(); iter.hasNext(); ) {
             Object error = iter.next();
             if ( error instanceof ParserError ) {
                 ParserError err = (ParserError) error;

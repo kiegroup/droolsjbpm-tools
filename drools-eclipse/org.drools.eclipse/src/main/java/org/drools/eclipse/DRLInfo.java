@@ -17,10 +17,9 @@
 package org.drools.eclipse;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import org.drools.core.base.ClassObjectType;
+import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.DroolsError;
@@ -31,6 +30,7 @@ import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.rule.DialectRuntimeRegistry;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.LineMappings;
@@ -44,11 +44,10 @@ import org.eclipse.core.resources.IResource;
 public class DRLInfo {
 
     private static final DroolsError[] EMPTY_DROOLS_ERROR_ARRAY = new DroolsError[0];
-    private static final List<DroolsError> EMPTY_LIST = Collections.unmodifiableList(new ArrayList<DroolsError>());
 
     private final String sourcePathName;
     private final PackageDescr packageDescr;
-    private List<DroolsError> parserErrors;
+    private List<BaseKnowledgeBuilderResultImpl> parserErrors;
     private Package compiledPackage;
     private DroolsError[] builderErrors;
     // cached entry
@@ -60,7 +59,7 @@ public class DRLInfo {
 
     public DRLInfo( String sourcePathName, 
     				PackageDescr packageDescr, 
-    				List<DroolsError> parserErrors, 
+    				List<BaseKnowledgeBuilderResultImpl> parserErrors, 
     				DialectCompiletimeRegistry dialectRegistry ) {
         if (sourcePathName == null) {
             throw new IllegalArgumentException("Invalid sourcePathName " + sourcePathName);
@@ -74,7 +73,7 @@ public class DRLInfo {
 
     public DRLInfo( String pathName, 
     				PackageDescr packageDescr, 
-    				List<DroolsError> parserErrors, 
+    				List<BaseKnowledgeBuilderResultImpl> parserErrors, 
     				Package compiledPackage, 
     				DroolsError[] builderErrors, 
     				DialectCompiletimeRegistry dialectRegistry ) {
@@ -95,7 +94,7 @@ public class DRLInfo {
         return packageDescr;
     }
 
-    public List<DroolsError> getParserErrors() {
+    public List<BaseKnowledgeBuilderResultImpl> getParserErrors() {
         return parserErrors;
     }
     

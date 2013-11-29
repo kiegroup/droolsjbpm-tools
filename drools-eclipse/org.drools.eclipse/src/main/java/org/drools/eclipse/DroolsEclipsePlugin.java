@@ -29,6 +29,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.DroolsParserException;
@@ -367,7 +368,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 
 			DRLInfo info = new DRLInfo( resourceDescr.getSourcePathName(),
 		            packageDescr,
-		            new ArrayList<DroolsError>(),
+		            new ArrayList<BaseKnowledgeBuilderResultImpl>(),
 		            packageBuilder.getPackageRegistry(packageDescr.getNamespace()).getPackage(),
 		            new DroolsError[0],
 		            packageBuilder.getPackageRegistry( packageDescr.getNamespace() ).getDialectCompiletimeRegistry() );
@@ -404,7 +405,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 			if (info == null) {
 				info = new DRLInfo( resourceDescr.getResource().getName(),
 		                packageDescr,
-		                new ArrayList<DroolsError>() {{
+		                new ArrayList<BaseKnowledgeBuilderResultImpl>() {{
 		                	add(droolsError);
 		                }},
 		                packageBuilder.getPackageRegistry( packageDescr.getNamespace() ).getDialectCompiletimeRegistry() );
@@ -616,7 +617,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 
                 // first parse the source
                 PackageDescr packageDescr = null;
-                List<DroolsError> parserErrors = null;
+                List<BaseKnowledgeBuilderResultImpl> parserErrors = null;
                 if ( useCache && resource != null) {
                     DRLInfo cachedDrlInfo = (DRLInfo) parsedRules.get( resource );
                     if ( cachedDrlInfo != null ) {
@@ -633,7 +634,8 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                     } else {
                         packageDescr = parser.parse( true, content );
                     }
-                    parserErrors = parser.getErrors();
+                    parserErrors = new ArrayList<BaseKnowledgeBuilderResultImpl>();
+                    parserErrors.addAll(parser.getErrors());
                 }
                 PackageBuilder builder = new PackageBuilder( builder_configuration );
                 DRLInfo result = null;
@@ -806,7 +808,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
             "file://" + resource.getLocation().toString() ) );
         ProcessInfo processInfo = new ProcessInfo( process.getId(),
                                                    process );
-        List<DroolsError> errors = new ArrayList<DroolsError>();
+        List<BaseKnowledgeBuilderResultImpl> errors = new ArrayList<BaseKnowledgeBuilderResultImpl>();
         errors.addAll( processBuilder.getErrors() );
         errors.addAll( Arrays.asList( packageBuilder.getErrors().getErrors() ) );
         processInfo.setErrors( errors );
