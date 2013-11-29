@@ -18,14 +18,14 @@ package org.drools.eclipse;
 
 import java.util.List;
 
-import org.drools.compiler.compiler.DroolsError;
+import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
 import org.kie.api.definition.process.Process;
 
 public class ProcessInfo {
     
     private String processId;
     private Process process;
-    private List<DroolsError> errors;
+    private List<BaseKnowledgeBuilderResultImpl> errors;
     
     public ProcessInfo(String processId, Process process) {
         this.processId = processId;
@@ -40,11 +40,11 @@ public class ProcessInfo {
         return process;
     }
     
-    public List<DroolsError> getErrors() {
+    public List<BaseKnowledgeBuilderResultImpl> getErrors() {
         return errors;
     }
     
-    public void setErrors(List<DroolsError> errors) {
+    public void setErrors(List<BaseKnowledgeBuilderResultImpl> errors) {
         this.errors = errors;
     }
 
