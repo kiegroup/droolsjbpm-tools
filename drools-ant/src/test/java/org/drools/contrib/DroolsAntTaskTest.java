@@ -127,6 +127,18 @@ public class DroolsAntTaskTest extends BuildFileTest {
                       kbase.getKnowledgePackages().size() );
     }
 
+    @Test
+    public void testProcessKnowledge() throws IOException,
+                                       ClassNotFoundException {
+        executeTarget( "bpmnKnowledge" );
+
+        KnowledgeBase kbase = (KnowledgeBase) DroolsStreamUtils.streamIn( new FileInputStream( "target/process.rules" ) );
+
+        assertNotNull( kbase );
+        assertEquals( 1,
+                      kbase.getKnowledgePackages().size() );
+    }
+
     @Test(expected = BuildException.class)
     public void testNoPackageFile() {
         executeTarget( "rulesnopackagefile" );

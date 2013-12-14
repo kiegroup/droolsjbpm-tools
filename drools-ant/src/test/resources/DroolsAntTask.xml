@@ -87,6 +87,16 @@
     </compiler>
   </target>
 
+  <target name="bpmnKnowledge" >
+    <compiler
+      srcdir="${eclipsepath}src/test/resources/bpmn"
+      tofile="${eclipsepath}target/process.rules"
+      bintype="knowledge" >
+      <include name="*.bpmn" />
+      <include name="*.bpmn2" />
+    </compiler>
+  </target>
+
   <target name="rulesnopackagefile" >
     <compiler
       srcdir="${eclipsepath}src/test/resources/packagefiletest/emptydir"

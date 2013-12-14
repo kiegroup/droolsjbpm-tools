@@ -56,6 +56,8 @@ public class DroolsCompilerAntTask extends MatchingTask {
     public static String XMLFILEEXTENSION = ".xml";
     public static String RULEFLOWMODELFILEEXTENSION = ".rfm";
     public static String RULEFLOWFILEEXTENSION = ".rf";
+    public static String BUSINESSPROCESSFILEEXTENSION = ".bpmn";
+    public static String BUSINESSPROCESSFILEEXTENSIONv2 = ".bpmn2";
     public static String DSLFILEEXTENSION = ".dsl";
     public static String DSLRFILEEXTENSION = ".dslr";
     public static String XLSFILEEXTENSION = ".xls";
@@ -103,10 +105,10 @@ public class DroolsCompilerAntTask extends MatchingTask {
     /**
      * Classpath to use, by reference, when compiling the rulebase
      *
-     * @param a reference to an existing classpath
+     * @param r reference to an existing classpath
      */
     public void setClasspathref(Reference r) {
-        createClasspath().setRefid(r);
+        createClasspath().setRefid( r );
     }
 
     /**
@@ -232,7 +234,7 @@ public class DroolsCompilerAntTask extends MatchingTask {
         }
 
         if (kbuilder.hasErrors()) {
-            System.err.println(kbuilder.getErrors().toString());
+            System.err.println( kbuilder.getErrors().toString() );
         }
     }
 
@@ -263,7 +265,7 @@ public class DroolsCompilerAntTask extends MatchingTask {
     private void createWithPackageBuilder(AntClassLoader loader)
             throws FileNotFoundException, DroolsParserException, IOException {
         // create a package builder configured to use the given classloader
-        PackageBuilder builder = getPackageBuilder(loader);
+        PackageBuilder builder = getPackageBuilder( loader );
 
         compileAndAddFiles(builder);
 
@@ -288,7 +290,7 @@ public class DroolsCompilerAntTask extends MatchingTask {
         // adds the packages
         ruleBase.addPackages(packages);
 
-        if (PACKAGEBINFORMAT.equals(binformat)) {
+        if (PACKAGEBINFORMAT.equals( binformat )) {
             for (org.drools.rule.Package pkg : packages) {
                 if (verboseoption) {
                     log("** Serializing package [" + pkg.getName() + "] to destination file. **** THIS WILL OVERRIDE ANY PREVIOUSLY SERIALIZED PACKAGE ****");
@@ -300,12 +302,13 @@ public class DroolsCompilerAntTask extends MatchingTask {
                 log("** Serializing RuleBase to destination file.");
             }
             // serialize the rule base to the destination file
-            serializeObject(ruleBase);
+            serializeObject( ruleBase );
         }
     }
 
     /**
-     * @param ruleBase
+     * 
+     * @param object
      * @throws FileNotFoundException
      * @throws IOException
      */
@@ -323,7 +326,7 @@ public class DroolsCompilerAntTask extends MatchingTask {
     }
 
     /**
-     * @param builder
+     * @param kbuilder
      * @param fileName
      * @return
      * @throws FileNotFoundException
@@ -348,6 +351,10 @@ public class DroolsCompilerAntTask extends MatchingTask {
             kbuilder.add(ResourceFactory.newReaderResource(fileReader),
                     ResourceType.DRF);
 
+        } else if ( fileName.endsWith(DroolsCompilerAntTask.BUSINESSPROCESSFILEEXTENSION)
+                    || fileName.endsWith(DroolsCompilerAntTask.BUSINESSPROCESSFILEEXTENSIONv2) )  {
+            kbuilder.add( ResourceFactory.newReaderResource( fileReader ),
+                          ResourceType.BPMN2 );
         } else if (fileName.endsWith(DroolsCompilerAntTask.XMLFILEEXTENSION)) {
             kbuilder.add(ResourceFactory.newReaderResource(fileReader),
                     ResourceType.XDRL);
@@ -405,13 +412,16 @@ public class DroolsCompilerAntTask extends MatchingTask {
                     .endsWith(DroolsCompilerAntTask.RULEFLOWMODELFILEEXTENSION)
                     || fileName
                     .endsWith(DroolsCompilerAntTask.RULEFLOWFILEEXTENSION)) {
-                builder.addRuleFlow(instream);
+                builder.addRuleFlow( instream );
+            } else if ( fileName.endsWith(DroolsCompilerAntTask.BUSINESSPROCESSFILEEXTENSION)
+                        || fileName.endsWith(DroolsCompilerAntTask.BUSINESSPROCESSFILEEXTENSIONv2) ) {
+                builder.addProcessFromXml( ResourceFactory.newReaderResource( instream ) );
             } else if (fileName
-                    .endsWith(DroolsCompilerAntTask.XMLFILEEXTENSION)) {
-                builder.addPackageFromXml(instream);
+                    .endsWith( DroolsCompilerAntTask.XMLFILEEXTENSION )) {
+                builder.addPackageFromXml( instream );
 
-            } else if (fileName.endsWith(DroolsCompilerAntTask.BRLFILEEXTENSION)) {
-                builder.addPackageFromBrl(ResourceFactory.newReaderResource(instream));
+            } else if (fileName.endsWith( DroolsCompilerAntTask.BRLFILEEXTENSION )) {
+                builder.addPackageFromBrl( ResourceFactory.newReaderResource( instream ) );
             } else if (fileName
                     .endsWith(DroolsCompilerAntTask.XLSFILEEXTENSION)) {
 
