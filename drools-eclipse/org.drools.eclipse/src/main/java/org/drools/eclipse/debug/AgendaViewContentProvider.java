@@ -111,14 +111,11 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
                             new LazyActivationWrapper(activations, activation, workingMemoryImpl)));
                     }
                 }
-                boolean active = false;
-                if (agendaGroup.equals(focus)) {
-                    active = true;
-                }
+
                 // because the debug view does not handle spaces well, all spaces
                 // in the agenda group name are replaced with '_'s.
                 name = replaceSpaces(name);
-                result.add(new MyVariableWrapper(name + "[" + (active ? "focus" : "nofocus") + "]",
+                result.add(new MyVariableWrapper(name + "[" + (agendaGroup.equals(focus) ? "focus" : "nofocus") + "]",
                     new ObjectWrapper((IJavaObject) agendaGroup,
                         activationsResult.toArray(new IJavaVariable[activationsResult.size()]))));
             }
@@ -159,24 +156,7 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
                     if (activationId != null) {
                         IValue objects = DebugUtil.getValueByExpression("return getActivationParameters(" + activationId + ");", workingMemoryImpl);
                         if (objects instanceof IJavaArray) {
-                            IJavaArray array = (IJavaArray) objects;
-                            IJavaValue[] javaVals = array.getValues();
-                            for ( int k = 0; k < javaVals.length; k++ ) {
-                                IJavaValue mapEntry = javaVals[k];
-                                String key = null;
-                                IJavaValue value = null;
-
-                                IVariable[] vars = mapEntry.getVariables();
-                                for ( int j = 0; j < vars.length; j++ ) {
-                                    IVariable var = vars[j];
-                                    if ("key".equals(var.getName())) {
-                                        key = var.getValue().getValueString();
-                                    } else if ("value".equals(var.getName())) {
-                                        value = (IJavaValue) var.getValue();
-                                    }
-                                }
-                                variables.add(new VariableWrapper(key, value));
-                            }
+                        	addVariablesFromArray(variables, (IJavaArray) objects);
                         }
                         result = variables.toArray(new IJavaVariable[variables.size()]);
                     }
@@ -189,6 +169,33 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
                 setVariables((IJavaVariable[]) result);
             }
             return result;
+        }
+        
+        private void addVariablesFromArray(List<VariableWrapper> variables, IJavaArray array) throws Exception {
+            IJavaValue[] javaVals = array.getValues();
+            for ( int k = 0; k < javaVals.length; k++ ) {
+                IJavaValue mapEntry = javaVals[k];
+                IJavaObject key = null;
+                IJavaValue value = null;
+
+                IVariable[] vars = mapEntry.getVariables();
+                for ( int j = 0; j < vars.length; j++ ) {
+                    IVariable var = vars[j];
+                    if ("key".equals(var.getName())) {
+                        key = (IJavaObject) var.getValue();
+                    } else if ("value".equals(var.getName())) {
+                        value = (IJavaValue) var.getValue();
+                    }
+                }
+                if (value instanceof IJavaArray) {
+                	List<VariableWrapper> nestedVariables = new ArrayList<VariableWrapper>();
+                	addVariablesFromArray(nestedVariables, (IJavaArray)value);
+                	IJavaVariable[] nestedResult = nestedVariables.toArray(new IJavaVariable[nestedVariables.size()]);
+                	variables.add(new VariableWrapper("[" + k + "]", new ObjectWrapper(key, nestedResult)));
+                } else {
+                	variables.add(new VariableWrapper(key.getValueString(), value));
+                }
+            }
         }
 
         public boolean hasVariables() {
