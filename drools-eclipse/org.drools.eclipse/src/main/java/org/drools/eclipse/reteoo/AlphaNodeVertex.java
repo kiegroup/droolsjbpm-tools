@@ -20,6 +20,7 @@ import org.drools.core.base.ClassFieldReader;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.Constraint;
+import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.reteoo.AlphaNode;
 import org.eclipse.draw2d.ColorConstants;
@@ -111,7 +112,8 @@ public class AlphaNodeVertex extends BaseVertex {
         AlphaNodeFieldConstraint constraint = this.node.getConstraint();
         if (constraint instanceof MvelConstraint) {
         	MvelConstraint mvelConstraint = (MvelConstraint) constraint;
-            return mvelConstraint.getField().toString();
+        	FieldValue field = mvelConstraint.getField();
+            return field != null ? field.toString() : null;
         }
         return null;
     }
