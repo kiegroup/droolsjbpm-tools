@@ -93,7 +93,7 @@
           <artifact>
             <groupId>org.jboss.tools.integration-stack</groupId>
             <artifactId>target-platform</artifactId>
-            <version>4.1.5.CR3</version>
+            <version>4.1.5.Final</version>
             <type>target</type>
             <classifier>base</classifier>
           </artifact>
