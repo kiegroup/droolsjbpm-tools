@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>droolsjbpm-tools</artifactId>
-    <version>6.0.1-SNAPSHOT</version>
+    <version>6.0.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-eclipse</artifactId>
@@ -165,4 +165,4 @@
     </plugins>
   </build>
 
-</project>
+<version>6.0.2-SNAPSHOT</version></project>
