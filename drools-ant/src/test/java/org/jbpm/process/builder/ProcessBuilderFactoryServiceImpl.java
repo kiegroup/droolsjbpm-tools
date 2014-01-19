@@ -36,6 +36,10 @@ public class ProcessBuilderFactoryServiceImpl implements ProcessBuilderFactorySe
 
                 return Collections.emptyList();
             }
+
+            public List<DroolsError> getErrors() { 
+                return Collections.emptyList();
+            }
         };
     }
 }
