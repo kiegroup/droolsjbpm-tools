@@ -251,7 +251,7 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
         List<IClasspathEntry> list = new ArrayList<IClasspathEntry>();
         list.addAll(Arrays.asList(project.getRawClasspath()));
         addSourceFolder(project, list, "src/main/java", monitor);
-        if (runtimePage.getGenerationType() == NewDroolsProjectRuntimeWizardPage.DROOLS6) {
+        if (NewDroolsProjectRuntimeWizardPage.DROOLS6.equals(runtimePage.getGenerationType())) {
         	addSourceFolder(project, list, "src/main/resources", monitor);
         	createFolder(project, "src/main/resources/META-INF", monitor);
         	createFolder(project, "src/main/resources/META-INF/maven", monitor);
@@ -333,11 +333,12 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
      */
     private void createRuleSampleLauncher(IJavaProject project)
             throws JavaModelException, IOException {
-        
-        if (runtimePage.getGenerationType() == NewDroolsProjectRuntimeWizardPage.DROOLS4) {
+
+        String runtime = runtimePage.getGenerationType();
+        if (NewDroolsProjectRuntimeWizardPage.DROOLS4.equals(runtime)) {
             createProjectJavaFile(project, "org/drools/eclipse/wizard/project/RuleLauncherSample_4.java.template", "DroolsTest.java");
-        } else if (runtimePage.getGenerationType() == NewDroolsProjectRuntimeWizardPage.DROOLS5 ||
-        			runtimePage.getGenerationType() == NewDroolsProjectRuntimeWizardPage.DROOLS5_1) {
+        } else if (NewDroolsProjectRuntimeWizardPage.DROOLS5.equals(runtime) ||
+                NewDroolsProjectRuntimeWizardPage.DROOLS5_1.equals(runtime)) {
             createProjectJavaFile(project, "org/drools/eclipse/wizard/project/RuleLauncherSample_5.java.template", "DroolsTest.java");
         } else {
             createProjectJavaFile(project, "org/drools/eclipse/wizard/project/RuleLauncherSample_6.java.template", "DroolsTest.java");
@@ -350,10 +351,11 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
     private void createDecisionTableSampleLauncher(IJavaProject project)
             throws JavaModelException, IOException {
         
-        if (runtimePage.getGenerationType() == NewDroolsProjectRuntimeWizardPage.DROOLS4) {
+        String runtime = runtimePage.getGenerationType();
+        if (NewDroolsProjectRuntimeWizardPage.DROOLS4.equals(runtime)) {
             createProjectJavaFile(project, "org/drools/eclipse/wizard/project/DecisionTableLauncherSample_4.java.template", "DecisionTableTest.java");
-        } else if (runtimePage.getGenerationType() == NewDroolsProjectRuntimeWizardPage.DROOLS5 ||
-    			runtimePage.getGenerationType() == NewDroolsProjectRuntimeWizardPage.DROOLS5_1) {
+        } else if (NewDroolsProjectRuntimeWizardPage.DROOLS5.equals(runtime) ||
+            NewDroolsProjectRuntimeWizardPage.DROOLS5_1.equals(runtime)) {
             createProjectJavaFile(project, "org/drools/eclipse/wizard/project/DecisionTableLauncherSample_5.java.template", "DecisionTableTest.java");
         } else {
             createProjectJavaFile(project, "org/drools/eclipse/wizard/project/DecisionTableLauncherSample_6.java.template", "DecisionTableTest.java");
@@ -374,8 +376,14 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
 	}
 
 	private void createProjectFile(IJavaProject project, IProgressMonitor monitor, InputStream inputstream, String folderName, String fileName) throws CoreException {
-        IFolder folder = project.getProject().getFolder(folderName);
-        IFile file = folder.getFile(fileName);
+        IFile file;
+        if (folderName == null) {
+            file = project.getProject().getFile(fileName);
+        } else {
+            IFolder folder = project.getProject().getFolder(folderName);
+            file = folder.getFile(fileName);
+        }
+
         if (!file.exists()) {
             file.create(inputstream, true, monitor);
         } else {
@@ -387,23 +395,27 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
      * Create the sample rule file.
      */
     private void createRule(IJavaProject project, IProgressMonitor monitor) throws CoreException {
-    	if (runtimePage.getGenerationType() == NewDroolsProjectRuntimeWizardPage.DROOLS6) {
-    		createFolder(project, "src/main/resources/rules", monitor);
-        	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/Sample.drl.template", "src/main/resources/rules", "Sample.drl");
-    	} else {
-        	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/Sample.drl.template", "src/main/rules", "Sample.drl");
-    	}
+        if (NewDroolsProjectRuntimeWizardPage.DROOLS6.equals(runtimePage.getGenerationType())) {
+            createFolder(project, "src/main/resources/rules", monitor);
+            createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/Sample.drl.template", "src/main/resources/rules", "Sample.drl");
+        } else {
+            createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/Sample.drl.template", "src/main/rules", "Sample.drl");
+        }
     }
 
     private void createKModule(IJavaProject project, IProgressMonitor monitor) throws CoreException {
-        if (runtimePage.getGenerationType() == NewDroolsProjectRuntimeWizardPage.DROOLS6) {
+        if (NewDroolsProjectRuntimeWizardPage.DROOLS6.equals(runtimePage.getGenerationType())) {
         	createProjectFile(project, monitor, generateKModule(), "src/main/resources/META-INF", "kmodule.xml");
         }
     }
 
     private void createPom(IJavaProject project, IProgressMonitor monitor) throws CoreException {
-        if (runtimePage.getGenerationType() == NewDroolsProjectRuntimeWizardPage.DROOLS6) {
-        	createProjectFile(project, monitor, generatePomProperties(runtimePage.getGroupId(), runtimePage.getArtifactId(), runtimePage.getVersion()), "src/main/resources/META-INF/maven", "pom.properties");
+        if (NewDroolsProjectRuntimeWizardPage.DROOLS6.equals(runtimePage.getGenerationType())) {
+            String groupId = runtimePage.getGroupId();
+            String artifactId = runtimePage.getArtifactId();
+            String version = runtimePage.getVersion();
+            createProjectFile(project, monitor, generatePomProperties(groupId, artifactId, version), "src/main/resources/META-INF/maven", "pom.properties");
+            createProjectFile(project, monitor, generatePom(groupId, artifactId, version), null, "pom.xml");
         }
     }
 
@@ -411,7 +423,7 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
      * Create the sample decision table file.
      */
     private void createDecisionTable(IJavaProject project, IProgressMonitor monitor) throws CoreException {
-    	if (runtimePage.getGenerationType() == NewDroolsProjectRuntimeWizardPage.DROOLS6) {
+        if (NewDroolsProjectRuntimeWizardPage.DROOLS6.equals(runtimePage.getGenerationType())) {
     		createFolder(project, "src/main/resources/dtables", monitor);
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/Sample.xls.template", "src/main/resources/dtables", "Sample.xls");
     	} else {
