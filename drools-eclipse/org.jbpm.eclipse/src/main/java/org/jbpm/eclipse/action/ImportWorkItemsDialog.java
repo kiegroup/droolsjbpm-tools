@@ -339,7 +339,8 @@ public class ImportWorkItemsDialog extends Dialog {
 		        	String content = "[";
 		        	for (WorkDefinitionImpl def: workDefs.values()) {
 			        	if (def.getDefaultHandler() != null) {
-			        		content += EOL + "  \"" + def.getName() + "\" : new " + def.getDefaultHandler() + "(),";
+			        		content += EOL + "  \"" + def.getName() + "\" : new "
+			        			+ def.getDefaultHandler().replaceFirst("[^()]+$", "$0()") + ",";
 			        	}
 			        }
 		        	if (content.endsWith(",")) {
@@ -354,7 +355,8 @@ public class ImportWorkItemsDialog extends Dialog {
 			        }
 			        for (WorkDefinitionImpl def: workDefs.values()) {
 			        	if (def.getDefaultHandler() != null) {
-			        		newContent += EOL + "  \"" + def.getName() + "\" : new " + def.getDefaultHandler() + "(),";
+			        		newContent += EOL + "  \"" + def.getName() + "\" : new "
+			        			   + def.getDefaultHandler().replaceFirst("[^()]+$", "$0()") + ",";
 			        	}
 			        }
 			        newContent += content;
