@@ -120,14 +120,12 @@ public class AuditView extends AbstractDebugView {
             ObjectInputStream in = xstream.createObjectInputStream( new FileReader(logFileName) );
             try {
                 while (true) {
-                    Object object = in.readObject();
+                	Object object = in.readObject();
                     if (object instanceof WorkingMemoryLog) {
                     	WorkingMemoryLog log = (WorkingMemoryLog) object;
-                    	eventList = log.getEvents();
-                    	phreak = log.getEngine().equalsIgnoreCase("PHREAK");
-                    	break;
-                    }
-                    if (object instanceof LogEvent) {
+                    	eventList.addAll(log.getEvents());
+                    	phreak |= log.getEngine().equalsIgnoreCase("PHREAK");
+                    } else if (object instanceof LogEvent) {
                         eventList.add((LogEvent) object);
                     } else if (object instanceof List) {
                         drools4 = true;
