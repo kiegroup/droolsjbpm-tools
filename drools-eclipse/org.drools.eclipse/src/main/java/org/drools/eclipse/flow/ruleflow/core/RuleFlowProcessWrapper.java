@@ -59,7 +59,7 @@ public class RuleFlowProcessWrapper extends ProcessWrapper {
     }
     
     public boolean canAddElement(ElementWrapper element) {
-        if (element instanceof StartNodeWrapper && getRuleFlowProcess().getStart() != null) {
+        if (element instanceof StartNodeWrapper && getRuleFlowProcess().getStart(null) != null) {
             return false;
         }
         return true;
