@@ -158,7 +158,7 @@ public class GenerateBPMN2JUnitTests implements IObjectActionDelegate {
                         	}
                         	Map<String, String> cases = new HashMap<String, String>();
                         	Map<String, String> ongoingCases = new HashMap<String, String>();
-                        	boolean done = processNodes("", process.getStart(), "", cases, ongoingCases);
+                        	boolean done = processNodes("", process.getStart(null), "", cases, ongoingCases);
                         	if (!done) {
                         		if (ongoingCases.size() == 1) {
                         			cases.put("Implicit", ongoingCases.values().iterator().next());
