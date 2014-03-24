@@ -264,6 +264,21 @@
          sourceLocatorId="org.drools.eclipse.launching.DroolsSourceLookupDirector"
          sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer"
          modes="debug" />
+      <launchConfigurationType
+            delegate="org.drools.eclipse.launching.DroolsRemoteApplicationLaunchConfigurationDelegate"
+            id="org.drools.eclipse.launching.DroolsRemoteApplicationLaunchConfigurationDelegate"
+            modes="debug"
+            name="Remote Drools Application"
+            sourceLocatorId="org.drools.eclipse.launching.DroolsSourceLookupDirector"
+            sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer">
+      </launchConfigurationType>
+   </extension>
+   <extension
+         point="org.eclipse.jdt.launching.vmConnectors">
+      <vmConnector
+            class="org.drools.eclipse.launching.DroolsVMConnector"
+            id="org.drools.eclipse.launching.DroolsVMConnector">
+      </vmConnector>
    </extension>
 
    <extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
@@ -276,6 +291,11 @@
          icon="icons/drools.gif"
          configTypeID="org.drools.eclipse.launching.DroolsJUnitLaunchConfigurationDelegate"
          id="org.drools.eclipse.launching.DroolsJUnitLaunchConfigurationDelegate.Image">
+      </launchConfigurationTypeImage>
+      <launchConfigurationTypeImage
+            configTypeID="org.drools.eclipse.launching.DroolsRemoteApplicationLaunchConfigurationDelegate"
+            icon="icons/drools.gif"
+            id="org.drools.eclipse.launching.DroolsRemoteApplicationLaunchConfigurationDelegate.Image">
       </launchConfigurationTypeImage>
    </extension>
 
@@ -300,6 +320,16 @@
                   perspective="org.eclipse.debug.ui.DebugPerspective"
                   description="Debug a Drools JUnit Test">
             </launchMode>
+      </launchConfigurationTabGroup>
+      <launchConfigurationTabGroup
+            class="org.eclipse.jdt.internal.debug.ui.launcher.RemoteJavaApplicationTabGroup"
+            id="org.eclipse.jdt.debug.ui.launchConfigurationTabGroup.localJavaApplication"
+            type="org.drools.eclipse.launching.DroolsRemoteApplicationLaunchConfigurationDelegate">
+         <launchMode
+               description="Debug a Drools application"
+               mode="debug"
+               perspective="org.eclipse.debug.ui.DebugPerspective">
+         </launchMode>
       </launchConfigurationTabGroup>
    </extension>
    
