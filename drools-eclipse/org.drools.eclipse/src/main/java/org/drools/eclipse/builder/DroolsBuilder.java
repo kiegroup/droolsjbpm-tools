@@ -39,6 +39,8 @@ import org.drools.compiler.compiler.GlobalError;
 import org.drools.compiler.compiler.ImportError;
 import org.drools.compiler.compiler.ParserError;
 import org.drools.compiler.compiler.RuleBuildError;
+import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.compiler.lang.ExpanderException;
 import org.drools.decisiontable.InputType;
 import org.drools.decisiontable.SpreadsheetCompiler;
 import org.drools.eclipse.DRLInfo;
@@ -46,12 +48,10 @@ import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.ProcessInfo;
 import org.drools.eclipse.preferences.IDroolsConstants;
 import org.drools.eclipse.util.DroolsRuntimeManager;
+import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.eclipse.wizard.project.NewDroolsProjectWizard;
-import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.compiler.lang.ExpanderException;
 import org.drools.template.parser.DecisionTableParseException;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -62,10 +62,8 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
@@ -126,31 +124,39 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
     protected void fullBuild(IProgressMonitor monitor) throws CoreException {
         removeProblemsFor( getProject() );
         IJavaProject project = JavaCore.create( getProject() );
-        IClasspathEntry[] classpathEntries = project.getRawClasspath();
-        for ( int i = 0; i < classpathEntries.length; i++ ) {
-            if ( NewDroolsProjectWizard.DROOLS_CLASSPATH_CONTAINER_PATH.equals( classpathEntries[i].getPath().toString() ) ) {
-                String[] jars = DroolsRuntimeManager.getDroolsRuntimeJars( getProject() );
-                if ( jars == null || jars.length == 0 ) {
-                    String runtime = DroolsRuntimeManager.getDroolsRuntime( getProject() );
-                    IMarker marker = getProject().createMarker( IDroolsModelMarker.DROOLS_MODEL_PROBLEM_MARKER );
-                    if ( runtime == null ) {
-                        marker.setAttribute( IMarker.MESSAGE,
-                                             "Could not find default Drools runtime" );
-                    } else {
-                        marker.setAttribute( IMarker.MESSAGE,
-                                             "Could not find Drools runtime " + runtime );
+
+        ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader newLoader = ProjectClassLoader.getProjectClassLoader( project );
+        try {
+            Thread.currentThread().setContextClassLoader( newLoader );
+            IClasspathEntry[] classpathEntries = project.getRawClasspath();
+            for ( int i = 0; i < classpathEntries.length; i++ ) {
+                if ( NewDroolsProjectWizard.DROOLS_CLASSPATH_CONTAINER_PATH.equals( classpathEntries[i].getPath().toString() ) ) {
+                    String[] jars = DroolsRuntimeManager.getDroolsRuntimeJars( getProject() );
+                    if ( jars == null || jars.length == 0 ) {
+                        String runtime = DroolsRuntimeManager.getDroolsRuntime( getProject() );
+                        IMarker marker = getProject().createMarker( IDroolsModelMarker.DROOLS_MODEL_PROBLEM_MARKER );
+                        if ( runtime == null ) {
+                            marker.setAttribute( IMarker.MESSAGE,
+                                                 "Could not find default Drools runtime" );
+                        } else {
+                            marker.setAttribute( IMarker.MESSAGE,
+                                                 "Could not find Drools runtime " + runtime );
+                        }
+                        marker.setAttribute( IMarker.SEVERITY,
+                                             IMarker.SEVERITY_ERROR );
+                        return;
                     }
-                    marker.setAttribute( IMarker.SEVERITY,
-                                         IMarker.SEVERITY_ERROR );
-                    return;
                 }
             }
+    
+            isKieProject = false;
+            DroolsBuilderVisitor droolsBuilderVisitor = new DroolsBuilderVisitor();
+            getProject().accept( droolsBuilderVisitor );
+            droolsBuilderVisitor.build();
+        } finally {
+            Thread.currentThread().setContextClassLoader( oldLoader );
         }
-
-        isKieProject = false;
-        DroolsBuilderVisitor droolsBuilderVisitor = new DroolsBuilderVisitor();
-        getProject().accept( droolsBuilderVisitor );
-        droolsBuilderVisitor.build();
     }
 
     protected void incrementalBuild(IResourceDelta delta,
