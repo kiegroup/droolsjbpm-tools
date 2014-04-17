@@ -31,12 +31,12 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.DialectRuntimeRegistry;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.LineMappings;
-import org.drools.core.rule.Package;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.Rule;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.ObjectType;
 import org.eclipse.core.resources.IResource;
@@ -48,7 +48,7 @@ public class DRLInfo {
     private final String sourcePathName;
     private final PackageDescr packageDescr;
     private List<BaseKnowledgeBuilderResultImpl> parserErrors;
-    private Package compiledPackage;
+    private InternalKnowledgePackage compiledPackage;
     private DroolsError[] builderErrors;
     // cached entry
     private transient RuleInfo[] ruleInfos;
@@ -74,7 +74,7 @@ public class DRLInfo {
     public DRLInfo( String pathName, 
     				PackageDescr packageDescr, 
     				List<BaseKnowledgeBuilderResultImpl> parserErrors, 
-    				Package compiledPackage, 
+    				InternalKnowledgePackage compiledPackage, 
     				DroolsError[] builderErrors, 
     				DialectCompiletimeRegistry dialectRegistry ) {
         this(pathName, packageDescr, parserErrors, dialectRegistry);
@@ -102,7 +102,7 @@ public class DRLInfo {
     	parserErrors.add(error);
     }
 
-    public Package getPackage() {
+    public InternalKnowledgePackage getPackage() {
         return compiledPackage;
     }
 
@@ -163,7 +163,7 @@ public class DRLInfo {
     public static class RuleInfo {
 
         private final PackageDescr packageDescr;
-        private final Package compiledPackage;
+        private final InternalKnowledgePackage compiledPackage;
         private final RuleDescr ruleDescr;
         private final DialectCompiletimeRegistry dialectRegistry;
         private final String sourcePathName;
@@ -174,7 +174,7 @@ public class DRLInfo {
         private transient List<PatternInfo> patternInfos = null;
         private transient int endPatternsCharacter = -1;
 
-        public RuleInfo(PackageDescr packageDescr, Package compiledPackage, RuleDescr ruleDescr, DialectCompiletimeRegistry dialectRegistry, String sourcePathName) {
+        public RuleInfo(PackageDescr packageDescr, InternalKnowledgePackage compiledPackage, RuleDescr ruleDescr, DialectCompiletimeRegistry dialectRegistry, String sourcePathName) {
             if (ruleDescr == null) {
                 throw new IllegalArgumentException("Null ruleDescr");
             }
@@ -273,7 +273,7 @@ public class DRLInfo {
             return ruleDescr.getName();
         }
         
-        public Rule getRule() {
+        public RuleImpl getRule() {
         	return compiledPackage.getRule(getRuleName());
         }
         
@@ -374,7 +374,7 @@ public class DRLInfo {
     public static class FunctionInfo {
 
         private final PackageDescr packageDescr;
-        private final Package compiledPackage;
+        private final InternalKnowledgePackage compiledPackage;
         private final FunctionDescr functionDescr;
         private final String sourcePathName;
 
@@ -382,7 +382,7 @@ public class DRLInfo {
         private transient String className;
         private transient int javaLineNumber = -1;
 
-        public FunctionInfo(PackageDescr packageDescr, Package compiledPackage, FunctionDescr functionDescr, String sourcePathName) {
+        public FunctionInfo(PackageDescr packageDescr, InternalKnowledgePackage compiledPackage, FunctionDescr functionDescr, String sourcePathName) {
             if (functionDescr == null) {
                 throw new IllegalArgumentException("Null functionDescr");
             }

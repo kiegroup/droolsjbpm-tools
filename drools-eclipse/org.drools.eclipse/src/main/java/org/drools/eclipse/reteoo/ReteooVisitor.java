@@ -23,12 +23,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.common.BaseNode;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ReflectiveVisitor;
 import org.drools.eclipse.editors.rete.model.Connection;
@@ -76,7 +76,7 @@ public class ReteooVisitor extends ReflectiveVisitor {
     /**
      * RuleBaseImpl visits its Rete.
      */
-    public void visitReteooRuleBase(final ReteooRuleBase ruleBase) {
+    public void visitInternalKnowledgeBase(final InternalKnowledgeBase ruleBase) {
         visit( (ruleBase).getRete() );
     }
 

@@ -19,9 +19,9 @@ package org.drools.eclipse.flow.ruleflow.view.property.constraint;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.util.ArrayUtils;
 import org.drools.eclipse.editors.DRLSourceViewerConfig;
 import org.drools.eclipse.editors.scanners.DRLPartionScanner;
+import org.drools.eclipse.util.ArrayUtils;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;

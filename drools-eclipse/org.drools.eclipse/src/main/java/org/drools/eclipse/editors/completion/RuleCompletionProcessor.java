@@ -28,7 +28,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Matcher;
 
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.Location;
 import org.drools.compiler.lang.descr.GlobalDescr;
@@ -611,8 +611,8 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                                           "accumulate (  , init (  ), action (  ), result (  ) )",
                                                           13,
                                                           DROOLS_ICON ) );
-                    PackageBuilderConfiguration config = new PackageBuilderConfiguration( ProjectClassLoader.getProjectClassLoader( getEditor() ),
-                                                                                          null );
+                    KnowledgeBuilderConfigurationImpl config = new KnowledgeBuilderConfigurationImpl( ProjectClassLoader.getProjectClassLoader( getEditor() ),
+                                                                                                      null );
                     Map<String, String> accumulateFunctions = config.getAccumulateFunctionsMap();
                     for (String accumulateFunction : accumulateFunctions.keySet()) {
                         list.add( new RuleCompletionProposal( documentOffset - prefix.length(),

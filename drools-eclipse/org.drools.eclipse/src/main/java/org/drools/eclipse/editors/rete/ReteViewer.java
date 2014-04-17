@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.RuleBaseFactory;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.eclipse.DRLInfo;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.builder.DroolsBuilder;
@@ -31,9 +31,7 @@ import org.drools.eclipse.editors.rete.model.ReteGraph;
 import org.drools.eclipse.editors.rete.part.VertexEditPartFactory;
 import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.eclipse.reteoo.BaseVertex;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.eclipse.reteoo.ReteooVisitor;
-import org.drools.core.rule.Package;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.draw2d.ColorConstants;
@@ -58,6 +56,8 @@ import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.swt.SWT;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
 
 /**
  * GEF-based RETE Viewer
@@ -131,7 +131,7 @@ public class ReteViewer extends GraphicalEditor {
                                100 );
 
             monitor.subTask( "Loading Rule Base" );
-            ReteooRuleBase ruleBase = null;
+            InternalKnowledgeBase ruleBase = null;
             try {
                 IResource resource = drlEditor.getResource();
                 ClassLoader newLoader = DroolsBuilder.class.getClassLoader();
@@ -150,10 +150,10 @@ public class ReteViewer extends GraphicalEditor {
                     throw new Exception( drlInfo.getParserErrors().size() + " parser errors" );
                 }
 
-                Package pkg = drlInfo.getPackage();
+                InternalKnowledgePackage pkg = drlInfo.getPackage();
                 RuleBaseConfiguration config = new RuleBaseConfiguration();
                 config.setClassLoader(newLoader);
-                ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase(RuleBase.RETEOO, config);
+                ruleBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(config);
                 if (pkg != null) {
                     ruleBase.addPackage(pkg);
                 }
@@ -169,7 +169,7 @@ public class ReteViewer extends GraphicalEditor {
 
             monitor.subTask( "Building RETE Tree" );
             final ReteooVisitor visitor = new ReteooVisitor( newDiagram );
-            visitor.visitReteooRuleBase( ruleBase );
+            visitor.visitInternalKnowledgeBase( ruleBase );
             monitor.worked( 30 );
             if ( monitor.isCanceled() ) {
                 throw new InterruptedException();

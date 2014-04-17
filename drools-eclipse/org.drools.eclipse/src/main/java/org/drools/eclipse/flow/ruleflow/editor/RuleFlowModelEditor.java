@@ -27,7 +27,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.WorkItemDefinitions;
 import org.drools.eclipse.flow.common.editor.GenericModelEditor;
@@ -58,6 +58,7 @@ import org.jbpm.compiler.xml.XmlRuleFlowProcessDumper;
 import org.jbpm.compiler.xml.processes.RuleFlowMigrator;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.kie.api.definition.process.Process;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 
 /**
  * Graphical editor for a RuleFlow.
@@ -185,7 +186,7 @@ public class RuleFlowModelEditor extends GenericModelEditor {
         try
         {
             InputStreamReader isr = new InputStreamReader(is);
-            PackageBuilderConfiguration configuration = new PackageBuilderConfiguration();
+            KnowledgeBuilderConfigurationImpl configuration = new KnowledgeBuilderConfigurationImpl();
             SemanticModules modules = configuration.getSemanticModules();
             modules.addSemanticModule(new ProcessSemanticModule());
             XmlProcessReader xmlReader = new XmlProcessReader( modules, Thread.currentThread().getContextClassLoader() );

@@ -140,10 +140,9 @@ public class DefaultCompletionProcessor extends AbstractCompletionProcessor {
 
     private Map<String, String> extractParams(String params) {
         Map<String, String> result = new HashMap<String, String>();
-        String[] parameters = StringUtils.split( params,
-                                                 "," );
+        String[] parameters = params.split( "," );
         for ( int i = 0; i < parameters.length; i++ ) {
-            String[] typeAndName = StringUtils.split( parameters[i] );
+            String[] typeAndName = parameters[i].split( " " );
             if ( typeAndName.length == 2 ) {
                 result.put( typeAndName[1],
                             typeAndName[0] );

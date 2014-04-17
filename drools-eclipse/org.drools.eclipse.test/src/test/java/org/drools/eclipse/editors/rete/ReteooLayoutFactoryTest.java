@@ -25,14 +25,14 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.junit.Test;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.definition.KnowledgePackage;
+
 import static org.junit.Assert.*;
 
-import org.drools.core.PackageIntegrationException;
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.eclipse.editors.rete.model.ReteGraph;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.eclipse.reteoo.AlphaNodeVertex;
@@ -41,10 +41,10 @@ import org.drools.eclipse.reteoo.EntryPointNodeVertex;
 import org.drools.eclipse.reteoo.LeftInputAdapterNodeVertex;
 import org.drools.eclipse.reteoo.ObjectTypeNodeVertex;
 import org.drools.eclipse.reteoo.ReteVertex;
-import org.drools.core.reteoo.ReteooRuleBase;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.eclipse.reteoo.ReteooVisitor;
 import org.drools.eclipse.reteoo.RuleTerminalNodeVertex;
-import org.drools.core.rule.Package;
 
 /**
  * 
@@ -69,7 +69,6 @@ public class ReteooLayoutFactoryTest {
      */
     @Test
     public void testCalculateReteRows() throws IOException,
-                                             PackageIntegrationException,
                                              DroolsParserException {
         ReteGraph graph = new ReteGraph();
         BaseVertex root = loadRete( graph );
@@ -105,7 +104,6 @@ public class ReteooLayoutFactoryTest {
      */
     @Test
     public void testLayoutRowList() throws IOException,
-                                         PackageIntegrationException,
                                          DroolsParserException {
         ReteGraph graph = new ReteGraph();
         BaseVertex root = loadRete( graph );
@@ -160,17 +158,16 @@ public class ReteooLayoutFactoryTest {
     }
 
     private BaseVertex loadRete(ReteGraph graph) throws IOException,
-                                                PackageIntegrationException,
                                                 DroolsParserException {
         final InputStream is = getClass().getClassLoader().getResourceAsStream( "simplerule.drl" );
         String drl = streamToString( is );
 
         DrlParser parser = new DrlParser();
         PackageDescr packageDescr = parser.parse(null, drl);
-        PackageBuilder builder = new PackageBuilder();
+        KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
         builder.addPackage(packageDescr);
-        Package pkg = builder.getPackage();
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase(RuleBase.RETEOO);
+        InternalKnowledgePackage pkg = builder.getPackage();
+        KnowledgeBaseImpl ruleBase = (KnowledgeBaseImpl) KnowledgeBaseFactory.newKnowledgeBase();
         ruleBase.addPackage(pkg);
 
         final ReteooVisitor visitor = new ReteooVisitor( graph );

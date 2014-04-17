@@ -25,16 +25,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.StatefulSession;
 import org.drools.core.base.MapGlobalResolver;
-import org.drools.core.common.AbstractWorkingMemory;
-import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.core.common.InternalAgenda;
+import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.spi.AgendaGroup;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.rule.Match;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 /**
  *
@@ -53,16 +54,16 @@ public class DebugViewsTest {
     @Test
     public void testApplicationDataView() throws Exception {
         Reader source = new InputStreamReader(DebugViewsTest.class.getResourceAsStream("/debug.drl"));
-        PackageBuilder builder = new PackageBuilder();
+        KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
         builder.addPackageFromDrl(source);
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        KnowledgeBaseImpl ruleBase = (KnowledgeBaseImpl) KnowledgeBaseFactory.newKnowledgeBase();
         ruleBase.addPackage(builder.getPackage());
-        StatefulSession session = ruleBase.newStatefulSession();
+        StatefulKnowledgeSession session = ruleBase.newStatefulKnowledgeSession();
         session.setGlobal("s", "String");
         List list = new ArrayList();
         list.add("Value");
         session.setGlobal("list", list);
-        Entry[] globals = ((MapGlobalResolver) session.getGlobalResolver()).getGlobals();
+        Entry[] globals = ((MapGlobalResolver) session.getGlobals()).getGlobals();
         assertEquals(2, globals.length);
         if ("list".equals(globals[0].getKey())) {
             assertEquals("list", globals[0].getKey());
@@ -86,24 +87,24 @@ public class DebugViewsTest {
     @Test @Ignore
     public void testAgendaView() throws Exception {
         Reader source = new InputStreamReader(DebugViewsTest.class.getResourceAsStream("/debug.drl"));
-        PackageBuilder builder = new PackageBuilder();
+        KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
         builder.addPackageFromDrl(source);
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        KnowledgeBaseImpl ruleBase = (KnowledgeBaseImpl) KnowledgeBaseFactory.newKnowledgeBase();
         ruleBase.addPackage(builder.getPackage());
-        AbstractWorkingMemory session = (AbstractWorkingMemory) ruleBase.newStatefulSession();
+        StatefulKnowledgeSession session = ruleBase.newStatefulSession();
         List list = new ArrayList();
         session.setGlobal("list", list);
         session.insert("String1");
-        String focusName = session.getAgenda().getFocusName();
+        String focusName = ((InternalAgenda)session.getAgenda()).getFocusName();
         assertEquals("MAIN", focusName);
-        AgendaGroup[] agendaGroups = session.getAgenda().getAgendaGroups();
+        AgendaGroup[] agendaGroups = ((InternalAgenda)session.getAgenda()).getAgendaGroups();
         assertEquals(1, agendaGroups.length);
         assertEquals("MAIN", agendaGroups[0].getName());
         assertEquals(1, agendaGroups[0].getActivations().length);
 
         Match activation = agendaGroups[0].getActivations()[0];
         assertEquals("ActivationCreator", activation.getRule().getName());
-        Entry[] parameters = session.getActivationParameters(
+        Entry[] parameters = ((StatefulKnowledgeSessionImpl)session).getActivationParameters(
             ((org.drools.core.spi.Activation) activation).getActivationNumber());
         assertEquals(1, parameters.length);
         assertEquals("o", parameters[0].getKey());
@@ -118,11 +119,11 @@ public class DebugViewsTest {
     
     @Test
     public void testWorkingMemoryView() throws Exception {
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        AbstractWorkingMemory session = (AbstractWorkingMemory) ruleBase.newStatefulSession();
+    	KnowledgeBaseImpl ruleBase = (KnowledgeBaseImpl) KnowledgeBaseFactory.newKnowledgeBase();
+    	StatefulKnowledgeSession session = ruleBase.newStatefulSession();
         session.insert("Test1");
         session.insert("Test2");
-        Object[] objects = session.iterateObjectsToList().toArray();
+        Object[] objects = ((StatefulKnowledgeSessionImpl)session).iterateObjectsToList().toArray();
         assertEquals(2, objects.length);
         assertTrue(("Test1".equals(objects[0]) && "Test2".equals(objects[1])) ||
                    ("Test2".equals(objects[0]) && "Test1".equals(objects[1])));

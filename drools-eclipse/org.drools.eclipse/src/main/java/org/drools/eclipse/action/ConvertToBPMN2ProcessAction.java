@@ -7,8 +7,8 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.List;
 
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.eclipse.DroolsEclipsePlugin;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.core.xml.SemanticModules;
 import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.resources.IFile;
@@ -66,7 +66,7 @@ public class ConvertToBPMN2ProcessAction implements IObjectActionDelegate {
     public void convertToBPMN2() {
         try {
             InputStreamReader isr = new InputStreamReader(((File) file).getContents());
-            PackageBuilderConfiguration configuration = new PackageBuilderConfiguration();
+            KnowledgeBuilderConfigurationImpl configuration = new KnowledgeBuilderConfigurationImpl();
             SemanticModules modules = configuration.getSemanticModules();
             modules.addSemanticModule(new ProcessSemanticModule());
             XmlProcessReader xmlReader = new XmlProcessReader( modules, Thread.currentThread().getContextClassLoader() );

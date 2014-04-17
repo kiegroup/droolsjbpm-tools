@@ -29,13 +29,13 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.util.StringUtils;
 import org.drools.eclipse.DRLInfo.FunctionInfo;
 import org.drools.eclipse.DRLInfo.RuleInfo;
@@ -56,7 +56,6 @@ import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
-import org.drools.core.rule.Package;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.template.parser.DecisionTableParseException;
 import org.drools.core.xml.SemanticModules;
@@ -89,6 +88,7 @@ import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.node.RuleSetNode;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.api.definition.process.Node;
@@ -314,9 +314,9 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
         	Map<Resource, ResourceDescr> resourceMap = new HashMap<Resource, ResourceDescr>();
         	KnowledgeBuilder kbuilder = compositeBuild(resources, resourceMap);
 
-            PackageBuilder packageBuilder = ((KnowledgeBuilderImpl)kbuilder).getPackageBuilder();
-            Map<IResource, DRLInfo> infoMap = collectDRLInfo(resourceMap, packageBuilder);
-    		collectErrors(resourceMap, kbuilder, packageBuilder, infoMap);
+        	KnowledgeBuilderImpl kBuilder = ((KnowledgeBuilderImpl)kbuilder);
+            Map<IResource, DRLInfo> infoMap = collectDRLInfo(resourceMap, kBuilder);
+    		collectErrors(resourceMap, kbuilder, kBuilder, infoMap);
     		
     		for (DRLInfo drlInfo : infoMap.values()) {
                 for ( RuleInfo ruleInfo : drlInfo.getRuleInfos() ) {
@@ -356,10 +356,10 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 	}
 
 	private Map<IResource, DRLInfo> collectDRLInfo( Map<Resource, ResourceDescr> resourceMap,
-													PackageBuilder packageBuilder) {
+			                                        KnowledgeBuilderImpl kBuilder) {
 		Map<IResource, DRLInfo> infoMap = new HashMap<IResource, DRLInfo>();
 
-		for (Map.Entry<Resource, PackageDescr> entry : groupPackageDescrByResource(packageBuilder).entrySet()) {
+		for (Map.Entry<Resource, PackageDescr> entry : groupPackageDescrByResource(kBuilder).entrySet()) {
 			ResourceDescr resourceDescr = resourceMap.get(entry.getKey());
 			if (resourceDescr == null) {
 				continue;
@@ -369,9 +369,9 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 			DRLInfo info = new DRLInfo( resourceDescr.getSourcePathName(),
 		            packageDescr,
 		            new ArrayList<BaseKnowledgeBuilderResultImpl>(),
-		            packageBuilder.getPackageRegistry(packageDescr.getNamespace()).getPackage(),
+		            kBuilder.getPackageRegistry(packageDescr.getNamespace()).getPackage(),
 		            new DroolsError[0],
-		            packageBuilder.getPackageRegistry( packageDescr.getNamespace() ).getDialectCompiletimeRegistry() );
+		            kBuilder.getPackageRegistry( packageDescr.getNamespace() ).getDialectCompiletimeRegistry() );
 
 			info.setResource(resourceDescr.getResource());
 			infoMap.put(resourceDescr.getResource(), info);
@@ -381,7 +381,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 
 	private void collectErrors( Map<Resource, ResourceDescr> resourceMap, 
 								KnowledgeBuilder kbuilder, 
-								PackageBuilder packageBuilder,
+								KnowledgeBuilderImpl kBuilder,
 								Map<IResource, DRLInfo> infoMap) {
 		for (KnowledgeBuilderError error : (Collection<KnowledgeBuilderError>)kbuilder.getErrors()) {
 			if (!(error instanceof DroolsError)) {
@@ -395,7 +395,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 			
 			final DroolsError droolsError = (DroolsError)error;
 			String pkgName = droolsError.getNamespace();
-			List<PackageDescr> packageDescrs = packageBuilder.getPackageDescrs(pkgName);
+			List<PackageDescr> packageDescrs = kBuilder.getPackageDescrs(pkgName);
 			if (packageDescrs == null || packageDescrs.isEmpty()) {
 				continue;
 			}
@@ -408,7 +408,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 		                new ArrayList<BaseKnowledgeBuilderResultImpl>() {{
 		                	add(droolsError);
 		                }},
-		                packageBuilder.getPackageRegistry( packageDescr.getNamespace() ).getDialectCompiletimeRegistry() );
+		                kBuilder.getPackageRegistry( packageDescr.getNamespace() ).getDialectCompiletimeRegistry() );
 				info.setResource(resourceDescr.getResource());
 				infoMap.put(resourceDescr.getResource(), info);
 			} else {
@@ -417,10 +417,10 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 		}
 	}
     
-    private Map<Resource, PackageDescr> groupPackageDescrByResource(PackageBuilder packageBuilder) {
+    private Map<Resource, PackageDescr> groupPackageDescrByResource(KnowledgeBuilderImpl kBuilder) {
     	Map<Resource, PackageDescr> map = new HashMap<Resource, PackageDescr>();
-    	for (String pkgName : packageBuilder.getPackageNames()) {
-    		for (PackageDescr pkgDescr : packageBuilder.getPackageDescrs(pkgName)) {
+    	for (String pkgName : kBuilder.getPackageNames()) {
+    		for (PackageDescr pkgDescr : kBuilder.getPackageDescrs(pkgName)) {
     			for (ImportDescr importDescr : pkgDescr.getImports()) {
     				getPkgDescr(map, importDescr, pkgName).addImport(importDescr);
     			}
@@ -461,7 +461,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 		return resourceDescr;
     }
     
-    private PackageBuilderConfiguration getBuilderConfiguration(List<ResourceDescr> resources) throws CoreException {
+    private KnowledgeBuilderConfiguration getBuilderConfiguration(List<ResourceDescr> resources) throws CoreException {
         ClassLoader newLoader = DroolsBuilder.class.getClassLoader();
         IResource firstResource = resources.get(0).getResource();
         String level = null;
@@ -472,7 +472,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
         }
 
         Thread.currentThread().setContextClassLoader( newLoader );
-        PackageBuilderConfiguration builderConfiguration = new PackageBuilderConfiguration();
+        KnowledgeBuilderConfigurationImpl builderConfiguration = new KnowledgeBuilderConfigurationImpl();
         if ( level != null ) {
             JavaDialectConfiguration javaConf = (JavaDialectConfiguration) builderConfiguration.getDialectConfiguration( "java" );
             javaConf.setJavaLanguageLevel( level );
@@ -609,7 +609,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
             }
             try {
                 Thread.currentThread().setContextClassLoader( newLoader );
-                PackageBuilderConfiguration builder_configuration = new PackageBuilderConfiguration(newLoader);
+                KnowledgeBuilderConfigurationImpl builder_configuration = new KnowledgeBuilderConfigurationImpl(newLoader);
                 if ( level != null ) {
                     JavaDialectConfiguration javaConf = (JavaDialectConfiguration) builder_configuration.getDialectConfiguration( "java" );
                     javaConf.setJavaLanguageLevel( level );
@@ -637,7 +637,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                     parserErrors = new ArrayList<BaseKnowledgeBuilderResultImpl>();
                     parserErrors.addAll(parser.getErrors());
                 }
-                PackageBuilder builder = new PackageBuilder( builder_configuration );
+                KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl( builder_configuration );
                 DRLInfo result = null;
                 // compile parsed rules if necessary
                 if ( packageDescr != null && compile && !parser.hasErrors()) {
@@ -661,7 +661,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                                         
                     // make sure the namespace is set, use default if necessary, as this is used to build the DRLInfo
                     if ( StringUtils.isEmpty( packageDescr.getNamespace() ) ) {
-                        packageDescr.setNamespace( builder.getPackageBuilderConfiguration().getDefaultPackageName() );
+                        packageDescr.setNamespace( builder.getBuilderConfiguration().getDefaultPackageName() );
                     }
                     
                     result = new DRLInfo( resource == null ? "" : resource.getProjectRelativePath().toString(),
@@ -674,7 +674,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                     result = new DRLInfo( resource == null ? "" : resource.getProjectRelativePath().toString(),
                                           packageDescr,
                                           parserErrors,
-                                          new PackageRegistry(builder, new Package("")).getDialectCompiletimeRegistry() );
+                                          new PackageRegistry(newLoader, builder.getBuilderConfiguration(), new KnowledgePackageImpl("")).getDialectCompiletimeRegistry() );
                 }
 
                 // cache result
@@ -730,7 +730,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
             }
             try {
                 Thread.currentThread().setContextClassLoader( newLoader );
-                PackageBuilderConfiguration configuration = new PackageBuilderConfiguration();
+                KnowledgeBuilderConfigurationImpl configuration = new KnowledgeBuilderConfigurationImpl();
                 if ( level != null ) {
                     JavaDialectConfiguration javaConf = (JavaDialectConfiguration) configuration.getDialectConfiguration( "java" );
                     javaConf.setJavaLanguageLevel( level );
@@ -801,8 +801,8 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 
     public ProcessInfo parseProcess(Process process,
                                     IResource resource,
-                                    PackageBuilderConfiguration config) {
-        PackageBuilder packageBuilder = new PackageBuilder( config );
+                                    KnowledgeBuilderConfigurationImpl config) {
+    	KnowledgeBuilderImpl packageBuilder = new KnowledgeBuilderImpl( config );
         ProcessBuilderImpl processBuilder = new ProcessBuilderImpl( packageBuilder );
         processBuilder.buildProcess( process, ResourceFactory.newUrlResource(
             "file://" + resource.getLocation().toString() ) );

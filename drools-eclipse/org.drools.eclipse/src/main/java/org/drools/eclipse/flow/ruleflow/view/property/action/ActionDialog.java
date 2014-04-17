@@ -19,12 +19,12 @@ package org.drools.eclipse.flow.ruleflow.view.property.action;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.util.ArrayUtils;
 import org.drools.eclipse.editors.DRLSourceViewerConfig;
 import org.drools.eclipse.editors.scanners.DRLPartionScanner;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
 import org.drools.eclipse.flow.ruleflow.view.property.constraint.RuleFlowGlobalsDialog;
 import org.drools.eclipse.flow.ruleflow.view.property.constraint.RuleFlowImportsDialog;
+import org.drools.eclipse.util.ArrayUtils;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;

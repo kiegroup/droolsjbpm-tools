@@ -39,8 +39,7 @@ public class ReteooLayoutFactory {
      * @return Optimally layouted rows from provided graph
      */
     public static RowList calculateReteRows(BaseVertex root) {
-        RowList rowList;
-        rowList = new RowList();
+        RowList rowList = new RowList();
 
         rowList.add( 0,
                      root );

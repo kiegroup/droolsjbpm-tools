@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.Process;
@@ -80,7 +80,7 @@ public class GenerateForms implements IObjectActionDelegate {
                 return;
             }
             InputStreamReader isr = new InputStreamReader(((File) file).getContents());
-            PackageBuilderConfiguration configuration = new PackageBuilderConfiguration();
+            KnowledgeBuilderConfigurationImpl configuration = new KnowledgeBuilderConfigurationImpl();
             SemanticModules modules = configuration.getSemanticModules();
             modules.addSemanticModule(new BPMNSemanticModule());
             modules.addSemanticModule(new BPMNDISemanticModule());
