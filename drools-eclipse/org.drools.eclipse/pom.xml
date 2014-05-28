@@ -62,7 +62,6 @@
           </execution>
         </executions>
       </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -108,6 +107,17 @@
                 protobuf-java
               </includeArtifactIds>
             </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- enforce-plugin-version disabled because of tycho-plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-plugin-versions</id>
+            <phase>none</phase>
           </execution>
         </executions>
       </plugin>

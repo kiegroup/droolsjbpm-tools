@@ -22,7 +22,7 @@
   </description>
   
   <properties>
-    <version.org.eclipse.tycho>0.16.0</version.org.eclipse.tycho>
+    <version.org.eclipse.tycho>0.20.0</version.org.eclipse.tycho>
   </properties>
 
   <modules>
@@ -161,6 +161,17 @@
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-versions-plugin</artifactId>
         <version>${version.org.eclipse.tycho}</version>
+      </plugin>
+      <!-- enforce-plugin-version disabled because of tycho-plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-plugin-versions</id>
+            <phase>none</phase>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
