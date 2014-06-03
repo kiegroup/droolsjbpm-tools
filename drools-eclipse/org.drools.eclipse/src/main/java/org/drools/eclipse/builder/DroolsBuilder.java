@@ -46,6 +46,7 @@ import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.ProcessInfo;
 import org.drools.eclipse.preferences.IDroolsConstants;
 import org.drools.eclipse.util.DroolsRuntimeManager;
+import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.eclipse.wizard.project.NewDroolsProjectWizard;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.compiler.lang.ExpanderException;
@@ -126,31 +127,39 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
     protected void fullBuild(IProgressMonitor monitor) throws CoreException {
         removeProblemsFor( getProject() );
         IJavaProject project = JavaCore.create( getProject() );
-        IClasspathEntry[] classpathEntries = project.getRawClasspath();
-        for ( int i = 0; i < classpathEntries.length; i++ ) {
-            if ( NewDroolsProjectWizard.DROOLS_CLASSPATH_CONTAINER_PATH.equals( classpathEntries[i].getPath().toString() ) ) {
-                String[] jars = DroolsRuntimeManager.getDroolsRuntimeJars( getProject() );
-                if ( jars == null || jars.length == 0 ) {
-                    String runtime = DroolsRuntimeManager.getDroolsRuntime( getProject() );
-                    IMarker marker = getProject().createMarker( IDroolsModelMarker.DROOLS_MODEL_PROBLEM_MARKER );
-                    if ( runtime == null ) {
-                        marker.setAttribute( IMarker.MESSAGE,
-                                             "Could not find default Drools runtime" );
-                    } else {
-                        marker.setAttribute( IMarker.MESSAGE,
-                                             "Could not find Drools runtime " + runtime );
+
+        ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader newLoader = ProjectClassLoader.getProjectClassLoader( project );
+        try {
+            Thread.currentThread().setContextClassLoader( newLoader );
+            IClasspathEntry[] classpathEntries = project.getRawClasspath();
+            for ( int i = 0; i < classpathEntries.length; i++ ) {
+                if ( NewDroolsProjectWizard.DROOLS_CLASSPATH_CONTAINER_PATH.equals( classpathEntries[i].getPath().toString() ) ) {
+                    String[] jars = DroolsRuntimeManager.getDroolsRuntimeJars( getProject() );
+                    if ( jars == null || jars.length == 0 ) {
+                        String runtime = DroolsRuntimeManager.getDroolsRuntime( getProject() );
+                        IMarker marker = getProject().createMarker( IDroolsModelMarker.DROOLS_MODEL_PROBLEM_MARKER );
+                        if ( runtime == null ) {
+                            marker.setAttribute( IMarker.MESSAGE,
+                                                 "Could not find default Drools runtime" );
+                        } else {
+                            marker.setAttribute( IMarker.MESSAGE,
+                                                 "Could not find Drools runtime " + runtime );
+                        }
+                        marker.setAttribute( IMarker.SEVERITY,
+                                             IMarker.SEVERITY_ERROR );
+                        return;
                     }
-                    marker.setAttribute( IMarker.SEVERITY,
-                                         IMarker.SEVERITY_ERROR );
-                    return;
                 }
             }
+    
+            isKieProject = false;
+            DroolsBuilderVisitor droolsBuilderVisitor = new DroolsBuilderVisitor();
+            getProject().accept( droolsBuilderVisitor );
+            droolsBuilderVisitor.build();
+        } finally {
+            Thread.currentThread().setContextClassLoader( oldLoader );
         }
-
-        isKieProject = false;
-        DroolsBuilderVisitor droolsBuilderVisitor = new DroolsBuilderVisitor();
-        getProject().accept( droolsBuilderVisitor );
-        droolsBuilderVisitor.build();
     }
 
     protected void incrementalBuild(IResourceDelta delta,
@@ -220,7 +229,8 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         		if (resource == null) {
         			resource = resourcesMap.get("src/main/resources/" + message.getPath());
         		}
-        		if (resource != null) {
+        		// avoid to add markers for java compilation issues since they are already reported by the java compiler
+        		if (resource != null && !resource.getName().endsWith(".java")) {
         			createMarker(resource, message.getText(), message.getLine());
         		}
         	}
