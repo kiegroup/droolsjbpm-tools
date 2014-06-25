@@ -47,7 +47,9 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
         try {
             Object[] variables = null;
             if (obj != null && obj instanceof IJavaObject
-                    && ("org.drools.core.common.AbstractWorkingMemory".equals(
+                    && ("org.drools.core.impl.StatefulKnowledgeSessionImpl".equals(
+                    		((IJavaObject) obj).getReferenceTypeName()) ||
+                		"org.drools.core.common.AbstractWorkingMemory".equals(
                     		((IJavaObject) obj).getReferenceTypeName()) ||
                         "org.drools.core.reteoo.ReteooStatefulSession".equals(
                             ((IJavaObject) obj).getReferenceTypeName()) ||
