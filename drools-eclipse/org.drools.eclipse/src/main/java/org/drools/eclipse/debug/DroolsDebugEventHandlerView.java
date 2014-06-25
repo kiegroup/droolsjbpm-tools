@@ -97,6 +97,8 @@ public abstract class DroolsDebugEventHandlerView extends AbstractDebugView impl
                         IJavaFieldVariable sessionVar = ((IJavaObject) value).getField("session", false);
                         if (sessionVar != null) {
                             input = sessionVar.getValue();
+                        } else {
+                        	input = variable.getValue();
                         }
                     }
                 }
