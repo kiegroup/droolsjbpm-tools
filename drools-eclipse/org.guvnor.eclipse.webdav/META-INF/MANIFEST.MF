@@ -2,17 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.guvnor.eclipse.webdav
-Bundle-Version: 6.1.0.qualifier
+Bundle-Version: 6.1.0.CR2
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Export-Package: org.eclipse.webdav,
- org.eclipse.webdav.client,
- org.eclipse.webdav.dom,
- org.eclipse.webdav.http.client,
- org.eclipse.webdav.internal.authentication;x-internal:=true,
- org.eclipse.webdav.internal.kernel;x-internal:=true,
- org.eclipse.webdav.internal.kernel.utils;x-internal:=true,
- org.eclipse.webdav.internal.utils;x-internal:=true
+Export-Package: org.eclipse.webdav,org.eclipse.webdav.client,org.eclip
+ se.webdav.dom,org.eclipse.webdav.http.client,org.eclipse.webdav.inter
+ nal.authentication;x-internal:=true,org.eclipse.webdav.internal.kerne
+ l;x-internal:=true,org.eclipse.webdav.internal.kernel.utils;x-interna
+ l:=true,org.eclipse.webdav.internal.utils;x-internal:=true
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: javax.xml.parsers,
  javax.xml.transform,
