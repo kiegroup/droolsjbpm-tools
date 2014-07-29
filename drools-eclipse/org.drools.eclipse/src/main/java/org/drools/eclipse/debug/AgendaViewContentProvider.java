@@ -80,15 +80,25 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
     
     private Object[] getAgendaElements(IJavaObject workingMemoryImpl) throws DebugException {
         List<MyVariableWrapper> result = new ArrayList<MyVariableWrapper>();
-        IValue agendaGroupObjects = DebugUtil.getValueByExpression("return getAgenda().getAgendaGroups();", workingMemoryImpl);
-        IValue focus = null;
+        IValue agendaGroupObjects = null;
         try {
-            // Drools 4 code
-        	focus = DebugUtil.getValueByExpression("return getAgenda().getFocus();", workingMemoryImpl);
+        	agendaGroupObjects = DebugUtil.getValueByExpression("return ((org.drools.core.common.InternalAgenda) getAgenda()).getAgendaGroups();", workingMemoryImpl);
         } catch (RuntimeException e) {
-        	// Drools 5 code
-            focus = DebugUtil.getValueByExpression("return getAgenda().getFocusName();", workingMemoryImpl);
+        	// backwards compabitibility
+        	agendaGroupObjects = DebugUtil.getValueByExpression("return getAgenda().getAgendaGroups();", workingMemoryImpl);
         }
+        IValue focus = null;
+    	try {
+    		focus = DebugUtil.getValueByExpression("return ((org.drools.core.common.InternalAgenda) getAgenda()).getFocusName();", workingMemoryImpl);
+    	} catch (RuntimeException e) {
+    		try {
+	            // Drools 4 code
+	        	focus = DebugUtil.getValueByExpression("return getAgenda().getFocus();", workingMemoryImpl);
+	        } catch (RuntimeException e2) {
+	    		// Drools 5 code
+	            focus = DebugUtil.getValueByExpression("return getAgenda().getFocusName();", workingMemoryImpl);
+	        }
+    	}
         if (agendaGroupObjects instanceof IJavaArray) {
             IJavaArray agendaGroupArray = (IJavaArray) agendaGroupObjects;
             IJavaValue[] agendaGroupValueArray = agendaGroupArray.getValues();
