@@ -2,7 +2,7 @@
 <feature
       id="org.jbpm.eclipse.feature"
       label="JBoss jBPM Core"
-      version="6.2.0.qualifier"
+      version="6.2.0.Beta3"
       provider-name="JBoss by Red Hat">
 
    <description url="http://www.jboss.org/jbpm/">
@@ -49,7 +49,7 @@ Raleigh NC 27606 USA.
          id="org.jbpm.eclipse"
          download-size="0"
          install-size="0"
-         version="6.2.0.qualifier"
+         version="6.2.0.Beta3"
          unpack="false"/>
 
 </feature>
