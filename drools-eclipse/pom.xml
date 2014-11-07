@@ -23,6 +23,9 @@
   
   <properties>
     <version.org.eclipse.tycho>0.20.0</version.org.eclipse.tycho>
+    <!-- disabling javadoc as it seems to interfere with source generation:
+         http://dev.eclipse.org/mhonarc/lists/tycho-user/msg04453.html -->
+    <maven.javadoc.skip>true</maven.javadoc.skip>
   </properties>
 
   <modules>
