@@ -15,6 +15,10 @@
   <name>Drools :: Eclipse :: Base</name>
   <description>Drools Eclipse plugin</description>
 
+  <properties>
+    <illegaltransitivereportonly>true</illegaltransitivereportonly>
+  </properties>
+
   <build>
     <plugins>
       <plugin>

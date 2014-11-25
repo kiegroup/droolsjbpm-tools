@@ -16,6 +16,10 @@
   <description>Drools Eclipse plugin test</description>
   <!-- maven-enforcer-plugin disabled because build fails when having enforce-plugin-versions rule enabled
   this has to be fixed, since kie-eap-integration has a lot of different hard coded versions -->
+  <properties>
+    <illegaltransitivereportonly>true</illegaltransitivereportonly>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
