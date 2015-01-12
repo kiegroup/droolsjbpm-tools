@@ -22,7 +22,6 @@
   </description>
   
   <properties>
-    <version.org.eclipse.tycho>0.21.0</version.org.eclipse.tycho>
     <!-- disabling javadoc as it seems to interfere with source generation:
          http://dev.eclipse.org/mhonarc/lists/tycho-user/msg04453.html -->
     <maven.javadoc.skip>true</maven.javadoc.skip>
@@ -47,13 +46,11 @@
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-maven-plugin</artifactId>
-        <version>${version.org.eclipse.tycho}</version>
         <extensions>true</extensions>
       </plugin>
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>target-platform-configuration</artifactId>
-        <version>${version.org.eclipse.tycho}</version>
         <configuration>
         <resolver>p2</resolver>
         <ignoreTychoRepositories>true</ignoreTychoRepositories>
@@ -106,12 +103,10 @@
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-surefire-plugin</artifactId>
-        <version>${version.org.eclipse.tycho}</version>
       </plugin>
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-packaging-plugin</artifactId>
-        <version>${version.org.eclipse.tycho}</version>
         <configuration>
           <archiveSite>true</archiveSite>
           <environments>
@@ -151,7 +146,6 @@
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-source-plugin</artifactId>
-        <version>${version.org.eclipse.tycho}</version>
         <executions>
           <execution>
             <goals>
@@ -163,12 +157,10 @@
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-versions-plugin</artifactId>
-        <version>${version.org.eclipse.tycho}</version>
       </plugin>
       <plugin>
         <groupId>org.eclipse.tycho.extras</groupId>
         <artifactId>tycho-source-feature-plugin</artifactId>
-        <version>${version.org.eclipse.tycho}</version>
         <executions>
           <execution>
             <id>source-feature</id>
@@ -182,7 +174,6 @@
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-p2-plugin</artifactId>
-        <version>${version.org.eclipse.tycho}</version>
         <executions>
           <execution>
             <id>attached-p2-metadata</id>
