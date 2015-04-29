@@ -80,7 +80,7 @@ public class ReteooLayoutFactoryTest {
                       rownum );
 
         int[] expectedDepths = new int[]{-1, 0, 1, 2, 3, 4};
-        int[] expectedSizes = new int[]{1, 1, 1, 2, 2, 2};
+        int[] expectedSizes = new int[]{1, 1, 2, 2, 2, 2};
 
         for ( int j = 0; j < rownum; j++ ) {
             final Row row = rows.get( j );
@@ -129,8 +129,8 @@ public class ReteooLayoutFactoryTest {
                      } );
 
         Class[] expectedTypes = new Class[]{ReteVertex.class, EntryPointNodeVertex.class,
-            ObjectTypeNodeVertex.class, AlphaNodeVertex.class, AlphaNodeVertex.class,
-            LeftInputAdapterNodeVertex.class, LeftInputAdapterNodeVertex.class,
+            ObjectTypeNodeVertex.class, ObjectTypeNodeVertex.class, AlphaNodeVertex.class, 
+            AlphaNodeVertex.class, LeftInputAdapterNodeVertex.class, LeftInputAdapterNodeVertex.class,
             RuleTerminalNodeVertex.class, RuleTerminalNodeVertex.class};
 
         for ( int i = 0; i < yOrder.length; i++ ) {
