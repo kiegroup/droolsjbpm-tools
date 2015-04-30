@@ -40,7 +40,13 @@ import org.eclipse.core.runtime.Platform;
 public class DroolsRuntimeManager {
 
     private static final String DROOLS_RUNTIME_RECOGNIZER = "org.drools.eclipse.runtimeRecognizer";
-
+	// This is the "hidden" Eclipse Workspace Project name that will hold a copy
+	// of the Drools Runtime that is packaged with this plugin; currently just
+	// a simple project with a "lib" folder containing all of the required
+	// Drools Runtime jars. If the user has not yet created a default Runtime,
+    // this  project will be created, populated and used as the default.
+    private static final String DROOLS_BUNDLE_RUNTIME_PATH = ".drools.runtime";
+    
     private static DroolsRuntimeManager manager;
     public static DroolsRuntimeManager getDefault() {
     	if( manager == null )
@@ -102,7 +108,36 @@ public class DroolsRuntimeManager {
     	}
     }
 
+    /**
+     * Returns the version number of the Drools Runtime that is packaged with
+     * this plugin, i.e. the version number of the org.drools.eclipse plugin.
+     * 
+     * @return version number of default Drools Runtime.
+     */
+    public static String getBundleRuntimeVersion() {
+    	return Platform.getBundle("org.drools.eclipse").getVersion().toString();
+    }
+    
+    public static String getBundleRuntimeName() {
+    	return "Drools " + getBundleRuntimeVersion() + " Runtime";
+    }
+    
+    public static String getBundleRuntimePath() {
+    	return DROOLS_BUNDLE_RUNTIME_PATH;
+    }
+    
+    /**
+     * @deprecated this method name conflicts with the notion of a "default runtime"
+     * since it is not creating a Default Runtime, but rather a Drools Runtime based
+     * on the jars contained in the org.drools.eclipse bundle (plugin).
+     * Use createBundleRuntime() instead
+     * @param location
+     */
     public static void createDefaultRuntime(String location) {
+    	createBundleRuntime(location);
+    }
+    
+    public static DroolsRuntime createBundleRuntime(String location) {
         List<String> jars = new ArrayList<String>();
         // get all drools jars from drools eclipse plugin
         String s = getDroolsLocation();
@@ -131,14 +166,18 @@ public class DroolsRuntimeManager {
         if (!location.endsWith(File.separator)) {
             location = location + File.separator;
         }
+        
+        List<String> jarsCreated = new ArrayList<String>();
+        
         for (String jar: jars) {
             try {
                 File jarFile = new File(jar);
                 FileChannel inChannel = new FileInputStream(jarFile).getChannel();
-                FileChannel outChannel = new FileOutputStream(new File(
-                    location + jarFile.getName())).getChannel();
+                String createdJar = location + jarFile.getName();
+                FileChannel outChannel = new FileOutputStream(new File(createdJar)).getChannel();
                 try {
                     inChannel.transferTo(0, inChannel.size(), outChannel);
+                    jarsCreated.add(createdJar);
                 }
                 catch (IOException e) {
                     throw e;
@@ -151,6 +190,13 @@ public class DroolsRuntimeManager {
                 DroolsEclipsePlugin.log(t);
             }
         }
+
+    	DroolsRuntime runtime = new DroolsRuntime();
+        runtime.setPath(location);
+        runtime.setName(getBundleRuntimeName());
+        runtime.setJars(jarsCreated.toArray(new String[jarsCreated.size()]));
+        
+        return runtime;
     }
 
     private static String getDroolsLocation() {

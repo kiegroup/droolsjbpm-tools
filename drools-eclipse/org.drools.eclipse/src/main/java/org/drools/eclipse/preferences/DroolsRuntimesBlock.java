@@ -111,14 +111,16 @@ public class DroolsRuntimesBlock implements ISelectionProvider {
         if (selection instanceof IStructuredSelection) {
             if (!selection.equals(fPrevSelection)) {
                 fPrevSelection = selection;
-                Object runtime = ((IStructuredSelection)selection).getFirstElement();
-                if (runtime == null) {
-                    droolsRuntimesList.setCheckedElements(new Object[0]);
-                } else {
-                    droolsRuntimesList.setCheckedElements(new Object[]{runtime});
-                    droolsRuntimesList.reveal(runtime);
+                if (!droolsRuntimesList.getTable().isDisposed()) {
+	                Object runtime = ((IStructuredSelection)selection).getFirstElement();
+	                if (runtime == null) {
+	                    droolsRuntimesList.setCheckedElements(new Object[0]);
+	                } else {
+	                    droolsRuntimesList.setCheckedElements(new Object[]{runtime});
+	                    droolsRuntimesList.reveal(runtime);
+	                }
+	                fireSelectionChanged();
                 }
-                fireSelectionChanged();
             }
         }
     }
@@ -239,14 +241,16 @@ public class DroolsRuntimesBlock implements ISelectionProvider {
         for (int i = 0; i < runtimes.length; i++) {
             droolsRuntimes.add(runtimes[i]);
         }
-        droolsRuntimesList.setInput(droolsRuntimes);
+        if (!droolsRuntimesList.getTable().isDisposed())
+        	droolsRuntimesList.setInput(droolsRuntimes);
         for (DroolsRuntime runtime: runtimes) {
             if (runtime.isDefault()) {
                 setDefaultDroolsRuntime(runtime);
                 break;
             }
         }
-        droolsRuntimesList.refresh();
+        if (!droolsRuntimesList.getTable().isDisposed())
+        	droolsRuntimesList.refresh();
     }
 
     public DroolsRuntime[] getDroolsRuntimes() {

@@ -108,7 +108,8 @@ public class DroolsRuntimeDialog extends Dialog {
         });
 
         Button createButton = new Button(composite, SWT.PUSH | SWT.LEFT);
-        createButton.setText("Create a new Drools 6 Runtime...");
+        String name = DroolsRuntimeManager.getBundleRuntimeName();
+        createButton.setText("Create a new " + name + "...");
         gridData = new GridData();
         gridData.horizontalSpan = 2;
         createButton.setLayoutData(gridData);
@@ -183,10 +184,9 @@ public class DroolsRuntimeDialog extends Dialog {
         String selectedDirectory = dialog.open();
 
         if (selectedDirectory != null) {
-            DroolsRuntimeManager.createDefaultRuntime(selectedDirectory);
-            String version = Platform.getBundle("org.drools.eclipse").getVersion().toString();
-            nameText.setText("Drools " + version + " runtime");
-            pathText.setText(selectedDirectory);
+            DroolsRuntime rt = DroolsRuntimeManager.createBundleRuntime(selectedDirectory);
+            nameText.setText(rt.getName());
+            pathText.setText(rt.getPath());
         }
     }
 

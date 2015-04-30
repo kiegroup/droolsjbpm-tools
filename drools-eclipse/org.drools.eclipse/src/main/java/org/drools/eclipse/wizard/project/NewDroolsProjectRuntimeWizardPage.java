@@ -16,9 +16,22 @@
 
 package org.drools.eclipse.wizard.project;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.preferences.DroolsProjectPreferencePage;
 import org.drools.eclipse.util.DroolsRuntime;
 import org.drools.eclipse.util.DroolsRuntimeManager;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -42,8 +55,9 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
     public static final String DROOLS5_1 = "Drools 5.1.x or above";
     public static final String DROOLS6 = "Drools 6.0.x";
 
+    private List<DroolsRuntime> droolsRuntimes = new ArrayList<DroolsRuntime>();
     private boolean isDefaultRuntime = true;
-    private String selectedRuntime;
+    private DroolsRuntime selectedRuntime;
     private String generationType = DROOLS6;
     private Button projectSpecificRuntime;
     private Combo droolsRuntimeCombo;
@@ -92,23 +106,16 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
         droolsRuntimeCombo.setEnabled(false);
         droolsRuntimeCombo.addSelectionListener(new SelectionListener() {
             public void widgetDefaultSelected(SelectionEvent e) {
-                selectedRuntime = droolsRuntimeCombo.getText();
+            	widgetSelected(e);
             }
             public void widgetSelected(SelectionEvent e) {
-                selectedRuntime = droolsRuntimeCombo.getText();
+            	Integer key = droolsRuntimeCombo.getSelectionIndex();
+                selectedRuntime = (DroolsRuntime) droolsRuntimeCombo.getData(key.toString());
             }
         });
-        DroolsRuntime[] runtimes = DroolsRuntimeManager.getDroolsRuntimes();
-        if (runtimes.length == 0) {
-            setErrorMessage("No Drools Runtimes have been defined, configure workspace settings first");
-        } else {
-            setErrorMessage(null);
-            for (int i = 0; i < runtimes.length; i++) {
-                droolsRuntimeCombo.add(runtimes[i].getName());
-            }
-            droolsRuntimeCombo.select(0);
-            selectedRuntime = droolsRuntimeCombo.getText();
-        }
+        
+        fillRuntimesCombo();
+
         gridData = new GridData();
         gridData.grabExcessHorizontalSpace = true;
         gridData.horizontalAlignment = GridData.FILL;
@@ -116,6 +123,23 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
         Link changeWorkspaceSettingsLink = createLink(composite, "Configure Workspace Settings...");
         changeWorkspaceSettingsLink.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
 
+        /*
+        Button createButton = new Button(composite, SWT.PUSH | SWT.LEFT);
+        String name = DroolsRuntimeManager.getBundleRuntimeName();
+        createButton.setText("Create a new " + name + "...");
+        gridData = new GridData();
+        gridData.horizontalSpan = 2;
+        createButton.setLayoutData(gridData);
+        createButton.addSelectionListener(new SelectionListener() {
+            public void widgetSelected(SelectionEvent e) {
+                createRuntime();
+            }
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+        });
+        */
+        
+        
         Composite subPanel = new Composite(composite, SWT.NONE);
         gridLayout = new GridLayout();
         gridLayout.numColumns = 2;
@@ -192,10 +216,39 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
         });
 
         setMessage(null);
-        setPageComplete(runtimes.length > 0 && isComplete());
+        setPageComplete(droolsRuntimes.size() > 0 && isComplete());
         setControl(composite);
     }
-    
+
+    private void fillRuntimesCombo() {
+    	droolsRuntimes.clear();
+    	for (DroolsRuntime rt : DroolsRuntimeManager.getDroolsRuntimes())
+    		droolsRuntimes.add(rt);
+
+    	if (droolsRuntimes.size()==0) {
+	    	DroolsRuntime rt = new DroolsRuntime();
+	    	rt.setName(DroolsRuntimeManager.getBundleRuntimeName());
+	    	droolsRuntimes.add(rt);
+    	}
+    	
+        setErrorMessage(null);
+        droolsRuntimeCombo.removeAll();
+        Integer key = 0;
+        for (DroolsRuntime rt : droolsRuntimes) {
+            droolsRuntimeCombo.add(rt.getName());
+            droolsRuntimeCombo.setData(key.toString(), rt);
+            ++key;
+        }
+        
+        key = 0;
+        droolsRuntimeCombo.select(key);
+        selectedRuntime = (DroolsRuntime) droolsRuntimeCombo.getData(key.toString());
+
+        DroolsRuntime defaultRuntime = DroolsRuntimeManager.getDefaultDroolsRuntime();
+        projectSpecificRuntime.setText("Use default Drools Runtime (currently " +
+        		(defaultRuntime == null ? "undefined)" : defaultRuntime.getName() + ")"));
+    }
+
     private void setComplete() {
         setPageComplete(isComplete());
     }
@@ -231,30 +284,116 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
         PreferencesUtil.createPreferenceDialogOn(getShell(),
             DroolsProjectPreferencePage.PREF_ID,
             new String[] { DroolsProjectPreferencePage.PROP_ID }, null).open();
-        droolsRuntimeCombo.removeAll();
-        DroolsRuntime[] runtimes = DroolsRuntimeManager.getDroolsRuntimes();
-        if (runtimes.length == 0) {
-            setPageComplete(false);
-            setErrorMessage("No Drools Runtimes have been defined, please do this first");
-        } else {
-            setPageComplete(true);
-            setErrorMessage(null);
-            for (int i = 0; i < runtimes.length; i++) {
-                droolsRuntimeCombo.add(runtimes[i].getName());
-            }
-            droolsRuntimeCombo.select(0);
-            selectedRuntime = droolsRuntimeCombo.getText();
-        }
-        DroolsRuntime defaultRuntime = DroolsRuntimeManager.getDefaultDroolsRuntime();
-        projectSpecificRuntime.setText("Use default Drools Runtime (currently "
-            + (defaultRuntime == null ? "undefined)" : defaultRuntime.getName() + ")"));
+        
+        fillRuntimesCombo();
     }
 
     public DroolsRuntime getDroolsRuntime() {
+    	// The bundle runtime project may have been deleted; if so, we need to rebuild it
+    	boolean rebuildBundleRuntimeProject = false;
+    	String bundleRuntimeLocation = DroolsRuntimeManager.getBundleRuntimePath();
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        if (selectedRuntime.getPath() != null) {
+        	// If this really is the Bundle Runtime project,
+        	// remove the "lib" segment if there is one
+        	IPath runtimeRootPath = new Path(selectedRuntime.getPath());
+        	if ("lib".equals(runtimeRootPath.lastSegment()))
+        		runtimeRootPath = runtimeRootPath.removeLastSegments(1);
+        	if (bundleRuntimeLocation.equals(runtimeRootPath.lastSegment()))
+        		// then remove the Bundle Runtime project name. 
+        		runtimeRootPath = runtimeRootPath.removeLastSegments(1);
+
+			// if the absolute path matches the Workspace Root path, then this
+			// is the Bundle Runtime Project
+        	IPath rootPath = workspace.getRoot().getLocation();
+        	if (rootPath.equals(runtimeRootPath)) {
+        		IProject project = workspace.getRoot().getProject(bundleRuntimeLocation);
+        		// If the project exists and is not open, try to open it
+        		if (!project.isOpen()) {
+	                try {
+						project.open(IResource.BACKGROUND_REFRESH,null);
+					} catch (CoreException ex) {
+			            DroolsEclipsePlugin.log(ex);
+					}
+        		}
+				// If the project does not exist, we need to create it. This is
+				// an indication that the project was previously deleted by the
+				// user.
+            	if (!project.exists()) {
+            		rebuildBundleRuntimeProject = true;
+            	}
+            	else {
+					// Check if the "lib" folder was deleted, or if the jars
+					// were removed
+        			int jarCount = 0;
+            		IFolder lib = project.getFolder("lib");
+            		if (!lib.exists()) {
+            			try {
+							// The "lib" folder is gone, might as well rebuild
+							// the entire project
+							project.delete(true, null);
+		            		rebuildBundleRuntimeProject = true;
+						} catch (CoreException ex) {
+				            DroolsEclipsePlugin.log(ex);
+						}
+            		}
+            		else {
+	        			try {
+							// Count the number of jars in the "lib" folder.
+							// We don't actually know how many jars SHOULD be in
+							// there, but if there are none, this is a clear
+							// indication that the "lib" folder was cleaned out.
+							for (IResource f : lib.members()) {
+								if ("jar".equals(f.getFileExtension())) {
+									++jarCount;
+								}
+							}
+						} catch (CoreException ex) {
+				            DroolsEclipsePlugin.log(ex);
+						}
+					}
+        			if (jarCount==0) {
+                		rebuildBundleRuntimeProject = true;
+        			}
+            	}
+        	}
+        }
+        
+        if (selectedRuntime.getPath() == null || rebuildBundleRuntimeProject) {
+			// This is the Bundle Runtime and it doesn't exist yet, or needs
+			// to be rebuilt. Create a "hidden" workspace project.
+			// But first, remove the old DroolsRuntime entry from our list.
+        	droolsRuntimes.remove(selectedRuntime);
+        	
+        	final IProject project = workspace.getRoot().getProject(bundleRuntimeLocation);
+        	// The "lib" folder will contain the runtime jars.
+        	final IFolder lib = project.getFolder("lib");
+        	if (!project.exists() || !lib.exists()) {
+                final IProjectDescription description = workspace
+                        .newProjectDescription(project.getName());
+                description.setLocation(null);
+                try {
+					project.create(description, null);
+	                project.open(IResource.BACKGROUND_REFRESH,null);
+	                lib.create(true, true, null);
+				} catch (CoreException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	}
+        	
+        	// and create a new entry
+            String location = lib.getLocation().toString();
+            selectedRuntime = DroolsRuntimeManager.createBundleRuntime(location);
+            selectedRuntime.setDefault(isDefaultRuntime);
+        	droolsRuntimes.add(selectedRuntime);
+        	// finally rebuild the DroolsRuntime definitions in User Preferences
+        	DroolsRuntimeManager.setDroolsRuntimes(droolsRuntimes.toArray(new DroolsRuntime[droolsRuntimes.size()]));
+        }
         if (isDefaultRuntime) {
             return null;
         }
-        return DroolsRuntimeManager.getDroolsRuntime(selectedRuntime);
+        return selectedRuntime;
     }
 
     public String getGenerationType() {
