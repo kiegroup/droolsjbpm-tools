@@ -41,6 +41,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
@@ -120,7 +121,7 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
         gridData.grabExcessHorizontalSpace = true;
         gridData.horizontalAlignment = GridData.FILL;
         droolsRuntimeCombo.setLayoutData(gridData);
-        Link changeWorkspaceSettingsLink = createLink(composite, "Configure Workspace Settings...");
+        Link changeWorkspaceSettingsLink = createLink(composite, "Configure Drools Runtimes...");
         changeWorkspaceSettingsLink.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
 
         /*
@@ -225,17 +226,45 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
     	for (DroolsRuntime rt : DroolsRuntimeManager.getDroolsRuntimes())
     		droolsRuntimes.add(rt);
 
+    	if (DroolsRuntimeManager.getDefaultDroolsRuntime()==null) {
+    		isDefaultRuntime = false;
+			projectSpecificRuntime.setSelection(false);
+			projectSpecificRuntime.setEnabled(false);
+    	}
+    	else
+			projectSpecificRuntime.setEnabled(true);
+
+
     	if (droolsRuntimes.size()==0) {
 	    	DroolsRuntime rt = new DroolsRuntime();
 	    	rt.setName(DroolsRuntimeManager.getBundleRuntimeName());
 	    	droolsRuntimes.add(rt);
+	    	
+	    	setControlVisible(projectSpecificRuntime, false);
+	    	setControlVisible(droolsRuntimeCombo, true);
+	    	droolsRuntimeCombo.setEnabled(true);
+    	}
+    	else {
+        	if (droolsRuntimes.size()==1) {
+    	    	setControlVisible(projectSpecificRuntime, false);
+    	    	droolsRuntimeCombo.setEnabled(true);
+        	}
+        	else {
+        		setControlVisible(projectSpecificRuntime, true);
+    	    	droolsRuntimeCombo.setEnabled(!isDefaultRuntime);
+        	}
+	    	setControlVisible(droolsRuntimeCombo, true);
     	}
     	
         setErrorMessage(null);
         droolsRuntimeCombo.removeAll();
         Integer key = 0;
         for (DroolsRuntime rt : droolsRuntimes) {
-            droolsRuntimeCombo.add(rt.getName());
+        	String name = rt.getName();
+        	if (rt.getPath()==null) {
+        		name += " (will be created)";
+        	}
+            droolsRuntimeCombo.add(name);
             droolsRuntimeCombo.setData(key.toString(), rt);
             ++key;
         }
@@ -249,6 +278,15 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
         		(defaultRuntime == null ? "undefined)" : defaultRuntime.getName() + ")"));
     }
 
+    private void setControlVisible(Control control, boolean visible) {
+    	Object ld = control.getLayoutData();
+    	if (ld instanceof GridData) {
+    		((GridData)ld).exclude = !visible;
+    	}
+    	control.setVisible(visible);
+    	control.getParent().layout();
+    }
+    
     private void setComplete() {
         setPageComplete(isComplete());
     }
@@ -289,111 +327,7 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
     }
 
     public DroolsRuntime getDroolsRuntime() {
-    	// The bundle runtime project may have been deleted; if so, we need to rebuild it
-    	boolean rebuildBundleRuntimeProject = false;
-    	String bundleRuntimeLocation = DroolsRuntimeManager.getBundleRuntimePath();
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        if (selectedRuntime.getPath() != null) {
-        	// If this really is the Bundle Runtime project,
-        	// remove the "lib" segment if there is one
-        	IPath runtimeRootPath = new Path(selectedRuntime.getPath());
-        	if ("lib".equals(runtimeRootPath.lastSegment()))
-        		runtimeRootPath = runtimeRootPath.removeLastSegments(1);
-        	if (bundleRuntimeLocation.equals(runtimeRootPath.lastSegment()))
-        		// then remove the Bundle Runtime project name. 
-        		runtimeRootPath = runtimeRootPath.removeLastSegments(1);
-
-			// if the absolute path matches the Workspace Root path, then this
-			// is the Bundle Runtime Project
-        	IPath rootPath = workspace.getRoot().getLocation();
-        	if (rootPath.equals(runtimeRootPath)) {
-        		IProject project = workspace.getRoot().getProject(bundleRuntimeLocation);
-        		// If the project exists and is not open, try to open it
-        		if (!project.isOpen()) {
-	                try {
-						project.open(IResource.BACKGROUND_REFRESH,null);
-					} catch (CoreException ex) {
-			            DroolsEclipsePlugin.log(ex);
-					}
-        		}
-				// If the project does not exist, we need to create it. This is
-				// an indication that the project was previously deleted by the
-				// user.
-            	if (!project.exists()) {
-            		rebuildBundleRuntimeProject = true;
-            	}
-            	else {
-					// Check if the "lib" folder was deleted, or if the jars
-					// were removed
-        			int jarCount = 0;
-            		IFolder lib = project.getFolder("lib");
-            		if (!lib.exists()) {
-            			try {
-							// The "lib" folder is gone, might as well rebuild
-							// the entire project
-							project.delete(true, null);
-		            		rebuildBundleRuntimeProject = true;
-						} catch (CoreException ex) {
-				            DroolsEclipsePlugin.log(ex);
-						}
-            		}
-            		else {
-	        			try {
-							// Count the number of jars in the "lib" folder.
-							// We don't actually know how many jars SHOULD be in
-							// there, but if there are none, this is a clear
-							// indication that the "lib" folder was cleaned out.
-							for (IResource f : lib.members()) {
-								if ("jar".equals(f.getFileExtension())) {
-									++jarCount;
-								}
-							}
-						} catch (CoreException ex) {
-				            DroolsEclipsePlugin.log(ex);
-						}
-					}
-        			if (jarCount==0) {
-                		rebuildBundleRuntimeProject = true;
-        			}
-            	}
-        	}
-        }
-        
-        if (selectedRuntime.getPath() == null || rebuildBundleRuntimeProject) {
-			// This is the Bundle Runtime and it doesn't exist yet, or needs
-			// to be rebuilt. Create a "hidden" workspace project.
-			// But first, remove the old DroolsRuntime entry from our list.
-        	droolsRuntimes.remove(selectedRuntime);
-        	
-        	final IProject project = workspace.getRoot().getProject(bundleRuntimeLocation);
-        	// The "lib" folder will contain the runtime jars.
-        	final IFolder lib = project.getFolder("lib");
-        	if (!project.exists() || !lib.exists()) {
-                final IProjectDescription description = workspace
-                        .newProjectDescription(project.getName());
-                description.setLocation(null);
-                try {
-					project.create(description, null);
-	                project.open(IResource.BACKGROUND_REFRESH,null);
-	                lib.create(true, true, null);
-				} catch (CoreException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-        	}
-        	
-        	// and create a new entry
-            String location = lib.getLocation().toString();
-            selectedRuntime = DroolsRuntimeManager.createBundleRuntime(location);
-            selectedRuntime.setDefault(isDefaultRuntime);
-        	droolsRuntimes.add(selectedRuntime);
-        	// finally rebuild the DroolsRuntime definitions in User Preferences
-        	DroolsRuntimeManager.setDroolsRuntimes(droolsRuntimes.toArray(new DroolsRuntime[droolsRuntimes.size()]));
-        }
-        if (isDefaultRuntime) {
-            return null;
-        }
-        return selectedRuntime;
+    	return DroolsRuntimeManager.getEffectiveDroolsRuntime(selectedRuntime, isDefaultRuntime);
     }
 
     public String getGenerationType() {

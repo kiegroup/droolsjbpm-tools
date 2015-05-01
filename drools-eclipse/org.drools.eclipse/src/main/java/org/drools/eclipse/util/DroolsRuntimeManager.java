@@ -31,9 +31,16 @@ import java.util.List;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.preferences.IDroolsConstants;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 
@@ -115,7 +122,12 @@ public class DroolsRuntimeManager {
      * @return version number of default Drools Runtime.
      */
     public static String getBundleRuntimeVersion() {
-    	return Platform.getBundle("org.drools.eclipse").getVersion().toString();
+    	String version = Platform.getBundle("org.drools.eclipse").getVersion().toString();
+    	String a[] = version.split("\\.");
+    	if (a.length>3) {
+    		return a[0] + "." + a[1] + "." + a[2];
+    	}
+    	return version;
     }
     
     public static String getBundleRuntimeName() {
@@ -163,17 +175,16 @@ public class DroolsRuntimeManager {
 
 
         // copy jars to specified location
+        String separator = "";
         if (!location.endsWith(File.separator)) {
-            location = location + File.separator;
+            separator = File.separator;
         }
-        
         List<String> jarsCreated = new ArrayList<String>();
-        
         for (String jar: jars) {
             try {
                 File jarFile = new File(jar);
                 FileChannel inChannel = new FileInputStream(jarFile).getChannel();
-                String createdJar = location + jarFile.getName();
+                String createdJar = location + separator + jarFile.getName();
                 FileChannel outChannel = new FileOutputStream(new File(createdJar)).getChannel();
                 try {
                     inChannel.transferTo(0, inChannel.size(), outChannel);
@@ -197,6 +208,122 @@ public class DroolsRuntimeManager {
         runtime.setJars(jarsCreated.toArray(new String[jarsCreated.size()]));
         
         return runtime;
+    }
+    
+    public static DroolsRuntime getEffectiveDroolsRuntime(DroolsRuntime selectedRuntime, boolean useDefault) {
+    	
+    	// The bundle runtime project may have been deleted; if so, we need to rebuild it
+    	boolean rebuildBundleRuntimeProject = false;
+    	String bundleRuntimeLocation = getBundleRuntimePath();
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        if (selectedRuntime.getPath() != null) {
+        	// If this really is the Bundle Runtime project,
+        	// remove the "lib" segment if there is one
+        	IPath runtimeRootPath = new Path(selectedRuntime.getPath());
+        	if ("lib".equals(runtimeRootPath.lastSegment()))
+        		runtimeRootPath = runtimeRootPath.removeLastSegments(1);
+        	if (bundleRuntimeLocation.equals(runtimeRootPath.lastSegment()))
+        		// then remove the Bundle Runtime project name. 
+        		runtimeRootPath = runtimeRootPath.removeLastSegments(1);
+
+			// if the absolute path matches the Workspace Root path, then this
+			// is the Bundle Runtime Project
+        	IPath rootPath = workspace.getRoot().getLocation();
+        	if (rootPath.equals(runtimeRootPath)) {
+        		IProject project = workspace.getRoot().getProject(bundleRuntimeLocation);
+        		// If the project exists and is not open, try to open it
+        		if (!project.isOpen()) {
+	                try {
+						project.open(IResource.BACKGROUND_REFRESH,null);
+					} catch (CoreException ex) {
+			            DroolsEclipsePlugin.log(ex);
+					}
+        		}
+				// If the project does not exist, we need to create it. This is
+				// an indication that the project was previously deleted by the
+				// user.
+            	if (!project.exists()) {
+            		rebuildBundleRuntimeProject = true;
+            	}
+            	else {
+					// Check if the "lib" folder was deleted, or if the jars
+					// were removed
+        			int jarCount = 0;
+            		IFolder lib = project.getFolder("lib");
+            		if (!lib.exists()) {
+            			try {
+							// The "lib" folder is gone, might as well rebuild
+							// the entire project
+							project.delete(true, null);
+		            		rebuildBundleRuntimeProject = true;
+						} catch (CoreException ex) {
+				            DroolsEclipsePlugin.log(ex);
+						}
+            		}
+            		else {
+	        			try {
+							// Count the number of jars in the "lib" folder.
+							// We don't actually know how many jars SHOULD be in
+							// there, but if there are none, this is a clear
+							// indication that the "lib" folder was cleaned out.
+							for (IResource f : lib.members()) {
+								if ("jar".equals(f.getFileExtension())) {
+									++jarCount;
+								}
+							}
+						} catch (CoreException ex) {
+				            DroolsEclipsePlugin.log(ex);
+						}
+					}
+        			if (jarCount==0) {
+                		rebuildBundleRuntimeProject = true;
+        			}
+            	}
+        	}
+        }
+        
+        List<DroolsRuntime> droolsRuntimes = new ArrayList<DroolsRuntime>();
+    	for (DroolsRuntime rt : getDroolsRuntimes())
+    		droolsRuntimes.add(rt);
+    	
+        if (selectedRuntime.getPath() == null || rebuildBundleRuntimeProject || droolsRuntimes.size()==0) {
+			// This is the Bundle Runtime and it doesn't exist yet, or needs
+			// to be rebuilt. Create a "hidden" workspace project.
+			// But first, remove the old DroolsRuntime entry from our list.
+        	droolsRuntimes.remove(selectedRuntime);
+        	
+        	final IProject project = workspace.getRoot().getProject(bundleRuntimeLocation);
+        	// The "lib" folder will contain the runtime jars.
+        	final IFolder lib = project.getFolder("lib");
+        	if (!project.exists() || !lib.exists()) {
+                final IProjectDescription description = workspace
+                        .newProjectDescription(project.getName());
+                description.setLocation(null);
+                try {
+					project.create(description, null);
+	                project.open(IResource.BACKGROUND_REFRESH,null);
+	                lib.create(true, true, null);
+				} catch (CoreException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	}
+        	
+        	// and create a new entry
+            String location = lib.getLocation().removeTrailingSeparator().toString();
+            selectedRuntime = createBundleRuntime(location);
+            if (droolsRuntimes.size()==0)
+            	useDefault = true;
+            
+            selectedRuntime.setDefault(useDefault);
+        	droolsRuntimes.add(selectedRuntime);
+        	// finally rebuild the DroolsRuntime definitions in User Preferences
+        	setDroolsRuntimes(droolsRuntimes.toArray(new DroolsRuntime[droolsRuntimes.size()]));
+        }
+        if (useDefault) {
+            return null;
+        }
+        return selectedRuntime;
     }
 
     private static String getDroolsLocation() {
@@ -231,20 +358,25 @@ public class DroolsRuntimeManager {
                 String[] properties = runtimeString.split("#");
                 DroolsRuntime runtime = new DroolsRuntime();
                 runtime.setName(properties[0]);
-                runtime.setPath(properties[1]);
-                runtime.setDefault("true".equals(properties[2]));
-                if (properties.length > 3) {
-                    List<String> list = new ArrayList<String>();
-                    String[] jars = properties[3].split(";");
-                    for (String jar: jars) {
-                        jar = jar.trim();
-                        if (jar.length() > 0) {
-                            list.add(jar);
-                        }
-                    }
-                    runtime.setJars(list.toArray(new String[list.size()]));
+                String location = properties[1];
+                File file = new File(location);
+                // if the path no longer exists remove it from our list
+                if (file.exists()) {
+	                runtime.setPath(location);
+	                runtime.setDefault("true".equals(properties[2]));
+	                if (properties.length > 3) {
+	                    List<String> list = new ArrayList<String>();
+	                    String[] jars = properties[3].split(";");
+	                    for (String jar: jars) {
+	                        jar = jar.trim();
+	                        if (jar.length() > 0) {
+	                            list.add(jar);
+	                        }
+	                    }
+	                    runtime.setJars(list.toArray(new String[list.size()]));
+	                }
+	                result.add(runtime);
                 }
-                result.add(runtime);
             }
         }
         return result.toArray(new DroolsRuntime[result.size()]);
@@ -266,7 +398,7 @@ public class DroolsRuntimeManager {
 
     private static void setDroolsRuntimesInternal(DroolsRuntime[] runtimes) {
         DroolsEclipsePlugin.getDefault().getPreferenceStore().setValue(IDroolsConstants.DROOLS_RUNTIMES,
-        DroolsRuntimeManager.generateString(runtimes));
+        generateString(runtimes));
     }
 
     

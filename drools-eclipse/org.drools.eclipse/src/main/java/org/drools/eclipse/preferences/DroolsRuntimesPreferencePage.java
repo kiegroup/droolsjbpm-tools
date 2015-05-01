@@ -93,7 +93,12 @@ public class DroolsRuntimesPreferencePage extends PreferencePage
             public void selectionChanged(SelectionChangedEvent event) {
                 DroolsRuntime runtime = droolsRuntimesBlock.getDefaultDroolsRuntime();
                 if (runtime == null) {
-                    setErrorMessage("Select a default Drools Runtime");
+                	if (droolsRuntimesBlock.getDroolsRuntimes().length==0) {
+	                    setErrorMessage("Create a default Drools Runtime");
+                	}
+                	else {
+	                    setErrorMessage("Select a default Drools Runtime");
+                	}
                 } else {
                     setErrorMessage(null);
                 }
@@ -103,7 +108,7 @@ public class DroolsRuntimesPreferencePage extends PreferencePage
         return ancestor;
     }
 
-    public boolean performOk() {
+	public boolean performOk() {
         if (DroolsRuntimeManager.getDefaultDroolsRuntime() != null) {
             MessageDialog.openInformation(getShell(), "Warning",
             "You need to restart Eclipse to update the Drools Runtime of existing projects.");
