@@ -17,18 +17,49 @@
 package org.drools.eclipse.util;
 
 public class DroolsRuntime {
+	public static final String ID_DROOLS_6 = "Drools 6.x";
+	public static final String ID_DROOLS_5_1 = "Drools 5.1.x";
+	public static final String ID_DROOLS_5 = "Drools 5.0.x";
+	public static final String ID_DROOLS_4 = "Drools 4.x";
 
+	private static String[] allIds = {
+		ID_DROOLS_4, ID_DROOLS_5, ID_DROOLS_5_1, ID_DROOLS_6
+	};
     private String name;
     private String path;
     private boolean isDefault;
     private String[] jars;
+    private String id;
 
-    public String getName() {
+    public static String[] getIAllds() {
+    	return allIds;
+    }
+    
+    public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+        if (id==null && name!=null) {
+        	// try to guess the ID from the name
+        	if (name.contains("6"))
+        		id = ID_DROOLS_6;
+        	if (name.contains("5.1"))
+        		id = ID_DROOLS_5_1;
+        	if (name.contains("5.0"))
+        		id = ID_DROOLS_5;
+        	if (name.contains("4"))
+        		id = ID_DROOLS_4;
+        }
     }
 
     public String getPath() {

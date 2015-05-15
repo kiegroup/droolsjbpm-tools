@@ -1,0 +1,180 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.drools.eclipse" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.drools.eclipse" id="sampleProjectsRepository" name="Sample Projects Repository"/>
+      </appInfo>
+      <documentation>
+         &lt;a name=&quot;e.Description&quot;/&gt;&lt;p/&gt;
+This extension identifies a repository of Drools and jBPM sample projects that can be downloaded into the user&apos;s workspace. The extension is used by the New Drools Project Wizard when the user selects to download a sample project from the wizard.
+&lt;p/&gt;
+A repository mimics an Eclipse p2 update site, and although the current implementation of the New Project Wizard does not use all of the capabilities of the Eclipse Provisioning Platform (p2), this could be useful in the future to install actual runtime components into a user&apos;s workspace.
+&lt;p/&gt;
+A Repository can be built from the Eclipse workbench in the same way as an update site, using the &quot;Export/Deployable Features&quot; wizard. This of course requires that all of the update site artifacts are present. A typical Repository structure would look like this:
+
+&lt;pre&gt;
+com.acme.examples
+  acme-project-part1
+    META-INF
+      MANIFEST.MF
+    src
+      main
+        java
+          com
+            acme
+              project
+                part1
+                  *.java
+                  ...
+        resources
+          META-INF
+            kmodule.xml
+          acme.form
+          acme.bpmn
+          acme.drl
+          ...
+  acme-project-part2
+  another-acme-project
+  ...
+  features
+    acme.project.feature
+       .project
+       build.properties
+       feature.xml
+    another.acme.project.feature
+       .project
+       build.properties
+       feature.xml
+  site
+    features
+      acme.project.feature.jar
+    plugins
+      acme-project_1.0.0.jar
+      another.acme.project_1.0.0.jar
+    artifacts.jar
+    content.jar
+  .project
+  category.xml
+&lt;/pre&gt;
+
+In this example, the compiled update site artifacts are contained in the &quot;site&quot; folder. If these artifacts were stored on an HTTP server at &quot;http://acme.com&quot; then the repository URL would be &quot;http://acme.com/com.acme.examples/site/&quot;.
+&lt;p/&gt;
+This folder could actually be split out and located at a different URL than the project sources. We have chosen to keep these together in this example for the sake of simplicity.
+&lt;p/&gt;
+Note that each example project (&quot;acme-project*&quot; and &quot;another-acme-project&quot; above) must be an Eclipse plug-in project. The &quot;features&quot; folder contains Eclipse Feature projects, where each references one or more of the plug-in projects.
+&lt;p/&gt;
+The New Drools Project Wizard will append the most common Java source directories to the project&apos;s, so a &quot;.classpath&quot; file is optional. The following folders will be added to the project classpath, if they exist:
+&lt;ul&gt;
+	&lt;li/&gt;src/main/java
+	&lt;li/&gt;src/main/resources
+	&lt;li/&gt;src/test/java
+	&lt;li/&gt;src/test/resources
+	&lt;li/&gt;src/main/rules
+&lt;/ul&gt;
+The &quot;build.properties&quot; files are also required, and identify which files and folders are to be compiled into Installable Units on the update site.
+
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
+      <complexType>
+         <choice>
+            <element ref="repository" minOccurs="1" maxOccurs="unbounded"/>
+         </choice>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="repository">
+      <annotation>
+         <documentation>
+            Defines a Drools/jBPM sample project update site.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  A unique ID that identifies this example repository.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Human-readable name of the repository.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="url" type="string" use="required">
+            <annotation>
+               <documentation>
+                  A URL of the repository. The repository structure must conform to a p2 update site (see the &lt;a href=&quot;#e.Description&quot;&gt;Description&lt;/a&gt;)
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         6.3.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         &lt;pre&gt;
+   &lt;extension point=&quot;org.drools.eclipse.sampleProjectsRepository&quot;&gt;
+         &lt;repository
+         	id=&quot;org.drools.sample.project.jbpm-playground&quot;
+         	name=&quot;jBPM Playground at github&quot;
+         	url=&quot;https://raw.githubusercontent.com/droolsjbpm/jbpm-playground/master/site/&quot;/&gt;
+         &lt;repository
+         	id=&quot;org.drools.sample.project.jbpm-playground.local&quot;
+         	name=&quot;Examples on local filesystem&quot;
+         	url=&quot;file:///C:/Users/home/workspace/org.jboss.droolsjbpm.jbpm-playground/site&quot;/&gt;
+   &lt;/extension&gt;
+&lt;/pre&gt;
+      </documentation>
+   </annotation>
+
+
+
+
+</schema>

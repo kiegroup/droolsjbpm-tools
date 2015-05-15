@@ -151,6 +151,10 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
 
     }
 
+    public static BundleContext getContext() {
+    	return plugin.getBundle().getBundleContext();
+    }
+    
     public void clearCache() {
         parsedRules.clear();
         compiledRules.clear();

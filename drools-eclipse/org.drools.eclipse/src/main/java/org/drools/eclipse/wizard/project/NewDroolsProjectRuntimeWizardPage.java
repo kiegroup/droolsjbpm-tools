@@ -19,19 +19,10 @@ package org.drools.eclipse.wizard.project;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.preferences.DroolsProjectPreferencePage;
 import org.drools.eclipse.util.DroolsRuntime;
 import org.drools.eclipse.util.DroolsRuntimeManager;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -51,15 +42,10 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 
 public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
 
-    public static final String DROOLS4 = "Drools 4.x";
-    public static final String DROOLS5 = "Drools 5.0.x";
-    public static final String DROOLS5_1 = "Drools 5.1.x or above";
-    public static final String DROOLS6 = "Drools 6.0.x";
-
     private List<DroolsRuntime> droolsRuntimes = new ArrayList<DroolsRuntime>();
     private boolean isDefaultRuntime = true;
     private DroolsRuntime selectedRuntime;
-    private String generationType = DROOLS6;
+    private String generationType = DroolsRuntime.ID_DROOLS_6;
     private Button projectSpecificRuntime;
     private Combo droolsRuntimeCombo;
     private Combo droolsGenerateCombo;
@@ -69,8 +55,8 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
     private String artifactId = "";
     private String version = "";
 
-    public NewDroolsProjectRuntimeWizardPage() {
-        super("extendedNewProjectRuntimePage");
+    public NewDroolsProjectRuntimeWizardPage(String pageName) {
+        super(pageName);
         setTitle("Drools Runtime");
         setDescription("Select a Drools Runtime");
     }
@@ -154,25 +140,25 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
         Label generateLabel = new Label(subPanel, SWT.NONE);
         generateLabel.setText("Generate code compatible with:");
         droolsGenerateCombo = new Combo(subPanel, SWT.READ_ONLY);
-        droolsGenerateCombo.add(DROOLS4);
-        droolsGenerateCombo.add(DROOLS5);
-        droolsGenerateCombo.add(DROOLS5_1);
-        droolsGenerateCombo.add(DROOLS6);
+        droolsGenerateCombo.add(DroolsRuntime.ID_DROOLS_4);
+        droolsGenerateCombo.add(DroolsRuntime.ID_DROOLS_5);
+        droolsGenerateCombo.add(DroolsRuntime.ID_DROOLS_5_1);
+        droolsGenerateCombo.add(DroolsRuntime.ID_DROOLS_6);
         droolsGenerateCombo.addSelectionListener(new SelectionListener() {
             public void widgetDefaultSelected(SelectionEvent e) {
                 generationType = droolsGenerateCombo.getText();
-            	gavPanel.setVisible(getGenerationType().equals(DROOLS6));
+            	gavPanel.setVisible(getGenerationType().equals(DroolsRuntime.ID_DROOLS_6));
             	setComplete();
             }
             public void widgetSelected(SelectionEvent e) {
                 generationType = droolsGenerateCombo.getText();
-            	gavPanel.setVisible(getGenerationType().equals(DROOLS6));
+            	gavPanel.setVisible(getGenerationType().equals(DroolsRuntime.ID_DROOLS_6));
             	setComplete();
             }
         });
         droolsGenerateCombo.select(3);
         setPageComplete(false);
-        generationType = DROOLS6;
+        generationType = DroolsRuntime.ID_DROOLS_6;
         gridData = new GridData();
         gridData.grabExcessHorizontalSpace = true;
         gridData.horizontalAlignment = GridData.FILL;
@@ -292,7 +278,7 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
     }
     
     private boolean isComplete() {
-    	return !getGenerationType().equals(DROOLS6) || (getGroupId().length() > 0 && getArtifactId().length() > 0 && getVersion().length() > 0);
+    	return !getGenerationType().equals(DroolsRuntime.ID_DROOLS_6) || (getGroupId().length() > 0 && getArtifactId().length() > 0 && getVersion().length() > 0);
     }
 
     private Button createCheckBox(Composite group, String label) {
@@ -345,4 +331,10 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
     public String getVersion() {
     	return version;
     }
+
+	@Override
+	public IWizardPage getPreviousPage() {
+		selectedRuntime = null;
+		return super.getPreviousPage();
+	}
 }
