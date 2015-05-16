@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.drools.eclipse.util.FileUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -74,7 +75,7 @@ public class RuleSourceFieldRenameParticipant extends RenameParticipant {
             // if at least one file have a reference to the renamed field => apply refactoring
             for (IFile drlFile : drlFiles) {
 
-                if ((content = FileUtil.readFile(drlFile))==null)
+                if ((content = FileUtils.readFile(drlFile))==null)
                     return null;
 
                 Pattern pattern = Pattern.compile("(?<=:\\s)" + currentName + "|" + currentName + "(?=\\s=)");
@@ -109,7 +110,7 @@ public class RuleSourceFieldRenameParticipant extends RenameParticipant {
             RenameFieldProcessor renameFieldProcessor = (RenameFieldProcessor)processor;
             for (IFile drlFile : drlFiles) {
 
-                if ((content = FileUtil.readFile(drlFile))==null)
+                if ((content = FileUtils.readFile(drlFile))==null)
                     return null;
 
                 TextFileChange change = new TextFileChange(drlFile.getName(), drlFile);

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.drools.eclipse.util.FileUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -77,7 +78,7 @@ public class RuleIFileMoveParticipant extends MoveParticipant {
         for (IFile drlFile : drlProjectDetector.detect(file.getProject())) {
 
             content = refactoringContent.getIFileContent(drlFile);
-            if (content==null && (content = FileUtil.readFile(drlFile))==null)
+            if (content==null && (content = FileUtils.readFile(drlFile))==null)
                 continue;
 
             String toReplace = currentName + "." + className;

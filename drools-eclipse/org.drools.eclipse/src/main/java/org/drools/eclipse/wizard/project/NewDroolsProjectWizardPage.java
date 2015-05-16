@@ -16,24 +16,17 @@
 
 package org.drools.eclipse.wizard.project;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.util.DroolsRuntime;
+import org.drools.eclipse.util.FileUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspace;
@@ -42,7 +35,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.equinox.p2.core.IProvisioningAgent;
 import org.eclipse.equinox.p2.core.IProvisioningAgentProvider;
 import org.eclipse.equinox.p2.core.ProvisionException;
@@ -541,10 +533,10 @@ public class NewDroolsProjectWizardPage extends WizardNewProjectCreationPage {
 			for (IInstallableUnit iu : getInstallableUnits()) {
 				if (projectName.equals(iu.getId())) {
 					for (IArtifactKey k : iu.getArtifacts()) {
-						String filename = k.getId() + "_" + k.getVersion()
-								+ ".jar";
-						File jarFile = downloadJarFile(filename, monitor);
-						extractJarFile(jarFile, project);
+						String filename = k.getId() + "_" + k.getVersion() + ".jar";
+						URL url = new URL(getRepositoryUrl() + "/plugins/" + filename);
+						java.io.File jarFile = FileUtils.downloadFile(url, monitor);
+						FileUtils.extractJarFile(jarFile, project, monitor);
 						// delete this temporary file
 						jarFile.delete();
 						project.refreshLocal(IProject.DEPTH_INFINITE, monitor);
@@ -559,82 +551,7 @@ public class NewDroolsProjectWizardPage extends WizardNewProjectCreationPage {
 		return null;
     }
     
-	protected File downloadJarFile(String filename, IProgressMonitor monitor) throws IOException {
-		String host = getRepositoryUrl();
-		URL url = new URL(host + "/plugins/" + filename);
-		URLConnection conn = url.openConnection();
-		if (conn instanceof HttpURLConnection)
-			((HttpURLConnection)conn).setRequestMethod("GET");
-		
-		File file = null;
-		int length = conn.getContentLength();
-		final int buffersize = 1024;
-    	SubProgressMonitor spm = new SubProgressMonitor(monitor, length/buffersize);
-		InputStream istream = conn.getInputStream();
-		OutputStream ostream = null;
-		try {
-			spm.beginTask("Downloading "+filename, length/buffersize);
-			file = File.createTempFile(filename, null);
-			if (istream!=null) {
-				ostream = new FileOutputStream(file);
-	
-				int read = 0;
-				byte[] bytes = new byte[buffersize];
-	
-				while ((read = istream.read(bytes)) != -1) {
-					ostream.write(bytes, 0, read);
-					spm.worked(1);
-				}
-			}
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		finally {
-			if (istream!=null)
-				istream.close();
-			if (ostream!=null) {
-				ostream.flush();
-				ostream.close();
-			}
-			spm.done();
-		}
-		return file;
-	}
-
-	private void extractJarFile(File file, IProject project) throws IOException {
-		JarFile jar = new java.util.jar.JarFile(file);
-	    InputStream is = null;
-	    FileOutputStream fos = null;
-		try {
-			Enumeration<JarEntry> enumEntries = jar.entries();
-			while (enumEntries.hasMoreElements()) {
-			    JarEntry entry = enumEntries.nextElement();
-			    System.out.println(entry.getName());
-			    IPath path = project.getLocation().append(entry.getName());
-			    File entryFile = new File(path.toString());
-			    if (entry.isDirectory()) { // if its a directory, create it
-			        entryFile.mkdir();
-			        continue;
-			    }
-			    entryFile.getParentFile().mkdirs();
-			    is = jar.getInputStream(entry);
-			    fos = new java.io.FileOutputStream(entryFile);
-			    while (is.available() > 0) {  // write contents of 'is' to 'fos'
-			        fos.write(is.read());
-			    }
-			}
-		}
-		finally {
-			jar.close();
-			if (fos!=null)
-				fos.close();
-			if (is!=null)
-				is.close();
-		}
-	}
-	
-    /**
+	/**
      * Check if a given URL is accessible and if the page exists.
      * 
      * @param urlString
