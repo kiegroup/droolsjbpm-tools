@@ -19,31 +19,6 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>enforce-plugin-versions</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <skip>true</skip>
-            </configuration>
-          </execution>
-          <execution>
-            <id>no-managed-deps</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <phase>initialize</phase>
-            <configuration>
-              <skip>true</skip>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-p2-plugin</artifactId>
         <executions>
