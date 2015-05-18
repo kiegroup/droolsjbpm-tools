@@ -66,14 +66,13 @@ Note that each example project (&quot;acme-project*&quot; and &quot;another-acme
 &lt;p/&gt;
 The New Drools Project Wizard will append the most common Java source directories to the project&apos;s, so a &quot;.classpath&quot; file is optional. The following folders will be added to the project classpath, if they exist:
 &lt;ul&gt;
-	&lt;li/&gt;src/main/java
-	&lt;li/&gt;src/main/resources
-	&lt;li/&gt;src/test/java
-	&lt;li/&gt;src/test/resources
-	&lt;li/&gt;src/main/rules
+ &lt;li/&gt;src/main/java
+ &lt;li/&gt;src/main/resources
+ &lt;li/&gt;src/test/java
+ &lt;li/&gt;src/test/resources
+ &lt;li/&gt;src/main/rules
 &lt;/ul&gt;
 The &quot;build.properties&quot; files are also required, and identify which files and folders are to be compiled into Installable Units on the update site.
-
       </documentation>
    </annotation>
 
@@ -138,7 +137,16 @@ The &quot;build.properties&quot; files are also required, and identify which fil
          <attribute name="url" type="string" use="required">
             <annotation>
                <documentation>
-                  A URL of the repository. The repository structure must conform to a p2 update site (see the &lt;a href=&quot;#e.Description&quot;&gt;Description&lt;/a&gt;)
+                  A URL of the repository. The repository structure must conform to a p2 update site (see the &lt;a href=&quot;#e.Description&quot;&gt;Description&lt;/a&gt;.)
+&lt;p/&gt;
+If the optional &quot;gitUrl&quot; is specified, the &quot;url&quot; value may contain the strings &quot;${BRANCH}&quot; or &quot;${TAG}&quot; which will be replaced by the Git repository&apos;s list of branches or tags.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="gitUrl" type="string">
+            <annotation>
+               <documentation>
+                  If the examples repository is also a Git repository, this URL points to it. In this case, if t the &quot;url&quot; value contains the strings &quot;${BRANCH}&quot; or &quot;${TAG}&quot; they will be replaced with the names of branches and tags in the Git repository.
                </documentation>
             </annotation>
          </attribute>
@@ -162,13 +170,13 @@ The &quot;build.properties&quot; files are also required, and identify which fil
          &lt;pre&gt;
    &lt;extension point=&quot;org.drools.eclipse.sampleProjectsRepository&quot;&gt;
          &lt;repository
-         	id=&quot;org.drools.sample.project.jbpm-playground&quot;
-         	name=&quot;jBPM Playground at github&quot;
-         	url=&quot;https://raw.githubusercontent.com/droolsjbpm/jbpm-playground/master/site/&quot;/&gt;
+          id=&quot;org.drools.sample.project.jbpm-playground&quot;
+          name=&quot;jBPM Playground at github&quot;
+          url=&quot;https://raw.githubusercontent.com/droolsjbpm/jbpm-playground/master/site/&quot;/&gt;
          &lt;repository
-         	id=&quot;org.drools.sample.project.jbpm-playground.local&quot;
-         	name=&quot;Examples on local filesystem&quot;
-         	url=&quot;file:///C:/Users/home/workspace/org.jboss.droolsjbpm.jbpm-playground/site&quot;/&gt;
+          id=&quot;org.drools.sample.project.jbpm-playground.local&quot;
+          name=&quot;Examples on local filesystem&quot;
+          url=&quot;file:///C:/Users/home/workspace/org.jboss.droolsjbpm.jbpm-playground/site&quot;/&gt;
    &lt;/extension&gt;
 &lt;/pre&gt;
       </documentation>

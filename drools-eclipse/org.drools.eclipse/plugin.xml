@@ -629,7 +629,8 @@
          <repository
          	id="org.drools.sample.project.jbpm-playground"
          	name="jBPM Playground at github"
-         	url="https://raw.githubusercontent.com/bbrodt/jbpm-playground/master/site/"/>
+         	url="https://raw.githubusercontent.com/bbrodt/jbpm-playground/${TAG}/site/"
+         	gitUrl="https://github.com/bbrodt/jbpm-playground"/>
          <repository
          	id="org.drools.sample.project.jbpm-playground.local"
          	name="Examples on local filesystem"

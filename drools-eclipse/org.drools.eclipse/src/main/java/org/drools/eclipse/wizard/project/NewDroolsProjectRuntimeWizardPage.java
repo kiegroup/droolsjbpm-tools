@@ -334,7 +334,7 @@ public class NewDroolsProjectRuntimeWizardPage extends WizardPage {
 
 	@Override
 	public IWizardPage getPreviousPage() {
-		selectedRuntime = null;
+//		selectedRuntime = null;
 		return super.getPreviousPage();
 	}
 }

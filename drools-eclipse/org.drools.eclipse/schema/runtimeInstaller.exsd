@@ -83,7 +83,7 @@ This extension defines a mapping of a Drools Runtime version with a loader/insta
                   Java implementation class to do the actual downloading, file extraction and installation.
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.drools.eclipse.util.IDroolsRuntimeInstaller"/>
+                  <meta.attribute kind="java" basedOn="org.drools.eclipse.util.DroolsRuntimeInstallerBase:"/>
                </appInfo>
             </annotation>
          </attribute>

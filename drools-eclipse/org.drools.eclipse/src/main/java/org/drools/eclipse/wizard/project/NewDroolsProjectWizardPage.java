@@ -47,6 +47,11 @@ import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.InvalidRemoteException;
+import org.eclipse.jgit.api.errors.TransportException;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
@@ -272,18 +277,74 @@ public class NewDroolsProjectWizardPage extends WizardNewProjectCreationPage {
         try {
             IConfigurationElement[] config = Platform.getExtensionRegistry()
                     .getConfigurationElementsFor(DROOLS_SAMPLE_PROJECTS_REPOSITORY);
-            int selectionIndex = 0;
+            int selectionIndex = -1;
             int index = 0;
             for (IConfigurationElement e : config) {
             	String id = e.getAttribute("id");
             	String name = e.getAttribute("name");
             	String url = e.getAttribute("url");
-                repositoryCombo.add(name);
-                repositoryCombo.setData(Integer.toString(index), url);
-                if (DEFAULT_REPOSITORY_ID.equals(id))
+            	String gitUrl = e.getAttribute("gitUrl");
+
+                if (DEFAULT_REPOSITORY_ID.equals(id) && selectionIndex==-1)
                 	selectionIndex = index;
-                ++index;
+
+                if (gitUrl!=null) {
+	    			try {
+	    				// Get all refs from this Git repository, including
+	    				// branches and tags. The branch or tag name will
+	    				// replace the strings "${BRACNH}" or "$TAG}" in the
+	    				// url when fetching the available sample projects.
+	    	            Collection<Ref> refs;
+	    				refs = Git.lsRemoteRepository()
+	    				        .setHeads(true)
+	    				        .setTags(true)
+	    				        .setRemote(gitUrl)
+	    				        .call();
+
+	    				if (refs.size()>0) {
+		    	            for (Ref ref : refs) {
+		    	                System.out.println("Ref: " + ref.getName());
+		    	                String a[] = ref.getName().split("/");
+		    	                if (a.length==3) {
+		    	                	String tagUrl = null;
+		    	                	if ("heads".equals(a[1]) && url.contains("${BRANCH}")) {
+		    	                		tagUrl = url.replace("${BRANCH}", a[2]);	
+		    	                	}
+		    	                	else if ("tags".equals(a[1]) && url.contains("${TAG}")) {
+		    	                		tagUrl = url.replace("${TAG}", a[2]);	
+		    	                	}
+		    	                	if (tagUrl!=null) {
+		    	                		repositoryCombo.add(name + " (" + a[2] + ")");
+		    	                		repositoryCombo.setData(Integer.toString(index), tagUrl);
+		    	                		++index;
+		    	                	}
+		    	                }
+		    	            }
+	    				}
+	    				else {
+	    					gitUrl = null;
+	    				}
+	    			} catch (InvalidRemoteException e2) {
+	    				gitUrl = null;
+	    				e2.printStackTrace();
+	    			} catch (TransportException e2) {
+	    				gitUrl = null;
+	    				e2.printStackTrace();
+	    			} catch (GitAPIException e2) {
+	    				gitUrl = null;
+	    				e2.printStackTrace();
+	    			}
+                }
+                
+                if (gitUrl==null){
+                	repositoryCombo.add(name);
+                    repositoryCombo.setData(Integer.toString(index), url);
+                    ++index;
+                }
             }
+            if (selectionIndex==-1)
+            	selectionIndex = 0;
+            
             repositoryCombo.select(selectionIndex);
 			repositoryUrl = (String) repositoryCombo.getData(Integer.toString(selectionIndex));
             
@@ -295,8 +356,9 @@ public class NewDroolsProjectWizardPage extends WizardNewProjectCreationPage {
     }
     
     private String getRepositoryUrl() {
-    	if (repositoryUrl!=null)
+    	if (repositoryUrl!=null) {
     		return repositoryUrl;
+    	}
     	return DEFAULT_REPOSITORY_URL;
     }
     
