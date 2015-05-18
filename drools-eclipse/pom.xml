@@ -41,8 +41,25 @@
     <module>org.jboss.tools.runtime.drools.detector.feature</module>
     <module>org.drools.updatesite</module>
   </modules>
+
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <!-- Does not work properly together with the tycho-plugin -->
+          <execution>
+            <id>enforce-plugin-versions</id>
+            <phase>none</phase>
+          </execution>
+          <!-- Does not work properly together with the tycho-plugin -->
+          <execution>
+            <id>ban-uberjars</id>
+            <phase>none</phase>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-maven-plugin</artifactId>

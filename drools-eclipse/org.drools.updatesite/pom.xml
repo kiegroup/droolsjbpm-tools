@@ -38,14 +38,14 @@
         <artifactId>maven-source-plugin</artifactId>
         <executions>
           <execution>
-            <id>jar</id>
+            <id>attach-sources</id>
             <goals>
               <goal>never</goal>
             </goals>
             <phase>never</phase>
           </execution>
           <execution>
-            <id>test-jar</id>
+            <id>attach-test-sources</id>
             <phase>never</phase>
             <goals>
               <goal>never</goal>
@@ -77,33 +77,6 @@
                 <update.site.version>${update.site.version}</update.site.version>
                 <target.eclipse.version>${target.eclipse.version}</target.eclipse.version>
               </symbols>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <!-- maven-enforcer-plugin disabled because build fails when having enforce-plugin-versions rule enabled
-      this has to be fixed, since kie-eap-integration has a lot of different hard coded versions -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>enforce-plugin-versions</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <skip>true</skip>
-            </configuration>
-          </execution>
-          <execution>
-            <id>no-managed-deps</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <phase>initialize</phase>
-            <configuration>
-              <skip>true</skip>
             </configuration>
           </execution>
         </executions>
