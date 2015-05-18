@@ -38,14 +38,14 @@
         <artifactId>maven-source-plugin</artifactId>
         <executions>
           <execution>
-            <id>jar</id>
+            <id>attach-sources</id>
             <goals>
               <goal>never</goal>
             </goals>
             <phase>never</phase>
           </execution>
           <execution>
-            <id>test-jar</id>
+            <id>attach-test-sources</id>
             <phase>never</phase>
             <goals>
               <goal>never</goal>
