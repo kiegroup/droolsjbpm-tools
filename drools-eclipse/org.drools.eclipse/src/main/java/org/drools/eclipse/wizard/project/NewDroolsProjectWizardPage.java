@@ -199,14 +199,14 @@ public class NewDroolsProjectWizardPage extends WizardNewProjectCreationPage {
         });
         fillRepositoryCombo(repositoryCombo);
     	
-        emptyProjectGroup = new Composite(parent, SWT.NONE);
-        emptyProjectGroup.setLayout(new GridLayout());
-        emptyProjectGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
-    	
         sampleFilesProjectGroup = new Composite(parent, SWT.NONE);
         sampleFilesProjectGroup.setLayout(new GridLayout());
         gd = new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL);
         sampleFilesProjectGroup.setLayoutData(gd);
+    	
+        emptyProjectGroup = new Composite(parent, SWT.NONE);
+        emptyProjectGroup.setLayout(new GridLayout());
+        emptyProjectGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
     	
         onlineExampleProjectGroup = new Composite(parent, SWT.NONE);
         onlineExampleProjectGroup.setLayout(new GridLayout());
@@ -268,8 +268,8 @@ public class NewDroolsProjectWizardPage extends WizardNewProjectCreationPage {
         showGroup(onlineExampleProjectGroup, false);
         emptyProjectButton.setSelection(true);
         
-        createEmptyProjectControls(emptyProjectGroup);
         createSampleFilesProjectControls(sampleFilesProjectGroup);
+        createEmptyProjectControls(emptyProjectGroup);
     }
 
     private void fillRepositoryCombo(Combo repositoryCombo) {
@@ -707,6 +707,8 @@ public class NewDroolsProjectWizardPage extends WizardNewProjectCreationPage {
     	super.setPageComplete(complete);
     	if (runtimePage!=null)
     		runtimePage.setPageComplete(getInitialProjectContent()==ONLINE_EXAMPLE_PROJECT);
+    	if (isCurrentPage())
+    		getContainer().updateButtons();
     }
     
 	@Override

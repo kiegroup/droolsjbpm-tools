@@ -83,7 +83,7 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
         setNeedsProgressMonitor(true);
     }
 
-    public boolean performFinish() {
+	public boolean performFinish() {
     	IProject newProjectHandle = null;
     	for (IProjectDescription pd : mainPage.getNewProjectDescriptions()) {
     		if (newProjectHandle==null)
