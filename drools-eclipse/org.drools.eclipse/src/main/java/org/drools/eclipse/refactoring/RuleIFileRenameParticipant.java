@@ -24,7 +24,6 @@ import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.eclipse.DRLInfo;
 import org.drools.eclipse.DRLInfo.PatternInfo;
 import org.drools.eclipse.DroolsEclipsePlugin;
-import org.drools.eclipse.util.FileUtils;
 import org.drools.compiler.lang.descr.ImportDescr;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -41,6 +40,7 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringProcessor;
 import org.eclipse.ltk.core.refactoring.participants.RenameParticipant;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.ReplaceEdit;
+import org.kie.eclipse.utils.FileUtils;
 
 /**
  * Participant to generate refactoring when a type is renamed.

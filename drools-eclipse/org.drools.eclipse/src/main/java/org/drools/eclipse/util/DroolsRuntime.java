@@ -16,11 +16,23 @@
 
 package org.drools.eclipse.util;
 
-public class DroolsRuntime {
-	public static final String ID_DROOLS_6 = "Drools 6.x";
-	public static final String ID_DROOLS_5_1 = "Drools 5.1.x";
-	public static final String ID_DROOLS_5 = "Drools 5.0.x";
-	public static final String ID_DROOLS_4 = "Drools 4.x";
+import org.kie.eclipse.runtime.IRuntime;
+
+public class DroolsRuntime implements IRuntime {
+	public static final String NAME_DROOLS_6 = "Drools 6.x";
+	public static final String NAME_DROOLS_5_1 = "Drools 5.1.x";
+	public static final String NAME_DROOLS_5 = "Drools 5.0.x";
+	public static final String NAME_DROOLS_4 = "Drools 4.x";
+
+	public static final String ID_DROOLS_6 = "org.drools.runtime_6.x";
+	public static final String ID_DROOLS_5_1 = "org.drools.runtime_5.1.x";
+	public static final String ID_DROOLS_5 = "org.drools.runtime_5.0.x";
+	public static final String ID_DROOLS_4 = "org.drools.runtime_4.x";
+	
+
+	private static String[] allNames = {
+		NAME_DROOLS_4, NAME_DROOLS_5, NAME_DROOLS_5_1, NAME_DROOLS_6
+	};
 
 	private static String[] allIds = {
 		ID_DROOLS_4, ID_DROOLS_5, ID_DROOLS_5_1, ID_DROOLS_6
@@ -31,7 +43,11 @@ public class DroolsRuntime {
     private String[] jars;
     private String id;
 
-    public static String[] getIAllds() {
+    public static String[] getAllNames() {
+    	return allNames;
+    }
+
+    public static String[] getAllIds() {
     	return allIds;
     }
     
@@ -84,5 +100,9 @@ public class DroolsRuntime {
 
     public void setJars(String[] jars) {
         this.jars = jars;
+    }
+    
+    public String toString() {
+    	return getName();
     }
 }

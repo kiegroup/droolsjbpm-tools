@@ -1,4 +1,4 @@
-package org.drools.eclipse.wizard.project;
+package org.kie.eclipse.wizard.project;
 
 import java.util.ArrayList;
 import java.util.Collection;

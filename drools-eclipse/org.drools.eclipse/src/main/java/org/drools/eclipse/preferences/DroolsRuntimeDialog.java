@@ -108,7 +108,7 @@ public class DroolsRuntimeDialog extends Dialog {
         });
 
         Button createButton = new Button(composite, SWT.PUSH | SWT.LEFT);
-        String name = DroolsRuntimeManager.getBundleRuntimeName();
+        String name = DroolsRuntimeManager.getDefault().getBundleRuntimeName();
         createButton.setText("Create a new " + name + "...");
         gridData = new GridData();
         gridData.horizontalSpan = 2;
@@ -184,7 +184,7 @@ public class DroolsRuntimeDialog extends Dialog {
         String selectedDirectory = dialog.open();
 
         if (selectedDirectory != null) {
-            DroolsRuntime rt = DroolsRuntimeManager.createBundleRuntime(selectedDirectory);
+            DroolsRuntime rt = DroolsRuntimeManager.getDefault().createBundleRuntime(selectedDirectory);
             nameText.setText(rt.getName());
             pathText.setText(rt.getPath());
         }

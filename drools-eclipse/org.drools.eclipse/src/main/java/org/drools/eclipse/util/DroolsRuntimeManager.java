@@ -17,6 +17,7 @@
 package org.drools.eclipse.util;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -41,10 +42,14 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jdt.core.IJavaProject;
+import org.kie.eclipse.runtime.IRuntime;
+import org.kie.eclipse.runtime.IRuntimeManager;
 
-public class DroolsRuntimeManager {
+public class DroolsRuntimeManager implements IRuntimeManager {
 
     private static final String DROOLS_RUNTIME_RECOGNIZER = "org.drools.eclipse.runtimeRecognizer";
 	// This is the "hidden" Eclipse Workspace Project name that will hold a copy
@@ -52,7 +57,7 @@ public class DroolsRuntimeManager {
 	// a simple project with a "lib" folder containing all of the required
 	// Drools Runtime jars. If the user has not yet created a default Runtime,
     // this  project will be created, populated and used as the default.
-    private static final String DROOLS_BUNDLE_RUNTIME_PATH = ".drools.runtime";
+    private static final String DROOLS_BUNDLE_RUNTIME_LOCATION = ".drools.runtime";
     
     private static DroolsRuntimeManager manager;
     public static DroolsRuntimeManager getDefault() {
@@ -76,10 +81,21 @@ public class DroolsRuntimeManager {
     	listeners.remove(listener);
     }
     
+    public String[] getAllRuntimeNames() {
+    	return DroolsRuntime.getAllNames();
+    }
+    
+    public String[] getAllRuntimeIds() {
+    	return DroolsRuntime.getAllIds();
+    }
+    
+    public boolean isMavenized(String runtimeId) {
+    	return DroolsRuntime.ID_DROOLS_6.equals(runtimeId);
+    }
     
     public void addRuntime(DroolsRuntime rt) {
     	ArrayList<DroolsRuntime> list = new ArrayList<DroolsRuntime>();
-    	list.addAll(Arrays.asList(getDroolsRuntimes()));
+    	list.addAll(Arrays.asList(getConfiguredRuntimes()));
     	list.add(rt);
     	setDroolsRuntimesInternal(list.toArray(new DroolsRuntime[list.size()]));
     	fireRuntimeAdded(rt);
@@ -88,7 +104,7 @@ public class DroolsRuntimeManager {
     
     public void removeRuntime(DroolsRuntime rt) {
     	ArrayList<DroolsRuntime> list = new ArrayList<DroolsRuntime>();
-    	list.addAll(Arrays.asList(getDroolsRuntimes()));
+    	list.addAll(Arrays.asList(getConfiguredRuntimes()));
     	list.remove(rt);
     	setDroolsRuntimesInternal(list.toArray(new DroolsRuntime[list.size()]));
     	fireRuntimeRemoved(rt);
@@ -111,7 +127,7 @@ public class DroolsRuntimeManager {
     private void fireRuntimesChanged() {
     	Iterator<IDroolsRuntimeManagerListener> it = listeners.iterator();
     	while(it.hasNext()) {
-    		it.next().runtimesChanged(getDroolsRuntimes());
+    		it.next().runtimesChanged(getConfiguredRuntimes());
     	}
     }
 
@@ -121,7 +137,7 @@ public class DroolsRuntimeManager {
      * 
      * @return version number of default Drools Runtime.
      */
-    public static String getBundleRuntimeVersion() {
+    public String getBundleRuntimeVersion() {
     	String version = Platform.getBundle("org.drools.eclipse").getVersion().toString();
     	String a[] = version.split("\\.");
     	if (a.length>3) {
@@ -130,12 +146,12 @@ public class DroolsRuntimeManager {
     	return version;
     }
     
-    public static String getBundleRuntimeName() {
+    public String getBundleRuntimeName() {
     	return "Drools " + getBundleRuntimeVersion() + " Runtime";
     }
     
-    public static String getBundleRuntimePath() {
-    	return DROOLS_BUNDLE_RUNTIME_PATH;
+    public String getBundleRuntimeLocation() {
+    	return DROOLS_BUNDLE_RUNTIME_LOCATION;
     }
     
     /**
@@ -145,11 +161,11 @@ public class DroolsRuntimeManager {
      * Use createBundleRuntime() instead
      * @param location
      */
-    public static void createDefaultRuntime(String location) {
+    public void createDefaultRuntime(String location) {
     	createBundleRuntime(location);
     }
     
-    public static DroolsRuntime createBundleRuntime(String location) {
+    public DroolsRuntime createBundleRuntime(String location) {
         List<String> jars = new ArrayList<String>();
         // get all drools jars from drools eclipse plugin
         String s = getDroolsLocation();
@@ -210,11 +226,11 @@ public class DroolsRuntimeManager {
         return runtime;
     }
     
-    public static DroolsRuntime getEffectiveDroolsRuntime(DroolsRuntime selectedRuntime, boolean useDefault) {
+    public IRuntime getEffectiveRuntime(IRuntime selectedRuntime, boolean useDefault) {
     	
     	// The bundle runtime project may have been deleted; if so, we need to rebuild it
     	boolean rebuildBundleRuntimeProject = false;
-    	String bundleRuntimeLocation = getBundleRuntimePath();
+    	String bundleRuntimeLocation = getBundleRuntimeLocation();
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         if (selectedRuntime.getPath() != null) {
         	// If this really is the Bundle Runtime project,
@@ -282,8 +298,8 @@ public class DroolsRuntimeManager {
         	}
         }
         
-        List<DroolsRuntime> droolsRuntimes = new ArrayList<DroolsRuntime>();
-    	for (DroolsRuntime rt : getDroolsRuntimes())
+        List<IRuntime> droolsRuntimes = new ArrayList<IRuntime>();
+    	for (DroolsRuntime rt : getConfiguredRuntimes())
     		droolsRuntimes.add(rt);
     	
         if (selectedRuntime.getPath() == null || rebuildBundleRuntimeProject || droolsRuntimes.size()==0) {
@@ -326,7 +342,7 @@ public class DroolsRuntimeManager {
         return selectedRuntime;
     }
 
-    private static String getDroolsLocation() {
+    private String getDroolsLocation() {
         try {
             return FileLocator.toFileURL(Platform.getBundle("org.drools.eclipse")
                 .getEntry("/")).getFile().toString();
@@ -336,10 +352,12 @@ public class DroolsRuntimeManager {
         return null;
     }
 
-    private static String generateString(DroolsRuntime[] droolsRuntimes) {
+    private String generateString(DroolsRuntime[] droolsRuntimes) {
         String result = "";
         for (DroolsRuntime runtime: droolsRuntimes) {
             result += runtime.getName() + "#" + runtime.getPath() + "#" + runtime.isDefault() + "# ";
+            // migrate to new runtime string format by adding the runtime ID
+            result += runtime.getId() + "#";
             if (runtime.getJars() != null) {
                 for (String jar: runtime.getJars()) {
                     result += jar + ";";
@@ -350,7 +368,7 @@ public class DroolsRuntimeManager {
         return result;
     }
 
-    private static DroolsRuntime[] generateRuntimes(String s) {
+    private DroolsRuntime[] generateRuntimes(String s) {
         List<DroolsRuntime> result = new ArrayList<DroolsRuntime>();
         if (s != null && !"".equals(s)) {
             String[] runtimeStrings = s.split("###");
@@ -367,7 +385,13 @@ public class DroolsRuntimeManager {
 	                if (properties.length > 3) {
 	                    List<String> list = new ArrayList<String>();
 	                    String[] jars = properties[3].split(";");
-	                    for (String jar: jars) {
+	                    // migrate to new runtime string format
+	                    int index = 0;
+	                    if (!jars[index].endsWith(".jar")) {
+	                    	runtime.setId(jars[index++]);
+	                    }
+	                    while (index<jars.length) {
+	                    	String jar = jars[index++];
 	                        jar = jar.trim();
 	                        if (jar.length() > 0) {
 	                            list.add(jar);
@@ -382,7 +406,7 @@ public class DroolsRuntimeManager {
         return result.toArray(new DroolsRuntime[result.size()]);
     }
 
-    public static DroolsRuntime[] getDroolsRuntimes() {
+    public DroolsRuntime[] getConfiguredRuntimes() {
         String runtimesString = DroolsEclipsePlugin.getDefault().getPreferenceStore()
             .getString(IDroolsConstants.DROOLS_RUNTIMES);
         if (runtimesString != null) {
@@ -391,19 +415,19 @@ public class DroolsRuntimeManager {
         return new DroolsRuntime[0];
     }
 
-    public static void setDroolsRuntimes(DroolsRuntime[] runtimes) {
+    public void setDroolsRuntimes(DroolsRuntime[] runtimes) {
     	setDroolsRuntimesInternal(runtimes);
     	getDefault().fireRuntimesChanged();
     }
 
-    private static void setDroolsRuntimesInternal(DroolsRuntime[] runtimes) {
+    private void setDroolsRuntimesInternal(DroolsRuntime[] runtimes) {
         DroolsEclipsePlugin.getDefault().getPreferenceStore().setValue(IDroolsConstants.DROOLS_RUNTIMES,
         generateString(runtimes));
     }
 
     
-    public static DroolsRuntime getDroolsRuntime(String name) {
-        DroolsRuntime[] runtimes = getDroolsRuntimes();
+    public DroolsRuntime getDroolsRuntime(String name) {
+        DroolsRuntime[] runtimes = getConfiguredRuntimes();
         for (DroolsRuntime runtime: runtimes) {
             if (runtime.getName().equals(name)) {
                 return runtime;
@@ -412,8 +436,8 @@ public class DroolsRuntimeManager {
         return null;
     }
 
-    public static DroolsRuntime getDefaultDroolsRuntime() {
-        DroolsRuntime[] runtimes = getDroolsRuntimes();
+    public DroolsRuntime getDefaultRuntime() {
+        DroolsRuntime[] runtimes = getConfiguredRuntimes();
         for (DroolsRuntime runtime: runtimes) {
             if (runtime.isDefault()) {
                 return runtime;
@@ -421,31 +445,42 @@ public class DroolsRuntimeManager {
         }
         return null;
     }
+    
+    public void setRuntime(IRuntime runtime, IProject project, IProgressMonitor monitor) throws CoreException {
+        if (runtime != null) {
+            IFile file = project.getFile(".settings/.drools.runtime");
+            String runtimeString = "<runtime>" + runtime.getName() + "</runtime>";
+            if (!file.exists()) {
+                IFolder folder = project.getProject().getFolder(".settings");
+                if (!folder.exists()) {
+                    folder.create(true, true, null);
+                }
+                file.create(new ByteArrayInputStream(runtimeString.getBytes()), true, null);
+            } else {
+                file.setContents(new ByteArrayInputStream(runtimeString.getBytes()), true, false, null);
+            }
+        }
+    }
 
-    public static String getDroolsRuntime(IProject project) {
+    public IRuntime getRuntime(IProject project) {
         try {
             IFile file = project.getFile(".settings/.drools.runtime");
             if (file.exists()) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(file.getContents()));
                 String location = reader.readLine();
                 if (location.startsWith("<runtime>") && location.endsWith("</runtime>")) {
-                    return location.substring(9, location.length() - 10);
+                    String runtimeName = location.substring(9, location.length() - 10);
+                    return getDroolsRuntime(runtimeName);
                 }
             }
         } catch (Exception e) {
             DroolsEclipsePlugin.log(e);
         }
-        return null;
+        return getDefaultRuntime();
     }
     
-    public static String[] getDroolsRuntimeJars(IProject project) {
-        String runtimeName = getDroolsRuntime(project);
-        DroolsRuntime runtime = null;
-        if (runtimeName == null) {
-            runtime = getDefaultDroolsRuntime();
-        } else {
-            runtime = getDroolsRuntime(runtimeName);
-        }
+    public String[] getDroolsRuntimeJars(IProject project) {
+        DroolsRuntime runtime = (DroolsRuntime) getRuntime(project);
         if (runtime == null) {
             return null;
         }
@@ -455,7 +490,7 @@ public class DroolsRuntimeManager {
         return runtime.getJars();
     }
     
-    public static void recognizeJars(DroolsRuntime runtime) {
+    public void recognizeJars(DroolsRuntime runtime) {
         String path = runtime.getPath();
         if (path != null) {
             try {

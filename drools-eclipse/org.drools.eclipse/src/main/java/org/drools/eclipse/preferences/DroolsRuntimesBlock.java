@@ -266,7 +266,7 @@ public class DroolsRuntimesBlock implements ISelectionProvider {
         if (dialog.open() == Window.OK) {
             DroolsRuntime result = dialog.getResult();
             if (result != null) {
-                DroolsRuntimeManager.recognizeJars(result);
+                DroolsRuntimeManager.getDefault().recognizeJars(result);
                 droolsRuntimes.add(result);
                 droolsRuntimesList.refresh();
                 droolsRuntimesList.setSelection(new StructuredSelection(result));
@@ -285,7 +285,7 @@ public class DroolsRuntimesBlock implements ISelectionProvider {
         if (dialog.open() == Window.OK) {
             DroolsRuntime result = dialog.getResult();
             if (result != null) {
-                DroolsRuntimeManager.recognizeJars(result);
+                DroolsRuntimeManager.getDefault().recognizeJars(result);
                 // replace with the edited VM
                 int index = droolsRuntimes.indexOf(runtime);
                 droolsRuntimes.remove(index);

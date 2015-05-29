@@ -82,7 +82,7 @@ public class DroolsClasspathContainer implements IClasspathContainer {
     }
 
     private String[] getJarNames(IJavaProject project) {
-        return DroolsRuntimeManager.getDroolsRuntimeJars(project.getProject());
+        return DroolsRuntimeManager.getDefault().getDroolsRuntimeJars(project.getProject());
     }
 
 }

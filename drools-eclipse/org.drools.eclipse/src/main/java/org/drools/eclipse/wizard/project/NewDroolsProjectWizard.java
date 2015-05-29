@@ -19,7 +19,6 @@ package org.drools.eclipse.wizard.project;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,22 +28,13 @@ import org.drools.eclipse.builder.DroolsBuilder;
 import org.drools.eclipse.util.DroolsClasspathContainer;
 import org.drools.eclipse.util.DroolsRuntime;
 import org.eclipse.core.resources.ICommand;
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceStatus;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
@@ -52,234 +42,63 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.ui.PreferenceConstants;
-import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.actions.WorkspaceModifyOperation;
-import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
-import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
+import org.kie.eclipse.wizard.project.AbstractKieProjectMainWizardPage;
+import org.kie.eclipse.wizard.project.AbstractKieProjectRuntimeWizardPage;
+import org.kie.eclipse.wizard.project.AbstractKieProjectWizard;
 
 /**
  * A wizard to create a new Drools project.
  */
-public class NewDroolsProjectWizard extends BasicNewResourceWizard {
+public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 
     public static final String DROOLS_CLASSPATH_CONTAINER_PATH = "DROOLS/Drools";
     
     public static final String MAIN_PAGE = "extendedNewProjectPage";
     public static final String RUNTIME_PAGE = "extendedNewProjectRuntimePage";
     
-//    private IProject newProject;
     private NewDroolsProjectWizardPage mainPage;
     private NewDroolsProjectRuntimeWizardPage runtimePage;
-    
-    public void addPages() {
-        super.addPages();
-        mainPage = new NewDroolsProjectWizardPage(MAIN_PAGE);
-        addPage(mainPage);
-        runtimePage = new NewDroolsProjectRuntimeWizardPage(RUNTIME_PAGE);
-        addPage(runtimePage);
-        setNeedsProgressMonitor(true);
+
+    protected void initializeDefaultPageImageDescriptor() {
+        ImageDescriptor desc = DroolsEclipsePlugin.getImageDescriptor("icons/drools-large.PNG");
+        setDefaultPageImageDescriptor(desc);
     }
 
-	public boolean performFinish() {
-    	IProject newProjectHandle = null;
-    	for (IProjectDescription pd : mainPage.getNewProjectDescriptions()) {
-    		if (newProjectHandle==null)
-    			newProjectHandle = createDroolsProject(pd);
-    		else
-    			createDroolsProject(pd);
-    	}
-        if (newProjectHandle == null) {
-            return false;
-        }
-        selectAndReveal(newProjectHandle);
-        return true;
-    }
-    
-    private IProject getProjectHandle(String name) {
-        return ResourcesPlugin.getWorkspace().getRoot().getProject(name);
-    }
-
-    private IProject createDroolsProject(IProjectDescription pd) {
-        final IProject newProjectHandle = createNewProject(pd);
-        WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
-            protected void execute(IProgressMonitor monitor)
-                    throws CoreException {
-                try {
-                    IJavaProject project = JavaCore.create(newProjectHandle);
-                    createDroolsRuntime(project, monitor);
-                    createOutputLocation(project, monitor);
-                    addJavaBuilder(project, monitor);
-                    setClasspath(project, monitor);
-                    createInitialContent(project, monitor);
-                    newProjectHandle.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
-                } catch (IOException _ex) {
-                    ErrorDialog.openError(getShell(), "Problem creating Drools project",
-                        null, null);
-                }
-            }
-        };
-        try {
-            getContainer().run(true, true, op);
-        } catch (Throwable t) {
-            DroolsEclipsePlugin.log(t);
-        }
-        
-        return newProjectHandle;
-    }
-    
-    private IProject createNewProject(final IProjectDescription description) {
-        addNatures(description);
-        final IProject newProjectHandle = getProjectHandle(description.getName());
-        // create the new project operation
-        WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
-            protected void execute(IProgressMonitor monitor)
-                    throws CoreException {
-                createProject(description, newProjectHandle, monitor);
-            }
-        };
-
-        // run the new project creation operation
-        try {
-            getContainer().run(true, true, op);
-        } catch (InterruptedException e) {
-            return null;
-        } catch (InvocationTargetException e) {
-            Throwable t = e.getTargetException();
-            if (t instanceof CoreException) {
-                if (((CoreException) t).getStatus().getCode() == IResourceStatus.CASE_VARIANT_EXISTS) {
-                    MessageDialog.openError(getShell(),
-                        "NewProject.errorMessage",
-                        "NewProject.caseVariantExistsError"
-                                + newProjectHandle.getName());
-                } else {
-                    ErrorDialog.openError(getShell(),
-                        "NewProject.errorMessage", null, // no special message
-                        ((CoreException) t).getStatus());
-                }
-            } else {
-                DroolsEclipsePlugin.log(e);
-            }
-            return null;
-        }
-
-        return newProjectHandle;
-    }
-    
-    List<String> list = new ArrayList<String>();
-    private void addNatures(IProjectDescription projectDescription) {
-        list.addAll(Arrays.asList(projectDescription.getNatureIds()));
-        list.add("org.eclipse.jdt.core.javanature");
-        projectDescription.setNatureIds((String[]) list
-            .toArray(new String[list.size()]));
-    }
-    
-    private void createProject(IProjectDescription description,
-            IProject projectHandle, IProgressMonitor monitor)
-            throws CoreException, OperationCanceledException {
-        try {
-            monitor.beginTask("", 2000);
-            projectHandle.create(description, new SubProgressMonitor(monitor,
-                    1000));
-            if (monitor.isCanceled()) {
-                throw new OperationCanceledException();
-            }
-            projectHandle.open(IResource.BACKGROUND_REFRESH,
-                new SubProgressMonitor(monitor, 1000));
-        } finally {
-            monitor.done();
-        }
-    }
-    
-    private void createDroolsRuntime(IJavaProject project, IProgressMonitor monitor) throws CoreException {
-        DroolsRuntime runtime = mainPage.getDroolsRuntime();
-        if (runtime != null) {
-            IFile file = project.getProject().getFile(".settings/.drools.runtime");
-            String runtimeString = "<runtime>" + runtime.getName() + "</runtime>";
-            if (!file.exists()) {
-                IFolder folder = project.getProject().getFolder(".settings");
-                if (!folder.exists()) {
-                    folder.create(true, true, null);
-                }
-                file.create(new ByteArrayInputStream(runtimeString.getBytes()), true, null);
-            } else {
-                file.setContents(new ByteArrayInputStream(runtimeString.getBytes()), true, false, null);
-            }
-        }
-    }
-
-    private void createOutputLocation(IJavaProject project, IProgressMonitor monitor)
+    protected void createOutputLocation(IJavaProject project, IProgressMonitor monitor)
             throws JavaModelException, CoreException {
         IFolder folder = createFolder(project, "target", monitor);
         IPath path = folder.getFullPath();
         project.setOutputLocation(path, null);
     }
 
-    private void addJavaBuilder(IJavaProject project, IProgressMonitor monitor) throws CoreException {
+    protected void addBuilders(IJavaProject project, IProgressMonitor monitor) throws CoreException {
+    	super.addBuilders(project, monitor);
+    	addDroolsBuilder(project, monitor);
+    }
+    
+    private void addDroolsBuilder(IJavaProject project, IProgressMonitor monitor) throws CoreException {
         IProjectDescription description = project.getProject().getDescription();
         ICommand[] commands = description.getBuildSpec();
-        ICommand[] newCommands = new ICommand[commands.length + 2];
+        ICommand[] newCommands = new ICommand[commands.length + 1];
         System.arraycopy(commands, 0, newCommands, 0, commands.length);
-
-        ICommand javaCommand = description.newCommand();
-        javaCommand.setBuilderName("org.eclipse.jdt.core.javabuilder");
-        newCommands[commands.length] = javaCommand;
         
         ICommand droolsCommand = description.newCommand();
         droolsCommand.setBuilderName(DroolsBuilder.BUILDER_ID);
-        newCommands[commands.length + 1] = droolsCommand;
+        newCommands[commands.length] = droolsCommand;
         
         description.setBuildSpec(newCommands);
         project.getProject().setDescription(description, monitor);
     }
 
-    private void setClasspath(IJavaProject project, IProgressMonitor monitor)
-            throws JavaModelException, CoreException {
-        project.setRawClasspath(new IClasspathEntry[0], monitor);
-        addSourceFolders(project, monitor);
-        addJRELibraries(project, monitor);
-        addDroolsLibraries(project, monitor);
-    }
-
-    private void addSourceFolders(IJavaProject project, IProgressMonitor monitor) throws JavaModelException, CoreException {
-    	if (mainPage.getInitialProjectContent()!=NewDroolsProjectWizardPage.ONLINE_EXAMPLE_PROJECT) {
-	        List<IClasspathEntry> list = new ArrayList<IClasspathEntry>();
-	        list.addAll(Arrays.asList(project.getRawClasspath()));
-	        addSourceFolder(project, list, "src/main/java", monitor);
-	        if (DroolsRuntime.ID_DROOLS_6.equals(runtimePage.getGenerationType())) {
-	        	addSourceFolder(project, list, "src/main/resources", monitor);
-	        	createFolder(project, "src/main/resources/META-INF", monitor);
-	        	createFolder(project, "src/main/resources/META-INF/maven", monitor);
-	        } else {
-	        	addSourceFolder(project, list, "src/main/rules", monitor);
-	        }
-	        project.setRawClasspath((IClasspathEntry[]) list.toArray(new IClasspathEntry[list.size()]), null);
-    	}
-    }
-    
-    private void addFolderToClasspath(IJavaProject project, String folderName, IProgressMonitor monitor) throws JavaModelException, CoreException {
-        List<IClasspathEntry> list = new ArrayList<IClasspathEntry>();
-        list.addAll(Arrays.asList(project.getRawClasspath()));
-        IFolder folder = project.getProject().getFolder(folderName);
-        if (folder.exists()) {
-        	addSourceFolder(project, list, folderName, monitor);
-        	project.setRawClasspath((IClasspathEntry[]) list.toArray(new IClasspathEntry[list.size()]), null);
-        }
-    }
-    
-    private void addJRELibraries(IJavaProject project, IProgressMonitor monitor) throws JavaModelException {
-        List<IClasspathEntry> list = new ArrayList<IClasspathEntry>();
-        list.addAll(Arrays.asList(project.getRawClasspath()));
-        list.addAll(Arrays.asList(PreferenceConstants.getDefaultJRELibrary()));
-        project.setRawClasspath((IClasspathEntry[]) list
-            .toArray(new IClasspathEntry[list.size()]), monitor);
-    }
-
     private static IPath getClassPathContainerPath() {
         return new Path(DROOLS_CLASSPATH_CONTAINER_PATH);
     }
+
+	@Override
+	protected IClasspathContainer createClasspathContainer(IJavaProject project) {
+		return new DroolsClasspathContainer(project, getClassPathContainerPath());
+	}
 
     private static void createDroolsLibraryContainer(IJavaProject project, IProgressMonitor monitor)
             throws JavaModelException {
@@ -299,56 +118,50 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
             .toArray(new IClasspathEntry[list.size()]), monitor);
     }
 
-    private void createInitialContent(IJavaProject javaProject, IProgressMonitor monitor)
+    protected boolean createInitialContent(IJavaProject javaProject, IProgressMonitor monitor)
             throws CoreException, JavaModelException, IOException {
-    	if (mainPage.getInitialProjectContent() == NewDroolsProjectWizardPage.EMPTY_PROJECT) {
-        	createKModule(javaProject, monitor);
-        	createPom(javaProject, monitor);
+    	if (!super.createInitialContent(javaProject, monitor)) {
+	    	if (mainPage.getInitialProjectContent() == NewDroolsProjectWizardPage.EMPTY_PROJECT) {
+	        	createKModule(javaProject, monitor);
+	        	createPom(javaProject, monitor);
+	    	}
+	    	else if (mainPage.getInitialProjectContent() == NewDroolsProjectWizardPage.SAMPLE_FILES_PROJECT) {
+		        try {
+		        	boolean createKModule = false;
+		            if (mainPage.createJavaRuleFile()) {
+		                createRuleSampleLauncher(javaProject);
+		                createKModule = true;
+		            }
+		            if (mainPage.createRuleFile()) {
+		                createRule(javaProject, monitor);
+		                createKModule = true;
+		            }
+		            if (mainPage.createDecisionTableFile()) {
+		                createDecisionTable(javaProject, monitor);
+		                createKModule = true;
+		            }
+		            if (mainPage.createJavaDecisionTableFile()) {
+		                createDecisionTableSampleLauncher(javaProject);
+		                createKModule = true;
+		            }
+		            if (mainPage.createRuleFlowFile()) {
+		                createRuleFlow(javaProject, monitor);
+		                createKModule = true;
+		            }
+		            if (mainPage.createJavaRuleFlowFile()) {
+		                createRuleFlowSampleLauncher(javaProject);
+		                createKModule = true;
+		            }
+		            if (createKModule) {
+		            	createKModule(javaProject, monitor);
+		            	createPom(javaProject, monitor);
+		            }
+		        } catch (Throwable t) {
+		            t.printStackTrace();
+		        }
+	    	}
     	}
-    	else if (mainPage.getInitialProjectContent() == NewDroolsProjectWizardPage.ONLINE_EXAMPLE_PROJECT) {
-    		mainPage.downloadOnlineExampleProject(javaProject.getProject(), monitor);
-    		// Add these folders to the classpath if they exist, otherwise ignore.
-    		addFolderToClasspath(javaProject, "src/main/java", monitor);
-    		addFolderToClasspath(javaProject, "src/main/resources", monitor);
-    		addFolderToClasspath(javaProject, "src/test/java", monitor);
-    		addFolderToClasspath(javaProject, "src/test/resources", monitor);
-    		addFolderToClasspath(javaProject, "src/main/rules", monitor);
-    	}
-    	else if (mainPage.getInitialProjectContent() == NewDroolsProjectWizardPage.SAMPLE_FILES_PROJECT) {
-	        try {
-	        	boolean createKModule = false;
-	            if (mainPage.createJavaRuleFile()) {
-	                createRuleSampleLauncher(javaProject);
-	                createKModule = true;
-	            }
-	            if (mainPage.createRuleFile()) {
-	                createRule(javaProject, monitor);
-	                createKModule = true;
-	            }
-	            if (mainPage.createDecisionTableFile()) {
-	                createDecisionTable(javaProject, monitor);
-	                createKModule = true;
-	            }
-	            if (mainPage.createJavaDecisionTableFile()) {
-	                createDecisionTableSampleLauncher(javaProject);
-	                createKModule = true;
-	            }
-	            if (mainPage.createRuleFlowFile()) {
-	                createRuleFlow(javaProject, monitor);
-	                createKModule = true;
-	            }
-	            if (mainPage.createJavaRuleFlowFile()) {
-	                createRuleFlowSampleLauncher(javaProject);
-	                createKModule = true;
-	            }
-	            if (createKModule) {
-	            	createKModule(javaProject, monitor);
-	            	createPom(javaProject, monitor);
-	            }
-	        } catch (Throwable t) {
-	            t.printStackTrace();
-	        }
-    	}
+    	return true;
     }
 
     /**
@@ -357,7 +170,7 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
     private void createRuleSampleLauncher(IJavaProject project)
             throws JavaModelException, IOException {
 
-        String runtime = runtimePage.getGenerationType();
+        String runtime = runtimePage.getRuntimeId();
         if (DroolsRuntime.ID_DROOLS_4.equals(runtime)) {
             createProjectJavaFile(project, "org/drools/eclipse/wizard/project/RuleLauncherSample_4.java.template", "DroolsTest.java");
         } else if (DroolsRuntime.ID_DROOLS_5.equals(runtime) ||
@@ -374,7 +187,7 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
     private void createDecisionTableSampleLauncher(IJavaProject project)
             throws JavaModelException, IOException {
         
-        String runtime = runtimePage.getGenerationType();
+        String runtime = runtimePage.getRuntimeId();
         if (DroolsRuntime.ID_DROOLS_4.equals(runtime)) {
             createProjectJavaFile(project, "org/drools/eclipse/wizard/project/DecisionTableLauncherSample_4.java.template", "DecisionTableTest.java");
         } else if (DroolsRuntime.ID_DROOLS_5.equals(runtime) ||
@@ -418,7 +231,7 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
      * Create the sample rule file.
      */
     private void createRule(IJavaProject project, IProgressMonitor monitor) throws CoreException {
-        if (DroolsRuntime.ID_DROOLS_6.equals(runtimePage.getGenerationType())) {
+        if (DroolsRuntime.ID_DROOLS_6.equals(runtimePage.getRuntimeId())) {
             createFolder(project, "src/main/resources/rules", monitor);
             createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/Sample.drl.template", "src/main/resources/rules", "Sample.drl");
         } else {
@@ -427,13 +240,13 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
     }
 
     private void createKModule(IJavaProject project, IProgressMonitor monitor) throws CoreException {
-        if (DroolsRuntime.ID_DROOLS_6.equals(runtimePage.getGenerationType())) {
+        if (DroolsRuntime.ID_DROOLS_6.equals(runtimePage.getRuntimeId())) {
         	createProjectFile(project, monitor, generateKModule(), "src/main/resources/META-INF", "kmodule.xml");
         }
     }
 
     private void createPom(IJavaProject project, IProgressMonitor monitor) throws CoreException {
-        if (DroolsRuntime.ID_DROOLS_6.equals(runtimePage.getGenerationType())) {
+        if (DroolsRuntime.ID_DROOLS_6.equals(runtimePage.getRuntimeId())) {
             String groupId = runtimePage.getGroupId();
             String artifactId = runtimePage.getArtifactId();
             String version = runtimePage.getVersion();
@@ -446,7 +259,7 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
      * Create the sample decision table file.
      */
     private void createDecisionTable(IJavaProject project, IProgressMonitor monitor) throws CoreException {
-        if (DroolsRuntime.ID_DROOLS_6.equals(runtimePage.getGenerationType())) {
+        if (DroolsRuntime.ID_DROOLS_6.equals(runtimePage.getRuntimeId())) {
     		createFolder(project, "src/main/resources/dtables", monitor);
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/Sample.xls.template", "src/main/resources/dtables", "Sample.xls");
     	} else {
@@ -459,14 +272,14 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
      */
     private void createRuleFlow(IJavaProject project, IProgressMonitor monitor) throws CoreException {
 
-        String generationType = runtimePage.getGenerationType();
-        if (DroolsRuntime.ID_DROOLS_4.equals(generationType)) {
+        String runtimeId = runtimePage.getRuntimeId();
+        if (DroolsRuntime.ID_DROOLS_4.equals(runtimeId)) {
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/ruleflow_4.rf.template", "src/main/rules", "ruleflow.rf");
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/ruleflow_4.rfm.template", "src/main/rules", "ruleflow.rfm");
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/ruleflow_4.drl.template", "src/main/rules", "ruleflow.drl");
-        } else if (DroolsRuntime.ID_DROOLS_5.equals(generationType)) {
+        } else if (DroolsRuntime.ID_DROOLS_5.equals(runtimeId)) {
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/ruleflow.rf.template", "src/main/rules", "ruleflow.rf");
-        } else if (DroolsRuntime.ID_DROOLS_5_1.equals(generationType)) {
+        } else if (DroolsRuntime.ID_DROOLS_5_1.equals(runtimeId)) {
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/sample.bpmn.template", "src/main/rules", "sample.bpmn");
         } else {
     		createFolder(project, "src/main/resources/process", monitor);
@@ -481,22 +294,17 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
             throws JavaModelException, IOException {
         
         String s;
-        String generationType = runtimePage.getGenerationType();
-        if (DroolsRuntime.ID_DROOLS_4.equals(generationType)) {
+        String runtimeId = runtimePage.getRuntimeId();
+        if (DroolsRuntime.ID_DROOLS_4.equals(runtimeId)) {
             s = "org/drools/eclipse/wizard/project/RuleFlowLauncherSample_4.java.template";
-        } else if (DroolsRuntime.ID_DROOLS_5.equals(generationType)) {
+        } else if (DroolsRuntime.ID_DROOLS_5.equals(runtimeId)) {
             s = "org/drools/eclipse/wizard/project/RuleFlowLauncherSample.java.template";
-        } else if (DroolsRuntime.ID_DROOLS_5_1.equals(generationType)) {
+        } else if (DroolsRuntime.ID_DROOLS_5_1.equals(runtimeId)) {
             s = "org/drools/eclipse/wizard/project/ProcessLauncherSample_bpmn_5.java.template";
         } else {
             s = "org/drools/eclipse/wizard/project/ProcessLauncherSample_bpmn_6.java.template";
         }
         createProjectJavaFile(project, s, "ProcessTest.java");
-    }
-
-    protected void initializeDefaultPageImageDescriptor() {
-        ImageDescriptor desc = DroolsEclipsePlugin.getImageDescriptor("icons/drools-large.PNG");
-        setDefaultPageImageDescriptor(desc);
     }
 
     private byte[] readStream(InputStream inputstream) throws IOException {
@@ -514,29 +322,6 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
         }
 
         return bytes;
-    }
-    
-    private void addSourceFolder(IJavaProject project, List<IClasspathEntry> list, String s, IProgressMonitor monitor) throws CoreException {
-        IFolder folder = project.getProject().getFolder(s);
-        createFolder(folder, monitor);
-        IPackageFragmentRoot ipackagefragmentroot = project.getPackageFragmentRoot(folder);
-        list.add(JavaCore.newSourceEntry(ipackagefragmentroot.getPath()));
-    }
-    
-    private IFolder createFolder(IJavaProject project, String s, IProgressMonitor monitor) throws CoreException {
-    	IFolder folder = project.getProject().getFolder(s);
-    	createFolder(folder, monitor);
-    	return folder;
-    }
-
-    private void createFolder(IFolder folder, IProgressMonitor monitor) throws CoreException {
-        IContainer container = folder.getParent();
-        if (container != null && !container.exists()
-                && (container instanceof IFolder))
-            createFolder((IFolder) container, monitor);
-        if (!folder.exists()) {
-            folder.create(true, true, monitor);
-        }
     }
     
     private InputStream generateKModule() {
@@ -579,11 +364,24 @@ public class NewDroolsProjectWizard extends BasicNewResourceWizard {
         return new ByteArrayInputStream(pom.getBytes());
     }
     
-    private InputStream generatePomProperties(String groupId, String artifactId, String version) {
-        String pom =
-				"groupId=" + groupId + "\n" +
-				"artifactId=" + artifactId + "\n" +
-			    "version=" + version + "\n";
-    return new ByteArrayInputStream(pom.getBytes());
-}
+	private InputStream generatePomProperties(String groupId,
+			String artifactId, String version) {
+		String pom = "groupId=" + groupId + "\n" + "artifactId=" + artifactId
+				+ "\n" + "version=" + version + "\n";
+		return new ByteArrayInputStream(pom.getBytes());
+	}
+
+	@Override
+	protected AbstractKieProjectMainWizardPage createMainPage(String pageId) {
+		if (mainPage==null)
+			mainPage = new NewDroolsProjectWizardPage(pageId);
+        return mainPage;
+	}
+
+	@Override
+	protected AbstractKieProjectRuntimeWizardPage createRuntimePage(String pageId) {
+		if (runtimePage==null)
+			runtimePage = new NewDroolsProjectRuntimeWizardPage(pageId);
+        return runtimePage;
+	}
 }

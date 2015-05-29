@@ -78,7 +78,7 @@ public class DroolsRuntimesPreferencePage extends PreferencePage
         l.setLayoutData(gd);
         droolsRuntimesBlock = new DroolsRuntimesBlock();
         droolsRuntimesBlock.createControl(ancestor);
-        DroolsRuntime[] runtimes = DroolsRuntimeManager.getDroolsRuntimes();
+        DroolsRuntime[] runtimes = DroolsRuntimeManager.getDefault().getConfiguredRuntimes();
         droolsRuntimesBlock.setDroolsRuntimes(runtimes);
         if (droolsRuntimesBlock.getDefaultDroolsRuntime() == null) {
             setErrorMessage("Select a default Drools Runtime");
@@ -109,26 +109,26 @@ public class DroolsRuntimesPreferencePage extends PreferencePage
     }
 
 	public boolean performOk() {
-        if (DroolsRuntimeManager.getDefaultDroolsRuntime() != null) {
+        if (DroolsRuntimeManager.getDefault().getDefaultRuntime() != null) {
             MessageDialog.openInformation(getShell(), "Warning",
             "You need to restart Eclipse to update the Drools Runtime of existing projects.");
         }
-        DroolsRuntimeManager.setDroolsRuntimes(droolsRuntimesBlock.getDroolsRuntimes());
+        DroolsRuntimeManager.getDefault().setDroolsRuntimes(droolsRuntimesBlock.getDroolsRuntimes());
         return super.performOk();
     }
 
 	public void runtimeAdded(DroolsRuntime rt) {
-		droolsRuntimesBlock.setDroolsRuntimes(DroolsRuntimeManager.getDroolsRuntimes());
+		droolsRuntimesBlock.setDroolsRuntimes(DroolsRuntimeManager.getDefault().getConfiguredRuntimes());
 	}
 
 	public void runtimeRemoved(DroolsRuntime rt) {
-		droolsRuntimesBlock.setDroolsRuntimes(DroolsRuntimeManager.getDroolsRuntimes());
+		droolsRuntimesBlock.setDroolsRuntimes(DroolsRuntimeManager.getDefault().getConfiguredRuntimes());
 	}
 
 	public void runtimesChanged(DroolsRuntime[] newList) {
 		Display.getDefault().asyncExec(new Runnable() { 
 			public void run() {
-				droolsRuntimesBlock.setDroolsRuntimes(DroolsRuntimeManager.getDroolsRuntimes());
+				droolsRuntimesBlock.setDroolsRuntimes(DroolsRuntimeManager.getDefault().getConfiguredRuntimes());
 			}
 		});
 	}

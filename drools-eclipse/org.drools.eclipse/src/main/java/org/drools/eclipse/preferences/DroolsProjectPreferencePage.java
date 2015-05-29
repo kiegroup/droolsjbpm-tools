@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.kie.eclipse.runtime.IRuntime;
 
 public class DroolsProjectPreferencePage extends PropertyAndPreferencePage {
 
@@ -53,12 +54,12 @@ public class DroolsProjectPreferencePage extends PropertyAndPreferencePage {
         Label nameLabel = new Label(composite, SWT.NONE);
         nameLabel.setText("Drools Runtime:");
         droolsRuntimeCombo = new Combo(composite, SWT.LEFT);
-        DroolsRuntime[] runtimes = DroolsRuntimeManager.getDroolsRuntimes();
+        DroolsRuntime[] runtimes = DroolsRuntimeManager.getDefault().getConfiguredRuntimes();
         int selection = -1;
-        String currentRuntime = DroolsRuntimeManager.getDroolsRuntime(getProject());
+        IRuntime currentRuntime = DroolsRuntimeManager.getDefault().getRuntime(getProject());
         for (int i = 0; i < runtimes.length; i++) {
             droolsRuntimeCombo.add(runtimes[i].getName());
-            if (runtimes[i].getName().equals(currentRuntime)) {
+            if (runtimes[i].equals(currentRuntime)) {
                 selection = i;
             }
         }

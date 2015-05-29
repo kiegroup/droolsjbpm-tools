@@ -1,4 +1,4 @@
-package org.drools.eclipse.util;
+package org.kie.eclipse.utils;
 
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
@@ -135,6 +135,10 @@ public class FileUtils {
 			spm.done();
 		}
 		return jarFile;
+	}
+
+	public static IProject getProjectHandle(String name) {
+	    return ResourcesPlugin.getWorkspace().getRoot().getProject(name);
 	}
 
 }

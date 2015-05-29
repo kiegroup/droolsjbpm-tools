@@ -74,6 +74,7 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
 import org.kie.api.io.ResourceType;
+import org.kie.eclipse.runtime.IRuntime;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.io.ResourceFactory;
 
@@ -129,9 +130,9 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             IClasspathEntry[] classpathEntries = project.getRawClasspath();
             for ( int i = 0; i < classpathEntries.length; i++ ) {
                 if ( NewDroolsProjectWizard.DROOLS_CLASSPATH_CONTAINER_PATH.equals( classpathEntries[i].getPath().toString() ) ) {
-                    String[] jars = DroolsRuntimeManager.getDroolsRuntimeJars( getProject() );
+                    String[] jars = DroolsRuntimeManager.getDefault().getDroolsRuntimeJars( getProject() );
                     if ( jars == null || jars.length == 0 ) {
-                        String runtime = DroolsRuntimeManager.getDroolsRuntime( getProject() );
+                        IRuntime runtime = DroolsRuntimeManager.getDefault().getRuntime( getProject() );
                         IMarker marker = getProject().createMarker( IDroolsModelMarker.DROOLS_MODEL_PROBLEM_MARKER );
                         if ( runtime == null ) {
                             marker.setAttribute( IMarker.MESSAGE,
