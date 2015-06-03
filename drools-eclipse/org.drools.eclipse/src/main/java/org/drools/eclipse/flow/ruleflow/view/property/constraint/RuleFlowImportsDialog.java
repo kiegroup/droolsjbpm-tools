@@ -18,6 +18,7 @@ package org.drools.eclipse.flow.ruleflow.view.property.constraint;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -117,15 +118,15 @@ public class RuleFlowImportsDialog extends Dialog {
 
     private String getProcessImports() {
         String result = "// define your imports here: e.g. import com.sample.MyClass\n";
-        List<String> imports = ((Process) process).getImports();
+        Set<String> imports = ((Process) process).getImports();
         if (imports != null) {
             for (String importString: imports) {
                 result += "import " + importString + "\n";
             }
         }
-        imports = process.getFunctionImports();
-        if (imports != null) {
-            for (String importString: imports) {
+        List<String> fimports = process.getFunctionImports();
+        if (fimports != null) {
+            for (String importString: fimports) {
                 result += "import function " + importString + "\n";
             }
         }

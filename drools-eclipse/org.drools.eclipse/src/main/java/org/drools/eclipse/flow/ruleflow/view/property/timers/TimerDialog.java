@@ -17,6 +17,7 @@
 package org.drools.eclipse.flow.ruleflow.view.property.timers;
 
 import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.drools.eclipse.editors.DRLSourceViewerConfig;
@@ -65,9 +66,9 @@ import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
  * Dialog for editing exception handlers.
  */
 public class TimerDialog extends EditBeanDialog<DroolsAction> implements MapItemDialog<Timer> {
-    
+
     private static final String[] DIALECTS = new String[] { "mvel", "java" };
-    
+
     private Timer timer;
     private Text delayText;
     private Text periodText;
@@ -81,17 +82,17 @@ public class TimerDialog extends EditBeanDialog<DroolsAction> implements MapItem
         super(parentShell, "Edit Timer");
         this.process = process;
     }
-    
+
     protected Point getInitialSize() {
         return new Point(400, 500);
     }
-    
+
     protected Control createDialogArea(Composite parent) {
         final Composite composite = (Composite) super.createDialogArea(parent);
         GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 2;
         composite.setLayout(gridLayout);
-        
+
         Label label = new Label(composite, SWT.NONE);
         label.setText("Timer delay: ");
         delayText = new Text(composite, SWT.NONE);
@@ -112,7 +113,7 @@ public class TimerDialog extends EditBeanDialog<DroolsAction> implements MapItem
         if (timer != null && timer.getPeriod() != null) {
             periodText.setText(timer.getPeriod());
         }
-        
+
         Composite top = new Composite(composite, SWT.NONE);
         GridData gd = new GridData();
         gd.horizontalSpan = 2;
@@ -159,7 +160,7 @@ public class TimerDialog extends EditBeanDialog<DroolsAction> implements MapItem
         textEditorTab.setControl(createTextualEditor(tabFolder));
         return composite;
     }
-    
+
     private Control createTextualEditor(Composite parent) {
         actionViewer = new SourceViewer(parent, null, SWT.BORDER);
         actionViewer.configure(new DRLSourceViewerConfig(null) {
@@ -246,7 +247,7 @@ public class TimerDialog extends EditBeanDialog<DroolsAction> implements MapItem
                 int code = dialog.open();
                 if (code != CANCEL) {
                     List<String> imports = dialog.getImports();
-                    ((Process) process).setImports(imports);
+                    ((Process) process).setImports(new HashSet(imports));
                     completionProcessor.reset();
                 }
             }
@@ -292,7 +293,7 @@ public class TimerDialog extends EditBeanDialog<DroolsAction> implements MapItem
         }
         return null;
     }
-    
+
     public void setKey(Timer key) {
         this.timer = key;
     }
@@ -300,5 +301,5 @@ public class TimerDialog extends EditBeanDialog<DroolsAction> implements MapItem
     public Timer getKey() {
         return timer;
     }
-    
+
 }

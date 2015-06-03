@@ -17,6 +17,7 @@
 package org.drools.eclipse.flow.ruleflow.view.property.exceptionHandler;
 
 import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.drools.eclipse.editors.DRLSourceViewerConfig;
@@ -65,9 +66,9 @@ import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
  * Dialog for editing exception handlers.
  */
 public class ExceptionHandlerDialog extends EditBeanDialog<ActionExceptionHandler> implements MapItemDialog<String> {
-    
+
     private static final String[] DIALECTS = new String[] { "mvel", "java" };
-    
+
     private String key;
     private Text nameText;
     private Text faultVariableText;
@@ -81,17 +82,17 @@ public class ExceptionHandlerDialog extends EditBeanDialog<ActionExceptionHandle
         super(parentShell, "Edit Exception Handler");
         this.process = process;
     }
-    
+
     protected Point getInitialSize() {
         return new Point(400, 500);
     }
-    
+
     protected Control createDialogArea(Composite parent) {
         final Composite composite = (Composite) super.createDialogArea(parent);
         GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 2;
         composite.setLayout(gridLayout);
-        
+
         Label nameLabel = new Label(composite, SWT.NONE);
         nameLabel.setText("Name: ");
         nameText = new Text(composite, SWT.NONE);
@@ -160,7 +161,7 @@ public class ExceptionHandlerDialog extends EditBeanDialog<ActionExceptionHandle
         textEditorTab.setControl(createTextualEditor(tabFolder));
         return composite;
     }
-    
+
     private Control createTextualEditor(Composite parent) {
         actionViewer = new SourceViewer(parent, null, SWT.BORDER);
         actionViewer.configure(new DRLSourceViewerConfig(null) {
@@ -247,7 +248,7 @@ public class ExceptionHandlerDialog extends EditBeanDialog<ActionExceptionHandle
                 int code = dialog.open();
                 if (code != CANCEL) {
                     List<String> imports = dialog.getImports();
-                    ((Process) process).setImports(imports);
+                    ((Process) process).setImports(new HashSet(imports));
                     completionProcessor.reset();
                 }
             }
@@ -283,7 +284,7 @@ public class ExceptionHandlerDialog extends EditBeanDialog<ActionExceptionHandle
         }
         return value;
     }
-    
+
     public void setKey(String key) {
         this.key = key;
     }
@@ -291,5 +292,5 @@ public class ExceptionHandlerDialog extends EditBeanDialog<ActionExceptionHandle
     public String getKey() {
         return key;
     }
-    
+
 }

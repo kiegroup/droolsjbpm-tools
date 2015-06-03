@@ -17,6 +17,7 @@
 package org.drools.eclipse.flow.ruleflow.view.property.constraint;
 
 import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.drools.eclipse.editors.DRLSourceViewerConfig;
@@ -219,7 +220,7 @@ public class RuleFlowConstraintDialog extends Dialog {
             }
         });
         typeCombo.select(0);
-        
+
         Label l4 = new Label(top, SWT.NONE);
         gd = new GridData();
         l4.setLayoutData(gd);
@@ -229,7 +230,7 @@ public class RuleFlowConstraintDialog extends Dialog {
         dialectCombo.select(0);
         gd = new GridData();
         dialectCombo.setLayoutData(gd);
-        
+
         tabFolder = new TabFolder(parent, SWT.NONE);
         gd = new GridData();
         gd.horizontalSpan = 4;
@@ -265,7 +266,7 @@ public class RuleFlowConstraintDialog extends Dialog {
                 int code = dialog.open();
                 if (code != CANCEL) {
                     List<String> imports = dialog.getImports();
-                    ((org.jbpm.process.core.Process) process).setImports(imports);
+                    ((org.jbpm.process.core.Process) process).setImports(new HashSet(imports));
                     completionProcessor.reset();
                 }
             }
