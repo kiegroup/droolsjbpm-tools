@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.drools.eclipse.util;
+package org.kie.eclipse.runtime;
 
-public interface DroolsRuntimeRecognizer {
+public interface IRuntimeRecognizer {
 
     String[] recognizeJars(String path);
 

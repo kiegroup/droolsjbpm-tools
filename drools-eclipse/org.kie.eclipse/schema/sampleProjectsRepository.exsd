@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.drools.eclipse" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.kie.eclipse" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.drools.eclipse" id="sampleProjectsRepository" name="Sample Projects Repository"/>
+         <meta.schema plugin="org.kie.eclipse" id="sampleProjectsRepository" name="Sample Projects Repository"/>
       </appInfo>
       <documentation>
          &lt;a name=&quot;e.Description&quot;/&gt;&lt;p/&gt;
@@ -168,7 +168,7 @@ If the optional &quot;gitUrl&quot; is specified, the &quot;url&quot; value may c
       </appInfo>
       <documentation>
          &lt;pre&gt;
-   &lt;extension point=&quot;org.drools.eclipse.sampleProjectsRepository&quot;&gt;
+   &lt;extension point=&quot;org.kie.eclipse.sampleProjectsRepository&quot;&gt;
          &lt;repository
           id=&quot;org.drools.sample.project.jbpm-playground&quot;
           name=&quot;jBPM Playground at github&quot;

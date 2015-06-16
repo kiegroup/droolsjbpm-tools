@@ -50,6 +50,6 @@ public class NewDroolsProjectRuntimeWizardPage extends AbstractKieProjectRuntime
 	}
     
     protected boolean isComplete() {
-    	return !DroolsRuntime.ID_DROOLS_6.equals(getRuntimeId()) || (getGroupId().length() > 0 && getArtifactId().length() > 0 && getVersion().length() > 0);
+    	return true;
     }
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension-point id="runtimeInstaller" name="Runtime Installer Definition" schema="schema/runtimeInstaller.exsd"/>
+   <extension-point id="sampleProjectsRepository" name="Sample Projects Repository Definition" schema="schema/sampleProjectsRepository.exsd"/>
+   
+   <extension point="org.kie.eclipse.sampleProjectsRepository">
+         <repository
+         	id="org.kie.sample.project.drools-playground"
+         	name="Drools Playground at github"
+         	url="https://raw.githubusercontent.com/bbrodt/jbpm-playground/${TAG}/site/"
+         	gitUrl="https://github.com/bbrodt/jbpm-playground"/>
+         <repository
+         	id="org.kie.sample.project.jbpm-playground"
+         	name="jBPM Playground at github"
+         	url="https://raw.githubusercontent.com/bbrodt/jbpm-playground/${TAG}/site/"
+         	gitUrl="https://github.com/bbrodt/jbpm-playground"/>
+   </extension>
+</plugin>

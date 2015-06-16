@@ -24,7 +24,6 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspace;
@@ -65,6 +64,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.eclipse.ui.progress.IProgressService;
+import org.kie.eclipse.Activator;
 import org.kie.eclipse.runtime.IRuntime;
 import org.kie.eclipse.utils.FileUtils;
 import org.osgi.framework.ServiceReference;
@@ -74,8 +74,8 @@ public abstract class AbstractKieProjectMainWizardPage extends WizardNewProjectC
 	public final static int EMPTY_PROJECT = 0;
 	public final static int ONLINE_EXAMPLE_PROJECT = 1;
 	public final static int SAMPLE_FILES_PROJECT = 2;
-	private final static String DEFAULT_REPOSITORY_ID = "org.drools.sample.project.jbpm-playground";
-	private final static String DROOLS_SAMPLE_PROJECTS_REPOSITORY = "org.drools.eclipse.sampleProjectsRepository";
+	private final static String DEFAULT_REPOSITORY_ID = "org.kie.sample.project.drools-playground";
+	private final static String DROOLS_SAMPLE_PROJECTS_REPOSITORY = "org.kie.eclipse.sampleProjectsRepository";
 	private final static String DEFAULT_REPOSITORY_URL = "https://raw.githubusercontent.com/bbrodt/jbpm-playground/master/site/";
 	private final Collection<IInstallableUnit> EMPTY_IU_LIST = new ArrayList<IInstallableUnit>();
 	
@@ -587,14 +587,6 @@ public abstract class AbstractKieProjectMainWizardPage extends WizardNewProjectC
     	return runtimePage.getRuntime();
     }
     
-    public void setPageComplete(boolean complete) {
-    	super.setPageComplete(complete);
-    	if (runtimePage!=null)
-    		runtimePage.setPageComplete(getInitialProjectContent()==ONLINE_EXAMPLE_PROJECT);
-    	if (isCurrentPage())
-    		getContainer().updateButtons();
-    }
-    
 	@Override
 	public boolean isPageComplete() {
 		if (getInitialProjectContent()==ONLINE_EXAMPLE_PROJECT)
@@ -619,7 +611,7 @@ public abstract class AbstractKieProjectMainWizardPage extends WizardNewProjectC
 	@Override
 	public void dispose() {
 		if (providerRef!=null) {
-			DroolsEclipsePlugin.getContext().ungetService(providerRef);
+			Activator.getContext().ungetService(providerRef);
 			providerRef = null;
 		}
 		super.dispose();
@@ -627,11 +619,11 @@ public abstract class AbstractKieProjectMainWizardPage extends WizardNewProjectC
 
 	private IProvisioningAgent createProvisiongAgent() throws ProvisionException {
 		IProvisioningAgent result = null;
-		providerRef = DroolsEclipsePlugin.getContext().getServiceReference(IProvisioningAgentProvider.SERVICE_NAME);
+		providerRef = Activator.getContext().getServiceReference(IProvisioningAgentProvider.SERVICE_NAME);
 		if (providerRef == null) {
 			throw new RuntimeException("No provisioning agent provider is available"); //$NON-NLS-1$
 		}
-		IProvisioningAgentProvider provider = (IProvisioningAgentProvider) DroolsEclipsePlugin.getContext().getService(providerRef);
+		IProvisioningAgentProvider provider = (IProvisioningAgentProvider) Activator.getContext().getService(providerRef);
 		if (provider == null) {
 			throw new RuntimeException("No provisioning agent provider is available"); //$NON-NLS-1$
 		}

@@ -130,7 +130,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             IClasspathEntry[] classpathEntries = project.getRawClasspath();
             for ( int i = 0; i < classpathEntries.length; i++ ) {
                 if ( NewDroolsProjectWizard.DROOLS_CLASSPATH_CONTAINER_PATH.equals( classpathEntries[i].getPath().toString() ) ) {
-                    String[] jars = DroolsRuntimeManager.getDefault().getDroolsRuntimeJars( getProject() );
+                    String[] jars = DroolsRuntimeManager.getDefault().getRuntimeJars( getProject() );
                     if ( jars == null || jars.length == 0 ) {
                         IRuntime runtime = DroolsRuntimeManager.getDefault().getRuntime( getProject() );
                         IMarker marker = getProject().createMarker( IDroolsModelMarker.DROOLS_MODEL_PROBLEM_MARKER );

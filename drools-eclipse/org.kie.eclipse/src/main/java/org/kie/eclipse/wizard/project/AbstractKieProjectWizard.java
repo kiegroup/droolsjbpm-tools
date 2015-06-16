@@ -18,6 +18,7 @@ package org.kie.eclipse.wizard.project;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -229,8 +230,8 @@ public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
 	        List<IClasspathEntry> list = new ArrayList<IClasspathEntry>();
 	        list.addAll(Arrays.asList(project.getRawClasspath()));
 	        addSourceFolder(project, list, "src/main/java", monitor);
-	        if (runtimePage.getRuntimeManager().isMavenized(runtimePage.getRuntimeId())) {
-	        	addSourceFolder(project, list, "src/main/resources", monitor);
+        	addSourceFolder(project, list, "src/main/resources", monitor);
+	        if (runtimePage.getRuntimeManager().isMavenized(runtimePage.getRuntime())) {
 	        	createFolder(project, "src/main/resources/META-INF", monitor);
 	        	createFolder(project, "src/main/resources/META-INF/maven", monitor);
 	        } else {
@@ -316,4 +317,21 @@ public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
             folder.create(true, true, monitor);
         }
     }
+
+	protected byte[] readStream(InputStream inputstream) throws IOException {
+	    byte bytes[] = (byte[]) null;
+	    int i = 0;
+	    byte tempBytes[] = new byte[1024];
+	    for (int j = inputstream.read(tempBytes); j != -1; j = inputstream.read(tempBytes)) {
+	        byte tempBytes2[] = new byte[i + j];
+	        if (i > 0) {
+	            System.arraycopy(bytes, 0, tempBytes2, 0, i);
+	        }
+	        System.arraycopy(tempBytes, 0, tempBytes2, i, j);
+	        bytes = tempBytes2;
+	        i += j;
+	    }
+	
+	    return bytes;
+	}
 }

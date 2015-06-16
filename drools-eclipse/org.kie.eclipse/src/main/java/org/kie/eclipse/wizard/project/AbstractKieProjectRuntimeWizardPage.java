@@ -23,7 +23,6 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -42,13 +41,15 @@ import org.kie.eclipse.runtime.IRuntimeManager;
 
 public abstract class AbstractKieProjectRuntimeWizardPage extends WizardPage {
 
+	private AbstractKieProjectMainWizardPage mainPage;
+	
     private List<IRuntime> runtimes = new ArrayList<IRuntime>();
     private boolean isDefaultRuntime = true;
     private IRuntime selectedRuntime;
-    private String runtimeId;
+    private IRuntime effectiveRuntime;
     private Button projectSpecificRuntime;
     private Combo runtimesCombo;
-    private Combo versionsCombo;
+//    private Combo versionsCombo;
     
     private Composite mavenPanel;
     private String groupId = "";
@@ -56,31 +57,34 @@ public abstract class AbstractKieProjectRuntimeWizardPage extends WizardPage {
     private String version = "";
 
     protected IRuntimeManager runtimeManager;
-    private String[] runtimeNames;
-    private String[] runtimeIds;
+//    private String[] runtimeNames;
+//    private String[] runtimeIds;
     
     public AbstractKieProjectRuntimeWizardPage(String pageName) {
         super(pageName);
         runtimeManager = getRuntimeManager();
-        runtimeNames = runtimeManager.getAllRuntimeNames();
-        runtimeIds = runtimeManager.getAllRuntimeIds();
+//        runtimeNames = runtimeManager.getAllRuntimeNames();
+//        runtimeIds = runtimeManager.getAllRuntimeIds();
 
         setTitle("Runtime");
         setDescription("Select a Runtime");
+
     }
 
     abstract public IRuntimeManager getRuntimeManager();
     abstract protected IRuntime createRuntime();
     
     public void createControl(Composite parent) {
-        Composite composite = new Composite(parent, SWT.NONE);
+		mainPage = (AbstractKieProjectMainWizardPage) getWizard().getPage(AbstractKieProjectWizard.MAIN_PAGE);
+
+		Composite composite = new Composite(parent, SWT.NONE);
         GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 2;
         composite.setLayout(gridLayout);
         
         IRuntime defaultRuntime = runtimeManager.getDefaultRuntime();
         projectSpecificRuntime = createCheckBox(composite,
-            "Use default Drools Runtime (currently "
+            "Use default Runtime (currently "
                 + (defaultRuntime == null ? "undefined)" : defaultRuntime.getName() + ")"));
         projectSpecificRuntime.setSelection(true);
         projectSpecificRuntime.addSelectionListener(new SelectionListener() {
@@ -99,7 +103,7 @@ public abstract class AbstractKieProjectRuntimeWizardPage extends WizardPage {
         projectSpecificRuntime.setLayoutData(gridData);
         
         Label nameLabel = new Label(composite, SWT.NONE);
-        nameLabel.setText("Drools Runtime:");
+        nameLabel.setText("Runtime:");
         runtimesCombo = new Combo(composite, SWT.READ_ONLY);
         runtimesCombo.setEnabled(false);
         runtimesCombo.addSelectionListener(new SelectionListener() {
@@ -108,7 +112,13 @@ public abstract class AbstractKieProjectRuntimeWizardPage extends WizardPage {
             }
             public void widgetSelected(SelectionEvent e) {
             	Integer key = runtimesCombo.getSelectionIndex();
-                selectedRuntime = (IRuntime) runtimesCombo.getData(key.toString());
+                IRuntime rt = (IRuntime) runtimesCombo.getData(key.toString());
+                if (rt!=selectedRuntime) {
+                	selectedRuntime = rt;
+                	effectiveRuntime = null;
+                	mavenPanel.setVisible(runtimeManager.isMavenized(selectedRuntime));
+                }
+            	setComplete();
             }
         });
         
@@ -118,7 +128,7 @@ public abstract class AbstractKieProjectRuntimeWizardPage extends WizardPage {
         gridData.grabExcessHorizontalSpace = true;
         gridData.horizontalAlignment = GridData.FILL;
         runtimesCombo.setLayoutData(gridData);
-        Link changeWorkspaceSettingsLink = createLink(composite, "Configure Drools Runtimes...");
+        Link changeWorkspaceSettingsLink = createLink(composite, "Configure Runtimes...");
         changeWorkspaceSettingsLink.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
 
         /*
@@ -148,66 +158,66 @@ public abstract class AbstractKieProjectRuntimeWizardPage extends WizardPage {
         gridData.horizontalSpan = 2;
         subPanel.setLayoutData(gridData);
 
-        Label versionsLabel = new Label(subPanel, SWT.NONE);
-        versionsLabel.setText("Generate code compatible with:");
-        versionsCombo = new Combo(subPanel, SWT.READ_ONLY);
-        for (int i=0; i<runtimeIds.length; ++i) {
-        	versionsCombo.add(runtimeNames[i]);
-            versionsCombo.select(i);
-        }
-        versionsCombo.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-            	int index = versionsCombo.getSelectionIndex();
-            	if (index>=0 && index<runtimeIds.length) {
-	                runtimeId = runtimeIds[index];
-	            	mavenPanel.setVisible(runtimeManager.isMavenized(runtimeId));
-	            	setComplete();
-            	}
-            }
-        });
-        setPageComplete(false);
-        gridData = new GridData();
-        gridData.grabExcessHorizontalSpace = true;
-        gridData.horizontalAlignment = GridData.FILL;
-        versionsCombo.setLayoutData(gridData);
+//        Label versionsLabel = new Label(subPanel, SWT.NONE);
+//        versionsLabel.setText("Generate code compatible with:");
+//        versionsCombo = new Combo(subPanel, SWT.READ_ONLY);
+//        for (int i=0; i<runtimeIds.length; ++i) {
+//        	versionsCombo.add(runtimeNames[i]);
+//            versionsCombo.select(i);
+//        }
+//        versionsCombo.addSelectionListener(new SelectionAdapter() {
+//            public void widgetSelected(SelectionEvent e) {
+//            	int index = versionsCombo.getSelectionIndex();
+//            	if (index>=0 && index<runtimeIds.length) {
+//	                runtimeId = runtimeIds[index];
+//	            	mavenPanel.setVisible(runtimeManager.isMavenized(runtimes.get(index)));
+//	            	setComplete();
+//            	}
+//            }
+//        });
+//        setPageComplete(false);
+//        gridData = new GridData();
+//        gridData.grabExcessHorizontalSpace = true;
+//        gridData.horizontalAlignment = GridData.FILL;
+//        versionsCombo.setLayoutData(gridData);
         
-        mavenPanel = new Composite(composite, SWT.NONE);
-        gridLayout = new GridLayout();
-        gridLayout.numColumns = 2;
-        mavenPanel.setLayout(gridLayout);
-        gridData = new GridData(GridData.FILL_HORIZONTAL);
-        gridData.grabExcessHorizontalSpace = true;
-        gridData.horizontalAlignment = GridData.FILL;
-        gridData.horizontalSpan = 2;
-        mavenPanel.setLayoutData(gridData);
-        
-        Label groupLabel = new Label(mavenPanel, SWT.NONE);
-        groupLabel.setText("GroupId: ");
-        final Text groupField = new Text(mavenPanel, SWT.BORDER);
-        groupField.addListener(SWT.Modify, new Listener() {
-        	public void handleEvent(Event event) {
-        		groupId = groupField.getText();
-        		setComplete();
-        	}       	
-        });
-        Label artifactLabel = new Label(mavenPanel, SWT.NONE);
-        artifactLabel.setText("ArtifactId: ");
-        final Text artifactField = new Text(mavenPanel, SWT.BORDER);
-        artifactField.addListener(SWT.Modify, new Listener() {
-        	public void handleEvent(Event event) {
-        		artifactId = artifactField.getText();
-        		setComplete();
-        	}       	
-        });
-        Label versionLabel = new Label(mavenPanel, SWT.NONE);
-        versionLabel.setText("Version: ");
-        final Text versionField = new Text(mavenPanel, SWT.BORDER);
-        versionField.addListener(SWT.Modify, new Listener() {
-        	public void handleEvent(Event event) {
-        		version = versionField.getText();
-        		setComplete();
-        	}       	
-        });
+//        mavenPanel = new Composite(composite, SWT.NONE);
+//        gridLayout = new GridLayout();
+//        gridLayout.numColumns = 2;
+//        mavenPanel.setLayout(gridLayout);
+//        gridData = new GridData(GridData.FILL_HORIZONTAL);
+//        gridData.grabExcessHorizontalSpace = true;
+//        gridData.horizontalAlignment = GridData.FILL;
+//        gridData.horizontalSpan = 2;
+//        mavenPanel.setLayoutData(gridData);
+//        
+//        Label groupLabel = new Label(mavenPanel, SWT.NONE);
+//        groupLabel.setText("GroupId: ");
+//        final Text groupField = new Text(mavenPanel, SWT.BORDER);
+//        groupField.addListener(SWT.Modify, new Listener() {
+//        	public void handleEvent(Event event) {
+//        		groupId = groupField.getText();
+//        		setComplete();
+//        	}       	
+//        });
+//        Label artifactLabel = new Label(mavenPanel, SWT.NONE);
+//        artifactLabel.setText("ArtifactId: ");
+//        final Text artifactField = new Text(mavenPanel, SWT.BORDER);
+//        artifactField.addListener(SWT.Modify, new Listener() {
+//        	public void handleEvent(Event event) {
+//        		artifactId = artifactField.getText();
+//        		setComplete();
+//        	}       	
+//        });
+//        Label versionLabel = new Label(mavenPanel, SWT.NONE);
+//        versionLabel.setText("Version: ");
+//        final Text versionField = new Text(mavenPanel, SWT.BORDER);
+//        versionField.addListener(SWT.Modify, new Listener() {
+//        	public void handleEvent(Event event) {
+//        		version = versionField.getText();
+//        		setComplete();
+//        	}       	
+//        });
 
         setMessage(null);
         setPageComplete(runtimes.size() > 0 && isComplete());
@@ -231,6 +241,7 @@ public abstract class AbstractKieProjectRuntimeWizardPage extends WizardPage {
     	if (runtimes.size()==0) {
 	    	IRuntime rt = createRuntime();
 	    	rt.setName(runtimeManager.getBundleRuntimeName());
+	    	rt.setVersion(runtimeManager.getBundleRuntimeVersion());
 	    	runtimes.add(rt);
 	    	
 	    	setControlVisible(projectSpecificRuntime, false);
@@ -317,22 +328,23 @@ public abstract class AbstractKieProjectRuntimeWizardPage extends WizardPage {
     }
 
     public IRuntime getRuntime() {
-    	return runtimeManager.getEffectiveRuntime(selectedRuntime, isDefaultRuntime);
-    }
-
-    public String getRuntimeId() {
-        return runtimeId;
+    	if (effectiveRuntime==null)
+        	effectiveRuntime = runtimeManager.getEffectiveRuntime(selectedRuntime, isDefaultRuntime);
+    	return effectiveRuntime;
     }
 
     public String getGroupId() {
+    	groupId = mainPage.getProjectName() + ".group";
     	return groupId;
     }
 
     public String getArtifactId() {
+    	artifactId = mainPage.getProjectName() + ".artifact";
     	return artifactId;
     }
 
     public String getVersion() {
+    	version = "1.0";
     	return version;
     }
 

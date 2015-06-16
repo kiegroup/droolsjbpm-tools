@@ -622,31 +622,85 @@
 
    <extension-point id="processExtension" name="Process Extension" schema="schema/processExtension.exsd"/>
    <extension-point id="runtimeRecognizer" name="Drools Runtime Recognizer" schema="schema/runtimeRecognizer.exsd"/>
-   <extension-point id="sampleProjectsRepository" name="Sample Projects Repo" schema="schema/sampleProjectsRepository.exsd"/>
-   <extension-point id="runtimeInstaller" name="Runtime Installer" schema="schema/runtimeInstaller.exsd"/>
-   
-   <extension point="org.drools.eclipse.sampleProjectsRepository">
-         <repository
-         	id="org.drools.sample.project.jbpm-playground"
-         	name="jBPM Playground at github"
-         	url="https://raw.githubusercontent.com/bbrodt/jbpm-playground/${TAG}/site/"
-         	gitUrl="https://github.com/bbrodt/jbpm-playground"/>
-         <repository
-         	id="org.drools.sample.project.jbpm-playground.local"
-         	name="Examples on local filesystem"
-         	url="file:///C:/Users/bbrodt/git/jbpm-playground/site/"/>
-   </extension>
-   <extension point="org.drools.eclipse.runtimeInstaller">
+
+   <extension point="org.kie.eclipse.runtimeInstaller">
          <installer
-            id="drools.runtime_6.x.installer"
-            name="Drools 6.x Runtime Installer"
-            runtimeId="drools.runtime_6.x"
-            class="org.drools.eclipse.util.DefaultDroolsRuntimeInstaller"
-            url="http://downloads.jboss.org/drools/release/6.2.0.Final/droolsjbpm-integration-distribution-6.2.0.Final.zip"
-            type="zip"
-            source="*/binaries"
-            artifacts="drools.runtime_6.x.artifacts">
+            id="drools.runtime_5.4.0_installer"
+            product="drools"
+            version="5.4.0"
+            runtimeName="Drools 5.4.0 Runtime"
+            class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
+            <repository
+               url="http://downloads.jboss.org/drools/release/5.4.0.Final/droolsjbpm-integration-distribution-5.4.0.Final.zip"
+               type="zip"
+               source="*/binaries"
+               artifacts="drools.runtime_5.x.artifacts"/>
          </installer>
+         <installer
+            id="drools.runtime_5.6.0_installer"
+            product="drools"
+            version="5.6.0"
+            runtimeName="Drools 5.6.0 Runtime"
+            class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
+            <repository
+               url="http://downloads.jboss.org/drools/release/5.6.0.Final/droolsjbpm-integration-distribution-5.6.0.Final.zip"
+               type="zip"
+               source="*/binaries"
+               artifacts="drools.runtime_5.x.artifacts"/>
+         </installer>
+         <installer
+            id="drools.runtime_6.0.1_installer"
+            product="drools"
+            version="6.0.1"
+            runtimeName="Drools 6.0.1 Runtime"
+            class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
+            <repository
+               url="http://downloads.jboss.org/drools/release/6.0.1.Final/droolsjbpm-integration-distribution-6.0.1.Final.zip"
+               type="zip"
+               source="*/binaries"
+               artifacts="drools.runtime_6.x.artifacts"/>
+         </installer>
+         <installer
+            id="drools.runtime_6.1.0_installer"
+            product="drools"
+            version="6.1.0"
+            runtimeName="Drools 6.1.0 Runtime"
+            class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
+            <repository
+               url="http://downloads.jboss.org/drools/release/6.1.0.Final/droolsjbpm-integration-distribution-6.1.0.Final.zip"
+               type="zip"
+               source="*/binaries"
+               artifacts="drools.runtime_6.x.artifacts"/>
+         </installer>
+         <installer
+            id="drools.runtime_6.2.0_installer"
+            product="drools"
+            version="6.2.0"
+            runtimeName="Drools 6.2.0 Runtime"
+            class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
+            <repository
+               url="http://downloads.jboss.org/drools/release/6.2.0.Final/droolsjbpm-integration-distribution-6.2.0.Final.zip"
+               type="zip"
+               source="*/binaries"
+               artifacts="drools.runtime_6.x.artifacts"/>
+         </installer>
+         <artifacts id="drools.runtime_5.x.artifacts">
+               <artifact name="antlr-runtime*.jar"/>
+               <artifact name="drools-compiler*.jar"/>
+               <artifact name="drools-core*.jar"/>
+               <artifact name="jbpm-bpmn2*.jar"/>
+               <artifact name="jbpm-flow-builder*.jar"/>
+               <artifact name="jbpm-flow*.jar"/>
+               <artifact name="jsr94*.jar"/>
+               <artifact name="kie-api*.jar"/>
+               <artifact name="kie-internal*.jar"/>
+               <artifact name="mvel2*.jar"/>
+               <!-- <artifact name="org.eclipse.jdt.core_3.10.2.v20150120-1634*.jar"/> -->
+               <artifact name="slf4j-api*.jar"/>
+               <artifact name="xmlpull*.jar"/>
+               <artifact name="xpp3_min*.jar"/>
+               <artifact name="xstream*.jar"/>
+         </artifacts>
          <artifacts id="drools.runtime_6.x.artifacts">
                <artifact name="antlr-runtime*.jar"/>
                <artifact name="drools-compiler*.jar"/>

@@ -74,7 +74,7 @@ public class JBPMClasspathContainer implements IClasspathContainer {
     }
 
     private String[] getJarNames(IJavaProject project) {
-    	return JBPMRuntimeManager.getJBPMRuntimeJars(project.getProject());
+    	return JBPMRuntimeManager.getDefault().getRuntimeJars(project.getProject());
     }
 
 }

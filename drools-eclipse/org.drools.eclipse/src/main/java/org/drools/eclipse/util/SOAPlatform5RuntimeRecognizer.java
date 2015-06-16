@@ -23,8 +23,9 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.kie.eclipse.runtime.IRuntimeRecognizer;
 
-public class SOAPlatform5RuntimeRecognizer implements DroolsRuntimeRecognizer {
+public class SOAPlatform5RuntimeRecognizer implements IRuntimeRecognizer {
 
     public String[] recognizeJars(String path) {
         IPath jbossrulesesbPath = new Path(path).append("jboss-as/server/default/deploy/jbrules.esb");

@@ -170,13 +170,12 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
     private void createRuleSampleLauncher(IJavaProject project)
             throws JavaModelException, IOException {
 
-        String runtime = runtimePage.getRuntimeId();
-        if (DroolsRuntime.ID_DROOLS_4.equals(runtime)) {
+        String version = runtimePage.getRuntime().getVersion();
+        if (version.startsWith("4")) {
             createProjectJavaFile(project, "org/drools/eclipse/wizard/project/RuleLauncherSample_4.java.template", "DroolsTest.java");
-        } else if (DroolsRuntime.ID_DROOLS_5.equals(runtime) ||
-                DroolsRuntime.ID_DROOLS_5_1.equals(runtime)) {
+        } else if (version.startsWith("5")) {
             createProjectJavaFile(project, "org/drools/eclipse/wizard/project/RuleLauncherSample_5.java.template", "DroolsTest.java");
-        } else {
+        } else if (version.startsWith("6")) {
             createProjectJavaFile(project, "org/drools/eclipse/wizard/project/RuleLauncherSample_6.java.template", "DroolsTest.java");
         }
     }
@@ -187,13 +186,12 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
     private void createDecisionTableSampleLauncher(IJavaProject project)
             throws JavaModelException, IOException {
         
-        String runtime = runtimePage.getRuntimeId();
-        if (DroolsRuntime.ID_DROOLS_4.equals(runtime)) {
+        String version = runtimePage.getRuntime().getVersion();
+        if (version.startsWith("4")) {
             createProjectJavaFile(project, "org/drools/eclipse/wizard/project/DecisionTableLauncherSample_4.java.template", "DecisionTableTest.java");
-        } else if (DroolsRuntime.ID_DROOLS_5.equals(runtime) ||
-            DroolsRuntime.ID_DROOLS_5_1.equals(runtime)) {
+        } else if (version.startsWith("5")) {
             createProjectJavaFile(project, "org/drools/eclipse/wizard/project/DecisionTableLauncherSample_5.java.template", "DecisionTableTest.java");
-        } else {
+        } else if (version.startsWith("6")) {
             createProjectJavaFile(project, "org/drools/eclipse/wizard/project/DecisionTableLauncherSample_6.java.template", "DecisionTableTest.java");
         }
     }
@@ -231,7 +229,7 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
      * Create the sample rule file.
      */
     private void createRule(IJavaProject project, IProgressMonitor monitor) throws CoreException {
-        if (DroolsRuntime.ID_DROOLS_6.equals(runtimePage.getRuntimeId())) {
+        if (runtimePage.getRuntime().getVersion().startsWith("6")) {
             createFolder(project, "src/main/resources/rules", monitor);
             createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/Sample.drl.template", "src/main/resources/rules", "Sample.drl");
         } else {
@@ -240,13 +238,13 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
     }
 
     private void createKModule(IJavaProject project, IProgressMonitor monitor) throws CoreException {
-        if (DroolsRuntime.ID_DROOLS_6.equals(runtimePage.getRuntimeId())) {
+        if (runtimePage.getRuntime().getVersion().startsWith("6")) {
         	createProjectFile(project, monitor, generateKModule(), "src/main/resources/META-INF", "kmodule.xml");
         }
     }
 
     private void createPom(IJavaProject project, IProgressMonitor monitor) throws CoreException {
-        if (DroolsRuntime.ID_DROOLS_6.equals(runtimePage.getRuntimeId())) {
+        if (runtimePage.getRuntime().getVersion().startsWith("6")) {
             String groupId = runtimePage.getGroupId();
             String artifactId = runtimePage.getArtifactId();
             String version = runtimePage.getVersion();
@@ -259,7 +257,7 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
      * Create the sample decision table file.
      */
     private void createDecisionTable(IJavaProject project, IProgressMonitor monitor) throws CoreException {
-        if (DroolsRuntime.ID_DROOLS_6.equals(runtimePage.getRuntimeId())) {
+        if (runtimePage.getRuntime().getVersion().startsWith("6")) {
     		createFolder(project, "src/main/resources/dtables", monitor);
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/Sample.xls.template", "src/main/resources/dtables", "Sample.xls");
     	} else {
@@ -272,15 +270,15 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
      */
     private void createRuleFlow(IJavaProject project, IProgressMonitor monitor) throws CoreException {
 
-        String runtimeId = runtimePage.getRuntimeId();
-        if (DroolsRuntime.ID_DROOLS_4.equals(runtimeId)) {
+        String version = runtimePage.getRuntime().getVersion();
+        if (version.startsWith("4")) {
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/ruleflow_4.rf.template", "src/main/rules", "ruleflow.rf");
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/ruleflow_4.rfm.template", "src/main/rules", "ruleflow.rfm");
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/ruleflow_4.drl.template", "src/main/rules", "ruleflow.drl");
-        } else if (DroolsRuntime.ID_DROOLS_5.equals(runtimeId)) {
-        	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/ruleflow.rf.template", "src/main/rules", "ruleflow.rf");
-        } else if (DroolsRuntime.ID_DROOLS_5_1.equals(runtimeId)) {
+        } else if (version.startsWith("5.1")) {
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/sample.bpmn.template", "src/main/rules", "sample.bpmn");
+        } else if (version.startsWith("5")) {
+        	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/ruleflow.rf.template", "src/main/rules", "ruleflow.rf");
         } else {
     		createFolder(project, "src/main/resources/process", monitor);
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/sample.bpmn.template", "src/main/resources/process", "sample.bpmn");
@@ -294,36 +292,19 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
             throws JavaModelException, IOException {
         
         String s;
-        String runtimeId = runtimePage.getRuntimeId();
-        if (DroolsRuntime.ID_DROOLS_4.equals(runtimeId)) {
+        String version = runtimePage.getRuntime().getVersion();
+        if (version.startsWith("4")) {
             s = "org/drools/eclipse/wizard/project/RuleFlowLauncherSample_4.java.template";
-        } else if (DroolsRuntime.ID_DROOLS_5.equals(runtimeId)) {
-            s = "org/drools/eclipse/wizard/project/RuleFlowLauncherSample.java.template";
-        } else if (DroolsRuntime.ID_DROOLS_5_1.equals(runtimeId)) {
+        } else if (version.startsWith("5.1")) {
             s = "org/drools/eclipse/wizard/project/ProcessLauncherSample_bpmn_5.java.template";
+        } else if (version.startsWith("5")) {
+            s = "org/drools/eclipse/wizard/project/RuleFlowLauncherSample.java.template";
         } else {
             s = "org/drools/eclipse/wizard/project/ProcessLauncherSample_bpmn_6.java.template";
         }
         createProjectJavaFile(project, s, "ProcessTest.java");
     }
 
-    private byte[] readStream(InputStream inputstream) throws IOException {
-        byte bytes[] = (byte[]) null;
-        int i = 0;
-        byte tempBytes[] = new byte[1024];
-        for (int j = inputstream.read(tempBytes); j != -1; j = inputstream.read(tempBytes)) {
-            byte tempBytes2[] = new byte[i + j];
-            if (i > 0) {
-                System.arraycopy(bytes, 0, tempBytes2, 0, i);
-            }
-            System.arraycopy(tempBytes, 0, tempBytes2, i, j);
-            bytes = tempBytes2;
-            i += j;
-        }
-
-        return bytes;
-    }
-    
     private InputStream generateKModule() {
     	StringBuilder sb = new StringBuilder();
     	sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");

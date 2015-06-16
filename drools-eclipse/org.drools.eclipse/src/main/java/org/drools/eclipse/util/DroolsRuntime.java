@@ -16,93 +16,12 @@
 
 package org.drools.eclipse.util;
 
-import org.kie.eclipse.runtime.IRuntime;
+import org.kie.eclipse.runtime.AbstractRuntime;
 
-public class DroolsRuntime implements IRuntime {
-	public static final String NAME_DROOLS_6 = "Drools 6.x";
-	public static final String NAME_DROOLS_5_1 = "Drools 5.1.x";
-	public static final String NAME_DROOLS_5 = "Drools 5.0.x";
-	public static final String NAME_DROOLS_4 = "Drools 4.x";
+public class DroolsRuntime extends AbstractRuntime {
 
-	public static final String ID_DROOLS_6 = "org.drools.runtime_6.x";
-	public static final String ID_DROOLS_5_1 = "org.drools.runtime_5.1.x";
-	public static final String ID_DROOLS_5 = "org.drools.runtime_5.0.x";
-	public static final String ID_DROOLS_4 = "org.drools.runtime_4.x";
-	
-
-	private static String[] allNames = {
-		NAME_DROOLS_4, NAME_DROOLS_5, NAME_DROOLS_5_1, NAME_DROOLS_6
-	};
-
-	private static String[] allIds = {
-		ID_DROOLS_4, ID_DROOLS_5, ID_DROOLS_5_1, ID_DROOLS_6
-	};
-    private String name;
-    private String path;
-    private boolean isDefault;
-    private String[] jars;
-    private String id;
-
-    public static String[] getAllNames() {
-    	return allNames;
-    }
-
-    public static String[] getAllIds() {
-    	return allIds;
-    }
-    
-    public String getId() {
-		return id;
+	@Override
+	public String getProduct() {
+		return "drools";
 	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-        if (id==null && name!=null) {
-        	// try to guess the ID from the name
-        	if (name.contains("6"))
-        		id = ID_DROOLS_6;
-        	if (name.contains("5.1"))
-        		id = ID_DROOLS_5_1;
-        	if (name.contains("5.0"))
-        		id = ID_DROOLS_5;
-        	if (name.contains("4"))
-        		id = ID_DROOLS_4;
-        }
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public boolean isDefault() {
-        return isDefault;
-    }
-
-    public void setDefault(boolean isDefault) {
-        this.isDefault = isDefault;
-    }
-
-    public String[] getJars() {
-        return jars;
-    }
-
-    public void setJars(String[] jars) {
-        this.jars = jars;
-    }
-    
-    public String toString() {
-    	return getName();
-    }
 }

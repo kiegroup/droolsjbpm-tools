@@ -16,45 +16,30 @@
 
 package org.jbpm.eclipse.wizard.project;
 
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.kie.eclipse.wizard.project.AbstractKieProjectMainWizardPage;
 
-public class NewJBPMProjectWizardPage extends WizardPage {
+public class NewJBPMProjectWizardPage extends AbstractKieProjectMainWizardPage {
 
 	private Button simpleProcessButton;
 	private Button advancedProcessButton;
-	private Button addSampleProcessButton;
 	private Button addSampleJUnitTestCodeButton;
 	private boolean addSampleJUnit = true;
 	private String typeOfExample = "simple";
-	
-	public NewJBPMProjectWizardPage() {
-		super("extendedNewProjectPage");
+
+	public NewJBPMProjectWizardPage(String pageId) {
+		super(pageId);
 		setTitle("New jBPM Project");
         setDescription("Create a new jBPM Project");
 	}
-	
-	public void createControl(Composite parent) {
-        Composite composite = new Composite(parent, SWT.NULL);
-        composite.setFont(parent.getFont());
-        composite.setLayout(new GridLayout());
-        composite.setLayoutData(new GridData(GridData.FILL_BOTH));
-        createControls(composite);
-        setPageComplete(true);
-        // Show description on opening
-        setErrorMessage(null);
-        setMessage(null);
-        setControl(composite);
-	}
-	
-	private void createControls(Composite parent) {
+
+	protected void createSampleFilesProjectControls(Composite parent) {
 		Label label = new Label(parent, SWT.LEFT);
 		label.setText("I want to create:");
 		simpleProcessButton = createRadioButton(parent,
@@ -83,19 +68,7 @@ public class NewJBPMProjectWizardPage extends WizardPage {
 				}
 			}
 		});
-		addSampleProcessButton = createRadioButton(parent,
-			"an empty project");
-		addSampleProcessButton.setSelection(false);
-		addSampleProcessButton.addSelectionListener(new SelectionListener() {
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// do nothing
-			}
-			public void widgetSelected(SelectionEvent e) {
-				if (((Button) e.widget).getSelection()) {
-					typeOfExample = "none";
-				}
-			}
-		});
+
 		addSampleJUnitTestCodeButton = createCheckBox(parent,
 			"Add a sample JUnit test for the HelloWorld process.");
 		addSampleJUnitTestCodeButton.setSelection(addSampleJUnit);
@@ -126,10 +99,14 @@ public class NewJBPMProjectWizardPage extends WizardPage {
     }
 	
 	public String getExampleType() {
-		return typeOfExample;
+    	if (getInitialProjectContent() == SAMPLE_FILES_PROJECT)
+    		return typeOfExample;
+    	return "none";
 	}
 	
 	public boolean createJUnitFile() {
-		return addSampleJUnit;
+    	if (getInitialProjectContent() == SAMPLE_FILES_PROJECT)
+    		return addSampleJUnit;
+    	return false;
 	}
 }

@@ -10,6 +10,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Enumeration;
+import java.util.Map.Entry;
+import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -69,6 +71,10 @@ public class FileUtils {
 		JarFile jar = new java.util.jar.JarFile(jarFile);
 	    InputStream is = null;
 		try {
+//			System.out.println("Jar: "+jar.getName());
+//			for (Entry<Object, Object> e : jar.getManifest().getMainAttributes().entrySet()) {
+//				System.out.println("  "+e.getKey() + "=" + e.getValue());
+//			}
 			Enumeration<JarEntry> enumEntries = jar.entries();
 			while (enumEntries.hasMoreElements()) {
 			    JarEntry entry = enumEntries.nextElement();

@@ -16,104 +16,25 @@
 
 package org.jbpm.eclipse.preferences;
 
-import java.io.ByteArrayInputStream;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.jdt.internal.ui.preferences.PropertyAndPreferencePage;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
-import org.jbpm.eclipse.JBPMEclipsePlugin;
-import org.jbpm.eclipse.util.JBPMRuntime;
 import org.jbpm.eclipse.util.JBPMRuntimeManager;
+import org.kie.eclipse.preferences.AbstractProjectPreferencePage;
+import org.kie.eclipse.runtime.IRuntimeManager;
 
-public class JBPMProjectPreferencePage extends PropertyAndPreferencePage {
+public class JBPMProjectPreferencePage extends AbstractProjectPreferencePage {
 
 	public static final String PREF_ID= "org.jbpm.eclipse.preferences.JBPMRuntimesPreferencePage";
 	public static final String PROP_ID= "org.jbpm.eclipse.preferences.JBPMProjectPreferencePage";
-
-	private Combo jBPMRuntimeCombo;
 	
-	public JBPMProjectPreferencePage() {
-		setTitle("jBPM Project Preferences");
+	@Override
+	protected IRuntimeManager getRuntimeManager() {
+		return JBPMRuntimeManager.getDefault();
 	}
-	
-	protected Control createPreferenceContent(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NONE);
-		GridLayout gridLayout = new GridLayout();
-        gridLayout.numColumns = 2;
-        composite.setLayout(gridLayout);
-        
-        Label nameLabel = new Label(composite, SWT.NONE);
-        nameLabel.setText("jBPM Runtime: ");
-        jBPMRuntimeCombo = new Combo(composite, SWT.LEFT);
-        JBPMRuntime[] runtimes = JBPMRuntimeManager.getJBPMRuntimes();
-        int selection = -1;
-        String currentRuntime = JBPMRuntimeManager.getJBPMRuntime(getProject());
-        for (int i = 0; i < runtimes.length; i++) {
-        	jBPMRuntimeCombo.add(runtimes[i].getName());
-        	if (runtimes[i].getName().equals(currentRuntime)) {
-        		selection = i;
-        	}
-        }
-        if (selection != -1) {
-        	jBPMRuntimeCombo.select(selection);
-        } else if (runtimes.length > 0) {
-            jBPMRuntimeCombo.select(0);
-        }
-        GridData gridData = new GridData();
-        gridData.grabExcessHorizontalSpace = true;
-        gridData.horizontalAlignment = GridData.FILL;
-        jBPMRuntimeCombo.setLayoutData(gridData);
-		return composite;
-	}
-	
+	@Override
 	protected String getPreferencePageID() {
 		return PREF_ID;
 	}
-
+	@Override
 	protected String getPropertyPageID() {
 		return PROP_ID;
 	}
-
-	protected boolean hasProjectSpecificOptions(IProject project) {
-		return project.getFile(".settings/.jbpm.runtime").exists();
-	}
-
-	public boolean performOk() {
-		try {
-			IFile file = getProject().getFile(".settings/.jbpm.runtime");
-			if (useProjectSettings()) {
-				String runtime = "<runtime>"
-					+ jBPMRuntimeCombo.getItem(jBPMRuntimeCombo.getSelectionIndex())
-					+ "</runtime>";
-				if (!file.exists()) {
-					IFolder folder = getProject().getFolder(".settings");
-					if (!folder.exists()) {
-						folder.create(true, true, null);
-					}
-					file.create(new ByteArrayInputStream(runtime.getBytes()), true, null);
-				} else {
-					file.setContents(new ByteArrayInputStream(runtime.getBytes()), true, false, null);
-				}
-			} else {
-				if (file.exists()) {
-					file.delete(true, null);
-				}
-			}
-			getProject().close(null);
-			getProject().open(null);
-		} catch (Throwable t) {
-			JBPMEclipsePlugin.log(t);
-			return false;
-		}
-		return super.performOk();
-	}
-	
 }

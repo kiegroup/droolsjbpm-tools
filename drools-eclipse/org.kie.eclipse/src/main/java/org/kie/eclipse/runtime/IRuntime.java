@@ -4,10 +4,18 @@ public interface IRuntime {
 
 	/**
 	 * Identifies the version number of this Runtime
-	 * @return Runtime version number ID
+	 * @return Runtime version number
 	 */
-	String getId();
-	void setId(String id);
+	String getVersion();
+	void setVersion(String version);
+	/**
+	 * Identifies the product name, either "drools", "jbpm" or "kie" or something else?
+	 * @return Runtime product name
+	 */
+	String getProduct();
+	// probably not needed:
+	void setProduct(String string);
+	
 	/**
 	 * Returns a descriptive name of this Runtime. The name, not the ID, uniquely identifies
 	 * a configured Runtime; for example two Runtimes may be configured in the user's workspace

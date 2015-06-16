@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.eclipse.util;
+package org.kie.eclipse.runtime;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Path;
 
-public class DefaultDroolsRuntimeRecognizer implements DroolsRuntimeRecognizer {
+public class DefaultRuntimeRecognizer implements IRuntimeRecognizer {
 
     public String[] recognizeJars(String path) {
         List<String> list = new ArrayList<String>();

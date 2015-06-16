@@ -1,11 +1,14 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Drools Eclipse Plug-in
-Bundle-SymbolicName: org.drools.eclipse;singleton:=true
-Bundle-Version: 6.3.0.qualifier
-Bundle-Activator: org.drools.eclipse.DroolsEclipsePlugin
+Bundle-Name: Common plugin for Drools/jBPM
+Bundle-SymbolicName: org.kie.eclipse;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.kie.eclipse.Activator
 Bundle-Vendor: JBoss by Red Hat
 Bundle-Localization: plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: org.osgi.framework;version="1.3.0"
+Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.equinox.p2.metadata;bundle-version="2.0.0",
@@ -34,31 +37,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ltk.core.refactoring;bundle-version="3.4.0",
  org.eclipse.ltk.ui.refactoring;bundle-version="3.4.0",
  org.eclipse.swt,
- org.eclipse.jgit,
- org.kie.eclipse
-Eclipse-LazyStart: true
-Eclipse-BuddyPolicy: registered
-Bundle-ClassPath: .,
- lib/kie-api.jar,
- lib/kie-internal.jar,
- lib/drools-core.jar,
- lib/drools-compiler.jar,
- lib/drools-decisiontables.jar,
- lib/drools-jsr94.jar,
- lib/jsr94.jar,
- lib/junit.jar,
- lib/drools-templates.jar,
- lib/mvel2.jar,
- lib/jbpm-bpmn2.jar,
- lib/antlr-runtime.jar,
- lib/poi-ooxml.jar,
- lib/poi.jar,
- lib/xmlpull.jar,
- lib/xpp3_min.jar,
- lib/xstream.jar,
- lib/jbpm-flow.jar,
- lib/jbpm-flow-builder.jar,
- lib/slf4j-api.jar,
- lib/protobuf-java.jar
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: org.drools.eclipse.util
+ org.eclipse.jgit
+Export-Package: org.kie.eclipse.preferences,
+ org.kie.eclipse.runtime,
+ org.kie.eclipse.utils,
+ org.kie.eclipse.wizard.project

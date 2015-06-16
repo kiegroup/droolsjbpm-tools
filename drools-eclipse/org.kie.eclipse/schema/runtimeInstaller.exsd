@@ -1,13 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.drools.eclipse" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.kie.eclipse" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.drools.eclipse" id="runtimeInstaller" name="Runtime Installer"/>
+         <meta.schema plugin="org.kie.eclipse" id="runtimeInstaller" name="Runtime Installer"/>
       </appInfo>
       <documentation>
          &lt;p/&gt;
-This extension defines a mapping of a Drools Runtime version with a loader/installer implementation. The &lt;a href=&quot;#e.installer&quot;&gt;installer&lt;/a&gt; defines a URL which identifies the location of a Runtime Archive. The loader/installer implementation class must know how to download this Archive, extract the needed Artifacts from it, and install them into a workspace project. The Artifacts in this project can then be added to the classpath of Drools and jBPM workspace projects when needed.
+This extension defines a mapping of a Drools/jBPM Runtime version with a loader/installer implementation. The &lt;a href=&quot;#e.installer&quot;&gt;installer&lt;/a&gt; defines a URL which identifies the location of a Runtime Archive. The loader/installer implementation class must know how to download this Archive, extract the needed Artifacts from it, and install them into a workspace project. The Artifacts in this project can then be added to the classpath of Drools and jBPM workspace projects when needed.
       </documentation>
    </annotation>
 
@@ -52,10 +52,13 @@ This extension defines a mapping of a Drools Runtime version with a loader/insta
    <element name="installer">
       <annotation>
          <documentation>
-            Defines a mapping of a Drools Runtime version with a loader/installer implementation class.
+            Defines a mapping of a Drools/jBPM Runtime version with a loader/installer implementation class.
          </documentation>
       </annotation>
       <complexType>
+         <sequence>
+            <element ref="repository" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
          <attribute name="id" type="string">
             <annotation>
                <documentation>
@@ -63,17 +66,32 @@ This extension defines a mapping of a Drools Runtime version with a loader/insta
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="name" type="string">
+         <attribute name="product" use="required">
             <annotation>
                <documentation>
-                  Human readable name of this installer.
+                  The product being installed, either &quot;drools&quot; or &quot;jbpm&quot;.
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="drools">
+                  </enumeration>
+                  <enumeration value="jbpm">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+         <attribute name="version" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The Runtime ID that this installer will support. This should be in the form of &quot;m.n.s&quot; where m is a major version, n is an optional minor version and s is an optional service release number.
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="runtimeId" type="string" use="required">
+         <attribute name="runtimeName" type="string">
             <annotation>
                <documentation>
-                  The Drools Runtime ID that this installer will support.
+                  Human readable name of this runtime (e.g. &quot;Drools 6.x Runtime&quot;).
                </documentation>
             </annotation>
          </attribute>
@@ -83,54 +101,14 @@ This extension defines a mapping of a Drools Runtime version with a loader/insta
                   Java implementation class to do the actual downloading, file extraction and installation.
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="org.drools.eclipse.util.DroolsRuntimeInstallerBase:"/>
+                  <meta.attribute kind="java" basedOn="org.kie.eclipse.runtime.AbstractRuntimeInstaller:"/>
                </appInfo>
             </annotation>
          </attribute>
-         <attribute name="url" type="string" use="required">
+         <attribute name="priority" type="string">
             <annotation>
                <documentation>
-                  The URL of the archive that contains the Drools Runtime artifacts.
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="artifacts" type="string">
-            <annotation>
-               <documentation>
-                  The ID of an &lt;a href=&quot;#e.artifacts&quot;&gt;artifacts&lt;/a&gt; element in this extension point definition.
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="type">
-            <annotation>
-               <documentation>
-                  File type of the Runtime Archive.
-               </documentation>
-            </annotation>
-            <simpleType>
-               <restriction base="string">
-                  <enumeration value="zip">
-                  </enumeration>
-                  <enumeration value="jar">
-                  </enumeration>
-               </restriction>
-            </simpleType>
-         </attribute>
-         <attribute name="source" type="string">
-            <annotation>
-               <documentation>
-                  A folder path in the Runtime Archive where the required Artifacts can be found. The string value of this attribute is a fnmatch pattern.
-
-This value is used as the default source path for all Artifacts unless overridden in the &lt;a href=&quot;#e.artifact&quot;&gt;artifact&lt;/a&gt; definition.
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="target" type="string">
-            <annotation>
-               <documentation>
-                  A relative path in the Drools Runtime project where the matching Artifacts will be installed. The string value of this attribute is a fnmatch pattern.
-
-This value is used as the default target path for all Artifacts unless overridden in the &lt;a href=&quot;#e.artifact&quot;&gt;artifact&lt;/a&gt; definition.
+                  This value is used to sort the list of &lt;a href=&quot;#e.installer&quot;&gt;installer&lt;/a&gt; definitions. Higher priority values take precedence over lower priorities. This allows contributing extension plugins to override the default installer for a given runtimeId, by assigning a priority greater than 1.
                </documentation>
             </annotation>
          </attribute>
@@ -163,13 +141,6 @@ This container is identified by a unique ID which can be referenced by an &lt;a 
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="priority" type="string">
-            <annotation>
-               <documentation>
-                  This value is used to sort a list of &lt;a href=&quot;#e.artifacts&quot;&gt;artifacts&lt;/a&gt; definitions. Higher numbered priorities are process after lower priorities. This allows contributing extension plugins to override the default list of artifacts by defining a priority greater than 1.
-               </documentation>
-            </annotation>
-         </attribute>
       </complexType>
    </element>
 
@@ -198,7 +169,7 @@ This container is identified by a unique ID which can be referenced by an &lt;a 
          <attribute name="name" type="string" use="required">
             <annotation>
                <documentation>
-                  The fnmatch file name pattern to compare against Artifacts in the Archive. All Artifacts that match this pattern will be extracted and installed in the Drools Runtime project.
+                  The fnmatch file name pattern to compare against Artifacts in the Archive. All Artifacts that match this pattern will be extracted and installed in the Drools/jBPM Runtime project.
                </documentation>
             </annotation>
          </attribute>
@@ -212,7 +183,59 @@ This container is identified by a unique ID which can be referenced by an &lt;a 
          <attribute name="target" type="string">
             <annotation>
                <documentation>
-                  A relative path in the Drools Runtime project where the matching Artifacts will be installed.This optional attribute overrides the &quot;target&quot; attrinbute in the &lt;a href=&quot;#e.installer&quot;&gt;installer&lt;/a&gt; definition.
+                  A relative path in the Drools/jBPM Runtime project where the matching Artifacts will be installed.This optional attribute overrides the &quot;target&quot; attrinbute in the &lt;a href=&quot;#e.installer&quot;&gt;installer&lt;/a&gt; definition.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="repository">
+      <complexType>
+         <attribute name="url" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The URL of the archive that contains the Runtime artifacts.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="artifacts" type="string">
+            <annotation>
+               <documentation>
+                  The ID of an &lt;a href=&quot;#e.artifacts&quot;&gt;artifacts&lt;/a&gt; element in this extension point definition.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="type">
+            <annotation>
+               <documentation>
+                  File type of the Runtime Archive, either &quot;zip&quot; or &quot;jar&quot;.
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="zip">
+                  </enumeration>
+                  <enumeration value="jar">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+         <attribute name="source" type="string">
+            <annotation>
+               <documentation>
+                  A folder path in the Runtime Archive where the required Artifacts can be found. The string value of this attribute is a fnmatch pattern.
+
+This value is used as the default source path for all Artifacts unless overridden in the &lt;a href=&quot;#e.artifact&quot;&gt;artifact&lt;/a&gt; definition.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="target" type="string">
+            <annotation>
+               <documentation>
+                  A relative path in the Runtime project where the matching Artifacts will be installed. The string value of this attribute is a fnmatch pattern.
+
+This value is used as the default target path for all Artifacts unless overridden in the &lt;a href=&quot;#e.artifact&quot;&gt;artifact&lt;/a&gt; definition.
                </documentation>
             </annotation>
          </attribute>
@@ -234,12 +257,13 @@ This container is identified by a unique ID which can be referenced by an &lt;a 
       </appInfo>
       <documentation>
          &lt;pre&gt;
-   &lt;extension point=&quot;org.drools.eclipse.runtimeInstaller&quot;&gt;
+   &lt;extension point=&quot;org.kie.eclipse.runtimeInstaller&quot;&gt;
          &lt;installer
             id=&quot;drools.runtime_6.x.installer&quot;
-            name=&quot;Drools 6.x Runtime Installer&quot;
+            product=&quot;drools&quot;
+            runtimeName=&quot;Drools 6.x Runtime&quot;
             runtimeId=&quot;drools.runtime_6.x&quot;
-            class=&quot;org.drools.eclipse.util.DefaultDroolsRuntimeInstaller&quot;
+            class=&quot;org.kie.eclipse.util.DefaultDroolsRuntimeInstaller&quot;
             url=&quot;http://downloads.jboss.org/drools/release/6.2.0.Final/droolsjbpm-integration-distribution-6.2.0.Final.zip&quot;
             type=&quot;zip&quot;
             source=&quot;*/binaries&quot;
@@ -278,7 +302,7 @@ This container is identified by a unique ID which can be referenced by an &lt;a 
          <meta.section type="implementation"/>
       </appInfo>
       <documentation>
-         org.drools.eclipse.util.DefaultDroolsRuntimeInstaller
+         org.kie.eclipse.util.DefaultDroolsRuntimeInstaller
       </documentation>
    </annotation>
 
