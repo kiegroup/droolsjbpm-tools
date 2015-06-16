@@ -17,6 +17,7 @@
 package org.drools.eclipse.flow.ruleflow.view.property.constraint;
 
 import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.drools.eclipse.editors.DRLSourceViewerConfig;
@@ -180,7 +181,7 @@ public class MilestoneConstraintDialog extends EditBeanDialog<String> {
                 int code = dialog.open();
                 if (code != CANCEL) {
                     List<String> imports = dialog.getImports();
-                    process.setImports(imports);
+                    process.setImports(new HashSet(imports));
                     List<String> functionImports = dialog.getFunctionImports();
                     process.setFunctionImports(functionImports);
                     completionProcessor.reset();

@@ -19,6 +19,7 @@ package org.drools.eclipse.flow.ruleflow.view.property.constraint;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.drools.eclipse.editors.DRLRuleEditor;
 import org.drools.eclipse.editors.completion.RuleCompletionProcessor;
@@ -41,7 +42,7 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.workflow.core.WorkflowProcess;
 
 /**
- * Completion for ruleflow constraints. 
+ * Completion for ruleflow constraints.
  */
 public class ConstraintCompletionProcessor extends RuleCompletionProcessor {
 
@@ -93,17 +94,17 @@ public class ConstraintCompletionProcessor extends RuleCompletionProcessor {
             return "rule dummy \n when \n" + prefix;
         }
     }
-    
+
     public List<String> getImports() {
         if (imports == null) {
             loadImports();
         }
         return imports;
     }
-    
+
     private void loadImports() {
         this.imports = new ArrayList<String>();
-        List<String> imports = ((org.jbpm.process.core.Process) process).getImports();
+        Set<String> imports = ((org.jbpm.process.core.Process) process).getImports();
         if (imports != null) {
             Iterator<String> iterator = imports.iterator();
             while (iterator.hasNext()) {
@@ -120,14 +121,14 @@ public class ConstraintCompletionProcessor extends RuleCompletionProcessor {
             }
         }
     }
-    
+
     public List<GlobalDescr> getGlobals() {
         if (globals == null) {
             loadGlobals();
         }
         return globals;
     }
-    
+
     private void loadGlobals() {
         String[] globalNames = process.getGlobalNames();
         this.globals = new ArrayList<GlobalDescr>(globalNames.length);
@@ -135,7 +136,7 @@ public class ConstraintCompletionProcessor extends RuleCompletionProcessor {
             this.globals.add(new GlobalDescr(globalName, "java.lang.Object"));
         }
     }
-    
+
     private IJavaProject getJavaProject() {
         IEditorPart editor = getEditor();
         if (editor != null && editor.getEditorInput() instanceof IFileEditorInput) {
@@ -150,7 +151,7 @@ public class ConstraintCompletionProcessor extends RuleCompletionProcessor {
         }
         return null;
     }
-    
+
     public void reset() {
         this.imports = null;
         this.globals = null;

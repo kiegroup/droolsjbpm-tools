@@ -17,6 +17,7 @@
 package org.drools.eclipse.flow.ruleflow.view.property.action;
 
 import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.drools.eclipse.editors.DRLSourceViewerConfig;
@@ -62,7 +63,7 @@ import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 public class ActionDialog extends EditBeanDialog<DroolsAction> {
 
     private static final String[] DIALECTS = new String[] { "mvel", "java" };
-    
+
     private WorkflowProcess process;
     private TabFolder tabFolder;
     private SourceViewer actionViewer;
@@ -220,7 +221,7 @@ public class ActionDialog extends EditBeanDialog<DroolsAction> {
                 int code = dialog.open();
                 if (code != CANCEL) {
                     List<String> imports = dialog.getImports();
-                    process.setImports(imports);
+                    process.setImports(new HashSet(imports));
                     List<String> functionImports = dialog.getFunctionImports();
                     process.setFunctionImports(functionImports);
                     completionProcessor.reset();

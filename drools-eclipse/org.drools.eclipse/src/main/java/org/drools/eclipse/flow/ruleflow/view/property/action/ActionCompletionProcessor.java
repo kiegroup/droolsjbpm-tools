@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.eclipse.editors.DRLRuleEditor;
 import org.drools.eclipse.editors.completion.RuleCompletionProcessor;
@@ -40,7 +41,7 @@ import org.eclipse.ui.PlatformUI;
 import org.jbpm.workflow.core.WorkflowProcess;
 
 /**
- * Completion for ruleflow constraints. 
+ * Completion for ruleflow constraints.
  */
 public class ActionCompletionProcessor extends RuleCompletionProcessor {
 
@@ -82,17 +83,17 @@ public class ActionCompletionProcessor extends RuleCompletionProcessor {
             + (dialect == null ? "" : " dialect \"" + dialect + "\" ")
             + "\n when \n then \n org.kie.api.runtime.process.ProcessContext context = null; \n org.kie.api.runtime.process.ProcessContext kcontext = null; \n " + prefix;
     }
-    
+
     public List<String> getImports() {
         if (imports == null) {
             loadImports();
         }
         return imports;
     }
-    
+
     private void loadImports() {
         this.imports = new ArrayList<String>();
-        List<String> imports = ((org.jbpm.process.core.Process) process).getImports();
+        Set<String> imports = ((org.jbpm.process.core.Process) process).getImports();
 
         if (imports != null) {
             Iterator<String> iterator = imports.iterator();
@@ -110,14 +111,14 @@ public class ActionCompletionProcessor extends RuleCompletionProcessor {
             }
         }
     }
-    
+
     public List<GlobalDescr> getGlobals() {
         if (globals == null) {
             loadGlobals();
         }
         return globals;
     }
-    
+
     private void loadGlobals() {
         String[] globalNames = process.getGlobalNames();
 
@@ -129,14 +130,14 @@ public class ActionCompletionProcessor extends RuleCompletionProcessor {
             this.globals.add(new GlobalDescr(globalName, "java.lang.Object"));
         }
     }
-    
+
     protected List<String> getFunctions() {
         if (functions == null) {
             loadFunctions();
         }
         return functions;
     }
-    
+
     private void loadFunctions() {
         this.functions = new ArrayList<String>();
         List<String> imports = process.getFunctionImports();
@@ -149,21 +150,21 @@ public class ActionCompletionProcessor extends RuleCompletionProcessor {
             }
         }
     }
-    
+
     private void loadAttributes() {
         attributes = new HashMap<String, String>();
         if (this.dialect != null) {
             attributes.put("dialect", dialect);
         }
     }
-    
+
     protected Map<String, String> getAttributes() {
         if (attributes == null) {
             loadAttributes();
         }
         return attributes;
     }
-    
+
     private IJavaProject getJavaProject() {
         IEditorPart editor = getEditor();
         if (editor != null && editor.getEditorInput() instanceof IFileEditorInput) {
@@ -178,7 +179,7 @@ public class ActionCompletionProcessor extends RuleCompletionProcessor {
         }
         return null;
     }
-    
+
     public void reset() {
         this.imports = null;
         this.globals = null;
