@@ -298,7 +298,7 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
         return selectedRuntime;
     }
 
-    private String createStringFromRuntimes(IRuntime[] runtimes) {
+    protected String createStringFromRuntimes(IRuntime[] runtimes) {
         String result = "";
         for (IRuntime runtime: runtimes) {
             result += runtime.getName() + "#" + runtime.getPath() + "#" + runtime.isDefault() + "# ";
@@ -315,7 +315,7 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
         return result;
     }
 
-    private IRuntime[] createRuntimesFromString(String s) {
+    protected IRuntime[] createRuntimesFromString(String s) {
         List<IRuntime> result = new ArrayList<IRuntime>();
         if (s != null && !"".equals(s)) {
             String[] runtimeStrings = s.split("###");

@@ -36,7 +36,7 @@ public class DroolsHandler extends AbstractRuntimeDetectorDelegate {
 
     @Override
     public void initializeRuntimes(List<RuntimeDefinition> serverDefinitions) {
-        DroolsRuntime[] existingRuntimes = DroolsRuntimeManager.getDefault().getConfiguredRuntimes();
+        DroolsRuntime[] existingRuntimes = (DroolsRuntime[]) DroolsRuntimeManager.getDefault().getConfiguredRuntimes();
         List<DroolsRuntime> droolsRuntimes = new ArrayList<DroolsRuntime>();
         if (existingRuntimes != null) {
             for (DroolsRuntime runtime : existingRuntimes) {
@@ -46,7 +46,7 @@ public class DroolsHandler extends AbstractRuntimeDetectorDelegate {
         initializeInternal(serverDefinitions, droolsRuntimes);
         if (droolsRuntimes.size() > 0) {
             DroolsRuntime[] dra = droolsRuntimes.toArray(new DroolsRuntime[0]);
-            DroolsRuntimeManager.getDefault().setDroolsRuntimes(dra);
+            DroolsRuntimeManager.getDefault().setRuntimes(dra);
         }
 
     }
@@ -86,7 +86,7 @@ public class DroolsHandler extends AbstractRuntimeDetectorDelegate {
     }
     
     private static DroolsRuntime getRuntimeForLocation(String loc) {
-        DroolsRuntime[] droolsRuntimes = DroolsRuntimeManager.getDefault().getConfiguredRuntimes();
+        DroolsRuntime[] droolsRuntimes = (DroolsRuntime[]) DroolsRuntimeManager.getDefault().getConfiguredRuntimes();
         for (DroolsRuntime dr : droolsRuntimes) {
             String location = dr.getPath();
             if (location != null && location.equals(loc)) {
@@ -97,7 +97,7 @@ public class DroolsHandler extends AbstractRuntimeDetectorDelegate {
     }
     
     private boolean droolsRuntimeNameExists(String name) {
-        DroolsRuntime[] droolsRuntimes = DroolsRuntimeManager.getDefault().getConfiguredRuntimes();
+        DroolsRuntime[] droolsRuntimes = (DroolsRuntime[]) DroolsRuntimeManager.getDefault().getConfiguredRuntimes();
     	for( int i = 0; i < droolsRuntimes.length; i++ ) {
     		if( droolsRuntimes[i].getName().equals(name))
     			return true;

@@ -62,3 +62,7 @@ Bundle-ClassPath: .,
  lib/protobuf-java.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.drools.eclipse.util
+Import-Package: org.kie.eclipse.preferences,
+ org.kie.eclipse.runtime,
+ org.kie.eclipse.utils,
+ org.kie.eclipse.wizard.project

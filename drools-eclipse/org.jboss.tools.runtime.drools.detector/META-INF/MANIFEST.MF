@@ -14,5 +14,7 @@ Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: %BundleVendor
 Bundle-Localization: plugin
-Export-Package: org.jboss.tools.runtime.drools.detector,org.jboss.tool
- s.runtime.handlers
+Import-Package: org.kie.eclipse.preferences,
+ org.kie.eclipse.runtime,
+ org.kie.eclipse.utils,
+ org.kie.eclipse.wizard.project

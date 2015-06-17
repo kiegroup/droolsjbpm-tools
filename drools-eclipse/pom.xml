@@ -37,6 +37,8 @@
     <module>org.guvnor.tools.test</module> 
     <module>org.jbpm.eclipse</module>
     <module>org.jbpm.eclipse.feature</module>
+    <module>org.kie.eclipse</module>
+    <module>org.kie.eclipse.feature</module>
     <module>org.jboss.tools.runtime.drools.detector</module>
     <module>org.jboss.tools.runtime.drools.detector.feature</module>
     <module>org.drools.updatesite</module>

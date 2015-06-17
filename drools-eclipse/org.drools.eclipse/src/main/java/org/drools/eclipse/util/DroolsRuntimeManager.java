@@ -50,7 +50,7 @@ public class DroolsRuntimeManager extends AbstractRuntimeManager {
     		manager = new DroolsRuntimeManager();
     	return manager;
     }
-    
+
 	@Override
 	public String getBundleRuntimeLocation() {
     	return DROOLS_BUNDLE_RUNTIME_LOCATION;
