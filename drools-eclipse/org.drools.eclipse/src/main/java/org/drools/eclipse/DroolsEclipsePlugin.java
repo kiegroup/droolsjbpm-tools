@@ -28,24 +28,13 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.util.StringUtils;
-import org.drools.eclipse.DRLInfo.FunctionInfo;
-import org.drools.eclipse.DRLInfo.RuleInfo;
-import org.drools.eclipse.builder.DroolsBuilder;
-import org.drools.eclipse.builder.ResourceDescr;
-import org.drools.eclipse.builder.Util;
-import org.drools.eclipse.dsl.editor.DSLAdapter;
-import org.drools.eclipse.editors.AbstractRuleEditor;
-import org.drools.eclipse.preferences.IDroolsConstants;
-import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.EnumDeclarationDescr;
@@ -57,8 +46,19 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
-import org.drools.template.parser.DecisionTableParseException;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.util.StringUtils;
 import org.drools.core.xml.SemanticModules;
+import org.drools.eclipse.DRLInfo.FunctionInfo;
+import org.drools.eclipse.DRLInfo.RuleInfo;
+import org.drools.eclipse.builder.DroolsBuilder;
+import org.drools.eclipse.builder.ResourceDescr;
+import org.drools.eclipse.builder.Util;
+import org.drools.eclipse.dsl.editor.DSLAdapter;
+import org.drools.eclipse.editors.AbstractRuleEditor;
+import org.drools.eclipse.preferences.IDroolsConstants;
+import org.drools.eclipse.util.ProjectClassLoader;
+import org.drools.template.parser.DecisionTableParseException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
@@ -76,7 +76,12 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.FormColors;
+import org.eclipse.ui.internal.WorkbenchPlugin;
+import org.eclipse.ui.internal.dialogs.WorkbenchWizardElement;
+import org.eclipse.ui.internal.wizards.AbstractExtensionWizardRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.wizards.IWizardCategory;
+import org.eclipse.ui.wizards.IWizardDescriptor;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
@@ -86,13 +91,13 @@ import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.process.core.Process;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.node.RuleSetNode;
+import org.kie.api.definition.process.Node;
+import org.kie.api.io.Resource;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.api.definition.process.Node;
-import org.kie.api.io.Resource;
 import org.kie.internal.io.ResourceFactory;
 import org.osgi.framework.BundleContext;
 
@@ -123,6 +128,12 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
     
     private boolean 					forceFullBuild;
 
+    private static String[] wizardIdsToRemove = new String[] {
+    	"org.eclipse.bpmn2.presentation.Bpmn2ModelWizardID",
+    	"org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.wizards.NewJbpmProcessWizard",
+    	"org.eclipse.bpmn2.modeler.ui.diagram"
+    };
+
     /**
      * The constructor.
      */
@@ -134,7 +145,8 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
     /**
      * This method is called upon plug-in activation
      */
-    public void start(BundleContext context) throws Exception {
+    @SuppressWarnings("restriction")
+	public void start(BundleContext context) throws Exception {
         super.start( context );
         IPreferenceStore preferenceStore = getPreferenceStore();
         useCachePreference = preferenceStore.getBoolean( IDroolsConstants.CACHE_PARSED_RULES );
@@ -148,7 +160,20 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                 }
             }
         } );
-
+        
+        // remove BPMN2 category wizards
+        AbstractExtensionWizardRegistry wizardRegistry = (AbstractExtensionWizardRegistry)WorkbenchPlugin.getDefault().getNewWizardRegistry();
+        IWizardCategory[] categories = WorkbenchPlugin.getDefault().getNewWizardRegistry().getRootCategory().getCategories();
+        for (IWizardCategory category : categories) {
+            for(IWizardDescriptor wizard : category.getWizards()) {
+            	for (String id : wizardIdsToRemove) {
+            		if (id.equals(wizard.getId())) {
+	                	WorkbenchWizardElement wizardElement = (WorkbenchWizardElement) wizard;
+	                	wizardRegistry.removeExtension(wizardElement.getConfigurationElement().getDeclaringExtension(), new Object[]{wizardElement});
+	                }
+	        	}
+        	}
+        }
     }
 
     public static BundleContext getContext() {
