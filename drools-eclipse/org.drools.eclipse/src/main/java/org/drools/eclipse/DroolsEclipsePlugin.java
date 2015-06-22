@@ -162,17 +162,23 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
         } );
         
         // remove BPMN2 category wizards
-        AbstractExtensionWizardRegistry wizardRegistry = (AbstractExtensionWizardRegistry)WorkbenchPlugin.getDefault().getNewWizardRegistry();
-        IWizardCategory[] categories = WorkbenchPlugin.getDefault().getNewWizardRegistry().getRootCategory().getCategories();
-        for (IWizardCategory category : categories) {
-            for(IWizardDescriptor wizard : category.getWizards()) {
-            	for (String id : wizardIdsToRemove) {
-            		if (id.equals(wizard.getId())) {
-	                	WorkbenchWizardElement wizardElement = (WorkbenchWizardElement) wizard;
-	                	wizardRegistry.removeExtension(wizardElement.getConfigurationElement().getDeclaringExtension(), new Object[]{wizardElement});
-	                }
+        try {
+	        AbstractExtensionWizardRegistry wizardRegistry = (AbstractExtensionWizardRegistry)WorkbenchPlugin.getDefault().getNewWizardRegistry();
+	        IWizardCategory[] categories = WorkbenchPlugin.getDefault().getNewWizardRegistry().getRootCategory().getCategories();
+	        for (IWizardCategory category : categories) {
+	            for(IWizardDescriptor wizard : category.getWizards()) {
+	            	for (String id : wizardIdsToRemove) {
+	            		if (id.equals(wizard.getId())) {
+		                	WorkbenchWizardElement wizardElement = (WorkbenchWizardElement) wizard;
+		                	wizardRegistry.removeExtension(wizardElement.getConfigurationElement().getDeclaringExtension(), new Object[]{wizardElement});
+		                }
+		        	}
 	        	}
-        	}
+	        }
+        }
+        catch (Exception ex) {
+        	// Ignore all exceptions. They are probably due to eclipse being run
+        	// in a headless JUnit test environment.
         }
     }
 
