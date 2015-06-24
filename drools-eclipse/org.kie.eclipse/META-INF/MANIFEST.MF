@@ -6,7 +6,7 @@ Bundle-Version: 6.3.0.qualifier
 Bundle-Activator: org.kie.eclipse.Activator
 Bundle-Vendor: JBoss by Red Hat
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
