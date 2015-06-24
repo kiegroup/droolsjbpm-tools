@@ -7,7 +7,6 @@ Bundle-Activator: org.kie.eclipse.Activator
 Bundle-Vendor: JBoss by Red Hat
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: org.osgi.framework;version="1.3.0"
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
