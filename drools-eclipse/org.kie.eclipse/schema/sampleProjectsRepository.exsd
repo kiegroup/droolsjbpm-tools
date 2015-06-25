@@ -150,6 +150,13 @@ If the optional &quot;gitUrl&quot; is specified, the &quot;url&quot; value may c
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="product" type="string">
+            <annotation>
+               <documentation>
+                  An optional product ID that this repository supports. This can be either &quot;drools&quot; or &quot;jbpm&quot;. A single repository may support multiple products by organizing the sample projects as different Git tags. See the &lt;a href=&quot;#e.url&quot;&gt;url&lt;/a&gt; attribute.
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 

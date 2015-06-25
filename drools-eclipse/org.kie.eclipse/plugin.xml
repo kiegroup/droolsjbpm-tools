@@ -8,11 +8,13 @@
          <repository
          	id="org.kie.sample.project.drools-playground"
          	name="Drools Playground at github"
+         	product="drools"
          	url="https://raw.githubusercontent.com/bbrodt/jbpm-playground/${TAG}/site/"
          	gitUrl="https://github.com/bbrodt/jbpm-playground"/>
          <repository
          	id="org.kie.sample.project.jbpm-playground"
          	name="jBPM Playground at github"
+         	product="jbpm"
          	url="https://raw.githubusercontent.com/bbrodt/jbpm-playground/${TAG}/site/"
          	gitUrl="https://github.com/bbrodt/jbpm-playground"/>
    </extension>

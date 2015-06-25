@@ -293,7 +293,7 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
         	setRuntimes(runtimes.toArray(new IRuntime[runtimes.size()]));
         }
         if (useDefault) {
-            return null;
+            return getDefaultRuntime();
         }
         return selectedRuntime;
     }
