@@ -29,8 +29,8 @@ public abstract class AbstractKieEmptyProjectWizardPage extends KieProjectWizard
     private Button projectSpecificRuntime;
     private Combo runtimesCombo;
     
-	private boolean createMavenProject = false;
-	private boolean createKJarProject = false;
+	private boolean createMavenProject = true;
+	private boolean createKJarProject = true;
 
 	abstract protected void createControls(Composite parent);
     abstract public IRuntimeManager getRuntimeManager();
@@ -58,7 +58,7 @@ public abstract class AbstractKieEmptyProjectWizardPage extends KieProjectWizard
         
         projectSpecificRuntime = new Button(composite, SWT.CHECK);
         projectSpecificRuntime.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false, 3, 1));
-        projectSpecificRuntime.setSelection(false);
+        projectSpecificRuntime.setSelection(isDefaultRuntime);
         projectSpecificRuntime.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 isDefaultRuntime = ((Button) e.widget).getSelection();
@@ -68,11 +68,10 @@ public abstract class AbstractKieEmptyProjectWizardPage extends KieProjectWizard
         
         Label nameLabel = new Label(composite, SWT.NONE);
         nameLabel.setLayoutData(new GridData(GridData.BEGINNING, GridData.CENTER, false, false, 1, 1));
-        nameLabel.setText("Runtime:");
+        nameLabel.setText("Use Runtime:");
         
         runtimesCombo = new Combo(composite, SWT.READ_ONLY);
         runtimesCombo.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, false, false, 1, 1));
-        runtimesCombo.setEnabled(false);
         runtimesCombo.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
             	Integer key = runtimesCombo.getSelectionIndex();
@@ -122,14 +121,11 @@ public abstract class AbstractKieEmptyProjectWizardPage extends KieProjectWizard
         final Button createMavenProjectButton = new Button(composite, SWT.CHECK);
         createMavenProjectButton.setText("Create as Maven Project");
 		createMavenProjectButton.setToolTipText("Generates a default Maven \"Project Object Model\" (POM) File");
-
-        createMavenProject = false;
         createMavenProjectButton.setSelection(createMavenProject);
         
         final Button createKJarProjectButton = new Button(composite, SWT.CHECK);
         createKJarProjectButton.setText("Create as KJar Project");
         createKJarProjectButton.setToolTipText("Generates a default KJar Module Descriptor as well as the necessary Maven artifacts");
-        createKJarProject = false;
         createKJarProjectButton.setSelection(createKJarProject);
 
         createMavenProjectButton.addSelectionListener(new SelectionAdapter() {
@@ -169,31 +165,19 @@ public abstract class AbstractKieEmptyProjectWizardPage extends KieProjectWizard
 
     	if (runtimeManager.getDefaultRuntime()==null) {
     		isDefaultRuntime = false;
-//			projectSpecificRuntime.setSelection(false);
-//			projectSpecificRuntime.setEnabled(false);
     	}
-//    	else
-//			projectSpecificRuntime.setEnabled(true);
-
 
     	if (runtimes.size()==0) {
 	    	IRuntime rt = createRuntime();
 	    	rt.setName(runtimeManager.getBundleRuntimeName());
 	    	rt.setVersion(runtimeManager.getBundleRuntimeVersion());
+	    	rt.setDefault(true);
 	    	runtimes.add(rt);
 	    	
 	    	setControlVisible(runtimesCombo, true);
-	    	runtimesCombo.setEnabled(true);
+	    	isDefaultRuntime = true;
     	}
-    	else {
-        	if (runtimes.size()==1) {
-    	    	runtimesCombo.setEnabled(true);
-        	}
-        	else {
-    	    	runtimesCombo.setEnabled(!isDefaultRuntime);
-        	}
-	    	setControlVisible(runtimesCombo, true);
-    	}
+    	runtimesCombo.setEnabled(!isDefaultRuntime);
     	
         setErrorMessage(null);
         runtimesCombo.removeAll();
@@ -208,19 +192,28 @@ public abstract class AbstractKieEmptyProjectWizardPage extends KieProjectWizard
             ++key;
         }
         
-        key = 0;
+        key = 0; 
         runtimesCombo.select(key);
         selectedRuntime = (IRuntime) runtimesCombo.getData(key.toString());
 
         IRuntime defaultRuntime = runtimeManager.getDefaultRuntime();
-        projectSpecificRuntime.setText("Use default Runtime (currently " +
+        if (defaultRuntime==null) {
+        	if (runtimes.size()==1)
+        		defaultRuntime = runtimes.get(0);
+        }
+        projectSpecificRuntime.setText("Use default Runtime (" +
         		(defaultRuntime == null ? "undefined)" : defaultRuntime.getName() + ")"));
+        projectSpecificRuntime.setEnabled(isDefaultRuntime);
     }
 
     public IRuntime getRuntime() {
     	if (effectiveRuntime==null)
         	effectiveRuntime = runtimeManager.getEffectiveRuntime(selectedRuntime, isDefaultRuntime);
     	return effectiveRuntime;
+    }
+    
+    public boolean isDefaultRuntime() {
+    	return isDefaultRuntime;
     }
     
 	@Override

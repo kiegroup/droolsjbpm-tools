@@ -469,6 +469,12 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 	        composite.setLayoutData(gd);
 	        composite.setLayoutData(gd);
 
+	        /*
+	         * FIXME: there's no sense in having separate checkboxes for
+	         * any of the Java generation items because these are required!
+	         * The rule and decision table will not compile without the
+	         * Java classes.
+	         */
 	        final Button addSampleRuleButton = createCheckBox(composite,
 	            "Add a sample HelloWorld rule file to this project.");
 	        addSampleRuleButton.setSelection(addSampleRule);
@@ -477,16 +483,15 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 	                addSampleRule = ((Button) e.widget).getSelection();
 	            }
 	        });
-	        final Button addSampleJavaRuleCodeButton = createCheckBox(composite,
-	            "Add a sample Java class for loading and executing the HelloWorld rules.");
-	        addSampleJavaRuleCodeButton.setSelection(addSampleJavaRuleCode);
-	        addSampleJavaRuleCodeButton.addSelectionListener(new SelectionAdapter() {
-	            public void widgetSelected(SelectionEvent e) {
-	                addSampleJavaRuleCode = ((Button) e.widget).getSelection();
-	                if (addSampleJavaRuleCode)
-	                	addSampleRuleButton.setSelection(true);
-	            }
-	        });
+//	        final Button addSampleJavaRuleCodeButton = createCheckBox2(addSampleRuleButton, composite,
+//	            "Add a Java class for loading and executing the HelloWorld rules.");
+//	        addSampleJavaRuleCodeButton.setSelection(addSampleJavaRuleCode);
+//	        addSampleJavaRuleCodeButton.addSelectionListener(new SelectionAdapter() {
+//	            public void widgetSelected(SelectionEvent e) {
+//	                addSampleJavaRuleCode = ((Button) e.widget).getSelection();
+//	            }
+//	        });
+	        
 	        final Button addSampleDecisionTableCodeButton = createCheckBox(composite,
 	            "Add a sample HelloWorld decision table file to this project.");
 	        addSampleDecisionTableCodeButton.setSelection(addSampleDecisionTableCode);
@@ -495,16 +500,15 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 	                addSampleDecisionTableCode = ((Button) e.widget).getSelection();
 	            }
 	        });
-	        final Button addSampleJavaDecisionTableCodeButton = createCheckBox(composite,
-	            "Add a sample Java class for loading and executing the HelloWorld decision table.");
-	        addSampleJavaDecisionTableCodeButton.setSelection(addSampleDecisionTableCode);
-	        addSampleJavaDecisionTableCodeButton.addSelectionListener(new SelectionAdapter() {
-	            public void widgetSelected(SelectionEvent e) {
-	                addSampleJavaDecisionTableCode = ((Button) e.widget).getSelection();
-	                if (addSampleJavaDecisionTableCode)
-	                	addSampleDecisionTableCodeButton.setSelection(true);
-	            }
-	        });
+//	        final Button addSampleJavaDecisionTableCodeButton = createCheckBox2(addSampleDecisionTableCodeButton, composite,
+//	            "Add a Java class for loading and executing the HelloWorld decision table.");
+//	        addSampleJavaDecisionTableCodeButton.setSelection(addSampleJavaDecisionTableCode);
+//	        addSampleJavaDecisionTableCodeButton.addSelectionListener(new SelectionAdapter() {
+//	            public void widgetSelected(SelectionEvent e) {
+//	                addSampleJavaDecisionTableCode = ((Button) e.widget).getSelection();
+//	            }
+//	        });
+	        
 	        final Button addSampleRuleFlowButton = createCheckBox(composite,
 	            "Add a sample HelloWorld process file to this project.");
 	        addSampleRuleFlowButton.setSelection(addSampleRuleFlow);
@@ -513,16 +517,14 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 	                addSampleRuleFlow = ((Button) e.widget).getSelection();
 	            }
 	        });
-	        final Button addSampleJavaRuleFlowCodeButton = createCheckBox(composite,
-	            "Add a sample Java class for loading and executing the HelloWorld process.");
-	        addSampleJavaRuleFlowCodeButton.setSelection(addSampleJavaRuleFlowCode);
-	        addSampleJavaRuleFlowCodeButton.addSelectionListener(new SelectionAdapter() {
-	            public void widgetSelected(SelectionEvent e) {
-	                addSampleJavaRuleFlowCode = ((Button) e.widget).getSelection();
-	                if (addSampleJavaRuleFlowCode)
-	                	addSampleRuleFlowButton.setSelection(true);
-	            }
-	        });
+//	        final Button addSampleJavaRuleFlowCodeButton = createCheckBox2(addSampleRuleFlowButton, composite,
+//	            "Add a Java class for loading and executing the HelloWorld process.");
+//	        addSampleJavaRuleFlowCodeButton.setSelection(addSampleJavaRuleFlowCode);
+//	        addSampleJavaRuleFlowCodeButton.addSelectionListener(new SelectionAdapter() {
+//	            public void widgetSelected(SelectionEvent e) {
+//	                addSampleJavaRuleFlowCode = ((Button) e.widget).getSelection();
+//	            }
+//	        });
 
 		}
 	    
@@ -533,13 +535,35 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 	        button.setLayoutData(data);
 	        return button;
 	    }
+	    
+	    private Button createCheckBox2(final Button dependent, Composite group, String label) {
+	        Button button = new Button(group, SWT.CHECK | SWT.LEFT);
+	        button.setText(label);
+	        GridData data = new GridData();
+	        data.horizontalIndent = 20;
+	        button.setLayoutData(data);
+	        button.addSelectionListener(new SelectionAdapter() {
+	            public void widgetSelected(SelectionEvent e) {
+	                boolean selected = ((Button) e.widget).getSelection();
+	                if (selected) {
+	                	dependent.setSelection(true);
+	                	dependent.setEnabled(false);
+	                }
+	                else
+	                	dependent.setEnabled(true);
+	            }
+	        });
+	        
+	        return button;
+	    }
+
 
 	    public boolean shouldCreateRuleFile() {
 	        return addSampleRule;
 	    }
 
 	    public boolean shouldCreateJavaRuleFile() {
-	        return addSampleJavaRuleCode;
+	        return addSampleRule; //addSampleJavaRuleCode;
 	    }
 
 	    public boolean shouldCreateDecisionTableFile() {
@@ -547,7 +571,7 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 	    }
 
 	    public boolean shouldCreateJavaDecisionTableFile() {
-	        return addSampleJavaDecisionTableCode;
+	        return addSampleDecisionTableCode; //addSampleJavaDecisionTableCode;
 	    }
 
 	    public boolean shouldCreateRuleFlowFile() {
@@ -555,7 +579,7 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 	    }
 
 	    public boolean shouldCreateJavaRuleFlowFile() {
-	        return addSampleJavaRuleFlowCode;
+	        return addSampleRuleFlow; //addSampleJavaRuleFlowCode;
 	    }
 	}
 }

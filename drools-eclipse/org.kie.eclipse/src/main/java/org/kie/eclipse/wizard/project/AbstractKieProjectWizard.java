@@ -219,7 +219,14 @@ public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
     protected void createRuntimeSettings(IJavaProject javaProject, IProgressMonitor monitor) throws CoreException {
         IRuntime runtime = startPage.getRuntime();
         if (runtime != null) {
-        	startPage.getRuntimeManager().setRuntime(runtime, javaProject.getProject(), monitor);
+        	boolean isDefaultRuntime = false;
+        	if (startPage.getInitialProjectContent()==IKieProjectWizardPage.EMPTY_PROJECT)
+        		isDefaultRuntime = emptyProjectPage.isDefaultRuntime();
+        	else if (startPage.getInitialProjectContent()==IKieProjectWizardPage.SAMPLE_FILES_PROJECT) 
+        		isDefaultRuntime = sampleFilesProjectPage.isDefaultRuntime();
+        	if (!isDefaultRuntime) {
+        		startPage.getRuntimeManager().setRuntime(runtime, javaProject.getProject(), monitor);
+        	}
         }
     }
 

@@ -50,7 +50,7 @@ public abstract class AbstractProjectPreferencePage extends PropertyAndPreferenc
         
         Label nameLabel = new Label(composite, SWT.NONE);
         nameLabel.setText("Runtime:");
-        runtimeCombo = new Combo(composite, SWT.LEFT);
+        runtimeCombo = new Combo(composite, SWT.READ_ONLY);
         IRuntime[] runtimes = runtimeManager.getConfiguredRuntimes();
         int selection = -1;
         IRuntime currentRuntime = runtimeManager.getRuntime(getProject());
