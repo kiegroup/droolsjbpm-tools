@@ -103,6 +103,7 @@
             category="org.drools.eclipse.new"
             class="org.drools.eclipse.wizard.rule.NewRulePackageWizard"
             descriptionImage="icons/drools-large.PNG"
+            description="Create a new Drools Rule"
             icon="icons/drools.gif"
             id="org.drools.eclipse.new.file"
             name="Rule Resource"/>
@@ -110,6 +111,7 @@
             category="org.drools.eclipse.new"
             class="org.drools.eclipse.wizard.dsl.NewDSLFileWizard"
             descriptionImage="icons/dsl-large.png"
+            description="Create a new Drools DSL file"
             icon="icons/dsl.GIF"
             id="org.drools.eclipse.new.dsl"
             name="Domain Specific Language"/>
@@ -120,7 +122,7 @@
             category= "org.drools.eclipse.new"
             project= "true"
             icon= "icons/drools.gif">
-         <description>This wizard creates a new Rule project.</description>
+         <description>Creates a new Drools project</description>
       </wizard>     
       <category
             id="org.drools.eclipse.new"
@@ -129,6 +131,7 @@
             category="org.drools.eclipse.new"
             class="org.drools.eclipse.wizard.decisiontable.NewDTFileWizard"
             descriptionImage="icons/dt_large.gif"
+            description="Create a new Drools Decision Table"
             icon="icons/dt_small.gif"
             id="org.drools.eclipse.new.decisiontable"
             name="Decision Table"/>
@@ -602,7 +605,7 @@
          />
       </editorContribution>
    </extension>
-
+<!--
    <extension
          point = "org.eclipse.ui.newWizards">
     <category
@@ -619,7 +622,7 @@
       <selection class="org.eclipse.core.resources.IResource"/>
     </wizard>
    </extension>
-
+-->
    <extension-point id="processExtension" name="Process Extension" schema="schema/processExtension.exsd"/>
    <extension-point id="runtimeRecognizer" name="Drools Runtime Recognizer" schema="schema/runtimeRecognizer.exsd"/>
 

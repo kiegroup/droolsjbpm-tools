@@ -18,4 +18,10 @@
          	url="https://raw.githubusercontent.com/bbrodt/jbpm-playground/${TAG}/site/"
          	gitUrl="https://github.com/bbrodt/jbpm-playground"/>
    </extension>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="org.kie.eclipse.ReconfigureWizardsEarlyStartup">
+      </startup>
+   </extension>
 </plugin>

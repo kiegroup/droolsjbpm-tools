@@ -13,8 +13,9 @@
             name="jBPM project"
             icon="icons/jbpm.gif"
             project= "true">
-         <description>This wizard creates a new jBPM project.</description>
+         <description>Create a new jBPM project</description>
       </wizard>
+      <!--
       <wizard
             id = "org.jbpm.eclipse.new.bpmn2process"
             name = "BPMN2 Process"
@@ -23,6 +24,7 @@
             icon="icons/jbpm.gif">
          <description>A wizard that creates a new BPMN2 process.</description>
       </wizard>
+      -->
    </extension>
    <extension point="org.eclipse.jdt.core.classpathContainerInitializer">
        <classpathContainerInitializer class="org.jbpm.eclipse.util.JBPMClasspathContainerInitializer" id="JBPM" />

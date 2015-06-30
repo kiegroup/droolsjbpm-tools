@@ -76,12 +76,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.FormColors;
-import org.eclipse.ui.internal.WorkbenchPlugin;
-import org.eclipse.ui.internal.dialogs.WorkbenchWizardElement;
-import org.eclipse.ui.internal.wizards.AbstractExtensionWizardRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.eclipse.ui.wizards.IWizardCategory;
-import org.eclipse.ui.wizards.IWizardDescriptor;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
@@ -127,13 +122,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
     private FormColors                  ruleBuilderFormColors;
     
     private boolean 					forceFullBuild;
-
-    private static String[] wizardIdsToRemove = new String[] {
-    	"org.eclipse.bpmn2.presentation.Bpmn2ModelWizardID",
-    	"org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.wizards.NewJbpmProcessWizard",
-    	"org.eclipse.bpmn2.modeler.ui.diagram"
-    };
-
+    
     /**
      * The constructor.
      */
@@ -145,7 +134,6 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
     /**
      * This method is called upon plug-in activation
      */
-    @SuppressWarnings("restriction")
 	public void start(BundleContext context) throws Exception {
         super.start( context );
         IPreferenceStore preferenceStore = getPreferenceStore();
@@ -160,26 +148,6 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                 }
             }
         } );
-        
-        // remove BPMN2 category wizards
-        try {
-	        AbstractExtensionWizardRegistry wizardRegistry = (AbstractExtensionWizardRegistry)WorkbenchPlugin.getDefault().getNewWizardRegistry();
-	        IWizardCategory[] categories = WorkbenchPlugin.getDefault().getNewWizardRegistry().getRootCategory().getCategories();
-	        for (IWizardCategory category : categories) {
-	            for(IWizardDescriptor wizard : category.getWizards()) {
-	            	for (String id : wizardIdsToRemove) {
-	            		if (id.equals(wizard.getId())) {
-		                	WorkbenchWizardElement wizardElement = (WorkbenchWizardElement) wizard;
-		                	wizardRegistry.removeExtension(wizardElement.getConfigurationElement().getDeclaringExtension(), new Object[]{wizardElement});
-		                }
-		        	}
-	        	}
-	        }
-        }
-        catch (Exception ex) {
-        	// Ignore all exceptions. They are probably due to eclipse being run
-        	// in a headless JUnit test environment.
-        }
     }
 
     public static BundleContext getContext() {
