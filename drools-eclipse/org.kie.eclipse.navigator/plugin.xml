@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+	<extension-point
+		id="org.kie.eclipse.navigator.serviceImpl"
+		name="KIE Service Implementation"
+		schema="schema/serviceImpl.exsd" />
+	<extension point="org.eclipse.ui.views">
+		<category
+			id="org.drools.eclipse.views"
+			name="Drools">
+		</category>
+		<view
+			category="org.drools.eclipse.views"
+			class="org.kie.eclipse.navigator.view.KieNavigatorView"
+			icon="icons/navigator.gif"
+			id="org.kie.eclipse.navigator.view"
+			name="Kie Navigator"
+			restorable="true">
+		</view>
+	</extension>
+	<extension
+		id="org.kie.common.navigator.viewer"
+		point="org.eclipse.ui.navigator.viewer">
+		<viewer viewerId="org.kie.eclipse.navigator.view">
+		</viewer>
+		<viewerContentBinding viewerId="org.kie.eclipse.navigator.view">
+			<includes>
+				<contentExtension
+					isRoot="true"
+					pattern="org.kie.eclipse.navigator.kieContent"/>
+
+				<!-- content from eclipse UI Package Explorer -->
+				<contentExtension pattern="org.eclipse.jdt.java.ui.javaContent" />
+				<contentExtension pattern="org.eclipse.jdt.java.ui.filters.*" />	
+				<contentExtension pattern="org.eclipse.jdt.java.ui.javaLinkHelper" />	
+
+				<!-- content from eclipse UI Project Viewer org.eclipse.ui.navigator.ProjectExplorer -->
+				<contentExtension
+					isRoot="false"
+					pattern="org.eclipse.ui.navigator.resourceContent"/>
+				
+			</includes>
+		</viewerContentBinding>
+
+		<viewerActionBinding viewerId="org.kie.eclipse.navigator.view">
+			<includes>
+				<actionExtension pattern="org.kie.eclipse.navigator.view.content.*"/>
+			</includes>
+		</viewerActionBinding>
+	</extension>
+	
+	<extension point="org.eclipse.ui.navigator.navigatorContent">
+		<navigatorContent
+			activeByDefault="true"
+			contentProvider="org.kie.eclipse.navigator.view.KieNavigatorContentProvider"
+			icon="icons/navigator.gif"
+			id="org.kie.eclipse.navigator.kieContent"
+			labelProvider="org.kie.eclipse.navigator.view.KieNavigatorLabelProvider"
+			name="KIE Navigator - Server Content"
+			priority="normal">
+			<triggerPoints>
+				<and>
+					<instanceof value="org.eclipse.wst.server.core.IServer">
+					</instanceof>
+					<or>
+						<test
+							property="org.eclipse.wst.server.ui.serverType"
+							value="org.jboss.ide.eclipse.as.70">
+						</test>
+						<test
+							property="org.eclipse.wst.server.ui.serverType"
+							value="org.jboss.ide.eclipse.as.71">
+						</test>
+						<test
+							property="org.eclipse.wst.server.ui.serverType"
+							value="org.jboss.ide.eclipse.as.eap.60">
+						</test>
+						<test
+							property="org.eclipse.wst.server.ui.serverType"
+							value="org.jboss.ide.eclipse.as.eap.61">
+						</test>
+						<test
+							property="org.eclipse.wst.server.ui.serverType"
+							value="org.jboss.ide.eclipse.as.wildfly.80">
+						</test>
+						<!-- NEW_SERVER_ADAPTER -->
+					</or>
+				</and>
+			</triggerPoints>
+			<possibleChildren>
+				<instanceof value="org.kie.eclipse.navigator.view.content.IContentNode"/>
+			</possibleChildren>
+			
+			<!--
+			<actionProvider
+				class="org.kie.eclipse.navigator.view.actions.RefreshActionProvider"
+				id="org.navigator.view.content.container">
+				<enablement>
+					<instanceof value="org.kie.eclipse.navigator.view.content.IContainerNode">
+					</instanceof>
+				</enablement>
+			</actionProvider>
+			-->
+			
+			<!-- TODO: add other actionProviders here for different node types -->
+		</navigatorContent>
+		
+		<actionProvider
+			class="org.kie.eclipse.navigator.view.actions.RefreshActionProvider"
+			id="org.kie.eclipse.navigator.view.content.container">
+			<enablement>
+				<instanceof value="org.kie.eclipse.navigator.view.content.IContainerNode">
+				</instanceof>
+			</enablement>
+		</actionProvider>
+		
+		<actionProvider
+			class="org.kie.eclipse.navigator.view.actions.server.ServerActionProvider"
+			id="org.kie.eclipse.navigator.view.content.server">
+			<enablement>
+				<instanceof value="org.kie.eclipse.navigator.view.content.ServerNode">
+				</instanceof>
+			</enablement>
+		</actionProvider>
+		
+		<actionProvider
+			class="org.kie.eclipse.navigator.view.actions.organization.OrganizationActionProvider"
+			id="org.kie.eclipse.navigator.view.content.organization">
+			<enablement>
+				<instanceof value="org.kie.eclipse.navigator.view.content.OrganizationNode">
+				</instanceof>
+			</enablement>
+		</actionProvider>
+		
+		<actionProvider
+			class="org.kie.eclipse.navigator.view.actions.repository.RepositoryActionProvider"
+			id="org.kie.eclipse.navigator.view.content.repository">
+			<enablement>
+				<instanceof value="org.kie.eclipse.navigator.view.content.RepositoryNode">
+				</instanceof>
+			</enablement>
+		</actionProvider>
+		
+		<actionProvider
+			class="org.kie.eclipse.navigator.view.actions.project.ProjectActionProvider"
+			id="org.kie.eclipse.navigator.view.content.project">
+			<enablement>
+				<instanceof value="org.kie.eclipse.navigator.view.content.ProjectNode">
+				</instanceof>
+			</enablement>
+		</actionProvider>
+	</extension>
+
+	<extension
+		id="org.kie.eclipse.navigator.service.wildfly.80"
+		name="Wildfly 8.x"
+		point="org.kie.eclipse.navigator.serviceImpl">
+		<containerBinding
+			class="org.kie.eclipse.navigator.view.server.jbpm60.Kie60Service"
+			runtimeId="org.jboss.kie.6.2"
+			serverId="org.jboss.ide.eclipse.as.wildfly.80">
+		</containerBinding>
+		<containerBinding
+			class="org.kie.eclipse.navigator.view.server.jbpm60.Kie60Service"
+			runtimeId="org.jboss.kie.6.1"
+			serverId="org.jboss.ide.eclipse.as.71">
+		</containerBinding>
+	</extension>
+ <extension
+       point="org.eclipse.ui.propertyPages">
+    <page
+          class="org.kie.eclipse.navigator.preferences.ServerPropertyPage"
+          id="org.kie.eclipse.navigator.serverPropertyPage"
+          name="Kie Server">
+          <enabledWhen>
+              <instanceof
+                  value="org.kie.eclipse.navigator.view.content.ServerNode">
+              </instanceof>
+          </enabledWhen>
+          
+    </page>
+ </extension>
+
+ <extension
+       point="org.eclipse.ui.propertyPages">
+    <page
+          class="org.kie.eclipse.navigator.preferences.OrganizationPropertyPage"
+          id="org.kie.eclipse.navigator.organizationPropertyPage"
+          name="Organizational Unit">
+          <enabledWhen>
+              <instanceof
+                  value="org.kie.eclipse.navigator.view.content.OrganizationNode">
+              </instanceof>
+          </enabledWhen>
+    </page>
+ </extension>
+
+ <extension
+       point="org.eclipse.ui.propertyPages">
+    <page
+          class="org.kie.eclipse.navigator.preferences.RepositoryPropertyPage"
+          id="org.kie.eclipse.navigator.repositoryPropertyPage"
+          name="Repository">
+          <enabledWhen>
+              <instanceof
+                  value="org.kie.eclipse.navigator.view.content.RepositoryNode">
+              </instanceof>
+          </enabledWhen>
+    </page>
+ </extension>
+
+ <extension
+       point="org.eclipse.ui.propertyPages">
+    <page
+          class="org.kie.eclipse.navigator.preferences.ProjectPropertyPage"
+          id="org.kie.eclipse.navigator.projectPropertyPage"
+          name="Project">
+          <enabledWhen>
+              <instanceof
+                  value="org.kie.eclipse.navigator.view.content.ProjectNode">
+              </instanceof>
+          </enabledWhen>
+    </page>
+ </extension>
+</plugin>
