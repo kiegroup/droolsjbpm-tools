@@ -1,7 +1,9 @@
 package org.kie.eclipse.navigator.view.actions.repository;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -51,24 +53,25 @@ public class CreateProjectAction extends KieNavigatorAction {
 		IContainerNode<?> container = getContainer();
 		if (container==null)
 			return;
-		
+
 		IKieRepositoryHandler repository = (IKieRepositoryHandler) container.getHandler();
         IKieServiceDelegate delegate = getDelegate();
-        
+        IStructuredSelection sel = getStructuredSelection();
+        /*
         CreateProjectRequestDialog dlg = new CreateProjectRequestDialog(getShell(), repository);
-        
+
         if (dlg.open()==Window.OK) {
         	JsonObject properties = dlg.getResult();
         	String name = properties.get("name").asString();
             IKieProjectHandler project = new KieProjectHandler(repository, name);
             project.setProperties(properties);
 	        try {
-	        	delegate.createProject(project);
-
-	        	refreshViewer(container.getParent());
+//	        	delegate.createProject(project);
+//
+//	        	refreshViewer(container.getParent());
 
 	            if (dlg.shouldStartProjectWizard()) {
-		    		BasicNewResourceWizard wizard = (BasicNewResourceWizard) createWizard("org.drools.eclipse.wizards.new.project");
+		    		BasicNewResourceWizard wizard = (BasicNewResourceWizard) createWizard("org.kie.eclipse.navigator.project");
 		    		wizard.init(PlatformUI.getWorkbench(), getStructuredSelection());
 		    		WizardDialog wd = new WizardDialog(Display.getDefault().getActiveShell(), wizard);
 		    		wd.setTitle(wizard.getWindowTitle());
@@ -80,6 +83,15 @@ public class CreateProjectAction extends KieNavigatorAction {
 	        	handleException(e);
 	        }
         }
+        */
+        
+		BasicNewResourceWizard wizard = (BasicNewResourceWizard) createWizard("org.drools.eclipse.wizards.new.project");
+		wizard.init(PlatformUI.getWorkbench(), getStructuredSelection());
+		WizardDialog wd = new WizardDialog(Display.getDefault().getActiveShell(), wizard);
+		wd.setTitle(wizard.getWindowTitle());
+		int rtn = wd.open();
+		System.out.println(rtn);
+        
 	}
 
 	public IWizard createWizard(String id) {

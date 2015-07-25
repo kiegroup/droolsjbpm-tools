@@ -46,6 +46,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.ui.PreferenceConstants;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 import org.kie.eclipse.runtime.IRuntime;
@@ -69,6 +70,7 @@ public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
     protected IKieEmptyProjectWizardPage emptyProjectPage;
     protected IKieSampleFilesProjectWizardPage sampleFilesProjectPage;
     protected IKieOnlineExampleProjectWizardPage onlineExampleProjectPage;
+    protected IWizardPage lastPage = null;
     
     abstract protected IKieProjectWizardPage createStartPage(String pageId);
     abstract protected IKieProjectWizardPage createEmptyProjectPage(String pageId);
@@ -82,18 +84,34 @@ public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
     
     public void addPages() {
         super.addPages();
+        
         startPage = (IKieProjectStartWizardPage) createStartPage(START_PAGE);
         addPage(startPage);
+        
         emptyProjectPage = (IKieEmptyProjectWizardPage) createEmptyProjectPage(EMPTY_PROJECT_PAGE);
         addPage(emptyProjectPage);
+        
         sampleFilesProjectPage = (IKieSampleFilesProjectWizardPage) createSampleFilesProjectPage(SAMPLE_FILES_PROJECT_PAGE);
         addPage(sampleFilesProjectPage);
+
         onlineExampleProjectPage = (IKieOnlineExampleProjectWizardPage) createOnlineExampleProjectPage(ONLINE_EXAMPLE_PROJECT_PAGE);
         addPage(onlineExampleProjectPage);
+        
+        lastPage = createLastPage();
+        if (lastPage!=null)
+        	addPage(lastPage);
 
         setNeedsProgressMonitor(true);
     }
-
+    
+    protected IWizardPage createLastPage() {
+    	return null;
+    }
+    
+    public IWizardPage getLastPage() {
+    	return lastPage;
+    }
+    
 	public boolean performFinish() {
     	IProject newProjectHandle = null;
     	for (IProjectDescription pd : startPage.getNewProjectDescriptions()) {

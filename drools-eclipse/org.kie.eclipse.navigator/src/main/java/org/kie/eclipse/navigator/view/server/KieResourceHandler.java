@@ -66,6 +66,11 @@ public abstract class KieResourceHandler implements IKieResourceHandler {
 		return getParent().getRoot();
 	}
 
+	@Override
+	public Object getResource() {
+		return null;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.kie.eclipse.navigator.view.server.IKieResourceHandler#getServer()
 	 */

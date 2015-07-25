@@ -13,7 +13,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.kie.eclipse.runtime.IRuntime;
@@ -218,6 +217,6 @@ public abstract class AbstractKieEmptyProjectWizardPage extends KieProjectWizard
     
 	@Override
 	public IWizardPage getNextPage() {
-		return null;
+		return ((AbstractKieProjectWizard)getWizard()).getLastPage();
 	}
 }

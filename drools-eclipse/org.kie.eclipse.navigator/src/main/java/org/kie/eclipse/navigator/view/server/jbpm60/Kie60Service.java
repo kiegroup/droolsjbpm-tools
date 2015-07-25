@@ -368,4 +368,75 @@ public class Kie60Service extends KieServiceDelegate {
 		}
 	}
 
+	public void mavenCompile(IKieProjectHandler project, JsonObject params) throws IOException {
+		String jobId = httpPost("repositories/" + project.getParent().getName() + "/projects/"+
+				"/maven/compile/", params);
+		try {
+			String status = getJobStatus(jobId, "Compiling Project '"+project.getName()+"'");
+			
+			if (status==null) {
+				throw new IOException("Request to compile Project '"+project.getName()+"' has timed out");
+			}
+			if (!status.startsWith(JOB_STATUS_SUCCESS))
+				throw new IOException("Request to compile Project '"+project.getName()+"' has failed with status "+status);
+		}
+		catch (InterruptedException e) {
+			deleteJob(jobId);
+			throw new IOException("Request to compile Project '"+project.getName()+"' was canceled");
+		}
+	}
+
+	public void mavenInstall(IKieProjectHandler project, JsonObject params) throws IOException {
+		String jobId = httpPost("repositories/" + project.getParent().getName() + "/projects/"+
+				"/maven/install/", params);
+		try {
+			String status = getJobStatus(jobId, "Installing Project '"+project.getName()+"'");
+			
+			if (status==null) {
+				throw new IOException("Request to install Project '"+project.getName()+"' has timed out");
+			}
+			if (!status.startsWith(JOB_STATUS_SUCCESS))
+				throw new IOException("Request to install Project '"+project.getName()+"' has failed with status "+status);
+		}
+		catch (InterruptedException e) {
+			deleteJob(jobId);
+			throw new IOException("Request to install Project '"+project.getName()+"' was canceled");
+		}
+	}
+
+	public void mavenTest(IKieProjectHandler project, JsonObject params) throws IOException {
+		String jobId = httpPost("repositories/" + project.getParent().getName() + "/projects/"+
+				"/maven/test/", params);
+		try {
+			String status = getJobStatus(jobId, "Testing Project '"+project.getName()+"'");
+			
+			if (status==null) {
+				throw new IOException("Request to test Project '"+project.getName()+"' has timed out");
+			}
+			if (!status.startsWith(JOB_STATUS_SUCCESS))
+				throw new IOException("Request to test Project '"+project.getName()+"' has failed with status "+status);
+		}
+		catch (InterruptedException e) {
+			deleteJob(jobId);
+			throw new IOException("Request to test Project '"+project.getName()+"' was canceled");
+		}
+	}
+
+	public void mavenDeploy(IKieProjectHandler project, JsonObject params) throws IOException {
+		String jobId = httpPost("repositories/" + project.getParent().getName() + "/projects/"+
+				"/maven/deploy/", params);
+		try {
+			String status = getJobStatus(jobId, "Deploying Project '"+project.getName()+"'");
+			
+			if (status==null) {
+				throw new IOException("Request to deploy Project '"+project.getName()+"' has timed out");
+			}
+			if (!status.startsWith(JOB_STATUS_SUCCESS))
+				throw new IOException("Request to deploy Project '"+project.getName()+"' has failed with status "+status);
+		}
+		catch (InterruptedException e) {
+			deleteJob(jobId);
+			throw new IOException("Request to deploy Project '"+project.getName()+"' was canceled");
+		}
+	}
 }

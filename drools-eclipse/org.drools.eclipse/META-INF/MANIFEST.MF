@@ -61,7 +61,8 @@ Bundle-ClassPath: .,
  lib/slf4j-api.jar,
  lib/protobuf-java.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: org.drools.eclipse.util
+Export-Package: org.drools.eclipse.util,
+ org.drools.eclipse.wizard.project
 Import-Package: org.kie.eclipse.preferences,
  org.kie.eclipse.runtime,
  org.kie.eclipse.utils,

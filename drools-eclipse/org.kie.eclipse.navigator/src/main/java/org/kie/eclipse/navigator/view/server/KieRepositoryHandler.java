@@ -56,7 +56,12 @@ public class KieRepositoryHandler extends KieResourceHandler implements IKieRepo
 	public KieRepositoryHandler(IKieServerHandler server, String name) {
 		super(server, name);
 	}
-	
+
+	@Override
+	public Object getResource() {
+		return repository;
+	}
+
 	@Override
 	public List<? extends IKieResourceHandler> getChildren() throws Exception {
 		if (children==null || children.isEmpty()) {

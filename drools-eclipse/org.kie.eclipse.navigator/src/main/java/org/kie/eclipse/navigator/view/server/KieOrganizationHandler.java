@@ -26,7 +26,12 @@ public class KieOrganizationHandler extends KieResourceHandler implements IKieOr
 	public KieOrganizationHandler(IKieServerHandler service, String name) {
 		super(service, name);
 	}
-	
+
+	@Override
+	public Object getResource() {
+		return properties;
+	}
+
 	public List<? extends IKieResourceHandler> getChildren() throws Exception {
 		if (children==null || children.isEmpty()) {
 			children = getDelegate().getRepositories(this);

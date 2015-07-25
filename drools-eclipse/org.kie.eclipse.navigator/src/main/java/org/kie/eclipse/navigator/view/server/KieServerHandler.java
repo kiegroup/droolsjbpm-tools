@@ -39,6 +39,11 @@ public class KieServerHandler extends KieResourceHandler implements IKieServerHa
 		this.server = server;
 	}
 
+	@Override
+	public Object getResource() {
+		return server;
+	}
+
 	public void dispose() {
 	}
 	

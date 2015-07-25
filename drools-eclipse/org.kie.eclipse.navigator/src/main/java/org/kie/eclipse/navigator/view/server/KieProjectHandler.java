@@ -34,7 +34,12 @@ public class KieProjectHandler extends KieResourceHandler implements IKieProject
 	public KieProjectHandler(IKieRepositoryHandler repository, String name) {
 		super(repository, name);
 	}
-	
+
+	@Override
+	public Object getResource() {
+		return project;
+	}
+
 	public Object load() {
 		if (project==null) {
 			Repository repository = (Repository) parent.load();

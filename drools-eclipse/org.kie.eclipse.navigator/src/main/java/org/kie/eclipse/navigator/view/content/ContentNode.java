@@ -92,6 +92,10 @@ public abstract class ContentNode<T extends IContainerNode<?>> implements IConte
     	return this;
     }
 
+    public Object getAdapter(Class adapter) {
+    	return null;
+    }
+    
 	@Override
 	public abstract boolean equals(Object obj);
 }
