@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.kie.eclipse.navigator.view.server.IKieOrganizationHandler;
-import org.kie.eclipse.navigator.view.server.IKieRepositoryHandler;
-import org.kie.eclipse.navigator.view.server.IKieResourceHandler;
+import org.kie.eclipse.server.IKieOrganizationHandler;
+import org.kie.eclipse.server.IKieRepositoryHandler;
+import org.kie.eclipse.server.IKieResourceHandler;
 
 /**
  *

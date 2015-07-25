@@ -11,7 +11,7 @@
  * @author Bob Brodt
  ******************************************************************************/
 
-package org.kie.eclipse.navigator.view.server;
+package org.kie.eclipse.server;
 
 import java.util.List;
 import java.util.Map;

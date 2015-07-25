@@ -1,7 +1,8 @@
 package org.kie.eclipse.navigator.preferences;
 
 import org.eclipse.jface.preference.StringFieldEditor;
-import org.kie.eclipse.navigator.view.server.IKieRepositoryHandler;
+import org.kie.eclipse.server.IKieRepositoryHandler;
+import org.kie.eclipse.utils.PreferencesUtils;
 
 public class RepositoryPropertyPage extends AbstractKiePropertyPage {
 	

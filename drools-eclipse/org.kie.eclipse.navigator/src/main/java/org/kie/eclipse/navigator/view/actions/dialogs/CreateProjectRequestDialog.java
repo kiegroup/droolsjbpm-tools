@@ -7,8 +7,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.kie.eclipse.navigator.view.server.IKieProjectHandler;
-import org.kie.eclipse.navigator.view.server.IKieRepositoryHandler;
+import org.kie.eclipse.server.IKieProjectHandler;
+import org.kie.eclipse.server.IKieRepositoryHandler;
 
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;

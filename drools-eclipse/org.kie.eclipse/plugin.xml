@@ -3,6 +3,7 @@
 <plugin>
    <extension-point id="runtimeInstaller" name="Runtime Installer Definition" schema="schema/runtimeInstaller.exsd"/>
    <extension-point id="sampleProjectsRepository" name="Sample Projects Repository Definition" schema="schema/sampleProjectsRepository.exsd"/>
+   	<extension-point id="serviceImpl" name="KIE Service Implementation" schema="schema/serviceImpl.exsd" />
    
    <extension point="org.kie.eclipse.sampleProjectsRepository">
          <repository

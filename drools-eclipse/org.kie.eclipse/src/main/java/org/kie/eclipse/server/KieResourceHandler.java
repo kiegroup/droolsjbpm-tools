@@ -11,7 +11,7 @@
  * @author Bob Brodt
  ******************************************************************************/
 
-package org.kie.eclipse.navigator.view.server;
+package org.kie.eclipse.server;
 
 import java.util.List;
 
@@ -19,8 +19,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.wst.server.core.IServer;
-import org.kie.eclipse.navigator.Activator;
-import org.kie.eclipse.navigator.IKieNavigatorConstants;
+import org.kie.eclipse.Activator;
+import org.kie.eclipse.IKieConstants;
 import org.osgi.service.prefs.Preferences;
 
 import com.eclipsesource.json.JsonObject;
@@ -118,20 +118,20 @@ public abstract class KieResourceHandler implements IKieResourceHandler {
 	}
 	
 	protected static String getCanonicalName(String name) {
-		return name.replaceAll(IKieNavigatorConstants.CANONICAL_NAME_PATTERN, IKieNavigatorConstants.CANONICAL_NAME_REPLACEMENT);
+		return name.replaceAll(IKieConstants.CANONICAL_NAME_PATTERN, IKieConstants.CANONICAL_NAME_REPLACEMENT);
 	}
 	
 	public String getPreferenceName(String name) {
 		String canonicalName = getCanonicalName(getName());
 		String path = "";
 		if (parent!=null) {
-			path = parent.getPreferenceName(null) + IKieNavigatorConstants.PREF_PATH_SEPARATOR + canonicalName;
+			path = parent.getPreferenceName(null) + IKieConstants.PREF_PATH_SEPARATOR + canonicalName;
 		}
 		else
 			path = canonicalName;
 		if (name==null)
 			return path;
-		return path + IKieNavigatorConstants.PREF_PATH_SEPARATOR + getCanonicalName(name);
+		return path + IKieConstants.PREF_PATH_SEPARATOR + getCanonicalName(name);
 	}
 	
 	public Preferences getPreferences() {

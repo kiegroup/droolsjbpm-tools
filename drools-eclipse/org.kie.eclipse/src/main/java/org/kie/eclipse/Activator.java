@@ -9,6 +9,9 @@ import org.osgi.framework.BundleContext;
 
 public class Activator extends AbstractUIPlugin implements BundleActivator {
 
+	// The plug-in ID
+	public static final String PLUGIN_ID = "org.kie.eclipse"; //$NON-NLS-1$
+
 	private static BundleContext context;
 	private static Activator instance;
 	
@@ -23,6 +26,10 @@ public class Activator extends AbstractUIPlugin implements BundleActivator {
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
 		instance = this;
+	}
+	
+	public static Activator getDefault() {
+		return instance;
 	}
 
 	/*

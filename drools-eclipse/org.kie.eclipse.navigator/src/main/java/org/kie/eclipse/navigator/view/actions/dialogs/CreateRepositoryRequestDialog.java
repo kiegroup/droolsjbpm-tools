@@ -6,8 +6,8 @@ import java.net.URISyntaxException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.kie.eclipse.navigator.view.server.IKieOrganizationHandler;
-import org.kie.eclipse.navigator.view.server.IKieRepositoryHandler;
+import org.kie.eclipse.server.IKieOrganizationHandler;
+import org.kie.eclipse.server.IKieRepositoryHandler;
 
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;

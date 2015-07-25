@@ -4,8 +4,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.kie.eclipse.navigator.view.actions.KieNavigatorAction;
 import org.kie.eclipse.navigator.view.content.IContainerNode;
-import org.kie.eclipse.navigator.view.server.IKieProjectHandler;
-import org.kie.eclipse.navigator.view.server.IKieServiceDelegate;
+import org.kie.eclipse.server.IKieProjectHandler;
+import org.kie.eclipse.server.IKieServiceDelegate;
 
 public class DeleteProjectAction extends KieNavigatorAction {
 

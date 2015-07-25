@@ -22,17 +22,18 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.navigator.CommonNavigator;
 import org.eclipse.ui.navigator.CommonViewer;
 import org.eclipse.wst.server.core.IServer;
+import org.kie.eclipse.IKieConstants;
+import org.kie.eclipse.IKieConstants;
 import org.kie.eclipse.navigator.Activator;
-import org.kie.eclipse.navigator.IKieNavigatorConstants;
-import org.kie.eclipse.navigator.view.server.IKieOrganizationHandler;
-import org.kie.eclipse.navigator.view.server.IKieRepositoryHandler;
-import org.kie.eclipse.navigator.view.server.IKieResourceHandler;
-import org.kie.eclipse.navigator.view.server.KieServerHandler;
+import org.kie.eclipse.server.IKieOrganizationHandler;
+import org.kie.eclipse.server.IKieRepositoryHandler;
+import org.kie.eclipse.server.IKieResourceHandler;
+import org.kie.eclipse.server.KieServerHandler;
 
 /**
  *
  */
-public class ServerNode extends ContainerNode implements IPropertyChangeListener, IKieNavigatorConstants {
+public class ServerNode extends ContainerNode implements IPropertyChangeListener, IKieConstants {
 
 	protected CommonNavigator navigator;
     protected final IServer server;
@@ -111,7 +112,7 @@ public class ServerNode extends ContainerNode implements IPropertyChangeListener
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		String name = event.getProperty();
-		if (name.endsWith(PREF_GIT_REPO_PATH) || name.endsWith(PREF_USE_DEFAULT_GIT_PATH)) {
+		if (name.endsWith(IKieConstants.PREF_GIT_REPO_PATH) || name.endsWith(IKieConstants.PREF_USE_DEFAULT_GIT_PATH)) {
 	        clearChildren();
 	        CommonViewer viewer = navigator.getCommonViewer();
 	        viewer.refresh(this);

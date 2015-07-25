@@ -13,7 +13,7 @@ package org.kie.eclipse.navigator.view.content;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ui.navigator.CommonNavigator;
 import org.eclipse.wst.server.core.IServer;
-import org.kie.eclipse.navigator.view.server.IKieResourceHandler;
+import org.kie.eclipse.server.IKieResourceHandler;
 
 public interface IContentNode<T extends IContainerNode<?>> extends IAdaptable {
 

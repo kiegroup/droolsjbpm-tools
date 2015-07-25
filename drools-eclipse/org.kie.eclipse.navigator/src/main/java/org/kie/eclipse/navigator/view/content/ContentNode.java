@@ -12,7 +12,7 @@ package org.kie.eclipse.navigator.view.content;
 
 import org.eclipse.ui.navigator.CommonNavigator;
 import org.eclipse.wst.server.core.IServer;
-import org.kie.eclipse.navigator.view.server.IKieResourceHandler;
+import org.kie.eclipse.server.IKieResourceHandler;
 
 public abstract class ContentNode<T extends IContainerNode<?>> implements IContentNode<T> {
 
@@ -75,10 +75,6 @@ public abstract class ContentNode<T extends IContainerNode<?>> implements IConte
         }
     }
 
-    /**
-     * TODO: handler should be a generic IKieResourceHandler
-     * @return
-     */
     public IKieResourceHandler getHandler() {
     	 return handler;
     }
@@ -93,6 +89,9 @@ public abstract class ContentNode<T extends IContainerNode<?>> implements IConte
     }
 
     public Object getAdapter(Class adapter) {
+		if (adapter==IKieResourceHandler.class) {
+			return getHandler();
+		}
     	return null;
     }
     

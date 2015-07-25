@@ -11,16 +11,17 @@
  * @author Bob Brodt
  ******************************************************************************/
 
-package org.kie.eclipse.navigator.view.server;
+package org.kie.eclipse.server;
 
+import java.io.IOException;
 import java.util.List;
-
-import org.eclipse.jgit.lib.Repository;
 
 /**
  *
  */
-public interface IKieRepositoryHandler extends IKieResourceHandler {
-	Repository getRepository();
-	List<IKieProjectHandler> getProjects() throws Exception;
+public interface IKieServerHandler extends IKieResourceHandler {
+
+	List<IKieOrganizationHandler> getOrganizations() throws IOException;
+	List<IKieRepositoryHandler> getRepositories(IKieOrganizationHandler organization) throws IOException;
+	List<IKieProjectHandler> getProjects(IKieRepositoryHandler repository) throws IOException;
 }

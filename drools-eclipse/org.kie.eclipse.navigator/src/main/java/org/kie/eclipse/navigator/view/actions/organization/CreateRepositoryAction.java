@@ -6,9 +6,9 @@ import org.eclipse.swt.widgets.Display;
 import org.kie.eclipse.navigator.view.actions.KieNavigatorAction;
 import org.kie.eclipse.navigator.view.actions.dialogs.CreateRepositoryRequestDialog;
 import org.kie.eclipse.navigator.view.content.IContainerNode;
-import org.kie.eclipse.navigator.view.server.IKieOrganizationHandler;
-import org.kie.eclipse.navigator.view.server.IKieServiceDelegate;
-import org.kie.eclipse.navigator.view.server.KieRepositoryHandler;
+import org.kie.eclipse.server.IKieOrganizationHandler;
+import org.kie.eclipse.server.IKieServiceDelegate;
+import org.kie.eclipse.server.KieRepositoryHandler;
 
 import com.eclipsesource.json.JsonObject;
 

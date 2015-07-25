@@ -13,9 +13,10 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.wst.server.core.IServer;
-import org.kie.eclipse.navigator.IKieNavigatorConstants;
+import org.kie.eclipse.IKieConstants;
+import org.kie.eclipse.IKieConstants;
 
-public class ServerPropertyPage extends FieldEditorPropertyPage implements IKieNavigatorConstants {
+public class ServerPropertyPage extends FieldEditorPropertyPage implements IKieConstants {
 
 	private MyDirectoryFieldEditor gitPathEditor;
 	private BooleanFieldEditor useDefaultGitPathEditor;
@@ -36,28 +37,28 @@ public class ServerPropertyPage extends FieldEditorPropertyPage implements IKieN
 		BooleanFieldEditor boolEditor;
 		
 		
-		stringEditor = new StringFieldEditor(PREF_SERVER_USERNAME, "Username:", getFieldEditorParent());
+		stringEditor = new StringFieldEditor(IKieConstants.PREF_SERVER_USERNAME, "Username:", getFieldEditorParent());
 		addField(stringEditor);
 		
-		passwordEditor = new PasswordFieldEditor(PREF_SERVER_PASSWORD, "Password:", getFieldEditorParent());
+		passwordEditor = new PasswordFieldEditor(IKieConstants.PREF_SERVER_PASSWORD, "Password:", getFieldEditorParent());
 		addField(passwordEditor);
 		
-		boolEditor = new MessageDialogToggleFieldEditor(PREF_SERVER_TRUSTED_CONNECTION, "Trust connections to this Server", getFieldEditorParent());
+		boolEditor = new MessageDialogToggleFieldEditor(IKieConstants.PREF_SERVER_TRUSTED_CONNECTION, "Trust connections to this Server", getFieldEditorParent());
 		addField(boolEditor);
 		
-		stringEditor = new StringFieldEditor(PREF_SERVER_KIE_APPLICATION_NAME, "KIE Application Name:", getFieldEditorParent());
+		stringEditor = new StringFieldEditor(IKieConstants.PREF_SERVER_KIE_APPLICATION_NAME, "KIE Application Name:", getFieldEditorParent());
 		addField(stringEditor);
 
-		intEditor = new IntegerFieldEditor(PREF_SERVER_HTTP_PORT, "HTTP Port:", getFieldEditorParent());
+		intEditor = new IntegerFieldEditor(IKieConstants.PREF_SERVER_HTTP_PORT, "HTTP Port:", getFieldEditorParent());
 		addField(intEditor);
 		
-		intEditor = new IntegerFieldEditor(PREF_SERVER_GIT_PORT, "Git Port:", getFieldEditorParent());
+		intEditor = new IntegerFieldEditor(IKieConstants.PREF_SERVER_GIT_PORT, "Git Port:", getFieldEditorParent());
 		addField(intEditor);
 
-		useDefaultGitPathEditor = new BooleanFieldEditor(PREF_USE_DEFAULT_GIT_PATH, "Use default Git Repository Path", getFieldEditorParent());
+		useDefaultGitPathEditor = new BooleanFieldEditor(IKieConstants.PREF_USE_DEFAULT_GIT_PATH, "Use default Git Repository Path", getFieldEditorParent());
 		addField(useDefaultGitPathEditor);
 		
-		gitPathEditor = new MyDirectoryFieldEditor(PREF_GIT_REPO_PATH, "Git Repository Path", getFieldEditorParent());
+		gitPathEditor = new MyDirectoryFieldEditor(IKieConstants.PREF_GIT_REPO_PATH, "Git Repository Path", getFieldEditorParent());
 		addField(gitPathEditor);
 	}
 	
@@ -69,7 +70,7 @@ public class ServerPropertyPage extends FieldEditorPropertyPage implements IKieN
 		
 		if (!checked && gitPathEditor.getStringValue().isEmpty()) {
 			String defaultRepoPath = UIUtils.getDefaultRepositoryDir();
-			String repoPath = getResourceHandler().getPreferenceName(null).replace(IKieNavigatorConstants.PREF_PATH_SEPARATOR.charAt(0), File.separator.charAt(0));
+			String repoPath = getResourceHandler().getPreferenceName(null).replace(IKieConstants.PREF_PATH_SEPARATOR.charAt(0), File.separator.charAt(0));
 			if (defaultRepoPath!=null)
 				defaultRepoPath += File.separator + repoPath;
 			else

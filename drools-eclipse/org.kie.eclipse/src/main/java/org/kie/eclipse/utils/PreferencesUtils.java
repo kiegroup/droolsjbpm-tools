@@ -1,23 +1,24 @@
-package org.kie.eclipse.navigator.preferences;
+package org.kie.eclipse.utils;
 
 import java.io.File;
 import java.net.URISyntaxException;
 
 import org.eclipse.egit.ui.UIUtils;
 import org.eclipse.jgit.transport.URIish;
-import org.kie.eclipse.navigator.IKieNavigatorConstants;
-import org.kie.eclipse.navigator.view.server.IKieRepositoryHandler;
-import org.kie.eclipse.navigator.view.server.IKieServerHandler;
-import org.kie.eclipse.navigator.view.server.IKieServiceDelegate;
+import org.kie.eclipse.IKieConstants;
+import org.kie.eclipse.IKieConstants;
+import org.kie.eclipse.server.IKieRepositoryHandler;
+import org.kie.eclipse.server.IKieServerHandler;
+import org.kie.eclipse.server.IKieServiceDelegate;
 
-public class PreferencesUtils implements IKieNavigatorConstants {
+public class PreferencesUtils implements IKieConstants {
 
 	public PreferencesUtils() {
 	}
 
 	public static String getRepoRoot(IKieRepositoryHandler repository) {
 		IKieServerHandler server = (IKieServerHandler) repository.getRoot();
-	    boolean useDefaultGitPath = server.getPreference(PREF_USE_DEFAULT_GIT_PATH, false);
+	    boolean useDefaultGitPath = server.getPreference(IKieConstants.PREF_USE_DEFAULT_GIT_PATH, false);
 		String defaultRepoRoot = UIUtils.getDefaultRepositoryDir();
 		String repoRoot;
 		if (useDefaultGitPath) {
@@ -25,8 +26,8 @@ public class PreferencesUtils implements IKieNavigatorConstants {
 		}
 		else
 		{
-			defaultRepoRoot += File.separator + server.getPreferenceName(null).replace(PREF_PATH_SEPARATOR.charAt(0), File.separator.charAt(0));
-			repoRoot = server.getPreference(PREF_GIT_REPO_PATH, defaultRepoRoot);
+			defaultRepoRoot += File.separator + server.getPreferenceName(null).replace(IKieConstants.PREF_PATH_SEPARATOR.charAt(0), File.separator.charAt(0));
+			repoRoot = server.getPreference(IKieConstants.PREF_GIT_REPO_PATH, defaultRepoRoot);
 		}
 		return repoRoot;
 	}

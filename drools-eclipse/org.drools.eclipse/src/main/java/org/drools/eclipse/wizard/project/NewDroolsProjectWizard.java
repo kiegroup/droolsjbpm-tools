@@ -34,7 +34,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -46,10 +45,6 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.IWizardPage;
-import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.jgit.lib.Repository;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -57,9 +52,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.kie.eclipse.runtime.IRuntime;
 import org.kie.eclipse.runtime.IRuntimeManager;
@@ -78,36 +70,6 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
     public static final IPath DROOLS_CLASSPATH_CONTAINER_PATH = new Path("DROOLS/Drools");
     private EmptyDroolsProjectWizardPage emptyProjectPage;
     private SampleDroolsProjectWizardPage sampleFilesProjectPage;
-
-	public final static String REPOSITORY_INFO_PAGE = "RepositoryInfoPage";
-	Repository repository;
-	KieRepositoryInfoWizardPage repositoryInfoPage;
-    
-    @Override
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		super.init(workbench, selection);
-		Object o = selection.getFirstElement();
-		if (o instanceof IAdaptable) {
-			repository = (Repository) ((IAdaptable)o).getAdapter(Repository.class);
-		}
-	}
-    
-    @Override
-    protected IWizardPage createLastPage() {
-    	if (repository!=null) {
-			repositoryInfoPage = new KieRepositoryInfoWizardPage(REPOSITORY_INFO_PAGE);
-			return repositoryInfoPage;
-    	}
-    	return null;
-    }
-
-    @Override
-	public boolean performFinish() {
-		// Before we can create the local resources within the selected
-		// Git Repository, we have to create the Project on the Kie server.
-		// If this step fails, we can't complete the wizard.
-		return super.performFinish();
-	}
 
     protected void initializeDefaultPageImageDescriptor() {
         ImageDescriptor desc = DroolsEclipsePlugin.getImageDescriptor("icons/drools-large.PNG");
@@ -446,7 +408,7 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 	/**
 	 * Implementation for the Empty Project Wizard Page
 	 */
-	public class EmptyDroolsProjectWizardPage extends AbstractKieEmptyProjectWizardPage implements IKieSampleFilesProjectWizardPage {
+	class EmptyDroolsProjectWizardPage extends AbstractKieEmptyProjectWizardPage implements IKieSampleFilesProjectWizardPage {
 		public EmptyDroolsProjectWizardPage(String pageName) {
 			super(pageName);
 			setTitle("Create New Empty Drools Project");
@@ -478,7 +440,7 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 	/**
 	 * Implementation for the Sample Files Project Wizard Page
 	 */
-	public class SampleDroolsProjectWizardPage extends EmptyDroolsProjectWizardPage {
+	class SampleDroolsProjectWizardPage extends EmptyDroolsProjectWizardPage {
 	    private boolean addSampleRule = true;
 	    private boolean addSampleJavaRuleCode = false;
 	    private boolean addSampleDecisionTableCode = true;
@@ -620,62 +582,4 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 	        return addSampleRuleFlow; //addSampleJavaRuleFlowCode;
 	    }
 	}
-    class KieRepositoryInfoWizardPage extends WizardPage {
-
-		protected KieRepositoryInfoWizardPage(String pageName) {
-			super(pageName);
-			this.setTitle("Repository Details");
-			this.setDescription("Provide optional details about the Project for the Kie Repository");
-		}
-
-		@Override
-		public void createControl(Composite parent) {
-	        GridData gd;
-	        Composite composite = new Composite(parent, SWT.NULL);
-	        composite.setFont(parent.getFont());
-	        composite.setLayout(new GridLayout(2, false));
-	        gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false, 1, 1);
-	        composite.setLayoutData(gd);
-
-	        createLabel(composite, "Description");
-	        createText(composite, SWT.BORDER, "");
-	        
-	        createLabel(composite, "Group ID");
-	        createText(composite, SWT.BORDER, "");
-
-	        createLabel(composite, "Version");
-	        createText(composite, SWT.BORDER, "");
-	        
-	        setControl(composite);
-		}
-
-		@Override
-		public IWizardPage getNextPage() {
-			return startPage.getProjectContentPage();
-		}
-		
-		protected GridData createLabelGridData() {
-			return new GridData(SWT.END, SWT.BEGINNING, false, false, 1, 1);
-		}
-		
-		protected GridData createControlGridData() {
-			return new GridData(SWT.FILL, SWT.BEGINNING, true, false, 1, 1);
-		}
-	
-		protected Label createLabel(Composite parent, String labelValue) {
-			Label label = new Label(parent, SWT.NONE);
-			label.setLayoutData(createLabelGridData());
-			label.setFont(parent.getFont());
-			label.setText(labelValue);
-			return label;
-		}
-		
-		protected Text createText(Composite parent, int style, String textValue) {
-			Text text = new Text(parent,style);
-			text.setLayoutData(createControlGridData());
-			text.setFont(parent.getFont());
-			text.setText(textValue);
-			return text;
-		}
-    }
 }

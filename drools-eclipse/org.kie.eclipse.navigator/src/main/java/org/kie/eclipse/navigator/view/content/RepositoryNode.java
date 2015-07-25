@@ -18,9 +18,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jgit.lib.Repository;
-import org.kie.eclipse.navigator.view.server.IKieProjectHandler;
-import org.kie.eclipse.navigator.view.server.IKieRepositoryHandler;
-import org.kie.eclipse.navigator.view.server.IKieResourceHandler;
+import org.kie.eclipse.server.IKieProjectHandler;
+import org.kie.eclipse.server.IKieRepositoryHandler;
+import org.kie.eclipse.server.IKieResourceHandler;
 
 /**
  *
@@ -73,7 +73,7 @@ public class RepositoryNode extends ContainerNode<OrganizationNode> {
 			if (o instanceof Repository)
 				return o;
 		}
-		return null;
+		return super.getAdapter(adapter);
     }
 
 }

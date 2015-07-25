@@ -7,7 +7,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.kie.eclipse.navigator.view.content.IContainerNode;
-import org.kie.eclipse.navigator.view.server.IKieServiceDelegate;
+import org.kie.eclipse.server.IKieServiceDelegate;
 
 public class KieNavigatorAction extends SelectionProviderAction implements IKieNavigatorAction {
 

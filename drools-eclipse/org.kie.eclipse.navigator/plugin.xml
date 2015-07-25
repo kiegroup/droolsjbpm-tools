@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-	<extension-point
-		id="org.kie.eclipse.navigator.serviceImpl"
-		name="KIE Service Implementation"
-		schema="schema/serviceImpl.exsd" />
 	<extension point="org.eclipse.ui.views">
 		<category
 			id="org.drools.eclipse.views"
@@ -155,14 +151,14 @@
 	<extension
 		id="org.kie.eclipse.navigator.service.wildfly.80"
 		name="Wildfly 8.x"
-		point="org.kie.eclipse.navigator.serviceImpl">
+		point="org.kie.eclipse.serviceImpl">
 		<containerBinding
-			class="org.kie.eclipse.navigator.view.server.jbpm60.Kie60Service"
+			class="org.kie.eclipse.server.jbpm60.Kie60Service"
 			runtimeId="org.jboss.kie.6.2"
 			serverId="org.jboss.ide.eclipse.as.wildfly.80">
 		</containerBinding>
 		<containerBinding
-			class="org.kie.eclipse.navigator.view.server.jbpm60.Kie60Service"
+			class="org.kie.eclipse.server.jbpm60.Kie60Service"
 			runtimeId="org.jboss.kie.6.1"
 			serverId="org.jboss.ide.eclipse.as.71">
 		</containerBinding>

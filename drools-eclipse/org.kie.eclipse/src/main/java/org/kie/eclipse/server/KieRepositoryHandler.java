@@ -11,7 +11,7 @@
  * @author Bob Brodt
  ******************************************************************************/
 
-package org.kie.eclipse.navigator.view.server;
+package org.kie.eclipse.server;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -33,14 +33,14 @@ import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.util.FS;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
-import org.kie.eclipse.navigator.IKieNavigatorConstants;
-import org.kie.eclipse.navigator.preferences.PreferencesUtils;
+import org.kie.eclipse.IKieConstants;
+import org.kie.eclipse.utils.PreferencesUtils;
 
 /**
  *
  */
 @SuppressWarnings("restriction")
-public class KieRepositoryHandler extends KieResourceHandler implements IKieRepositoryHandler, ConfigChangedListener, IKieNavigatorConstants {
+public class KieRepositoryHandler extends KieResourceHandler implements IKieRepositoryHandler, ConfigChangedListener, IKieConstants {
 
 	static RepositoryCache repositoryCache = org.eclipse.egit.core.Activator.getDefault().getRepositoryCache();
 	Repository repository;

@@ -11,7 +11,7 @@
  * @author Bob Brodt
  ******************************************************************************/
 
-package org.kie.eclipse.navigator.view.server;
+package org.kie.eclipse.server;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,14 +33,15 @@ import org.eclipse.ui.progress.IProgressService;
 import org.eclipse.wst.server.core.IServer;
 import org.eclipse.wst.server.core.ServerPort;
 import org.jboss.ide.eclipse.as.core.server.internal.JBossServer;
-import org.kie.eclipse.navigator.IKieNavigatorConstants;
+import org.kie.eclipse.IKieConstants;
+import org.kie.eclipse.IKieConstants;
 
 import com.eclipsesource.json.JsonObject;
 
 /**
  *
  */
-public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieNavigatorConstants {
+public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieConstants {
 
 	protected IKieResourceHandler handler;
 	protected IServer server;
@@ -259,20 +260,20 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieNav
 	}
 	
 	public String getUsername() {
-		return handler.getPreference(PREF_SERVER_USERNAME, "admin");
+		return handler.getPreference(IKieConstants.PREF_SERVER_USERNAME, "admin");
 	}
 
 	public String getPassword() {
-		return handler.getPreference(PREF_SERVER_PASSWORD, "admin");
+		return handler.getPreference(IKieConstants.PREF_SERVER_PASSWORD, "admin");
 	}
 
 	public int getGitPort() {
-		return handler.getPreference(PREF_SERVER_GIT_PORT, 8001);
+		return handler.getPreference(IKieConstants.PREF_SERVER_GIT_PORT, 8001);
 	}
 
 	public String getKieApplication() {
 		if (kieApplication == null) {
-			String app = handler.getPreference(PREF_SERVER_KIE_APPLICATION_NAME, null);
+			String app = handler.getPreference(IKieConstants.PREF_SERVER_KIE_APPLICATION_NAME, null);
 			if (app != null) {
 				try {
 					kieApplication = app;
@@ -293,7 +294,7 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieNav
 						kieApplication = s;
 						System.out.print("Trying " + getKieRESTUrl() + "...");
 						httpGet("organizationalunits");
-						handler.putPreference(PREF_SERVER_KIE_APPLICATION_NAME, s);
+						handler.putPreference(IKieConstants.PREF_SERVER_KIE_APPLICATION_NAME, s);
 						System.out.println("success!");
 						break;
 					}
@@ -331,7 +332,7 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieNav
 			}
 			if (httpPort == -1) {
 				// assume that it's 8080
-				return handler.getPreference(PREF_SERVER_HTTP_PORT, 8080);
+				return handler.getPreference(IKieConstants.PREF_SERVER_HTTP_PORT, 8080);
 			}
 		}
 		return httpPort;

@@ -13,10 +13,10 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.dialogs.ListDialog;
 import org.kie.eclipse.navigator.view.actions.KieNavigatorAction;
 import org.kie.eclipse.navigator.view.content.IContainerNode;
-import org.kie.eclipse.navigator.view.server.IKieOrganizationHandler;
-import org.kie.eclipse.navigator.view.server.IKieRepositoryHandler;
-import org.kie.eclipse.navigator.view.server.IKieServerHandler;
-import org.kie.eclipse.navigator.view.server.IKieServiceDelegate;
+import org.kie.eclipse.server.IKieOrganizationHandler;
+import org.kie.eclipse.server.IKieRepositoryHandler;
+import org.kie.eclipse.server.IKieServerHandler;
+import org.kie.eclipse.server.IKieServiceDelegate;
 
 public class AddRepositoryAction extends KieNavigatorAction {
 

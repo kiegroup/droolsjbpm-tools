@@ -15,7 +15,7 @@ package org.kie.eclipse.navigator.view.content;
 
 import java.util.List;
 
-import org.kie.eclipse.navigator.view.server.IKieProjectHandler;
+import org.kie.eclipse.server.IKieProjectHandler;
 
 /**
  *

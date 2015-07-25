@@ -22,8 +22,8 @@ import org.eclipse.wst.server.core.ServerCore;
 import org.kie.eclipse.navigator.view.content.ContainerNode;
 import org.kie.eclipse.navigator.view.content.IContentNode;
 import org.kie.eclipse.navigator.view.content.ServerNode;
-import org.kie.eclipse.navigator.view.server.KieServerHandler;
-import org.kie.eclipse.navigator.view.server.ServerProxy;
+import org.kie.eclipse.server.KieServerHandler;
+import org.kie.eclipse.server.ServerProxy;
 
 /**
  * This is a placeholder class that replaces the default IWorkspaceRoot used as

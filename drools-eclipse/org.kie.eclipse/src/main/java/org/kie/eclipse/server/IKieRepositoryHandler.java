@@ -11,11 +11,16 @@
  * @author Bob Brodt
  ******************************************************************************/
 
-package org.kie.eclipse.navigator.view.server;
+package org.kie.eclipse.server;
 
+import java.util.List;
+
+import org.eclipse.jgit.lib.Repository;
 
 /**
  *
  */
-public interface IKieProjectHandler extends IKieResourceHandler {
+public interface IKieRepositoryHandler extends IKieResourceHandler {
+	Repository getRepository();
+	List<IKieProjectHandler> getProjects() throws Exception;
 }

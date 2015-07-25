@@ -15,11 +15,11 @@ import org.kie.eclipse.navigator.view.actions.KieNavigatorAction;
 import org.kie.eclipse.navigator.view.actions.dialogs.CreateProjectRequestDialog;
 import org.kie.eclipse.navigator.view.content.ContentNode;
 import org.kie.eclipse.navigator.view.content.IContainerNode;
-import org.kie.eclipse.navigator.view.server.IKieProjectHandler;
-import org.kie.eclipse.navigator.view.server.IKieRepositoryHandler;
-import org.kie.eclipse.navigator.view.server.IKieServiceDelegate;
-import org.kie.eclipse.navigator.view.server.KieProjectHandler;
-import org.kie.eclipse.navigator.view.server.KieRepositoryHandler;
+import org.kie.eclipse.server.IKieProjectHandler;
+import org.kie.eclipse.server.IKieRepositoryHandler;
+import org.kie.eclipse.server.IKieServiceDelegate;
+import org.kie.eclipse.server.KieProjectHandler;
+import org.kie.eclipse.server.KieRepositoryHandler;
 
 import com.eclipsesource.json.JsonObject;
 

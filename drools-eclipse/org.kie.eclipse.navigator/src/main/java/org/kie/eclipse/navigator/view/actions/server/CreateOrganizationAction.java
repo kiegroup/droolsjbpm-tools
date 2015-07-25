@@ -5,9 +5,9 @@ import org.eclipse.jface.window.Window;
 import org.kie.eclipse.navigator.view.actions.KieNavigatorAction;
 import org.kie.eclipse.navigator.view.actions.dialogs.CreateOrganizationRequestDialog;
 import org.kie.eclipse.navigator.view.content.IContainerNode;
-import org.kie.eclipse.navigator.view.server.IKieServerHandler;
-import org.kie.eclipse.navigator.view.server.IKieServiceDelegate;
-import org.kie.eclipse.navigator.view.server.KieOrganizationHandler;
+import org.kie.eclipse.server.IKieServerHandler;
+import org.kie.eclipse.server.IKieServiceDelegate;
+import org.kie.eclipse.server.KieOrganizationHandler;
 
 import com.eclipsesource.json.JsonObject;
 

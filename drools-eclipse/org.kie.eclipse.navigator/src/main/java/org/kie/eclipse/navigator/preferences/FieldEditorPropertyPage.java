@@ -20,7 +20,7 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.ui.internal.dialogs.PropertyDialog;
 import org.kie.eclipse.navigator.Activator;
 import org.kie.eclipse.navigator.view.content.IContentNode;
-import org.kie.eclipse.navigator.view.server.IKieResourceHandler;
+import org.kie.eclipse.server.IKieResourceHandler;
 
 public abstract class FieldEditorPropertyPage extends PropertyPage implements IWorkbenchPropertyPage, IPropertyChangeListener {
 	/**

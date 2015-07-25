@@ -11,20 +11,20 @@
  * @author Bob Brodt
  ******************************************************************************/
 
-package org.kie.eclipse.navigator.view.server.jbpm60;
+package org.kie.eclipse.server.jbpm60;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.eclipse.navigator.view.server.IKieOrganizationHandler;
-import org.kie.eclipse.navigator.view.server.IKieProjectHandler;
-import org.kie.eclipse.navigator.view.server.IKieRepositoryHandler;
-import org.kie.eclipse.navigator.view.server.IKieServerHandler;
-import org.kie.eclipse.navigator.view.server.KieOrganizationHandler;
-import org.kie.eclipse.navigator.view.server.KieProjectHandler;
-import org.kie.eclipse.navigator.view.server.KieRepositoryHandler;
-import org.kie.eclipse.navigator.view.server.KieServiceDelegate;
+import org.kie.eclipse.server.IKieOrganizationHandler;
+import org.kie.eclipse.server.IKieProjectHandler;
+import org.kie.eclipse.server.IKieRepositoryHandler;
+import org.kie.eclipse.server.IKieServerHandler;
+import org.kie.eclipse.server.KieOrganizationHandler;
+import org.kie.eclipse.server.KieProjectHandler;
+import org.kie.eclipse.server.KieRepositoryHandler;
+import org.kie.eclipse.server.KieServiceDelegate;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;

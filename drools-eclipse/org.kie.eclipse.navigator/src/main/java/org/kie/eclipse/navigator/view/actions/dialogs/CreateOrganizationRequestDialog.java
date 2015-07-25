@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.kie.eclipse.navigator.view.server.IKieOrganizationHandler;
-import org.kie.eclipse.navigator.view.server.IKieServerHandler;
+import org.kie.eclipse.server.IKieOrganizationHandler;
+import org.kie.eclipse.server.IKieServerHandler;
 
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;

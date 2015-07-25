@@ -16,8 +16,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.wst.server.core.IServer;
-import org.kie.eclipse.navigator.view.server.IKieProjectHandler;
-import org.kie.eclipse.navigator.view.server.IKieResourceHandler;
+import org.kie.eclipse.server.IKieProjectHandler;
+import org.kie.eclipse.server.IKieResourceHandler;
 
 public abstract class ContainerNode<T extends IContainerNode<?>> extends ContentNode<T> implements IContainerNode<T> {
 

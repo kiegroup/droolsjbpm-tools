@@ -12,8 +12,8 @@ package org.kie.eclipse.navigator.view.content;
 
 import java.util.List;
 
-import org.kie.eclipse.navigator.view.server.IKieResourceHandler;
-import org.kie.eclipse.navigator.view.server.KieResourceHandler;
+import org.kie.eclipse.server.IKieResourceHandler;
+import org.kie.eclipse.server.KieResourceHandler;
 
 /**
  * Represents an error that occurred while attempting to retrieve a resource's

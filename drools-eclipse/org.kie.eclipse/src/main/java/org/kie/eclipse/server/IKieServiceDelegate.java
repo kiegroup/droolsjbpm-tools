@@ -11,7 +11,7 @@
  * @author Bob Brodt
  ******************************************************************************/
 
-package org.kie.eclipse.navigator.view.server;
+package org.kie.eclipse.server;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,8 +23,6 @@ import org.eclipse.wst.server.core.IServer;
  */
 public interface IKieServiceDelegate {
 
-	public final static String KIE_SERVICE_IMPL_ID = "org.kie.eclipse.navigator.serviceImpl";
-	
 	public final static String JOB_STATUS_SUCCESS = "SUCCESS";
 	public final static String JOB_STATUS_BAD_REQUEST = "BAD_REQUEST";
 	

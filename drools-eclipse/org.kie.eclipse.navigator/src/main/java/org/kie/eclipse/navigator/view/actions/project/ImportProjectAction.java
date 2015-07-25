@@ -26,7 +26,7 @@ import org.kie.eclipse.navigator.view.actions.KieNavigatorAction;
 import org.kie.eclipse.navigator.view.content.IContainerNode;
 import org.kie.eclipse.navigator.view.content.ProjectNode;
 import org.kie.eclipse.navigator.view.content.RepositoryNode;
-import org.kie.eclipse.navigator.view.server.KieRepositoryHandler;
+import org.kie.eclipse.server.KieRepositoryHandler;
 
 public class ImportProjectAction extends KieNavigatorAction {
 

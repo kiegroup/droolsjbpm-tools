@@ -11,7 +11,7 @@
  * @author Bob Brodt
  ******************************************************************************/
 
-package org.kie.eclipse.navigator.view.server;
+package org.kie.eclipse.server;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,7 +21,8 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.wst.server.core.IServer;
-import org.kie.eclipse.navigator.Activator;
+import org.kie.eclipse.Activator;
+import org.kie.eclipse.IKieConstants;
 
 /**
  *
@@ -57,7 +58,7 @@ public class KieServerHandler extends KieResourceHandler implements IKieServerHa
 		IKieServiceDelegate result = null;
 		try {
 			IConfigurationElement[] config = Platform.getExtensionRegistry()
-					.getConfigurationElementsFor(IKieServiceDelegate.KIE_SERVICE_IMPL_ID);
+					.getConfigurationElementsFor(IKieConstants.KIE_SERVICE_IMPL_ID);
 			for (IConfigurationElement e : config) {
 				if ("containerBinding".equals(e.getName())) {
 					String serverId = e.getAttribute("serverId");
@@ -84,7 +85,7 @@ public class KieServerHandler extends KieResourceHandler implements IKieServerHa
 	
 	public static boolean isSupportedServer(IServer server) {
 		IConfigurationElement[] config = Platform.getExtensionRegistry()
-				.getConfigurationElementsFor(IKieServiceDelegate.KIE_SERVICE_IMPL_ID);
+				.getConfigurationElementsFor(IKieConstants.KIE_SERVICE_IMPL_ID);
 		for (IConfigurationElement e : config) {
 			if ("containerBinding".equals(e.getName())) {
 				String serverId = e.getAttribute("serverId");

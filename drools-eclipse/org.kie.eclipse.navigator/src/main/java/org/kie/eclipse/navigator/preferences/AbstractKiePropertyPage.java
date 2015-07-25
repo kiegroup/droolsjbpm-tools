@@ -4,17 +4,17 @@ import java.io.IOException;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.kie.eclipse.navigator.IKieNavigatorConstants;
+import org.kie.eclipse.IKieConstants;
 import org.kie.eclipse.navigator.view.content.IContainerNode;
-import org.kie.eclipse.navigator.view.server.IKieOrganizationHandler;
-import org.kie.eclipse.navigator.view.server.IKieProjectHandler;
-import org.kie.eclipse.navigator.view.server.IKieRepositoryHandler;
-import org.kie.eclipse.navigator.view.server.IKieResourceHandler;
-import org.kie.eclipse.navigator.view.server.IKieServiceDelegate;
+import org.kie.eclipse.server.IKieOrganizationHandler;
+import org.kie.eclipse.server.IKieProjectHandler;
+import org.kie.eclipse.server.IKieRepositoryHandler;
+import org.kie.eclipse.server.IKieResourceHandler;
+import org.kie.eclipse.server.IKieServiceDelegate;
 
 import com.eclipsesource.json.JsonObject;
 
-public abstract class AbstractKiePropertyPage extends FieldEditorPropertyPage implements IKieNavigatorConstants {
+public abstract class AbstractKiePropertyPage extends FieldEditorPropertyPage implements IKieConstants {
 
 	protected IPreferenceStore preferenceStore;
 	protected JsonObject properties;
