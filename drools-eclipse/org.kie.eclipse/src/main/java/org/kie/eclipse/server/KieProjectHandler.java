@@ -13,6 +13,7 @@
 
 package org.kie.eclipse.server;
 
+import java.io.File;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -26,6 +27,7 @@ import org.eclipse.jgit.lib.Repository;
 public class KieProjectHandler extends KieResourceHandler implements IKieProjectHandler {
 
 	IProject project;
+	File directory;
 	
 	/**
 	 * @param repository
@@ -51,6 +53,7 @@ public class KieProjectHandler extends KieResourceHandler implements IKieProject
 						Repository projectRepo = repositoryCache.getRepository(project);
 						if (repository==projectRepo) {
 							this.project = project;
+							directory = new File(project.getLocation().toString());
 							break;
 						}
 					}
@@ -65,7 +68,24 @@ public class KieProjectHandler extends KieResourceHandler implements IKieProject
 		return project!=null;
 	}
 	
+	@Override
+	public void dispose() {
+		super.dispose();
+		project = null;
+		directory = null;
+	}
+
 	public List<? extends IKieResourceHandler> getChildren() throws Exception {
 		return null;
+	}
+	
+	@Override
+	public File getDirectory() {
+		return directory;
+	}
+	
+	@Override
+	public IProject getProject() {
+		return project;
 	}
 }

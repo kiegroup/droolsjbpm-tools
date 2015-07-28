@@ -474,6 +474,6 @@ public abstract class AbstractKieOnlineExampleProjectWizardPage extends WizardPa
 
 	@Override
 	public IWizardPage getNextPage() {
-		return ((AbstractKieProjectWizard)getWizard()).getLastPage();
+		return null;
 	}
 }

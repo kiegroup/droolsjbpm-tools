@@ -14,6 +14,7 @@
 package org.kie.eclipse.navigator;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.ui.navigator.CommonNavigator;
@@ -22,6 +23,7 @@ import org.eclipse.wst.server.core.ServerCore;
 import org.kie.eclipse.navigator.view.content.ContainerNode;
 import org.kie.eclipse.navigator.view.content.IContentNode;
 import org.kie.eclipse.navigator.view.content.ServerNode;
+import org.kie.eclipse.navigator.view.utils.SimpleTreeIterator;
 import org.kie.eclipse.server.KieServerHandler;
 import org.kie.eclipse.server.ServerProxy;
 
@@ -31,7 +33,7 @@ import org.kie.eclipse.server.ServerProxy;
  * allows other CommonNavigator plugins to embed KIE Navigator content as child
  * or root nodes into their own content.
  */
-public class KieNavigatorContentRoot {
+public class KieNavigatorContentRoot extends SimpleTreeIterator<Object> {
 
 	protected CommonNavigator viewer;
 	protected List<? extends IContentNode<?>> children;
@@ -58,5 +60,11 @@ public class KieNavigatorContentRoot {
 			}
 		}
 		return ( List<? extends IContentNode<?>> )children;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Iterator<Object> iterator() {
+		return new TreeIterator((List<Object>)getChildren());
 	}
 }

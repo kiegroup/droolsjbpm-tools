@@ -19,6 +19,7 @@ package org.drools.eclipse.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.preferences.IDroolsConstants.InternalApiChoice;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -27,21 +28,43 @@ import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.core.ClasspathAccessRule;
 import org.eclipse.jdt.internal.core.ClasspathEntry;
 
 public class DroolsClasspathContainer implements IClasspathContainer {
 
+    public static final IPath DROOLS_CLASSPATH_CONTAINER_PATH = new Path("DROOLS/Drools");
     IClasspathEntry droolsLibraryEntries[];
     IPath path;
     IJavaProject javaProject;
 
+    public DroolsClasspathContainer(IJavaProject project) {
+    	this(project, DROOLS_CLASSPATH_CONTAINER_PATH);
+    }
+    
     public DroolsClasspathContainer(IJavaProject project, IPath path) {
         javaProject = null;
         javaProject = project;
         this.path = path;
     }
 
+    public static boolean hasDroolsClasspath(IJavaProject project) {
+    	IClasspathEntry[] classpathEntries;
+		try {
+			classpathEntries = project.getRawClasspath();
+	    	for (int i = 0; i < classpathEntries.length; i++) {
+	    		if (DROOLS_CLASSPATH_CONTAINER_PATH.equals(classpathEntries[i].getPath().toString())) {
+	    			return true;
+	    		}
+	    	}
+		}
+		catch (JavaModelException e) {
+            DroolsEclipsePlugin.log(e);
+		}
+    	return false;
+    }
+    
     public IClasspathEntry[] getClasspathEntries() {
         if (droolsLibraryEntries == null) {
             droolsLibraryEntries = createDroolsLibraryEntries(javaProject);

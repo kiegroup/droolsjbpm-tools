@@ -54,6 +54,7 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 		kieApplicationNames.add("business-central");
 		kieApplicationNames.add("drools-console");
 		kieApplicationNames.add("jbpm-console");
+		kieApplicationNames.add("jboss-brms");
 	}
 	private String kieApplication;
 	private int httpPort = -1;
@@ -204,6 +205,7 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 			ps.busyCursorWhile(new IRunnableWithProgress() {
 				public void run(IProgressMonitor pm) throws InterruptedException {
 					pm.beginTask("Waiting for Job "+jobId+":\n\n"+title, STATUS_REQUEST_TIMEOUT);
+					pm.subTask(title);
 					long startTime = System.currentTimeMillis();
 					long stopTime = startTime;
 					do {

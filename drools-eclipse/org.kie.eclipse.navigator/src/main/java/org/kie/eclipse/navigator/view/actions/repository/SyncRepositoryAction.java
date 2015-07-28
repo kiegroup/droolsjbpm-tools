@@ -1,27 +1,18 @@
 package org.kie.eclipse.navigator.view.actions.repository;
 
-import java.io.File;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.egit.core.EclipseGitProgressTransformer;
-import org.eclipse.egit.core.RepositoryUtil;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jgit.api.CloneCommand;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.TransportConfigCallback;
-import org.eclipse.jgit.internal.storage.file.FileRepository;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.CredentialsProvider;
-import org.eclipse.jgit.transport.JschConfigSessionFactory;
-import org.eclipse.jgit.transport.OpenSshConfig.Host;
-import org.eclipse.jgit.transport.Transport;
-import org.eclipse.jgit.transport.TransportGitSsh;
 import org.eclipse.jgit.transport.URIish;
-import org.eclipse.jgit.util.FS;
 import org.kie.eclipse.navigator.view.actions.KieNavigatorAction;
 import org.kie.eclipse.navigator.view.actions.dialogs.LoginDialog;
 import org.kie.eclipse.navigator.view.content.ContentNode;
@@ -31,9 +22,6 @@ import org.kie.eclipse.server.IKieServerHandler;
 import org.kie.eclipse.server.IKieServiceDelegate;
 import org.kie.eclipse.server.KieRepositoryHandler;
 import org.kie.eclipse.utils.PreferencesUtils;
-
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
 
 public class SyncRepositoryAction extends KieNavigatorAction {
 
@@ -52,6 +40,11 @@ public class SyncRepositoryAction extends KieNavigatorAction {
 			KieRepositoryHandler handler = (KieRepositoryHandler) ((ContentNode) container).getHandler();
 			if (handler == null || !handler.isLoaded())
 				return false;
+			Repository repository = handler.getRepository();
+			Map<String, Ref> allRefs = repository.getAllRefs();
+			for (Entry<String, Ref> entry : allRefs.entrySet()) {
+				Ref ref = entry.getValue();
+			}
 		}
 		return true;
 	}

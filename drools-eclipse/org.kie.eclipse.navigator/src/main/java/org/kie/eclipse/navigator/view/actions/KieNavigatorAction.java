@@ -48,8 +48,14 @@ public class KieNavigatorAction extends SelectionProviderAction implements IKieN
 		return Display.getDefault().getActiveShell();
 	}
 
-	protected void handleException(Exception e) {
-		e.printStackTrace();
-		MessageDialog.openError(getShell(), "Error", e.getMessage());
+	@Override
+	public void handleException(Throwable t) {
+		t.printStackTrace();
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				MessageDialog.openError(getShell(), "Error", t.getMessage());
+			}
+		});
 	}
 }

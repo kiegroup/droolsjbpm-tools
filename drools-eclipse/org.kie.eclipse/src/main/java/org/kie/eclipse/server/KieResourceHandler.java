@@ -121,17 +121,14 @@ public abstract class KieResourceHandler implements IKieResourceHandler {
 		return name.replaceAll(IKieConstants.CANONICAL_NAME_PATTERN, IKieConstants.CANONICAL_NAME_REPLACEMENT);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.kie.eclipse.server.IKieResourceHandler#getPreferenceName(java.lang.String)
+	 */
 	public String getPreferenceName(String name) {
-		String canonicalName = getCanonicalName(getName());
-		String path = "";
-		if (parent!=null) {
-			path = parent.getPreferenceName(null) + IKieConstants.PREF_PATH_SEPARATOR + canonicalName;
-		}
-		else
-			path = canonicalName;
+		String canonicalName = getCanonicalName(getRoot().getName());
 		if (name==null)
-			return path;
-		return path + IKieConstants.PREF_PATH_SEPARATOR + getCanonicalName(name);
+			return canonicalName;
+		return canonicalName + IKieConstants.PREF_PATH_SEPARATOR + getCanonicalName(name);
 	}
 	
 	public Preferences getPreferences() {

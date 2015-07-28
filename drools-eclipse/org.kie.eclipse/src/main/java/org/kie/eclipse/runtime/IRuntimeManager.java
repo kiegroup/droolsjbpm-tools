@@ -3,6 +3,8 @@ package org.kie.eclipse.runtime;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaModelException;
 
 
 
@@ -22,4 +24,5 @@ public interface IRuntimeManager {
 	void recognizeJars(IRuntime runtime);
 	void addListener(IRuntimeManagerListener listener);
 	void removeListener(IRuntimeManagerListener listener);
+	void addBuilder(IJavaProject project, IProgressMonitor monitor) throws JavaModelException, CoreException;
 }

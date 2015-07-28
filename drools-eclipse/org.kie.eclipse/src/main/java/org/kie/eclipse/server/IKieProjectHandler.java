@@ -13,9 +13,16 @@
 
 package org.kie.eclipse.server;
 
+import java.io.File;
+
+import org.eclipse.core.resources.IProject;
+
 
 /**
  *
  */
 public interface IKieProjectHandler extends IKieResourceHandler {
+
+	File getDirectory();
+	IProject getProject();
 }

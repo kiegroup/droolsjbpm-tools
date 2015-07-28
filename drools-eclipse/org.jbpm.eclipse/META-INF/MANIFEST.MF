@@ -31,3 +31,5 @@ Bundle-ClassPath: .,
  lib/slf4j-api.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.jbpm.eclipse
+Import-Package: org.drools.eclipse.builder,
+ org.drools.eclipse.util

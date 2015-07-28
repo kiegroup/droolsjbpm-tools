@@ -98,7 +98,8 @@ public class KieNavigatorView extends CommonNavigator implements IResourceChange
 	
 	@Override
 	protected Object getInitialInput() {
-		return new KieNavigatorContentRoot(this);
+		KieNavigatorContentRoot root = new KieNavigatorContentRoot(this);
+		return root;
 	}
 
 	@Override

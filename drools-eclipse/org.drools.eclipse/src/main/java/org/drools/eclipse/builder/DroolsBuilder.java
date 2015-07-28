@@ -47,6 +47,7 @@ import org.drools.eclipse.DRLInfo;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.ProcessInfo;
 import org.drools.eclipse.preferences.IDroolsConstants;
+import org.drools.eclipse.util.DroolsClasspathContainer;
 import org.drools.eclipse.util.DroolsRuntimeManager;
 import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.eclipse.wizard.project.NewDroolsProjectWizard;
@@ -129,7 +130,7 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             Thread.currentThread().setContextClassLoader( newLoader );
             IClasspathEntry[] classpathEntries = project.getRawClasspath();
             for ( int i = 0; i < classpathEntries.length; i++ ) {
-                if ( NewDroolsProjectWizard.DROOLS_CLASSPATH_CONTAINER_PATH.equals( classpathEntries[i].getPath().toString() ) ) {
+                if ( DroolsClasspathContainer.DROOLS_CLASSPATH_CONTAINER_PATH.equals( classpathEntries[i].getPath().toString() ) ) {
                     String[] jars = DroolsRuntimeManager.getDefault().getRuntimeJars( getProject() );
                     if ( jars == null || jars.length == 0 ) {
                         IRuntime runtime = DroolsRuntimeManager.getDefault().getRuntime( getProject() );

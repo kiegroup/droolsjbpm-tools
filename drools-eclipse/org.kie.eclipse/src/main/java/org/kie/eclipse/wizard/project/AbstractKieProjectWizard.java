@@ -17,14 +17,11 @@
 package org.kie.eclipse.wizard.project;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.resources.ICommand;
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -32,11 +29,9 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -44,144 +39,57 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.ui.PreferenceConstants;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.IWizardPage;
-import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.jgit.lib.Repository;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 import org.kie.eclipse.runtime.IRuntime;
-import org.kie.eclipse.server.IKieRepositoryHandler;
-import org.kie.eclipse.server.IKieResourceHandler;
-import org.kie.eclipse.server.KieProjectHandler;
 import org.kie.eclipse.utils.FileUtils;
-
-import com.eclipsesource.json.JsonObject;
-
-import com.eclipsesource.json.JsonObject;
 
 /**
  * A wizard to create a new Drools project.
  */
 public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
 
-    public static final String DROOLS_CLASSPATH_CONTAINER_PATH = "DROOLS/Drools";
-    
     public static final String START_PAGE = "NewProjectStartPage";
     public static final String EMPTY_PROJECT_PAGE = "NewEmptProjectPage";
     public static final String SAMPLE_FILES_PROJECT_PAGE = "NewSampleFilesProjectPage";
     public static final String ONLINE_EXAMPLE_PROJECT_PAGE = "NewOnlineExampleProjectPage";
     public static final String MAIN_PAGE = "NewProjectMainPage";
     public static final String RUNTIME_PAGE = "NewProjectRuntimePage";
-	public final static String REPOSITORY_INFO_PAGE = "RepositoryInfoPage";
-
-	private Repository repository;
-	private KieRepositoryInfoWizardPage repositoryInfoPage;
-	private IKieRepositoryHandler repositoryHandler;
     
     protected IKieProjectStartWizardPage startPage;
     protected IKieEmptyProjectWizardPage emptyProjectPage;
     protected IKieSampleFilesProjectWizardPage sampleFilesProjectPage;
     protected IKieOnlineExampleProjectWizardPage onlineExampleProjectPage;
-    protected IWizardPage lastPage = null;
     
     abstract protected IKieProjectWizardPage createStartPage(String pageId);
     abstract protected IKieProjectWizardPage createEmptyProjectPage(String pageId);
     abstract protected IKieProjectWizardPage createSampleFilesProjectPage(String pageId);
     abstract protected IKieProjectWizardPage createOnlineExampleProjectPage(String pageId);
 
-    abstract protected IClasspathContainer createClasspathContainer(IJavaProject project, IProgressMonitor monitor);
     abstract protected void createMavenArtifacts(IJavaProject project, IProgressMonitor monitor);
     abstract protected void createKJarArtifacts(IJavaProject project, IProgressMonitor monitor);
     abstract protected void createOutputLocation(IJavaProject project, IProgressMonitor monitor) throws JavaModelException, CoreException;
     
     public void addPages() {
         super.addPages();
-        
         startPage = (IKieProjectStartWizardPage) createStartPage(START_PAGE);
         addPage(startPage);
-        
         emptyProjectPage = (IKieEmptyProjectWizardPage) createEmptyProjectPage(EMPTY_PROJECT_PAGE);
         addPage(emptyProjectPage);
-        
         sampleFilesProjectPage = (IKieSampleFilesProjectWizardPage) createSampleFilesProjectPage(SAMPLE_FILES_PROJECT_PAGE);
         addPage(sampleFilesProjectPage);
-
         onlineExampleProjectPage = (IKieOnlineExampleProjectWizardPage) createOnlineExampleProjectPage(ONLINE_EXAMPLE_PROJECT_PAGE);
         addPage(onlineExampleProjectPage);
-        
-        lastPage = createLastPage();
-        if (lastPage!=null)
-        	addPage(lastPage);
 
         setNeedsProgressMonitor(true);
     }
-    
-    @Override
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		super.init(workbench, selection);
-		Object o = selection.getFirstElement();
-		if (o instanceof IAdaptable) {
-			IKieResourceHandler rh = (IKieResourceHandler) ((IAdaptable)o).getAdapter(IKieResourceHandler.class);
-			if (rh!=null) {
-				do {
-					if (rh instanceof IKieRepositoryHandler) {
-						repositoryHandler = (IKieRepositoryHandler) rh;
-						repository = (Repository) repositoryHandler.getResource();
-						break;
-					}
-					rh = rh.getParent();
-				}
-				while (rh!=null);
-			}
-		}
-	}
-    
-    protected IWizardPage createLastPage() {
-    	if (repository!=null) {
-			repositoryInfoPage = new KieRepositoryInfoWizardPage(REPOSITORY_INFO_PAGE);
-			// TODO:
-			// set the location for the new project so that it is contained in the Repository
-			// and somehow hide the location selection in the second wizard pages
-			return repositoryInfoPage;
-    	}
-    	return null;
-    }
-    
-    public IWizardPage getLastPage() {
-    	return lastPage;
-    }
-    
+
 	public boolean performFinish() {
     	IProject newProjectHandle = null;
     	for (IProjectDescription pd : startPage.getNewProjectDescriptions()) {
     		if (newProjectHandle==null) {
-    	    	if (repository!=null) {
-    	    		// Before we can create the local resources within the selected
-    	    		// Git Repository, we have to create the Project on the Kie server.
-    	    		// If this step fails, we can't complete the wizard.
-    	    		KieProjectHandler kph = new KieProjectHandler(repositoryHandler, pd.getName());
-    	    		JsonObject properties = repositoryInfoPage.getProperties();
-    	    		properties.add("name", pd.getName());
-    	    		kph.setProperties(properties);
-    	    		try {
-						repositoryHandler.getDelegate().createProject(kph);
-					}
-					catch (IOException e) {
-						e.printStackTrace();
-						return false;
-					}
-    	    	}
     			newProjectHandle = createNewProject(pd);
     		}
    			initializeNewProject(newProjectHandle);
@@ -259,28 +167,14 @@ public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
     }
     
     protected void addNatures(IProjectDescription projectDescription) {
-    	addJavaNature(projectDescription);
-    	addMavenNature(projectDescription);
-    }
-    
-    protected void addJavaNature(IProjectDescription projectDescription) {
-        List<String> list = new ArrayList<String>();
-        list.addAll(Arrays.asList(projectDescription.getNatureIds()));
-        list.add("org.eclipse.jdt.core.javanature");
-        projectDescription.setNatureIds((String[]) list.toArray(new String[list.size()]));
-    }
-    
-    protected void addMavenNature(IProjectDescription projectDescription) {
+    	FileUtils.addJavaNature(projectDescription);
     	boolean shouldAddMavenNature = false;
     	if (startPage.getInitialProjectContent()==IKieProjectWizardPage.EMPTY_PROJECT)
     		shouldAddMavenNature = emptyProjectPage.shouldCreateMavenProject();
     	else if (startPage.getInitialProjectContent()==IKieProjectWizardPage.SAMPLE_FILES_PROJECT) 
     		shouldAddMavenNature = sampleFilesProjectPage.shouldCreateMavenProject();
     	if (shouldAddMavenNature) {
-	        List<String> list = new ArrayList<String>();
-	        list.addAll(Arrays.asList(projectDescription.getNatureIds()));
-	        list.add("org.eclipse.m2e.core.maven2Nature");
-	        projectDescription.setNatureIds((String[]) list.toArray(new String[list.size()]));
+    		FileUtils.addMavenNature(projectDescription);
     	}
     }
     
@@ -317,58 +211,37 @@ public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
 
     protected void createOutputLocation(IJavaProject project, String folderName, IProgressMonitor monitor)
             throws JavaModelException, CoreException {
-        IFolder folder = createFolder(project, folderName, monitor);
+        IFolder folder = FileUtils.createFolder(project, folderName, monitor);
         IPath path = folder.getFullPath();
         project.setOutputLocation(path, null);
     }
 
     protected void addBuilders(IJavaProject project, IProgressMonitor monitor) throws CoreException {
-    	addJavaBuilder(project, monitor);
-    	addMavenBuilder(project, monitor);
-    }
-    
-    protected void addJavaBuilder(IJavaProject project, IProgressMonitor monitor) throws CoreException {
-        IProjectDescription description = project.getProject().getDescription();
-        ICommand[] commands = description.getBuildSpec();
-        ICommand[] newCommands = new ICommand[commands.length + 1];
-        System.arraycopy(commands, 0, newCommands, 0, commands.length);
-
-        ICommand javaCommand = description.newCommand();
-        javaCommand.setBuilderName("org.eclipse.jdt.core.javabuilder");
-        newCommands[commands.length] = javaCommand;
-        
-        description.setBuildSpec(newCommands);
-        project.getProject().setDescription(description, monitor);
-    }
-
-    protected void addMavenBuilder(IJavaProject project, IProgressMonitor monitor) throws CoreException {
+    	FileUtils.addJavaBuilder(project, monitor);
     	boolean shouldAddMavenBuilder = false;
     	if (startPage.getInitialProjectContent()==IKieProjectWizardPage.EMPTY_PROJECT)
     		shouldAddMavenBuilder = emptyProjectPage.shouldCreateMavenProject();
     	else if (startPage.getInitialProjectContent()==IKieProjectWizardPage.SAMPLE_FILES_PROJECT) 
     		shouldAddMavenBuilder = sampleFilesProjectPage.shouldCreateMavenProject();
     	if (shouldAddMavenBuilder) {
-            IProjectDescription description = project.getProject().getDescription();
-            ICommand[] commands = description.getBuildSpec();
-            ICommand[] newCommands = new ICommand[commands.length + 1];
-            System.arraycopy(commands, 0, newCommands, 0, commands.length);
-
-            ICommand mavenCommand = description.newCommand();
-            mavenCommand.setBuilderName("org.eclipse.m2e.core.maven2Builder");
-            newCommands[commands.length] = mavenCommand;
-            
-            description.setBuildSpec(newCommands);
-            project.getProject().setDescription(description, monitor);
+    		FileUtils.addMavenBuilder(project, monitor);
     	}
+    	startPage.getRuntimeManager().addBuilder(project, monitor);
     }
     
     protected void setClasspath(IJavaProject project, IProgressMonitor monitor)
             throws JavaModelException, CoreException {
         project.setRawClasspath(new IClasspathEntry[0], monitor);
         addSourceFolders(project, monitor);
-        addJRELibraries(project, monitor);
-        addRuntimeLibraries(project, monitor);
-        addMavenLibraries(project, monitor);
+        FileUtils.addJRELibraries(project, monitor);
+    	boolean shouldAddMavenLibrary = false;
+    	if (startPage.getInitialProjectContent()==IKieProjectWizardPage.EMPTY_PROJECT)
+    		shouldAddMavenLibrary = emptyProjectPage.shouldCreateMavenProject();
+    	else if (startPage.getInitialProjectContent()==IKieProjectWizardPage.SAMPLE_FILES_PROJECT) 
+    		shouldAddMavenLibrary = sampleFilesProjectPage.shouldCreateMavenProject();
+    	if (shouldAddMavenLibrary) {
+    		FileUtils.addMavenLibraries(project, monitor);
+    	}
     }
 
     protected void addSourceFolders(IJavaProject project, IProgressMonitor monitor) throws JavaModelException, CoreException {
@@ -378,72 +251,13 @@ public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
 	        addSourceFolder(project, list, "src/main/java", monitor);
         	addSourceFolder(project, list, "src/main/resources", monitor);
 	        if (emptyProjectPage.shouldCreateMavenProject()) {
-	        	createFolder(project, "src/main/resources/META-INF", monitor);
-	        	createFolder(project, "src/main/resources/META-INF/maven", monitor);
+	        	FileUtils.createFolder(project, "src/main/resources/META-INF", monitor);
+	        	FileUtils.createFolder(project, "src/main/resources/META-INF/maven", monitor);
 	        } else {
 	        	addSourceFolder(project, list, "src/main/rules", monitor);
 	        }
 	        project.setRawClasspath((IClasspathEntry[]) list.toArray(new IClasspathEntry[list.size()]), null);
     	}
-    }
-    
-    protected void addFolderToClasspath(IJavaProject project, String folderName, IProgressMonitor monitor) throws JavaModelException, CoreException {
-        List<IClasspathEntry> list = new ArrayList<IClasspathEntry>();
-        list.addAll(Arrays.asList(project.getRawClasspath()));
-        IFolder folder = project.getProject().getFolder(folderName);
-        if (folder.exists()) {
-        	addSourceFolder(project, list, folderName, monitor);
-        	project.setRawClasspath((IClasspathEntry[]) list.toArray(new IClasspathEntry[list.size()]), null);
-        }
-    }
-    
-    protected void addJRELibraries(IJavaProject project, IProgressMonitor monitor) throws JavaModelException {
-        List<IClasspathEntry> list = new ArrayList<IClasspathEntry>();
-        list.addAll(Arrays.asList(project.getRawClasspath()));
-        list.addAll(Arrays.asList(PreferenceConstants.getDefaultJRELibrary()));
-        project.setRawClasspath((IClasspathEntry[]) list.toArray(new IClasspathEntry[list.size()]), monitor);
-    }
-    
-    protected IClasspathContainer createRuntimeLibraryContainer(IJavaProject project, IProgressMonitor monitor)
-            throws JavaModelException {
-    	IClasspathContainer cp = createClasspathContainer(project, monitor);
-        JavaCore.setClasspathContainer(cp.getPath(),
-            new IJavaProject[] { project },
-            new IClasspathContainer[] { cp }, monitor);
-        return cp;
-    }
-
-    protected void addRuntimeLibraries(IJavaProject project, IProgressMonitor monitor)
-            throws JavaModelException {
-    	IClasspathContainer cp = createRuntimeLibraryContainer(project, monitor);
-        List<IClasspathEntry> list = new ArrayList<IClasspathEntry>();
-        list.addAll(Arrays.asList(project.getRawClasspath()));
-        list.add(JavaCore.newContainerEntry(cp.getPath()));
-        project.setRawClasspath((IClasspathEntry[]) list.toArray(new IClasspathEntry[list.size()]), monitor);
-    }
-
-    protected void addMavenLibraries(IJavaProject project, IProgressMonitor monitor)
-            throws JavaModelException {
-    	boolean shouldAddMavenLibrary = false;
-    	if (startPage.getInitialProjectContent()==IKieProjectWizardPage.EMPTY_PROJECT)
-    		shouldAddMavenLibrary = emptyProjectPage.shouldCreateMavenProject();
-    	else if (startPage.getInitialProjectContent()==IKieProjectWizardPage.SAMPLE_FILES_PROJECT) 
-    		shouldAddMavenLibrary = sampleFilesProjectPage.shouldCreateMavenProject();
-    	if (shouldAddMavenLibrary) {
-			List<IClasspathEntry> list = new ArrayList<IClasspathEntry>();
-			list.addAll(Arrays.asList(project.getRawClasspath()));
-			list.add(JavaCore.newContainerEntry(new Path("org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER")));
-			project.setRawClasspath((IClasspathEntry[]) list.toArray(new IClasspathEntry[list.size()]), monitor);
-    	}
-    }
-
-    public void addJUnitLibrary(IJavaProject project, IProgressMonitor monitor)
-    		throws JavaModelException {
-		List<IClasspathEntry> list = new ArrayList<IClasspathEntry>();
-		list.addAll(Arrays.asList(project.getRawClasspath()));
-		list.add(JavaCore.newContainerEntry(new Path("org.eclipse.jdt.junit.JUNIT_CONTAINER/4")));
-		project.setRawClasspath((IClasspathEntry[]) list
-		    .toArray(new IClasspathEntry[list.size()]), monitor);
     }
 
     protected void createInitialContent(IJavaProject javaProject, IProgressMonitor monitor)
@@ -451,11 +265,11 @@ public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
     	if (startPage.getInitialProjectContent() == IKieProjectWizardPage.ONLINE_EXAMPLE_PROJECT) {
     		onlineExampleProjectPage.downloadOnlineExampleProject(javaProject.getProject(), monitor);
     		// Add these folders to the classpath if they exist, otherwise ignore.
-    		addFolderToClasspath(javaProject, "src/main/java", monitor);
-    		addFolderToClasspath(javaProject, "src/main/resources", monitor);
-    		addFolderToClasspath(javaProject, "src/test/java", monitor);
-    		addFolderToClasspath(javaProject, "src/test/resources", monitor);
-    		addFolderToClasspath(javaProject, "src/main/rules", monitor);
+    		FileUtils.addFolderToClasspath(javaProject, "src/main/java", false, monitor);
+    		FileUtils.addFolderToClasspath(javaProject, "src/main/resources", false, monitor);
+    		FileUtils.addFolderToClasspath(javaProject, "src/test/java", false, monitor);
+    		FileUtils.addFolderToClasspath(javaProject, "src/test/resources", false, monitor);
+    		FileUtils.addFolderToClasspath(javaProject, "src/main/rules", false, monitor);
     	}
     	else if (startPage.getInitialProjectContent() == IKieProjectWizardPage.EMPTY_PROJECT) {
     		if (emptyProjectPage.shouldCreateKJarProject())
@@ -473,45 +287,12 @@ public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
     
     protected void addSourceFolder(IJavaProject project, List<IClasspathEntry> list, String s, IProgressMonitor monitor) throws CoreException {
         IFolder folder = project.getProject().getFolder(s);
-        createFolder(folder, monitor);
+        FileUtils.createFolder(folder, monitor);
         IPackageFragmentRoot ipackagefragmentroot = project.getPackageFragmentRoot(folder);
         list.add(JavaCore.newSourceEntry(ipackagefragmentroot.getPath()));
     }
-    
-    protected IFolder createFolder(IJavaProject project, String s, IProgressMonitor monitor) throws CoreException {
-    	IFolder folder = project.getProject().getFolder(s);
-    	createFolder(folder, monitor);
-    	return folder;
-    }
 
-    protected void createFolder(IFolder folder, IProgressMonitor monitor) throws CoreException {
-        IContainer container = folder.getParent();
-        if (container != null && !container.exists()
-                && (container instanceof IFolder))
-            createFolder((IFolder) container, monitor);
-        if (!folder.exists()) {
-            folder.create(true, true, monitor);
-        }
-    }
-
-	protected byte[] readStream(InputStream inputstream) throws IOException {
-	    byte bytes[] = (byte[]) null;
-	    int i = 0;
-	    byte tempBytes[] = new byte[1024];
-	    for (int j = inputstream.read(tempBytes); j != -1; j = inputstream.read(tempBytes)) {
-	        byte tempBytes2[] = new byte[i + j];
-	        if (i > 0) {
-	            System.arraycopy(bytes, 0, tempBytes2, 0, i);
-	        }
-	        System.arraycopy(tempBytes, 0, tempBytes2, i, j);
-	        bytes = tempBytes2;
-	        i += j;
-	    }
-	
-	    return bytes;
-	}
-	
-    @Override
+	@Override
 	public boolean canFinish() {
     	if (startPage.getInitialProjectContent()==IKieProjectWizardPage.EMPTY_PROJECT)
     		return emptyProjectPage.isPageComplete();
@@ -520,76 +301,5 @@ public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
     	if (startPage.getInitialProjectContent()==IKieProjectWizardPage.ONLINE_EXAMPLE_PROJECT)
     		return this.onlineExampleProjectPage.isPageComplete();
     	return false;
-    }
-    
-    class KieRepositoryInfoWizardPage extends WizardPage {
-
-    	Text description;
-    	Text groupId;
-    	Text version;
-    	
-		protected KieRepositoryInfoWizardPage(String pageName) {
-			super(pageName);
-			this.setTitle("Repository Details");
-			this.setDescription("Provide optional details about the Project for the Kie Repository");
-		}
-
-		@Override
-		public void createControl(Composite parent) {
-	        GridData gd;
-	        Composite composite = new Composite(parent, SWT.NULL);
-	        composite.setFont(parent.getFont());
-	        composite.setLayout(new GridLayout(2, false));
-	        gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false, 1, 1);
-	        composite.setLayoutData(gd);
-
-	        createLabel(composite, "Description");
-	        description = createText(composite, SWT.BORDER, "");
-	        
-	        createLabel(composite, "Group ID");
-	        groupId = createText(composite, SWT.BORDER, "");
-
-	        createLabel(composite, "Version");
-	        version = createText(composite, SWT.BORDER, "");
-	        
-	        setControl(composite);
-		}
-
-		@Override
-		public IWizardPage getNextPage() {
-			return startPage.getProjectContentPage();
-		}
-		
-		public JsonObject getProperties() {
-			JsonObject properties = new JsonObject();
-			properties.add("description", description.getText());
-			properties.add("groupId", groupId.getText());
-			properties.add("version", version.getText());
-			return properties;
-		}
-		
-		protected GridData createLabelGridData() {
-			return new GridData(SWT.END, SWT.BEGINNING, false, false, 1, 1);
-		}
-		
-		protected GridData createControlGridData() {
-			return new GridData(SWT.FILL, SWT.BEGINNING, true, false, 1, 1);
-		}
-	
-		protected Label createLabel(Composite parent, String labelValue) {
-			Label label = new Label(parent, SWT.NONE);
-			label.setLayoutData(createLabelGridData());
-			label.setFont(parent.getFont());
-			label.setText(labelValue);
-			return label;
-		}
-		
-		protected Text createText(Composite parent, int style, String textValue) {
-			Text text = new Text(parent,style);
-			text.setLayoutData(createControlGridData());
-			text.setFont(parent.getFont());
-			text.setText(textValue);
-			return text;
-		}
     }
 }

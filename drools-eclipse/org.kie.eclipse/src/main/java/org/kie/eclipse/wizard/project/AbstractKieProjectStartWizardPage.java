@@ -180,7 +180,7 @@ public class AbstractKieProjectStartWizardPage extends WizardPage implements IKi
 		return null;
 	}
 	
-	public IWizardPage getProjectContentPage() {
+	private IWizardPage getProjectContentPage() {
 		if (initialProjectContent==IKieProjectWizardPage.EMPTY_PROJECT)
 			return getWizard().getPage(AbstractKieProjectWizard.EMPTY_PROJECT_PAGE);
 		if (initialProjectContent==IKieProjectWizardPage.SAMPLE_FILES_PROJECT)

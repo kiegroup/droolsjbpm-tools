@@ -48,4 +48,5 @@ Export-Package: com.eclipsesource.json,
  org.kie.eclipse.server.jbpm60,
  org.kie.eclipse.utils,
  org.kie.eclipse.wizard.project
-Import-Package: org.eclipse.wst.server.core
+Import-Package: org.eclipse.core.filesystem,
+ org.eclipse.wst.server.core

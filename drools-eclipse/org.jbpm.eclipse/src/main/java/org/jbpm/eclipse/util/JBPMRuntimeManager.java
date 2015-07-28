@@ -16,6 +16,20 @@
 
 package org.jbpm.eclipse.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.drools.eclipse.builder.DroolsBuilder;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.IClasspathContainer;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.jbpm.eclipse.JBPMEclipsePlugin;
 import org.jbpm.eclipse.preferences.JBPMConstants;
@@ -23,7 +37,7 @@ import org.kie.eclipse.runtime.AbstractRuntimeManager;
 import org.kie.eclipse.runtime.IRuntime;
 
 public class JBPMRuntimeManager extends AbstractRuntimeManager {
-	
+
     private static JBPMRuntimeManager manager;
     public static JBPMRuntimeManager getDefault() {
     	if( manager == null )
@@ -66,5 +80,35 @@ public class JBPMRuntimeManager extends AbstractRuntimeManager {
 	@Override
 	public IPreferenceStore getPreferenceStore() {
 		return JBPMEclipsePlugin.getDefault().getPreferenceStore();
+	}
+	
+	@Override
+	public void addBuilder(IJavaProject project, IProgressMonitor monitor) throws JavaModelException, CoreException {
+		if (!JBPMClasspathContainer.hasJBPMClassPath(project)) {
+			IClasspathContainer cp = new JBPMClasspathContainer(project);
+	        JavaCore.setClasspathContainer(cp.getPath(),
+	                new IJavaProject[] { project },
+	                new IClasspathContainer[] { cp }, monitor);
+			List<IClasspathEntry> list = new ArrayList<IClasspathEntry>();
+			list.addAll(Arrays.asList(project.getRawClasspath()));
+			list.add(JavaCore.newContainerEntry(cp.getPath()));
+			project.setRawClasspath((IClasspathEntry[]) list.toArray(new IClasspathEntry[list.size()]), monitor);
+		}
+		
+        IProjectDescription description = project.getProject().getDescription();
+        ICommand[] commands = description.getBuildSpec();
+        for (ICommand cmd : commands) {
+        	if (cmd.getBuilderName().equals(DroolsBuilder.BUILDER_ID))
+        		return;
+        }
+        ICommand[] newCommands = new ICommand[commands.length + 1];
+        System.arraycopy(commands, 0, newCommands, 0, commands.length);
+        
+        ICommand droolsCommand = description.newCommand();
+        droolsCommand.setBuilderName(DroolsBuilder.BUILDER_ID);
+        newCommands[commands.length] = droolsCommand;
+        
+        description.setBuildSpec(newCommands);
+        project.getProject().setDescription(description, monitor);
 	}
 }

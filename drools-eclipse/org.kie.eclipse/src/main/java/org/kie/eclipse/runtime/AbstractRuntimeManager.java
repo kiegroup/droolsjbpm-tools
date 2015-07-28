@@ -183,6 +183,10 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
     	boolean rebuildBundleRuntimeProject = false;
     	String bundleRuntimeLocation = getBundleRuntimeLocation() + "_" + getBundleRuntimeVersion();
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        
+        if (selectedRuntime==null)
+        	selectedRuntime = createNewRuntime();
+        
         if (selectedRuntime.getPath() != null) {
         	// If this really is the Bundle Runtime project,
         	// remove the "lib" segment if there is one

@@ -18,10 +18,7 @@ package org.jbpm.eclipse.wizard.project;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
@@ -30,13 +27,9 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.jdt.core.IClasspathContainer;
-import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
@@ -49,11 +42,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.jbpm.eclipse.JBPMEclipsePlugin;
 import org.jbpm.eclipse.preferences.JBPMProjectPreferencePage;
-import org.jbpm.eclipse.util.JBPMClasspathContainer;
 import org.jbpm.eclipse.util.JBPMRuntime;
 import org.jbpm.eclipse.util.JBPMRuntimeManager;
 import org.kie.eclipse.runtime.IRuntime;
 import org.kie.eclipse.runtime.IRuntimeManager;
+import org.kie.eclipse.utils.FileUtils;
 import org.kie.eclipse.wizard.project.AbstractKieEmptyProjectWizardPage;
 import org.kie.eclipse.wizard.project.AbstractKieOnlineExampleProjectWizardPage;
 import org.kie.eclipse.wizard.project.AbstractKieProjectStartWizardPage;
@@ -68,7 +61,6 @@ import org.kie.eclipse.wizard.project.IKieSampleFilesProjectWizardPage;
  */
 public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
 
-    public static final IPath JBPM_CLASSPATH_CONTAINER_PATH = new Path("JBPM/jbpm");
     public static final String DROOLS_BUILDER_ID = "org.drools.eclipse.droolsbuilder";
     
     private EmptyJBPMProjectWizardPage emptyProjectPage;
@@ -83,59 +75,18 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
     protected void createOutputLocation(IJavaProject project, IProgressMonitor monitor)
             throws JavaModelException, CoreException {
         IFolder folder = project.getProject().getFolder("bin");
-        createFolder(folder, monitor);
+        FileUtils.createFolder(folder, monitor);
         IPath path = folder.getFullPath();
         project.setOutputLocation(path, null);
     }
-
-    protected void addBuilders(IJavaProject project, IProgressMonitor monitor) throws CoreException {
-    	super.addBuilders(project, monitor);
-    	addJBPMBuilder(project, monitor);
-    }
-
-    private void addJBPMBuilder(IJavaProject project, IProgressMonitor monitor) throws CoreException {
-        IProjectDescription description = project.getProject().getDescription();
-        ICommand[] commands = description.getBuildSpec();
-        ICommand[] newCommands = new ICommand[commands.length + 1];
-        System.arraycopy(commands, 0, newCommands, 0, commands.length);
-        
-        ICommand droolsCommand = description.newCommand();
-        droolsCommand.setBuilderName(DROOLS_BUILDER_ID);
-        newCommands[commands.length] = droolsCommand;
-        
-        description.setBuildSpec(newCommands);
-        project.getProject().setDescription(description, monitor);
-    }
-
-	protected IClasspathContainer createClasspathContainer(IJavaProject project, IProgressMonitor monitor) {
-		return new JBPMClasspathContainer(project, JBPM_CLASSPATH_CONTAINER_PATH);
-	}
 
     protected void setClasspath(IJavaProject project, IProgressMonitor monitor)
             throws JavaModelException, CoreException {
         super.setClasspath(project, monitor);
     	if (startPage.getInitialProjectContent() == IKieProjectWizardPage.SAMPLE_FILES_PROJECT) {
 	        if (sampleFilesProjectPage.shouldCreateJUnitFile())
-	        	addJUnitLibrary(project, monitor);
+	        	FileUtils.addJUnitLibrary(project, monitor);
         }
-    }
-
-    private static void createJBPMLibraryContainer(IJavaProject project, IProgressMonitor monitor)
-            throws JavaModelException {
-        JavaCore.setClasspathContainer(JBPM_CLASSPATH_CONTAINER_PATH,
-            new IJavaProject[] { project },
-            new IClasspathContainer[] { new JBPMClasspathContainer(
-                    project, JBPM_CLASSPATH_CONTAINER_PATH) }, monitor);
-    }
-
-    public static void addJBPMLibraries(IJavaProject project, IProgressMonitor monitor)
-            throws JavaModelException {
-        createJBPMLibraryContainer(project, monitor);
-        List<IClasspathEntry> list = new ArrayList<IClasspathEntry>();
-        list.addAll(Arrays.asList(project.getRawClasspath()));
-        list.add(JavaCore.newContainerEntry(JBPM_CLASSPATH_CONTAINER_PATH));
-        project.setRawClasspath((IClasspathEntry[]) list
-            .toArray(new IClasspathEntry[list.size()]), monitor);
     }
 
     protected void createInitialContent(IJavaProject javaProject, IProgressMonitor monitor)
@@ -185,14 +136,14 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
         InputStream inputstream = getClass().getClassLoader()
                 .getResourceAsStream(s);
         packageFragment.createCompilationUnit("ProcessTest.java", new String(
-                readStream(inputstream)), true, monitor);
+                FileUtils.readStream(inputstream)), true, monitor);
     }
 	
     protected void createKJarArtifacts(IJavaProject project, IProgressMonitor monitor) {
     	try {
 		    String fileName = "org/jbpm/eclipse/wizard/project/kmodule.xml.template";
 	        IFolder folder = project.getProject().getFolder("src/main/resources/META-INF");
-	        createFolder(folder, monitor);
+	        FileUtils.createFolder(folder, monitor);
 	        IFile file = folder.getFile("kmodule.xml");
 	        InputStream inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
 	        if (!file.exists()) {

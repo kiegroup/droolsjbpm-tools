@@ -21,6 +21,6 @@ public abstract class AbstractKieSampleFilesProjectWizardPage extends AbstractKi
 
 	@Override
 	public IWizardPage getNextPage() {
-		return ((AbstractKieProjectWizard)getWizard()).getLastPage();
+		return null;
 	}
 }

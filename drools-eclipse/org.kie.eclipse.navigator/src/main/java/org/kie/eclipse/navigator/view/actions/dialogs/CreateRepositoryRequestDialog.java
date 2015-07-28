@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.kie.eclipse.navigator.Activator;
 import org.kie.eclipse.server.IKieOrganizationHandler;
 import org.kie.eclipse.server.IKieRepositoryHandler;
 
@@ -61,6 +62,7 @@ public class CreateRepositoryRequestDialog extends AbstractKieRequestDialog {
 				return null;
 			}
         });
+		setTitleImage(Activator.getImage("icons/wizban/repository.png"));
 		this.organization = organization;
 	}
     

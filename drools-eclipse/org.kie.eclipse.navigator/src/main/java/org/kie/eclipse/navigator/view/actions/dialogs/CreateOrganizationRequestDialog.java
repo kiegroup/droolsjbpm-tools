@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.kie.eclipse.navigator.Activator;
 import org.kie.eclipse.server.IKieOrganizationHandler;
 import org.kie.eclipse.server.IKieServerHandler;
 
@@ -45,6 +46,7 @@ public class CreateOrganizationRequestDialog extends AbstractKieRequestDialog {
 				return null;
 			}
         });
+		setTitleImage(Activator.getImage("icons/wizban/organization.png"));
 		this.server = server;
 	}
     

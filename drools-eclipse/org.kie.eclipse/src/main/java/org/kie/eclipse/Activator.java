@@ -24,7 +24,7 @@ public class Activator extends AbstractUIPlugin implements BundleActivator {
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
-		Activator.context = bundleContext;
+		context = bundleContext;
 		instance = this;
 	}
 	
@@ -37,14 +37,16 @@ public class Activator extends AbstractUIPlugin implements BundleActivator {
 	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
-		Activator.context = null;
+		context = null;
+		instance = null;
+		super.stop(bundleContext);
 	}
 	
     public static ImageDescriptor getImageDescriptor(String path) {
         ImageRegistry registry = instance.getImageRegistry();
         ImageDescriptor descriptor = registry.getDescriptor( path );
         if ( descriptor == null ) {
-            descriptor = AbstractUIPlugin.imageDescriptorFromPlugin("org.kie.eclipse",path);
+            descriptor = AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID,path);
             registry.put(path,descriptor);
         }
         return descriptor;

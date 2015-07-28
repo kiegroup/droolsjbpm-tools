@@ -19,30 +19,21 @@ package org.drools.eclipse.wizard.project;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.builder.DroolsBuilder;
 import org.drools.eclipse.preferences.DroolsProjectPreferencePage;
-import org.drools.eclipse.util.DroolsClasspathContainer;
 import org.drools.eclipse.util.DroolsRuntime;
 import org.drools.eclipse.util.DroolsRuntimeManager;
 import org.eclipse.core.resources.ICommand;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.jdt.core.IClasspathContainer;
-import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
@@ -55,6 +46,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.kie.eclipse.runtime.IRuntime;
 import org.kie.eclipse.runtime.IRuntimeManager;
+import org.kie.eclipse.utils.FileUtils;
 import org.kie.eclipse.wizard.project.AbstractKieEmptyProjectWizardPage;
 import org.kie.eclipse.wizard.project.AbstractKieOnlineExampleProjectWizardPage;
 import org.kie.eclipse.wizard.project.AbstractKieProjectStartWizardPage;
@@ -67,7 +59,6 @@ import org.kie.eclipse.wizard.project.IKieSampleFilesProjectWizardPage;
  */
 public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 
-    public static final IPath DROOLS_CLASSPATH_CONTAINER_PATH = new Path("DROOLS/Drools");
     private EmptyDroolsProjectWizardPage emptyProjectPage;
     private SampleDroolsProjectWizardPage sampleFilesProjectPage;
 
@@ -78,49 +69,9 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 
     protected void createOutputLocation(IJavaProject project, IProgressMonitor monitor)
             throws JavaModelException, CoreException {
-        IFolder folder = createFolder(project, "target", monitor);
+        IFolder folder = FileUtils.createFolder(project, "target", monitor);
         IPath path = folder.getFullPath();
         project.setOutputLocation(path, null);
-    }
-
-    protected void addBuilders(IJavaProject project, IProgressMonitor monitor) throws CoreException {
-    	super.addBuilders(project, monitor);
-    	addDroolsBuilder(project, monitor);
-    }
-    
-    private void addDroolsBuilder(IJavaProject project, IProgressMonitor monitor) throws CoreException {
-        IProjectDescription description = project.getProject().getDescription();
-        ICommand[] commands = description.getBuildSpec();
-        ICommand[] newCommands = new ICommand[commands.length + 1];
-        System.arraycopy(commands, 0, newCommands, 0, commands.length);
-        
-        ICommand droolsCommand = description.newCommand();
-        droolsCommand.setBuilderName(DroolsBuilder.BUILDER_ID);
-        newCommands[commands.length] = droolsCommand;
-        
-        description.setBuildSpec(newCommands);
-        project.getProject().setDescription(description, monitor);
-    }
-
-	@Override
-	protected IClasspathContainer createClasspathContainer(IJavaProject project, IProgressMonitor monitor) {
-		return new DroolsClasspathContainer(project, DROOLS_CLASSPATH_CONTAINER_PATH);
-	}
-
-    private static void createDroolsLibraryContainer(IJavaProject project, IProgressMonitor monitor)
-            throws JavaModelException {
-        JavaCore.setClasspathContainer(DROOLS_CLASSPATH_CONTAINER_PATH,
-            new IJavaProject[] { project },
-            new IClasspathContainer[] { new DroolsClasspathContainer(project, DROOLS_CLASSPATH_CONTAINER_PATH) }, monitor);
-    }
-
-    public static void addDroolsLibraries(IJavaProject project, IProgressMonitor monitor)
-            throws JavaModelException {
-        createDroolsLibraryContainer(project, monitor);
-        List<IClasspathEntry> list = new ArrayList<IClasspathEntry>();
-        list.addAll(Arrays.asList(project.getRawClasspath()));
-        list.add(JavaCore.newContainerEntry(DROOLS_CLASSPATH_CONTAINER_PATH));
-        project.setRawClasspath((IClasspathEntry[]) list.toArray(new IClasspathEntry[list.size()]), monitor);
     }
 
     protected void createInitialContent(IJavaProject javaProject, IProgressMonitor monitor)
@@ -154,8 +105,8 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
             String groupId = projectName + ".group";
             String artifactId = projectName + ".artifact";
             String version = "1.0";
-			createProjectFile(project, monitor, generatePomProperties(groupId, artifactId, version), "src/main/resources/META-INF/maven", "pom.properties");
-            createProjectFile(project, monitor, generatePom(groupId, artifactId, version), null, "pom.xml");
+			FileUtils.createProjectFile(project, monitor, FileUtils.generatePomProperties(groupId, artifactId, version), "src/main/resources/META-INF/maven", "pom.properties");
+            FileUtils.createProjectFile(project, monitor, FileUtils.generatePom(groupId, artifactId, version), null, "pom.xml");
 		}
 		catch (CoreException e) {
 			// TODO Auto-generated catch block
@@ -166,7 +117,7 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
     protected void createKJarArtifacts(IJavaProject project, IProgressMonitor monitor) {
         try {
 	        if (startPage.getRuntime().getVersion().startsWith("6")) {
-	        	createProjectFile(project, monitor, generateKModule(), "src/main/resources/META-INF", "kmodule.xml");
+	        	FileUtils.createProjectFile(project, monitor, generateKModule(), "src/main/resources/META-INF", "kmodule.xml");
 	        }
 		}
 		catch (CoreException e) {
@@ -200,27 +151,6 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
     	
         return new ByteArrayInputStream(sb.toString().getBytes());
     }
-    
-    private InputStream generatePom(String groupId, String artifactId, String version) {
-        String pom =
-                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-                "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n" +
-                "  <modelVersion>4.0.0</modelVersion>\n" +
-                "\n" +
-                "  <groupId>" + groupId + "</groupId>\n" +
-                "  <artifactId>" + artifactId + "</artifactId>\n" +
-                "  <version>" + version + "</version>\n" +
-                "</project>\n";
-        return new ByteArrayInputStream(pom.getBytes());
-    }
-    
-	private InputStream generatePomProperties(String groupId,
-			String artifactId, String version) {
-		String pom = "groupId=" + groupId + "\n" + "artifactId=" + artifactId
-				+ "\n" + "version=" + version + "\n";
-		return new ByteArrayInputStream(pom.getBytes());
-	}
     
     /**
      * Create the sample rule launcher file.
@@ -259,28 +189,12 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
         IPackageFragmentRoot packageFragmentRoot = project.getPackageFragmentRoot(folder);
         IPackageFragment packageFragment = packageFragmentRoot.createPackageFragment("com.sample", true, null);
         InputStream inputstream = getClass().getClassLoader().getResourceAsStream(templateFile);
-        packageFragment.createCompilationUnit(javaFile, new String(readStream(inputstream)), true, null);
+        packageFragment.createCompilationUnit(javaFile, new String(FileUtils.readStream(inputstream)), true, null);
 	}
     
 	private void createProjectFile(IJavaProject project, IProgressMonitor monitor, String templateFile, String folderName, String fileName) throws CoreException {
         InputStream inputstream = getClass().getClassLoader().getResourceAsStream(templateFile);
-        createProjectFile(project, monitor, inputstream, folderName, fileName);
-	}
-
-	private void createProjectFile(IJavaProject project, IProgressMonitor monitor, InputStream inputstream, String folderName, String fileName) throws CoreException {
-        IFile file;
-        if (folderName == null) {
-            file = project.getProject().getFile(fileName);
-        } else {
-            IFolder folder = project.getProject().getFolder(folderName);
-            file = folder.getFile(fileName);
-        }
-
-        if (!file.exists()) {
-            file.create(inputstream, true, monitor);
-        } else {
-            file.setContents(inputstream, true, false, monitor);
-        }
+        FileUtils.createProjectFile(project, monitor, inputstream, folderName, fileName);
 	}
 
 	/**
@@ -288,7 +202,7 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
      */
     private void createRule(IJavaProject project, IProgressMonitor monitor) throws CoreException {
         if (startPage.getRuntime().getVersion().startsWith("6")) {
-            createFolder(project, "src/main/resources/rules", monitor);
+        	FileUtils.createFolder(project, "src/main/resources/rules", monitor);
             createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/Sample.drl.template", "src/main/resources/rules", "Sample.drl");
         } else {
             createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/Sample.drl.template", "src/main/rules", "Sample.drl");
@@ -300,7 +214,7 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
      */
     private void createDecisionTable(IJavaProject project, IProgressMonitor monitor) throws CoreException {
         if (startPage.getRuntime().getVersion().startsWith("6")) {
-    		createFolder(project, "src/main/resources/dtables", monitor);
+        	FileUtils.createFolder(project, "src/main/resources/dtables", monitor);
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/Sample.xls.template", "src/main/resources/dtables", "Sample.xls");
     	} else {
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/Sample.xls.template", "src/main/rules", "Sample.xls");
@@ -322,7 +236,7 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
         } else if (version.startsWith("5")) {
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/ruleflow.rf.template", "src/main/rules", "ruleflow.rf");
         } else {
-    		createFolder(project, "src/main/resources/process", monitor);
+        	FileUtils.createFolder(project, "src/main/resources/process", monitor);
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/sample.bpmn.template", "src/main/resources/process", "sample.bpmn");
         }
     }
