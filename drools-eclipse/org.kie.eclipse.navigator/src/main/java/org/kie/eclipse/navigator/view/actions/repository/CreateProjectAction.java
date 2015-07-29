@@ -63,8 +63,6 @@ public class CreateProjectAction extends KieNavigatorAction {
             project.setProperties(properties);
 	        try {
 	        	delegate.createProject(project);
-				container.clearChildren();
-				container.getNavigator().getCommonViewer().refresh(container);
 	        	
 				ProjectNode projectNode = null;
 	            if (dlg.shouldImportProject()) {
@@ -105,7 +103,7 @@ public class CreateProjectAction extends KieNavigatorAction {
 	                   	ActionUtils.createProjectArtifacts(javaProject, groupId, artifactId, version, null);
 	            	}
 	            }
-
+				container.refresh();
 	        }
 	        catch (Exception e) {
 	        	handleException(e);

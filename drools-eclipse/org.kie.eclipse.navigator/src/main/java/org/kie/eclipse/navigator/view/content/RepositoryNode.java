@@ -40,30 +40,19 @@ public class RepositoryNode extends ContainerNode<OrganizationNode> {
         this.parent = server;
 	}
 
+	@Override
 	protected List<? extends IContentNode<?>> createChildren() {
-		List<ProjectNode> result = new ArrayList<ProjectNode>();
+		clearHandlerChildren();
+		load();
+		List<ProjectNode> children = new ArrayList<ProjectNode>();
 		Iterator<? extends IKieResourceHandler> iter = handlerChildren.iterator();
 		while (iter.hasNext()) {
 			IKieResourceHandler h = iter.next();
 			if (h instanceof IKieProjectHandler)
-				result.add(new ProjectNode(this,(IKieProjectHandler)h));
+				children.add(new ProjectNode(this,(IKieProjectHandler)h));
 		}
-		return result;
+		return children;
 
-	}
-
-	/* (non-Javadoc)
-	 * @see org.kie.eclipse.navigator.view.content.ContentNode#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		try {
-			RepositoryNode other = (RepositoryNode) obj;
-			return other.getName().equals(this.getName());
-		}
-		catch (Exception ex) {
-		}
-		return false;
 	}
 	
 	@Override

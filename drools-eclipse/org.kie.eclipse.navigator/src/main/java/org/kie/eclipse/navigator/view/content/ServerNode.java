@@ -51,7 +51,9 @@ public class ServerNode extends ContainerNode implements IPropertyChangeListener
 	}
 	
 	protected List<? extends IContentNode<?>> createChildren() {
-		List children = new ArrayList();
+		clearHandlerChildren();
+		load();
+		List<IContentNode<?>> children = new ArrayList<IContentNode<?>>();
 		Iterator<? extends IKieResourceHandler> iter = handlerChildren.iterator();
 		while (iter.hasNext()) {
 			IKieResourceHandler h = iter.next();
@@ -100,11 +102,13 @@ public class ServerNode extends ContainerNode implements IPropertyChangeListener
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		try {
-			ServerNode other = (ServerNode)obj;
-			return other.getServer().getId().equals(this.getServer().getId());
-		}
-		catch (Exception ex) {
+		if (obj instanceof ServerNode) {
+			try {
+				ServerNode other = (ServerNode)obj;
+				return other.getServer().getId().equals(this.getServer().getId());
+			}
+			catch (Exception ex) {
+			}
 		}
 		return false;
 	}

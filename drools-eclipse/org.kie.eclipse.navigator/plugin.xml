@@ -163,6 +163,8 @@
 			serverId="org.jboss.ide.eclipse.as.71">
 		</containerBinding>
 	</extension>
+	
+	
  <extension
        point="org.eclipse.ui.propertyPages">
     <page
@@ -170,9 +172,20 @@
           id="org.kie.eclipse.navigator.serverPropertyPage"
           name="Kie Server">
           <enabledWhen>
+            <or>
               <instanceof
                   value="org.kie.eclipse.navigator.view.content.ServerNode">
               </instanceof>
+              <instanceof
+                  value="org.kie.eclipse.navigator.view.content.OrganizationNode">
+              </instanceof>
+              <instanceof
+                  value="org.kie.eclipse.navigator.view.content.RepositoryNode">
+              </instanceof>
+              <instanceof
+                  value="org.kie.eclipse.navigator.view.content.ProjectNode">
+              </instanceof>
+            </or>
           </enabledWhen>
           
     </page>
@@ -183,11 +196,20 @@
     <page
           class="org.kie.eclipse.navigator.preferences.OrganizationPropertyPage"
           id="org.kie.eclipse.navigator.organizationPropertyPage"
+          category="org.kie.eclipse.navigator.serverPropertyPage"
           name="Organizational Unit">
           <enabledWhen>
+            <or>
               <instanceof
                   value="org.kie.eclipse.navigator.view.content.OrganizationNode">
               </instanceof>
+              <instanceof
+                  value="org.kie.eclipse.navigator.view.content.RepositoryNode">
+              </instanceof>
+              <instanceof
+                  value="org.kie.eclipse.navigator.view.content.ProjectNode">
+              </instanceof>
+            </or>
           </enabledWhen>
     </page>
  </extension>
@@ -197,11 +219,17 @@
     <page
           class="org.kie.eclipse.navigator.preferences.RepositoryPropertyPage"
           id="org.kie.eclipse.navigator.repositoryPropertyPage"
+          category="org.kie.eclipse.navigator.organizationPropertyPage"
           name="Repository">
           <enabledWhen>
+            <or>
               <instanceof
                   value="org.kie.eclipse.navigator.view.content.RepositoryNode">
               </instanceof>
+              <instanceof
+                  value="org.kie.eclipse.navigator.view.content.ProjectNode">
+              </instanceof>
+            </or>
           </enabledWhen>
     </page>
  </extension>
@@ -211,6 +239,7 @@
     <page
           class="org.kie.eclipse.navigator.preferences.ProjectPropertyPage"
           id="org.kie.eclipse.navigator.projectPropertyPage"
+          category="org.kie.eclipse.navigator.repositoryPropertyPage"
           name="Project">
           <enabledWhen>
               <instanceof

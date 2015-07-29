@@ -8,8 +8,6 @@ import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -17,10 +15,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbenchPropertyPage;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.eclipse.ui.internal.dialogs.PropertyDialog;
 import org.kie.eclipse.navigator.Activator;
-import org.kie.eclipse.navigator.view.content.IContentNode;
-import org.kie.eclipse.server.IKieResourceHandler;
 
 public abstract class FieldEditorPropertyPage extends PropertyPage implements IWorkbenchPropertyPage, IPropertyChangeListener {
 	/**
@@ -74,11 +69,6 @@ public abstract class FieldEditorPropertyPage extends PropertyPage implements IW
 	 */
 	private Composite fieldEditorParent;
 
-	/**
-	 * The KIE Resource Handler for the current selection
-	 */
-	private IKieResourceHandler resourceHandler;
-
 	public FieldEditorPropertyPage() {
 	}
 
@@ -100,10 +90,12 @@ public abstract class FieldEditorPropertyPage extends PropertyPage implements IW
 		// in the Kie Navigator tree view. The preference name is constructed
 		// from the path to the selected tree node by getPreferenceName().
 		String name = editor.getPreferenceName();
-		editor.setPreferenceName(getPreferenceName((name)));
+		editor.setPreferenceName(getPreferenceName(name));
 		fields.add(editor);
 	}
 
+	protected abstract String getPreferenceName(String name);
+	
 	/**
 	 * Adjust the layout of the field editors so that they are properly aligned.
 	 */
@@ -170,27 +162,6 @@ public abstract class FieldEditorPropertyPage extends PropertyPage implements IW
 		}
 		setValid(valid);
 	}
-
-	protected IContentNode<?> getContentNode() {
-		PropertyDialog pd = (PropertyDialog) getContainer();
-		IStructuredSelection selection = (IStructuredSelection) pd.getSelection();
-		TreeSelection ts = (TreeSelection) ((IStructuredSelection) selection).getFirstElement();
-		IContentNode<?> node = (IContentNode<?>) ts.getFirstElement();
-		return node;
-	}
-
-	protected IKieResourceHandler getResourceHandler() {
-		IContentNode<?> node = getContentNode();
-		return node.getHandler();
-	}
-	
-	protected String getPreferenceName(String name) {
-		if (resourceHandler==null) {
-			resourceHandler = getResourceHandler();
-			setPreferenceStore(getPreferenceStore());
-		}
-		return resourceHandler.getPreferenceName(name);
-	}
 	
 	@Override
 	public IPreferenceStore getPreferenceStore() {
@@ -235,7 +206,14 @@ public abstract class FieldEditorPropertyPage extends PropertyPage implements IW
 	 * </p>
 	 */
 	protected abstract void createFieldEditors();
-
+	
+	/**
+	 * Gets the initial property page ID based on the current selection.
+	 *  
+	 * @return the page ID string
+	 */
+	protected abstract String getInitialPageId();
+	
 	/**
 	 * The field editor preference page implementation of an
 	 * <code>IDialogPage</code> method disposes of this page's controls and

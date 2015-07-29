@@ -19,7 +19,7 @@ Require-Bundle: org.eclipse.ui,
  org.jboss.tools.jmx.core,
  org.kie.eclipse,
  org.eclipse.ui.workbench
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Import-Package: com.jcraft.jsch,
  org.drools.eclipse.util,

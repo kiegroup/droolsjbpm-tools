@@ -83,9 +83,4 @@ public class KieProjectHandler extends KieResourceHandler implements IKieProject
 	public File getDirectory() {
 		return directory;
 	}
-	
-	@Override
-	public IProject getProject() {
-		return project;
-	}
 }

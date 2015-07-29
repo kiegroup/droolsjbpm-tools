@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.wst.server.core.IServer;
-import org.kie.eclipse.server.IKieProjectHandler;
 import org.kie.eclipse.server.IKieResourceHandler;
 
 public abstract class ContainerNode<T extends IContainerNode<?>> extends ContentNode<T> implements IContainerNode<T> {
@@ -33,11 +32,13 @@ public abstract class ContainerNode<T extends IContainerNode<?>> extends Content
         super(container, handler);
     }
     
+	@Override
 	public boolean hasChildren() {
 		return isResolved();
 	}
 
-    public List<? extends Object> getChildren() {
+    @Override
+	public List<? extends IContentNode<?>> getChildren() {
         if (error != null) {
             return Collections.singletonList(error);
         }
@@ -50,18 +51,27 @@ public abstract class ContainerNode<T extends IContainerNode<?>> extends Content
 
     protected abstract List<? extends IContentNode<?>> createChildren();
     
-    public final void clearChildren() {
+    @Override
+	public final void clearChildren() {
         clearError();
-		if (handlerChildren!=null) {
-			handlerChildren.clear();
-			handlerChildren = null;
-		}
+        clearHandlerChildren();
 		if (children!=null) {
+			for (IContentNode<?> n : children)
+				n.dispose();
 			children.clear();
 			children = null;
 		}
     }
 
+    public final void clearHandlerChildren() {
+		if (handlerChildren!=null) {
+			for (IKieResourceHandler h : handlerChildren)
+				h.dispose();
+			handlerChildren.clear();
+			handlerChildren = null;
+		}
+    }
+    
     protected void setError(IErrorNode error) {
         clearError();
         this.error = error;
@@ -73,19 +83,21 @@ public abstract class ContainerNode<T extends IContainerNode<?>> extends Content
         super.dispose();
     }
 
-    public final void load() {
+    @Override
+	public final void load() {
         if (getServer().getServerState() != IServer.STATE_STARTED) {
             setError(new ErrorNode(this, "Not connected"));
             return;
         }
         try {
-    		handlerChildren = (List<IKieProjectHandler>) getHandler().getChildren();
+    		handlerChildren = getHandler().getChildren();
             clearError();
         } catch (Exception e) {
             setError(new ErrorNode(this, e));
         }
     }
 
+	@SuppressWarnings("unchecked")
 	public static List<? extends IContentNode<?>> updateChildren(List<? extends IContentNode<?>> children, List<? extends IContentNode<?>> newChildren) {
 		if (children==null)
 			return newChildren;
@@ -99,6 +111,7 @@ public abstract class ContainerNode<T extends IContainerNode<?>> extends Content
 				while (oldIter.hasNext()) {
 					IContentNode<?> oldChild = oldIter.next();
 					if (oldChild.equals(newChild)) {
+						newChild.dispose();
 						found = true;
 						break;
 					}
@@ -108,13 +121,13 @@ public abstract class ContainerNode<T extends IContainerNode<?>> extends Content
 				}
 			}
 
-			Iterator<? extends IContentNode> oldIter = children.iterator();
+			Iterator<? extends IContentNode<?>> oldIter = children.iterator();
 			while (oldIter.hasNext()) {
-				IContentNode oldChild = oldIter.next();
+				IContentNode<?> oldChild = oldIter.next();
 				boolean found = false;
-				Iterator<? extends IContentNode> newIter2 = newChildren.iterator();
+				Iterator<? extends IContentNode<?>> newIter2 = newChildren.iterator();
 				while (newIter2.hasNext()) {
-					IContentNode newChild = newIter2.next();
+					IContentNode<?> newChild = newIter2.next();
 					if (oldChild.equals(newChild)) {
 						found = true;
 						break;
@@ -122,6 +135,7 @@ public abstract class ContainerNode<T extends IContainerNode<?>> extends Content
 				}
 				if (!found) {
 					removed.add(oldChild);
+					oldChild.dispose();
 				}
 			}
 			children.removeAll(removed);

@@ -25,7 +25,7 @@ public interface IContentNode<T extends IContainerNode<?>> extends IAdaptable {
     /**
      * @return the resource containing this node, if any.
      */
-    IContainerNode getParent();
+    IContainerNode<?> getParent();
 
     /**
      * @return the containing node.
@@ -56,4 +56,5 @@ public interface IContentNode<T extends IContainerNode<?>> extends IAdaptable {
     IContainerNode<?> getRoot();
     IKieResourceHandler getHandler();
     CommonNavigator getNavigator();
+    void refresh();
 }

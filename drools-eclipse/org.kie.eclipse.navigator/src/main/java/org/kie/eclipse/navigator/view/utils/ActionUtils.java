@@ -237,35 +237,7 @@ public class ActionUtils {
                 	FileUtils.addFolderToClasspath(javaProject, "src/main/rules", true, monitor);
 					ar.set(javaProject);
 
-
-                	FileUtils.createFolder(javaProject, "src/main/resources/META-INF", monitor);
-                   	FileUtils.createFolder(javaProject, "src/main/resources/META-INF/maven", monitor);
-                   	
-                   	JsonObject projectProperties = projectNode.getHandler().getProperties();
-                   	JsonValue jv = projectProperties.get("groupId");
-                   	String groupId = null;
-                   	if (jv==null || jv.asString().isEmpty()) {
-                   		if (projectNode.getParent() instanceof RepositoryNode) {
-	                       	JsonObject orgProperties = projectNode.getParent().getParent().getHandler().getProperties();
-	                   		jv = orgProperties.get("defaultGroupId");
-                   		}
-                   	}
-                   	if (jv!=null)
-                   		groupId = jv.asString();
-
-					String artifactId = null;
-					jv = projectProperties.get("artifactId");
-					if (jv != null)
-						artifactId = jv.asString();
-
-                   	String version = null;
-					jv = projectProperties.get("version");
-                   	if (jv!=null)
-                   		version = jv.asString();
-                   	FileUtils.createMavenArtifacts(javaProject, groupId, artifactId, version, monitor);
-                   	FileUtils.createKJarArtifacts(javaProject, monitor);
-                   	
-                    project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
+					project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
                     
                 } catch (Exception e) {
                     ErrorDialog.openError(Display.getDefault().getActiveShell(),
@@ -298,6 +270,10 @@ public class ActionUtils {
                    	FileUtils.createKJarArtifacts(javaProject, monitor);
                    	
                     javaProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, monitor);
+                    
+                    IProject project = javaProject.getProject();
+					project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
+                    project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
                 } catch (Exception e) {
                     ErrorDialog.openError(Display.getDefault().getActiveShell(),
                     	"Problem creating project artifacts",

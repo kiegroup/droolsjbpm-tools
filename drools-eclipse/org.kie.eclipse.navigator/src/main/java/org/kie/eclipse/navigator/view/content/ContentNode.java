@@ -36,27 +36,37 @@ public abstract class ContentNode<T extends IContainerNode<?>> implements IConte
         this.handler = handler;
     }
 
-    public IContainerNode<?> getParent() {
+    @Override
+	public IContainerNode<?> getParent() {
         return parent;
     }
 
-    public T getContainer() {
+    @Override
+	public T getContainer() {
         return container;
     }
 
-    public String getName() {
+    @Override
+	public String getName() {
         return name;
     }
 
-    public IServer getServer() {
+    @Override
+	public IServer getServer() {
+    	if (parent==null)
+    		return ((ServerNode)this).server;
         return getRoot().getServer();
     }
 
+	@Override
 	public CommonNavigator getNavigator() {
+    	if (parent==null)
+    		return ((ServerNode)this).navigator;
 		return getRoot().getNavigator();
 	}
 	
-    public IContainerNode<?> getRoot() {
+    @Override
+	public IContainerNode<?> getRoot() {
     	if (parent==null)
     		return (IContainerNode)this;
         return parent.getRoot();
@@ -66,7 +76,8 @@ public abstract class ContentNode<T extends IContainerNode<?>> implements IConte
     	return getRoot().getRuntimeId();
     }
     
-    public void dispose() {
+    @Override
+	public void dispose() {
         container = null;
         parent = null;
         if (handler!=null) {
@@ -75,20 +86,24 @@ public abstract class ContentNode<T extends IContainerNode<?>> implements IConte
         }
     }
 
-    public IKieResourceHandler getHandler() {
+    @Override
+	public IKieResourceHandler getHandler() {
     	 return handler;
     }
     
-    public boolean isResolved() {
+    @Override
+	public boolean isResolved() {
        	return getHandler().isLoaded();
     }
     
-    public Object resolveContent() {
+    @Override
+	public Object resolveContent() {
     	getHandler().load();
     	return this;
     }
 
-    public Object getAdapter(Class adapter) {
+    @Override
+	public Object getAdapter(Class adapter) {
 		if (adapter==IKieResourceHandler.class) {
 			return getHandler();
 		}
@@ -96,5 +111,20 @@ public abstract class ContentNode<T extends IContainerNode<?>> implements IConte
     }
     
 	@Override
-	public abstract boolean equals(Object obj);
+	public boolean equals(Object obj) {
+		if (obj instanceof IContentNode) {
+			try {
+				IContentNode<?> other = (IContentNode<?>)obj;
+				return other.getName().equals(this.getName());
+			}
+			catch (Exception ex) {
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public void refresh() {
+		getNavigator().getCommonViewer().refresh(getRoot());
+	}
 }
