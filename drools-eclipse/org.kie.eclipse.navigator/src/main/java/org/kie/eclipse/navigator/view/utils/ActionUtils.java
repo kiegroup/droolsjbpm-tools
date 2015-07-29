@@ -69,7 +69,7 @@ public class ActionUtils {
 	private ActionUtils() {
 	}
 
-	public static void importRepository(IExceptionHandler exceptionHandler, RepositoryNode container) {
+	public static void importRepository(final IExceptionHandler exceptionHandler, RepositoryNode container) {
 		final IKieRepositoryHandler handler = (IKieRepositoryHandler) container.getHandler();
 		final IKieServerHandler server = (IKieServerHandler) handler.getRoot();
 		final IKieServiceDelegate delegate = container.getHandler().getDelegate();
@@ -146,7 +146,7 @@ public class ActionUtils {
 		}
 	}
 
-	public static IJavaProject importProject(ProjectNode projectNode, IExceptionHandler exceptionHandler) {
+	public static IJavaProject importProject(final ProjectNode projectNode, final IExceptionHandler exceptionHandler) {
 		final String projectName = projectNode.getName();
 		final AtomicReference<IJavaProject> ar = new AtomicReference<IJavaProject>();
 		IWorkspaceRunnable wsr = new IWorkspaceRunnable() {
@@ -188,7 +188,7 @@ public class ActionUtils {
 		return ar.get();
 	}
 
-	public static IJavaProject createOrOpenProject(ProjectNode projectNode, String projectName, IProgressMonitor monitor)
+	public static IJavaProject createOrOpenProject(final ProjectNode projectNode, final String projectName, final IProgressMonitor monitor)
 			throws CoreException, IllegalArgumentException {
 		final AtomicReference<IJavaProject> ar = new AtomicReference<IJavaProject>();
 		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -284,7 +284,7 @@ public class ActionUtils {
 
 	}
 
-	public static void createProjectArtifacts(IJavaProject javaProject, String groupId, String artifactId, String version, IProgressMonitor monitor)
+	public static void createProjectArtifacts(final IJavaProject javaProject, final String groupId, final String artifactId, final String version, final IProgressMonitor monitor)
 			throws CoreException, IllegalArgumentException {
 		
         WorkspaceModifyOperation op = new WorkspaceModifyOperation() {

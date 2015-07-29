@@ -16,7 +16,7 @@ public class ShowPropertiesAction extends PropertyDialogAction implements IKieNa
 	}
 
 	@Override
-	public void handleException(Throwable t) {
+	public void handleException(final Throwable t) {
 		t.printStackTrace();
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
