@@ -49,7 +49,7 @@ public class KieNavigatorAction extends SelectionProviderAction implements IKieN
 	}
 
 	@Override
-	public void handleException(Throwable t) {
+	public void handleException(final Throwable t) {
 		t.printStackTrace();
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
