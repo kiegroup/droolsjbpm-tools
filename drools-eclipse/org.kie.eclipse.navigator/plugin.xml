@@ -163,6 +163,16 @@
 		</containerBinding>
 	</extension>
 	
+  <extension
+        point="org.eclipse.core.expressions.propertyTesters">
+     <propertyTester
+           id="org.eclipse.kie.navigator.ResourcePropertyTester"
+           class="org.eclipse.kie.navigator.ResourcePropertyTester"
+           namespace="org.eclipse.kie.navigator"
+           properties="contentNode"
+           type="org.eclipse.core.resources.IProject">
+     </propertyTester>
+  </extension>
 	
  <extension
        point="org.eclipse.ui.propertyPages">
@@ -185,9 +195,11 @@
               <instanceof
                   value="org.kie.eclipse.navigator.view.content.ProjectNode">
               </instanceof>
+			  <adapt type="org.eclipse.core.resources.IProject" >
+				<test property="org.eclipse.kie.navigator.contentNode" value="org.kie.eclipse.navigator.view.content.ProjectNode"/>
+ 			  </adapt>
             </or>
           </enabledWhen>
-          
     </page>
  </extension>
 
@@ -210,6 +222,9 @@
               <instanceof
                   value="org.kie.eclipse.navigator.view.content.ProjectNode">
               </instanceof>
+			  <adapt type="org.eclipse.core.resources.IProject" >
+				<test property="org.eclipse.kie.navigator.contentNode" value="org.kie.eclipse.navigator.view.content.ProjectNode"/>
+ 			  </adapt>
             </or>
           </enabledWhen>
     </page>
@@ -231,6 +246,9 @@
               <instanceof
                   value="org.kie.eclipse.navigator.view.content.ProjectNode">
               </instanceof>
+			  <adapt type="org.eclipse.core.resources.IProject" >
+				<test property="org.eclipse.kie.navigator.contentNode" value="org.kie.eclipse.navigator.view.content.ProjectNode"/>
+ 			  </adapt>
             </or>
           </enabledWhen>
     </page>
@@ -245,9 +263,14 @@
           icon="icons/project.gif"
           name="Project">
           <enabledWhen>
+            <or>
               <instanceof
                   value="org.kie.eclipse.navigator.view.content.ProjectNode">
               </instanceof>
+			  <adapt type="org.eclipse.core.resources.IProject" >
+				<test property="org.eclipse.kie.navigator.contentNode" value="org.kie.eclipse.navigator.view.content.ProjectNode"/>
+ 			  </adapt>
+            </or>
           </enabledWhen>
     </page>
  </extension>

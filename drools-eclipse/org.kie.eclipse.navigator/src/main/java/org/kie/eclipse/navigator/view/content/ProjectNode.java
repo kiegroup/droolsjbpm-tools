@@ -27,6 +27,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Display;
 import org.kie.eclipse.server.IKieProjectHandler;
+import org.kie.eclipse.server.IKieResourceHandler;
 
 /**
  *
@@ -53,13 +54,27 @@ public class ProjectNode extends ContainerNode<RepositoryNode> implements IResou
 	@Override
 	public Object resolveContent() {
 		Object resource = getHandler().load();
-		if (resource!=null)
-			return resource;
-		return super.resolveContent();
+		if (resource==null)
+			resource = super.resolveContent();
+		
+		if (resource instanceof IProject) {
+			try {
+				((IProject)resource).setSessionProperty(IKieResourceHandler.RESOURCE_KEY, this);
+			}
+			catch (Exception e) {
+			}
+		}
+		return resource;
 	}
 
 	@Override
 	public void dispose() {
+		try {
+			IProject project = (IProject) getHandler().getResource();
+			project.setSessionProperty(IKieResourceHandler.RESOURCE_KEY, null);
+		}
+		catch (Exception e) {
+		}
 		super.dispose();
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
 	}

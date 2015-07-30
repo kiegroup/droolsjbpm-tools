@@ -1,14 +1,12 @@
 package org.kie.eclipse.navigator.preferences;
 
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.jface.dialogs.IPageChangedListener;
-import org.eclipse.jface.dialogs.PageChangedEvent;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.internal.dialogs.PropertyDialog;
 import org.kie.eclipse.IKieConstants;
 import org.kie.eclipse.navigator.view.content.IContentNode;
@@ -61,7 +59,20 @@ public abstract class AbstractKiePropertyPage extends FieldEditorPropertyPage im
 			PropertyDialog pd = (PropertyDialog) getContainer();
 			IStructuredSelection selection = (IStructuredSelection) pd.getSelection();
 			TreeSelection ts = (TreeSelection) ((IStructuredSelection) selection).getFirstElement();
-			contentNode = (IContentNode<?>) ts.getFirstElement();
+			Object element = ts.getFirstElement();
+			if (element instanceof IJavaProject) {
+				element = ((IJavaProject)element).getProject();
+			}
+			if (element instanceof IResource) {
+				try {
+					element = ((IResource)element).getSessionProperty(IKieResourceHandler.RESOURCE_KEY);
+				}
+				catch (CoreException e) {
+					e.printStackTrace();
+				}
+			}
+			if (element instanceof IContentNode)
+				contentNode = (IContentNode<?>) element;
 		}
 		return contentNode;
 	}

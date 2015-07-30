@@ -172,20 +172,21 @@ public class KieNavigatorContentProvider implements ITreeContentProvider {
 		else if (parentElement instanceof IProject) {
 			// TODO: support GoInto actions for Projects
 			final IProject project = (IProject) parentElement;
-			try {
-				project.accept(new IResourceVisitor() {
-					@Override
-					public boolean visit(IResource resource) throws CoreException {
-						if (resource!=project)
-							results.add(resource);
-						return !(resource instanceof IFolder) || resource==project;
-					}
-				});
-			}
-			catch (CoreException e) {
-				e.printStackTrace();
-			}
-			
+			if (project.isAccessible()) {
+				try {
+					project.accept(new IResourceVisitor() {
+						@Override
+						public boolean visit(IResource resource) throws CoreException {
+							if (resource!=project)
+								results.add(resource);
+							return !(resource instanceof IFolder) || resource==project;
+						}
+					});
+				}
+				catch (CoreException e) {
+					e.printStackTrace();
+				}
+			}			
 		}
 		return results.toArray();
 	}

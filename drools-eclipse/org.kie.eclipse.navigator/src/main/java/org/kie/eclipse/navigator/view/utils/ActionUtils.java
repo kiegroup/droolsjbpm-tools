@@ -227,6 +227,7 @@ public class ActionUtils {
                     
                     IJavaProject javaProject = JavaCore.create(project);
                     FileUtils.createOutputLocation(javaProject, "bin", monitor);
+                    FileUtils.addJRELibraries(javaProject, monitor);
                     
                 	FileUtils.addJavaBuilder(javaProject, monitor);
                 	FileUtils.addMavenBuilder(javaProject, monitor);

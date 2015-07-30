@@ -54,7 +54,7 @@ public class RepositoryNode extends ContainerNode<OrganizationNode> {
 		return children;
 
 	}
-	
+    
 	@Override
     public Object getAdapter(Class adapter) {
 		if (adapter==Repository.class) {

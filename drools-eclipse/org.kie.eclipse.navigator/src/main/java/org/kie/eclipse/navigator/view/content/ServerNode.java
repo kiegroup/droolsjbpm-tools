@@ -50,6 +50,7 @@ public class ServerNode extends ContainerNode implements IPropertyChangeListener
 		Activator.getDefault().getPreferenceStore().addPropertyChangeListener(this);
 	}
 	
+	@Override
 	protected List<? extends IContentNode<?>> createChildren() {
 		clearHandlerChildren();
 		load();
@@ -68,21 +69,25 @@ public class ServerNode extends ContainerNode implements IPropertyChangeListener
 		return children;
 	}
 
-    public IServer getServer() {
+    @Override
+	public IServer getServer() {
         return server;
     }
 
+	@Override
 	public CommonNavigator getNavigator() {
 		return navigator;
 	}
 	
+	@Override
 	public IKieResourceHandler getHandler() {
     	 if (handler==null) {
     		 handler = new KieServerHandler(server);
     	 }
     	 return handler;
     }
-    public String getRuntimeId() {
+    @Override
+	public String getRuntimeId() {
     	return getHandler().getRuntimeId();
     }
     

@@ -18,14 +18,13 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.egit.core.RepositoryCache;
 import org.eclipse.jgit.lib.Repository;
 
 /**
  *
  */
+@SuppressWarnings("restriction")
 public class KieProjectHandler extends KieResourceHandler implements IKieProjectHandler {
 
 	IProject project;
@@ -44,7 +43,6 @@ public class KieProjectHandler extends KieResourceHandler implements IKieProject
 		return project;
 	}
 
-	@SuppressWarnings("restriction")
 	@Override
 	public Object load() {
 		if (project==null) {
@@ -57,12 +55,6 @@ public class KieProjectHandler extends KieResourceHandler implements IKieProject
 						Repository projectRepo = repositoryCache.getRepository(project);
 						if (repository==projectRepo) {
 							this.project = project;
-							try {
-								this.project.setSessionProperty(IKieResourceHandler.RESOURCE_HANDLER_KEY, this);
-							}
-							catch (CoreException e) {
-								e.printStackTrace();
-							}
 							directory = new File(project.getLocation().toString());
 							break;
 						}
@@ -81,14 +73,6 @@ public class KieProjectHandler extends KieResourceHandler implements IKieProject
 	@Override
 	public void dispose() {
 		super.dispose();
-		if (project!=null) {
-			try {
-				project.setSessionProperty(IKieResourceHandler.RESOURCE_HANDLER_KEY, null);
-			}
-			catch (CoreException e) {
-				e.printStackTrace();
-			}
-		}
 		project = null;
 		directory = null;
 	}
@@ -97,7 +81,29 @@ public class KieProjectHandler extends KieResourceHandler implements IKieProject
 	public List<? extends IKieResourceHandler> getChildren() throws Exception {
 		return null;
 	}
-	
+	   
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof KieProjectHandler) {
+			KieProjectHandler that = (KieProjectHandler) obj;
+			if (this.directory!=null) {
+				if (!this.directory.equals(that.directory))
+					return false;
+			}
+			else if (that.directory!=null)
+				return false;
+			
+			if (this.project!=null) {
+				if (!this.project.equals(that.project) || this.project.isOpen()!=that.project.isOpen())
+					return false;
+			}
+			else if (that.project!=null) {
+				return false;
+			}
+		}
+		return super.equals(obj);
+	}
+		
 	@Override
 	public File getDirectory() {
 		return directory;

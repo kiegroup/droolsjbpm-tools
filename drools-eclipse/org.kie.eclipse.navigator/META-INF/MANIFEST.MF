@@ -24,6 +24,7 @@ Bundle-ActivationPolicy: lazy
 Import-Package: com.jcraft.jsch,
  org.drools.eclipse.util,
  org.drools.eclipse.wizard.project,
+ org.eclipse.core.expressions,
  org.eclipse.debug.core,
  org.eclipse.jdt.core,
  org.eclipse.jdt.ui,
