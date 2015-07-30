@@ -15,6 +15,7 @@ package org.kie.eclipse.server;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -81,6 +82,7 @@ public abstract class KieResourceHandler implements IKieResourceHandler {
 		return null;
 	}
     
+	@Override
 	public String getRuntimeId() {
 		if (parent!=null)
 			return parent.getRuntimeId();
@@ -94,18 +96,22 @@ public abstract class KieResourceHandler implements IKieResourceHandler {
 		return null;
 	}
 
+	@Override
 	public void dispose() {
 		children = null;
 	}
 	
+	@Override
 	public Object load() {
 		return null;
 	}
 	
+	@Override
 	public boolean isLoaded() {
 		return false;
 	}
 	
+	@Override
 	public void setProperties(JsonObject properties) {
 		JsonValue v = properties.get("name");
 		if (v!=null && v.isString())
@@ -113,6 +119,7 @@ public abstract class KieResourceHandler implements IKieResourceHandler {
 		this.properties = properties;
 	}
 	
+	@Override
 	public JsonObject getProperties() {
 		return properties;
 	}
@@ -124,6 +131,7 @@ public abstract class KieResourceHandler implements IKieResourceHandler {
 	/* (non-Javadoc)
 	 * @see org.kie.eclipse.server.IKieResourceHandler#getPreferenceName(java.lang.String)
 	 */
+	@Override
 	public String getPreferenceName(String name) {
 		String canonicalName = getCanonicalName(getRoot().getName());
 		if (name==null)
@@ -131,6 +139,7 @@ public abstract class KieResourceHandler implements IKieResourceHandler {
 		return canonicalName + IKieConstants.PREF_PATH_SEPARATOR + getCanonicalName(name);
 	}
 	
+	@Override
 	public Preferences getPreferences() {
 		if (preferences==null) {
 			preferences = (IEclipsePreferences) Platform.getPreferencesService().

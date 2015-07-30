@@ -18,6 +18,8 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.egit.core.RepositoryCache;
 import org.eclipse.jgit.lib.Repository;
 
@@ -42,6 +44,8 @@ public class KieProjectHandler extends KieResourceHandler implements IKieProject
 		return project;
 	}
 
+	@SuppressWarnings("restriction")
+	@Override
 	public Object load() {
 		if (project==null) {
 			Repository repository = (Repository) parent.load();
@@ -53,6 +57,12 @@ public class KieProjectHandler extends KieResourceHandler implements IKieProject
 						Repository projectRepo = repositoryCache.getRepository(project);
 						if (repository==projectRepo) {
 							this.project = project;
+							try {
+								this.project.setSessionProperty(IKieResourceHandler.RESOURCE_HANDLER_KEY, this);
+							}
+							catch (CoreException e) {
+								e.printStackTrace();
+							}
 							directory = new File(project.getLocation().toString());
 							break;
 						}
@@ -71,10 +81,19 @@ public class KieProjectHandler extends KieResourceHandler implements IKieProject
 	@Override
 	public void dispose() {
 		super.dispose();
+		if (project!=null) {
+			try {
+				project.setSessionProperty(IKieResourceHandler.RESOURCE_HANDLER_KEY, null);
+			}
+			catch (CoreException e) {
+				e.printStackTrace();
+			}
+		}
 		project = null;
 		directory = null;
 	}
 
+	@Override
 	public List<? extends IKieResourceHandler> getChildren() throws Exception {
 		return null;
 	}

@@ -380,7 +380,7 @@ public class KieNavigatorView extends CommonNavigator implements IResourceChange
 	}
 	
 	protected void addListener() {
-		// To enable the UI updating of servers and its childrens
+		// To enable the UI updating of servers and its children
 		serverResourceListener = new IServerLifecycleListener() {
 			public void serverAdded(IServer server) {
 				addServer(server);

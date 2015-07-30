@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.egit.core.RepositoryCache;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -75,6 +76,7 @@ public class KieRepositoryHandler extends KieResourceHandler implements IKieRepo
 		return (List<IKieProjectHandler>) getChildren();
 	}
 	
+	@Override
 	public Object load() {
 		if (repository == null) {
 			final File repoRoot = new File(PreferencesUtils.getRepoRoot(this));
@@ -186,6 +188,7 @@ public class KieRepositoryHandler extends KieResourceHandler implements IKieRepo
 		return repository != null;
 	}
 	
+	@Override
 	public Repository getRepository() {
 		return repository;
 	}

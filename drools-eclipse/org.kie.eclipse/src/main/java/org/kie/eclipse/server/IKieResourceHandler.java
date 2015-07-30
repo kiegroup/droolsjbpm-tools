@@ -15,7 +15,10 @@ package org.kie.eclipse.server;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.wst.server.core.IServer;
+import org.kie.eclipse.Activator;
 import org.osgi.service.prefs.Preferences;
 
 import com.eclipsesource.json.JsonObject;
@@ -24,6 +27,7 @@ import com.eclipsesource.json.JsonObject;
  *
  */
 public interface IKieResourceHandler {
+	public static QualifiedName RESOURCE_HANDLER_KEY = new QualifiedName(Activator.PLUGIN_ID, "ResourceHandler");
 	String getName();
 	IServer getServer();
 	IKieResourceHandler getParent();
