@@ -35,11 +35,11 @@ import org.kie.eclipse.server.IKieResourceHandler;
 public class ProjectNode extends ContainerNode<RepositoryNode> implements IResourceChangeListener {
 	
 	/**
-	 * @param container
+	 * @param parent
 	 * @param name
 	 */
-	protected ProjectNode(RepositoryNode container, IKieProjectHandler project) {
-		super(container, project);
+	protected ProjectNode(RepositoryNode parent, IKieProjectHandler project) {
+		super(parent, project);
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 	}
 
@@ -93,6 +93,7 @@ public class ProjectNode extends ContainerNode<RepositoryNode> implements IResou
 							case IResourceDelta.REMOVED:
 								final IKieProjectHandler handler = (IKieProjectHandler) getHandler();
 								if (resource==handler.getResource()) {
+									handler.setResource(null);
 									File directory = handler.getDirectory();
 									if (directory!=null && !directory.exists()) {
 										// The actual server request to remove the project needs
@@ -102,11 +103,11 @@ public class ProjectNode extends ContainerNode<RepositoryNode> implements IResou
 											public void run() {
 												try {
 													handler.getDelegate().deleteProject(handler);
+													refresh();
 												}
 												catch (IOException e) {
 													e.printStackTrace();
 												}
-												refresh();
 											}
 										});
 									}

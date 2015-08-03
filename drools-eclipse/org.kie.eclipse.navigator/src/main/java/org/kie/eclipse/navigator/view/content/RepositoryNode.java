@@ -28,16 +28,16 @@ import org.kie.eclipse.server.IKieResourceHandler;
 public class RepositoryNode extends ContainerNode<OrganizationNode> {
 	
 	/**
-	 * @param container
+	 * @param parent
 	 * @param name
 	 */
-	protected RepositoryNode(OrganizationNode container, IKieRepositoryHandler repository) {
-		super(container, repository);
+	protected RepositoryNode(OrganizationNode parent, IKieRepositoryHandler repository) {
+		super(parent, repository);
 	}
 
-	protected RepositoryNode(ServerNode server, IKieRepositoryHandler repository) {
+	protected RepositoryNode(ServerNode parent, IKieRepositoryHandler repository) {
 		super(null, repository);
-        this.parent = server;
+        this.parent = parent;
 	}
 
 	@Override

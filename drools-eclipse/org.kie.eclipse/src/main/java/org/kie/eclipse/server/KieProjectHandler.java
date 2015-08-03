@@ -42,6 +42,13 @@ public class KieProjectHandler extends KieResourceHandler implements IKieProject
 	public Object getResource() {
 		return project;
 	}
+	
+	@Override
+	public void setResource(Object resource) {
+		if (resource==null || resource instanceof IProject) {
+			project = (IProject) resource;
+		}
+	}
 
 	@Override
 	public Object load() {

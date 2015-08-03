@@ -24,7 +24,8 @@ public class RefreshActionProvider extends KieNavigatorActionProvider {
     public RefreshActionProvider() {
     }
 
-    public void init(ICommonActionExtensionSite aSite) {
+    @Override
+	public void init(ICommonActionExtensionSite aSite) {
         super.init(aSite);
         addAction(new RefreshAction(aSite.getStructuredViewer()));
     }
@@ -35,11 +36,13 @@ public class RefreshActionProvider extends KieNavigatorActionProvider {
             super(selectionProvider, WorkbenchMessages.Workbench_refresh);
         }
 
-        public void run() {
+        @Override
+		public void run() {
             IContainerNode<?> container = getContainer();
             if (container==null)
             	return;
             
+            container.clearChildren();
             refreshViewer(container);
         }
 

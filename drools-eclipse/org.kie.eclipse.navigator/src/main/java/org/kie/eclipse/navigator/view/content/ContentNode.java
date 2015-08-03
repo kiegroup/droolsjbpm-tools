@@ -10,6 +10,9 @@
  ******************************************************************************/ 
 package org.kie.eclipse.navigator.view.content;
 
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.navigator.CommonNavigator;
 import org.eclipse.wst.server.core.IServer;
 import org.kie.eclipse.server.IKieResourceHandler;
@@ -18,20 +21,15 @@ public abstract class ContentNode<T extends IContainerNode<?>> implements IConte
 
     protected IKieResourceHandler handler;
     protected IContainerNode<?> parent;
-    protected T container;
     protected final String name;
 
     protected ContentNode(String name) {
         this.parent = null;
-        this.container = null;
        	this.name = name;
     }
 
-    protected ContentNode(T container, IKieResourceHandler handler) {
-        this.parent = container instanceof IContainerNode ?
-        		(IContainerNode<?>) container :
-        			(container==null ? null : container.getParent());
-        this.container = container;
+    protected ContentNode(T parent, IKieResourceHandler handler) {
+        this.parent = parent;
         this.name = handler.getName();
         this.handler = handler;
     }
@@ -39,11 +37,6 @@ public abstract class ContentNode<T extends IContainerNode<?>> implements IConte
     @Override
 	public IContainerNode<?> getParent() {
         return parent;
-    }
-
-    @Override
-	public T getContainer() {
-        return container;
     }
 
     @Override
@@ -78,7 +71,6 @@ public abstract class ContentNode<T extends IContainerNode<?>> implements IConte
     
     @Override
 	public void dispose() {
-        container = null;
         parent = null;
         if (handler!=null) {
         	handler.dispose();
@@ -93,7 +85,7 @@ public abstract class ContentNode<T extends IContainerNode<?>> implements IConte
     
     @Override
 	public boolean isResolved() {
-       	return getHandler().isLoaded();
+       	return getHandler()!=null && getHandler().isLoaded();
     }
     
     @Override
@@ -124,7 +116,30 @@ public abstract class ContentNode<T extends IContainerNode<?>> implements IConte
 	}
 
 	@Override
+	public int compareTo(Object arg0) {
+		if (arg0 instanceof IContentNode) {
+			return getName().compareTo(((IContentNode)arg0).getName());
+		}
+		return 0;
+	}
+
+	@Override
 	public void refresh() {
 		getNavigator().getCommonViewer().refresh(getRoot());
+	}
+
+	protected static Shell getShell() {
+		return Display.getDefault().getActiveShell();
+	}
+
+	@Override
+	public void handleException(final Throwable t) {
+		t.printStackTrace();
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				MessageDialog.openError(getShell(), "Error", t.getMessage());
+			}
+		});
 	}
 }

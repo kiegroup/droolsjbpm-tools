@@ -39,13 +39,13 @@ public class ErrorNode extends ContentNode<IContainerNode<?>> implements IErrorN
 		}
     }
     
-    protected ErrorNode(IContainerNode<?> container, String text) {
-        super(container, new ErrorHandler(text));
+    protected ErrorNode(IContainerNode<?> parent, String text) {
+        super(parent, new ErrorHandler(text));
         this.text = text;
     }
     
-    protected ErrorNode(IContainerNode<?> container, Exception exception) {
-        super(container, new ErrorHandler("Error"));
+    protected ErrorNode(IContainerNode<?> parent, Exception exception) {
+        super(parent, new ErrorHandler("Error"));
         this.text = "Error";
         this.exception = exception;
     }

@@ -194,7 +194,7 @@ public class KieNavigatorContentProvider implements ITreeContentProvider {
     @Override
 	public Object getParent(Object element) {
         if (element instanceof IContentNode) {
-            Object parent = ((IContentNode<?>) element).getContainer();
+            Object parent = ((IContentNode<?>) element).getParent();
             if (parent == null) {
                 parent = ((IContentNode<?>) element).getServer();
             }

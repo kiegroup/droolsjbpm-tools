@@ -27,11 +27,11 @@ import org.kie.eclipse.server.IKieResourceHandler;
 public class OrganizationNode extends ContainerNode<ServerNode> {
 	
 	/**
-	 * @param container
+	 * @param parent
 	 * @param name
 	 */
-	protected OrganizationNode(ServerNode container, IKieOrganizationHandler organization) {
-		super(container, organization);
+	protected OrganizationNode(ServerNode parent, IKieOrganizationHandler organization) {
+		super(parent, organization);
 	}
 	
 	@Override

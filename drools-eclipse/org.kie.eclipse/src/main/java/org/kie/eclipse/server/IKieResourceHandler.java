@@ -34,6 +34,7 @@ public interface IKieResourceHandler {
 	void setParent(IKieResourceHandler parent);
 	IKieResourceHandler getRoot();
 	Object getResource();
+	void setResource(Object resource);
 	void dispose();
 	IKieServiceDelegate getDelegate();
 	Object load();

@@ -28,8 +28,8 @@ public abstract class ContainerNode<T extends IContainerNode<?>> extends Content
         super(name);
     }
 
-    protected ContainerNode(T container, IKieResourceHandler handler) {
-        super(container, handler);
+    protected ContainerNode(T parent, IKieResourceHandler handler) {
+        super(parent, handler);
     }
     
 	@Override
@@ -140,6 +140,7 @@ public abstract class ContainerNode<T extends IContainerNode<?>> extends Content
 			}
 			children.removeAll(removed);
 		}
+		Collections.sort(children);
 		return children;
 	}
 

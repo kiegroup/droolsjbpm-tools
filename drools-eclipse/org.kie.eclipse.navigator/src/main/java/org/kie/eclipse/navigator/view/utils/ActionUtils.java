@@ -193,7 +193,7 @@ public class ActionUtils {
 		final AtomicReference<IJavaProject> ar = new AtomicReference<IJavaProject>();
 		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		final IProject project = workspace.getRoot().getProject(projectName);
-		final RepositoryNode repoNode = (RepositoryNode) projectNode.getContainer();
+		final RepositoryNode repoNode = (RepositoryNode)projectNode.getParent();
 		Repository repository = ((KieRepositoryHandler) repoNode.getHandler()).getRepository();
 		final IPath location = new Path(repository.getWorkTree().toString()).append(projectName);
 		

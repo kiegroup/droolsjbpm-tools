@@ -15,7 +15,7 @@ import org.eclipse.ui.navigator.CommonNavigator;
 import org.eclipse.wst.server.core.IServer;
 import org.kie.eclipse.server.IKieResourceHandler;
 
-public interface IContentNode<T extends IContainerNode<?>> extends IAdaptable {
+public interface IContentNode<T extends IContainerNode<?>> extends IAdaptable, Comparable {
 
     /**
      * @return returns the server containing this node.
@@ -23,14 +23,9 @@ public interface IContentNode<T extends IContainerNode<?>> extends IAdaptable {
     IServer getServer();
 
     /**
-     * @return the resource containing this node, if any.
-     */
-    IContainerNode<?> getParent();
-
-    /**
      * @return the containing node.
      */
-    T getContainer();
+    IContainerNode<?> getParent();
 
     /**
      * @return the name of this node.
@@ -57,4 +52,5 @@ public interface IContentNode<T extends IContainerNode<?>> extends IAdaptable {
     IKieResourceHandler getHandler();
     CommonNavigator getNavigator();
     void refresh();
+	void handleException(Throwable e);
 }
