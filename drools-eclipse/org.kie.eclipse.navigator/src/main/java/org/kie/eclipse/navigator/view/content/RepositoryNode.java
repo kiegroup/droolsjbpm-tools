@@ -17,15 +17,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.jgit.lib.Repository;
 import org.kie.eclipse.server.IKieProjectHandler;
 import org.kie.eclipse.server.IKieRepositoryHandler;
 import org.kie.eclipse.server.IKieResourceHandler;
+import org.kie.eclipse.utils.GitUtils;
 
 /**
  *
  */
-public class RepositoryNode extends ContainerNode<OrganizationNode> {
+public class RepositoryNode extends ContainerNode<OrganizationNode> implements IPreferenceChangeListener {
 	
 	/**
 	 * @param parent
@@ -33,13 +36,19 @@ public class RepositoryNode extends ContainerNode<OrganizationNode> {
 	 */
 	protected RepositoryNode(OrganizationNode parent, IKieRepositoryHandler repository) {
 		super(parent, repository);
+		init();
 	}
 
 	protected RepositoryNode(ServerNode parent, IKieRepositoryHandler repository) {
 		super(null, repository);
         this.parent = parent;
+		init();
 	}
 
+	private void init() {
+		GitUtils.getRepositoryUtil().getPreferences().addPreferenceChangeListener(this);
+	}
+	
 	@Override
 	protected List<? extends IContentNode<?>> createChildren() {
 		clearHandlerChildren();
@@ -64,5 +73,17 @@ public class RepositoryNode extends ContainerNode<OrganizationNode> {
 		}
 		return super.getAdapter(adapter);
     }
+
+	@Override
+	public void dispose() {
+		GitUtils.getRepositoryUtil().getPreferences().removePreferenceChangeListener(this);
+		super.dispose();
+	}
+
+	@Override
+	public void preferenceChange(PreferenceChangeEvent event) {
+		getParent().clearChildren();
+		refresh();
+	}
 
 }

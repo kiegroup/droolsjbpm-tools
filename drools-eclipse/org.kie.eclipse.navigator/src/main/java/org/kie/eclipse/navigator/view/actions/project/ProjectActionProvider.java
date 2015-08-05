@@ -1,17 +1,29 @@
 package org.kie.eclipse.navigator.view.actions.project;
 
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.navigator.ICommonActionConstants;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.kie.eclipse.navigator.view.actions.KieNavigatorActionProvider;
-import org.kie.eclipse.navigator.view.actions.ShowPropertiesAction;
 
 public class ProjectActionProvider extends KieNavigatorActionProvider {
 
+	private ImportProjectAction importAction;
+	
 	public ProjectActionProvider() {
 	}
 
-    public void init(ICommonActionExtensionSite aSite) {
+    @Override
+	public void fillActionBars(IActionBars actionBars) {
+		super.fillActionBars(actionBars);
+		if (importAction.isEnabled())
+			actionBars.setGlobalActionHandler(ICommonActionConstants.OPEN, importAction);
+	}
+
+	@Override
+	public void init(ICommonActionExtensionSite aSite) {
         super.init(aSite);
-        addAction(new ImportProjectAction(aSite.getStructuredViewer()));
+        importAction = new ImportProjectAction(aSite.getStructuredViewer());
+        addAction(importAction);
         addAction(new DeleteProjectAction(aSite.getStructuredViewer()));
 //        addAction(new ShowPropertiesAction(aSite));
     }

@@ -91,6 +91,7 @@ public class ProjectNode extends ContainerNode<RepositoryNode> implements IResou
 						if (resource instanceof IProject) {
 							switch (delta.getKind()) {
 							case IResourceDelta.REMOVED:
+								final ProjectNode container = ProjectNode.this;
 								final IKieProjectHandler handler = (IKieProjectHandler) getHandler();
 								if (resource==handler.getResource()) {
 									handler.setResource(null);
@@ -103,6 +104,7 @@ public class ProjectNode extends ContainerNode<RepositoryNode> implements IResou
 											public void run() {
 												try {
 													handler.getDelegate().deleteProject(handler);
+													container.getParent().clearChildren();
 													refresh();
 												}
 												catch (IOException e) {

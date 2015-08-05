@@ -83,14 +83,16 @@ public abstract class AbstractKieRequestDialog extends TitleAreaDialog {
     protected Control createHelpControl(Composite parent) {
         ((GridLayout) parent.getLayout()).numColumns++;
         errorComposite = new Composite(parent, SWT.NONE);
-        errorComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+        errorComposite.setLayoutData(gd);
         errorComposite.setLayout(new GridLayout(2, false));
     	Label errorImage = new Label(errorComposite, SWT.NONE);
     	errorImage.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
     	errorImage.setImage(JFaceResources.getImage(DLG_IMG_TITLE_ERROR));
 
     	errorText = new Label(errorComposite, SWT.NONE);
-    	errorText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+    	gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
+    	errorText.setLayoutData(gd);
     	errorText.setText("");
     	return errorComposite;
     }
@@ -111,6 +113,7 @@ public abstract class AbstractKieRequestDialog extends TitleAreaDialog {
 				((GridData)errorComposite.getLayoutData()).exclude = false;
 				errorText.setText(newErrorMessage);
 			}
+			errorText.getParent().getParent().layout();
 		}
 	}
 	

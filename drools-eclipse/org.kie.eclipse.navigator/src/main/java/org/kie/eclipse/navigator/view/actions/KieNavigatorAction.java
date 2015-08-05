@@ -36,12 +36,8 @@ public class KieNavigatorAction extends SelectionProviderAction implements IKieN
 	}
 
 	protected static void refreshViewer(final IContainerNode<?> container) {
-		Display.getDefault().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				container.refresh();
-			}
-		});
+		container.clearChildren();
+		container.refresh();
 	}
 
 	protected static Shell getShell() {

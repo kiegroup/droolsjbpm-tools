@@ -17,6 +17,7 @@ import org.kie.eclipse.server.IKieResourceHandler;
 
 public interface IContentNode<T extends IContainerNode<?>> extends IAdaptable, Comparable {
 
+	public final static String INTERNAL_REFRESH_KEY = "org.kie.eclipse.navigator.property.internalRefresh";
     /**
      * @return returns the server containing this node.
      */

@@ -2,6 +2,7 @@ package org.kie.eclipse.utils;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +31,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
@@ -38,7 +38,6 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.core.JavaModelManager;
 import org.eclipse.jdt.ui.PreferenceConstants;
-import org.kie.eclipse.runtime.IRuntimeManager;
 
 public class FileUtils {
 	
@@ -80,7 +79,30 @@ public class FileUtils {
 		if (resource instanceof IFolder && !resource.exists())
 			((IFolder)resource).create(true, true, monitor);
 	}
+	
+	public static boolean deleteFolder(File file) {
+		File[] flist = null;
+		if (file == null) {
+			return false;
+		}
+		if (file.isFile()) {
+			return file.delete();
+		}
+		if (!file.isDirectory()) {
+			return false;
+		}
+		flist = file.listFiles();
+		if (flist != null && flist.length > 0) {
+			for (File f : flist) {
+				if (!deleteFolder(f)) {
+					return false;
+				}
+			}
+		}
 
+		return file.delete();
+	}
+	
 	public static void extractJarFile(java.io.File jarFile, IProject project, IProgressMonitor monitor)
 			throws IOException, CoreException {
 		JarFile jar = new java.util.jar.JarFile(jarFile);

@@ -53,9 +53,15 @@ public abstract class ContentNode<T extends IContainerNode<?>> implements IConte
 
 	@Override
 	public CommonNavigator getNavigator() {
-    	if (parent==null)
-    		return ((ServerNode)this).navigator;
-		return getRoot().getNavigator();
+		try {
+	    	if (parent==null)
+	    		return ((ServerNode)this).navigator;
+			return getRoot().getNavigator();
+		}
+		catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return null;
 	}
 	
     @Override
@@ -71,7 +77,7 @@ public abstract class ContentNode<T extends IContainerNode<?>> implements IConte
     
     @Override
 	public void dispose() {
-        parent = null;
+//        parent = null;
         if (handler!=null) {
         	handler.dispose();
         	handler = null;
@@ -117,6 +123,16 @@ public abstract class ContentNode<T extends IContainerNode<?>> implements IConte
 
 	@Override
 	public int compareTo(Object arg0) {
+		if (arg0 instanceof RepositoryNode) {
+			if (this instanceof RepositoryNode)
+				return getName().compareTo(((RepositoryNode)arg0).getName());
+			return 1;
+		}
+		if (this instanceof RepositoryNode) {
+			if (arg0 instanceof RepositoryNode)
+				return getName().compareTo(((RepositoryNode)arg0).getName());
+			return -1;
+		}
 		if (arg0 instanceof IContentNode) {
 			return getName().compareTo(((IContentNode)arg0).getName());
 		}
@@ -124,8 +140,20 @@ public abstract class ContentNode<T extends IContainerNode<?>> implements IConte
 	}
 
 	@Override
-	public void refresh() {
-		getNavigator().getCommonViewer().refresh(getRoot());
+	public synchronized void refresh() {
+		final CommonNavigator navigator = getNavigator();
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					navigator.setPartProperty(INTERNAL_REFRESH_KEY, Boolean.toString(true));
+					navigator.getCommonViewer().refresh(getRoot());
+				}
+				finally {
+					navigator.setPartProperty(INTERNAL_REFRESH_KEY, Boolean.toString(false));
+				}
+			}
+		});
 	}
 
 	protected static Shell getShell() {

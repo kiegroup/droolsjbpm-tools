@@ -7,44 +7,29 @@
  * 
  * Contributors: 
  * Red Hat, Inc. - initial API and implementation 
- ******************************************************************************/ 
+ ******************************************************************************/
 package org.kie.eclipse.navigator.view.actions;
 
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.ui.internal.WorkbenchMessages;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
-import org.kie.eclipse.navigator.view.content.IContainerNode;
 
 /**
  * Provides a refresh action for IContainer nodes.
  */
-@SuppressWarnings("restriction")
 public class RefreshActionProvider extends KieNavigatorActionProvider {
 
-    public RefreshActionProvider() {
-    }
+	public RefreshActionProvider() {
+	}
 
-    @Override
+	@Override
 	public void init(ICommonActionExtensionSite aSite) {
-        super.init(aSite);
-        addAction(new RefreshAction(aSite.getStructuredViewer()));
-    }
-
-    private class RefreshAction extends KieNavigatorAction {
-
-        public RefreshAction(ISelectionProvider selectionProvider) {
-            super(selectionProvider, WorkbenchMessages.Workbench_refresh);
-        }
-
-        @Override
-		public void run() {
-            IContainerNode<?> container = getContainer();
-            if (container==null)
-            	return;
-            
-            container.clearChildren();
-            refreshViewer(container);
-        }
-
-    }
+		super.init(aSite);
+		IViewSite site = (IViewSite) aSite.getViewSite().getAdapter(IViewSite.class);
+		IActionBars bars = site.getActionBars();
+		RefreshAction refreshAction = new RefreshAction(aSite.getViewSite().getSelectionProvider());
+		bars.setGlobalActionHandler(ActionFactory.REFRESH.getId(), refreshAction);
+		addAction(refreshAction);
+	}
 }

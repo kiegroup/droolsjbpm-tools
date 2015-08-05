@@ -66,6 +66,7 @@ public class CreateProjectAction extends KieNavigatorAction {
 	        	
 				ProjectNode projectNode = null;
 	            if (dlg.shouldImportProject()) {
+	            	container.clearChildren();
 	            	container.load();
 	            	for (Object child : container.getChildren()) {
 	            		if (child instanceof ProjectNode) {

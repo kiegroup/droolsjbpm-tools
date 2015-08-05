@@ -18,25 +18,24 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.egit.core.EclipseGitProgressTransformer;
-import org.eclipse.egit.core.RepositoryUtil;
 import org.eclipse.egit.core.op.ConnectProviderOperation;
 import org.eclipse.egit.core.project.RepositoryFinder;
 import org.eclipse.egit.core.project.RepositoryMapping;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window.IExceptionHandler;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.TransportConfigCallback;
-import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.storage.file.WindowCacheConfig;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.JschConfigSessionFactory;
 import org.eclipse.jgit.transport.OpenSshConfig.Host;
@@ -45,6 +44,8 @@ import org.eclipse.jgit.transport.TransportGitSsh;
 import org.eclipse.jgit.transport.URIish;
 import org.eclipse.jgit.util.FS;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.kie.eclipse.navigator.view.actions.repository.KieCredentialsProvider;
 import org.kie.eclipse.navigator.view.content.ProjectNode;
@@ -56,24 +57,32 @@ import org.kie.eclipse.server.IKieServerHandler;
 import org.kie.eclipse.server.IKieServiceDelegate;
 import org.kie.eclipse.server.KieRepositoryHandler;
 import org.kie.eclipse.utils.FileUtils;
+import org.kie.eclipse.utils.GitUtils;
 import org.kie.eclipse.utils.PreferencesUtils;
 
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
 public class ActionUtils {
 
 	public static IRuntimeManager runtimeManager = DroolsRuntimeManager.getDefault();
+
 	private ActionUtils() {
 	}
 
+	public static Shell getShell() {
+		return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+	}
+	
 	public static void importRepository(final IExceptionHandler exceptionHandler, RepositoryNode container) {
 		final IKieRepositoryHandler handler = (IKieRepositoryHandler) container.getHandler();
 		final IKieServerHandler server = (IKieServerHandler) handler.getRoot();
 		final IKieServiceDelegate delegate = container.getHandler().getDelegate();
 		try {
+			WindowCacheConfig config = new WindowCacheConfig();
+			config.setPackedGitMMAP(false);
+			config.install();
+
 			String host = delegate.getServer().getHost();
 			int port = delegate.getGitPort();
 			String username = delegate.getUsername();
@@ -88,15 +97,30 @@ public class ActionUtils {
 			// password = dlg.getPassword();
 			uri = PreferencesUtils.getRepoURI(host, port, username, handler.getName());
 			final String localPath = PreferencesUtils.getRepoPath(handler);
+			File localDir = new File(localPath);
+			if (localDir.exists()) {
+				boolean okToOverwrite = MessageDialog.openQuestion(getShell(), "Directory Exists",
+						"The local directory '"+localPath+"' already exists.\n"+
+						"Do you want to overwrite it?");
+				if (!okToOverwrite) {
+					return;
+				}
+				if (!FileUtils.deleteFolder(localDir)) {
+					MessageDialog.openInformation(getShell(), "Delete Failed",
+							"Cannot delete the directory because it may be open in your workspace, or may be in use by some other process.\n\n"+
+							"Please try exiting Eclipse and removing the directory manually"
+					);
+					return;
+				}
+			}
 			final String remotePath = uri.toString();
 			final CredentialsProvider credentialsProvider = new KieCredentialsProvider(server, username, password);
 			Job job = new Job("Import Repository") {
 				@Override
 				protected IStatus run(final IProgressMonitor monitor) {
-					Repository localRepo = null;
+					Git git = null;
 					try {
 						EclipseGitProgressTransformer gitMonitor = new EclipseGitProgressTransformer(monitor);
-						localRepo = new FileRepository(localPath + File.separator + ".git");
 						CloneCommand cloneCmd = Git.cloneRepository().setURI(remotePath).setDirectory(new File(localPath))
 								.setProgressMonitor(gitMonitor).setCloneAllBranches(true).setTimeout(60)
 								.setCredentialsProvider(credentialsProvider)
@@ -121,25 +145,24 @@ public class ActionUtils {
 									}
 								});
 
-						cloneCmd.call();
-						localRepo.close();
-
-						RepositoryUtil util = org.eclipse.egit.ui.Activator.getDefault().getRepositoryUtil();
-						util.addConfiguredRepository(localRepo.getDirectory());
-						localRepo = null;
+						git = cloneCmd.call();
+						GitUtils.getRepositoryUtil().addConfiguredRepository(git.getRepository().getDirectory());
 					}
 					catch (Exception e) {
 						exceptionHandler.handleException(e);
 					}
 					finally {
-						if (localRepo != null)
-							localRepo.close();
+						if (git!=null) {
+							git.getRepository().close();
+							git = null;
+						}
 					}
 					return Status.OK_STATUS;
 				}
 			};
 			job.setUser(true);
 			job.schedule();
+			job.join();
 		}
 		catch (Exception e) {
 			exceptionHandler.handleException(e);

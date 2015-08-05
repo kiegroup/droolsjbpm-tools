@@ -22,9 +22,7 @@
  		</viewer>
 		<viewerContentBinding viewerId="org.kie.eclipse.navigator.view">
 			<includes>
-				<contentExtension
-					isRoot="true"
-					pattern="org.kie.eclipse.navigator.kieContent"/>
+				<contentExtension isRoot="true" pattern="org.kie.eclipse.navigator.kieContent"/>
 
 				<!-- content from eclipse UI Package Explorer -->
 				<contentExtension pattern="org.eclipse.jdt.java.ui.javaContent" />
@@ -274,4 +272,30 @@
           </enabledWhen>
     </page>
  </extension>
+ 
+    <extension
+         point="org.eclipse.ui.contexts">
+      <context
+            name="Kie Navigator Context"
+            description="Kie Navigator Context"
+            id="org.kie.eclipse.navigator.context">
+      </context>
+ 	</extension>
+ 	<!-- TODO: fix this mess
+	<extension point="org.eclipse.ui.commands">
+		<command name="Refresh Node"
+			defaultHandler="org.kie.eclipse.navigator.view.actions.RefreshAction"
+			description="Refreshes this node"
+			id="org.kie.eclipse.navigator.actions.refresh">
+		</command>
+	</extension>
+	
+	<extension point="org.eclipse.ui.bindings">
+		<key sequence="F5"
+			commandId="org.kie.eclipse.navigator.actions.refresh"
+			schemeId="org.kie.eclipse.navigator.scheme"
+			parentId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			contextId="org.kie.eclipse.navigator.context"/>
+	</extension>
+	-->
 </plugin>

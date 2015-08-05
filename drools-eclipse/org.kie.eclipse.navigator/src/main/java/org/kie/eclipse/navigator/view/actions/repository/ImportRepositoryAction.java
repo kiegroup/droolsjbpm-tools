@@ -1,6 +1,7 @@
 package org.kie.eclipse.navigator.view.actions.repository;
 
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.swt.widgets.Display;
 import org.kie.eclipse.navigator.view.actions.KieNavigatorAction;
 import org.kie.eclipse.navigator.view.content.IContainerNode;
 import org.kie.eclipse.navigator.view.content.RepositoryNode;
@@ -40,6 +41,7 @@ public class ImportRepositoryAction extends KieNavigatorAction {
 		
 		try {
 			ActionUtils.importRepository(this, container);
+			container.refresh();
 		}
 		catch (Exception e) {
 			e.printStackTrace();

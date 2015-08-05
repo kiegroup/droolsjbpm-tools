@@ -43,7 +43,20 @@ public abstract class ContainerNode<T extends IContainerNode<?>> extends Content
             return Collections.singletonList(error);
         }
 		if (handlerChildren!=null) {
-			children = updateChildren(children, createChildren());
+			// The Java Content Provider, which is included as a <contextExtension>
+			// in our Kie Navigator Viewer's content binding (see plugin.xml),
+			// will periodically (every 10 seconds or so) force a refresh of the
+			// entire viewer. This forces potentially many REST calls to the server
+			// to rebuild the entire tree. In order to avoid this, we set a Part
+			// Property on the Navigator to signal when a refresh was triggered
+			// as a result of a real change in the tree caused by user actions.
+			// The Part Property value is set to "true" in ContentNode.refresh()
+			// just before refreshing the Navigator viewer, and then back to "false"
+			// when done. This allows {@code #createChildren()} to be called only
+			// when necessary.
+			String internalRefresh = getNavigator().getPartProperty(INTERNAL_REFRESH_KEY);
+			if (children==null || Boolean.getBoolean(internalRefresh)==true)
+				children = updateChildren(children, createChildren());
 			return children;
 		}
 		return null;
@@ -100,7 +113,7 @@ public abstract class ContainerNode<T extends IContainerNode<?>> extends Content
 	@SuppressWarnings("unchecked")
 	public static List<? extends IContentNode<?>> updateChildren(List<? extends IContentNode<?>> children, List<? extends IContentNode<?>> newChildren) {
 		if (children==null)
-			return newChildren;
+			children = newChildren;
 		else {
 			List<IContentNode<?>> removed = new ArrayList<IContentNode<?>>();
 			Iterator<? extends IContentNode<?>> newIter = newChildren.iterator();

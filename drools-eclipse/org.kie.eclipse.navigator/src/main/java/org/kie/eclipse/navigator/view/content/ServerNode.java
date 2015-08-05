@@ -23,7 +23,6 @@ import org.eclipse.ui.navigator.CommonNavigator;
 import org.eclipse.ui.navigator.CommonViewer;
 import org.eclipse.wst.server.core.IServer;
 import org.kie.eclipse.IKieConstants;
-import org.kie.eclipse.IKieConstants;
 import org.kie.eclipse.navigator.Activator;
 import org.kie.eclipse.server.IKieOrganizationHandler;
 import org.kie.eclipse.server.IKieRepositoryHandler;
