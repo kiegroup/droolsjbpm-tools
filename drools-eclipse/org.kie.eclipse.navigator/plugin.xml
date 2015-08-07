@@ -89,17 +89,19 @@
 					</or>
 				</and>
 			</triggerPoints>
+			
 			<possibleChildren>
 				<instanceof value="org.kie.eclipse.navigator.view.content.IContentNode"/>
 			</possibleChildren>
 		</navigatorContent>
-		
+	
 		<actionProvider
 			class="org.kie.eclipse.navigator.view.actions.RefreshActionProvider"
 			appearsBefore="org.eclipse.ui.navigator.resources.PropertiesActionProvider"
+			overrides="org.eclipse.ui.navigator.resources.EditActions"
 			id="org.kie.eclipse.navigator.view.content.container">
 			<enablement>
-				<instanceof value="org.kie.eclipse.navigator.view.content.IContainerNode">
+				<instanceof value="org.kie.eclipse.navigator.view.content.IContentNode">
 				</instanceof>
 			</enablement>
 		</actionProvider>

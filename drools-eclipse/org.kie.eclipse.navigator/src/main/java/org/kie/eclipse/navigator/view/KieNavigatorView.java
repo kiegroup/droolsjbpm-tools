@@ -301,7 +301,7 @@ public class KieNavigatorView extends CommonNavigator implements IResourceChange
 		});
 		job.schedule();
 	}
-
+	
 	protected void refreshServerContent(final IServer server) {
 		// if (Trace.FINEST) {
 		// Trace.trace(Trace.STRING_FINEST, "Refreshing Content for server=" +
