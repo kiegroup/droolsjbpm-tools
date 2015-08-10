@@ -83,7 +83,7 @@ public class WorkingMemoryViewContentProvider extends DroolsDebugViewContentProv
     }
     
     private IVariable[] getWorkingMemoryElements(IJavaObject stackObj) throws DebugException {
-        IValue objects = DebugUtil.getValueByExpression("return iterateObjectsToList().toArray();", stackObj);
+        IValue objects = DebugUtil.getValueByExpression("return org.drools.eclipse.debug.DebugUtil.iterateObjectsToList(iterateObjects()).toArray();", stackObj);
         if (objects instanceof IJavaArray) {
             IJavaArray array = (IJavaArray) objects;
             List<MyJavaVariable> result = new ArrayList<MyJavaVariable>();
@@ -93,20 +93,6 @@ public class WorkingMemoryViewContentProvider extends DroolsDebugViewContentProv
             for ( int i = 0; i < vals.length; i++ ) {
                 result.add(new MyJavaVariable("[" + i + "]", vals[i]));
             }
-            
-//            objects = DebugUtil.getValueByExpression("return iterateNonDefaultEntryPointObjectsToList().toArray();", stackObj);
-//
-//            if (objects instanceof IJavaArray) {
-//                IJavaArray array = (IJavaArray) objects;
-//                vals = array.getValues();
-//                for ( int i = 0; i < vals.length; i++ ) {
-//                    vals = array.getValues();
-//                    name = name.replace(' ', '_');
-//                    result.add(new MyVariableWrapper(name,
-//                        new ObjectWrapper((IJavaObject) agendaGroup,
-//                            (IJavaVariable[]) activationsResult.toArray(new IJavaVariable[activationsResult.size()]))));
-//                }
-//            }
             
             return result.toArray(new IVariable[0]);
         }
