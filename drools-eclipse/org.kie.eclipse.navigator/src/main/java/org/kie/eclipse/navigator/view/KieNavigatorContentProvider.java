@@ -15,6 +15,11 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -48,11 +53,13 @@ public class KieNavigatorContentProvider implements ITreeContentProvider {
      * tree.
      */
     private Job loadElementJob = new Job(Messages.ServerContent_Job_Title) {
-        public boolean shouldRun() {
+        @Override
+		public boolean shouldRun() {
             return pendingUpdates.size() > 0;
         }
 
-        protected IStatus run(final IProgressMonitor monitor) {
+        @Override
+		protected IStatus run(final IProgressMonitor monitor) {
             monitor.beginTask(Messages.ServerContent_Job_Title, IProgressMonitor.UNKNOWN);
             try {
                 final List<IContainerNode<?>> updatedNodes = new ArrayList<IContainerNode<?>>(pendingUpdates.size());
@@ -72,7 +79,8 @@ public class KieNavigatorContentProvider implements ITreeContentProvider {
                     pendingUpdates.keySet().clear();
                 } else {
                     viewer.getTree().getDisplay().asyncExec(new Runnable() {
-                        public void run() {
+                        @Override
+						public void run() {
                             if (viewer.getTree().isDisposed()) {
                                 return;
                             }
@@ -90,14 +98,16 @@ public class KieNavigatorContentProvider implements ITreeContentProvider {
         }
     };
 
-    public void dispose() {
+    @Override
+	public void dispose() {
         viewer = null;
         loadElementJob.cancel();
         pendingUpdates.clear();
     }
     
 	private ServerToolTip tooltip = null;
-    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+    @Override
+	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         if (viewer instanceof TreeViewer) {
             this.viewer = (TreeViewer) viewer;
         } else {
@@ -106,9 +116,11 @@ public class KieNavigatorContentProvider implements ITreeContentProvider {
 		if( tooltip != null )
 			tooltip.deactivate();
 		tooltip = new ServerToolTip(((TreeViewer)viewer).getTree()) {
+			@Override
 			protected boolean isMyType(Object selected) {
 				return selected instanceof ServerNode;
 			}
+			@Override
 			protected void fillStyledText(Composite parent, StyledText sText, Object o) {
 				sText.setText("View JBoss-7 management details."); //$NON-NLS-1$
 			}
@@ -119,103 +131,70 @@ public class KieNavigatorContentProvider implements ITreeContentProvider {
 		tooltip.activate();
     }
 
-    public Object[] getElements(Object inputElement) {
+    @Override
+	public Object[] getElements(Object inputElement) {
         return getChildren(inputElement);
     }
 
     List<ServerNode> rootElements;
     
-    public Object[] getChildren(Object parentElement) {
-		List<Object> results = new ArrayList<Object>();
-    	if (parentElement instanceof KieNavigatorContentRoot) {
-    		List<? extends Object> children = ((KieNavigatorContentRoot)parentElement).getChildren();
-    		results.addAll(children);
-//    		if (rootElements==null) {
-//    			rootElements = new ArrayList<ServerNode>();
-//	    		for (IServer s : ServerCore.getServers()) {
-//	    			if (KieServer.isSupportedServer(s)) {
-//	    				s = new ServerProxy(s);
-//	    				ServerNode node = new ServerNode(s);
-//	    				rootElements.add(node);
-//	    				// not strictly necessary at this level,
-//	    				// see comment below.
-//	    				results.add(node.resolveContent());
-//	    			}
-//	    		}
-//    		}
-//    		else {
-//	    		for (IServer s : ServerCore.getServers()) {
-//	    			if (KieServer.isSupportedServer(s)) {
-//	    				boolean found = false;
-//	    				for (ServerNode n : rootElements) {
-//	    					if (n.getServer().getId().equals(s.getId())) {
-//	    						found = true;
-//	    						break;
-//	    					}
-//	    				}
-//	    				if (!found) {
-//	    					// found a new server
-//		    				s = new ServerProxy(s);
-//		    				ServerNode node = new ServerNode(s);
-//		    				rootElements.add(node);
-//	    				}
-//	    			}
-//	    		}
-//	    		List<ServerNode> removed = new ArrayList<ServerNode>();
-//	    		for (ServerNode n : rootElements) {
-//	    			if (KieServer.isSupportedServer(n.getServer())) {
-//						boolean found = false;
-//			    		for (IServer s : ServerCore.getServers()) {
-//			    			if (KieServer.isSupportedServer(s)) {
-//		    					if (n.getServer().getId().equals(s.getId())) {
-//		    						found = true;
-//		    						break;
-//		    					}
-//			    			}
-//			    		}
-//			    		if (!found)
-//			    			removed.add(n);
-//	    			}
-//	    		}
-//	    		for (ServerNode n : removed) {
-//	    			n.dispose();
-//	    		}
-//	    		rootElements.removeAll(removed);
-//	    		for (ServerNode n : rootElements) {
-//	    			results.add(n.resolveContent());
-//	    		}
-//    		}
-        } else
-        if (parentElement instanceof IContainerNode) {
-            IContainerNode<?> container = (IContainerNode<?>) parentElement;
-            if (pendingUpdates.containsKey(container)) {
-                return new Object[] {PENDING };
-            }
-            List<? extends Object> children = container.getChildren();
-            if (children == null) {
-                pendingUpdates.putIfAbsent(container, PENDING);
-                loadElementJob.schedule();
-                return new Object[] {PENDING };
-            }
-            for (Object node : children) {
-            	if (node instanceof IContentNode) {
-            		// Resolve the content of this node: this may or
-            		// may not be the node itself. This is currently
-            		// used only by IProjectNode, which may return
-            		// the workspace IProject itself. From the IProject
-            		// level down, we will delegate to the Project View
-            		// for node content and labels.
-            		node = ((IContentNode)node).resolveContent();
-            	}
-            	results.add(node);
-            }
-        }
-        return results.toArray();
-    }
+	@Override
+	public Object[] getChildren(Object parentElement) {
+		final List<Object> results = new ArrayList<Object>();
+		if (parentElement instanceof KieNavigatorContentRoot) {
+			List<? extends Object> children = ((KieNavigatorContentRoot) parentElement).getChildren();
+			results.addAll(children);
+		}
+		else if (parentElement instanceof IContainerNode) {
+			IContainerNode<?> container = (IContainerNode<?>) parentElement;
+			if (pendingUpdates.containsKey(container)) {
+				return new Object[] { PENDING };
+			}
+			List<? extends Object> children = container.getChildren();
+			if (children == null) {
+				pendingUpdates.putIfAbsent(container, PENDING);
+				loadElementJob.schedule();
+				return new Object[] { PENDING };
+			}
+			for (Object node : children) {
+				if (node instanceof IContentNode) {
+					// Resolve the content of this node: this may or
+					// may not be the node itself. This is currently
+					// used only by IProjectNode, which may return
+					// the workspace IProject itself. From the IProject
+					// level down, we will delegate to the Project View
+					// for node content and labels.
+					node = ((IContentNode) node).resolveContent();
+				}
+				results.add(node);
+			}
+		}
+		else if (parentElement instanceof IProject) {
+			// TODO: support GoInto actions for Projects
+			final IProject project = (IProject) parentElement;
+			if (project.isAccessible()) {
+				try {
+					project.accept(new IResourceVisitor() {
+						@Override
+						public boolean visit(IResource resource) throws CoreException {
+							if (resource!=project)
+								results.add(resource);
+							return !(resource instanceof IFolder) || resource==project;
+						}
+					});
+				}
+				catch (CoreException e) {
+					e.printStackTrace();
+				}
+			}			
+		}
+		return results.toArray();
+	}
 
-    public Object getParent(Object element) {
+    @Override
+	public Object getParent(Object element) {
         if (element instanceof IContentNode) {
-            Object parent = ((IContentNode<?>) element).getContainer();
+            Object parent = ((IContentNode<?>) element).getParent();
             if (parent == null) {
                 parent = ((IContentNode<?>) element).getServer();
             }
@@ -224,7 +203,8 @@ public class KieNavigatorContentProvider implements ITreeContentProvider {
         return null;
     }
 
-    public boolean hasChildren(Object element) {
+    @Override
+	public boolean hasChildren(Object element) {
         if (element instanceof IServer) {
             return true;
         } else if (element instanceof IContainerNode) {

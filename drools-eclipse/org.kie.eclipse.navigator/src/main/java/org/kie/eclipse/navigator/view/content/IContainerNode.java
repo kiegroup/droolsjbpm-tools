@@ -17,15 +17,8 @@ public interface IContainerNode<T extends IContainerNode<?>> extends IContentNod
     /**
      * @return the children of this container.
      */
-    List<? extends Object> getChildren();
+    List<? extends IContentNode<?>> getChildren();
     
-    /**
-     * Return the root node that holds Server information 
-     * 
-     * @return the root IContainerNode
-     */
-    IContainerNode<?> getRoot();
-
     /**
      * Loads the content of this container. This method is invoked by the
      * content provider if getChildren() returns null.

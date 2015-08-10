@@ -58,6 +58,8 @@ public class KieCredentialsProvider extends CredentialsProvider {
 			else if (item instanceof CredentialItem.Password)
 				passwordItem = (CredentialItem.Password) item;
 			else if (item instanceof CredentialItem.YesNoType) {
+				// The "Trusted Server Connection" preference is a string
+				// with values of either "always" or "never".
 				String trustedConnection = server.getPreference(
 						IKieConstants.PREF_SERVER_TRUSTED_CONNECTION,
 						MessageDialogWithToggle.NEVER);
@@ -77,6 +79,16 @@ public class KieCredentialsProvider extends CredentialsProvider {
 									Activator.getDefault().getPreferenceStore(),
 									server.getPreferenceName(IKieConstants.PREF_SERVER_TRUSTED_CONNECTION));
 							ar.set(dlg.getReturnCode() == IDialogConstants.YES_ID);
+							if (ar.get()) {
+								// if user said "Yes" then save the "Trusted Server Connection"
+								// preference - remember to convert the boolean toggle state
+								// to an "always" or "never" string!
+								server.putPreference(
+										IKieConstants.PREF_SERVER_TRUSTED_CONNECTION,
+										dlg.getToggleState() ?
+											MessageDialogWithToggle.ALWAYS :
+											MessageDialogWithToggle.NEVER);
+							}
 						}
 					});
 				}

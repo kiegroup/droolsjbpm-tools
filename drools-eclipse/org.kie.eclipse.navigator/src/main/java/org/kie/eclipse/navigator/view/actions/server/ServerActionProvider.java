@@ -10,9 +10,10 @@ public class ServerActionProvider extends KieNavigatorActionProvider implements 
 	public ServerActionProvider() {
 	}
 
-    public void init(ICommonActionExtensionSite aSite) {
+    @Override
+	public void init(ICommonActionExtensionSite aSite) {
         super.init(aSite);
         addAction(new CreateOrganizationAction(aSite.getStructuredViewer()));
-        addAction(new ShowPropertiesAction(aSite));
+//        addAction(new ShowPropertiesAction(aSite));
     }
 }

@@ -32,6 +32,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -43,10 +44,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.forms.widgets.Form;
@@ -68,14 +65,13 @@ import org.jboss.ide.eclipse.as.core.server.internal.JBossServer;
 import org.jboss.ide.eclipse.as.core.util.ServerConverter;
 import org.kie.eclipse.navigator.KieNavigatorContentRoot;
 import org.kie.eclipse.navigator.view.content.IContentNode;
+import org.kie.eclipse.navigator.view.utils.ViewUtils;
 
 /**
  * A view of servers, their modules, and status.
  */
 public class KieNavigatorView extends CommonNavigator implements IResourceChangeListener {
-	private static final String SERVERS_VIEW_CONTEXT = "org.eclipse.ui.serverViewScope";
-	private static final String SERVERS_VIEW_ID = "org.eclipse.wst.server.ui.ServersView";
-
+	private static final String KIE_NAVIGATOR_VIEW_CONTEXT = "org.kie.eclipse.navigator.context";
 	protected CommonViewer treeViewer;
 	private Control mainPage;
 	private Control noServersPage;
@@ -115,7 +111,7 @@ public class KieNavigatorView extends CommonNavigator implements IResourceChange
 		book.showPage(mainPage);
 
 		IContextService contextSupport = (IContextService) getSite().getService(IContextService.class);
-		contextSupport.activateContext(SERVERS_VIEW_CONTEXT);
+		contextSupport.activateContext(KIE_NAVIGATOR_VIEW_CONTEXT);
 		deferInitialization();
 	}
 	
@@ -142,6 +138,12 @@ public class KieNavigatorView extends CommonNavigator implements IResourceChange
 					item.setData("org.kie.navigator.content.node", element);
 				}
 			}
+
+			@Override
+			public ViewerComparator getComparator() {
+				// The ContentNodes will handle sorting 
+				return null;
+			}
 		};
 	}
 
@@ -165,7 +167,7 @@ public class KieNavigatorView extends CommonNavigator implements IResourceChange
 		hlink.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				// show Servers View
-				showServersView();
+				ViewUtils.showServersView();
 			}
 		});
 
@@ -259,7 +261,7 @@ public class KieNavigatorView extends CommonNavigator implements IResourceChange
 				try {
 					treeViewer = getCommonViewer();
 					getSite().setSelectionProvider(treeViewer);
-
+					
 					// init the tooltip
 					// ServerToolTip toolTip = new
 					// ServerToolTip(tableViewer.getTree());
@@ -299,7 +301,7 @@ public class KieNavigatorView extends CommonNavigator implements IResourceChange
 		});
 		job.schedule();
 	}
-
+	
 	protected void refreshServerContent(final IServer server) {
 		// if (Trace.FINEST) {
 		// Trace.trace(Trace.STRING_FINEST, "Refreshing Content for server=" +
@@ -380,7 +382,7 @@ public class KieNavigatorView extends CommonNavigator implements IResourceChange
 	}
 	
 	protected void addListener() {
-		// To enable the UI updating of servers and its childrens
+		// To enable the UI updating of servers and its children
 		serverResourceListener = new IServerLifecycleListener() {
 			public void serverAdded(IServer server) {
 				addServer(server);
@@ -551,22 +553,5 @@ public class KieNavigatorView extends CommonNavigator implements IResourceChange
 
 	protected void stopThread() {
 		stopAnimation = true;
-	}
-
-	public static boolean showServersView() {
-		IWorkbench wb = PlatformUI.getWorkbench();
-		IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
-		if (win == null)
-			return false;
-		IWorkbenchPage page = win.getActivePage();
-		if (page == null)
-			return false;
-		try {
-			page.showView(SERVERS_VIEW_ID, null, IWorkbenchPage.VIEW_CREATE);
-			page.showView(SERVERS_VIEW_ID, null, IWorkbenchPage.VIEW_ACTIVATE);
-			return true;
-		} catch (Exception e) {
-		}
-		return false;
 	}
 }

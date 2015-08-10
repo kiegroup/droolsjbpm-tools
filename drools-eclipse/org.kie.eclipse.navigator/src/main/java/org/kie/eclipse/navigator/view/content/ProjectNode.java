@@ -25,9 +25,9 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.widgets.Display;
 import org.kie.eclipse.server.IKieProjectHandler;
+import org.kie.eclipse.server.IKieResourceHandler;
 
 /**
  *
@@ -35,11 +35,11 @@ import org.kie.eclipse.server.IKieProjectHandler;
 public class ProjectNode extends ContainerNode<RepositoryNode> implements IResourceChangeListener {
 	
 	/**
-	 * @param container
+	 * @param parent
 	 * @param name
 	 */
-	protected ProjectNode(RepositoryNode container, IKieProjectHandler project) {
-		super(container, project);
+	protected ProjectNode(RepositoryNode parent, IKieProjectHandler project) {
+		super(parent, project);
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 	}
 
@@ -54,70 +54,76 @@ public class ProjectNode extends ContainerNode<RepositoryNode> implements IResou
 	@Override
 	public Object resolveContent() {
 		Object resource = getHandler().load();
-		if (resource!=null)
-			return resource;
-		return super.resolveContent();
+		if (resource==null)
+			resource = super.resolveContent();
+		
+		if (resource instanceof IProject) {
+			try {
+				((IProject)resource).setSessionProperty(IKieResourceHandler.RESOURCE_KEY, this);
+			}
+			catch (Exception e) {
+			}
+		}
+		return resource;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.kie.eclipse.navigator.view.content.ContentNode#equals(java.lang.Object)
-	 */
 	@Override
-	public boolean equals(Object obj) {
+	public void dispose() {
 		try {
-			ProjectNode other = (ProjectNode) obj;
-			return other.getName().equals(this.getName());
+			IProject project = (IProject) getHandler().getResource();
+			project.setSessionProperty(IKieResourceHandler.RESOURCE_KEY, null);
 		}
-		catch (Exception ex) {
+		catch (Exception e) {
 		}
-		return false;
+		super.dispose();
+        ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
 	}
 
 	@Override
 	public void resourceChanged(final IResourceChangeEvent event) {
-		// TODO: FIX THIS MESS!
-		// Figure out why we are getting multiple REMOVED events for the same IProject resource
-		// There should be only one!
-//		IResourceDelta delta = event.getDelta();
-//		if (delta!=null) {
-//			try {
-//				delta.accept(new IResourceDeltaVisitor() {
-//					@Override
-//					public boolean visit(IResourceDelta delta) throws CoreException {
-//						IResource resource = delta.getResource();
-//						if (resource instanceof IProject) {
-//							switch (delta.getKind()) {
-//							case IResourceDelta.REMOVED:
-//								IKieProjectHandler handler = (IKieProjectHandler) getHandler();
-//								if (resource==handler.getProject()) {
-//									File directory = handler.getDirectory();
-//									if (directory!=null && !directory.exists()) {
-//										// The actual server request to remove the project needs
-//										// to happen in the UI thread
-//										Display.getDefault().asyncExec(new Runnable() {
-//											@Override
-//											public void run() {
-//												try {
-//													handler.getDelegate().deleteProject(handler);
-//												}
-//												catch (IOException e) {
-//													e.printStackTrace();
-//												}
-//											}
-//										});
-//									}
-//								}
-//								return false;
-//							}
-//						}
-//						return true;
-//					}
-//					
-//				});
-//			}
-//			catch (CoreException e) {
-//				e.printStackTrace();
-//			}
-//		}
+		IResourceDelta delta = event.getDelta();
+		if (delta!=null) {
+			try {
+				delta.accept(new IResourceDeltaVisitor() {
+					@Override
+					public boolean visit(IResourceDelta delta) throws CoreException {
+						IResource resource = delta.getResource();
+						if (resource instanceof IProject) {
+							switch (delta.getKind()) {
+							case IResourceDelta.REMOVED:
+								final ProjectNode container = ProjectNode.this;
+								final IKieProjectHandler handler = (IKieProjectHandler) getHandler();
+								if (resource==handler.getResource()) {
+									handler.setResource(null);
+									File directory = handler.getDirectory();
+									if (directory!=null && !directory.exists()) {
+										// The actual server request to remove the project needs
+										// to happen in the UI thread
+										Display.getDefault().asyncExec(new Runnable() {
+											@Override
+											public void run() {
+												try {
+													handler.getDelegate().deleteProject(handler);
+													container.getParent().clearChildren();
+													refresh();
+												}
+												catch (IOException e) {
+													e.printStackTrace();
+												}
+											}
+										});
+									}
+								}
+							}
+						}
+						return true;
+					}
+					
+				});
+			}
+			catch (CoreException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }

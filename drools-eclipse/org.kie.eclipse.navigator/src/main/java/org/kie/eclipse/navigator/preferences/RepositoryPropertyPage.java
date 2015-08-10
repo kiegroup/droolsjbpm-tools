@@ -2,9 +2,11 @@ package org.kie.eclipse.navigator.preferences;
 
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.kie.eclipse.server.IKieRepositoryHandler;
+import org.kie.eclipse.server.IKieResourceHandler;
+import org.kie.eclipse.server.KieRepositoryHandler;
 import org.kie.eclipse.utils.PreferencesUtils;
 
-public class RepositoryPropertyPage extends AbstractKiePropertyPage {
+public class RepositoryPropertyPage extends AbstractKieJsonPropertyPage {
 	
 	@Override
 	protected void createFieldEditors() {
@@ -18,5 +20,9 @@ public class RepositoryPropertyPage extends AbstractKiePropertyPage {
 		addField(new StringFieldEditor("userName", "User Name", getFieldEditorParent()));
 		addField(new PasswordFieldEditor("password", "Password", getFieldEditorParent()));
 	}
-	
+
+	@Override
+	protected Class<? extends IKieResourceHandler> getResourceHandlerType() {
+		return KieRepositoryHandler.class;
+	}
 }

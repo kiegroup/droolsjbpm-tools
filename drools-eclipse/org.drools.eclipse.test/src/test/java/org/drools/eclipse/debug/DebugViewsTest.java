@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.drools.core.WorkingMemory;
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.impl.KnowledgeBaseImpl;
@@ -104,8 +105,8 @@ public class DebugViewsTest {
 
         Match activation = agendaGroups[0].getActivations()[0];
         assertEquals("ActivationCreator", activation.getRule().getName());
-        Entry[] parameters = ((StatefulKnowledgeSessionImpl)session).getActivationParameters(
-            ((org.drools.core.spi.Activation) activation).getActivationNumber());
+        Entry[] parameters = DebugUtil.getActivationParameters(
+            (StatefulKnowledgeSessionImpl)session, ((org.drools.core.spi.Activation) activation).getActivationNumber());
         assertEquals(1, parameters.length);
         assertEquals("o", parameters[0].getKey());
         assertEquals("String1", parameters[0].getValue());
@@ -123,10 +124,9 @@ public class DebugViewsTest {
     	StatefulKnowledgeSession session = ruleBase.newStatefulSession();
         session.insert("Test1");
         session.insert("Test2");
-        Object[] objects = ((StatefulKnowledgeSessionImpl)session).iterateObjectsToList().toArray();
-        assertEquals(2, objects.length);
-        assertTrue(("Test1".equals(objects[0]) && "Test2".equals(objects[1])) ||
-                   ("Test2".equals(objects[0]) && "Test1".equals(objects[1])));
+      Object[] objects = DebugUtil.iterateObjectsToList(((WorkingMemory)session).iterateObjects()).toArray();
+      assertEquals(2, objects.length);
+      assertTrue(("Test1".equals(objects[0]) && "Test2".equals(objects[1])) ||
+                 ("Test2".equals(objects[0]) && "Test1".equals(objects[1])));
     }
-    
 }

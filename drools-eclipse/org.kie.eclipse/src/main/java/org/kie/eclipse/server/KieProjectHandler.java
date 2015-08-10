@@ -14,12 +14,14 @@
 package org.kie.eclipse.server;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.egit.core.RepositoryCache;
 import org.eclipse.jgit.lib.Repository;
+import org.kie.eclipse.utils.GitUtils;
 
 /**
  *
@@ -41,22 +43,34 @@ public class KieProjectHandler extends KieResourceHandler implements IKieProject
 	public Object getResource() {
 		return project;
 	}
+	
+	@Override
+	public void setResource(Object resource) {
+		if (resource==null || resource instanceof IProject) {
+			project = (IProject) resource;
+		}
+	}
 
+	@Override
 	public Object load() {
 		if (project==null) {
 			Repository repository = (Repository) parent.load();
 			if (repository!=null) {
-				RepositoryCache repositoryCache = org.eclipse.egit.core.Activator.getDefault().getRepositoryCache();
-				
 				for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
 					if (project.getName().equals(name)) {
-						Repository projectRepo = repositoryCache.getRepository(project);
-						if (repository==projectRepo) {
-							this.project = project;
-							directory = new File(project.getLocation().toString());
-							break;
+						File directory = project.getLocation().toFile();
+						final Set<File> gitDirs = new HashSet<File>();
+						GitUtils.findGitDirsRecursive(directory.getParentFile(), gitDirs, false);
+						for (File dir : gitDirs) {
+							if (repository.getDirectory().equals(dir)) {
+								this.project = project;
+								this.directory = directory;
+								break;
+							}
 						}
 					}
+					if (this.project!=null)
+						break;
 				}
 			}
 		}
@@ -75,17 +89,35 @@ public class KieProjectHandler extends KieResourceHandler implements IKieProject
 		directory = null;
 	}
 
+	@Override
 	public List<? extends IKieResourceHandler> getChildren() throws Exception {
 		return null;
 	}
-	
+	   
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof KieProjectHandler) {
+			KieProjectHandler that = (KieProjectHandler) obj;
+			if (this.directory!=null) {
+				if (!this.directory.equals(that.directory))
+					return false;
+			}
+			else if (that.directory!=null)
+				return false;
+			
+			if (this.project!=null) {
+				if (!this.project.equals(that.project) || this.project.isOpen()!=that.project.isOpen())
+					return false;
+			}
+			else if (that.project!=null) {
+				return false;
+			}
+		}
+		return super.equals(obj);
+	}
+		
 	@Override
 	public File getDirectory() {
 		return directory;
-	}
-	
-	@Override
-	public IProject getProject() {
-		return project;
 	}
 }

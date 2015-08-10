@@ -16,6 +16,21 @@
 
 package org.drools.eclipse.debug;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.rule.Declaration;
+import org.drools.core.spi.Activation;
+import org.drools.core.util.index.LeftTupleList;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -47,6 +62,7 @@ import org.eclipse.jdt.debug.eval.ICompiledExpression;
 import org.eclipse.jdt.debug.eval.IEvaluationListener;
 import org.eclipse.jdt.debug.eval.IEvaluationResult;
 import org.eclipse.jdt.internal.debug.core.JDIDebugPlugin;
+import org.kie.api.runtime.rule.FactHandle;
 
 public class DebugUtil {
 
@@ -218,4 +234,53 @@ public class DebugUtil {
         }
     }
 
+    public static <T> List<T> iterateObjectsToList(Iterator<T> iterator) {
+        List<T> result = new ArrayList<T>();
+        while (iterator.hasNext()) {
+            result.add(iterator.next());
+        }
+        return result;
+    }
+    
+    public static Map.Entry[] getActivationParameters(StatefulKnowledgeSessionImpl session, long activationId) {
+        Activation[] activations = session.getAgenda().getActivations();
+        for (int i = 0; i < activations.length; i++) {
+            if (activations[i].getActivationNumber() == activationId) {
+                Map params = getActivationParameters(session, activations[i]);
+                return (Map.Entry[]) params.entrySet().toArray(new Map.Entry[params.size()]);
+            }
+        }
+        return new Map.Entry[0];
+    }
+
+    private static Map getActivationParameters(StatefulKnowledgeSessionImpl session, Activation activation) {
+        if (activation instanceof RuleAgendaItem) {
+            RuleAgendaItem ruleAgendaItem = (RuleAgendaItem)activation;
+            LeftTupleList tupleList = ruleAgendaItem.getRuleExecutor().getLeftTupleList();
+            Map result = new TreeMap();
+            int i = 0;
+            for (LeftTuple tuple = tupleList.getFirst(); tuple != null; tuple = (LeftTuple) tuple.getNext()) {
+                Map params = getActivationParameters(session, tuple);
+                result.put("Parameters set [" + i++ + "]", (Map.Entry[]) params.entrySet().toArray(new Map.Entry[params.size()]));
+            }
+            return result;
+        } else {
+            return getActivationParameters(session, activation.getTuple());
+        }
+    }
+
+    private static Map getActivationParameters(StatefulKnowledgeSessionImpl session, LeftTuple tuple) {
+        Map result = new HashMap();
+        Declaration[] declarations = ((RuleTerminalNode) tuple.getLeftTupleSink()).getDeclarations();
+
+        for (int i = 0; i < declarations.length; i++) {
+            FactHandle handle = tuple.get(declarations[i]);
+            if (handle instanceof InternalFactHandle) {
+                result.put(declarations[i].getIdentifier(),
+                           declarations[i].getValue(session,
+                                                    ((InternalFactHandle) handle).getObject()));
+            }
+        }
+        return result;
+    }
 }

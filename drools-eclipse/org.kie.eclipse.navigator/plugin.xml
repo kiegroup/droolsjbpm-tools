@@ -19,12 +19,10 @@
 		id="org.kie.common.navigator.viewer"
 		point="org.eclipse.ui.navigator.viewer">
 		<viewer viewerId="org.kie.eclipse.navigator.view">
-		</viewer>
+ 		</viewer>
 		<viewerContentBinding viewerId="org.kie.eclipse.navigator.view">
 			<includes>
-				<contentExtension
-					isRoot="true"
-					pattern="org.kie.eclipse.navigator.kieContent"/>
+				<contentExtension isRoot="true" pattern="org.kie.eclipse.navigator.kieContent"/>
 
 				<!-- content from eclipse UI Package Explorer -->
 				<contentExtension pattern="org.eclipse.jdt.java.ui.javaContent" />
@@ -32,17 +30,24 @@
 				<contentExtension pattern="org.eclipse.jdt.java.ui.javaLinkHelper" />	
 
 				<!-- content from eclipse UI Project Viewer org.eclipse.ui.navigator.ProjectExplorer -->
-				<contentExtension
-					isRoot="false"
-					pattern="org.eclipse.ui.navigator.resourceContent"/>
-				
+				<contentExtension isRoot="false" pattern="org.eclipse.ui.navigator.resourceContent" />		       	      
+				<contentExtension isRoot="false" pattern="org.eclipse.ui.navigator.resources.filters.*"/>
+				<contentExtension isRoot="false" pattern="org.eclipse.ui.navigator.resources.linkHelper"/>
+				<contentExtension isRoot="false" pattern="org.eclipse.ui.navigator.resources.workingSets"/>
 			</includes>
 		</viewerContentBinding>
 
 		<viewerActionBinding viewerId="org.kie.eclipse.navigator.view">
 			<includes>
 				<actionExtension pattern="org.kie.eclipse.navigator.view.content.*"/>
+				<actionExtension pattern="org.eclipse.ui.navigator.resources.*" />
 			</includes>
+			<excludes>
+				<actionExtension pattern="org.eclipse.ui.navigator.resources.WorkingSetActions" />
+				<actionExtension pattern="org.eclipse.ui.navigator.resources.GoIntoActions" />
+				<actionExtension pattern="org.eclipse.jdt.ui.navigator.resources.GoIntoActions" />
+				<actionExtension pattern="org.eclipse.ui.navigator.resources.PortingActions" />
+			</excludes>
 		</viewerActionBinding>
 	</extension>
 	
@@ -84,35 +89,26 @@
 					</or>
 				</and>
 			</triggerPoints>
+			
 			<possibleChildren>
 				<instanceof value="org.kie.eclipse.navigator.view.content.IContentNode"/>
 			</possibleChildren>
-			
-			<!--
-			<actionProvider
-				class="org.kie.eclipse.navigator.view.actions.RefreshActionProvider"
-				id="org.navigator.view.content.container">
-				<enablement>
-					<instanceof value="org.kie.eclipse.navigator.view.content.IContainerNode">
-					</instanceof>
-				</enablement>
-			</actionProvider>
-			-->
-			
-			<!-- TODO: add other actionProviders here for different node types -->
 		</navigatorContent>
-		
+	
 		<actionProvider
 			class="org.kie.eclipse.navigator.view.actions.RefreshActionProvider"
+			appearsBefore="org.eclipse.ui.navigator.resources.PropertiesActionProvider"
+			overrides="org.eclipse.ui.navigator.resources.EditActions"
 			id="org.kie.eclipse.navigator.view.content.container">
 			<enablement>
-				<instanceof value="org.kie.eclipse.navigator.view.content.IContainerNode">
+				<instanceof value="org.kie.eclipse.navigator.view.content.IContentNode">
 				</instanceof>
 			</enablement>
 		</actionProvider>
 		
 		<actionProvider
 			class="org.kie.eclipse.navigator.view.actions.server.ServerActionProvider"
+			appearsBefore="org.eclipse.ui.navigator.resources.PropertiesActionProvider"
 			id="org.kie.eclipse.navigator.view.content.server">
 			<enablement>
 				<instanceof value="org.kie.eclipse.navigator.view.content.ServerNode">
@@ -122,6 +118,7 @@
 		
 		<actionProvider
 			class="org.kie.eclipse.navigator.view.actions.organization.OrganizationActionProvider"
+			appearsBefore="org.eclipse.ui.navigator.resources.PropertiesActionProvider"
 			id="org.kie.eclipse.navigator.view.content.organization">
 			<enablement>
 				<instanceof value="org.kie.eclipse.navigator.view.content.OrganizationNode">
@@ -131,6 +128,7 @@
 		
 		<actionProvider
 			class="org.kie.eclipse.navigator.view.actions.repository.RepositoryActionProvider"
+			appearsBefore="org.eclipse.ui.navigator.resources.PropertiesActionProvider"
 			id="org.kie.eclipse.navigator.view.content.repository">
 			<enablement>
 				<instanceof value="org.kie.eclipse.navigator.view.content.RepositoryNode">
@@ -140,6 +138,7 @@
 		
 		<actionProvider
 			class="org.kie.eclipse.navigator.view.actions.project.ProjectActionProvider"
+			appearsBefore="org.eclipse.ui.navigator.resources.PropertiesActionProvider"
 			id="org.kie.eclipse.navigator.view.content.project">
 			<enablement>
 				<instanceof value="org.kie.eclipse.navigator.view.content.ProjectNode">
@@ -163,18 +162,44 @@
 			serverId="org.jboss.ide.eclipse.as.71">
 		</containerBinding>
 	</extension>
+	
+  <extension
+        point="org.eclipse.core.expressions.propertyTesters">
+     <propertyTester
+           id="org.eclipse.kie.navigator.ResourcePropertyTester"
+           class="org.eclipse.kie.navigator.ResourcePropertyTester"
+           namespace="org.eclipse.kie.navigator"
+           properties="contentNode"
+           type="org.eclipse.core.resources.IProject">
+     </propertyTester>
+  </extension>
+	
  <extension
        point="org.eclipse.ui.propertyPages">
     <page
           class="org.kie.eclipse.navigator.preferences.ServerPropertyPage"
           id="org.kie.eclipse.navigator.serverPropertyPage"
+          icon="icons/server_started.gif"
           name="Kie Server">
           <enabledWhen>
+            <or>
               <instanceof
                   value="org.kie.eclipse.navigator.view.content.ServerNode">
               </instanceof>
+              <instanceof
+                  value="org.kie.eclipse.navigator.view.content.OrganizationNode">
+              </instanceof>
+              <instanceof
+                  value="org.kie.eclipse.navigator.view.content.RepositoryNode">
+              </instanceof>
+              <instanceof
+                  value="org.kie.eclipse.navigator.view.content.ProjectNode">
+              </instanceof>
+			  <adapt type="org.eclipse.core.resources.IProject" >
+				<test property="org.eclipse.kie.navigator.contentNode" value="org.kie.eclipse.navigator.view.content.ProjectNode"/>
+ 			  </adapt>
+            </or>
           </enabledWhen>
-          
     </page>
  </extension>
 
@@ -183,11 +208,24 @@
     <page
           class="org.kie.eclipse.navigator.preferences.OrganizationPropertyPage"
           id="org.kie.eclipse.navigator.organizationPropertyPage"
+          category="org.kie.eclipse.navigator.serverPropertyPage"
+          icon="icons/organization.gif"
           name="Organizational Unit">
           <enabledWhen>
+            <or>
               <instanceof
                   value="org.kie.eclipse.navigator.view.content.OrganizationNode">
               </instanceof>
+              <instanceof
+                  value="org.kie.eclipse.navigator.view.content.RepositoryNode">
+              </instanceof>
+              <instanceof
+                  value="org.kie.eclipse.navigator.view.content.ProjectNode">
+              </instanceof>
+			  <adapt type="org.eclipse.core.resources.IProject" >
+				<test property="org.eclipse.kie.navigator.contentNode" value="org.kie.eclipse.navigator.view.content.ProjectNode"/>
+ 			  </adapt>
+            </or>
           </enabledWhen>
     </page>
  </extension>
@@ -197,11 +235,21 @@
     <page
           class="org.kie.eclipse.navigator.preferences.RepositoryPropertyPage"
           id="org.kie.eclipse.navigator.repositoryPropertyPage"
+          category="org.kie.eclipse.navigator.organizationPropertyPage"
+          icon="icons/repository.gif"
           name="Repository">
           <enabledWhen>
+            <or>
               <instanceof
                   value="org.kie.eclipse.navigator.view.content.RepositoryNode">
               </instanceof>
+              <instanceof
+                  value="org.kie.eclipse.navigator.view.content.ProjectNode">
+              </instanceof>
+			  <adapt type="org.eclipse.core.resources.IProject" >
+				<test property="org.eclipse.kie.navigator.contentNode" value="org.kie.eclipse.navigator.view.content.ProjectNode"/>
+ 			  </adapt>
+            </or>
           </enabledWhen>
     </page>
  </extension>
@@ -211,12 +259,45 @@
     <page
           class="org.kie.eclipse.navigator.preferences.ProjectPropertyPage"
           id="org.kie.eclipse.navigator.projectPropertyPage"
+          category="org.kie.eclipse.navigator.repositoryPropertyPage"
+          icon="icons/project.gif"
           name="Project">
           <enabledWhen>
+            <or>
               <instanceof
                   value="org.kie.eclipse.navigator.view.content.ProjectNode">
               </instanceof>
+			  <adapt type="org.eclipse.core.resources.IProject" >
+				<test property="org.eclipse.kie.navigator.contentNode" value="org.kie.eclipse.navigator.view.content.ProjectNode"/>
+ 			  </adapt>
+            </or>
           </enabledWhen>
     </page>
  </extension>
+ 
+    <extension
+         point="org.eclipse.ui.contexts">
+      <context
+            name="Kie Navigator Context"
+            description="Kie Navigator Context"
+            id="org.kie.eclipse.navigator.context">
+      </context>
+ 	</extension>
+ 	<!-- TODO: fix this mess
+	<extension point="org.eclipse.ui.commands">
+		<command name="Refresh Node"
+			defaultHandler="org.kie.eclipse.navigator.view.actions.RefreshAction"
+			description="Refreshes this node"
+			id="org.kie.eclipse.navigator.actions.refresh">
+		</command>
+	</extension>
+	
+	<extension point="org.eclipse.ui.bindings">
+		<key sequence="F5"
+			commandId="org.kie.eclipse.navigator.actions.refresh"
+			schemeId="org.kie.eclipse.navigator.scheme"
+			parentId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			contextId="org.kie.eclipse.navigator.context"/>
+	</extension>
+	-->
 </plugin>

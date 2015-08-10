@@ -13,6 +13,7 @@ public interface IKieConstants {
 	public static final String PREF_SERVER_TRUSTED_CONNECTION = "ServerTrustedConnection";
 	public static final String PREF_SERVER_KIE_APPLICATION_NAME = "ServerKieApplicationName";
 	public static final String PREF_PATH_SEPARATOR = "|";
+	public static final String PREF_REMOTE_TIMEOUT = "RemoteTimeout";
 	public static final String CANONICAL_NAME_PATTERN = "[^A-Za-z0-9_.,]";
 	public static final String CANONICAL_NAME_REPLACEMENT = "_";
 	public final static String KIE_SERVICE_IMPL_ID = "org.kie.eclipse.serviceImpl";

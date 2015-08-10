@@ -27,20 +27,25 @@ import org.kie.eclipse.server.IKieResourceHandler;
 public class OrganizationNode extends ContainerNode<ServerNode> {
 	
 	/**
-	 * @param container
+	 * @param parent
 	 * @param name
 	 */
-	protected OrganizationNode(ServerNode container, IKieOrganizationHandler organization) {
-		super(container, organization);
+	protected OrganizationNode(ServerNode parent, IKieOrganizationHandler organization) {
+		super(parent, organization);
 	}
 	
+	@Override
 	protected List<? extends IContentNode<?>> createChildren() {
+		clearHandlerChildren();
+		load();
 		List<RepositoryNode> children = new ArrayList<RepositoryNode>();
-		Iterator<? extends IKieResourceHandler> iter = handlerChildren.iterator();
-		while (iter.hasNext()) {
-			IKieResourceHandler h = iter.next();
-			if (h instanceof IKieRepositoryHandler)
-				children.add(new RepositoryNode(this,(IKieRepositoryHandler)h));
+		if (handlerChildren!=null) {
+			Iterator<? extends IKieResourceHandler> iter = handlerChildren.iterator();
+			while (iter.hasNext()) {
+				IKieResourceHandler h = iter.next();
+				if (h instanceof IKieRepositoryHandler)
+					children.add(new RepositoryNode(this,(IKieRepositoryHandler)h));
+			}
 		}
 		return children;
 	}
@@ -48,19 +53,5 @@ public class OrganizationNode extends ContainerNode<ServerNode> {
 	@Override
 	public boolean isResolved() {
 		return true;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.kie.eclipse.navigator.view.content.ContentNode#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		try {
-			OrganizationNode other = (OrganizationNode) obj;
-			return this.getName().equals(other.getName());
-		}
-		catch (Exception ex) {
-		}
-		return false;
 	}
 }

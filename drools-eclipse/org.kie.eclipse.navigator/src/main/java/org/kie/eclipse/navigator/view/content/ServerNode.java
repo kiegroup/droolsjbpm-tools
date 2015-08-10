@@ -23,7 +23,6 @@ import org.eclipse.ui.navigator.CommonNavigator;
 import org.eclipse.ui.navigator.CommonViewer;
 import org.eclipse.wst.server.core.IServer;
 import org.kie.eclipse.IKieConstants;
-import org.kie.eclipse.IKieConstants;
 import org.kie.eclipse.navigator.Activator;
 import org.kie.eclipse.server.IKieOrganizationHandler;
 import org.kie.eclipse.server.IKieRepositoryHandler;
@@ -50,8 +49,11 @@ public class ServerNode extends ContainerNode implements IPropertyChangeListener
 		Activator.getDefault().getPreferenceStore().addPropertyChangeListener(this);
 	}
 	
+	@Override
 	protected List<? extends IContentNode<?>> createChildren() {
-		List children = new ArrayList();
+		clearHandlerChildren();
+		load();
+		List<IContentNode<?>> children = new ArrayList<IContentNode<?>>();
 		Iterator<? extends IKieResourceHandler> iter = handlerChildren.iterator();
 		while (iter.hasNext()) {
 			IKieResourceHandler h = iter.next();
@@ -66,21 +68,25 @@ public class ServerNode extends ContainerNode implements IPropertyChangeListener
 		return children;
 	}
 
-    public IServer getServer() {
+    @Override
+	public IServer getServer() {
         return server;
     }
 
+	@Override
 	public CommonNavigator getNavigator() {
 		return navigator;
 	}
 	
+	@Override
 	public IKieResourceHandler getHandler() {
     	 if (handler==null) {
     		 handler = new KieServerHandler(server);
     	 }
     	 return handler;
     }
-    public String getRuntimeId() {
+    @Override
+	public String getRuntimeId() {
     	return getHandler().getRuntimeId();
     }
     
@@ -100,11 +106,13 @@ public class ServerNode extends ContainerNode implements IPropertyChangeListener
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		try {
-			ServerNode other = (ServerNode)obj;
-			return other.getServer().getId().equals(this.getServer().getId());
-		}
-		catch (Exception ex) {
+		if (obj instanceof ServerNode) {
+			try {
+				ServerNode other = (ServerNode)obj;
+				return other.getServer().getId().equals(this.getServer().getId());
+			}
+			catch (Exception ex) {
+			}
 		}
 		return false;
 	}

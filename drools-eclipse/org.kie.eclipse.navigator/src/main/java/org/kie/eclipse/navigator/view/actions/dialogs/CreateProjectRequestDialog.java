@@ -1,5 +1,9 @@
 package org.kie.eclipse.navigator.view.actions.dialogs;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -36,15 +40,22 @@ public class CreateProjectRequestDialog extends AbstractKieRequestDialog {
 		super(shell, "Project", new IKieRequestValidator() {
 			@Override
 			public String isValid(JsonObject object) {
+				final IWorkspaceRoot wsr = ResourcesPlugin.getWorkspace().getRoot();
 				JsonValue jv;
 				jv = object.get("name");
 				String name = jv==null ? null : jv.asString();
-				if (name!=null && !name.isEmpty()) {
+				if (name!=null && !name.trim().isEmpty()) {
+					name = name.trim();
 					try {
 						for (IKieProjectHandler p : repository.getProjects()) {
 							if (p.getName().equals(name))
-								return "Project '"+name+"' already exists in this Repository";
+								return "Project '"+name+"' already exists in Repository";
 						}
+						IProject project = wsr.getProject(name);
+						if (project.exists()) {
+							return "Project '"+name+"' already exists in Workspace";
+						}
+
 					}
 					catch (Exception e) {
 					}

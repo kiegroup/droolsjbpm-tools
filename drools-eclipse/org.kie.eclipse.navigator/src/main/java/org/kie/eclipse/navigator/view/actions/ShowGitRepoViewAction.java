@@ -1,11 +1,9 @@
 package org.kie.eclipse.navigator.view.actions;
 
 import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.jgit.lib.Repository;
 import org.kie.eclipse.navigator.view.content.IContainerNode;
+import org.kie.eclipse.navigator.view.utils.ViewUtils;
 
 public class ShowGitRepoViewAction extends KieNavigatorAction {
 	
@@ -16,27 +14,17 @@ public class ShowGitRepoViewAction extends KieNavigatorAction {
 	}
 	
 	public ShowGitRepoViewAction(ISelectionProvider selectionProvider) {
-		this(selectionProvider, "Show Git Repository View");
+		this(selectionProvider, "Show in Git Repository View");
 	}
 
+	@Override
 	public void run() {
         IContainerNode<?> container = getContainer();
         if (container==null)
         	return;
-        
-		IWorkbench wb = PlatformUI.getWorkbench();
-		IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
-		if (win==null)
-			return;
-		IWorkbenchPage page = win.getActivePage();
-		if (page==null)
-			return;
-		try {
-			page.showView(GIT_REPO_VIEW_ID, null, IWorkbenchPage.VIEW_CREATE);
-			page.showView(GIT_REPO_VIEW_ID, null,  IWorkbenchPage.VIEW_ACTIVATE);
-			return;
-		}
-		catch (Exception e) {}
+
+        Repository repository = (Repository) container.getHandler().getResource();
+		ViewUtils.showGitRepositoriesView(repository);
 		return;
     }
 }

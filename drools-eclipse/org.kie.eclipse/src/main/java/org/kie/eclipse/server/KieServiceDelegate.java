@@ -238,7 +238,7 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 					pm.done();
 					System.out.println(
 							"\n----------------------------------\n"+
-							"Job "+jobId+" completed in "+(stopTime - startTime) / 1000.0+" sec\n"+
+							"Job "+jobId+"\n"+title+"\ncompleted in "+(stopTime - startTime) / 1000.0+" sec\n"+
 							"Status: " + ar.get()+
 							"\n----------------------------------\n");
 				}

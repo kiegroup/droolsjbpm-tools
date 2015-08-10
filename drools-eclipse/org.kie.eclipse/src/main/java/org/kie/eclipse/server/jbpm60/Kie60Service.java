@@ -329,6 +329,7 @@ public class Kie60Service extends KieServiceDelegate {
 
 	@Override
 	public void updateRepository(String oldName, IKieRepositoryHandler repository) throws IOException {
+		/* TODO: This is not yet supported
 		JsonObject properties = new JsonObject(repository.getProperties());
 		// remove illegal properties
 		properties.remove("requestType");
@@ -348,10 +349,12 @@ public class Kie60Service extends KieServiceDelegate {
 			deleteJob(jobId);
 			throw new IOException("Request to update Repository '"+repository.getName()+"' was canceled");
 		}
+		*/
 	}
 
 	@Override
 	public void updateProject(String oldName, IKieProjectHandler project) throws IOException {
+		/* TODO: This is not yet supported
 		String jobId = httpPost("repositories/" + project.getParent().getName() + "/projects/", project.getProperties());
 		try {
 			String status = getJobStatus(jobId, "Updating Project '"+project.getName()+"'");
@@ -366,6 +369,7 @@ public class Kie60Service extends KieServiceDelegate {
 			deleteJob(jobId);
 			throw new IOException("Request to update Project '"+project.getName()+"' was canceled");
 		}
+		*/
 	}
 
 	public void mavenCompile(IKieProjectHandler project, JsonObject params) throws IOException {

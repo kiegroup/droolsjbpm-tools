@@ -14,7 +14,7 @@ public class OrganizationActionProvider extends KieNavigatorActionProvider {
 		addAction(new AddRepositoryAction(aSite.getStructuredViewer()));
 		addAction(new CreateRepositoryAction(aSite.getStructuredViewer()));
 		addAction(new DeleteOrganizationAction(aSite.getStructuredViewer()));
-        addAction(new ShowPropertiesAction(aSite));
+//        addAction(new ShowPropertiesAction(aSite));
 	}
 
 }

@@ -27,6 +27,7 @@ public class DeleteProjectAction extends KieNavigatorAction {
 		if (doit) {
             try {
             	delegate.deleteProject(project);
+            	container.getParent().clearChildren();
             	refreshViewer(container.getParent());
             }
             catch (Exception e) {

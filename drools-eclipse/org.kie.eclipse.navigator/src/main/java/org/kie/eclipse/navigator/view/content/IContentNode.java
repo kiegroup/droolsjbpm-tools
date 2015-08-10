@@ -15,22 +15,18 @@ import org.eclipse.ui.navigator.CommonNavigator;
 import org.eclipse.wst.server.core.IServer;
 import org.kie.eclipse.server.IKieResourceHandler;
 
-public interface IContentNode<T extends IContainerNode<?>> extends IAdaptable {
+public interface IContentNode<T extends IContainerNode<?>> extends IAdaptable, Comparable {
 
+	public final static String INTERNAL_REFRESH_KEY = "org.kie.eclipse.navigator.property.internalRefresh";
     /**
      * @return returns the server containing this node.
      */
     IServer getServer();
 
     /**
-     * @return the resource containing this node, if any.
-     */
-    IContainerNode getParent();
-
-    /**
      * @return the containing node.
      */
-    T getContainer();
+    IContainerNode<?> getParent();
 
     /**
      * @return the name of this node.
@@ -56,4 +52,6 @@ public interface IContentNode<T extends IContainerNode<?>> extends IAdaptable {
     IContainerNode<?> getRoot();
     IKieResourceHandler getHandler();
     CommonNavigator getNavigator();
+    void refresh();
+	void handleException(Throwable e);
 }

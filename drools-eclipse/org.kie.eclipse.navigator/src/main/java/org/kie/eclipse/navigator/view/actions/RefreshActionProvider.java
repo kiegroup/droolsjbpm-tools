@@ -7,41 +7,37 @@
  * 
  * Contributors: 
  * Red Hat, Inc. - initial API and implementation 
- ******************************************************************************/ 
+ ******************************************************************************/
 package org.kie.eclipse.navigator.view.actions;
 
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.ui.internal.WorkbenchMessages;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
-import org.kie.eclipse.navigator.view.content.IContainerNode;
+import org.eclipse.ui.navigator.ICommonMenuConstants;
 
 /**
  * Provides a refresh action for IContainer nodes.
  */
-@SuppressWarnings("restriction")
 public class RefreshActionProvider extends KieNavigatorActionProvider {
 
-    public RefreshActionProvider() {
-    }
+	private RefreshAction refreshAction;
+	
+	public RefreshActionProvider() {
+	}
 
-    public void init(ICommonActionExtensionSite aSite) {
-        super.init(aSite);
-        addAction(new RefreshAction(aSite.getStructuredViewer()));
-    }
+	@Override
+	public void init(ICommonActionExtensionSite aSite) {
+		super.init(aSite);
+		refreshAction = new RefreshAction(aSite.getViewSite().getSelectionProvider());
+	}
 
-    private class RefreshAction extends KieNavigatorAction {
+    @Override
+	public void fillActionBars(IActionBars actionBars) {
+		actionBars.setGlobalActionHandler(refreshAction.getId(), refreshAction);
+	}
 
-        public RefreshAction(ISelectionProvider selectionProvider) {
-            super(selectionProvider, WorkbenchMessages.Workbench_refresh);
-        }
-
-        public void run() {
-            IContainerNode<?> container = getContainer();
-            if (container==null)
-            	return;
-            
-            refreshViewer(container);
-        }
-
+	@Override
+	public void fillContextMenu(IMenuManager menu) {
+		menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, refreshAction);
     }
 }

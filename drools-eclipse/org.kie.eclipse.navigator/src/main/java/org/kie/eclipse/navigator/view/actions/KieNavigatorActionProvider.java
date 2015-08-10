@@ -18,7 +18,8 @@ public class KieNavigatorActionProvider extends CommonActionProvider {
 		actions.add(action);
 	}
 
-    public void fillContextMenu(IMenuManager menu) {
+    @Override
+	public void fillContextMenu(IMenuManager menu) {
     	for (IKieNavigatorAction action : actions) {
     		action.calculateEnabled();
 //    		if (action.isEnabled())
@@ -26,7 +27,8 @@ public class KieNavigatorActionProvider extends CommonActionProvider {
     	}
     }
 
-    public void dispose() {
+    @Override
+	public void dispose() {
     	for (IKieNavigatorAction action : actions) {
         	action.dispose();
         }

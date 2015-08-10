@@ -15,6 +15,7 @@ public class KieNavigatorAction extends SelectionProviderAction implements IKieN
 		super(provider, text);
 	}
 
+	@Override
 	public void calculateEnabled() {
 		setEnabled(isEnabled());
 	}
@@ -34,17 +35,12 @@ public class KieNavigatorAction extends SelectionProviderAction implements IKieN
 		return getContainer().getHandler().getDelegate();
 	}
 
-	protected void refreshViewer(final IContainerNode<?> container) {
-		Display.getDefault().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				container.clearChildren();
-				container.getNavigator().getCommonViewer().refresh(container);
-			}
-		});
+	protected static void refreshViewer(final IContainerNode<?> container) {
+		container.clearChildren();
+		container.refresh();
 	}
 
-	protected Shell getShell() {
+	protected static Shell getShell() {
 		return Display.getDefault().getActiveShell();
 	}
 

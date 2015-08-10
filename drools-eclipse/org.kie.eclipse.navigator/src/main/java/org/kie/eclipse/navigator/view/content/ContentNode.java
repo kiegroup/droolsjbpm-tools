@@ -10,6 +10,9 @@
  ******************************************************************************/ 
 package org.kie.eclipse.navigator.view.content;
 
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.navigator.CommonNavigator;
 import org.eclipse.wst.server.core.IServer;
 import org.kie.eclipse.server.IKieResourceHandler;
@@ -18,45 +21,51 @@ public abstract class ContentNode<T extends IContainerNode<?>> implements IConte
 
     protected IKieResourceHandler handler;
     protected IContainerNode<?> parent;
-    protected T container;
     protected final String name;
 
     protected ContentNode(String name) {
         this.parent = null;
-        this.container = null;
        	this.name = name;
     }
 
-    protected ContentNode(T container, IKieResourceHandler handler) {
-        this.parent = container instanceof IContainerNode ?
-        		(IContainerNode<?>) container :
-        			(container==null ? null : container.getParent());
-        this.container = container;
+    protected ContentNode(T parent, IKieResourceHandler handler) {
+        this.parent = parent;
         this.name = handler.getName();
         this.handler = handler;
     }
 
-    public IContainerNode<?> getParent() {
+    @Override
+	public IContainerNode<?> getParent() {
         return parent;
     }
 
-    public T getContainer() {
-        return container;
-    }
-
-    public String getName() {
+    @Override
+	public String getName() {
         return name;
     }
 
-    public IServer getServer() {
+    @Override
+	public IServer getServer() {
+    	if (parent==null)
+    		return ((ServerNode)this).server;
         return getRoot().getServer();
     }
 
+	@Override
 	public CommonNavigator getNavigator() {
-		return getRoot().getNavigator();
+		try {
+	    	if (parent==null)
+	    		return ((ServerNode)this).navigator;
+			return getRoot().getNavigator();
+		}
+		catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return null;
 	}
 	
-    public IContainerNode<?> getRoot() {
+    @Override
+	public IContainerNode<?> getRoot() {
     	if (parent==null)
     		return (IContainerNode)this;
         return parent.getRoot();
@@ -66,29 +75,33 @@ public abstract class ContentNode<T extends IContainerNode<?>> implements IConte
     	return getRoot().getRuntimeId();
     }
     
-    public void dispose() {
-        container = null;
-        parent = null;
+    @Override
+	public void dispose() {
+//        parent = null;
         if (handler!=null) {
         	handler.dispose();
         	handler = null;
         }
     }
 
-    public IKieResourceHandler getHandler() {
+    @Override
+	public IKieResourceHandler getHandler() {
     	 return handler;
     }
     
-    public boolean isResolved() {
-       	return getHandler().isLoaded();
+    @Override
+	public boolean isResolved() {
+       	return getHandler()!=null && getHandler().isLoaded();
     }
     
-    public Object resolveContent() {
+    @Override
+	public Object resolveContent() {
     	getHandler().load();
     	return this;
     }
 
-    public Object getAdapter(Class adapter) {
+    @Override
+	public Object getAdapter(Class adapter) {
 		if (adapter==IKieResourceHandler.class) {
 			return getHandler();
 		}
@@ -96,5 +109,65 @@ public abstract class ContentNode<T extends IContainerNode<?>> implements IConte
     }
     
 	@Override
-	public abstract boolean equals(Object obj);
+	public boolean equals(Object obj) {
+		if (obj instanceof IContentNode) {
+			try {
+				IContentNode<?> other = (IContentNode<?>)obj;
+				return other.getName().equals(this.getName());
+			}
+			catch (Exception ex) {
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public int compareTo(Object arg0) {
+		if (arg0 instanceof RepositoryNode) {
+			if (this instanceof RepositoryNode)
+				return getName().compareTo(((RepositoryNode)arg0).getName());
+			return 1;
+		}
+		if (this instanceof RepositoryNode) {
+			if (arg0 instanceof RepositoryNode)
+				return getName().compareTo(((RepositoryNode)arg0).getName());
+			return -1;
+		}
+		if (arg0 instanceof IContentNode) {
+			return getName().compareTo(((IContentNode)arg0).getName());
+		}
+		return 0;
+	}
+
+	@Override
+	public synchronized void refresh() {
+		final CommonNavigator navigator = getNavigator();
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					navigator.setPartProperty(INTERNAL_REFRESH_KEY, Boolean.toString(true));
+					navigator.getCommonViewer().refresh(getRoot());
+				}
+				finally {
+					navigator.setPartProperty(INTERNAL_REFRESH_KEY, Boolean.toString(false));
+				}
+			}
+		});
+	}
+
+	protected static Shell getShell() {
+		return Display.getDefault().getActiveShell();
+	}
+
+	@Override
+	public void handleException(final Throwable t) {
+		t.printStackTrace();
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				MessageDialog.openError(getShell(), "Error", t.getMessage());
+			}
+		});
+	}
 }

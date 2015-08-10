@@ -17,55 +17,53 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.jgit.lib.Repository;
 import org.kie.eclipse.server.IKieProjectHandler;
 import org.kie.eclipse.server.IKieRepositoryHandler;
 import org.kie.eclipse.server.IKieResourceHandler;
+import org.kie.eclipse.utils.GitUtils;
 
 /**
  *
  */
-public class RepositoryNode extends ContainerNode<OrganizationNode> {
+public class RepositoryNode extends ContainerNode<OrganizationNode> implements IPreferenceChangeListener {
 	
 	/**
-	 * @param container
+	 * @param parent
 	 * @param name
 	 */
-	protected RepositoryNode(OrganizationNode container, IKieRepositoryHandler repository) {
-		super(container, repository);
+	protected RepositoryNode(OrganizationNode parent, IKieRepositoryHandler repository) {
+		super(parent, repository);
+		init();
 	}
 
-	protected RepositoryNode(ServerNode server, IKieRepositoryHandler repository) {
+	protected RepositoryNode(ServerNode parent, IKieRepositoryHandler repository) {
 		super(null, repository);
-        this.parent = server;
+        this.parent = parent;
+		init();
 	}
 
+	private void init() {
+		GitUtils.getRepositoryUtil().getPreferences().addPreferenceChangeListener(this);
+	}
+	
+	@Override
 	protected List<? extends IContentNode<?>> createChildren() {
-		List<ProjectNode> result = new ArrayList<ProjectNode>();
+		clearHandlerChildren();
+		load();
+		List<ProjectNode> children = new ArrayList<ProjectNode>();
 		Iterator<? extends IKieResourceHandler> iter = handlerChildren.iterator();
 		while (iter.hasNext()) {
 			IKieResourceHandler h = iter.next();
 			if (h instanceof IKieProjectHandler)
-				result.add(new ProjectNode(this,(IKieProjectHandler)h));
+				children.add(new ProjectNode(this,(IKieProjectHandler)h));
 		}
-		return result;
+		return children;
 
 	}
-
-	/* (non-Javadoc)
-	 * @see org.kie.eclipse.navigator.view.content.ContentNode#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		try {
-			RepositoryNode other = (RepositoryNode) obj;
-			return other.getName().equals(this.getName());
-		}
-		catch (Exception ex) {
-		}
-		return false;
-	}
-	
+    
 	@Override
     public Object getAdapter(Class adapter) {
 		if (adapter==Repository.class) {
@@ -75,5 +73,17 @@ public class RepositoryNode extends ContainerNode<OrganizationNode> {
 		}
 		return super.getAdapter(adapter);
     }
+
+	@Override
+	public void dispose() {
+		GitUtils.getRepositoryUtil().getPreferences().removePreferenceChangeListener(this);
+		super.dispose();
+	}
+
+	@Override
+	public void preferenceChange(PreferenceChangeEvent event) {
+		getParent().clearChildren();
+		refresh();
+	}
 
 }

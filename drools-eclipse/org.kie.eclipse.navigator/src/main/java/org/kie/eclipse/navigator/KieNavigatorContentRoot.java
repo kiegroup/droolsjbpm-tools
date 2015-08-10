@@ -14,6 +14,7 @@
 package org.kie.eclipse.navigator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -59,6 +60,7 @@ public class KieNavigatorContentRoot extends SimpleTreeIterator<Object> {
 				children.add(node);
 			}
 		}
+		Collections.sort(children);
 		return ( List<? extends IContentNode<?>> )children;
 	}
 

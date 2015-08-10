@@ -14,9 +14,10 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.wst.server.core.IServer;
 import org.kie.eclipse.IKieConstants;
-import org.kie.eclipse.IKieConstants;
+import org.kie.eclipse.server.IKieResourceHandler;
+import org.kie.eclipse.server.KieServerHandler;
 
-public class ServerPropertyPage extends FieldEditorPropertyPage implements IKieConstants {
+public class ServerPropertyPage extends AbstractKiePropertyPage {
 
 	private MyDirectoryFieldEditor gitPathEditor;
 	private BooleanFieldEditor useDefaultGitPathEditor;
@@ -96,6 +97,11 @@ public class ServerPropertyPage extends FieldEditorPropertyPage implements IKieC
 				updateControls();
 			}
 		});
+	}
+
+	@Override
+	protected Class<? extends IKieResourceHandler> getResourceHandlerType() {
+		return KieServerHandler.class;
 	}
 	
 	private static class MyDirectoryFieldEditor extends DirectoryFieldEditor {
