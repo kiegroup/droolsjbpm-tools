@@ -70,7 +70,7 @@ import org.kie.eclipse.navigator.view.utils.ViewUtils;
 /**
  * A view of servers, their modules, and status.
  */
-public class KieNavigatorView extends CommonNavigator implements IResourceChangeListener {
+public class KieNavigatorView extends CommonNavigator implements IKieNavigatorView, IResourceChangeListener {
 	private static final String KIE_NAVIGATOR_VIEW_CONTEXT = "org.kie.eclipse.navigator.context";
 	protected CommonViewer treeViewer;
 	private Control mainPage;
@@ -250,9 +250,17 @@ public class KieNavigatorView extends CommonNavigator implements IResourceChange
 		job.schedule();
 	}
 	
-	public void refresh() {
+	public void refresh(Object element) {
+		getCommonViewer().refresh(element);
+	}
+	public void setProperty(String key, String value) {
+		setPartProperty(key, value);
 	}
 	
+	public String getProperty(String key) {
+		return getPartProperty(key);
+	}
+
 	protected void deferredInitialize() {
 		addListener();
 

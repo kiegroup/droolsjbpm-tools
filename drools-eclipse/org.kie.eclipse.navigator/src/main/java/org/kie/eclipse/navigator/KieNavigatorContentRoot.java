@@ -18,9 +18,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.ui.navigator.CommonNavigator;
 import org.eclipse.wst.server.core.IServer;
 import org.eclipse.wst.server.core.ServerCore;
+import org.kie.eclipse.navigator.view.IKieNavigatorView;
 import org.kie.eclipse.navigator.view.content.ContainerNode;
 import org.kie.eclipse.navigator.view.content.IContentNode;
 import org.kie.eclipse.navigator.view.content.ServerNode;
@@ -36,13 +36,13 @@ import org.kie.eclipse.server.ServerProxy;
  */
 public class KieNavigatorContentRoot extends SimpleTreeIterator<Object> {
 
-	protected CommonNavigator viewer;
+	protected IKieNavigatorView viewer;
 	protected List<? extends IContentNode<?>> children;
 
 	/**
 	 * @param kieNavigatorView
 	 */
-	public KieNavigatorContentRoot(CommonNavigator viewer) {
+	public KieNavigatorContentRoot(IKieNavigatorView viewer) {
 		this.viewer = viewer;
 	}
 

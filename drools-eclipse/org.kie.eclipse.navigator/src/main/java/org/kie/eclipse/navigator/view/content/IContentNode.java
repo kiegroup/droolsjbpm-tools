@@ -11,8 +11,8 @@
 package org.kie.eclipse.navigator.view.content;
 
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.ui.navigator.CommonNavigator;
 import org.eclipse.wst.server.core.IServer;
+import org.kie.eclipse.navigator.view.IKieNavigatorView;
 import org.kie.eclipse.server.IKieResourceHandler;
 
 public interface IContentNode<T extends IContainerNode<?>> extends IAdaptable, Comparable {
@@ -51,7 +51,7 @@ public interface IContentNode<T extends IContainerNode<?>> extends IAdaptable, C
     Object resolveContent();
     IContainerNode<?> getRoot();
     IKieResourceHandler getHandler();
-    CommonNavigator getNavigator();
+    IKieNavigatorView getNavigator();
     void refresh();
 	void handleException(Throwable e);
 }

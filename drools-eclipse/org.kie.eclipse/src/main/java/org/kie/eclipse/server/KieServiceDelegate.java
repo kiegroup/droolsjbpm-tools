@@ -203,9 +203,9 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 		IProgressService ps = wb.getProgressService();
 		try {
 			ps.busyCursorWhile(new IRunnableWithProgress() {
-				public void run(IProgressMonitor pm) throws InterruptedException {
-					pm.beginTask("Waiting for Job "+jobId+":\n\n"+title, STATUS_REQUEST_TIMEOUT);
-					pm.subTask(title);
+				public void run(IProgressMonitor monitor) throws InterruptedException {
+					monitor.beginTask("Waiting for Job "+jobId+":\n\n"+title, STATUS_REQUEST_TIMEOUT);
+					monitor.subTask(title);
 					long startTime = System.currentTimeMillis();
 					long stopTime = startTime;
 					do {
@@ -223,7 +223,7 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 							if (status!=null && result!=null)
 								ar.set(status + ":" + result);
 							stopTime = System.currentTimeMillis();
-							pm.worked(STATUS_REQUEST_DELAY);
+							monitor.worked(STATUS_REQUEST_DELAY);
 							
 							System.out.println("status="+status);
 							System.out.println("result="+result);
@@ -231,11 +231,11 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 						catch (Exception e) {
 							e.printStackTrace();
 						}
-						if (pm.isCanceled())
+						if (monitor.isCanceled())
 							throw new InterruptedException("Operation canceled");
 					}
 					while (ar.get()==null && stopTime - startTime < STATUS_REQUEST_TIMEOUT);
-					pm.done();
+					monitor.done();
 					System.out.println(
 							"\n----------------------------------\n"+
 							"Job "+jobId+"\n"+title+"\ncompleted in "+(stopTime - startTime) / 1000.0+" sec\n"+

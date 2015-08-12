@@ -225,7 +225,7 @@ public class Kie60Service extends KieServiceDelegate {
 			if (!status.startsWith(JOB_STATUS_SUCCESS))
 				throw new IOException("Request to create Project '"+project.getName()+"' has failed with status "+status);
 		}
-		catch (InterruptedException e) {
+		catch (Exception e) {
 			deleteJob(jobId);
 			throw new IOException("Request to create Project '"+project.getName()+"' was canceled");
 		}
