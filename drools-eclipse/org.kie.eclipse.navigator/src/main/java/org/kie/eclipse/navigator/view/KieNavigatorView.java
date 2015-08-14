@@ -219,7 +219,7 @@ public class KieNavigatorView extends CommonNavigator implements IResourceChange
 	 * Switch between the servers and default/empty page.
 	 * 
 	 */
-	void toggleDefultPage() {
+	void toggleDefaultPage() {
 		if (treeViewer.getTree().getItemCount() < 1) {
 			book.showPage(noServersPage);
 		} else {
@@ -287,7 +287,7 @@ public class KieNavigatorView extends CommonNavigator implements IResourceChange
 								Object obj = treeViewer.getTree().getItem(0).getData();
 								treeViewer.setSelection(new StructuredSelection(obj));
 							} else {
-								toggleDefultPage();
+								toggleDefaultPage();
 							}
 						} catch (Exception e) {
 							// if (Trace.WARNING) {
@@ -469,8 +469,9 @@ public class KieNavigatorView extends CommonNavigator implements IResourceChange
 	protected void addServer(final IServer server) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				treeViewer.add(treeViewer.getInput(), server);
-				toggleDefultPage();
+				KieNavigatorContentRoot root = new KieNavigatorContentRoot(KieNavigatorView.this);
+				treeViewer.setInput(root);
+				toggleDefaultPage();
 			}
 		});
 	}
@@ -478,8 +479,9 @@ public class KieNavigatorView extends CommonNavigator implements IResourceChange
 	protected void removeServer(final IServer server) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				treeViewer.remove(server);
-				toggleDefultPage();
+				KieNavigatorContentRoot root = new KieNavigatorContentRoot(KieNavigatorView.this);
+				treeViewer.setInput(root);
+				toggleDefaultPage();
 			}
 		});
 	}

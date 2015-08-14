@@ -65,22 +65,26 @@ public class DroolsClasspathContainer implements IClasspathContainer {
     	return false;
     }
     
-    public IClasspathEntry[] getClasspathEntries() {
+    @Override
+	public IClasspathEntry[] getClasspathEntries() {
         if (droolsLibraryEntries == null) {
             droolsLibraryEntries = createDroolsLibraryEntries(javaProject);
         }
         return droolsLibraryEntries;
     }
 
-    public String getDescription() {
+    @Override
+	public String getDescription() {
         return "Drools Library";
     }
 
-    public int getKind() {
+    @Override
+	public int getKind() {
         return 1;
     }
 
-    public IPath getPath() {
+    @Override
+	public IPath getPath() {
         return path;
     }
 

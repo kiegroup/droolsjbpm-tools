@@ -27,7 +27,7 @@
     <update.site.name>Drools ${project.version} Update Site</update.site.name>
     <update.site.description>Nightly Build</update.site.description>
     <update.site.version>${project.version}</update.site.version>
-    <target.eclipse.version>4.3 (Kepler)</target.eclipse.version>
+    <target.eclipse.version>4.4 (Luna)</target.eclipse.version>
     <siteTemplateFolder>siteTemplateFolder</siteTemplateFolder>
   </properties>
   <build>
@@ -66,9 +66,7 @@
             </goals>
             <configuration>
               <associateSites>
-                <associateSite>http://download.jboss.org/jbosstools/updates/kepler/integration-stack/</associateSite>
-                <associateSite>http://download.jboss.org/jbosstools/updates/kepler/</associateSite>
-                <associateSite>http://download.jboss.org/jbosstools/updates/stable/kepler/</associateSite>
+                <associateSite>http://download.jboss.org/jbosstools/targetplatforms/jbtistarget/luna/</associateSite>
               </associateSites>
               <siteTemplateFolder>${siteTemplateFolder}</siteTemplateFolder>
               <symbols>

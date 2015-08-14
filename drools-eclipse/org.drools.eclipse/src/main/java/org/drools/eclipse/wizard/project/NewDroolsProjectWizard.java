@@ -62,19 +62,22 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
     private EmptyDroolsProjectWizardPage emptyProjectPage;
     private SampleDroolsProjectWizardPage sampleFilesProjectPage;
 
-    protected void initializeDefaultPageImageDescriptor() {
+    @Override
+	protected void initializeDefaultPageImageDescriptor() {
         ImageDescriptor desc = DroolsEclipsePlugin.getImageDescriptor("icons/drools-large.PNG");
         setDefaultPageImageDescriptor(desc);
     }
 
-    protected void createOutputLocation(IJavaProject project, IProgressMonitor monitor)
+    @Override
+	protected void createOutputLocation(IJavaProject project, IProgressMonitor monitor)
             throws JavaModelException, CoreException {
         IFolder folder = FileUtils.createFolder(project, "target", monitor);
         IPath path = folder.getFullPath();
         project.setOutputLocation(path, null);
     }
 
-    protected void createInitialContent(IJavaProject javaProject, IProgressMonitor monitor)
+    @Override
+	protected void createInitialContent(IJavaProject javaProject, IProgressMonitor monitor)
             throws CoreException, JavaModelException, IOException {
     	if (startPage.getInitialProjectContent() == IKieProjectWizardPage.SAMPLE_FILES_PROJECT) {
             if (sampleFilesProjectPage.shouldCreateJavaRuleFile()) {
@@ -99,7 +102,8 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
     	super.createInitialContent(javaProject, monitor);
     }
     
-    protected void createMavenArtifacts(IJavaProject project, IProgressMonitor monitor) {
+    @Override
+	protected void createMavenArtifacts(IJavaProject project, IProgressMonitor monitor) {
         try {
         	String projectName = project.getProject().getName();
             String groupId = projectName + ".group";
@@ -114,7 +118,8 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 		}
     }
     
-    protected void createKJarArtifacts(IJavaProject project, IProgressMonitor monitor) {
+    @Override
+	protected void createKJarArtifacts(IJavaProject project, IProgressMonitor monitor) {
         try {
 	        if (startPage.getRuntime().getVersion().startsWith("6")) {
 	        	FileUtils.createProjectFile(project, monitor, generateKModule(), "src/main/resources/META-INF", "kmodule.xml");
@@ -311,7 +316,12 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 			public String getDescription() {
 				return "Select Drools Example Projects";
 			}
-			
+
+			@Override
+			public IRuntimeManager getRuntimeManager() {
+				return DroolsRuntimeManager.getDefault();
+			}
+		
 			@Override
 			public String getProductId() {
 				return "drools";
@@ -393,7 +403,8 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 	            "Add a sample HelloWorld rule file to this project.");
 	        addSampleRuleButton.setSelection(addSampleRule);
 	        addSampleRuleButton.addSelectionListener(new SelectionAdapter() {
-	            public void widgetSelected(SelectionEvent e) {
+	            @Override
+				public void widgetSelected(SelectionEvent e) {
 	                addSampleRule = ((Button) e.widget).getSelection();
 	            }
 	        });
@@ -410,7 +421,8 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 	            "Add a sample HelloWorld decision table file to this project.");
 	        addSampleDecisionTableCodeButton.setSelection(addSampleDecisionTableCode);
 	        addSampleDecisionTableCodeButton.addSelectionListener(new SelectionAdapter() {
-	            public void widgetSelected(SelectionEvent e) {
+	            @Override
+				public void widgetSelected(SelectionEvent e) {
 	                addSampleDecisionTableCode = ((Button) e.widget).getSelection();
 	            }
 	        });
@@ -427,7 +439,8 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 	            "Add a sample HelloWorld process file to this project.");
 	        addSampleRuleFlowButton.setSelection(addSampleRuleFlow);
 	        addSampleRuleFlowButton.addSelectionListener(new SelectionAdapter() {
-	            public void widgetSelected(SelectionEvent e) {
+	            @Override
+				public void widgetSelected(SelectionEvent e) {
 	                addSampleRuleFlow = ((Button) e.widget).getSelection();
 	            }
 	        });
@@ -457,7 +470,8 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 	        data.horizontalIndent = 20;
 	        button.setLayoutData(data);
 	        button.addSelectionListener(new SelectionAdapter() {
-	            public void widgetSelected(SelectionEvent e) {
+	            @Override
+				public void widgetSelected(SelectionEvent e) {
 	                boolean selected = ((Button) e.widget).getSelection();
 	                if (selected) {
 	                	dependent.setSelection(true);

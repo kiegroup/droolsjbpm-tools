@@ -16,6 +16,7 @@ import org.kie.eclipse.server.IKieRepositoryHandler;
 import org.kie.eclipse.server.IKieServiceDelegate;
 import org.kie.eclipse.server.KieProjectHandler;
 import org.kie.eclipse.server.KieRepositoryHandler;
+import org.kie.eclipse.utils.FileUtils;
 
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -63,6 +64,7 @@ public class CreateProjectAction extends KieNavigatorAction {
             project.setProperties(properties);
 	        try {
 	        	delegate.createProject(project);
+	        	ActionUtils.pullRepository(this, (RepositoryNode) container);
 	        	
 				ProjectNode projectNode = null;
 	            if (dlg.shouldImportProject()) {
@@ -81,28 +83,33 @@ public class CreateProjectAction extends KieNavigatorAction {
 	            		return;
 	            	}
 	            	IJavaProject javaProject = ActionUtils.importProject(projectNode, this);
-	            	if (javaProject!=null && dlg.shouldCreateArtifacts()) {
-	            		String artifactId = dlg.getArtifactId();
-	                   	
-	                   	JsonObject projectProperties = projectNode.getHandler().getProperties();
-	                   	JsonValue jv = projectProperties.get("groupId");
-	                   	String groupId = null;
-	                   	if (jv==null || jv.asString().isEmpty()) {
-	                   		if (projectNode.getParent() instanceof RepositoryNode) {
-		                       	JsonObject orgProperties = projectNode.getParent().getParent().getHandler().getProperties();
-		                   		jv = orgProperties.get("defaultGroupId");
-	                   		}
-	                   	}
-	                   	if (jv!=null)
-	                   		groupId = jv.asString();
-
-	                   	String version = null;
-						jv = projectProperties.get("version");
-	                   	if (jv!=null)
-	                   		version = jv.asString();
-
-	                   	ActionUtils.createProjectArtifacts(javaProject, groupId, artifactId, version, null);
+	            	if (javaProject!=null) {
+	            		FileUtils.createGitIgnore(javaProject, null);
 	            	}
+	            	// TODO: re-think this, because server already creates some of these
+	            	// artifacts, e.g. pom.xml kmodule.xml and deployment-descriptor.xml
+//	            	if (javaProject!=null && dlg.shouldCreateArtifacts()) {
+//	            		String artifactId = dlg.getArtifactId();
+//	                   	
+//	                   	JsonObject projectProperties = projectNode.getHandler().getProperties();
+//	                   	JsonValue jv = projectProperties.get("groupId");
+//	                   	String groupId = null;
+//	                   	if (jv==null || jv.asString().isEmpty()) {
+//	                   		if (projectNode.getParent() instanceof RepositoryNode) {
+//		                       	JsonObject orgProperties = projectNode.getParent().getParent().getHandler().getProperties();
+//		                   		jv = orgProperties.get("defaultGroupId");
+//	                   		}
+//	                   	}
+//	                   	if (jv!=null)
+//	                   		groupId = jv.asString();
+//
+//	                   	String version = null;
+//						jv = projectProperties.get("version");
+//	                   	if (jv!=null)
+//	                   		version = jv.asString();
+//
+//	                   	ActionUtils.createProjectArtifacts(javaProject, groupId, artifactId, version, null);
+//	            	}
 	            }
 				container.refresh();
 	        }

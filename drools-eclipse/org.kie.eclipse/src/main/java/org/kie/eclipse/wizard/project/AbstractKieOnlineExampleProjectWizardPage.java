@@ -52,6 +52,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 import org.kie.eclipse.Activator;
+import org.kie.eclipse.runtime.IRuntime;
 import org.kie.eclipse.utils.FileUtils;
 import org.osgi.framework.ServiceReference;
 
@@ -67,7 +68,8 @@ public abstract class AbstractKieOnlineExampleProjectWizardPage extends WizardPa
     private ServiceReference<?> providerRef;
     private String repositoryUrl;
 
-    public abstract String getProductId();
+    @Override
+	public abstract String getProductId();
 
 	public AbstractKieOnlineExampleProjectWizardPage(String pageName) {
 		super(pageName);
@@ -227,6 +229,7 @@ public abstract class AbstractKieOnlineExampleProjectWizardPage extends WizardPa
 		IProgressService ps = PlatformUI.getWorkbench().getProgressService();
 		try {
 			ps.busyCursorWhile(new IRunnableWithProgress() {
+				@Override
 				public void run(IProgressMonitor pm) {
 					try {
 						IProvisioningAgent agent = createProvisiongAgent();
@@ -273,12 +276,14 @@ public abstract class AbstractKieOnlineExampleProjectWizardPage extends WizardPa
 					boolean browserLoaded = true;
 					try {
 						IMatchExpression<IInstallableUnit> f = iu.getFilter();
-						for (Object p : f.getParameters()) {
-							// we can use this to identify the required Drools Runtime version:
-							// for example, setting the "Architecture" field in feature.xml
-							// (in the Overview page) to "Drools 6.0.x" produces this:
-							//           (osgi.arch=Drools 6.x)
-							System.out.println(p);
+						if (f!=null) {
+							for (Object p : f.getParameters()) {
+								// we can use this to identify the required Drools Runtime version:
+								// for example, setting the "Architecture" field in feature.xml
+								// (in the Overview page) to "Drools 6.0.x" produces this:
+								//           (osgi.arch=Drools 6.x)
+								System.out.println(p);
+							}
 						}
 						System.out.println("IU Properties:");
 						for (Entry<String, String> pe : iu.getProperties().entrySet()) {
@@ -368,7 +373,8 @@ public abstract class AbstractKieOnlineExampleProjectWizardPage extends WizardPa
 		}
 	}
 	
-    public String downloadOnlineExampleProject(IProject project, IProgressMonitor monitor) {
+    @Override
+	public String downloadOnlineExampleProject(IProject project, IProgressMonitor monitor) {
     	String projectName = project.getName();
 		try {
 			for (IInstallableUnit iu : getInstallableUnits()) {
@@ -450,8 +456,15 @@ public abstract class AbstractKieOnlineExampleProjectWizardPage extends WizardPa
 
 		return result;
 	}
-    
-    public Collection<IProjectDescription> getNewProjectDescriptions() {
+
+    @Override
+	public IRuntime getRuntime() {
+    	IRuntime effectiveRuntime = getRuntimeManager().getEffectiveRuntime(null, true);
+    	return effectiveRuntime;
+    }
+
+    @Override
+	public Collection<IProjectDescription> getNewProjectDescriptions() {
     	Collection<IProjectDescription> result = new ArrayList<IProjectDescription> ();
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		for (IInstallableUnit iu : getInstallableUnits()) {

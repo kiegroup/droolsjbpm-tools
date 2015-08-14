@@ -89,9 +89,7 @@ public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
 	public boolean performFinish() {
     	IProject newProjectHandle = null;
     	for (IProjectDescription pd : startPage.getNewProjectDescriptions()) {
-    		if (newProjectHandle==null) {
-    			newProjectHandle = createNewProject(pd);
-    		}
+   			newProjectHandle = createNewProject(pd);
    			initializeNewProject(newProjectHandle);
     	}
         if (newProjectHandle == null) {
@@ -109,8 +107,8 @@ public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
                     IJavaProject project = JavaCore.create(newProjectHandle);
                     createRuntimeSettings(project, monitor);
                     createOutputLocation(project, monitor);
-                    addBuilders(project, monitor);
                     setClasspath(project, monitor);
+                    addBuilders(project, monitor);
                     createInitialContent(project, monitor);
                     newProjectHandle.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
                 } catch (IOException _ex) {

@@ -24,8 +24,18 @@
    <feature url="org.jboss.tools.runtime.drools.detector.feature.source_6.3.0.qualifier.jar" id="org.jboss.tools.runtime.drools.detector.feature.source" version="6.3.0.qualifier">
       <category name="droolsjbpm"/>
    </feature>
-   <feature url="features/org.kie.eclipse.feature_6.3.0.qualifier.jar" id="org.kie.eclipse.feature" version="6.3.0.qualifier"/>
-   <feature url="features/org.kie.eclipse.navigator.feature_6.3.0.qualifier.jar" id="org.kie.eclipse.navigator.feature" version="6.3.0.qualifier"/>
+   <feature url="org.kie.eclipse.feature_6.3.0.qualifier.jar" id="org.kie.eclipse.feature" version="6.3.0.qualifier">
+      <category name="droolsjbpm"/>
+   </feature>
+   <feature url="org.kie.eclipse.feature.source_6.3.0.qualifier.jar" id="org.kie.eclipse.feature.source" version="6.3.0.qualifier">
+      <category name="droolsjbpm"/>
+   </feature>
+   <feature url="org.kie.eclipse.navigator.feature_6.3.0.qualifier.jar" id="org.kie.eclipse.navigator.feature" version="6.3.0.qualifier">
+      <category name="droolsjbpm"/>
+   </feature>
+   <feature url="org.kie.eclipse.navigator.feature.source_6.3.0.qualifier.jar" id="org.kie.eclipse.navigator.feature.source" version="6.3.0.qualifier">
+      <category name="droolsjbpm"/>
+   </feature>
    <category-def name="droolsjbpm" label="Drools and jBPM">
       <description>
          Drools and jBPM plugins for Eclipse.
