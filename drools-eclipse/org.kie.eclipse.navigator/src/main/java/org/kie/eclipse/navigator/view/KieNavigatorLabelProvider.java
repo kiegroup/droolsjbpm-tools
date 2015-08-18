@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.kie.eclipse.navigator.view;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
@@ -30,22 +29,15 @@ import org.kie.eclipse.navigator.view.content.ServerNode;
  */
 public class KieNavigatorLabelProvider extends LabelProvider {
 
-	@Override
 	public String getText(Object element) {
 		if (element instanceof IContainerNode) {
 			return ((IContainerNode<?>) element).getName();
-		}
-		else if (element instanceof IContentNode) {
+		} else if (element instanceof IContentNode) {
 			return ((IContentNode<?>) element).getName();
-		}
-		else if (element instanceof IErrorNode) {
+		} else if (element instanceof IErrorNode) {
 			return ((IErrorNode) element).getText();
-		}
-		else if (element == KieNavigatorContentProvider.PENDING) {
+		} else if (element == KieNavigatorContentProvider.PENDING) {
 			return "Loading...";
-		}
-		else if (element instanceof IProject) {
-			return ((IProject) element).getName();
 		}
 		return super.getText(element);
 	}
@@ -56,31 +48,22 @@ public class KieNavigatorLabelProvider extends LabelProvider {
 			if (((ServerNode) element).getServer().getServerState() == IServer.STATE_STARTED)
 				return Activator.getImageDescriptor(Activator.IMG_SERVER_STARTED).createImage();
 			return Activator.getImageDescriptor(Activator.IMG_SERVER_STOPPED).createImage();
-		}
-		else if (element instanceof OrganizationNode) {
+		} else if (element instanceof OrganizationNode) {
 			return Activator.getImageDescriptor(Activator.IMG_ORGANIZATION).createImage();
-		}
-		else if (element instanceof RepositoryNode) {
+		} else if (element instanceof RepositoryNode) {
 			if (((RepositoryNode) element).isResolved())
 				return Activator.getImageDescriptor(Activator.IMG_REPOSITORY).createImage();
 			return Activator.getImageDescriptor(Activator.IMG_REPOSITORY_UNAVAILABLE).createImage();
-		}
-		else if (element instanceof ProjectNode) {
+		} else if (element instanceof ProjectNode) {
 			if (((ProjectNode) element).isResolved())
 				return Activator.getImageDescriptor(Activator.IMG_PROJECT).createImage();
 			return Activator.getImageDescriptor(Activator.IMG_PROJECT_CLOSED).createImage();
-		}
-		else if (element instanceof IContainerNode<?>) {
+		} else if (element instanceof IContainerNode<?>) {
 			return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
-		}
-		else if (element instanceof IErrorNode) {
+		} else if (element instanceof IErrorNode) {
 			return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
-		}
-		else if (element instanceof IContentNode<?>) {
+		} else if (element instanceof IContentNode<?>) {
 			return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE);
-		}
-		else if (element instanceof IProject) {
-			return Activator.getImageDescriptor(Activator.IMG_PROJECT).createImage();
 		}
 		return super.getImage(element);
 	}

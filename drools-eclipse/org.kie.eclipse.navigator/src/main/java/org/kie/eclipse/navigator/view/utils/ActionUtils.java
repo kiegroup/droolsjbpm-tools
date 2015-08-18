@@ -33,6 +33,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window.IExceptionHandler;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.PullCommand;
+import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.TransportConfigCallback;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.WindowCacheConfig;
@@ -66,7 +68,6 @@ import com.jcraft.jsch.Session;
 public class ActionUtils {
 
 	public static IRuntimeManager runtimeManager = DroolsRuntimeManager.getDefault();
-
 	private ActionUtils() {
 	}
 
@@ -169,6 +170,68 @@ public class ActionUtils {
 		}
 	}
 
+	public static void pullRepository(final IExceptionHandler exceptionHandler, RepositoryNode container) {
+		final IKieRepositoryHandler handler = (IKieRepositoryHandler) container.getHandler();
+		final IKieServerHandler server = (IKieServerHandler) handler.getRoot();
+		final IKieServiceDelegate delegate = container.getHandler().getDelegate();
+		try {
+			WindowCacheConfig config = new WindowCacheConfig();
+			config.setPackedGitMMAP(false);
+			config.install();
+
+			String username = delegate.getUsername();
+			String password = delegate.getPassword();
+			final CredentialsProvider credentialsProvider = new KieCredentialsProvider(server, username, password);
+			Job job = new Job("Import Repository") {
+				@Override
+				protected IStatus run(final IProgressMonitor monitor) {
+					PullResult pullResult = null;
+					try {
+						EclipseGitProgressTransformer gitMonitor = new EclipseGitProgressTransformer(monitor);
+						PullCommand pullCmd = new Git(handler.getRepository()).pull();
+						pullCmd.setProgressMonitor(gitMonitor).setTimeout(60)
+								.setCredentialsProvider(credentialsProvider)
+								.setTransportConfigCallback(new TransportConfigCallback() {
+									@Override
+									public void configure(Transport transport) {
+										TransportGitSsh gt = (TransportGitSsh) transport;
+										gt.setSshSessionFactory(new JschConfigSessionFactory() {
+											@Override
+											protected Session createSession(Host hc, String user, String host, int port, FS fs)
+													throws JSchException {
+												Session session = super.createSession(hc, user, host, port, fs);
+												session.setConfig("PreferredAuthentications", "password");
+												return session;
+											}
+
+											@Override
+											protected void configure(Host hc, Session session) {
+												session.setConfig("PreferredAuthentications", "password");
+											}
+										});
+									}
+								});
+
+						pullResult = pullCmd.call();
+					}
+					catch (Exception e) {
+						exceptionHandler.handleException(e);
+					}
+					finally {
+						monitor.worked(1);
+					}
+					return Status.OK_STATUS;
+				}
+			};
+			job.setUser(true);
+			job.schedule();
+			job.join();
+		}
+		catch (Exception e) {
+			exceptionHandler.handleException(e);
+		}
+	}
+	
 	public static IJavaProject importProject(final ProjectNode projectNode, final IExceptionHandler exceptionHandler) {
 		final String projectName = projectNode.getName();
 		final AtomicReference<IJavaProject> ar = new AtomicReference<IJavaProject>();
@@ -189,6 +252,8 @@ public class ActionUtils {
 							projectsToConnect.put(project, mapping.getGitDirAbsolutePath().toFile());
 							ConnectProviderOperation connect = new ConnectProviderOperation(projectsToConnect);
 							connect.execute(monitor);
+							
+		            		FileUtils.createGitIgnore(javaProject, monitor);
 						}
 					}
 				}

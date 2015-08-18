@@ -34,7 +34,7 @@ public class CreateProjectRequestDialog extends AbstractKieRequestDialog {
 
 	String artifactIdValue = null;
 	boolean importProject = true;
-	boolean createArtifacts = true;
+//	boolean createArtifacts = true;
 	
 	public CreateProjectRequestDialog(Shell shell, final IKieRepositoryHandler repository) {
 		super(shell, "Project", new IKieRequestValidator() {
@@ -92,23 +92,23 @@ public class CreateProjectRequestDialog extends AbstractKieRequestDialog {
 		importProjectButton.setSelection(importProject);
 		new Label(composite, SWT.NONE);
 		
-		new Label(composite, SWT.NONE);
-		final Button createArtifactsButton = new Button(composite, SWT.CHECK);
-		createArtifactsButton.setText("Create Maven and KJar artifacts");
-		createArtifactsButton.setSelection(createArtifacts);
-		new Label(composite, SWT.NONE);
-		
-		createArtifactsButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				createArtifacts = createArtifactsButton.getSelection();
-			}
-		});
+//		new Label(composite, SWT.NONE);
+//		final Button createArtifactsButton = new Button(composite, SWT.CHECK);
+//		createArtifactsButton.setText("Create Maven and KJar artifacts");
+//		createArtifactsButton.setSelection(createArtifacts);
+//		new Label(composite, SWT.NONE);
+//		
+//		createArtifactsButton.addSelectionListener(new SelectionAdapter() {
+//			@Override
+//			public void widgetSelected(SelectionEvent e) {
+//				createArtifacts = createArtifactsButton.getSelection();
+//			}
+//		});
 		importProjectButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				importProject = importProjectButton.getSelection();
-				createArtifactsButton.setEnabled(importProject);
+//				createArtifactsButton.setEnabled(importProject);
 			}
 		});
 	}
@@ -128,9 +128,9 @@ public class CreateProjectRequestDialog extends AbstractKieRequestDialog {
 		return importProject;
 	}
 	
-	public boolean shouldCreateArtifacts() {
-		return createArtifacts;
-	}
+//	public boolean shouldCreateArtifacts() {
+//		return createArtifacts;
+//	}
 	
 	public String getArtifactId() {
 		return artifactIdValue;

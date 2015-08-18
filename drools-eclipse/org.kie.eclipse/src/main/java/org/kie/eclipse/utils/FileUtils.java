@@ -252,6 +252,24 @@ public class FileUtils {
 		}
     }
 
+    public static void createGitIgnore(IJavaProject project, IProgressMonitor monitor) {
+        try {
+        	createProjectFile(project, monitor, generateGitIGnore(), null, ".gitignore");
+		}
+		catch (CoreException e) {
+			e.printStackTrace();
+		}
+    }
+    
+    public static InputStream generateGitIGnore() {
+    	StringBuilder sb = new StringBuilder();
+    	sb.append(".gitignore\n");
+    	sb.append(".classpath\n");
+    	sb.append(".project\n");
+    	sb.append(".settings/\n");
+        return new ByteArrayInputStream(sb.toString().getBytes());
+    }
+    
     public static InputStream generateKModule() {
     	StringBuilder sb = new StringBuilder();
     	sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");

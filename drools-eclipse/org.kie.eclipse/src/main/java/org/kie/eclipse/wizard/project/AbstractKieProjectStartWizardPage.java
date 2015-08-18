@@ -164,6 +164,10 @@ public class AbstractKieProjectStartWizardPage extends WizardPage implements IKi
 			IKieSampleFilesProjectWizardPage page = (IKieSampleFilesProjectWizardPage) getWizard().getPage(AbstractKieProjectWizard.SAMPLE_FILES_PROJECT_PAGE);
 			return page.getRuntime();
 		}
+		else if (initialProjectContent==IKieProjectWizardPage.ONLINE_EXAMPLE_PROJECT) {
+			IKieOnlineExampleProjectWizardPage page = (IKieOnlineExampleProjectWizardPage) getWizard().getPage(AbstractKieProjectWizard.ONLINE_EXAMPLE_PROJECT_PAGE);
+			return page.getRuntime();
+		}
 		return null;
 	}
 
@@ -175,6 +179,10 @@ public class AbstractKieProjectStartWizardPage extends WizardPage implements IKi
 		}
 		else if (initialProjectContent==IKieProjectWizardPage.SAMPLE_FILES_PROJECT) {
 			IKieSampleFilesProjectWizardPage page = (IKieSampleFilesProjectWizardPage) getWizard().getPage(AbstractKieProjectWizard.SAMPLE_FILES_PROJECT_PAGE);
+			return page.getRuntimeManager();
+		}
+		else if (initialProjectContent==IKieProjectWizardPage.ONLINE_EXAMPLE_PROJECT) {
+			IKieOnlineExampleProjectWizardPage page = (IKieOnlineExampleProjectWizardPage) getWizard().getPage(AbstractKieProjectWizard.ONLINE_EXAMPLE_PROJECT_PAGE);
 			return page.getRuntimeManager();
 		}
 		return null;

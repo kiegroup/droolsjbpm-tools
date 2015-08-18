@@ -201,7 +201,7 @@ public class ConvertToKieProjectAction implements IObjectActionDelegate {
 		public KieDestinationSelectionDialog(Shell parent, final IProject project) {
 			super(parent, new KieNavigatorLabelProvider(), new KieNavigatorContentProvider());
 			this.project = project;
-			setTitle("Select Destination");
+			setTitle("Convert to Kie Project");
 			setMessage("Select a destination Repository for the Project \""+project.getName()+"\"");
 			setAllowMultiple(false);
 			setInput(new KieNavigatorContentRoot(this));

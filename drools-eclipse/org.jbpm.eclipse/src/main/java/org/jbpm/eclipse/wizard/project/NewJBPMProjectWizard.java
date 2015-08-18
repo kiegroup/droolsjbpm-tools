@@ -67,12 +67,14 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
     private SampleJBPMProjectWizardPage sampleFilesProjectPage;
 
 
-    protected void initializeDefaultPageImageDescriptor() {
+    @Override
+	protected void initializeDefaultPageImageDescriptor() {
         ImageDescriptor desc = JBPMEclipsePlugin.getImageDescriptor("icons/jbpm-large.png");
         setDefaultPageImageDescriptor(desc);
     }
 
-    protected void createOutputLocation(IJavaProject project, IProgressMonitor monitor)
+    @Override
+	protected void createOutputLocation(IJavaProject project, IProgressMonitor monitor)
             throws JavaModelException, CoreException {
         IFolder folder = project.getProject().getFolder("bin");
         FileUtils.createFolder(folder, monitor);
@@ -80,7 +82,8 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
         project.setOutputLocation(path, null);
     }
 
-    protected void setClasspath(IJavaProject project, IProgressMonitor monitor)
+    @Override
+	protected void setClasspath(IJavaProject project, IProgressMonitor monitor)
             throws JavaModelException, CoreException {
         super.setClasspath(project, monitor);
     	if (startPage.getInitialProjectContent() == IKieProjectWizardPage.SAMPLE_FILES_PROJECT) {
@@ -89,7 +92,8 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
         }
     }
 
-    protected void createInitialContent(IJavaProject javaProject, IProgressMonitor monitor)
+    @Override
+	protected void createInitialContent(IJavaProject javaProject, IProgressMonitor monitor)
             throws CoreException, JavaModelException, IOException {
     	if (startPage.getInitialProjectContent() == IKieProjectWizardPage.SAMPLE_FILES_PROJECT) {
     		String exampleType = sampleFilesProjectPage.getSampleType();
@@ -139,7 +143,8 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
                 FileUtils.readStream(inputstream)), true, monitor);
     }
 	
-    protected void createKJarArtifacts(IJavaProject project, IProgressMonitor monitor) {
+    @Override
+	protected void createKJarArtifacts(IJavaProject project, IProgressMonitor monitor) {
     	try {
 		    String fileName = "org/jbpm/eclipse/wizard/project/kmodule.xml.template";
 	        IFolder folder = project.getProject().getFolder("src/main/resources/META-INF");
@@ -226,6 +231,11 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
 			public String getDescription() {
 				return "Select jBPM Example Projects";
 			}
+
+			@Override
+			public IRuntimeManager getRuntimeManager() {
+				return JBPMRuntimeManager.getDefault();
+			}
 			
 			@Override
 			public String getProductId() {
@@ -287,6 +297,7 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
 				"a simple hello world process");
 			simpleProcessButton.setSelection(true);
 			simpleProcessButton.addSelectionListener(new SelectionAdapter() {
+				@Override
 				public void widgetSelected(SelectionEvent e) {
 					if (((Button) e.widget).getSelection()) {
 						sampleType = "simple";
@@ -297,6 +308,7 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
 				"a more advanced process including human tasks and persistence");
 			advancedProcessButton.setSelection(false);
 			advancedProcessButton.addSelectionListener(new SelectionAdapter() {
+				@Override
 				public void widgetSelected(SelectionEvent e) {
 					if (((Button) e.widget).getSelection()) {
 						sampleType = "advanced";
@@ -308,6 +320,7 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
 				"Also include a sample JUnit test for the process");
 			addSampleJUnitTestCodeButton.setSelection(addSampleJUnit);
 			addSampleJUnitTestCodeButton.addSelectionListener(new SelectionAdapter() {
+				@Override
 				public void widgetSelected(SelectionEvent e) {
 					addSampleJUnit = ((Button) e.widget).getSelection();
 				}
