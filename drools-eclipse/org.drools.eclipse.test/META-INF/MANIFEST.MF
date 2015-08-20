@@ -8,4 +8,4 @@ Fragment-Host: org.drools.eclipse
 Bundle-Localization: plugin
 Require-Bundle: org.junit;bundle-version="[4.8.1,5.0.0)"
 Bundle-ClassPath: .
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
