@@ -66,7 +66,7 @@
             </goals>
             <configuration>
               <associateSites>
-                <associateSite> http://download.jboss.org/jbosstools/targetplatforms/jbtistarget/luna</associateSite>
+                <associateSite> http://download.jboss.org/jbosstools/targetplatforms/jbtistarget/mars</associateSite>
               </associateSites>
               <siteTemplateFolder>${siteTemplateFolder}</siteTemplateFolder>
               <symbols>

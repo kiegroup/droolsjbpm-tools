@@ -26,6 +26,10 @@ Raleigh NC 27606 USA.
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.equinox.p2.metadata"/>
+      <import plugin="org.eclipse.equinox.p2.core"/>
+      <import plugin="org.eclipse.equinox.p2.metadata.repository"/>
+      <import plugin="org.eclipse.equinox.p2.repository"/>
       <import plugin="org.eclipse.debug.core"/>
       <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.jdt.core"/>
@@ -33,6 +37,7 @@ Raleigh NC 27606 USA.
       <import plugin="org.eclipse.jdt.debug.ui"/>
       <import plugin="org.eclipse.jdt.launching"/>
       <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.jdt.junit"/>
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.console"/>
@@ -40,22 +45,16 @@ Raleigh NC 27606 USA.
       <import plugin="org.eclipse.ui.forms"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.ui.views.properties.tabbed"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.gef"/>
       <import plugin="com.ibm.icu"/>
-      <import plugin="org.eclipse.equinox.p2.metadata"/>
-      <import plugin="org.eclipse.equinox.p2.core"/>
-      <import plugin="org.eclipse.equinox.p2.metadata.repository"/>
-      <import plugin="org.eclipse.equinox.p2.repository"/>
-      <import plugin="org.eclipse.jdt.junit"/>
-      <import plugin="org.eclipse.ui.views.properties.tabbed"/>
       <import plugin="org.eclipse.ltk.core.refactoring"/>
       <import plugin="org.eclipse.ltk.ui.refactoring"/>
       <import plugin="org.eclipse.swt"/>
       <import plugin="org.eclipse.jgit"/>
       <import plugin="org.eclipse.egit.core"/>
       <import plugin="org.eclipse.egit.ui"/>
-      <import plugin="org.jboss.ide.eclipse.as.core"/>
       <import plugin="org.eclipse.core.filesystem"/>
       <import plugin="org.eclipse.wst.server.core"/>
    </requires>

@@ -32,8 +32,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 import org.eclipse.wst.server.core.IServer;
 import org.eclipse.wst.server.core.ServerPort;
-import org.jboss.ide.eclipse.as.core.server.internal.JBossServer;
-import org.kie.eclipse.IKieConstants;
 import org.kie.eclipse.IKieConstants;
 
 import com.eclipsesource.json.JsonObject;
@@ -318,16 +316,25 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 		if (httpPort == -1) {
 			// find the HTTP port for this server. Note that the JBossServer
 			// implementation of Server does not support getServerPorts()!
-			Object o = getServer().getAdapter(JBossServer.class);
-			if (o instanceof JBossServer) {
-				httpPort = ((JBossServer) o).getJBossWebPort();
-			}
-			else {
+// remove dependency on org.jboss.eclipse.ide.as.core
+//			Object o = getServer().getAdapter(JBossServer.class);
+//			if (o instanceof JBossServer) {
+//				httpPort = ((JBossServer) o).getJBossWebPort();
+//			}
+//			else 
+			{
 				// assume that Server.getServerPorts() actually works!
 				ServerPort[] ports = getServer().getServerPorts(null);
 				for (ServerPort port : ports) {
 					if ("HTTP".equals(port.getProtocol())) {
 						httpPort = port.getPort();
+						if (httpPort==0) {
+							// assume that this is a JBossServer, in which case
+							// HTTP port is always reported as 0. We will have
+							// to rely on the User Preference setting to fetch
+							// the HTTP port for this server.
+							httpPort = -1;
+						}
 						break;
 					}
 				}

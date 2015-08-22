@@ -38,8 +38,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.swt,
  org.eclipse.jgit,
  org.eclipse.egit.core,
- org.eclipse.egit.ui,
- org.jboss.ide.eclipse.as.core
+ org.eclipse.egit.ui
 Export-Package: com.eclipsesource.json,
  org.kie.eclipse,
  org.kie.eclipse.preferences,

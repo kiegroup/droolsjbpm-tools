@@ -54,15 +54,11 @@ import org.eclipse.ui.navigator.CommonViewerSiteFactory;
 import org.eclipse.ui.navigator.ICommonViewerSite;
 import org.eclipse.ui.navigator.NavigatorActionService;
 import org.eclipse.ui.part.PageBook;
-import org.eclipse.wst.server.core.IModule;
 import org.eclipse.wst.server.core.IServer;
 import org.eclipse.wst.server.core.IServerLifecycleListener;
 import org.eclipse.wst.server.core.IServerListener;
 import org.eclipse.wst.server.core.ServerCore;
 import org.eclipse.wst.server.core.ServerEvent;
-import org.eclipse.wst.server.core.ServerPort;
-import org.jboss.ide.eclipse.as.core.server.internal.JBossServer;
-import org.jboss.ide.eclipse.as.core.util.ServerConverter;
 import org.kie.eclipse.navigator.KieNavigatorContentRoot;
 import org.kie.eclipse.navigator.view.content.IContentNode;
 import org.kie.eclipse.navigator.view.utils.ViewUtils;
@@ -314,24 +310,6 @@ public class KieNavigatorView extends CommonNavigator implements IKieNavigatorVi
 					treeViewer.refresh(server, true);
 					treeViewer.setExpandedElements(expanded);
 				}
-				
-//				if (server.getServerState() == IServer.STATE_STARTED) 
-				{
-					System.out.println("Server State="+server.getServerState());
-					System.out.println("Server Type ID="+server.getServerType().getId());
-					System.out.println("Modules:");
-					for (IModule m : server.getModules()) {
-						System.out.println("  "+m.getName());
-					}
-					if (ServerConverter.getJBossServer(server) instanceof JBossServer) {
-						JBossServer jbs = (JBossServer) ServerConverter.getJBossServer(server);
-						System.out.println("HTTP="+jbs.getJBossWebPort());
-					}
-					for (ServerPort p : server.getServerPorts(null)) {
-						System.out.println(p.getProtocol()+"="+p.getPort());
-					}
-				}
-				
 			}
 		});
 	}
