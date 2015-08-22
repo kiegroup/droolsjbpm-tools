@@ -300,4 +300,20 @@
 			contextId="org.kie.eclipse.navigator.context"/>
 	</extension>
 	-->
+
+	<extension point = "org.eclipse.ui.popupMenus">
+		<objectContribution
+				objectClass="org.eclipse.jdt.core.IJavaProject"
+				id="org.kie.eclipse.action.ConvertToKieProject">
+			<action id="org.kie.eclipse.action.ConvertToKieProject"
+				label="Convert to Kie Project..."
+				icon="icons/convert-to-kie-project.png"
+				menubarPath="org.eclipse.ui.projectConfigure/additions"
+				class="org.kie.eclipse.navigator.view.actions.project.ConvertToKieProjectAction"
+				definitionId="org.kie.eclipse.action.ConvertToKieProject"
+				enablesFor="1">
+			</action>
+		</objectContribution>
+	</extension>
+	
 </plugin>

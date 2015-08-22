@@ -54,7 +54,7 @@ public abstract class ContainerNode<T extends IContainerNode<?>> extends Content
 			// just before refreshing the Navigator viewer, and then back to "false"
 			// when done. This allows {@code #createChildren()} to be called only
 			// when necessary.
-			String internalRefresh = getNavigator().getPartProperty(INTERNAL_REFRESH_KEY);
+			String internalRefresh = getNavigator().getProperty(INTERNAL_REFRESH_KEY);
 			if (children==null || Boolean.getBoolean(internalRefresh)==true)
 				children = updateChildren(children, createChildren());
 			return children;

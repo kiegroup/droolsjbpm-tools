@@ -10,7 +10,7 @@ Export-Package: org.eclipse.webdav,org.eclipse.webdav.client,org.eclip
  nal.authentication;x-internal:=true,org.eclipse.webdav.internal.kerne
  l;x-internal:=true,org.eclipse.webdav.internal.kernel.utils;x-interna
  l:=true,org.eclipse.webdav.internal.utils;x-internal:=true
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: javax.xml.parsers,
  javax.xml.transform,
  org.w3c.dom,

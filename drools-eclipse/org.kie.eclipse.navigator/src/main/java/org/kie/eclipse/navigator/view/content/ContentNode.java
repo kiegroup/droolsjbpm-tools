@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.navigator.CommonNavigator;
 import org.eclipse.wst.server.core.IServer;
+import org.kie.eclipse.navigator.view.IKieNavigatorView;
 import org.kie.eclipse.server.IKieResourceHandler;
 
 public abstract class ContentNode<T extends IContainerNode<?>> implements IContentNode<T> {
@@ -52,7 +53,7 @@ public abstract class ContentNode<T extends IContainerNode<?>> implements IConte
     }
 
 	@Override
-	public CommonNavigator getNavigator() {
+	public IKieNavigatorView getNavigator() {
 		try {
 	    	if (parent==null)
 	    		return ((ServerNode)this).navigator;
@@ -141,16 +142,16 @@ public abstract class ContentNode<T extends IContainerNode<?>> implements IConte
 
 	@Override
 	public synchronized void refresh() {
-		final CommonNavigator navigator = getNavigator();
+		final IKieNavigatorView navigator = getNavigator();
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					navigator.setPartProperty(INTERNAL_REFRESH_KEY, Boolean.toString(true));
-					navigator.getCommonViewer().refresh(getRoot());
+					navigator.setProperty(INTERNAL_REFRESH_KEY, Boolean.toString(true));
+					navigator.refresh(getRoot());
 				}
 				finally {
-					navigator.setPartProperty(INTERNAL_REFRESH_KEY, Boolean.toString(false));
+					navigator.setProperty(INTERNAL_REFRESH_KEY, Boolean.toString(false));
 				}
 			}
 		});

@@ -24,6 +24,7 @@ import org.eclipse.ui.navigator.CommonViewer;
 import org.eclipse.wst.server.core.IServer;
 import org.kie.eclipse.IKieConstants;
 import org.kie.eclipse.navigator.Activator;
+import org.kie.eclipse.navigator.view.IKieNavigatorView;
 import org.kie.eclipse.server.IKieOrganizationHandler;
 import org.kie.eclipse.server.IKieRepositoryHandler;
 import org.kie.eclipse.server.IKieResourceHandler;
@@ -34,14 +35,14 @@ import org.kie.eclipse.server.KieServerHandler;
  */
 public class ServerNode extends ContainerNode implements IPropertyChangeListener, IKieConstants {
 
-	protected CommonNavigator navigator;
+	protected IKieNavigatorView navigator;
     protected final IServer server;
 
 	/**
 	 * @param server
 	 * @param name
 	 */
-	public ServerNode(IServer server, CommonNavigator navigator) {
+	public ServerNode(IServer server, IKieNavigatorView navigator) {
 		super(server==null ? "root" : server.getName());
 		this.server = server;
 		this.navigator = navigator;
@@ -74,7 +75,7 @@ public class ServerNode extends ContainerNode implements IPropertyChangeListener
     }
 
 	@Override
-	public CommonNavigator getNavigator() {
+	public IKieNavigatorView getNavigator() {
 		return navigator;
 	}
 	
@@ -122,8 +123,7 @@ public class ServerNode extends ContainerNode implements IPropertyChangeListener
 		String name = event.getProperty();
 		if (name.endsWith(IKieConstants.PREF_GIT_REPO_PATH) || name.endsWith(IKieConstants.PREF_USE_DEFAULT_GIT_PATH)) {
 	        clearChildren();
-	        CommonViewer viewer = navigator.getCommonViewer();
-	        viewer.refresh(this);
+	        navigator.refresh(this);
 		}
 	}
 }

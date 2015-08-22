@@ -27,12 +27,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.wst.server.core.IServer;
-import org.jboss.ide.eclipse.as.ui.Messages;
-import org.jboss.tools.as.wst.server.ui.xpl.ServerToolTip;
 import org.kie.eclipse.navigator.KieNavigatorContentRoot;
 import org.kie.eclipse.navigator.view.content.IContainerNode;
 import org.kie.eclipse.navigator.view.content.IContentNode;
@@ -52,7 +47,7 @@ public class KieNavigatorContentProvider implements ITreeContentProvider {
      * Loads content for specified nodes, then refreshes the content in the
      * tree.
      */
-    private Job loadElementJob = new Job(Messages.ServerContent_Job_Title) {
+    private Job loadElementJob = new Job("Refresh Server") {
         @Override
 		public boolean shouldRun() {
             return pendingUpdates.size() > 0;
@@ -60,7 +55,7 @@ public class KieNavigatorContentProvider implements ITreeContentProvider {
 
         @Override
 		protected IStatus run(final IProgressMonitor monitor) {
-            monitor.beginTask(Messages.ServerContent_Job_Title, IProgressMonitor.UNKNOWN);
+            monitor.beginTask("Loading Server Content", IProgressMonitor.UNKNOWN);
             try {
                 final List<IContainerNode<?>> updatedNodes = new ArrayList<IContainerNode<?>>(pendingUpdates.size());
                 for (IContainerNode<?> node : pendingUpdates.keySet()) {
@@ -105,7 +100,6 @@ public class KieNavigatorContentProvider implements ITreeContentProvider {
         pendingUpdates.clear();
     }
     
-	private ServerToolTip tooltip = null;
     @Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         if (viewer instanceof TreeViewer) {
@@ -113,22 +107,6 @@ public class KieNavigatorContentProvider implements ITreeContentProvider {
         } else {
             viewer = null;
         }
-		if( tooltip != null )
-			tooltip.deactivate();
-		tooltip = new ServerToolTip(((TreeViewer)viewer).getTree()) {
-			@Override
-			protected boolean isMyType(Object selected) {
-				return selected instanceof ServerNode;
-			}
-			@Override
-			protected void fillStyledText(Composite parent, StyledText sText, Object o) {
-				sText.setText("View JBoss-7 management details."); //$NON-NLS-1$
-			}
-		};
-		tooltip.setShift(new Point(15, 8));
-		tooltip.setPopupDelay(500); // in ms
-		tooltip.setHideOnMouseDown(true);
-		tooltip.activate();
     }
 
     @Override
