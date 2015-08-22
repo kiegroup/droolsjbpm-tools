@@ -1,4 +1,4 @@
-package org.eclipse.kie.navigator;
+package org.kie.eclipse.navigator;
 
 import org.eclipse.core.expressions.PropertyTester;
 import org.eclipse.core.resources.IResource;
