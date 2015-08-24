@@ -140,22 +140,36 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
      */
     private void createProcessSampleJUnit(IJavaProject project, String exampleType, IProgressMonitor monitor)
             throws JavaModelException, IOException {
-    	String s = "org/jbpm/eclipse/wizard/project/ProcessJUnit-" + exampleType + ".java";
-    	IRuntime runtime = startPage.getRuntime();
-        if (runtime.getVersion().startsWith("5")) {        
-        	s += ".v5.template";
-        } else {
-        	s += ".template";
+        if ("advanced".equals(exampleType)) {
+        	String s = "org/jbpm/eclipse/wizard/project/ProcessMain-advanced.java.template";
+            IFolder folder = project.getProject().getFolder("src/main/java");
+            IPackageFragmentRoot packageFragmentRoot = project
+                    .getPackageFragmentRoot(folder);
+            IPackageFragment packageFragment = packageFragmentRoot
+                    .createPackageFragment("com.sample", true, monitor);
+            InputStream inputstream = getClass().getClassLoader()
+                    .getResourceAsStream(s);
+            packageFragment.createCompilationUnit("ProcessMain.java", new String(
+            		FileUtils.readStream(inputstream)), true, monitor);
         }
-        IFolder folder = project.getProject().getFolder("src/main/java");
-        IPackageFragmentRoot packageFragmentRoot = project
-                .getPackageFragmentRoot(folder);
-        IPackageFragment packageFragment = packageFragmentRoot
-                .createPackageFragment("com.sample", true, monitor);
-        InputStream inputstream = getClass().getClassLoader()
-                .getResourceAsStream(s);
-        packageFragment.createCompilationUnit("ProcessTest.java", new String(
-                FileUtils.readStream(inputstream)), true, monitor);
+        else {
+        	String s = "org/jbpm/eclipse/wizard/project/ProcessJUnit-" + exampleType + ".java";
+        	IRuntime runtime = startPage.getRuntime();
+            if (runtime.getVersion().startsWith("5")) {        
+            	s += ".v5.template";
+            } else {
+            	s += ".template";
+            }
+            IFolder folder = project.getProject().getFolder("src/main/java");
+            IPackageFragmentRoot packageFragmentRoot = project
+                    .getPackageFragmentRoot(folder);
+            IPackageFragment packageFragment = packageFragmentRoot
+                    .createPackageFragment("com.sample", true, monitor);
+            InputStream inputstream = getClass().getClassLoader()
+                    .getResourceAsStream(s);
+            packageFragment.createCompilationUnit("ProcessTest.java", new String(
+                    FileUtils.readStream(inputstream)), true, monitor);
+        }
     }
 	
     @Override
