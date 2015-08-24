@@ -166,7 +166,7 @@ public class AgendaViewContentProvider extends DroolsDebugViewContentProvider {
                         }
                     }
                     if (activationId != null) {
-                        IValue objects = DebugUtil.getValueByExpression("return org.drools.eclipse.debug.DebugUtil.getActivationParameters(this, " + activationId + ");", workingMemoryImpl);
+                        IValue objects = DebugUtil.getValueByExpression("return getActivationParameters(" + activationId + ");", workingMemoryImpl);
                         if (objects instanceof IJavaArray) {
                         	addVariablesFromArray(variables, (IJavaArray) objects);
                         }
