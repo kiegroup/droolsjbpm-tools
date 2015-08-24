@@ -27,6 +27,10 @@ import org.kie.eclipse.runtime.IRuntimeRecognizer;
 
 public class SOAPlatform4RuntimeRecognizer implements IRuntimeRecognizer {
 
+	// TODO: determine actual version and installed product from jar manifests
+	String version = "4.0.X";
+	String product = "drools";
+
     public String[] recognizeJars(String path) {
         IPath jbossrulesesbPath = new Path(path).append("jboss-as/server/default/deploy/jbrules.esb");
         File jbossrulesesb = jbossrulesesbPath.toFile();
@@ -85,5 +89,15 @@ public class SOAPlatform4RuntimeRecognizer implements IRuntimeRecognizer {
         }
         return null;
     }
+
+	@Override
+	public String getVersion() {
+		return version;
+	}
+
+	@Override
+	public String getProduct() {
+		return product;
+	}
 
 }

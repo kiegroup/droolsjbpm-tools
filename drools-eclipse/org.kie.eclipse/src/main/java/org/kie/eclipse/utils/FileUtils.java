@@ -384,6 +384,8 @@ public class FileUtils {
 	    }
 	
 	    if (!file.exists()) {
+	    	if (file.getParent() instanceof IFolder)
+	    		createFolder((IFolder)file.getParent(), monitor);
 	        file.create(inputstream, true, monitor);
 	    } else {
 	        file.setContents(inputstream, true, false, monitor);

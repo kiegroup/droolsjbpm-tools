@@ -16,7 +16,6 @@ public interface IRuntimeManager {
 	IRuntime createNewRuntime();
 	IRuntime createBundleRuntime(String location);
 	IRuntime getEffectiveRuntime(IRuntime selectedRuntime, boolean useDefault);
-	boolean isMavenized(IRuntime runtime);
 	void setRuntimes(IRuntime[] runtimes);
 	void setRuntime(IRuntime runtime, IProject project, IProgressMonitor monitor) throws CoreException;
 	IRuntime getRuntime(IProject project);

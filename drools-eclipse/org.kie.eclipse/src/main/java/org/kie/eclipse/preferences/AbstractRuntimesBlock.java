@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.debug.internal.ui.SWTFactory;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -86,6 +87,8 @@ public abstract class AbstractRuntimesBlock implements ISelectionProvider {
                     case 0:
                         return runtime.getName();
                     case 1:
+                    	return runtime.getVersion();
+                    case 2:
                         return runtime.getPath();
                 }
             }
@@ -155,12 +158,16 @@ public abstract class AbstractRuntimesBlock implements ISelectionProvider {
 
         TableColumn column = new TableColumn(fTable, SWT.NULL);
         column.setText("Name");
-        int defaultwidth = 350/2 +1;
+        int defaultwidth = 350/3 +1;
         column.setWidth(defaultwidth);
 
         column = new TableColumn(fTable, SWT.NULL);
+        column.setText("Version");
+        column.setWidth(defaultwidth/2);
+
+        column = new TableColumn(fTable, SWT.NULL);
         column.setText("Location");
-        column.setWidth(defaultwidth);
+        column.setWidth(defaultwidth * 2);
 
         runtimesList = new CheckboxTableViewer(fTable);
         runtimesList.setLabelProvider(new RuntimesLabelProvider());
@@ -270,6 +277,13 @@ public abstract class AbstractRuntimesBlock implements ISelectionProvider {
             IRuntime result = dialog.getResult();
             if (result != null) {
                 runtimeManager.recognizeJars(result);
+                String version = result.getVersion();
+                if (version==null || version.isEmpty()) {
+                	MessageDialog.openError(getShell(), "Missing Version",
+                			"Could not determine the version of Runtime "+result.getName()+
+                			"\nPlease enter a valid version number.");
+                	return;
+                }
                 runtimes.add(result);
                 runtimesList.refresh();
                 runtimesList.setSelection(new StructuredSelection(result));
@@ -288,7 +302,21 @@ public abstract class AbstractRuntimesBlock implements ISelectionProvider {
         if (dialog.open() == Window.OK) {
             IRuntime result = dialog.getResult();
             if (result != null) {
+            	// save the possibly updated version...
+            	String newVersion = result.getVersion();
+            	// ...because this will change it:
                 runtimeManager.recognizeJars(result);
+                if (newVersion!=null && !newVersion.isEmpty())
+                	result.setVersion(newVersion);
+                else {
+                	newVersion = result.getVersion();
+                }
+                if (newVersion==null || newVersion.isEmpty()) {
+                	MessageDialog.openError(getShell(), "Missing Version",
+                			"Could not determine the version of Runtime "+result.getName()+
+                			"\nPlease enter a valid version number.");
+                	return;
+                }
                 // replace with the edited VM
                 int index = runtimes.indexOf(runtime);
                 runtimes.remove(index);

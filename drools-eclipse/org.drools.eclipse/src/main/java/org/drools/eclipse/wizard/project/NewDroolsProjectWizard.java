@@ -19,6 +19,9 @@ package org.drools.eclipse.wizard.project;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.builder.DroolsBuilder;
@@ -31,6 +34,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
@@ -71,7 +75,7 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
     @Override
 	protected void createOutputLocation(IJavaProject project, IProgressMonitor monitor)
             throws JavaModelException, CoreException {
-        IFolder folder = FileUtils.createFolder(project, "target", monitor);
+        IFolder folder = FileUtils.createFolder(project, "target/classes", monitor);
         IPath path = folder.getFullPath();
         project.setOutputLocation(path, null);
     }
@@ -98,8 +102,15 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
             if (sampleFilesProjectPage.shouldCreateJavaRuleFlowFile()) {
                 createRuleFlowSampleLauncher(javaProject);
             }
+			createKJarArtifacts(javaProject, monitor);
+			createMavenArtifacts(javaProject, monitor);
     	}
-    	super.createInitialContent(javaProject, monitor);
+    	else if (startPage.getInitialProjectContent() == IKieProjectWizardPage.EMPTY_PROJECT) {
+			createKJarArtifacts(javaProject, monitor);
+			createMavenArtifacts(javaProject, monitor);
+    	}
+    	else
+    		super.createInitialContent(javaProject, monitor);
     }
     
     @Override
@@ -236,10 +247,10 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/ruleflow_4.rf.template", "src/main/rules", "ruleflow.rf");
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/ruleflow_4.rfm.template", "src/main/rules", "ruleflow.rfm");
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/ruleflow_4.drl.template", "src/main/rules", "ruleflow.drl");
-        } else if (version.startsWith("5.1")) {
-        	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/sample.bpmn.template", "src/main/rules", "sample.bpmn");
-        } else if (version.startsWith("5")) {
+        } else if (version.startsWith("5.0")) {
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/ruleflow.rf.template", "src/main/rules", "ruleflow.rf");
+        } else if (version.startsWith("5")) {
+        	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/sample.bpmn.template", "src/main/rules", "sample.bpmn");
         } else {
         	FileUtils.createFolder(project, "src/main/resources/process", monitor);
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/sample.bpmn.template", "src/main/resources/process", "sample.bpmn");
@@ -256,10 +267,10 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
         String version = startPage.getRuntime().getVersion();
         if (version.startsWith("4")) {
             s = "org/drools/eclipse/wizard/project/RuleFlowLauncherSample_4.java.template";
-        } else if (version.startsWith("5.1")) {
-            s = "org/drools/eclipse/wizard/project/ProcessLauncherSample_bpmn_5.java.template";
-        } else if (version.startsWith("5")) {
+        } else if (version.startsWith("5.0")) {
             s = "org/drools/eclipse/wizard/project/RuleFlowLauncherSample.java.template";
+        } else if (version.startsWith("5")) {
+            s = "org/drools/eclipse/wizard/project/ProcessLauncherSample_bpmn_5.java.template";
         } else {
             s = "org/drools/eclipse/wizard/project/ProcessLauncherSample_bpmn_6.java.template";
         }
@@ -342,7 +353,14 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 		@Override
 		protected void createControls(Composite parent) {
 		}
-
+		
+		@Override
+		protected Composite createKJarControls(Composite parent) {
+	        Composite composite = new Composite(parent, SWT.NONE);
+	        composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+	        return composite;
+		}
+		
 		@Override
 		public IRuntimeManager getRuntimeManager() {
 			return DroolsRuntimeManager.getDefault();
@@ -358,6 +376,11 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 	        return PreferencesUtil.createPreferenceDialogOn(getShell(),
 	                DroolsProjectPreferencePage.PREF_ID,
 	                new String[] { DroolsProjectPreferencePage.PROP_ID }, null).open();
+		}
+		
+		@Override
+		public boolean shouldCreateMavenProject() {
+			return false;
 		}
 	}
 	
@@ -484,7 +507,11 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 	        
 	        return button;
 	    }
-
+		
+		@Override
+		public boolean shouldCreateMavenProject() {
+			return false;
+		}
 
 	    public boolean shouldCreateRuleFile() {
 	        return addSampleRule;
