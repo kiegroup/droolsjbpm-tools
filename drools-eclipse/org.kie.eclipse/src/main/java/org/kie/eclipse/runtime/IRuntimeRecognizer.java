@@ -19,5 +19,6 @@ package org.kie.eclipse.runtime;
 public interface IRuntimeRecognizer {
 
     String[] recognizeJars(String path);
-
+    String getVersion();
+    String getProduct();
 }

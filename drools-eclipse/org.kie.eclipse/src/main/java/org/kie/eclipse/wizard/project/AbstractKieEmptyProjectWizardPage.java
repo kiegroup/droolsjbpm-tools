@@ -78,7 +78,6 @@ public abstract class AbstractKieEmptyProjectWizardPage extends KieProjectWizard
                 if (rt!=selectedRuntime) {
                 	selectedRuntime = rt;
                 	effectiveRuntime = null;
-//                	mavenPanel.setVisible(runtimeManager.isMavenized(selectedRuntime));
                 }
                 setPageComplete(isPageComplete());
             }

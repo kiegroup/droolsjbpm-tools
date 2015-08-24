@@ -45,6 +45,7 @@ public abstract class AbstractRuntimeDialog extends Dialog {
     private IRuntime runtime;
     private Text nameText;
     private Text pathText;
+    private Text versionText;
     private List<IRuntime> runtimes;
 
     private Listener textModifyListener = new Listener() {
@@ -107,6 +108,17 @@ public abstract class AbstractRuntimeDialog extends Dialog {
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
+        
+        Label versionLabel = new Label(composite, SWT.NONE);
+        versionLabel.setText("Version:");
+        versionText = new Text(composite, SWT.SINGLE | SWT.BORDER);
+        versionText.setText(runtime == null || runtime.getName() == null ? "" : runtime.getVersion());
+        versionText.addListener(SWT.Modify, textModifyListener);
+        gridData = new GridData();
+        gridData.horizontalSpan = 2;
+        gridData.grabExcessHorizontalSpace = true;
+        gridData.horizontalAlignment = GridData.FILL;
+        versionText.setLayoutData(gridData);
 
         Button createButton = new Button(composite, SWT.PUSH | SWT.LEFT);
         String name = runtimeManager.getBundleRuntimeName();
@@ -188,6 +200,7 @@ public abstract class AbstractRuntimeDialog extends Dialog {
             IRuntime rt = runtimeManager.createBundleRuntime(selectedDirectory);
             nameText.setText(rt.getName());
             pathText.setText(rt.getPath());
+            versionText.setText(rt.getVersion());
         }
     }
 
@@ -199,6 +212,7 @@ public abstract class AbstractRuntimeDialog extends Dialog {
         runtime = getRuntimeManager().createNewRuntime();
         runtime.setName(nameText.getText());
         runtime.setPath(pathText.getText());
+        runtime.setVersion(versionText.getText());
         super.okPressed();
     }
 

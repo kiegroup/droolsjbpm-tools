@@ -13,7 +13,7 @@
   <description>A sample jBPM Maven project</description>
 
   <properties>
-    <jbpm.version>6.2.0.Final</jbpm.version>
+    <jbpm.version>6.3.0.CR1</jbpm.version>
   </properties>
 
   <repositories>

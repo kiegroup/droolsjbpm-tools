@@ -76,7 +76,13 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
     @Override
 	protected void createOutputLocation(IJavaProject project, IProgressMonitor monitor)
             throws JavaModelException, CoreException {
-        IFolder folder = project.getProject().getFolder("bin");
+    	String target = "bin";
+    	if (startPage.getInitialProjectContent()==IKieProjectWizardPage.EMPTY_PROJECT)
+    		target = emptyProjectPage.shouldCreateMavenProject() ? "target/classes" : "bin";
+    	else if (startPage.getInitialProjectContent()==IKieProjectWizardPage.SAMPLE_FILES_PROJECT)
+    		target = sampleFilesProjectPage.shouldCreateMavenProject() ? "target/classes" : "bin";
+    	
+        IFolder folder = project.getProject().getFolder(target);
         FileUtils.createFolder(folder, monitor);
         IPath path = folder.getFullPath();
         project.setOutputLocation(path, null);
@@ -86,7 +92,11 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
 	protected void setClasspath(IJavaProject project, IProgressMonitor monitor)
             throws JavaModelException, CoreException {
         super.setClasspath(project, monitor);
-    	if (startPage.getInitialProjectContent() == IKieProjectWizardPage.SAMPLE_FILES_PROJECT) {
+    	if (startPage.getInitialProjectContent()==IKieProjectWizardPage.EMPTY_PROJECT) {
+    		if (emptyProjectPage.shouldCreateMavenProject())
+	        	FileUtils.addJUnitLibrary(project, monitor);
+    	}
+    	else if (startPage.getInitialProjectContent() == IKieProjectWizardPage.SAMPLE_FILES_PROJECT) {
 	        if (sampleFilesProjectPage.shouldCreateJUnitFile())
 	        	FileUtils.addJUnitLibrary(project, monitor);
         }
@@ -110,7 +120,12 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
      */
     private void createProcess(IJavaProject project, IProgressMonitor monitor, String exampleType) throws CoreException {
 	    String fileName = "org/jbpm/eclipse/wizard/project/" + exampleType + ".bpmn.template";
-        IFolder folder = project.getProject().getFolder("src/main/resources");
+        IFolder folder = null;
+        if (sampleFilesProjectPage.shouldCreateMavenProject())
+        	folder = project.getProject().getFolder("src/main/resources/com/sample");
+        else
+        	folder = project.getProject().getFolder("src/main/resources");
+        FileUtils.createFolder(folder, monitor);
         IFile file = folder.getFile("sample.bpmn");
         InputStream inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
         if (!file.exists()) {
@@ -125,22 +140,36 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
      */
     private void createProcessSampleJUnit(IJavaProject project, String exampleType, IProgressMonitor monitor)
             throws JavaModelException, IOException {
-    	String s = "org/jbpm/eclipse/wizard/project/ProcessJUnit-" + exampleType + ".java";
-    	IRuntime runtime = startPage.getRuntime();
-        if (runtime.getVersion().startsWith("5")) {        
-        	s += ".v5.template";
-        } else {
-        	s += ".template";
+        if ("advanced".equals(exampleType)) {
+        	String s = "org/jbpm/eclipse/wizard/project/ProcessMain-advanced.java.template";
+            IFolder folder = project.getProject().getFolder("src/main/java");
+            IPackageFragmentRoot packageFragmentRoot = project
+                    .getPackageFragmentRoot(folder);
+            IPackageFragment packageFragment = packageFragmentRoot
+                    .createPackageFragment("com.sample", true, monitor);
+            InputStream inputstream = getClass().getClassLoader()
+                    .getResourceAsStream(s);
+            packageFragment.createCompilationUnit("ProcessMain.java", new String(
+            		FileUtils.readStream(inputstream)), true, monitor);
         }
-        IFolder folder = project.getProject().getFolder("src/main/java");
-        IPackageFragmentRoot packageFragmentRoot = project
-                .getPackageFragmentRoot(folder);
-        IPackageFragment packageFragment = packageFragmentRoot
-                .createPackageFragment("com.sample", true, monitor);
-        InputStream inputstream = getClass().getClassLoader()
-                .getResourceAsStream(s);
-        packageFragment.createCompilationUnit("ProcessTest.java", new String(
-                FileUtils.readStream(inputstream)), true, monitor);
+        else {
+        	String s = "org/jbpm/eclipse/wizard/project/ProcessJUnit-" + exampleType + ".java";
+        	IRuntime runtime = startPage.getRuntime();
+            if (runtime.getVersion().startsWith("5")) {        
+            	s += ".v5.template";
+            } else {
+            	s += ".template";
+            }
+            IFolder folder = project.getProject().getFolder("src/main/java");
+            IPackageFragmentRoot packageFragmentRoot = project
+                    .getPackageFragmentRoot(folder);
+            IPackageFragment packageFragment = packageFragmentRoot
+                    .createPackageFragment("com.sample", true, monitor);
+            InputStream inputstream = getClass().getClassLoader()
+                    .getResourceAsStream(s);
+            packageFragment.createCompilationUnit("ProcessTest.java", new String(
+                    FileUtils.readStream(inputstream)), true, monitor);
+        }
     }
 	
     @Override

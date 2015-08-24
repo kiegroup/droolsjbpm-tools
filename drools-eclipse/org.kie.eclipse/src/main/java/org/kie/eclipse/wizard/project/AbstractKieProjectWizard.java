@@ -224,7 +224,8 @@ public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
     	if (shouldAddMavenBuilder) {
     		FileUtils.addMavenBuilder(project, monitor);
     	}
-    	startPage.getRuntimeManager().addBuilder(project, monitor);
+    	else
+    		startPage.getRuntimeManager().addBuilder(project, monitor);
     }
     
     protected void setClasspath(IJavaProject project, IProgressMonitor monitor)
@@ -247,10 +248,8 @@ public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
 	        List<IClasspathEntry> list = new ArrayList<IClasspathEntry>();
 	        list.addAll(Arrays.asList(project.getRawClasspath()));
 	        addSourceFolder(project, list, "src/main/java", monitor);
-        	addSourceFolder(project, list, "src/main/resources", monitor);
-	        if (emptyProjectPage.shouldCreateMavenProject()) {
-	        	FileUtils.createFolder(project, "src/main/resources/META-INF", monitor);
-	        	FileUtils.createFolder(project, "src/main/resources/META-INF/maven", monitor);
+            if (startPage.getRuntime().getVersion().startsWith("6")) {
+	        	addSourceFolder(project, list, "src/main/resources", monitor);
 	        } else {
 	        	addSourceFolder(project, list, "src/main/rules", monitor);
 	        }

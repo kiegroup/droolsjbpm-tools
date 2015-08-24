@@ -31,8 +31,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
 
 public abstract class AbstractRuntimeManager implements IRuntimeManager {
 
-	private static final String KIE_RUNTIME_RECOGNIZER = "org.kie.eclipse.runtimeRecognizer";
-
     private ArrayList<IRuntimeManagerListener> listeners = new ArrayList<IRuntimeManagerListener>();
     /**
      * Add a listener to this model
@@ -102,7 +100,13 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
     }
     
     public String getBundleRuntimeName() {
-    	return "Runtime for version " + getBundleRuntimeVersion();
+    	String product = createNewRuntime().getProduct();
+    	if (product!=null && product.length()>0) {
+    		char c = Character.toUpperCase(product.charAt(0));
+    		product = c + product.substring(1);
+    		return product + " " + getBundleRuntimeVersion();
+    	}
+    	return "Runtime " + getBundleRuntimeVersion();
     }
     
     public IRuntime createBundleRuntime(String location) {
@@ -342,6 +346,7 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
 	                	}
 	                    List<String> list = new ArrayList<String>();
 	                    String[] jars = properties[index].split(";");
+	                    index = 0;
 	                    while (index<jars.length) {
 	                    	String jar = jars[index++];
 	                        jar = jar.trim();
@@ -361,7 +366,17 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
     public IRuntime[] getConfiguredRuntimes() {
         String runtimesString = getPreferenceStore().getString(getRuntimePreferenceKey());
         if (runtimesString != null) {
-            return createRuntimesFromString(runtimesString);
+        	IRuntime[] runtimes = createRuntimesFromString(runtimesString);
+        	boolean rebuild = false;
+        	for (IRuntime rt : runtimes) {
+        		if (rt.getJars()==null || rt.getJars().length==0) {
+        			rebuild = true;
+        			recognizeJars(rt);
+        		}
+        	}
+        	if (rebuild)
+        		setRuntimes(runtimes);
+        	return runtimes;
         }
         return new IRuntime[0];
     }
@@ -441,35 +456,42 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
     }
     
     public void recognizeJars(IRuntime runtime) {
+    	IRuntimeRecognizer recognizer = null;
         String path = runtime.getPath();
         if (path != null) {
             try {
                 IConfigurationElement[] config = Platform.getExtensionRegistry()
-                        .getConfigurationElementsFor(KIE_RUNTIME_RECOGNIZER);
+                        .getConfigurationElementsFor(getRuntimeRecognizerId());
                 for (IConfigurationElement e : config) {
                     Object o = e.createExecutableExtension("class");
                     if (o instanceof IRuntimeRecognizer) {
-                        String[] jars = ((IRuntimeRecognizer) o).recognizeJars(path);
+                    	recognizer = (IRuntimeRecognizer) o;
+                        String[] jars = recognizer.recognizeJars(path);
                         if (jars != null && jars.length > 0) {
                             runtime.setJars(jars);
+                            runtime.setProduct(recognizer.getProduct());
+                            runtime.setVersion(recognizer.getVersion());
                             return;
                         }
                     }
                 }
-            } catch (Exception ex) {
-                System.out.println(ex.getMessage());
+            } catch (Exception e) {
+            	logException(e);
             }
 
-            runtime.setJars(new DefaultRuntimeRecognizer().recognizeJars(path));
+            recognizer = new DefaultRuntimeRecognizer();
+            runtime.setJars(recognizer.recognizeJars(path));
+            runtime.setProduct(recognizer.getProduct());
+            runtime.setVersion(recognizer.getVersion());
         }
     }
-    
+
     ///////////////////////////////////////////////////////////////////////////////////////
     // to be implemented
     ///////////////////////////////////////////////////////////////////////////////////////
     abstract public String getBundleRuntimeLocation();
     abstract public String getRuntimePreferenceKey();
-    abstract public boolean isMavenized(IRuntime runtime);
+	abstract public String getRuntimeRecognizerId();
     abstract public String getSettingsFilename();
     abstract public String getBundleSymbolicName();
     abstract public IRuntime createNewRuntime();
