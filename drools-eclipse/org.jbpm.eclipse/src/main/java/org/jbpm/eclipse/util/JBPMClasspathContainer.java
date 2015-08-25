@@ -21,47 +21,27 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IAccessRule;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.internal.core.ClasspathAccessRule;
+import org.eclipse.jdt.internal.core.ClasspathEntry;
 import org.jbpm.eclipse.JBPMEclipsePlugin;
 
 public class JBPMClasspathContainer implements IClasspathContainer {
-
-    public static final IPath JBPM_CLASSPATH_CONTAINER_PATH = new Path("JBPM/jbpm");
 
     IClasspathEntry jbpmLibraryEntries[];
     IPath path;
     IJavaProject javaProject;
 
-    public JBPMClasspathContainer(IJavaProject project) {
-    	this(project, JBPM_CLASSPATH_CONTAINER_PATH);
-    }
-    
     public JBPMClasspathContainer(IJavaProject project, IPath path) {
         javaProject = null;
         javaProject = project;
         this.path = path;
     }
 
-    public static boolean hasJBPMClassPath(IJavaProject project) {
-    	IClasspathEntry[] classpathEntries;
-		try {
-			classpathEntries = project.getRawClasspath();
-	    	for (int i = 0; i < classpathEntries.length; i++) {
-	    		if (JBPM_CLASSPATH_CONTAINER_PATH.equals(classpathEntries[i].getPath().toString())) {
-	    			return true;
-	    		}
-	    	}
-		}
-		catch (JavaModelException e) {
-			JBPMEclipsePlugin.log(e);
-		}
-    	return false;
-    }
-    
     public IClasspathEntry[] getClasspathEntries() {
         if (jbpmLibraryEntries == null) {
             jbpmLibraryEntries = createJBPMLibraryEntries(javaProject);
@@ -94,7 +74,7 @@ public class JBPMClasspathContainer implements IClasspathContainer {
     }
 
     private String[] getJarNames(IJavaProject project) {
-    	return JBPMRuntimeManager.getDefault().getRuntimeJars(project.getProject());
+    	return JBPMRuntimeManager.getJBPMRuntimeJars(project.getProject());
     }
 
 }

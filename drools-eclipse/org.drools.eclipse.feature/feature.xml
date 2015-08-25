@@ -43,17 +43,6 @@ Raleigh NC 27606 USA.
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.gef"/>
       <import plugin="com.ibm.icu"/>
-      <import plugin="org.eclipse.equinox.p2.metadata" version="2.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.equinox.p2.core" version="2.2.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.equinox.p2.metadata.repository" version="1.2.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.equinox.p2.repository" version="2.2.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jdt.junit"/>
-      <import plugin="org.eclipse.ui.views.properties.tabbed"/>
-      <import plugin="org.eclipse.ltk.core.refactoring" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ltk.ui.refactoring" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.swt"/>
-      <import plugin="org.eclipse.jgit"/>
-      <import plugin="org.kie.eclipse"/>
    </requires>
 
    <plugin

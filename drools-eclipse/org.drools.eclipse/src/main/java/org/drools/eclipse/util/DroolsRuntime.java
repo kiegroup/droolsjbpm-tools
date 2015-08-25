@@ -16,12 +16,42 @@
 
 package org.drools.eclipse.util;
 
-import org.kie.eclipse.runtime.AbstractRuntime;
+public class DroolsRuntime {
 
-public class DroolsRuntime extends AbstractRuntime {
+    private String name;
+    private String path;
+    private boolean isDefault;
+    private String[] jars;
 
-	@Override
-	public String getProduct() {
-		return "drools";
-	}
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public boolean isDefault() {
+        return isDefault;
+    }
+
+    public void setDefault(boolean isDefault) {
+        this.isDefault = isDefault;
+    }
+
+    public String[] getJars() {
+        return jars;
+    }
+
+    public void setJars(String[] jars) {
+        this.jars = jars;
+    }
 }

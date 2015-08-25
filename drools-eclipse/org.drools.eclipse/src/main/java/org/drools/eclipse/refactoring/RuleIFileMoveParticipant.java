@@ -42,7 +42,6 @@ import org.eclipse.ltk.core.refactoring.participants.MoveParticipant;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringProcessor;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.ReplaceEdit;
-import org.kie.eclipse.utils.FileUtils;
 
 /**
  * Participant to generate refactoring when types are moved or a package is renamed
@@ -78,7 +77,7 @@ public class RuleIFileMoveParticipant extends MoveParticipant {
         for (IFile drlFile : drlProjectDetector.detect(file.getProject())) {
 
             content = refactoringContent.getIFileContent(drlFile);
-            if (content==null && (content = FileUtils.readFile(drlFile))==null)
+            if (content==null && (content = FileUtil.readFile(drlFile))==null)
                 continue;
 
             String toReplace = currentName + "." + className;

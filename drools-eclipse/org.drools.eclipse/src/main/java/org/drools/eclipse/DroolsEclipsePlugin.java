@@ -28,13 +28,24 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.util.StringUtils;
+import org.drools.eclipse.DRLInfo.FunctionInfo;
+import org.drools.eclipse.DRLInfo.RuleInfo;
+import org.drools.eclipse.builder.DroolsBuilder;
+import org.drools.eclipse.builder.ResourceDescr;
+import org.drools.eclipse.builder.Util;
+import org.drools.eclipse.dsl.editor.DSLAdapter;
+import org.drools.eclipse.editors.AbstractRuleEditor;
+import org.drools.eclipse.preferences.IDroolsConstants;
+import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.EnumDeclarationDescr;
@@ -46,19 +57,8 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.util.StringUtils;
-import org.drools.core.xml.SemanticModules;
-import org.drools.eclipse.DRLInfo.FunctionInfo;
-import org.drools.eclipse.DRLInfo.RuleInfo;
-import org.drools.eclipse.builder.DroolsBuilder;
-import org.drools.eclipse.builder.ResourceDescr;
-import org.drools.eclipse.builder.Util;
-import org.drools.eclipse.dsl.editor.DSLAdapter;
-import org.drools.eclipse.editors.AbstractRuleEditor;
-import org.drools.eclipse.preferences.IDroolsConstants;
-import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.template.parser.DecisionTableParseException;
+import org.drools.core.xml.SemanticModules;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
@@ -86,13 +86,13 @@ import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.process.core.Process;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.node.RuleSetNode;
-import org.kie.api.definition.process.Node;
-import org.kie.api.io.Resource;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.api.definition.process.Node;
+import org.kie.api.io.Resource;
 import org.kie.internal.io.ResourceFactory;
 import org.osgi.framework.BundleContext;
 
@@ -122,7 +122,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
     private FormColors                  ruleBuilderFormColors;
     
     private boolean 					forceFullBuild;
-    
+
     /**
      * The constructor.
      */
@@ -134,7 +134,7 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
     /**
      * This method is called upon plug-in activation
      */
-	public void start(BundleContext context) throws Exception {
+    public void start(BundleContext context) throws Exception {
         super.start( context );
         IPreferenceStore preferenceStore = getPreferenceStore();
         useCachePreference = preferenceStore.getBoolean( IDroolsConstants.CACHE_PARSED_RULES );
@@ -148,12 +148,9 @@ public class DroolsEclipsePlugin extends AbstractUIPlugin {
                 }
             }
         } );
+
     }
 
-    public static BundleContext getContext() {
-    	return plugin.getBundle().getBundleContext();
-    }
-    
     public void clearCache() {
         parsedRules.clear();
         compiledRules.clear();

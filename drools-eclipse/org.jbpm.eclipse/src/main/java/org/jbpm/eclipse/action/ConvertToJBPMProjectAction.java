@@ -17,15 +17,18 @@
 package org.jbpm.eclipse.action;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.jbpm.eclipse.JBPMEclipsePlugin;
-import org.jbpm.eclipse.util.JBPMRuntimeManager;
+import org.jbpm.eclipse.wizard.project.NewJBPMProjectWizard;
 
 public class ConvertToJBPMProjectAction implements IObjectActionDelegate {
 
@@ -37,7 +40,7 @@ public class ConvertToJBPMProjectAction implements IObjectActionDelegate {
 	public void run(IAction action) {
 		if (project != null && project.exists()) {
 			try {
-		    	JBPMRuntimeManager.getDefault().addBuilder(project, null);
+				addJBPMLibraries(project, null);
 			} catch (Throwable t) {
 				JBPMEclipsePlugin.log(t);
 			}
@@ -61,4 +64,15 @@ public class ConvertToJBPMProjectAction implements IObjectActionDelegate {
 			}
 		}
 	}
+	
+    public static void addJBPMLibraries(IJavaProject project, IProgressMonitor monitor) throws JavaModelException {
+    	IClasspathEntry[] classpathEntries = project.getRawClasspath();
+    	for (int i = 0; i < classpathEntries.length; i++) {
+    		if (NewJBPMProjectWizard.JBPM_CLASSPATH_CONTAINER_PATH.equals(classpathEntries[i].getPath().toString())) {
+    			return;
+    		}
+    	}
+		NewJBPMProjectWizard.addJBPMLibraries(project, null);
+    }
+            
 }

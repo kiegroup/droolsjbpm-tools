@@ -23,7 +23,8 @@ import java.util.jar.JarFile;
 import org.drools.eclipse.util.DroolsRuntime;
 import org.drools.eclipse.util.DroolsRuntimeManager;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.jboss.tools.runtime.core.model.AbstractRuntimeDetectorDelegate;
+import
+org.jboss.tools.runtime.core.model.AbstractRuntimeDetectorDelegate;
 import org.jboss.tools.runtime.core.model.RuntimeDefinition;
 
 public class DroolsHandler extends AbstractRuntimeDetectorDelegate {
@@ -36,7 +37,8 @@ public class DroolsHandler extends AbstractRuntimeDetectorDelegate {
 
     @Override
     public void initializeRuntimes(List<RuntimeDefinition> serverDefinitions) {
-        DroolsRuntime[] existingRuntimes = (DroolsRuntime[]) DroolsRuntimeManager.getDefault().getConfiguredRuntimes();
+        DroolsRuntime[] existingRuntimes = DroolsRuntimeManager
+                .getDroolsRuntimes();
         List<DroolsRuntime> droolsRuntimes = new ArrayList<DroolsRuntime>();
         if (existingRuntimes != null) {
             for (DroolsRuntime runtime : existingRuntimes) {
@@ -46,7 +48,7 @@ public class DroolsHandler extends AbstractRuntimeDetectorDelegate {
         initializeInternal(serverDefinitions, droolsRuntimes);
         if (droolsRuntimes.size() > 0) {
             DroolsRuntime[] dra = droolsRuntimes.toArray(new DroolsRuntime[0]);
-            DroolsRuntimeManager.getDefault().setRuntimes(dra);
+            DroolsRuntimeManager.setDroolsRuntimes(dra);
         }
 
     }
@@ -66,7 +68,7 @@ public class DroolsHandler extends AbstractRuntimeDetectorDelegate {
                         runtime.setName(newName);
 
                         runtime.setPath(droolsRoot.getAbsolutePath());
-                        DroolsRuntimeManager.getDefault().recognizeJars(runtime);
+                        DroolsRuntimeManager.recognizeJars(runtime);
                         runtime.setDefault(true);
                         droolsRuntimes.add(runtime);
                     }
@@ -86,7 +88,7 @@ public class DroolsHandler extends AbstractRuntimeDetectorDelegate {
     }
     
     private static DroolsRuntime getRuntimeForLocation(String loc) {
-        DroolsRuntime[] droolsRuntimes = (DroolsRuntime[]) DroolsRuntimeManager.getDefault().getConfiguredRuntimes();
+        DroolsRuntime[] droolsRuntimes = DroolsRuntimeManager.getDroolsRuntimes();
         for (DroolsRuntime dr : droolsRuntimes) {
             String location = dr.getPath();
             if (location != null && location.equals(loc)) {
@@ -97,7 +99,7 @@ public class DroolsHandler extends AbstractRuntimeDetectorDelegate {
     }
     
     private boolean droolsRuntimeNameExists(String name) {
-        DroolsRuntime[] droolsRuntimes = (DroolsRuntime[]) DroolsRuntimeManager.getDefault().getConfiguredRuntimes();
+        DroolsRuntime[] droolsRuntimes = DroolsRuntimeManager.getDroolsRuntimes();
     	for( int i = 0; i < droolsRuntimes.length; i++ ) {
     		if( droolsRuntimes[i].getName().equals(name))
     			return true;

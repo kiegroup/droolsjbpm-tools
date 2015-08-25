@@ -16,105 +16,216 @@
 
 package org.jbpm.eclipse.util;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import org.drools.eclipse.builder.DroolsBuilder;
-import org.eclipse.core.resources.ICommand;
-import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jdt.core.IClasspathContainer;
-import org.eclipse.jdt.core.IClasspathEntry;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.jbpm.eclipse.JBPMEclipsePlugin;
 import org.jbpm.eclipse.preferences.JBPMConstants;
-import org.kie.eclipse.runtime.AbstractRuntimeManager;
-import org.kie.eclipse.runtime.DefaultRuntimeRecognizer;
-import org.kie.eclipse.runtime.IRuntime;
-import org.kie.eclipse.runtime.IRuntimeRecognizer;
 
-public class JBPMRuntimeManager extends AbstractRuntimeManager {
+public class JBPMRuntimeManager {
+	
+	private static final String JBPM_RUNTIME_RECOGNIZER = "org.jbpm.eclipse.runtimeRecognizer";
 
-	private static final String RUNTIME_RECOGNIZER = "org.jbpm.eclipse.runtimeRecognizer";
+	public static void createDefaultRuntime(String location) {
+		List<String> jars = new ArrayList<String>();
+		// get all jbpm jars from jbpm eclipse plugin
+		String s = getJBPMLocation();
+        File file = (new Path(s)).toFile();
+        File[] files = file.listFiles();
+        for (int i = 0; i < files.length; i++) {
+	        if (files[i].isDirectory() && files[i].getName().equals("lib")) {
+	            File[] jarFiles = files[i].listFiles();
+	            for (int j = 0; j < jarFiles.length; j++) {
+	                if (jarFiles[j].getPath().endsWith(".jar")) {
+	                    jars.add(jarFiles[j].getAbsolutePath());
+	                }
+	            }
+            }
+        }
+        // get eclipse jdt jar
+        try {
+            jars.add(FileLocator.getBundleFile(Platform.getBundle("org.eclipse.jdt.core")).getAbsolutePath());
+        } catch (IOException ex) {
+            JBPMEclipsePlugin.log(ex);
+        }
+	    // copy jars to specified location
+	    if (!location.endsWith(File.separator)) {
+	    	location = location + File.separator;
+	    }
+	    for (String jar: jars) {
+	    	try {
+	    		File jarFile = new File(jar);
+		    	FileChannel inChannel = new FileInputStream(jarFile).getChannel();
+		        FileChannel outChannel = new FileOutputStream(new File(
+	        		location + jarFile.getName())).getChannel();
+		        try {
+		            inChannel.transferTo(0, inChannel.size(), outChannel);
+		        } 
+		        catch (IOException e) {
+		            throw e;
+		        }
+		        finally {
+		            if (inChannel != null) inChannel.close();
+		            if (outChannel != null) outChannel.close();
+		        }
+	    	} catch (Throwable t) {
+	    		JBPMEclipsePlugin.log(t);
+	    	}
+	    }
+	}
 
-    private static JBPMRuntimeManager manager;
-
-    public static JBPMRuntimeManager getDefault() {
-    	if( manager == null )
-    		manager = new JBPMRuntimeManager();
-    	return manager;
+	private static String getJBPMLocation() {
+        try {
+            return FileLocator.toFileURL(Platform.getBundle("org.jbpm.eclipse").getEntry("/")).getFile().toString();
+        } catch (IOException e) {
+            JBPMEclipsePlugin.log(e);
+        }
+        return null;
+    }
+	
+	private static String generateString(JBPMRuntime[] jBPMRuntimes) {
+		String result = "";
+		for (JBPMRuntime runtime: jBPMRuntimes) {
+			result += runtime.getName() + "#" + runtime.getPath() + "#" + runtime.isDefault() + "# ";
+			if (runtime.getJars() != null) {
+				for (String jar: runtime.getJars()) {
+					result += jar + ";";
+				}
+			}
+			result += "###";
+		}
+		return result;
+	}
+	
+	private static JBPMRuntime[] generateRuntimes(String s) {
+		List<JBPMRuntime> result = new ArrayList<JBPMRuntime>();
+		if (s != null && !"".equals(s)) {
+			String[] runtimeStrings = s.split("###");
+			for (String runtimeString: runtimeStrings) {
+				String[] properties = runtimeString.split("#");
+				JBPMRuntime runtime = new JBPMRuntime();
+				runtime.setName(properties[0]);
+				runtime.setPath(properties[1]);
+				runtime.setDefault("true".equals(properties[2]));
+				if (properties.length > 3) {
+					List<String> list = new ArrayList<String>();
+					String[] jars = properties[3].split(";");
+					for (String jar: jars) {
+						jar = jar.trim();
+						if (jar.length() > 0) {
+							list.add(jar);
+						}
+					}
+					runtime.setJars(list.toArray(new String[list.size()]));
+				}
+				result.add(runtime);
+			}
+		}
+		return result.toArray(new JBPMRuntime[result.size()]);
+	}
+	
+	public static JBPMRuntime[] getJBPMRuntimes() {
+		String runtimesString = JBPMEclipsePlugin.getDefault().getPreferenceStore()
+			.getString(JBPMConstants.JBPM_RUNTIMES);
+		if (runtimesString != null) {
+			return generateRuntimes(runtimesString);
+		}
+		return new JBPMRuntime[0];
+	}
+	
+	public static void setJBPMRuntimes(JBPMRuntime[] runtimes) {
+		JBPMEclipsePlugin.getDefault().getPreferenceStore().setValue(JBPMConstants.JBPM_RUNTIMES,
+			JBPMRuntimeManager.generateString(runtimes));
+	}
+	
+	public static JBPMRuntime getJBPMRuntime(String name) {
+		JBPMRuntime[] runtimes = getJBPMRuntimes();
+		for (JBPMRuntime runtime: runtimes) {
+			if (runtime.getName().equals(name)) {
+				return runtime;
+			}
+		}
+		return null;
+	}
+	
+	public static JBPMRuntime getDefaultJBPMRuntime() {
+		JBPMRuntime[] runtimes = getJBPMRuntimes();
+		for (JBPMRuntime runtime: runtimes) {
+			if (runtime.isDefault()) {
+				return runtime;
+			}
+		}
+		return null;
+	}
+	
+    public static String getJBPMRuntime(IProject project) {
+        try {
+        	IFile file = project.getFile(".settings/.jbpm.runtime");
+        	if (file.exists()) {
+        		BufferedReader reader = new BufferedReader(new InputStreamReader(file.getContents()));
+        		String location = reader.readLine();
+        		if (location.startsWith("<runtime>") && location.endsWith("</runtime>")) {
+        			return location.substring(9, location.length() - 10);
+        		}
+        	}
+        } catch (Exception e) {
+            JBPMEclipsePlugin.log(e);
+        }
+        return null;
     }
     
-	@Override
-	public String getBundleRuntimeLocation() {
-    	return ".jbpm.runtime";
-	}
-	
-	@Override
-	public String getRuntimePreferenceKey() {
-		return JBPMConstants.JBPM_RUNTIMES;
-	}
-	
-	@Override
-	public String getSettingsFilename() {
-		return ".jbpm.runtime";
-	}
-	@Override
-	public String getBundleSymbolicName() {
-		return "org.jbpm.eclipse";
-	}
-	@Override
-	public IRuntime createNewRuntime() {
-		return new JBPMRuntime();
-	}
-	@Override
-	public void logException(Throwable t) {
-		JBPMEclipsePlugin.log(t);
-	}
-	
-	@Override
-	public IPreferenceStore getPreferenceStore() {
-		return JBPMEclipsePlugin.getDefault().getPreferenceStore();
-	}
-	
-	@Override
-	public void addBuilder(IJavaProject project, IProgressMonitor monitor) throws JavaModelException, CoreException {
-		if (!JBPMClasspathContainer.hasJBPMClassPath(project)) {
-			IClasspathContainer cp = new JBPMClasspathContainer(project);
-	        JavaCore.setClasspathContainer(cp.getPath(),
-	                new IJavaProject[] { project },
-	                new IClasspathContainer[] { cp }, monitor);
-			List<IClasspathEntry> list = new ArrayList<IClasspathEntry>();
-			list.addAll(Arrays.asList(project.getRawClasspath()));
-			list.add(JavaCore.newContainerEntry(cp.getPath()));
-			project.setRawClasspath((IClasspathEntry[]) list.toArray(new IClasspathEntry[list.size()]), monitor);
-		}
-		
-        IProjectDescription description = project.getProject().getDescription();
-        ICommand[] commands = description.getBuildSpec();
-        for (ICommand cmd : commands) {
-        	if (cmd.getBuilderName().equals(DroolsBuilder.BUILDER_ID))
-        		return;
+    public static String[] getJBPMRuntimeJars(IProject project) {
+        String runtimeName = getJBPMRuntime(project);
+        JBPMRuntime runtime = null;
+        if (runtimeName == null) {
+        	runtime = getDefaultJBPMRuntime();
+        } else {
+        	runtime = getJBPMRuntime(runtimeName);
         }
-        ICommand[] newCommands = new ICommand[commands.length + 1];
-        System.arraycopy(commands, 0, newCommands, 0, commands.length);
-        
-        ICommand droolsCommand = description.newCommand();
-        droolsCommand.setBuilderName(DroolsBuilder.BUILDER_ID);
-        newCommands[commands.length] = droolsCommand;
-        
-        description.setBuildSpec(newCommands);
-        project.getProject().setDescription(description, monitor);
-	}
+        if (runtime == null) {
+        	return null;
+        }
+        if (runtime.getJars() == null || runtime.getJars().length == 0) {
+    		recognizeJars(runtime);
+    	}
+        return runtime.getJars();
+    }
     
-	public String getRuntimeRecognizerId() {
-		return RUNTIME_RECOGNIZER;
+    public static void recognizeJars(JBPMRuntime runtime) {
+    	String path = runtime.getPath();
+		if (path != null) {
+			try {
+				IConfigurationElement[] config = Platform.getExtensionRegistry()
+						.getConfigurationElementsFor(JBPM_RUNTIME_RECOGNIZER);
+				for (IConfigurationElement e : config) {
+					Object o = e.createExecutableExtension("class");
+					if (o instanceof JBPMRuntimeRecognizer) {
+						String[] jars = ((JBPMRuntimeRecognizer) o).recognizeJars(path);
+						if (jars != null && jars.length > 0) {
+							runtime.setJars(jars);
+							return;
+						}
+					}
+				}
+			} catch (Exception ex) {
+				System.out.println(ex.getMessage());
+			}
+
+			runtime.setJars(new DefaultJBPMRuntimeRecognizer().recognizeJars(path));
+		}
 	}
+
 }

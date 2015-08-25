@@ -15,10 +15,6 @@
   <name>Drools :: Eclipse :: Base</name>
   <description>Drools Eclipse plugin</description>
 
-  <properties>
-    <illegaltransitivereportonly>true</illegaltransitivereportonly>
-  </properties>
-
   <build>
     <plugins>
       <plugin>
@@ -107,6 +103,7 @@
                 xstream,
                 jbpm-flow,
                 jbpm-flow-builder,
+                jbpm-test,
                 slf4j-api,
                 protobuf-java
               </includeArtifactIds>
@@ -154,6 +151,10 @@
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-bpmn2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-test</artifactId>
     </dependency>
 
     <dependency>

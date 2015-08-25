@@ -1,12 +1,17 @@
 package org.kie.eclipse.navigator.view.utils;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.drools.eclipse.util.DroolsRuntimeManager;
+import org.drools.eclipse.builder.DroolsBuilder;
+import org.drools.eclipse.util.DroolsClasspathContainer;
+import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
@@ -26,8 +31,11 @@ import org.eclipse.egit.core.EclipseGitProgressTransformer;
 import org.eclipse.egit.core.op.ConnectProviderOperation;
 import org.eclipse.egit.core.project.RepositoryFinder;
 import org.eclipse.egit.core.project.RepositoryMapping;
+import org.eclipse.jdt.core.IClasspathContainer;
+import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window.IExceptionHandler;
@@ -52,8 +60,6 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.kie.eclipse.navigator.view.actions.repository.KieCredentialsProvider;
 import org.kie.eclipse.navigator.view.content.ProjectNode;
 import org.kie.eclipse.navigator.view.content.RepositoryNode;
-import org.kie.eclipse.runtime.IRuntime;
-import org.kie.eclipse.runtime.IRuntimeManager;
 import org.kie.eclipse.server.IKieRepositoryHandler;
 import org.kie.eclipse.server.IKieServerHandler;
 import org.kie.eclipse.server.IKieServiceDelegate;
@@ -67,7 +73,7 @@ import com.jcraft.jsch.Session;
 
 public class ActionUtils {
 
-	public static IRuntimeManager runtimeManager = DroolsRuntimeManager.getDefault();
+//	public static IRuntimeManager runtimeManager = DroolsRuntimeManager.getDefault();
 	private ActionUtils() {
 	}
 
@@ -254,6 +260,7 @@ public class ActionUtils {
 							connect.execute(monitor);
 							
 		            		FileUtils.createGitIgnore(javaProject, monitor);
+		            		FileUtils.addMavenLibraries(javaProject, monitor);
 						}
 					}
 				}
@@ -276,15 +283,15 @@ public class ActionUtils {
 		return ar.get();
 	}
 
-	public static IJavaProject createOrOpenProject(final ProjectNode projectNode, final String projectName, final IProgressMonitor monitor)
-			throws CoreException, IllegalArgumentException {
+	public static IJavaProject createOrOpenProject(final ProjectNode projectNode, final String projectName,
+			final IProgressMonitor monitor) throws CoreException, IllegalArgumentException {
 		final AtomicReference<IJavaProject> ar = new AtomicReference<IJavaProject>();
 		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		final IProject project = workspace.getRoot().getProject(projectName);
-		final RepositoryNode repoNode = (RepositoryNode)projectNode.getParent();
+		final RepositoryNode repoNode = (RepositoryNode) projectNode.getParent();
 		Repository repository = ((KieRepositoryHandler) repoNode.getHandler()).getRepository();
 		final IPath location = new Path(repository.getWorkTree().toString()).append(projectName);
-		
+
 		if (project.exists()) {
 			if (!project.isOpen()) {
 				IPath oldLocation = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME).getLocation();
@@ -296,53 +303,83 @@ public class ActionUtils {
 			}
 			throw new IllegalArgumentException("The Project " + projectName + " already exists");
 		}
-		
-        WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
-            protected void execute(IProgressMonitor monitor)
-                    throws CoreException {
-                try {
-            		IProjectDescription pd = workspace.newProjectDescription(projectName);
-            		pd.setLocation(location);
-            		// add the natures and builders
-                	FileUtils.addJavaNature(pd);
-                	FileUtils.addMavenNature(pd);
-            		project.create(pd, new SubProgressMonitor(monitor, 30));
-            		project.open(IResource.BACKGROUND_REFRESH, new SubProgressMonitor(monitor, 50));
-            		
-                    // create a default runtime if one does not exist
-                    IRuntime runtime = runtimeManager.getEffectiveRuntime(null, true);
-                    runtimeManager.setRuntime(runtime, project, monitor);
-                    
-                    IJavaProject javaProject = JavaCore.create(project);
-                    FileUtils.createOutputLocation(javaProject, "bin", monitor);
-                    FileUtils.addJRELibraries(javaProject, monitor);
-                    
-                	FileUtils.addJavaBuilder(javaProject, monitor);
-                	FileUtils.addMavenBuilder(javaProject, monitor);
-                	runtimeManager.addBuilder(javaProject, monitor);
-                	
-                	FileUtils.addFolderToClasspath(javaProject, "src/main/java", true, monitor);
-                	FileUtils.addFolderToClasspath(javaProject, "src/main/resources", true, monitor);
-                	FileUtils.addFolderToClasspath(javaProject, "src/main/rules", true, monitor);
+
+		WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
+			protected void execute(IProgressMonitor monitor) throws CoreException {
+				try {
+					IProjectDescription pd = workspace.newProjectDescription(projectName);
+					pd.setLocation(location);
+					// add the natures and builders
+					FileUtils.addJavaNature(pd);
+					FileUtils.addMavenNature(pd);
+					project.create(pd, new SubProgressMonitor(monitor, 30));
+					project.open(IResource.BACKGROUND_REFRESH, new SubProgressMonitor(monitor, 50));
+
+					// create a default runtime if one does not exist
+//					IRuntime runtime = runtimeManager.getEffectiveRuntime(null, true);
+//					runtimeManager.setRuntime(runtime, project, monitor);
+
+					IJavaProject javaProject = JavaCore.create(project);
+					FileUtils.createOutputLocation(javaProject, "bin", monitor);
+					FileUtils.addJRELibraries(javaProject, monitor);
+
+					FileUtils.addJavaBuilder(javaProject, monitor);
+					FileUtils.addMavenBuilder(javaProject, monitor);
+					addDroolsBuilder(javaProject, monitor);
+
+					FileUtils.addFolderToClasspath(javaProject, "src/main/java", true, monitor);
+					FileUtils.addFolderToClasspath(javaProject, "src/main/resources", true, monitor);
+					FileUtils.addFolderToClasspath(javaProject, "src/main/rules", true, monitor);
 					ar.set(javaProject);
 
 					project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
-                    
-                } catch (Exception e) {
-                    ErrorDialog.openError(Display.getDefault().getActiveShell(),
-                    	"Problem creating new project",
-                        e.getMessage(), null);
-                }
-            }
-        };
-        try {
-        	op.run(monitor);
-        } catch (Throwable t) {
-            t.printStackTrace();
+
+				}
+				catch (Exception e) {
+					ErrorDialog.openError(Display.getDefault().getActiveShell(), "Problem creating new project", e.getMessage(),
+							null);
+				}
+			}
+		};
+		try {
+			op.run(monitor);
+		}
+		catch (Throwable t) {
+			t.printStackTrace();
+		}
+
+		return ar.get();
+
+	}
+	
+	public static void addDroolsBuilder(IJavaProject project, IProgressMonitor monitor) throws JavaModelException, CoreException {
+//		if (!DroolsClasspathContainer.hasDroolsClasspath(project)) {
+//			IClasspathContainer cp = new DroolsClasspathContainer(project);
+//	        JavaCore.setClasspathContainer(cp.getPath(),
+//	                new IJavaProject[] { project },
+//	                new IClasspathContainer[] { cp }, monitor);
+//			List<IClasspathEntry> list = new ArrayList<IClasspathEntry>();
+//			list.addAll(Arrays.asList(project.getRawClasspath()));
+//			list.add(JavaCore.newContainerEntry(cp.getPath()));
+//			project.setRawClasspath((IClasspathEntry[]) list.toArray(new IClasspathEntry[list.size()]), monitor);
+//		}
+		
+        IProjectDescription description = project.getProject().getDescription();
+        ICommand[] commands = description.getBuildSpec();
+        for (ICommand cmd : commands) {
+        	if (cmd.getBuilderName().equals(DroolsBuilder.BUILDER_ID))
+        		return;
         }
-
-        return ar.get();
-
+        ICommand[] newCommands = new ICommand[commands.length + 1];
+        System.arraycopy(commands, 0, newCommands, 0, commands.length);
+        
+        ICommand droolsCommand = description.newCommand();
+        droolsCommand.setBuilderName(DroolsBuilder.BUILDER_ID);
+        newCommands[commands.length] = droolsCommand;
+        
+        description.setBuildSpec(newCommands);
+        project.getProject().setDescription(description, monitor);
+		
 	}
 
 	public static void createProjectArtifacts(final IJavaProject javaProject, final String groupId, final String artifactId, final String version, final IProgressMonitor monitor)

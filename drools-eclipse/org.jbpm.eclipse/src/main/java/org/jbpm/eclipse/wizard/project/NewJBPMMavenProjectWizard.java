@@ -16,7 +16,6 @@
 
 package org.jbpm.eclipse.wizard.project;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -56,33 +55,25 @@ import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 import org.jbpm.eclipse.JBPMEclipsePlugin;
 import org.jbpm.eclipse.util.JBPMClasspathContainer;
-import org.jbpm.eclipse.util.JBPMRuntime;
 
 /**
  * A wizard to create a new jBPM project.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  */
-public class NewJBPMProjectWizard extends BasicNewResourceWizard {
+public class NewJBPMMavenProjectWizard extends BasicNewResourceWizard {
 
-    public static final String JBPM_CLASSPATH_CONTAINER_PATH = "JBPM/jbpm";
     public static final String JUNIT_CLASSPATH_CONTAINER_PATH = "org.eclipse.jdt.junit.JUNIT_CONTAINER/4";
     
     private IProject newProject;
     private WizardNewProjectCreationPage mainPage;
-    private NewJBPMProjectWizardPage extraPage;
-    private NewJBPMProjectRuntimeWizardPage runtimePage;
     
     public void addPages() {
         super.addPages();
         mainPage = new WizardNewProjectCreationPage("basicNewProjectPage");
-        mainPage.setTitle("New jBPM Project");
-        mainPage.setDescription("Create a new jBPM Project");
+        mainPage.setTitle("New jBPM Maven Project");
+        mainPage.setDescription("Create a new jBPM Maven Project");
         this.addPage(mainPage);
-        extraPage = new NewJBPMProjectWizardPage();
-        addPage(extraPage);
-        runtimePage = new NewJBPMProjectRuntimeWizardPage();
-        addPage(runtimePage);
         setNeedsProgressMonitor(true);
     }
 
@@ -102,14 +93,13 @@ public class NewJBPMProjectWizard extends BasicNewResourceWizard {
                     throws CoreException {
                 try {
                 	IJavaProject project = JavaCore.create(newProject);
-                	createJBPMRuntime(project, monitor);
                     createOutputLocation(project, monitor);
                     addJavaBuilder(project, monitor);
                     setClasspath(project, monitor);
                     createInitialContent(project, monitor);
                 	newProject.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
                 } catch (IOException _ex) {
-                	ErrorDialog.openError(getShell(), "Problem creating jBPM project",
+                	ErrorDialog.openError(getShell(), "Problem creating jBPM Maven project",
                         null, null);
                 }
             }
@@ -177,6 +167,7 @@ public class NewJBPMProjectWizard extends BasicNewResourceWizard {
         List list = new ArrayList();
         list.addAll(Arrays.asList(projectDescription.getNatureIds()));
         list.add("org.eclipse.jdt.core.javanature");
+        list.add("org.eclipse.m2e.core.maven2Nature");
         projectDescription.setNatureIds((String[]) list
             .toArray(new String[list.size()]));
     }
@@ -198,26 +189,9 @@ public class NewJBPMProjectWizard extends BasicNewResourceWizard {
         }
     }
     
-    private void createJBPMRuntime(IJavaProject project, IProgressMonitor monitor) throws CoreException {
-		JBPMRuntime runtime = runtimePage.getJBPMRuntime();
-		if (runtime != null) {
-			IFile file = project.getProject().getFile(".settings/.jbpm.runtime");
-			String runtimeString = "<runtime>" + runtime.getName() + "</runtime>";
-			if (!file.exists()) {
-				IFolder folder = project.getProject().getFolder(".settings");
-				if (!folder.exists()) {
-					folder.create(true, true, null);
-				}
-				file.create(new ByteArrayInputStream(runtimeString.getBytes()), true, null);
-			} else {
-				file.setContents(new ByteArrayInputStream(runtimeString.getBytes()), true, false, null);
-			}
-		}
-	}
-
     private void createOutputLocation(IJavaProject project, IProgressMonitor monitor)
             throws JavaModelException, CoreException {
-        IFolder folder = project.getProject().getFolder("bin");
+        IFolder folder = project.getProject().getFolder("target/classes");
         createFolder(folder, monitor);
         IPath path = folder.getFullPath();
         project.setOutputLocation(path, null);
@@ -233,9 +207,9 @@ public class NewJBPMProjectWizard extends BasicNewResourceWizard {
         javaCommand.setBuilderName("org.eclipse.jdt.core.javabuilder");
         newCommands[commands.length] = javaCommand;
         
-        ICommand droolsCommand = description.newCommand();
-        droolsCommand.setBuilderName("org.drools.eclipse.droolsbuilder");
-        newCommands[commands.length + 1] = droolsCommand;
+        ICommand mavenCommand = description.newCommand();
+        mavenCommand.setBuilderName("org.eclipse.m2e.core.maven2Builder");
+        newCommands[commands.length + 1] = mavenCommand;
         
         description.setBuildSpec(newCommands);
         project.getProject().setDescription(description, monitor);
@@ -246,10 +220,8 @@ public class NewJBPMProjectWizard extends BasicNewResourceWizard {
         project.setRawClasspath(new IClasspathEntry[0], monitor);
         addSourceFolders(project, monitor);
         addJRELibraries(project, monitor);
-        addJBPMLibraries(project, monitor);
-        if (extraPage.createJUnitFile()) {
-        	addJUnitLibrary(project, monitor);
-        }
+    	addJUnitLibrary(project, monitor);
+    	addMavenClasspathContainer(project, monitor);
     }
 
     private void addSourceFolders(IJavaProject project, IProgressMonitor monitor) throws JavaModelException, CoreException {
@@ -268,35 +240,12 @@ public class NewJBPMProjectWizard extends BasicNewResourceWizard {
             .toArray(new IClasspathEntry[list.size()]), monitor);
     }
 
-    private static IPath getJbpmClassPathContainerPath() {
-        return new Path(JBPM_CLASSPATH_CONTAINER_PATH);
-    }
-
     private static IPath getJUnitClassPathContainerPath() {
         return new Path(JUNIT_CLASSPATH_CONTAINER_PATH);
     }
 
-    private static void createJBPMLibraryContainer(IJavaProject project, IProgressMonitor monitor)
-            throws JavaModelException {
-        JavaCore.setClasspathContainer(getJbpmClassPathContainerPath(),
-            new IJavaProject[] { project },
-            new IClasspathContainer[] { new JBPMClasspathContainer(
-                    project, getJbpmClassPathContainerPath()) }, monitor);
-    }
-
-    public static void addJBPMLibraries(IJavaProject project, IProgressMonitor monitor)
-            throws JavaModelException {
-        createJBPMLibraryContainer(project, monitor);
-        List list = new ArrayList();
-        list.addAll(Arrays.asList(project.getRawClasspath()));
-        list.add(JavaCore.newContainerEntry(getJbpmClassPathContainerPath()));
-        project.setRawClasspath((IClasspathEntry[]) list
-            .toArray(new IClasspathEntry[list.size()]), monitor);
-    }
-
     public static void addJUnitLibrary(IJavaProject project, IProgressMonitor monitor)
     		throws JavaModelException {
-		createJBPMLibraryContainer(project, monitor);
 		List list = new ArrayList();
 		list.addAll(Arrays.asList(project.getRawClasspath()));
 		list.add(JavaCore.newContainerEntry(getJUnitClassPathContainerPath()));
@@ -304,16 +253,26 @@ public class NewJBPMProjectWizard extends BasicNewResourceWizard {
 		    .toArray(new IClasspathEntry[list.size()]), monitor);
     }
 
+    public static void addMavenClasspathContainer(IJavaProject project, IProgressMonitor monitor)
+    		throws JavaModelException {
+		List list = new ArrayList();
+		list.addAll(Arrays.asList(project.getRawClasspath()));
+		list.add(JavaCore.newContainerEntry(getMavenClassPathContainerPath()));
+		project.setRawClasspath((IClasspathEntry[]) list
+		    .toArray(new IClasspathEntry[list.size()]), monitor);
+    }
+
+    private static IPath getMavenClassPathContainerPath() {
+        return new Path("org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER");
+    }
+
     private void createInitialContent(IJavaProject project, IProgressMonitor monitor)
             throws CoreException, JavaModelException, IOException {
     	try {
-    		String exampleType = extraPage.getExampleType();
-	    	if (!"none".equals(exampleType)) {
-	    		createProcess(project, monitor, exampleType);
-		    	if (extraPage.createJUnitFile()) {
-		    		createProcessSampleJUnit(project, exampleType, monitor);
-		    	}
-	    	}
+    		createProcess(project, monitor);
+    		createProcessSampleMain(project, monitor);
+    		createKModuleXML(project, monitor);
+    		createPOM(project, monitor);
     	} catch (Throwable t) {
     		t.printStackTrace();
     	}
@@ -322,10 +281,41 @@ public class NewJBPMProjectWizard extends BasicNewResourceWizard {
     /**
      * Create the sample process file.
      */
-    private void createProcess(IJavaProject project, IProgressMonitor monitor, String exampleType) throws CoreException {
-	    String fileName = "org/jbpm/eclipse/wizard/project/" + exampleType + ".bpmn.template";
-        IFolder folder = project.getProject().getFolder("src/main/resources");
+    private void createProcess(IJavaProject project, IProgressMonitor monitor) throws CoreException {
+	    String fileName = "org/jbpm/eclipse/wizard/project/advanced.bpmn.template";
+        IFolder folder = project.getProject().getFolder("src/main/resources/com/sample");
+        createFolder(folder, monitor);
         IFile file = folder.getFile("sample.bpmn");
+        InputStream inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
+        if (!file.exists()) {
+            file.create(inputstream, true, monitor);
+        } else {
+            file.setContents(inputstream, true, false, monitor);
+        }
+    }
+
+    /**
+     * Create the kmodule.xml file.
+     */
+    private void createKModuleXML(IJavaProject project, IProgressMonitor monitor) throws CoreException {
+	    String fileName = "org/jbpm/eclipse/wizard/project/kmodule.xml.template";
+        IFolder folder = project.getProject().getFolder("src/main/resources/META-INF");
+        createFolder(folder, monitor);
+        IFile file = folder.getFile("kmodule.xml");
+        InputStream inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
+        if (!file.exists()) {
+            file.create(inputstream, true, monitor);
+        } else {
+            file.setContents(inputstream, true, false, monitor);
+        }
+    }
+
+    /**
+     * Create the kmodule.xml file.
+     */
+    private void createPOM(IJavaProject project, IProgressMonitor monitor) throws CoreException {
+	    String fileName = "org/jbpm/eclipse/wizard/project/maven-pom.xml.template";
+        IFile file = project.getProject().getFile("pom.xml");
         InputStream inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
         if (!file.exists()) {
             file.create(inputstream, true, monitor);
@@ -337,15 +327,9 @@ public class NewJBPMProjectWizard extends BasicNewResourceWizard {
     /**
      * Create the sample process junit test file.
      */
-    private void createProcessSampleJUnit(IJavaProject project, String exampleType, IProgressMonitor monitor)
+    private void createProcessSampleMain(IJavaProject project, IProgressMonitor monitor)
             throws JavaModelException, IOException {
-    	String s = "org/jbpm/eclipse/wizard/project/ProcessJUnit-" + exampleType + ".java";
-    	String generationType = runtimePage.getGenerationType();
-        if (NewJBPMProjectRuntimeWizardPage.JBPM5.equals(generationType)) {        
-        	s += ".v5.template";
-        } else {
-        	s += ".template";
-        }
+    	String s = "org/jbpm/eclipse/wizard/project/ProcessMain-advanced.java.template";
         IFolder folder = project.getProject().getFolder("src/main/java");
         IPackageFragmentRoot packageFragmentRoot = project
                 .getPackageFragmentRoot(folder);
@@ -353,7 +337,7 @@ public class NewJBPMProjectWizard extends BasicNewResourceWizard {
                 .createPackageFragment("com.sample", true, monitor);
         InputStream inputstream = getClass().getClassLoader()
                 .getResourceAsStream(s);
-        packageFragment.createCompilationUnit("ProcessTest.java", new String(
+        packageFragment.createCompilationUnit("ProcessMain.java", new String(
                 readStream(inputstream)), true, monitor);
     }
 

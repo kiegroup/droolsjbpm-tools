@@ -40,7 +40,6 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringProcessor;
 import org.eclipse.ltk.core.refactoring.participants.RenameParticipant;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.ReplaceEdit;
-import org.kie.eclipse.utils.FileUtils;
 
 /**
  * Participant to generate refactoring when a type is renamed.
@@ -97,7 +96,7 @@ public class RuleIFileRenameParticipant extends RenameParticipant {
 			return null;
 		}
 
-		String content = FileUtils.readFile(drlFile);
+		String content = FileUtil.readFile(drlFile);
 		if ( content == null ) {
 		    return null;
 		}

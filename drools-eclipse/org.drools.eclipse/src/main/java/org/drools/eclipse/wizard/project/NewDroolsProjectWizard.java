@@ -19,167 +19,328 @@ package org.drools.eclipse.wizard.project;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.builder.DroolsBuilder;
-import org.drools.eclipse.preferences.DroolsProjectPreferencePage;
+import org.drools.eclipse.util.DroolsClasspathContainer;
 import org.drools.eclipse.util.DroolsRuntime;
-import org.drools.eclipse.util.DroolsRuntimeManager;
 import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.ui.PreferenceConstants;
+import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.dialogs.PreferencesUtil;
-import org.kie.eclipse.runtime.IRuntime;
-import org.kie.eclipse.runtime.IRuntimeManager;
-import org.kie.eclipse.utils.FileUtils;
-import org.kie.eclipse.wizard.project.AbstractKieEmptyProjectWizardPage;
-import org.kie.eclipse.wizard.project.AbstractKieOnlineExampleProjectWizardPage;
-import org.kie.eclipse.wizard.project.AbstractKieProjectStartWizardPage;
-import org.kie.eclipse.wizard.project.AbstractKieProjectWizard;
-import org.kie.eclipse.wizard.project.IKieProjectWizardPage;
-import org.kie.eclipse.wizard.project.IKieSampleFilesProjectWizardPage;
+import org.eclipse.ui.actions.WorkspaceModifyOperation;
+import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
+import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 
 /**
  * A wizard to create a new Drools project.
  */
-public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
+public class NewDroolsProjectWizard extends BasicNewResourceWizard {
 
-    private EmptyDroolsProjectWizardPage emptyProjectPage;
-    private SampleDroolsProjectWizardPage sampleFilesProjectPage;
-
-    @Override
-	protected void initializeDefaultPageImageDescriptor() {
-        ImageDescriptor desc = DroolsEclipsePlugin.getImageDescriptor("icons/drools-large.PNG");
-        setDefaultPageImageDescriptor(desc);
+    public static final String DROOLS_CLASSPATH_CONTAINER_PATH = "DROOLS/Drools";
+    
+    private IProject newProject;
+    private WizardNewProjectCreationPage mainPage;
+    private NewDroolsProjectWizardPage extraPage;
+    private NewDroolsProjectRuntimeWizardPage runtimePage;
+    
+    public void addPages() {
+        super.addPages();
+        mainPage = new WizardNewProjectCreationPage("basicNewProjectPage");
+        mainPage.setTitle("New Drools Project");
+        mainPage.setDescription("Create a new Drools Project");
+        this.addPage(mainPage);
+        extraPage = new NewDroolsProjectWizardPage();
+        addPage(extraPage);
+        runtimePage = new NewDroolsProjectRuntimeWizardPage();
+        addPage(runtimePage);
+        setNeedsProgressMonitor(true);
     }
 
-    @Override
-	protected void createOutputLocation(IJavaProject project, IProgressMonitor monitor)
+    public boolean performFinish() {
+        createDroolsProject();
+        if (newProject == null) {
+            return false;
+        }
+        selectAndReveal(newProject);
+        return true;
+    }
+
+    private void createDroolsProject() {
+        newProject = createNewProject();
+        WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
+            protected void execute(IProgressMonitor monitor)
+                    throws CoreException {
+                try {
+                    IJavaProject project = JavaCore.create(newProject);
+                    createDroolsRuntime(project, monitor);
+                    createOutputLocation(project, monitor);
+                    addJavaBuilder(project, monitor);
+                    setClasspath(project, monitor);
+                    createInitialContent(project, monitor);
+                    newProject.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
+                } catch (IOException _ex) {
+                    ErrorDialog.openError(getShell(), "Problem creating Drools project",
+                        null, null);
+                }
+            }
+        };
+        try {
+            getContainer().run(true, true, op);
+        } catch (Throwable t) {
+            DroolsEclipsePlugin.log(t);
+        }
+    }
+    
+    private IProject createNewProject() {
+        if (newProject != null) {
+            return newProject;
+        }
+        final IProject newProjectHandle = mainPage.getProjectHandle();
+
+        // get a project descriptor
+        IPath newPath = null;
+        if (!mainPage.useDefaults())
+            newPath = mainPage.getLocationPath();
+
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        final IProjectDescription description = workspace
+                .newProjectDescription(newProjectHandle.getName());
+        description.setLocation(newPath);
+        addNatures(description);
+
+        // create the new project operation
+        WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
+            protected void execute(IProgressMonitor monitor)
+                    throws CoreException {
+                createProject(description, newProjectHandle, monitor);
+            }
+        };
+
+        // run the new project creation operation
+        try {
+            getContainer().run(true, true, op);
+        } catch (InterruptedException e) {
+            return null;
+        } catch (InvocationTargetException e) {
+            Throwable t = e.getTargetException();
+            if (t instanceof CoreException) {
+                if (((CoreException) t).getStatus().getCode() == IResourceStatus.CASE_VARIANT_EXISTS) {
+                    MessageDialog.openError(getShell(),
+                        "NewProject.errorMessage",
+                        "NewProject.caseVariantExistsError"
+                                + newProjectHandle.getName());
+                } else {
+                    ErrorDialog.openError(getShell(),
+                        "NewProject.errorMessage", null, // no special message
+                        ((CoreException) t).getStatus());
+                }
+            } else {
+                DroolsEclipsePlugin.log(e);
+            }
+            return null;
+        }
+
+        return newProjectHandle;
+    }
+    
+    List<String> list = new ArrayList<String>();
+    private void addNatures(IProjectDescription projectDescription) {
+        list.addAll(Arrays.asList(projectDescription.getNatureIds()));
+        list.add("org.eclipse.jdt.core.javanature");
+        projectDescription.setNatureIds((String[]) list
+            .toArray(new String[list.size()]));
+    }
+    
+    private void createProject(IProjectDescription description,
+            IProject projectHandle, IProgressMonitor monitor)
+            throws CoreException, OperationCanceledException {
+        try {
+            monitor.beginTask("", 2000);
+            projectHandle.create(description, new SubProgressMonitor(monitor,
+                    1000));
+            if (monitor.isCanceled()) {
+                throw new OperationCanceledException();
+            }
+            projectHandle.open(IResource.BACKGROUND_REFRESH,
+                new SubProgressMonitor(monitor, 1000));
+        } finally {
+            monitor.done();
+        }
+    }
+    
+    private void createDroolsRuntime(IJavaProject project, IProgressMonitor monitor) throws CoreException {
+        DroolsRuntime runtime = runtimePage.getDroolsRuntime();
+        if (runtime != null) {
+            IFile file = project.getProject().getFile(".settings/.drools.runtime");
+            String runtimeString = "<runtime>" + runtime.getName() + "</runtime>";
+            if (!file.exists()) {
+                IFolder folder = project.getProject().getFolder(".settings");
+                if (!folder.exists()) {
+                    folder.create(true, true, null);
+                }
+                file.create(new ByteArrayInputStream(runtimeString.getBytes()), true, null);
+            } else {
+                file.setContents(new ByteArrayInputStream(runtimeString.getBytes()), true, false, null);
+            }
+        }
+    }
+
+    private void createOutputLocation(IJavaProject project, IProgressMonitor monitor)
             throws JavaModelException, CoreException {
-        IFolder folder = FileUtils.createFolder(project, "target/classes", monitor);
+        IFolder folder = createFolder(project, "target", monitor);
         IPath path = folder.getFullPath();
         project.setOutputLocation(path, null);
     }
 
-    @Override
-	protected void createInitialContent(IJavaProject javaProject, IProgressMonitor monitor)
-            throws CoreException, JavaModelException, IOException {
-    	if (startPage.getInitialProjectContent() == IKieProjectWizardPage.SAMPLE_FILES_PROJECT) {
-            if (sampleFilesProjectPage.shouldCreateJavaRuleFile()) {
-                createRuleSampleLauncher(javaProject);
-            }
-            if (sampleFilesProjectPage.shouldCreateRuleFile()) {
-                createRule(javaProject, monitor);
-            }
-            if (sampleFilesProjectPage.shouldCreateDecisionTableFile()) {
-                createDecisionTable(javaProject, monitor);
-            }
-            if (sampleFilesProjectPage.shouldCreateJavaDecisionTableFile()) {
-                createDecisionTableSampleLauncher(javaProject);
-            }
-            if (sampleFilesProjectPage.shouldCreateRuleFlowFile()) {
-                createRuleFlow(javaProject, monitor);
-            }
-            if (sampleFilesProjectPage.shouldCreateJavaRuleFlowFile()) {
-                createRuleFlowSampleLauncher(javaProject);
-            }
-			createKJarArtifacts(javaProject, monitor);
-			createMavenArtifacts(javaProject, monitor);
-    	}
-    	else if (startPage.getInitialProjectContent() == IKieProjectWizardPage.EMPTY_PROJECT) {
-			createKJarArtifacts(javaProject, monitor);
-			createMavenArtifacts(javaProject, monitor);
-    	}
-    	else
-    		super.createInitialContent(javaProject, monitor);
-    }
-    
-    @Override
-	protected void createMavenArtifacts(IJavaProject project, IProgressMonitor monitor) {
-        try {
-        	String projectName = project.getProject().getName();
-            String groupId = projectName + ".group";
-            String artifactId = projectName + ".artifact";
-            String version = "1.0";
-			FileUtils.createProjectFile(project, monitor, FileUtils.generatePomProperties(groupId, artifactId, version), "src/main/resources/META-INF/maven", "pom.properties");
-            FileUtils.createProjectFile(project, monitor, FileUtils.generatePom(groupId, artifactId, version), null, "pom.xml");
-		}
-		catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    }
-    
-    @Override
-	protected void createKJarArtifacts(IJavaProject project, IProgressMonitor monitor) {
-        try {
-	        if (startPage.getRuntime().getVersion().startsWith("6")) {
-	        	FileUtils.createProjectFile(project, monitor, generateKModule(), "src/main/resources/META-INF", "kmodule.xml");
-	        }
-		}
-		catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    private void addJavaBuilder(IJavaProject project, IProgressMonitor monitor) throws CoreException {
+        IProjectDescription description = project.getProject().getDescription();
+        ICommand[] commands = description.getBuildSpec();
+        ICommand[] newCommands = new ICommand[commands.length + 2];
+        System.arraycopy(commands, 0, newCommands, 0, commands.length);
+
+        ICommand javaCommand = description.newCommand();
+        javaCommand.setBuilderName("org.eclipse.jdt.core.javabuilder");
+        newCommands[commands.length] = javaCommand;
+        
+        ICommand droolsCommand = description.newCommand();
+        droolsCommand.setBuilderName(DroolsBuilder.BUILDER_ID);
+        newCommands[commands.length + 1] = droolsCommand;
+        
+        description.setBuildSpec(newCommands);
+        project.getProject().setDescription(description, monitor);
     }
 
-    private InputStream generateKModule() {
-    	StringBuilder sb = new StringBuilder();
-    	sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-    	sb.append("<kmodule xmlns=\"http://jboss.org/kie/6.0.0/kmodule\">\n");
-    	
-        if (sampleFilesProjectPage.shouldCreateRuleFile() || sampleFilesProjectPage.shouldCreateJavaRuleFile()) {
-        	sb.append("    <kbase name=\"rules\" packages=\"rules\">\n");
-        	sb.append("        <ksession name=\"ksession-rules\"/>\n");
-        	sb.append("    </kbase>\n");
+    private void setClasspath(IJavaProject project, IProgressMonitor monitor)
+            throws JavaModelException, CoreException {
+        project.setRawClasspath(new IClasspathEntry[0], monitor);
+        addSourceFolders(project, monitor);
+        addJRELibraries(project, monitor);
+        addDroolsLibraries(project, monitor);
+    }
+
+    private void addSourceFolders(IJavaProject project, IProgressMonitor monitor) throws JavaModelException, CoreException {
+        List<IClasspathEntry> list = new ArrayList<IClasspathEntry>();
+        list.addAll(Arrays.asList(project.getRawClasspath()));
+        addSourceFolder(project, list, "src/main/java", monitor);
+        if (NewDroolsProjectRuntimeWizardPage.DROOLS6.equals(runtimePage.getGenerationType())) {
+        	addSourceFolder(project, list, "src/main/resources", monitor);
+        	createFolder(project, "src/main/resources/META-INF", monitor);
+        	createFolder(project, "src/main/resources/META-INF/maven", monitor);
+        } else {
+        	addSourceFolder(project, list, "src/main/rules", monitor);
         }
-        if (sampleFilesProjectPage.shouldCreateDecisionTableFile() || sampleFilesProjectPage.shouldCreateJavaDecisionTableFile()) {
-        	sb.append("    <kbase name=\"dtables\" packages=\"dtables\">\n");
-        	sb.append("        <ksession name=\"ksession-dtables\"/>\n");
-        	sb.append("    </kbase>\n");
-        }
-        if (sampleFilesProjectPage.shouldCreateRuleFlowFile() || sampleFilesProjectPage.shouldCreateJavaRuleFlowFile()) {
-        	sb.append("    <kbase name=\"process\" packages=\"process\">\n");
-        	sb.append("        <ksession name=\"ksession-process\"/>\n");
-        	sb.append("    </kbase>\n");
-        }
-        
-        sb.append("</kmodule>\n");
-    	
-        return new ByteArrayInputStream(sb.toString().getBytes());
+        project.setRawClasspath((IClasspathEntry[]) list.toArray(new IClasspathEntry[list.size()]), null);
     }
     
+    private void addJRELibraries(IJavaProject project, IProgressMonitor monitor) throws JavaModelException {
+        List<IClasspathEntry> list = new ArrayList<IClasspathEntry>();
+        list.addAll(Arrays.asList(project.getRawClasspath()));
+        list.addAll(Arrays.asList(PreferenceConstants.getDefaultJRELibrary()));
+        project.setRawClasspath((IClasspathEntry[]) list
+            .toArray(new IClasspathEntry[list.size()]), monitor);
+    }
+
+    private static IPath getClassPathContainerPath() {
+        return new Path(DROOLS_CLASSPATH_CONTAINER_PATH);
+    }
+
+    private static void createDroolsLibraryContainer(IJavaProject project, IProgressMonitor monitor)
+            throws JavaModelException {
+        JavaCore.setClasspathContainer(getClassPathContainerPath(),
+            new IJavaProject[] { project },
+            new IClasspathContainer[] { new DroolsClasspathContainer(
+                    project, getClassPathContainerPath()) }, monitor);
+    }
+
+    public static void addDroolsLibraries(IJavaProject project, IProgressMonitor monitor)
+            throws JavaModelException {
+        createDroolsLibraryContainer(project, monitor);
+        List<IClasspathEntry> list = new ArrayList<IClasspathEntry>();
+        list.addAll(Arrays.asList(project.getRawClasspath()));
+        list.add(JavaCore.newContainerEntry(getClassPathContainerPath()));
+        project.setRawClasspath((IClasspathEntry[]) list
+            .toArray(new IClasspathEntry[list.size()]), monitor);
+    }
+
+    private void createInitialContent(IJavaProject project, IProgressMonitor monitor)
+            throws CoreException, JavaModelException, IOException {
+        try {
+        	boolean createKModule = false;
+            if (extraPage.createJavaRuleFile()) {
+                createRuleSampleLauncher(project);
+                createKModule = true;
+            }
+            if (extraPage.createRuleFile()) {
+                createRule(project, monitor);
+                createKModule = true;
+            }
+            if (extraPage.createDecisionTableFile()) {
+                createDecisionTable(project, monitor);
+                createKModule = true;
+            }
+            if (extraPage.createJavaDecisionTableFile()) {
+                createDecisionTableSampleLauncher(project);
+                createKModule = true;
+            }
+            if (extraPage.createRuleFlowFile()) {
+                createRuleFlow(project, monitor);
+                createKModule = true;
+            }
+            if (extraPage.createJavaRuleFlowFile()) {
+                createRuleFlowSampleLauncher(project);
+                createKModule = true;
+            }
+            if (createKModule) {
+            	createKModule(project, monitor);
+            	createPom(project, monitor);
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+    }
+
     /**
      * Create the sample rule launcher file.
      */
     private void createRuleSampleLauncher(IJavaProject project)
             throws JavaModelException, IOException {
 
-        String version = startPage.getRuntime().getVersion();
-        if (version.startsWith("4")) {
+        String runtime = runtimePage.getGenerationType();
+        if (NewDroolsProjectRuntimeWizardPage.DROOLS4.equals(runtime)) {
             createProjectJavaFile(project, "org/drools/eclipse/wizard/project/RuleLauncherSample_4.java.template", "DroolsTest.java");
-        } else if (version.startsWith("5")) {
+        } else if (NewDroolsProjectRuntimeWizardPage.DROOLS5.equals(runtime) ||
+                NewDroolsProjectRuntimeWizardPage.DROOLS5_1.equals(runtime)) {
             createProjectJavaFile(project, "org/drools/eclipse/wizard/project/RuleLauncherSample_5.java.template", "DroolsTest.java");
-        } else if (version.startsWith("6")) {
+        } else {
             createProjectJavaFile(project, "org/drools/eclipse/wizard/project/RuleLauncherSample_6.java.template", "DroolsTest.java");
         }
     }
@@ -190,12 +351,13 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
     private void createDecisionTableSampleLauncher(IJavaProject project)
             throws JavaModelException, IOException {
         
-        String version = startPage.getRuntime().getVersion();
-        if (version.startsWith("4")) {
+        String runtime = runtimePage.getGenerationType();
+        if (NewDroolsProjectRuntimeWizardPage.DROOLS4.equals(runtime)) {
             createProjectJavaFile(project, "org/drools/eclipse/wizard/project/DecisionTableLauncherSample_4.java.template", "DecisionTableTest.java");
-        } else if (version.startsWith("5")) {
+        } else if (NewDroolsProjectRuntimeWizardPage.DROOLS5.equals(runtime) ||
+            NewDroolsProjectRuntimeWizardPage.DROOLS5_1.equals(runtime)) {
             createProjectJavaFile(project, "org/drools/eclipse/wizard/project/DecisionTableLauncherSample_5.java.template", "DecisionTableTest.java");
-        } else if (version.startsWith("6")) {
+        } else {
             createProjectJavaFile(project, "org/drools/eclipse/wizard/project/DecisionTableLauncherSample_6.java.template", "DecisionTableTest.java");
         }
     }
@@ -205,23 +367,55 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
         IPackageFragmentRoot packageFragmentRoot = project.getPackageFragmentRoot(folder);
         IPackageFragment packageFragment = packageFragmentRoot.createPackageFragment("com.sample", true, null);
         InputStream inputstream = getClass().getClassLoader().getResourceAsStream(templateFile);
-        packageFragment.createCompilationUnit(javaFile, new String(FileUtils.readStream(inputstream)), true, null);
+        packageFragment.createCompilationUnit(javaFile, new String(readStream(inputstream)), true, null);
 	}
     
 	private void createProjectFile(IJavaProject project, IProgressMonitor monitor, String templateFile, String folderName, String fileName) throws CoreException {
         InputStream inputstream = getClass().getClassLoader().getResourceAsStream(templateFile);
-        FileUtils.createProjectFile(project, monitor, inputstream, folderName, fileName);
+        createProjectFile(project, monitor, inputstream, folderName, fileName);
+	}
+
+	private void createProjectFile(IJavaProject project, IProgressMonitor monitor, InputStream inputstream, String folderName, String fileName) throws CoreException {
+        IFile file;
+        if (folderName == null) {
+            file = project.getProject().getFile(fileName);
+        } else {
+            IFolder folder = project.getProject().getFolder(folderName);
+            file = folder.getFile(fileName);
+        }
+
+        if (!file.exists()) {
+            file.create(inputstream, true, monitor);
+        } else {
+            file.setContents(inputstream, true, false, monitor);
+        }
 	}
 
 	/**
      * Create the sample rule file.
      */
     private void createRule(IJavaProject project, IProgressMonitor monitor) throws CoreException {
-        if (startPage.getRuntime().getVersion().startsWith("6")) {
-        	FileUtils.createFolder(project, "src/main/resources/rules", monitor);
+        if (NewDroolsProjectRuntimeWizardPage.DROOLS6.equals(runtimePage.getGenerationType())) {
+            createFolder(project, "src/main/resources/rules", monitor);
             createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/Sample.drl.template", "src/main/resources/rules", "Sample.drl");
         } else {
             createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/Sample.drl.template", "src/main/rules", "Sample.drl");
+        }
+    }
+
+    private void createKModule(IJavaProject project, IProgressMonitor monitor) throws CoreException {
+        if (NewDroolsProjectRuntimeWizardPage.DROOLS6.equals(runtimePage.getGenerationType())) {
+        	createProjectFile(project, monitor, generateKModule(), "src/main/resources/META-INF", "kmodule.xml");
+        }
+    }
+
+    private void createPom(IJavaProject project, IProgressMonitor monitor) throws CoreException {
+        if (NewDroolsProjectRuntimeWizardPage.DROOLS6.equals(runtimePage.getGenerationType())) {
+            String groupId = runtimePage.getGroupId();
+            String artifactId = runtimePage.getArtifactId();
+            String version = runtimePage.getVersion();
+            createProjectFile(project, monitor, generatePomProperties(groupId, artifactId, version), "src/main/resources/META-INF/maven", "pom.properties");
+            createProjectFile(project, monitor, generatePom(groupId, artifactId, version), null, "pom.xml");
         }
     }
 
@@ -229,8 +423,8 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
      * Create the sample decision table file.
      */
     private void createDecisionTable(IJavaProject project, IProgressMonitor monitor) throws CoreException {
-        if (startPage.getRuntime().getVersion().startsWith("6")) {
-        	FileUtils.createFolder(project, "src/main/resources/dtables", monitor);
+        if (NewDroolsProjectRuntimeWizardPage.DROOLS6.equals(runtimePage.getGenerationType())) {
+    		createFolder(project, "src/main/resources/dtables", monitor);
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/Sample.xls.template", "src/main/resources/dtables", "Sample.xls");
     	} else {
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/Sample.xls.template", "src/main/rules", "Sample.xls");
@@ -242,17 +436,17 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
      */
     private void createRuleFlow(IJavaProject project, IProgressMonitor monitor) throws CoreException {
 
-        String version = startPage.getRuntime().getVersion();
-        if (version.startsWith("4")) {
+        String generationType = runtimePage.getGenerationType();
+        if (NewDroolsProjectRuntimeWizardPage.DROOLS4.equals(generationType)) {
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/ruleflow_4.rf.template", "src/main/rules", "ruleflow.rf");
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/ruleflow_4.rfm.template", "src/main/rules", "ruleflow.rfm");
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/ruleflow_4.drl.template", "src/main/rules", "ruleflow.drl");
-        } else if (version.startsWith("5.0")) {
+        } else if (NewDroolsProjectRuntimeWizardPage.DROOLS5.equals(generationType)) {
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/ruleflow.rf.template", "src/main/rules", "ruleflow.rf");
-        } else if (version.startsWith("5")) {
+        } else if (NewDroolsProjectRuntimeWizardPage.DROOLS5_1.equals(generationType)) {
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/sample.bpmn.template", "src/main/rules", "sample.bpmn");
         } else {
-        	FileUtils.createFolder(project, "src/main/resources/process", monitor);
+    		createFolder(project, "src/main/resources/process", monitor);
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/sample.bpmn.template", "src/main/resources/process", "sample.bpmn");
         }
     }
@@ -264,12 +458,12 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
             throws JavaModelException, IOException {
         
         String s;
-        String version = startPage.getRuntime().getVersion();
-        if (version.startsWith("4")) {
+        String generationType = runtimePage.getGenerationType();
+        if (NewDroolsProjectRuntimeWizardPage.DROOLS4.equals(generationType)) {
             s = "org/drools/eclipse/wizard/project/RuleFlowLauncherSample_4.java.template";
-        } else if (version.startsWith("5.0")) {
+        } else if (NewDroolsProjectRuntimeWizardPage.DROOLS5.equals(generationType)) {
             s = "org/drools/eclipse/wizard/project/RuleFlowLauncherSample.java.template";
-        } else if (version.startsWith("5")) {
+        } else if (NewDroolsProjectRuntimeWizardPage.DROOLS5_1.equals(generationType)) {
             s = "org/drools/eclipse/wizard/project/ProcessLauncherSample_bpmn_5.java.template";
         } else {
             s = "org/drools/eclipse/wizard/project/ProcessLauncherSample_bpmn_6.java.template";
@@ -277,264 +471,96 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
         createProjectJavaFile(project, s, "ProcessTest.java");
     }
 
-	/* (non-Javadoc)
-	 * @see org.kie.eclipse.wizard.project.AbstractKieProjectWizard#createStartPage(java.lang.String)
-	 * Create the Wizard Start Page
-	 */
-	@Override
-	protected IKieProjectWizardPage createStartPage(String pageId) {
-		return new AbstractKieProjectStartWizardPage(pageId) {
-			@Override
-			public String getTitle() {
-				return "Create New Drools Project";
-			}
-		};
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.kie.eclipse.wizard.project.AbstractKieProjectWizard#createEmptyProjectPage(java.lang.String)
-	 * Create the Empty Project Wizard Page
-	 */
-	@Override
-	protected IKieProjectWizardPage createEmptyProjectPage(String pageId) {
-		emptyProjectPage = new EmptyDroolsProjectWizardPage(EMPTY_PROJECT_PAGE);
-		return emptyProjectPage;
-	}
+    protected void initializeDefaultPageImageDescriptor() {
+        ImageDescriptor desc = DroolsEclipsePlugin.getImageDescriptor("icons/drools-large.PNG");
+        setDefaultPageImageDescriptor(desc);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.kie.eclipse.wizard.project.AbstractKieProjectWizard#createSampleFilesProjectPage(java.lang.String)
-	 * Create the Sample Files Project Wizard Page
-	 */
-	@Override
-	protected IKieProjectWizardPage createSampleFilesProjectPage(String pageId) {
-		sampleFilesProjectPage = new SampleDroolsProjectWizardPage(SAMPLE_FILES_PROJECT_PAGE);
-		return sampleFilesProjectPage;
-	}
+    private byte[] readStream(InputStream inputstream) throws IOException {
+        byte bytes[] = (byte[]) null;
+        int i = 0;
+        byte tempBytes[] = new byte[1024];
+        for (int j = inputstream.read(tempBytes); j != -1; j = inputstream.read(tempBytes)) {
+            byte tempBytes2[] = new byte[i + j];
+            if (i > 0) {
+                System.arraycopy(bytes, 0, tempBytes2, 0, i);
+            }
+            System.arraycopy(tempBytes, 0, tempBytes2, i, j);
+            bytes = tempBytes2;
+            i += j;
+        }
 
-	/* (non-Javadoc)
-	 * @see org.kie.eclipse.wizard.project.AbstractKieProjectWizard#createOnlineExampleProjectPage(java.lang.String)
-	 * Create the Online Example Project Wizard Page
-	 */
-	@Override
-	protected IKieProjectWizardPage createOnlineExampleProjectPage(String pageId) {
-		return new AbstractKieOnlineExampleProjectWizardPage(ONLINE_EXAMPLE_PROJECT_PAGE) {
-			@Override
-			public String getTitle() {
-				return "Create Drools Projects from Online Examples";
-			}
-			
-			@Override
-			public String getDescription() {
-				return "Select Drools Example Projects";
-			}
+        return bytes;
+    }
+    
+    private void addSourceFolder(IJavaProject project, List<IClasspathEntry> list, String s, IProgressMonitor monitor) throws CoreException {
+        IFolder folder = project.getProject().getFolder(s);
+        createFolder(folder, monitor);
+        IPackageFragmentRoot ipackagefragmentroot = project.getPackageFragmentRoot(folder);
+        list.add(JavaCore.newSourceEntry(ipackagefragmentroot.getPath()));
+    }
+    
+    private IFolder createFolder(IJavaProject project, String s, IProgressMonitor monitor) throws CoreException {
+    	IFolder folder = project.getProject().getFolder(s);
+    	createFolder(folder, monitor);
+    	return folder;
+    }
 
-			@Override
-			public IRuntimeManager getRuntimeManager() {
-				return DroolsRuntimeManager.getDefault();
-			}
-		
-			@Override
-			public String getProductId() {
-				return "drools";
-			}
-		};
-	}
-	
-	/**
-	 * Implementation for the Empty Project Wizard Page
-	 */
-	class EmptyDroolsProjectWizardPage extends AbstractKieEmptyProjectWizardPage implements IKieSampleFilesProjectWizardPage {
-		public EmptyDroolsProjectWizardPage(String pageName) {
-			super(pageName);
-			setTitle("Create New Empty Drools Project");
-			setDescription("Select the type of Drools Project");
-		}
-
-		@Override
-		protected void createControls(Composite parent) {
-		}
-		
-		@Override
-		protected Composite createKJarControls(Composite parent) {
-	        Composite composite = new Composite(parent, SWT.NONE);
-	        composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-	        return composite;
-		}
-		
-		@Override
-		public IRuntimeManager getRuntimeManager() {
-			return DroolsRuntimeManager.getDefault();
-		}
-
-		@Override
-		protected IRuntime createRuntime() {
-			return new DroolsRuntime();
-		}
-
-		@Override
-		public int showRuntimePreferenceDialog() {
-	        return PreferencesUtil.createPreferenceDialogOn(getShell(),
-	                DroolsProjectPreferencePage.PREF_ID,
-	                new String[] { DroolsProjectPreferencePage.PROP_ID }, null).open();
-		}
-		
-		@Override
-		public boolean shouldCreateMavenProject() {
-			return false;
-		}
-	}
-	
-	/**
-	 * Implementation for the Sample Files Project Wizard Page
-	 */
-	class SampleDroolsProjectWizardPage extends EmptyDroolsProjectWizardPage {
-	    private boolean addSampleRule = true;
-	    private boolean addSampleJavaRuleCode = false;
-	    private boolean addSampleDecisionTableCode = true;
-	    private boolean addSampleJavaDecisionTableCode = false;
-	    private boolean addSampleRuleFlow = true;
-	    private boolean addSampleJavaRuleFlowCode = false;
-
-		public SampleDroolsProjectWizardPage(String pageName) {
-			super(pageName);
-			setTitle("Create New Drools Projects with Sample Files");
-			setDescription("Select the sample files to be included");
-		}
-
-		@Override
-		protected Composite createKJarControls(Composite parent) {
-			return null;
-		}
-
-		@Override
-		protected void createControls(Composite parent) {
-			Composite composite = new Composite(parent, SWT.NONE);
-	        composite.setLayout(new GridLayout(1, false));
-	        GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-	        gd.verticalIndent = 10;
-	        gd.horizontalIndent = 10;
-	        composite.setLayoutData(gd);
-	        composite.setLayoutData(gd);
-
-	        /*
-	         * FIXME: there's no sense in having separate checkboxes for
-	         * any of the Java generation items because these are required!
-	         * The rule and decision table will not compile without the
-	         * Java classes.
-	         */
-	        final Button addSampleRuleButton = createCheckBox(composite,
-	            "Add a sample HelloWorld rule file to this project.");
-	        addSampleRuleButton.setSelection(addSampleRule);
-	        addSampleRuleButton.addSelectionListener(new SelectionAdapter() {
-	            @Override
-				public void widgetSelected(SelectionEvent e) {
-	                addSampleRule = ((Button) e.widget).getSelection();
-	            }
-	        });
-//	        final Button addSampleJavaRuleCodeButton = createCheckBox2(addSampleRuleButton, composite,
-//	            "Add a Java class for loading and executing the HelloWorld rules.");
-//	        addSampleJavaRuleCodeButton.setSelection(addSampleJavaRuleCode);
-//	        addSampleJavaRuleCodeButton.addSelectionListener(new SelectionAdapter() {
-//	            public void widgetSelected(SelectionEvent e) {
-//	                addSampleJavaRuleCode = ((Button) e.widget).getSelection();
-//	            }
-//	        });
-	        
-	        final Button addSampleDecisionTableCodeButton = createCheckBox(composite,
-	            "Add a sample HelloWorld decision table file to this project.");
-	        addSampleDecisionTableCodeButton.setSelection(addSampleDecisionTableCode);
-	        addSampleDecisionTableCodeButton.addSelectionListener(new SelectionAdapter() {
-	            @Override
-				public void widgetSelected(SelectionEvent e) {
-	                addSampleDecisionTableCode = ((Button) e.widget).getSelection();
-	            }
-	        });
-//	        final Button addSampleJavaDecisionTableCodeButton = createCheckBox2(addSampleDecisionTableCodeButton, composite,
-//	            "Add a Java class for loading and executing the HelloWorld decision table.");
-//	        addSampleJavaDecisionTableCodeButton.setSelection(addSampleJavaDecisionTableCode);
-//	        addSampleJavaDecisionTableCodeButton.addSelectionListener(new SelectionAdapter() {
-//	            public void widgetSelected(SelectionEvent e) {
-//	                addSampleJavaDecisionTableCode = ((Button) e.widget).getSelection();
-//	            }
-//	        });
-	        
-	        final Button addSampleRuleFlowButton = createCheckBox(composite,
-	            "Add a sample HelloWorld process file to this project.");
-	        addSampleRuleFlowButton.setSelection(addSampleRuleFlow);
-	        addSampleRuleFlowButton.addSelectionListener(new SelectionAdapter() {
-	            @Override
-				public void widgetSelected(SelectionEvent e) {
-	                addSampleRuleFlow = ((Button) e.widget).getSelection();
-	            }
-	        });
-//	        final Button addSampleJavaRuleFlowCodeButton = createCheckBox2(addSampleRuleFlowButton, composite,
-//	            "Add a Java class for loading and executing the HelloWorld process.");
-//	        addSampleJavaRuleFlowCodeButton.setSelection(addSampleJavaRuleFlowCode);
-//	        addSampleJavaRuleFlowCodeButton.addSelectionListener(new SelectionAdapter() {
-//	            public void widgetSelected(SelectionEvent e) {
-//	                addSampleJavaRuleFlowCode = ((Button) e.widget).getSelection();
-//	            }
-//	        });
-
-		}
-	    
-	    private Button createCheckBox(Composite group, String label) {
-	        Button button = new Button(group, SWT.CHECK | SWT.LEFT);
-	        button.setText(label);
-	        GridData data = new GridData();
-	        button.setLayoutData(data);
-	        return button;
-	    }
-	    
-	    private Button createCheckBox2(final Button dependent, Composite group, String label) {
-	        Button button = new Button(group, SWT.CHECK | SWT.LEFT);
-	        button.setText(label);
-	        GridData data = new GridData();
-	        data.horizontalIndent = 20;
-	        button.setLayoutData(data);
-	        button.addSelectionListener(new SelectionAdapter() {
-	            @Override
-				public void widgetSelected(SelectionEvent e) {
-	                boolean selected = ((Button) e.widget).getSelection();
-	                if (selected) {
-	                	dependent.setSelection(true);
-	                	dependent.setEnabled(false);
-	                }
-	                else
-	                	dependent.setEnabled(true);
-	            }
-	        });
-	        
-	        return button;
-	    }
-		
-		@Override
-		public boolean shouldCreateMavenProject() {
-			return false;
-		}
-
-	    public boolean shouldCreateRuleFile() {
-	        return addSampleRule;
-	    }
-
-	    public boolean shouldCreateJavaRuleFile() {
-	        return addSampleRule; //addSampleJavaRuleCode;
-	    }
-
-	    public boolean shouldCreateDecisionTableFile() {
-	        return addSampleDecisionTableCode;
-	    }
-
-	    public boolean shouldCreateJavaDecisionTableFile() {
-	        return addSampleDecisionTableCode; //addSampleJavaDecisionTableCode;
-	    }
-
-	    public boolean shouldCreateRuleFlowFile() {
-	        return addSampleRuleFlow;
-	    }
-
-	    public boolean shouldCreateJavaRuleFlowFile() {
-	        return addSampleRuleFlow; //addSampleJavaRuleFlowCode;
-	    }
-	}
+    private void createFolder(IFolder folder, IProgressMonitor monitor) throws CoreException {
+        IContainer container = folder.getParent();
+        if (container != null && !container.exists()
+                && (container instanceof IFolder))
+            createFolder((IFolder) container, monitor);
+        if (!folder.exists()) {
+            folder.create(true, true, monitor);
+        }
+    }
+    
+    private InputStream generateKModule() {
+    	StringBuilder sb = new StringBuilder();
+    	sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+    	sb.append("<kmodule xmlns=\"http://jboss.org/kie/6.0.0/kmodule\">\n");
+    	
+        if (extraPage.createJavaRuleFile() || extraPage.createRuleFile()) {
+        	sb.append("    <kbase name=\"rules\" packages=\"rules\">\n");
+        	sb.append("        <ksession name=\"ksession-rules\"/>\n");
+        	sb.append("    </kbase>\n");
+        }
+        if (extraPage.createDecisionTableFile() || extraPage.createJavaDecisionTableFile()) {
+        	sb.append("    <kbase name=\"dtables\" packages=\"dtables\">\n");
+        	sb.append("        <ksession name=\"ksession-dtables\"/>\n");
+        	sb.append("    </kbase>\n");
+        }
+        if (extraPage.createRuleFlowFile() || extraPage.createJavaRuleFlowFile()) {
+        	sb.append("    <kbase name=\"process\" packages=\"process\">\n");
+        	sb.append("        <ksession name=\"ksession-process\"/>\n");
+        	sb.append("    </kbase>\n");
+        }
+        
+        sb.append("</kmodule>\n");
+    	
+        return new ByteArrayInputStream(sb.toString().getBytes());
+    }
+    
+    private InputStream generatePom(String groupId, String artifactId, String version) {
+        String pom =
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n" +
+                "  <modelVersion>4.0.0</modelVersion>\n" +
+                "\n" +
+                "  <groupId>" + groupId + "</groupId>\n" +
+                "  <artifactId>" + artifactId + "</artifactId>\n" +
+                "  <version>" + version + "</version>\n" +
+                "</project>\n";
+        return new ByteArrayInputStream(pom.getBytes());
+    }
+    
+    private InputStream generatePomProperties(String groupId, String artifactId, String version) {
+        String pom =
+				"groupId=" + groupId + "\n" +
+				"artifactId=" + artifactId + "\n" +
+			    "version=" + version + "\n";
+    return new ByteArrayInputStream(pom.getBytes());
+}
 }

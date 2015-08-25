@@ -17,9 +17,11 @@
 package org.drools.eclipse.action;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
-import org.drools.eclipse.util.DroolsClasspathContainer;
-import org.drools.eclipse.util.DroolsRuntimeManager;
+import org.drools.eclipse.builder.DroolsBuilder;
+import org.drools.eclipse.wizard.project.NewDroolsProjectWizard;
+import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -42,7 +44,8 @@ public class ConvertToDroolsProjectAction implements IObjectActionDelegate {
     public void run(IAction action) {
         if (project != null && project.exists()) {
             try {
-                DroolsRuntimeManager.getDefault().addBuilder(project, null);
+                addDroolsBuilder(project, null);
+                addDroolsLibraries(project, null);
             } catch (Throwable t) {
                 DroolsEclipsePlugin.log(t);
             }
@@ -66,4 +69,36 @@ public class ConvertToDroolsProjectAction implements IObjectActionDelegate {
             }
         }
     }
+
+    public static void addDroolsBuilder(IJavaProject project, IProgressMonitor monitor) throws CoreException {
+        IProjectDescription description = project.getProject().getDescription();
+        // check whether Drools builder is already part of the project
+        ICommand[] commands = description.getBuildSpec();
+        for (int i = 0; i < commands.length; i++) {
+            if (DroolsBuilder.BUILDER_ID.equals(commands[i].getBuilderName())) {
+                return;
+            }
+        }
+        // add Drools builder
+        ICommand[] newCommands = new ICommand[commands.length + 1];
+        System.arraycopy(commands, 0, newCommands, 0, commands.length);
+
+        ICommand droolsCommand = description.newCommand();
+        droolsCommand.setBuilderName(DroolsBuilder.BUILDER_ID);
+        newCommands[commands.length] = droolsCommand;
+        
+        description.setBuildSpec(newCommands);
+        project.getProject().setDescription(description, monitor);
+    }
+    
+    public static void addDroolsLibraries(IJavaProject project, IProgressMonitor monitor) throws JavaModelException {
+        IClasspathEntry[] classpathEntries = project.getRawClasspath();
+        for (int i = 0; i < classpathEntries.length; i++) {
+            if (NewDroolsProjectWizard.DROOLS_CLASSPATH_CONTAINER_PATH.equals(classpathEntries[i].getPath().toString())) {
+                return;
+            }
+        }
+        NewDroolsProjectWizard.addDroolsLibraries(project, null);
+    }
+            
 }

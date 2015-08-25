@@ -23,7 +23,6 @@ import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.progress.IProgressConstants;
-import org.kie.eclipse.IKieConstants;
 
 public class DroolsPerspective implements IPerspectiveFactory {
 
@@ -52,7 +51,6 @@ public class DroolsPerspective implements IPerspectiveFactory {
         layout.addShowViewShortcut(IDroolsConstants.AUDIT_VIEW);
         layout.addNewWizardShortcut("org.drools.eclipse.new.file");
         layout.addNewWizardShortcut("org.drools.eclipse.new.dsl");
-        layout.addNewWizardShortcut(IKieConstants.BPMN2_MODELER_JBPM_WIZARD);
         layout.addNewWizardShortcut("org.drools.eclipse.wizards.new.project");
         // **********************************
 

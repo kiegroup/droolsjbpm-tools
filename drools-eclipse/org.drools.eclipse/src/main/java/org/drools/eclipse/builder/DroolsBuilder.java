@@ -47,7 +47,6 @@ import org.drools.eclipse.DRLInfo;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.ProcessInfo;
 import org.drools.eclipse.preferences.IDroolsConstants;
-import org.drools.eclipse.util.DroolsClasspathContainer;
 import org.drools.eclipse.util.DroolsRuntimeManager;
 import org.drools.eclipse.util.ProjectClassLoader;
 import org.drools.eclipse.wizard.project.NewDroolsProjectWizard;
@@ -75,7 +74,6 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
 import org.kie.api.io.ResourceType;
-import org.kie.eclipse.runtime.IRuntime;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.io.ResourceFactory;
 
@@ -130,10 +128,10 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
             Thread.currentThread().setContextClassLoader( newLoader );
             IClasspathEntry[] classpathEntries = project.getRawClasspath();
             for ( int i = 0; i < classpathEntries.length; i++ ) {
-                if ( DroolsClasspathContainer.DROOLS_CLASSPATH_CONTAINER_PATH.equals( classpathEntries[i].getPath().toString() ) ) {
-                    String[] jars = DroolsRuntimeManager.getDefault().getRuntimeJars( getProject() );
+                if ( NewDroolsProjectWizard.DROOLS_CLASSPATH_CONTAINER_PATH.equals( classpathEntries[i].getPath().toString() ) ) {
+                    String[] jars = DroolsRuntimeManager.getDroolsRuntimeJars( getProject() );
                     if ( jars == null || jars.length == 0 ) {
-                        IRuntime runtime = DroolsRuntimeManager.getDefault().getRuntime( getProject() );
+                        String runtime = DroolsRuntimeManager.getDroolsRuntime( getProject() );
                         IMarker marker = getProject().createMarker( IDroolsModelMarker.DROOLS_MODEL_PROBLEM_MARKER );
                         if ( runtime == null ) {
                             marker.setAttribute( IMarker.MESSAGE,

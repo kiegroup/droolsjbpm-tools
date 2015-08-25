@@ -22,7 +22,6 @@ import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.progress.IProgressConstants;
-import org.kie.eclipse.IKieConstants;
 
 public class JBPMPerspective implements IPerspectiveFactory {
 
@@ -45,7 +44,7 @@ public class JBPMPerspective implements IPerspectiveFactory {
         outputfolder.addPlaceholder(IPageLayout.ID_BOOKMARKS);
         outputfolder.addPlaceholder(IProgressConstants.PROGRESS_VIEW_ID);
 
-        layout.addNewWizardShortcut(IKieConstants.BPMN2_MODELER_JBPM_WIZARD);
+        layout.addNewWizardShortcut("org.jbpm.eclipse.new.bpmn2process");
         layout.addNewWizardShortcut("org.jbpm.eclipse.new.project");
 
         layout.addView(IPageLayout.ID_OUTLINE, IPageLayout.RIGHT, (float)0.75, editorArea);

@@ -38,7 +38,6 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringProcessor;
 import org.eclipse.ltk.core.refactoring.participants.RenameParticipant;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.ReplaceEdit;
-import org.kie.eclipse.utils.FileUtils;
 
 /**
  * Participant to generate refactoring when a field is renamed.
@@ -75,7 +74,7 @@ public class RuleSourceFieldRenameParticipant extends RenameParticipant {
             // if at least one file have a reference to the renamed field => apply refactoring
             for (IFile drlFile : drlFiles) {
 
-                if ((content = FileUtils.readFile(drlFile))==null)
+                if ((content = FileUtil.readFile(drlFile))==null)
                     return null;
 
                 Pattern pattern = Pattern.compile("(?<=:\\s)" + currentName + "|" + currentName + "(?=\\s=)");
@@ -110,7 +109,7 @@ public class RuleSourceFieldRenameParticipant extends RenameParticipant {
             RenameFieldProcessor renameFieldProcessor = (RenameFieldProcessor)processor;
             for (IFile drlFile : drlFiles) {
 
-                if ((content = FileUtils.readFile(drlFile))==null)
+                if ((content = FileUtil.readFile(drlFile))==null)
                     return null;
 
                 TextFileChange change = new TextFileChange(drlFile.getName(), drlFile);

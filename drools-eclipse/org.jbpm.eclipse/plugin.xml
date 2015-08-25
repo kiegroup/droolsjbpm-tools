@@ -13,9 +13,17 @@
             name="jBPM project"
             icon="icons/jbpm.gif"
             project= "true">
-         <description>Create a new jBPM project</description>
+         <description>This wizard creates a new jBPM project.</description>
       </wizard>
-      <!--
+      <wizard
+            category="org.jbpm.eclipse.new"
+            class="org.jbpm.eclipse.wizard.project.NewJBPMMavenProjectWizard"
+            id="org.jbpm.eclipse.new.maven.project"
+            name="jBPM project (Maven)"
+            icon="icons/jbpm.gif"
+            project= "true">
+         <description>This wizard creates a new jBPM Maven project.</description>
+      </wizard>
       <wizard
             id = "org.jbpm.eclipse.new.bpmn2process"
             name = "BPMN2 Process"
@@ -24,7 +32,6 @@
             icon="icons/jbpm.gif">
          <description>A wizard that creates a new BPMN2 process.</description>
       </wizard>
-      -->
    </extension>
    <extension point="org.eclipse.jdt.core.classpathContainerInitializer">
        <classpathContainerInitializer class="org.jbpm.eclipse.util.JBPMClasspathContainerInitializer" id="JBPM" />
@@ -130,110 +137,5 @@
          class="org.jbpm.eclipse.JBPMPerspective"
          id="org.jbpm.eclipse.JBPMPerspective">
       </perspective>
-   </extension>
-
-   <extension point="org.kie.eclipse.runtimeInstaller">
-         <installer
-            id="jbpm.runtime_5.4.0_installer"
-            product="jbpm"
-            version="5.4.0"
-            runtimeName="jBPM 5.4.0 Runtime"
-            class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
-            <repository
-               url="http://downloads.jboss.org/drools/release/5.4.0.Final/droolsjbpm-integration-distribution-5.4.0.Final.zip"
-               type="zip"
-               source="*/binaries"
-               artifacts="jbpm.runtime_5.x.artifacts"/>
-         </installer>
-         <installer
-            id="jbpm.runtime_5.6.0_installer"
-            product="jbpm"
-            version="5.6.0"
-            runtimeName="jBPM 5.6.0 Runtime"
-            class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
-            <repository
-               url="http://downloads.jboss.org/drools/release/5.6.0.Final/droolsjbpm-integration-distribution-5.6.0.Final.zip"
-               type="zip"
-               source="*/binaries"
-               artifacts="jbpm.runtime_5.x.artifacts"/>
-         </installer>
-         <installer
-            id="jbpm.runtime_6.0.1_installer"
-            product="jbpm"
-            version="6.0.1"
-            runtimeName="jBPM 6.0.1 Runtime"
-            class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
-            <repository
-               url="http://downloads.jboss.org/drools/release/6.0.1.Final/droolsjbpm-integration-distribution-6.0.1.Final.zip"
-               type="zip"
-               source="*/binaries"
-               artifacts="jbpm.runtime_6.x.artifacts"/>
-         </installer>
-         <installer
-            id="jbpm.runtime_6.1.0_installer"
-            product="jbpm"
-            version="6.1.0"
-            runtimeName="jBPM 6.1.0 Runtime"
-            class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
-            <repository
-               url="http://downloads.jboss.org/drools/release/6.1.0.Final/droolsjbpm-integration-distribution-6.1.0.Final.zip"
-               type="zip"
-               source="*/binaries"
-               artifacts="jbpm.runtime_6.x.artifacts"/>
-         </installer>
-         <installer
-            id="jbpm.runtime_6.2.0_installer"
-            product="jbpm"
-            version="6.2.0"
-            runtimeName="jBPM 6.2.0 Runtime"
-            class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
-            <repository
-               url="http://repository.jboss.org/nexus/content/groups/public-jboss/org/jbpm/jbpm-distribution/6.2.0.Final/jbpm-distribution-6.2.0.Final-bin.zip"
-               type="zip"
-               source="*/lib"
-               artifacts="jbpm.runtime_6.x.artifacts"/>
-            <repository
-               url="http://downloads.jboss.org/drools/release/6.1.0.Final/droolsjbpm-integration-distribution-6.2.0.Final.zip"
-               type="zip"
-               source="*/binaries"
-               artifacts="jbpm.drools.runtime_6.x.artifacts"/>
-         </installer>
-         <artifacts id="jbpm.runtime_5.x.artifacts">
-               <artifact name="antlr-runtime*.jar"/>
-               <artifact name="drools-compiler*.jar"/>
-               <artifact name="drools-core*.jar"/>
-               <artifact name="jbpm-bpmn2*.jar"/>
-               <artifact name="jbpm-flow-builder*.jar"/>
-               <artifact name="jbpm-flow*.jar"/>
-               <artifact name="jsr94*.jar"/>
-               <artifact name="kie-api*.jar"/>
-               <artifact name="kie-internal*.jar"/>
-               <artifact name="mvel2*.jar"/>
-               <!-- <artifact name="org.eclipse.jdt.core_3.10.2.v20150120-1634*.jar"/> -->
-               <artifact name="slf4j-api*.jar"/>
-               <artifact name="xmlpull*.jar"/>
-               <artifact name="xpp3_min*.jar"/>
-               <artifact name="xstream*.jar"/>
-         </artifacts>
-         <artifacts id="jbpm.runtime_6.x.artifacts">
-               <artifact name="drools-compiler*.jar"/>
-               <artifact name="drools-core*.jar"/>
-               <artifact name="drools-decisiontables*.jar"/>
-               <artifact name="drools-jsr94*.jar"/>
-               <artifact name="drools-templates*.jar"/>
-               <artifact name="jsr94*.jar"/>
-               <artifact name="poi-ooxml*.jar"/>
-               <artifact name="poi-*.jar"/>
-               <artifact name="protobuf-java*.jar"/>
-         </artifacts>
-         <artifacts id="jbpm.runtime.drools_6.x.artifacts">
-               <artifact name="kie-api*.jar"/>
-               <artifact name="kie-internal*.jar"/>
-               <artifact name="mvel2*.jar"/>
-               <artifact name="slf4j-api*.jar"/>
-               <artifact name="xmlpull*.jar"/>
-               <artifact name="xpp3_min*.jar"/>
-               <artifact name="xstream*.jar"/>
-         </artifacts>
    </extension>
 </plugin>

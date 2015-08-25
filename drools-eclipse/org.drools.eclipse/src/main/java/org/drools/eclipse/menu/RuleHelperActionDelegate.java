@@ -39,7 +39,6 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowPulldownDelegate;
-import org.kie.eclipse.wizard.project.AbstractKieProjectWizard;
 
 /**
  * Menu driver for launching wizards etc from the top level toolbar.
@@ -103,7 +102,7 @@ public class RuleHelperActionDelegate
 
         rule.addSelectionListener(new SelectionListener() {
             public void widgetSelected(SelectionEvent e) {
-                AbstractKieProjectWizard wizard = new NewDroolsProjectWizard();
+                NewDroolsProjectWizard wizard = new NewDroolsProjectWizard();
                 launchWizard(shell, wizard);
             }
 
