@@ -142,6 +142,10 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-decisiontables</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-templates</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.jbpm</groupId>
@@ -154,6 +158,15 @@
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-bpmn2</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mvel</groupId>
+      <artifactId>mvel2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr-runtime</artifactId>
     </dependency>
 
     <dependency>
