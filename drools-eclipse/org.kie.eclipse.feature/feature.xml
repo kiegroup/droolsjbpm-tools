@@ -2,7 +2,7 @@
 <feature
       id="org.kie.eclipse.feature"
       label="JBoss Drools/jBPM Common"
-      version="6.3.0.qualifier"
+      version="6.3.0.CR2"
       provider-name="JBoss by Red Hat">
 
    <description url="http://www.jboss.org/drools/">
@@ -63,7 +63,7 @@ Raleigh NC 27606 USA.
          id="org.kie.eclipse"
          download-size="0"
          install-size="0"
-         version="6.3.0.qualifier"
+         version="6.3.0.CR2"
          unpack="false"/>
 
 </feature>
