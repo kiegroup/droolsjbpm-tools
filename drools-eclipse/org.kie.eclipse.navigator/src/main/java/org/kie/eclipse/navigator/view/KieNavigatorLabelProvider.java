@@ -32,10 +32,10 @@ public class KieNavigatorLabelProvider extends LabelProvider {
 	public String getText(Object element) {
 		if (element instanceof IContainerNode) {
 			return ((IContainerNode<?>) element).getName();
-		} else if (element instanceof IContentNode) {
-			return ((IContentNode<?>) element).getName();
 		} else if (element instanceof IErrorNode) {
 			return ((IErrorNode) element).getText();
+		} else if (element instanceof IContentNode) {
+			return ((IContentNode<?>) element).getName();
 		} else if (element == KieNavigatorContentProvider.PENDING) {
 			return "Loading...";
 		}

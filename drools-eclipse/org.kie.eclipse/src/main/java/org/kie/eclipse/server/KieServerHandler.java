@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.wst.server.core.IServer;
-import org.kie.eclipse.Activator;
 import org.kie.eclipse.IKieConstants;
 
 /**
@@ -106,7 +105,7 @@ public class KieServerHandler extends KieResourceHandler implements IKieServerHa
 	 * @return
 	 */
 	public String getRuntimeId() {
-		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+		IPreferenceStore store = org.kie.eclipse.Activator.getDefault().getPreferenceStore();
 		String value = store.getString(getKieVersionPreferenceKey());
 		if (value==null || value.isEmpty())
 			value = "org.jboss.kie.6.2"; // just a bootstrap for testing
@@ -114,7 +113,7 @@ public class KieServerHandler extends KieResourceHandler implements IKieServerHa
 	}
 
 	public void setRuntimeId(String version) {
-		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+		IPreferenceStore store = org.kie.eclipse.Activator.getDefault().getPreferenceStore();
 		store.putValue(getKieVersionPreferenceKey(), version);
 	}
 

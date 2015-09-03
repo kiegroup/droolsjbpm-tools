@@ -83,6 +83,11 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 		return handler;
 	}
 
+	private void setHttpCredentials(HttpURLConnection conn) {
+		String creds = getUsername() + ":" + getPassword();
+		conn.setRequestProperty("Authorization", "Basic " + Base64Util.encode(creds));
+	}
+	
 	protected String httpGet(String request) throws IOException {
 		String host = getKieRESTUrl();
 		URL url = new URL(host + "/" + request);
@@ -90,8 +95,7 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setRequestMethod("GET");
 		conn.setRequestProperty("Content", "application/json");
-		String creds = getUsername() + ":" + getPassword();
-		conn.setRequestProperty("Authorization", "Basic " + Base64Util.encode(creds));
+		setHttpCredentials(conn);
 		String response = new BufferedReader(new InputStreamReader((conn.getInputStream()))).readLine();
 		System.out.println("[GET] response: "+response);
 		return response;
@@ -112,8 +116,7 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setRequestMethod("DELETE");
 		conn.setRequestProperty("Content", "application/json");
-		String creds = getUsername() + ":" + getPassword();
-		conn.setRequestProperty("Authorization", "Basic " + Base64Util.encode(creds));
+		setHttpCredentials(conn);
 		String response = new BufferedReader(new InputStreamReader((conn.getInputStream()))).readLine();
 		System.out.println("[DELETE] response: "+response);
 
@@ -154,8 +157,7 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 		conn.setDoOutput(body!=null);
 		conn.setRequestMethod("POST");
 		conn.setRequestProperty("Content-Type", "application/json");
-		String creds = getUsername() + ":" + getPassword();
-		conn.setRequestProperty("Authorization", "Basic " + Base64Util.encode(creds));
+		setHttpCredentials(conn);
 
 		if (body!=null) {
 			java.io.OutputStream os = conn.getOutputStream();

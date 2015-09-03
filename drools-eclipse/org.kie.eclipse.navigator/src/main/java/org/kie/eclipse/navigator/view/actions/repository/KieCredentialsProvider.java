@@ -11,7 +11,6 @@ import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.URIish;
 import org.eclipse.swt.widgets.Display;
 import org.kie.eclipse.IKieConstants;
-import org.kie.eclipse.navigator.Activator;
 import org.kie.eclipse.server.IKieServerHandler;
 
 public class KieCredentialsProvider extends CredentialsProvider {
@@ -76,7 +75,7 @@ public class KieCredentialsProvider extends CredentialsProvider {
 									"Connect to Server",
 									item.getPromptText(),
 									"Don't ask me again", false,
-									Activator.getDefault().getPreferenceStore(),
+									org.kie.eclipse.Activator.getDefault().getPreferenceStore(),
 									server.getPreferenceName(IKieConstants.PREF_SERVER_TRUSTED_CONNECTION));
 							ar.set(dlg.getReturnCode() == IDialogConstants.YES_ID);
 							if (ar.get()) {

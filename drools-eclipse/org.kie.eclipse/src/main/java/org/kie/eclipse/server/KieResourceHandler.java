@@ -15,14 +15,10 @@ package org.kie.eclipse.server;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.wst.server.core.IServer;
-import org.kie.eclipse.Activator;
 import org.kie.eclipse.IKieConstants;
-import org.osgi.service.prefs.Preferences;
 
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -143,44 +139,43 @@ public abstract class KieResourceHandler implements IKieResourceHandler {
 		return canonicalName + IKieConstants.PREF_PATH_SEPARATOR + getCanonicalName(name);
 	}
 	
-	@Override
-	public Preferences getPreferences() {
-		if (preferences==null) {
-			preferences = (IEclipsePreferences) Platform.getPreferencesService().
-					getRootNode().
-					node(InstanceScope.SCOPE).
-					node(Activator.PLUGIN_ID);
-		}
-		return preferences;
+	public IPreferenceStore getPreferenceStore() {
+		return org.kie.eclipse.Activator.getDefault().getPreferenceStore();
 	}
 	
 	@Override
 	public String getPreference(String name, String def) {
-		return getPreferences().get(getPreferenceName(name), def);
+		if (getPreferenceStore().contains(getPreferenceName(name)))
+			return getPreferenceStore().getString(getPreferenceName(name));
+		return def;
 	}
 	
 	@Override
 	public boolean getPreference(String name, boolean def) {
-		return getPreferences().getBoolean(getPreferenceName(name), def);
+		if (getPreferenceStore().contains(getPreferenceName(name)))
+			return getPreferenceStore().getBoolean(getPreferenceName(name));
+		return def;
 	}
 	
 	@Override
 	public int getPreference(String name, int def) {
-		return getPreferences().getInt(getPreferenceName(name), def);
+		if (getPreferenceStore().contains(getPreferenceName(name)))
+			return getPreferenceStore().getInt(getPreferenceName(name));
+		return def;
 	}
 	
 	@Override
 	public void putPreference(String name, String value) {
-		getPreferences().put(getPreferenceName(name), value);
+		getPreferenceStore().putValue(getPreferenceName(name), value);
 	}
 	
 	@Override
 	public void putPreference(String name, boolean value) {
-		getPreferences().putBoolean(getPreferenceName(name), value);
+		getPreferenceStore().putValue(getPreferenceName(name), Boolean.toString(value));
 	}
 	
 	@Override
 	public void putPreference(String name, int value) {
-		getPreferences().putInt(getPreferenceName(name), value);
+		getPreferenceStore().putValue(getPreferenceName(name), Integer.toString(value));
 	}
 }

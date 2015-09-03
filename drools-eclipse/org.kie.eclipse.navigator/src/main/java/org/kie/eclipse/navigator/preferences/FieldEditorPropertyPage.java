@@ -15,7 +15,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbenchPropertyPage;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.kie.eclipse.navigator.Activator;
 
 public abstract class FieldEditorPropertyPage extends PropertyPage implements IWorkbenchPropertyPage, IPropertyChangeListener {
 	/**
@@ -165,7 +164,7 @@ public abstract class FieldEditorPropertyPage extends PropertyPage implements IW
 	
 	@Override
 	public IPreferenceStore getPreferenceStore() {
-		return Activator.getDefault().getPreferenceStore();
+		return org.kie.eclipse.Activator.getDefault().getPreferenceStore();
 	}
 
 	/*

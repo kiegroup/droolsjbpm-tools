@@ -19,11 +19,8 @@ import java.util.List;
 
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.ui.navigator.CommonNavigator;
-import org.eclipse.ui.navigator.CommonViewer;
 import org.eclipse.wst.server.core.IServer;
 import org.kie.eclipse.IKieConstants;
-import org.kie.eclipse.navigator.Activator;
 import org.kie.eclipse.navigator.view.IKieNavigatorView;
 import org.kie.eclipse.server.IKieOrganizationHandler;
 import org.kie.eclipse.server.IKieRepositoryHandler;
@@ -47,7 +44,7 @@ public class ServerNode extends ContainerNode implements IPropertyChangeListener
 		this.server = server;
 		this.navigator = navigator;
         handler = server==null ? null : new KieServerHandler(server);
-		Activator.getDefault().getPreferenceStore().addPropertyChangeListener(this);
+        org.kie.eclipse.Activator.getDefault().getPreferenceStore().addPropertyChangeListener(this);
 	}
 	
 	@Override
@@ -99,7 +96,7 @@ public class ServerNode extends ContainerNode implements IPropertyChangeListener
 	@Override
 	public void dispose() {
 		super.dispose();
-		Activator.getDefault().getPreferenceStore().removePropertyChangeListener(this);
+		org.kie.eclipse.Activator.getDefault().getPreferenceStore().removePropertyChangeListener(this);
 	}
 
 	/* (non-Javadoc)

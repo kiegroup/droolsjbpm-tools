@@ -44,7 +44,7 @@ public interface IKieResourceHandler {
 	List<? extends IKieResourceHandler> getChildren() throws Exception;
 	String getRuntimeId();
 	String getPreferenceName(String name);
-	Preferences getPreferences();
+//	Preferences getPreferences();
 	// convenience methods
 	String getPreference(String name, String def);
 	boolean getPreference(String name, boolean def);
