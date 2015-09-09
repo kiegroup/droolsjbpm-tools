@@ -8,7 +8,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/drools-compiler.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jbpm-flow.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jbpm-flow-builder.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jbpm-test.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jbpm-audit.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jbpm-bpmn2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/mvel2.jar"/>

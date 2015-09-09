@@ -239,14 +239,16 @@ public class DroolsRuntimesBlock implements ISelectionProvider {
         for (int i = 0; i < runtimes.length; i++) {
             droolsRuntimes.add(runtimes[i]);
         }
-        droolsRuntimesList.setInput(droolsRuntimes);
-        for (DroolsRuntime runtime: runtimes) {
-            if (runtime.isDefault()) {
-                setDefaultDroolsRuntime(runtime);
-                break;
-            }
+        if (droolsRuntimesList!=null && !droolsRuntimesList.getControl().isDisposed()) {
+	        droolsRuntimesList.setInput(droolsRuntimes);
+	        for (DroolsRuntime runtime: runtimes) {
+	            if (runtime.isDefault()) {
+	                setDefaultDroolsRuntime(runtime);
+	                break;
+	            }
+	        }
+	        droolsRuntimesList.refresh();
         }
-        droolsRuntimesList.refresh();
     }
 
     public DroolsRuntime[] getDroolsRuntimes() {

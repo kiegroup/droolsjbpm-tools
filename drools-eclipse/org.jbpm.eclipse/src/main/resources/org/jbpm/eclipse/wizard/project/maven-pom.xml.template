@@ -31,12 +31,4 @@
       </snapshots>
     </repository>
   </repositories>
-
-  <dependencies>
-    <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-test</artifactId>
-      <version>${jbpm.version}</version>
-    </dependency>
-  </dependencies>
 </project>

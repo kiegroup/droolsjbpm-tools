@@ -51,7 +51,6 @@ Bundle-ClassPath: .,
  lib/xstream.jar,
  lib/jbpm-flow.jar,
  lib/jbpm-flow-builder.jar,
- lib/jbpm-test.jar,
  lib/slf4j-api.jar,
  lib/protobuf-java.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
