@@ -60,10 +60,13 @@ public class ServerPropertyPage extends AbstractKiePropertyPage {
 		addField(useDefaultGitPathEditor);
 		
 		gitPathEditor = new MyDirectoryFieldEditor(IKieConstants.PREF_GIT_REPO_PATH, "Git Repository Path", getFieldEditorParent());
+		gitPathEditor.setErrorMessage("Git Repository Path must be an existing directory");
 		addField(gitPathEditor);
 	}
 	
 	private void updateControls() {
+		setErrorMessage(null);
+
 		Button checkBox = (Button) useDefaultGitPathEditor.getDescriptionControl(getFieldEditorParent());
 		boolean checked = checkBox.getSelection();
 		gitPathEditor.setEnabled(!checked, getFieldEditorParent());
@@ -104,14 +107,28 @@ public class ServerPropertyPage extends AbstractKiePropertyPage {
 		return KieServerHandler.class;
 	}
 	
-	private static class MyDirectoryFieldEditor extends DirectoryFieldEditor {
+	private class MyDirectoryFieldEditor extends DirectoryFieldEditor {
 
 		public MyDirectoryFieldEditor(String prefGitRepoPath, String string, Composite fieldEditorParent) {
 			super(prefGitRepoPath, string, fieldEditorParent);
 		}
 	
+	    @Override
+		protected void createControl(Composite parent) {
+	        setValidateStrategy(VALIDATE_ON_KEY_STROKE);
+	        super.createControl(parent);
+	    }
+	    
+		@Override
 		public void refreshValidState() {
 			super.refreshValidState();
+		}
+		
+		@Override
+	    protected boolean checkState() {
+			if (useDefaultGitPathEditor.getBooleanValue())
+				return true;
+			return super.checkState();
 		}
 	}
 	

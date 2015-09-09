@@ -50,8 +50,13 @@ public class ErrorNode extends ContentNode<IContainerNode<?>> implements IErrorN
         this.exception = exception;
     }
 
-    public String getText() {
-        return text;
+    @Override
+	public String getText() {
+    	if (exception!=null) {
+    		String msg = exception.getMessage();
+    		return msg;
+    	}
+    	return text;
     }
 
 	/* (non-Javadoc)

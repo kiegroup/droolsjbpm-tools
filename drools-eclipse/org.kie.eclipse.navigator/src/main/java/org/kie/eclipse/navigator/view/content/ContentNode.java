@@ -11,14 +11,15 @@
 package org.kie.eclipse.navigator.view.content;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.navigator.CommonNavigator;
+import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.wst.server.core.IServer;
 import org.kie.eclipse.navigator.view.IKieNavigatorView;
 import org.kie.eclipse.server.IKieResourceHandler;
 
-public abstract class ContentNode<T extends IContainerNode<?>> implements IContentNode<T> {
+public abstract class ContentNode<T extends IContainerNode<?>> implements IContentNode<T>, IWorkbenchAdapter {
 
     protected IKieResourceHandler handler;
     protected IContainerNode<?> parent;
@@ -106,6 +107,9 @@ public abstract class ContentNode<T extends IContainerNode<?>> implements IConte
 		if (adapter==IKieResourceHandler.class) {
 			return getHandler();
 		}
+		if (adapter==IWorkbenchAdapter.class) {
+			return this;
+		}
     	return null;
     }
     
@@ -170,5 +174,26 @@ public abstract class ContentNode<T extends IContainerNode<?>> implements IConte
 				MessageDialog.openError(getShell(), "Error", t.getMessage());
 			}
 		});
+	}
+
+
+	@Override
+	public Object[] getChildren(Object o) {
+		return null;
+	}
+
+	@Override
+	public ImageDescriptor getImageDescriptor(Object object) {
+		return null;
+	}
+
+	@Override
+	public String getLabel(Object o) {
+		return getName();
+	}
+
+	@Override
+	public Object getParent(Object o) {
+		return getParent();
 	}
 }

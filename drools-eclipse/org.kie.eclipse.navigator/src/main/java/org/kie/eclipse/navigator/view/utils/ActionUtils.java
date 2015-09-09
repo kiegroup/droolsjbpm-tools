@@ -254,6 +254,7 @@ public class ActionUtils {
 							connect.execute(monitor);
 							
 		            		FileUtils.createGitIgnore(javaProject, monitor);
+		            		FileUtils.addMavenLibraries(javaProject, monitor);
 						}
 					}
 				}
