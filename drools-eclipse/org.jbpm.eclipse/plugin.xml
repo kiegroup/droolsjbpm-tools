@@ -15,7 +15,7 @@
             project= "true">
          <description>Create a new jBPM project</description>
       </wizard>
-      <!--
+      <!-- Use BPMN2 Modeler wizard instead
       <wizard
             id = "org.jbpm.eclipse.new.bpmn2process"
             name = "BPMN2 Process"
