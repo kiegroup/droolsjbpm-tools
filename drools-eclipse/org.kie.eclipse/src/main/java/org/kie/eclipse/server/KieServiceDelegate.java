@@ -354,6 +354,13 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 	}
 
 	protected String getKieRESTUrl() {
-		return "http://" + getServer().getHost() + ":" + getHttpPort() + "/" + getKieApplication() + "/rest";
+		String kieApp = getKieApplication();
+		if (kieApp==null) {
+			kieApp = handler.getPreference(IKieConstants.PREF_SERVER_KIE_APPLICATION_NAME, null);
+			if (kieApp==null)
+				throw new IllegalArgumentException("Can't determine KIE Application Name");
+			throw new IllegalArgumentException("KIE Application '"+kieApp+"' is not deployed");
+		}
+		return "http://" + getServer().getHost() + ":" + getHttpPort() + "/" + kieApp + "/rest";
 	}
 }
