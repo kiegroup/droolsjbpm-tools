@@ -56,10 +56,10 @@
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="runtimeId" type="string" use="required">
+         <attribute name="runtimeId" type="string">
             <annotation>
                <documentation>
-                  
+                  TODO: this should be tied to a KIE web app version number, but this information is not available from the KIE web app as a REST call yet, so it is not used.
                </documentation>
             </annotation>
          </attribute>
