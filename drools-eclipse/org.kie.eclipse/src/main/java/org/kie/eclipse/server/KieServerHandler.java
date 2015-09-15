@@ -44,9 +44,11 @@ public class KieServerHandler extends KieResourceHandler implements IKieServerHa
 		return server;
 	}
 
+	@Override
 	public void dispose() {
 	}
 	
+	@Override
 	public IKieServiceDelegate getDelegate() {
 		if (delegate==null)
 			delegate = loadDelegate();
@@ -56,14 +58,20 @@ public class KieServerHandler extends KieResourceHandler implements IKieServerHa
 	protected IKieServiceDelegate loadDelegate() {
 		IKieServiceDelegate result = null;
 		try {
+			String serverTypeId = getServerTypeId();
 			IConfigurationElement[] config = Platform.getExtensionRegistry()
 					.getConfigurationElementsFor(IKieConstants.KIE_SERVICE_IMPL_ID);
 			for (IConfigurationElement e : config) {
 				if ("containerBinding".equals(e.getName())) {
 					String serverId = e.getAttribute("serverId");
-					if (getServerTypeId().equals(serverId)) {
+					if (serverTypeId.matches(serverId)) {
 						String kieVersion = e.getAttribute("runtimeId");
-						if ( getRuntimeId().equals(kieVersion) ) {
+						String rid = server.getRuntime().getRuntimeType().getVersion();
+						// TODO: figure out how to associated KIE web app version with
+						// the containerBinding delegate class. The version number is
+						// not available as a REST call from KIE web app...yet.
+//						if ( getRuntimeId().equals(kieVersion) ) 
+						{
 							Object o = e.createExecutableExtension("class");
 							if (o instanceof IKieServiceDelegate) {
 								result = (IKieServiceDelegate)o;
@@ -85,11 +93,14 @@ public class KieServerHandler extends KieResourceHandler implements IKieServerHa
 	public static boolean isSupportedServer(IServer server) {
 		IConfigurationElement[] config = Platform.getExtensionRegistry()
 				.getConfigurationElementsFor(IKieConstants.KIE_SERVICE_IMPL_ID);
-		for (IConfigurationElement e : config) {
-			if ("containerBinding".equals(e.getName())) {
-				String serverId = e.getAttribute("serverId");
-				if (server.getServerType().getId().equals(serverId)) {
-					return true;
+		String serverTypeId = server.getServerType().getId();
+		if (serverTypeId!=null) {
+			for (IConfigurationElement e : config) {
+				if ("containerBinding".equals(e.getName())) {
+					String serverId = e.getAttribute("serverId");
+					if (serverTypeId.matches(serverId)) {
+						return true;
+					}
 				}
 			}
 		}
@@ -104,11 +115,10 @@ public class KieServerHandler extends KieResourceHandler implements IKieServerHa
 	 * @param server
 	 * @return
 	 */
+	@Override
 	public String getRuntimeId() {
 		IPreferenceStore store = org.kie.eclipse.Activator.getDefault().getPreferenceStore();
 		String value = store.getString(getKieVersionPreferenceKey());
-		if (value==null || value.isEmpty())
-			value = "org.jboss.kie.6.2"; // just a bootstrap for testing
 		return value;
 	}
 
@@ -145,6 +155,7 @@ public class KieServerHandler extends KieResourceHandler implements IKieServerHa
 		return getDelegate().getProjects(repository);
 	}
 
+	@Override
 	public List<? extends IKieResourceHandler> getChildren() throws Exception {
 		if (children==null)
 			children = new ArrayList<IKieResourceHandler>();
@@ -189,6 +200,7 @@ public class KieServerHandler extends KieResourceHandler implements IKieServerHa
 		return server.getId()+"/projects";
 	}
 	
+	@Override
 	public boolean isLoaded() {
 		return isServerRunning();
 	}

@@ -153,13 +153,15 @@
 		point="org.kie.eclipse.serviceImpl">
 		<containerBinding
 			class="org.kie.eclipse.server.jbpm60.Kie60Service"
-			runtimeId="org.jboss.kie.6.2"
-			serverId="org.jboss.ide.eclipse.as.wildfly.80">
+			serverId="org.jboss.ide.eclipse.as.wildfly.*">
 		</containerBinding>
 		<containerBinding
 			class="org.kie.eclipse.server.jbpm60.Kie60Service"
-			runtimeId="org.jboss.kie.6.1"
-			serverId="org.jboss.ide.eclipse.as.71">
+			serverId="org.jboss.ide.eclipse.as.eap.*">
+		</containerBinding>
+		<containerBinding
+			class="org.kie.eclipse.server.jbpm60.Kie60Service"
+			serverId="org.jboss.ide.eclipse.as.*">
 		</containerBinding>
 	</extension>
 	

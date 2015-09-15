@@ -10,6 +10,8 @@
  ******************************************************************************/ 
 package org.kie.eclipse.navigator.view.content;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
 
 import org.kie.eclipse.server.IKieResourceHandler;
@@ -54,6 +56,15 @@ public class ErrorNode extends ContentNode<IContainerNode<?>> implements IErrorN
 	public String getText() {
     	if (exception!=null) {
     		String msg = exception.getMessage();
+    		if (msg==null) {
+    			StringWriter sw = new StringWriter();
+    			PrintWriter pw = new PrintWriter(sw, true);
+    			exception.printStackTrace(pw);
+    			pw.close();
+    			String s[] = sw.toString().split(System.getProperty("line.separator"));
+    			if (s.length>1)
+    				msg = s[0] + " : " + s[1];
+    		}
     		return msg;
     	}
     	return text;
