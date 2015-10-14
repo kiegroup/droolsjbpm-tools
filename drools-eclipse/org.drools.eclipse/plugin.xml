@@ -464,7 +464,6 @@
          icon="icons/drools.gif"
          menubarPath="org.eclipse.ui.projectConfigure/additions"
          class="org.drools.eclipse.action.ConvertToDroolsProjectAction"
-           definitionId="org.drools.eclipse.action.ConvertToDroolsProjectAction1"
          enablesFor="1">
       </action>
       </objectContribution>
@@ -476,7 +475,6 @@
          icon="icons/drools.gif"
          menubarPath="org.eclipse.ui.projectConfigure/additions"
          class="org.drools.eclipse.action.ConvertToDroolsProjectAction"
-           definitionId="org.drools.eclipse.action.ConvertToDroolsProjectAction2"
          enablesFor="1">
       </action>
       </objectContribution>
@@ -488,7 +486,6 @@
          icon="icons/drools.gif"
          menubarPath="additions"
          class="org.drools.eclipse.action.ConvertToBPMN2ProcessAction"
-           definitionId="org.drools.eclipse.action.ConvertToBPMN2ProcessAction"
          enablesFor="1">
       </action>
       </objectContribution>

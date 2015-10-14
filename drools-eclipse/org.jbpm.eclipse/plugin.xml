@@ -51,11 +51,13 @@
          </enabledWhen>
       </page>
    </extension>
+   
    <extension point = "org.eclipse.ui.popupMenus">
       <objectContribution
-           objectClass="org.eclipse.jdt.core.IJavaProject"
-           id="org.jbpm.eclipse.action.ConvertToJBPMProject">
-	    <action id="org.jbpm.eclipse.action.ConvertToJBPMProjectAction"
+           objectClass="org.eclipse.core.resources.IProject"
+           id="org.jbpm.eclipse.action.ConvertToJBPMProject1">
+        <filter name="nature" value="org.eclipse.jdt.core.javanature"/>
+	    <action id="org.jbpm.eclipse.action.ConvertToJBPMProjectAction1"
 	       label="Convert to jBPM Project"
 	       menubarPath="org.eclipse.ui.projectConfigure/additions"
 	       class="org.jbpm.eclipse.action.ConvertToJBPMProjectAction"
@@ -63,6 +65,18 @@
            enablesFor="1">
 	    </action>
       </objectContribution>
+      <objectContribution
+           objectClass="org.eclipse.jdt.core.IJavaProject"
+           id="org.jbpm.eclipse.action.ConvertToJBPMProject2">
+	    <action id="org.jbpm.eclipse.action.ConvertToJBPMProjectAction2"
+	       label="Convert to jBPM Project"
+	       menubarPath="org.eclipse.ui.projectConfigure/additions"
+	       class="org.jbpm.eclipse.action.ConvertToJBPMProjectAction"
+	       icon="icons/jbpm.gif"
+           enablesFor="1">
+	    </action>
+      </objectContribution>
+
       <objectContribution
            objectClass="org.eclipse.jdt.core.IJavaProject"
            id="org.jbpm.eclipse.action.ImportWorkItems">
@@ -119,6 +133,7 @@
         </action>
       </objectContribution>
    </extension>
+   
    <extension-point id="runtimeRecognizer"
                     name="jBPM Runtime Recognizer"
                     schema="schema/runtimeRecognizer.exsd"/>
