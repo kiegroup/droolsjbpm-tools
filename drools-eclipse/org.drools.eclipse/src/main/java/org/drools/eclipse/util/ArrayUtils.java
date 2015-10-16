@@ -1,9 +1,3 @@
-package org.drools.eclipse.util;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -11,9 +5,9 @@ import java.util.List;
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,10 +17,10 @@ import java.util.List;
 
 /**
  * Taken from commons lang
- * 
+ *
  * <p>Operations on arrays, primitive arrays (like <code>int[]</code>) and
  * primitive wrapper arrays (like <code>Integer[]</code>).</p>
- * 
+ *
  * <p>This class tries to handle <code>null</code> input gracefully.
  * An exception will not be thrown for a <code>null</code>
  * array input. However, an Object array that contains a <code>null</code>
@@ -35,6 +29,14 @@ import java.util.List;
  * @since 2.0
  * @version $Id$
  */
+
+package org.drools.eclipse.util;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class ArrayUtils {
     // Taken from commons ArrayUtils
 
