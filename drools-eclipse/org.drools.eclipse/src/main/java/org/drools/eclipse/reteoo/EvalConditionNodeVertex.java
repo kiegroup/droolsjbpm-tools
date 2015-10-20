@@ -65,6 +65,6 @@ public class EvalConditionNodeVertex extends BaseVertex {
      * @see org.drools.core.reteoo.BaseNodeVertex#getFillColor()
      */
     public Color getFillColor() {
-        return ColorConstants.white;
+        return ColorConstants.green;
     }
 }

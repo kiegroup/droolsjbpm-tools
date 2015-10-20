@@ -58,7 +58,7 @@ public class ObjectTypeNodeVertex extends BaseVertex {
      * @see org.drools.core.reteoo.BaseNodeVertex#getFillColor()
      */
     public Color getFillColor() {
-        return ColorConstants.red;
+        return ColorConstants.blue;
     }
 
     /**

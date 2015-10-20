@@ -57,7 +57,7 @@ public class RuleTerminalNodeVertex extends BaseVertex {
      * @see org.drools.core.reteoo.BaseNodeVertex#getFillColor()
      */
     public Color getFillColor() {
-        return ColorConstants.darkGray;
+        return ColorConstants.black;
     }
 
     /**
