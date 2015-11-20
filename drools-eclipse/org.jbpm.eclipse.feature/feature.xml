@@ -1,26 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.jbpm.eclipse.feature"
-      label="JBoss jBPM Core"
+      label="%featurename"
       version="6.4.0.qualifier"
-      provider-name="JBoss by Red Hat">
+      provider-name="%providername"
+      license-feature="org.jboss.tools.foundation.license.feature"
+      license-feature-version="0.0.0">
 
    <description url="http://www.jboss.org/jbpm/">
-      Eclipse support for JBoss jBPM Core.
+      %description
    </description>
 
    <copyright>
-      (c) 2010 JBoss by Red Hat
+      %copyright
    </copyright>
 
-   <license>
-Red Hat, Inc. licenses these features and plugins to you under
-certain open source licenses (or aggregations of such licenses), which
-in a particular case may include the Eclipse Public License, the GNU
-Lesser General Public License, and/or certain other open source
-licenses. For precise licensing details, consult the corresponding
-source code, or contact Red Hat Legal Affairs, 1801 Varsity Drive,
-Raleigh NC 27606 USA.
+   <license url="%licenseURL">
+      %license
    </license>
 
    <requires>
