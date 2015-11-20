@@ -3,7 +3,9 @@
       id="org.kie.eclipse.navigator.feature"
       label="%featurename"
       version="6.4.0.qualifier"
-      provider-name="JBoss by Red Hat">
+      provider-name="JBoss by Red Hat"
+      license-feature="org.jboss.tools.foundation.license.feature"
+      license-feature-version="0.0.0">
 
    <description url="http://www.jboss.org/drools/">
       %description
