@@ -32,31 +32,9 @@
   </properties>
   <build>
     <plugins>
-      <!-- Suppress calling source-plugin for an update site build because it will cause clean to fire and delete the target/ folder AFTER producing the update site ~nickboldt -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <goals>
-              <goal>never</goal>
-            </goals>
-            <phase>never</phase>
-          </execution>
-          <execution>
-            <id>attach-test-sources</id>
-            <phase>never</phase>
-            <goals>
-              <goal>never</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.jboss.tools.tycho-plugins</groupId>
         <artifactId>repository-utils</artifactId>
-        <version>${version.org.eclipse.tycho}</version>
         <executions>
           <execution>
             <id>generate-facade</id>
