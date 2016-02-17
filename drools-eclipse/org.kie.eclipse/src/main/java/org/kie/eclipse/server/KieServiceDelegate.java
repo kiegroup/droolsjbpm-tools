@@ -14,6 +14,7 @@
 package org.kie.eclipse.server;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -151,8 +152,7 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 	protected String httpPost(String request, JsonObject body) throws IOException, RuntimeException {
 		String host = getKieRESTUrl();
 		URL url = new URL(host + "/" + request);
-		System.out.println("[POST] "+url.toString());
-		System.out.println("[POST] body: "+body);
+		System.out.println("[POST] "+url.toString()+" body: "+body);
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setDoOutput(body!=null);
 		conn.setRequestMethod("POST");
@@ -262,11 +262,11 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 	}
 	
 	public String getUsername() {
-		return handler.getPreference(IKieConstants.PREF_SERVER_USERNAME, "admin");
+		return handler.getPreference(IKieConstants.PREF_SERVER_USERNAME, "");
 	}
 
 	public String getPassword() {
-		return handler.getPreference(IKieConstants.PREF_SERVER_PASSWORD, "admin");
+		return handler.getPreference(IKieConstants.PREF_SERVER_PASSWORD, "");
 	}
 
 	public int getGitPort() {
@@ -300,8 +300,16 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 						System.out.println("success!");
 						break;
 					}
-					catch (Exception e) {
+					catch (FileNotFoundException e) {
 						System.out.println("not found");
+						kieApplication = null;
+					}
+					catch (IOException e1) {
+						System.out.println("not authorized");
+						break;
+					}
+					catch (Exception e2) {
+						System.out.println(e2.getMessage());
 						kieApplication = null;
 					}
 				}
