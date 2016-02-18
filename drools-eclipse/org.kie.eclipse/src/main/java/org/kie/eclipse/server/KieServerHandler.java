@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.wst.server.core.IServer;
+import org.kie.eclipse.Activator;
 import org.kie.eclipse.IKieConstants;
 
 /**
@@ -84,7 +85,7 @@ public class KieServerHandler extends KieResourceHandler implements IKieServerHa
 				}
 			}
 		} catch (Exception ex) {
-			System.out.println(ex.getMessage());
+			Activator.logError(ex.getMessage(), ex);
 		}
 		
 		return result;
