@@ -33,6 +33,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 import org.eclipse.wst.server.core.IServer;
 import org.eclipse.wst.server.core.ServerPort;
+import org.kie.eclipse.Activator;
 import org.kie.eclipse.IKieConstants;
 
 import com.eclipsesource.json.JsonObject;
@@ -92,13 +93,13 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 	protected String httpGet(String request) throws IOException {
 		String host = getKieRESTUrl();
 		URL url = new URL(host + "/" + request);
-		System.out.println("[GET] "+url.toString());
+		Activator.println("[GET] "+url.toString());
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setRequestMethod("GET");
 		conn.setRequestProperty("Content", "application/json");
 		setHttpCredentials(conn);
 		String response = new BufferedReader(new InputStreamReader((conn.getInputStream()))).readLine();
-		System.out.println("[GET] response: "+response);
+		Activator.println("[GET] response: "+response);
 		return response;
 	}
 
@@ -113,13 +114,13 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 	protected String httpDelete(String request) throws IOException {
 		String host = getKieRESTUrl();
 		URL url = new URL(host + "/" + request);
-		System.out.println("[DELETE] "+url.toString());
+		Activator.println("[DELETE] "+url.toString());
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setRequestMethod("DELETE");
 		conn.setRequestProperty("Content", "application/json");
 		setHttpCredentials(conn);
 		String response = new BufferedReader(new InputStreamReader((conn.getInputStream()))).readLine();
-		System.out.println("[DELETE] response: "+response);
+		Activator.println("[DELETE] response: "+response);
 
 		if (conn.getResponseCode() != HttpURLConnection.HTTP_ACCEPTED) {
 			throw new IOException("HTTP DELETE failed : HTTP error code : " + conn.getResponseCode());
@@ -152,7 +153,7 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 	protected String httpPost(String request, JsonObject body) throws IOException, RuntimeException {
 		String host = getKieRESTUrl();
 		URL url = new URL(host + "/" + request);
-		System.out.println("[POST] "+url.toString()+" body: "+body);
+		Activator.println("[POST] "+url.toString()+" body: "+body);
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setDoOutput(body!=null);
 		conn.setRequestMethod("POST");
@@ -168,7 +169,7 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 		}
 		
 		String response = new BufferedReader(new InputStreamReader((conn.getInputStream()))).readLine();
-		System.out.println("[POST] response: "+response);
+		Activator.println("[POST] response: "+response);
 
 		if (conn.getResponseCode() != HttpURLConnection.HTTP_ACCEPTED) {
 			throw new IOException("HTTP POST failed : HTTP error code : " + conn.getResponseCode());
@@ -225,8 +226,8 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 							stopTime = System.currentTimeMillis();
 							pm.worked(STATUS_REQUEST_DELAY);
 							
-							System.out.println("status="+status);
-							System.out.println("result="+result);
+							Activator.println("status="+status);
+							Activator.println("result="+result);
 						}
 						catch (Exception e) {
 							e.printStackTrace();
@@ -236,7 +237,7 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 					}
 					while (ar.get()==null && stopTime - startTime < STATUS_REQUEST_TIMEOUT);
 					pm.done();
-					System.out.println(
+					Activator.println(
 							"\n----------------------------------\n"+
 							"Job "+jobId+"\n"+title+"\ncompleted in "+(stopTime - startTime) / 1000.0+" sec\n"+
 							"Status: " + ar.get()+
@@ -279,12 +280,12 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 			if (app != null) {
 				try {
 					kieApplication = app;
-					System.out.print("Trying " + getKieRESTUrl() + "...");
+					Activator.print("Trying " + getKieRESTUrl() + "...");
 					httpGet("organizationalunits");
-					System.out.println("success!");
+					Activator.println("success!");
 				}
 				catch (Exception e) {
-					System.out.println("not found");
+					Activator.println("not found");
 					kieApplication = null;
 				}
 			}
@@ -294,22 +295,22 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 				for (String s : kieApplicationNames) {
 					try {
 						kieApplication = s;
-						System.out.print("Trying " + getKieRESTUrl() + "...");
+						Activator.print("Trying " + getKieRESTUrl() + "...");
 						httpGet("organizationalunits");
 						handler.putPreference(IKieConstants.PREF_SERVER_KIE_APPLICATION_NAME, s);
-						System.out.println("success!");
+						Activator.println("success!");
 						break;
 					}
 					catch (FileNotFoundException e) {
-						System.out.println("not found");
+						Activator.println("not found");
 						kieApplication = null;
 					}
 					catch (IOException e1) {
-						System.out.println("not authorized");
+						Activator.println("not authorized");
 						break;
 					}
 					catch (Exception e2) {
-						System.out.println(e2.getMessage());
+						Activator.println(e2.getMessage());
 						kieApplication = null;
 					}
 				}
