@@ -25,6 +25,7 @@
     <!-- disabling javadoc as it seems to interfere with source generation:
          http://dev.eclipse.org/mhonarc/lists/tycho-user/msg04453.html -->
     <maven.javadoc.skip>true</maven.javadoc.skip>
+    <BUILD_ALIAS>Final</BUILD_ALIAS>
   </properties>
 
   <modules>
@@ -132,6 +133,7 @@
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-packaging-plugin</artifactId>
         <configuration>
+          <format>'${BUILD_ALIAS}-v'yyyyMMdd-HHmm'-B212'</format>
           <archiveSite>true</archiveSite>
           <environments>
             <environment>
