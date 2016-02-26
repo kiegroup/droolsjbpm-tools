@@ -25,6 +25,7 @@
     <!-- disabling javadoc as it seems to interfere with source generation:
          http://dev.eclipse.org/mhonarc/lists/tycho-user/msg04453.html -->
     <maven.javadoc.skip>true</maven.javadoc.skip>
+    <BUILD_ALIAS>Final</BUILD_ALIAS>
   </properties>
 
   <modules>
@@ -132,6 +133,7 @@
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-packaging-plugin</artifactId>
         <configuration>
+          <format>'${BUILD_ALIAS}-v'yyyyMMdd-HHmm</format>
           <archiveSite>true</archiveSite>
           <environments>
             <environment>
@@ -197,5 +199,32 @@
       </plugin>
     </plugins>
   </build>
-<version>7.0.0-SNAPSHOT</version>
+
+  <profiles>
+    <profile>
+      <id>hudson</id>
+      <activation>
+        <property>
+          <name>BUILD_NUMBER</name>
+        </property>
+      </activation>
+      <properties>
+        <!-- to test p2StatsUrl, must pass in two vars: mvn clean install -DJOB_NAME=jbosstools-server_master -DBUILD_NUMBER=450002 -->
+        <p2StatsUrl>http://download.jboss.org/jbosstools/usage/installs/${JOB_NAME}/${project.version}/${BUILD_ALIAS}/${buildQualifier}/</p2StatsUrl>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.eclipse.tycho</groupId>
+            <artifactId>tycho-packaging-plugin</artifactId>
+            <configuration>
+              <format>'${BUILD_ALIAS}-v'yyyyMMdd-HHmm'-B${BUILD_NUMBER}'</format>
+              <archiveSite>true</archiveSite>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+  </profiles>
 </project>
