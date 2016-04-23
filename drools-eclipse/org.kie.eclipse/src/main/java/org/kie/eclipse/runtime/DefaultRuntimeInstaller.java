@@ -22,14 +22,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
-import org.eclipse.jgit.fnmatch.FileNameMatcher;
 import org.kie.eclipse.utils.FileUtils;
 
 public class DefaultRuntimeInstaller extends AbstractRuntimeInstaller {
@@ -41,7 +37,6 @@ public class DefaultRuntimeInstaller extends AbstractRuntimeInstaller {
 
 	@Override
 	public IRuntime install(IRuntimeManager runtimeManager, String runtimeId, final IProject project, IProgressMonitor monitor) {
-		FileNameMatcher fn;
 		AbstractRuntimeInstaller installer = FACTORY.getInstaller(runtimeId);
 		if (installer == null) {
 			return null; // "No installer found for "+runtimeId;
@@ -54,15 +49,32 @@ public class DefaultRuntimeInstaller extends AbstractRuntimeInstaller {
 
 		SubMonitor subMonitor = SubMonitor.convert(monitor, getRepositories().size());
 		for (Repository repo : getRepositories()) {
+			java.io.File jarFile = null;
 			try {
 				URL url = new URL(repo.getUrl());
-				java.io.File jarFile = FileUtils.downloadFile(url, subMonitor);
+				jarFile = FileUtils.downloadFile(url, subMonitor);
 				if (jarFile==null) {
 					return null;
 				}
-				System.out.println("Finished downloading "+jarFile.getAbsolutePath());
-				FileUtils.extractJarFile(jarFile, project, subMonitor);
-				System.out.println("Finished extracting "+jarFile.getName()+" to "+project.getLocation());
+				// build file include/exclude lists
+				List<String> includes = new ArrayList<String>();
+				List<String> excludes = new ArrayList<String>();
+				ArtifactList artifactList = repo.getArtifactList();
+				for (Artifact artifact : artifactList.getArtifacts()) {
+					if (artifact.getInclude()!=null)
+						includes.add(artifact.getInclude());
+					if (artifact.getExclude()!=null)
+						excludes.add(artifact.getExclude());
+				}
+				
+				int fileCount = FileUtils.extractJarFile(jarFile,
+						includes.toArray(new String[includes.size()]),
+						excludes.toArray(new String[excludes.size()]),
+						project, subMonitor);
+				// if no files were extracted, return failure
+				if (fileCount==0)
+					return null;
+				
 				runtimeManager.recognizeJars(runtime);
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
@@ -70,6 +82,14 @@ public class DefaultRuntimeInstaller extends AbstractRuntimeInstaller {
 				e.printStackTrace();
 			} catch (CoreException e) {
 				e.printStackTrace();
+			}
+			finally {
+				try {
+					jarFile.delete();
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			subMonitor.worked(1);
 		}

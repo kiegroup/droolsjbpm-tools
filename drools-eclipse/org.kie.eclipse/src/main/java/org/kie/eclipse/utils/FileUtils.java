@@ -27,6 +27,10 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.PathMatcher;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -119,32 +123,63 @@ public class FileUtils {
 		return file.delete();
 	}
 	
-	public static void extractJarFile(java.io.File jarFile, IProject project, IProgressMonitor monitor)
+	public static int extractJarFile(java.io.File jarFile, String[] includePatterns, String[] excludePatterns, IProject project, IProgressMonitor monitor)
 			throws IOException, CoreException {
 		JarFile jar = new java.util.jar.JarFile(jarFile);
 	    InputStream is = null;
+	    int fileCount = 0;
 		try {
 //			System.out.println("Jar: "+jar.getName());
 //			for (Entry<Object, Object> e : jar.getManifest().getMainAttributes().entrySet()) {
 //				System.out.println("  "+e.getKey() + "=" + e.getValue());
 //			}
+			List<PathMatcher> includeMatchers = new ArrayList<PathMatcher>();
+			List<PathMatcher> excludeMatchers = new ArrayList<PathMatcher>();
+			FileSystem fs = FileSystems.getDefault();
+			if (includePatterns!=null && includePatterns.length>0) {
+				for (String include : includePatterns) {
+					includeMatchers.add(fs.getPathMatcher("glob:" + include));
+				}
+			}
+			else
+				includeMatchers.add(fs.getPathMatcher("glob:" + "*"));
+			if (excludePatterns!=null) {
+				for (String exclude : excludePatterns) {
+					excludeMatchers.add(fs.getPathMatcher("glob:" + exclude));
+				}
+			}
+
 			Enumeration<JarEntry> enumEntries = jar.entries();
 			while (enumEntries.hasMoreElements()) {
 			    JarEntry entry = enumEntries.nextElement();
-			    if (entry.isDirectory()) {
-		    		IFolder folder = project.getFolder(entry.getName());
-			    	if (!folder.exists()) {
-			    		folder.create(true, true, monitor);
+			    String name = entry.getName();
+			    if (name.endsWith("/"))
+			    	name = name.substring(0, name.length()-1);
+			    java.nio.file.Path path = Paths.get(name);
+			    if (!entry.isDirectory()) {
+			    	boolean match = false;
+			    	for (PathMatcher m : includeMatchers) {
+			    		if (m.matches(path)) {
+			    			match = true;
+			    			break;
+			    		}
 			    	}
-			    }
-			    else {
-				    IFile file = project.getFile(entry.getName());
-				    mkdirs(file, monitor);
-				    is = jar.getInputStream(entry);
-				    if (file.exists())
-				    	file.setContents(is, true, false, monitor);
-				    else
-				    	file.create(is, true, monitor);
+			    	for (PathMatcher m : excludeMatchers) {
+			    		if (m.matches(path)) {
+			    			match = false;
+			    			break;
+			    		}
+			    	}
+					if (match) {
+					    IFile file = project.getFile(entry.getName());
+					    mkdirs(file, monitor);
+					    is = jar.getInputStream(entry);
+					    if (file.exists())
+					    	file.setContents(is, true, false, monitor);
+					    else
+					    	file.create(is, true, monitor);
+					    ++fileCount;
+					}
 			    }
 			}
 		}
@@ -153,6 +188,7 @@ public class FileUtils {
 			if (is!=null)
 				is.close();
 		}
+		return fileCount;
 	}
 
 	public static java.io.File downloadFile(URL url, IProgressMonitor monitor) throws IOException {
@@ -177,8 +213,13 @@ public class FileUtils {
 				byte[] bytes = new byte[buffersize];
 	
 				int block = 1;
+				int lastPercentDone = -1;
 				while ((read = istream.read(bytes)) != -1 && !spm.isCanceled()) {
-					spm.setTaskName("Downloading "+url.toString()+" "+block);
+					int percentDone = (int)(100 * ((float)block / (float)blocks));
+					if (percentDone != lastPercentDone && percentDone<=100) {
+						spm.setTaskName("Downloading "+url.toString()+" "+percentDone+"%");
+						lastPercentDone = percentDone;
+					}
 					ostream.write(bytes, 0, read);
 					spm.worked(1);
 					++block;

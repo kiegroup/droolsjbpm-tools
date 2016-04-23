@@ -10,7 +10,7 @@
       </bpmn2:extensionElements>
       <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
     </bpmn2:startEvent>
-    <bpmn2:scriptTask id="ScriptTask_1" name="Script Task 1" scriptFormat="http://www.java.com/java">
+    <bpmn2:scriptTask id="ScriptTask_1" name="Hello" scriptFormat="http://www.java.com/java">
       <bpmn2:extensionElements>
         <tns:metaData name="elementname">
           <tns:metaValue><![CDATA[Script Task 1]]></tns:metaValue>

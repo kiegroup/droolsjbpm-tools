@@ -166,24 +166,17 @@ This container is identified by a unique ID which can be referenced by an &lt;a 
                </restriction>
             </simpleType>
          </attribute>
-         <attribute name="name" type="string" use="required">
+         <attribute name="include" type="string">
             <annotation>
                <documentation>
                   The fnmatch file name pattern to compare against Artifacts in the Archive. All Artifacts that match this pattern will be extracted and installed in the Drools/jBPM Runtime project.
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="source" type="string">
+         <attribute name="exclude" type="string">
             <annotation>
                <documentation>
-                  A folder path in the Runtime Archive where the Artifact can be found. This optional attribute overrides the &quot;source&quot; attrinbute in the &lt;a href=&quot;#e.installer&quot;&gt;installer&lt;/a&gt; definition.
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="target" type="string">
-            <annotation>
-               <documentation>
-                  A relative path in the Drools/jBPM Runtime project where the matching Artifacts will be installed.This optional attribute overrides the &quot;target&quot; attrinbute in the &lt;a href=&quot;#e.installer&quot;&gt;installer&lt;/a&gt; definition.
+                  A fnmatch file name pattern to compare against Artifacts in the Archive. All Artifacts that match this pattern will be skipped.
                </documentation>
             </annotation>
          </attribute>
@@ -220,24 +213,6 @@ This container is identified by a unique ID which can be referenced by an &lt;a 
                   </enumeration>
                </restriction>
             </simpleType>
-         </attribute>
-         <attribute name="source" type="string">
-            <annotation>
-               <documentation>
-                  A folder path in the Runtime Archive where the required Artifacts can be found. The string value of this attribute is a fnmatch pattern.
-
-This value is used as the default source path for all Artifacts unless overridden in the &lt;a href=&quot;#e.artifact&quot;&gt;artifact&lt;/a&gt; definition.
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="target" type="string">
-            <annotation>
-               <documentation>
-                  A relative path in the Runtime project where the matching Artifacts will be installed. The string value of this attribute is a fnmatch pattern.
-
-This value is used as the default target path for all Artifacts unless overridden in the &lt;a href=&quot;#e.artifact&quot;&gt;artifact&lt;/a&gt; definition.
-               </documentation>
-            </annotation>
          </attribute>
       </complexType>
    </element>

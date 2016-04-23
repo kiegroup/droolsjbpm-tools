@@ -632,13 +632,16 @@
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
                url="http://downloads.jboss.org/drools/release/6.4.0.Final/drools-distribution-6.4.0.Final.zip"
-               type="zip"
-               source="*/binaries"/>
+               artifacts="drools.runtime_6.4.x.artifacts"
+               type="zip"/>
             <repository
                url="http://downloads.jboss.org/drools/release/6.4.0.Final/droolsjbpm-integration-distribution-6.4.0.Final.zip"
-               type="zip"
-               source="*/binaries"/>
+               artifacts="drools.runtime_6.4.x.artifacts"
+               type="zip"/>
          </installer>
+         <artifacts id="drools.runtime_6.4.x.artifacts">
+               <artifact include="*/binaries/*.jar"/>
+         </artifacts>
      </extension>
 
    <extension

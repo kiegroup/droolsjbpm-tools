@@ -20,9 +20,7 @@ import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
@@ -47,26 +45,24 @@ public abstract class AbstractRuntimeInstaller implements IRuntimeInstaller {
 	public static class Repository {
 		protected String url;
 		protected String type;
-		protected String source;
-		protected String target;
 		protected String artifactsId;
 		
 		public String getUrl() {
 			return url;
 		}
+
 		public String getType() {
 			return type;
-		}
-		public String getSource() {
-			return source;
-		}
-		public String getTarget() {
-			return target;
 		}
 		
 		public ArtifactList getArtifactList() {
 			FACTORY.createInstallers();
-			return artifacts.get(artifactsId);
+			ArtifactList artifactList = null;
+			if (artifactsId!=null && !artifactsId.isEmpty() && artifacts!=null)
+				artifactList = artifacts.get(artifactsId);
+			if (artifactList==null)
+				artifactList = new ArtifactList();
+			return artifactList;
 		}
 		
 		public List<Artifact> getArtifacts() {
@@ -80,23 +76,20 @@ public abstract class AbstractRuntimeInstaller implements IRuntimeInstaller {
 	 */
 	public static class Artifact {
 		String type;
-		String name;
-		String source;
-		String target;
+		String include;
+		String exclude;
 		
 		public String getType() {
 			return type;
 		}
-		public String getName() {
-			return name;
-		}
-		public String getSource() {
-			return source;
-		}
-		public String getTarget() {
-			return target;
+
+		public String getInclude() {
+			return include;
 		}
 		
+		public String getExclude() {
+			return exclude;
+		}
 	}
 	
 	/**
@@ -151,8 +144,6 @@ public abstract class AbstractRuntimeInstaller implements IRuntimeInstaller {
 				            		Repository repository = new Repository();
 				            		repository.url = r.getAttribute("url");
 				            		repository.type = r.getAttribute("type");
-				            		repository.source = r.getAttribute("source");
-				            		repository.target = r.getAttribute("target");
 				            		repository.artifactsId = r.getAttribute("artifacts");
 				            		installer.getRepositories().add(repository);
 				            	}
@@ -175,9 +166,8 @@ public abstract class AbstractRuntimeInstaller implements IRuntimeInstaller {
 			        		for (IConfigurationElement a : e.getChildren("artifact")) {
 			        			Artifact artifact = new Artifact();
 			        			artifact.type = a.getAttribute("type");
-			        			artifact.name = a.getAttribute("name");
-			        			artifact.source = a.getAttribute("source");
-			        			artifact.target = a.getAttribute("target");
+			        			artifact.include = a.getAttribute("include");
+			        			artifact.exclude = a.getAttribute("exclude");
 			        			artifactList.artifacts.add(artifact);
 			        		}
 			        		if (artifacts==null)
