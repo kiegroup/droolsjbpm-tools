@@ -87,6 +87,20 @@ public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
     }
 
 	public boolean performFinish() {
+        boolean downloadRuntime = false;
+    	if (startPage.getInitialProjectContent() == IKieProjectWizardPage.SAMPLE_FILES_PROJECT) {
+            downloadRuntime = sampleFilesProjectPage.shouldDownloadRuntime();
+    	}
+    	else if (startPage.getInitialProjectContent() == IKieProjectWizardPage.EMPTY_PROJECT) {
+            downloadRuntime = emptyProjectPage.shouldDownloadRuntime();
+    	}
+    	if (downloadRuntime) {
+    		if (!MessageDialog.openConfirm(getShell(), "Download Runtime",
+    				"You are about to download runtime artifacts from the JBoss server,\n"+
+    				"which could take a long time depending on your internet connection.\n\n"+
+    				"OK to continue?"))
+    			return false;
+    	}
     	IProject newProjectHandle = null;
     	for (IProjectDescription pd : startPage.getNewProjectDescriptions()) {
    			newProjectHandle = createNewProject(pd);
@@ -104,8 +118,29 @@ public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
             protected void execute(IProgressMonitor monitor)
                     throws CoreException {
                 try {
+            		startPage.setProgressMonitor(monitor);
+
+            		// if this project is going to be using a runtime, make sure
+					// the user has selected one; either an existing installation
+					// or downloaded from http://downloads.jboss.org
+                    boolean needRuntime = false;
+                	if (startPage.getInitialProjectContent() == IKieProjectWizardPage.SAMPLE_FILES_PROJECT) {
+                        needRuntime = !sampleFilesProjectPage.shouldCreateMavenProject();
+                	}
+                	else if (startPage.getInitialProjectContent() == IKieProjectWizardPage.EMPTY_PROJECT) {
+                        needRuntime = !emptyProjectPage.shouldCreateMavenProject();
+                	}
+                	else {
+                		
+                	}
+                	if (needRuntime) {
+	                    IRuntime runtime = startPage.getRuntime();
+	                    if (runtime==null)
+	                    	return;
+                	}
+                	
                     IJavaProject project = JavaCore.create(newProjectHandle);
-                    createRuntimeSettings(project, monitor);
+                	createRuntimeSettings(project, monitor);
                     createOutputLocation(project, monitor);
                     setClasspath(project, monitor);
                     addBuilders(project, monitor);
@@ -133,6 +168,8 @@ public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
         WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
             protected void execute(IProgressMonitor monitor)
                     throws CoreException {
+        		startPage.setProgressMonitor(monitor);
+            	
                 createProject(description, newProjectHandle, monitor);
             }
         };
@@ -166,6 +203,7 @@ public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
     
     protected void addNatures(IProjectDescription projectDescription) {
     	FileUtils.addJavaNature(projectDescription);
+    	FileUtils.addBPMN2Nature(projectDescription);
     	boolean shouldAddMavenNature = false;
     	if (startPage.getInitialProjectContent()==IKieProjectWizardPage.EMPTY_PROJECT)
     		shouldAddMavenNature = emptyProjectPage.shouldCreateMavenProject();
@@ -216,6 +254,7 @@ public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
 
     protected void addBuilders(IJavaProject project, IProgressMonitor monitor) throws CoreException {
     	FileUtils.addJavaBuilder(project, monitor);
+    	FileUtils.addBPMN2Builder(project, monitor);
     	boolean shouldAddMavenBuilder = false;
     	if (startPage.getInitialProjectContent()==IKieProjectWizardPage.EMPTY_PROJECT)
     		shouldAddMavenBuilder = emptyProjectPage.shouldCreateMavenProject();

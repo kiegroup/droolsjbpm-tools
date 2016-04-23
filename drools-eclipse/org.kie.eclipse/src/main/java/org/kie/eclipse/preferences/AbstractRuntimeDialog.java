@@ -193,7 +193,7 @@ public abstract class AbstractRuntimeDialog extends Dialog {
 
     private void createRuntime() {
         DirectoryDialog dialog = new DirectoryDialog(getShell());
-        dialog.setMessage("Select the new Drools 6 runtime directory.");
+        dialog.setMessage("Select the new Drools runtime directory.");
         String selectedDirectory = dialog.open();
 
         if (selectedDirectory != null) {

@@ -31,6 +31,8 @@ public interface IRuntime {
 	// probably not needed:
 	void setProduct(String string);
 	
+	String getId();
+	
 	/**
 	 * Returns a descriptive name of this Runtime. The name, not the ID, uniquely identifies
 	 * a configured Runtime; for example two Runtimes may be configured in the user's workspace

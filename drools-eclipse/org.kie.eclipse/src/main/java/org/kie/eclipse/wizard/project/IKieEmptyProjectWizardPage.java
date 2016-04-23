@@ -7,6 +7,8 @@ public interface IKieEmptyProjectWizardPage extends IKieProjectWizardPage {
 
 	boolean shouldCreateMavenProject();
 	boolean shouldCreateKJarProject();
+	boolean shouldDownloadRuntime();
+
 	IRuntime getRuntime();
 	boolean isDefaultRuntime();
 	IRuntimeManager getRuntimeManager();

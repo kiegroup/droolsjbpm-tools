@@ -20,6 +20,10 @@ import org.kie.eclipse.runtime.AbstractRuntime;
 
 public class DroolsRuntime extends AbstractRuntime {
 
+	public DroolsRuntime() {
+		name = "Drools";
+	}
+	
 	@Override
 	public String getProduct() {
 		return "drools";

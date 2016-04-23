@@ -20,10 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -32,13 +30,10 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.jbpm.eclipse.JBPMEclipsePlugin;
 import org.jbpm.eclipse.preferences.JBPMProjectPreferencePage;
@@ -61,8 +56,6 @@ import org.kie.eclipse.wizard.project.IKieSampleFilesProjectWizardPage;
  */
 public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
 
-    public static final String DROOLS_BUILDER_ID = "org.drools.eclipse.droolsbuilder";
-    
     private EmptyJBPMProjectWizardPage emptyProjectPage;
     private SampleJBPMProjectWizardPage sampleFilesProjectPage;
 
@@ -93,11 +86,11 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
             throws JavaModelException, CoreException {
         super.setClasspath(project, monitor);
     	if (startPage.getInitialProjectContent()==IKieProjectWizardPage.EMPTY_PROJECT) {
-    		if (emptyProjectPage.shouldCreateMavenProject())
-	        	FileUtils.addJUnitLibrary(project, monitor);
+    		if (!emptyProjectPage.shouldCreateMavenProject())
+    			FileUtils.addJUnitLibrary(project, monitor);
     	}
     	else if (startPage.getInitialProjectContent() == IKieProjectWizardPage.SAMPLE_FILES_PROJECT) {
-	        if (sampleFilesProjectPage.shouldCreateJUnitFile())
+	        if (!sampleFilesProjectPage.shouldCreateMavenProject() && sampleFilesProjectPage.shouldCreateJUnitFile())
 	        	FileUtils.addJUnitLibrary(project, monitor);
         }
     }
@@ -117,14 +110,16 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
 
     /**
      * Create the sample process file.
+     * @throws IOException 
      */
-    private void createProcess(IJavaProject project, IProgressMonitor monitor, String exampleType) throws CoreException {
+    private void createProcess(IJavaProject project, IProgressMonitor monitor, String exampleType) throws CoreException, IOException {
+    	// create the process (sample.bpmn) file
 	    String fileName = "org/jbpm/eclipse/wizard/project/" + exampleType + ".bpmn.template";
         IFolder folder = null;
-        if (sampleFilesProjectPage.shouldCreateMavenProject())
+//        if (sampleFilesProjectPage.shouldCreateMavenProject())
         	folder = project.getProject().getFolder("src/main/resources/com/sample");
-        else
-        	folder = project.getProject().getFolder("src/main/resources");
+//        else
+//        	folder = project.getProject().getFolder("src/main/resources");
         FileUtils.createFolder(folder, monitor);
         IFile file = folder.getFile("sample.bpmn");
         InputStream inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
@@ -133,6 +128,18 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
         } else {
             file.setContents(inputstream, true, false, monitor);
         }
+
+        // create a Java main class to invoke the process
+    	String s = "org/jbpm/eclipse/wizard/project/ProcessMain-" + exampleType + ".java.template";
+        folder = project.getProject().getFolder("src/main/java");
+        IPackageFragmentRoot packageFragmentRoot = project
+                .getPackageFragmentRoot(folder);
+        IPackageFragment packageFragment = packageFragmentRoot
+                .createPackageFragment("com.sample", true, monitor);
+        inputstream = getClass().getClassLoader()
+                .getResourceAsStream(s);
+        packageFragment.createCompilationUnit("ProcessMain.java", new String(
+        		FileUtils.readStream(inputstream)), true, monitor);
     }
 
     /**
@@ -140,36 +147,22 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
      */
     private void createProcessSampleJUnit(IJavaProject project, String exampleType, IProgressMonitor monitor)
             throws JavaModelException, IOException {
-        if ("advanced".equals(exampleType)) {
-        	String s = "org/jbpm/eclipse/wizard/project/ProcessMain-advanced.java.template";
-            IFolder folder = project.getProject().getFolder("src/main/java");
-            IPackageFragmentRoot packageFragmentRoot = project
-                    .getPackageFragmentRoot(folder);
-            IPackageFragment packageFragment = packageFragmentRoot
-                    .createPackageFragment("com.sample", true, monitor);
-            InputStream inputstream = getClass().getClassLoader()
-                    .getResourceAsStream(s);
-            packageFragment.createCompilationUnit("ProcessMain.java", new String(
-            		FileUtils.readStream(inputstream)), true, monitor);
+    	String s = "org/jbpm/eclipse/wizard/project/ProcessJUnit-" + exampleType + ".java";
+    	IRuntime runtime = startPage.getRuntime();
+        if (runtime.getVersion().startsWith("5")) {        
+        	s += ".v5.template";
+        } else {
+        	s += ".template";
         }
-        else {
-        	String s = "org/jbpm/eclipse/wizard/project/ProcessJUnit-" + exampleType + ".java";
-        	IRuntime runtime = startPage.getRuntime();
-            if (runtime.getVersion().startsWith("5")) {        
-            	s += ".v5.template";
-            } else {
-            	s += ".template";
-            }
-            IFolder folder = project.getProject().getFolder("src/main/java");
-            IPackageFragmentRoot packageFragmentRoot = project
-                    .getPackageFragmentRoot(folder);
-            IPackageFragment packageFragment = packageFragmentRoot
-                    .createPackageFragment("com.sample", true, monitor);
-            InputStream inputstream = getClass().getClassLoader()
-                    .getResourceAsStream(s);
-            packageFragment.createCompilationUnit("ProcessTest.java", new String(
-                    FileUtils.readStream(inputstream)), true, monitor);
-        }
+        IFolder folder = project.getProject().getFolder("src/main/java");
+        IPackageFragmentRoot packageFragmentRoot = project
+                .getPackageFragmentRoot(folder);
+        IPackageFragment packageFragment = packageFragmentRoot
+                .createPackageFragment("com.sample", true, monitor);
+        InputStream inputstream = getClass().getClassLoader()
+                .getResourceAsStream(s);
+        packageFragment.createCompilationUnit("ProcessTest.java", new String(
+                FileUtils.readStream(inputstream)), true, monitor);
     }
 	
     @Override
@@ -194,15 +187,28 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
 	@Override
 	protected void createMavenArtifacts(IJavaProject project, IProgressMonitor monitor) {
 		try {
+        	String projectName = project.getProject().getName();
+        	String runtimeVersion = JBPMEclipsePlugin.getDefault().getBundle().getVersion().toString().replace("qualifier", "Final");
+            String groupId = "com.sample";
+            String artifactId = projectName;
+            String version = "1.0.0-SNAPSHOT";
+        	if (startPage.getInitialProjectContent() == IKieProjectWizardPage.SAMPLE_FILES_PROJECT) {
+        		groupId = sampleFilesProjectPage.getPomGroupId();
+        		artifactId = sampleFilesProjectPage.getPomArtifactId();
+        		version = sampleFilesProjectPage.getPomVersion();
+        	}
+        	else if (startPage.getInitialProjectContent() == IKieProjectWizardPage.EMPTY_PROJECT) {
+        		groupId = emptyProjectPage.getPomGroupId();
+        		artifactId = emptyProjectPage.getPomArtifactId();
+        		version = emptyProjectPage.getPomVersion();
+        	}
+        	
+			FileUtils.createProjectFile(project, monitor, FileUtils.generatePomProperties(groupId, artifactId, version), "src/main/resources/META-INF/maven", "pom.properties");
 			String fileName = "org/jbpm/eclipse/wizard/project/maven-pom.xml.template";
-			IFile file = project.getProject().getFile("pom.xml");
 			InputStream inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
-			if (!file.exists()) {
-				file.create(inputstream, true, monitor);
-			}
-			else {
-				file.setContents(inputstream, true, false, monitor);
-			}
+            FileUtils.createProjectFile(project, monitor, 
+            		FileUtils.generatePom(inputstream, runtimeVersion, groupId, artifactId, version),
+            		null, "pom.xml");
 		}
 		catch (CoreException e) {
 			// TODO Auto-generated catch block
@@ -279,8 +285,8 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
 	class EmptyJBPMProjectWizardPage extends AbstractKieEmptyProjectWizardPage implements IKieSampleFilesProjectWizardPage {
 		public EmptyJBPMProjectWizardPage(String pageName) {
 			super(pageName);
-			setTitle("Create New Empty Drools Project");
-			setDescription("Select the type of Drools Project");
+			setTitle("Create New Empty jBPM Project");
+			setDescription("Select the type of jBPM Project");
 		}
 
 		@Override
@@ -303,27 +309,35 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
 					JBPMProjectPreferencePage.PREF_ID,
 					new String[] { JBPMProjectPreferencePage.PROP_ID }, new HashMap()).open();
 		}
+
+		@Override
+		public String getProductName() {
+			return "jBPM";
+		}
+		
+		@Override
+		public String getProductId() {
+			return "jbpm";
+		}
 	}
 	
 	class SampleJBPMProjectWizardPage extends EmptyJBPMProjectWizardPage {
 		private Button simpleProcessButton;
 		private Button advancedProcessButton;
 		private Button addSampleJUnitTestCodeButton;
-		private boolean addSampleJUnit = true;
+		private boolean addSampleJUnit = false;
 		private String sampleType = "simple";
 
 		public SampleJBPMProjectWizardPage(String pageName) {
 			super(pageName);
-			setTitle("Create New jBPM Projects with Sample Files");
+			setTitle("Create New jBPM Project with Sample Files");
 			setDescription("Select the samples to be included");
 		}
 
 		@Override
 		protected void createControls(Composite parent) {
-			Label label = new Label(parent, SWT.LEFT);
-			label.setText("I want to create:");
 			simpleProcessButton = createRadioButton(parent,
-				"a simple hello world process");
+				"Add a simple hello world process");
 			simpleProcessButton.setSelection(true);
 			simpleProcessButton.addSelectionListener(new SelectionAdapter() {
 				@Override
@@ -334,7 +348,7 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
 				}
 			});
 			advancedProcessButton = createRadioButton(parent,
-				"a more advanced process including human tasks and persistence");
+				"Add a more advanced process including human tasks and persistence");
 			advancedProcessButton.setSelection(false);
 			advancedProcessButton.addSelectionListener(new SelectionAdapter() {
 				@Override
@@ -355,24 +369,6 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
 				}
 			});
 		}
-
-		private Button createCheckBox(Composite group, String label) {
-	        Button button = new Button(group, SWT.CHECK | SWT.LEFT);
-	        button.setText(label);
-	        GridData data = new GridData();
-	        data.horizontalIndent = 20;
-	        button.setLayoutData(data);
-	        return button;
-	    }
-		
-		private Button createRadioButton(Composite group, String label) {
-	        Button button = new Button(group, SWT.RADIO | SWT.LEFT);
-	        button.setText(label);
-	        GridData data = new GridData();
-	        data.horizontalIndent = 40;
-	        button.setLayoutData(data);
-	        return button;
-	    }
 		
 		public String getSampleType() {
     		return sampleType;

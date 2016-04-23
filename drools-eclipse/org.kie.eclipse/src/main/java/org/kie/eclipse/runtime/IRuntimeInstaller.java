@@ -15,10 +15,11 @@
 
 package org.kie.eclipse.runtime;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 public interface IRuntimeInstaller {
-	String install(String runtimeId, String location, IProgressMonitor monitor);
+	IRuntime install(IRuntimeManager runtimeManager, String runtimeId, IProject project, IProgressMonitor monitor);
 	String getProduct();
 	String getVersion();
 	String getRuntimeId(); // this is just a concatenation of the product and version strings

@@ -75,7 +75,7 @@ public class DroolsRuntimeManager extends AbstractRuntimeManager {
 	}
 
 	@Override
-	public String getBundleRuntimeLocation() {
+	public String getRuntimeWorkspaceLocation() {
 		return DROOLS_BUNDLE_RUNTIME_LOCATION;
 	}
 
@@ -90,6 +90,7 @@ public class DroolsRuntimeManager extends AbstractRuntimeManager {
 	}
 
 	@Override
+    @Deprecated
 	public String getBundleSymbolicName() {
 		return DROOLS_BUNDLE_NAME;
 	}

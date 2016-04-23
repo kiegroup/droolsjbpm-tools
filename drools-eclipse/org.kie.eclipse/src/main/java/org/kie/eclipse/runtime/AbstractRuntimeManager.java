@@ -42,11 +42,15 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.swt.widgets.Display;
 
 public abstract class AbstractRuntimeManager implements IRuntimeManager {
 
     private ArrayList<IRuntimeManagerListener> listeners = new ArrayList<IRuntimeManagerListener>();
+    private IRuntime bundleRuntime = null;
+    
     /**
      * Add a listener to this model
      */
@@ -123,10 +127,39 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
     	}
     	return "Runtime " + getBundleRuntimeVersion();
     }
+
+    public IRuntime getBundleRuntime() {
+    	if (bundleRuntime==null) {
+        	bundleRuntime = createNewRuntime();
+            bundleRuntime.setName(getBundleRuntimeName());
+            bundleRuntime.setVersion(getBundleRuntimeVersion());
+        	String path = getRuntimeWorkspaceLocation() + "_" + getBundleRuntimeVersion();
+            bundleRuntime.setPath(path);
+    	}
+   		return bundleRuntime;
+    }
     
+    private String getBundleLocation() {
+        try {
+            return FileLocator.toFileURL(Platform.getBundle(getBundleSymbolicName())
+                .getEntry("/")).getFile().toString();
+        } catch (IOException e) {
+            logException(e);
+        }
+        return null;
+    }
+    
+    private IProject getRuntimeProject(IRuntime runtime) {
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+    	IPath rootPath = workspace.getRoot().getLocation();
+		IProject project = workspace.getRoot().getProject(runtime.getPath());
+    	return project;
+    }
+
     public IRuntime createBundleRuntime(String location) {
+
         List<String> jars = new ArrayList<String>();
-        // get all drools jars from drools eclipse plugin
+        // get all jars from the Drools or jBPM eclipse plugin's "lib" folder
         String s = getBundleLocation();
         File file = (new Path(s)).toFile();
         File[] files = file.listFiles();
@@ -177,42 +210,49 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
             }
         }
 
-    	IRuntime runtime = createNewRuntime();
-        runtime.setName(getBundleRuntimeName());
-        runtime.setVersion(getBundleRuntimeVersion());
+        IRuntime runtime = createNewRuntime();
         runtime.setPath(location);
-        runtime.setJars(jarsCreated.toArray(new String[jarsCreated.size()]));
+    	runtime.setJars(jarsCreated.toArray(new String[jarsCreated.size()]));
         
         return runtime;
     }
 
-    private String getBundleLocation() {
-        try {
-            return FileLocator.toFileURL(Platform.getBundle(getBundleSymbolicName())
-                .getEntry("/")).getFile().toString();
-        } catch (IOException e) {
-            logException(e);
-        }
-        return null;
+    public IRuntime downloadBundleRuntime(IProgressMonitor monitor) {
+    	return downloadRuntime(getBundleRuntime(), monitor);
+    }
+    
+    public IRuntime downloadRuntime(IRuntime runtime, IProgressMonitor monitor) {
+
+    	// this is where we invoke the IRuntimeInstaller to download and extract
+    	// the runtime jars, as defined in the "org.kie.eclipse.runtimeInstaller"
+    	// extension point. See the schema/runtimeInstaller.exsd extension point
+    	// definition file.
+    	String runtimeId = runtime.getId();
+    	IProject project = getRuntimeProject(runtime);
+    	IRuntimeInstaller installer = AbstractRuntimeInstaller.FACTORY.getInstaller(runtimeId);
+    	if (installer==null)
+    		return null;
+    	runtime = installer.install(this, runtimeId, project, monitor);
+        return runtime;
     }
 
-    public IRuntime getEffectiveRuntime(IRuntime selectedRuntime, boolean useDefault) {
-    	
-    	// The bundle runtime project may have been deleted; if so, we need to rebuild it
+    public IRuntime downloadOrCreateBundleRuntime(IProgressMonitor monitor) {
+    	return downloadOrCreateRuntime(getBundleRuntime(), monitor);
+    }
+    
+    public IRuntime downloadOrCreateRuntime(final IRuntime runtime, final IProgressMonitor monitor) {
+
     	boolean rebuildBundleRuntimeProject = false;
-    	String bundleRuntimeLocation = getBundleRuntimeLocation() + "_" + getBundleRuntimeVersion();
+    	String runtimeLocation = getRuntimeWorkspaceLocation() + "_" + getBundleRuntimeVersion();
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         
-        if (selectedRuntime==null)
-        	selectedRuntime = createNewRuntime();
-        
-        if (selectedRuntime.getPath() != null) {
+        if (runtime.getPath() != null) {
         	// If this really is the Bundle Runtime project,
         	// remove the "lib" segment if there is one
-        	IPath runtimeRootPath = new Path(selectedRuntime.getPath());
+        	IPath runtimeRootPath = new Path(runtime.getPath());
         	if ("lib".equals(runtimeRootPath.lastSegment()))
         		runtimeRootPath = runtimeRootPath.removeLastSegments(1);
-        	if (bundleRuntimeLocation.equals(runtimeRootPath.lastSegment()))
+        	if (runtimeLocation.equals(runtimeRootPath.lastSegment()))
         		// then remove the Bundle Runtime project name. 
         		runtimeRootPath = runtimeRootPath.removeLastSegments(1);
 
@@ -220,7 +260,7 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
 			// is the Bundle Runtime Project
         	IPath rootPath = workspace.getRoot().getLocation();
         	if (rootPath.equals(runtimeRootPath)) {
-        		IProject project = workspace.getRoot().getProject(bundleRuntimeLocation);
+        		IProject project = workspace.getRoot().getProject(runtimeLocation);
         		// If the project exists and is not open, try to open it
         		if (!project.isOpen()) {
 	                try {
@@ -236,34 +276,20 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
             		rebuildBundleRuntimeProject = true;
             	}
             	else {
-					// Check if the "lib" folder was deleted, or if the jars
-					// were removed
+					// Check if the jars were removed
         			int jarCount = 0;
-            		IFolder lib = project.getFolder("lib");
-            		if (!lib.exists()) {
-            			try {
-							// The "lib" folder is gone, might as well rebuild
-							// the entire project
-							project.delete(true, null);
-		            		rebuildBundleRuntimeProject = true;
-						} catch (CoreException ex) {
-				            logException(ex);
-						}
-            		}
-            		else {
-	        			try {
-							// Count the number of jars in the "lib" folder.
-							// We don't actually know how many jars SHOULD be in
-							// there, but if there are none, this is a clear
-							// indication that the "lib" folder was cleaned out.
-							for (IResource f : lib.members()) {
-								if ("jar".equals(f.getFileExtension())) {
-									++jarCount;
-								}
+        			try {
+						// Count the number of jars in the project.
+						// We don't actually know how many jars SHOULD be in
+						// there, but if there are none, this is a clear
+						// indication that the project was cleaned out.
+						for (IResource f : project.members()) {
+							if ("jar".equals(f.getFileExtension())) {
+								++jarCount;
 							}
-						} catch (CoreException ex) {
-				            logException(ex);
 						}
+					} catch (CoreException ex) {
+			            logException(ex);
 					}
         			if (jarCount==0) {
                 		rebuildBundleRuntimeProject = true;
@@ -276,51 +302,147 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
     	for (IRuntime rt : getConfiguredRuntimes())
     		runtimes.add(rt);
     	
-        if (selectedRuntime.getPath() == null || rebuildBundleRuntimeProject || runtimes.size()==0) {
+        if (runtime.getPath() == null || rebuildBundleRuntimeProject || runtimes.size()==0) {
 			// This is the Bundle Runtime and it doesn't exist yet, or needs
 			// to be rebuilt. Create a "hidden" workspace project.
 			// But first, remove the old IRuntime entry from our list.
         	for (IRuntime rt : runtimes) {
-        		if (rt.getName().equals(selectedRuntime.getName())) {
+        		if (rt.getName().equals(runtime.getName())) {
                 	runtimes.remove(rt);
                 	break;
         		}
         	}
         	
-        	final IProject project = workspace.getRoot().getProject(bundleRuntimeLocation);
-        	// The "lib" folder will contain the runtime jars.
-        	final IFolder lib = project.getFolder("lib");
-        	if (!project.exists() || !lib.exists()) {
+        	final IProject project = workspace.getRoot().getProject(runtimeLocation);
+        	if (!project.exists()) {
                 final IProjectDescription description = workspace
                         .newProjectDescription(project.getName());
                 description.setLocation(null);
                 try {
 					project.create(description, null);
 	                project.open(IResource.BACKGROUND_REFRESH,null);
-	                lib.create(true, true, null);
 				} catch (CoreException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					return null;
 				}
         	}
         	
-        	// and create a new entry
-            String location = lib.getLocation().removeTrailingSeparator().toString();
-            selectedRuntime = createBundleRuntime(location);
-            if (runtimes.size()==0)
-            	useDefault = true;
+        	// and create a new entry for the current version of this plugin
+            IRuntime newRuntime = downloadRuntime(runtime, monitor);
+            if (newRuntime==null) {
+            	// could not download runtime - no installer is defined for runtimeId
+            	// use limited runtime instead?
+            	final IRuntime[] result = new IRuntime[1];
+            	Display.getDefault().asyncExec(new Runnable() {
+					
+					@Override
+					public void run() {
+		            	boolean useBundledRuntime = MessageDialog.openQuestion(Display.getDefault().getActiveShell(),
+		            			"Runtime Download Failed",
+		            			"Could not download the runtime artifacts for "+runtime.getName()+
+		            			"Would you like to create a minimal runtime instead?\n\n\n"+
+		       					"Note: your project may not build and/or execute because of missing dependencies.");
+		                	if (useBundledRuntime)
+		                		result[0] = createBundleRuntime(runtime.getPath());
+		                	else
+		                    	result[0] = null;
+					}
+				});
+            	newRuntime = result[0];
+            }
             
-            selectedRuntime.setDefault(useDefault);
-        	runtimes.add(selectedRuntime);
+        	if (newRuntime==null)
+        		return null;
+
+        	newRuntime.setDefault(runtimes.size()==0);
+        	runtimes.add(newRuntime);
         	// finally rebuild the IRuntime definitions in User Preferences
         	setRuntimes(runtimes.toArray(new IRuntime[runtimes.size()]));
+        	return newRuntime;
+        }
+        return runtime;
+    }
+    
+    public IRuntime getEffectiveRuntime(IRuntime selectedRuntime, boolean useDefault) {
+    	
+    	// The runtime project may have been deleted; if so, we need to rebuild it
+    	boolean runtimeProjectMissing = false;
+    	String runtimeLocation = getRuntimeWorkspaceLocation() + "_" + getBundleRuntimeVersion();
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        
+        if (selectedRuntime==null)
+        	selectedRuntime = createNewRuntime();
+        
+        if (selectedRuntime.getPath() != null) {
+        	// If this really is the Bundle Runtime project,
+        	// remove the "lib" segment if there is one
+        	IPath runtimeRootPath = new Path(selectedRuntime.getPath());
+        	if ("lib".equals(runtimeRootPath.lastSegment()))
+        		runtimeRootPath = runtimeRootPath.removeLastSegments(1);
+        	if (runtimeLocation.equals(runtimeRootPath.lastSegment()))
+        		// then remove the Bundle Runtime project name. 
+        		runtimeRootPath = runtimeRootPath.removeLastSegments(1);
+
+			// if the absolute path matches the Workspace Root path, then this
+			// is the Bundle Runtime Project
+        	IPath rootPath = workspace.getRoot().getLocation();
+        	if (rootPath.equals(runtimeRootPath)) {
+        		IProject project = workspace.getRoot().getProject(runtimeLocation);
+        		// If the project exists and is not open, try to open it
+        		if (!project.isOpen()) {
+	                try {
+						project.open(IResource.BACKGROUND_REFRESH,null);
+					} catch (CoreException ex) {
+			            logException(ex);
+					}
+        		}
+				// If the project does not exist, we need to create it. This is
+				// an indication that the project was previously deleted by the
+				// user.
+            	if (!project.exists()) {
+            		runtimeProjectMissing = true;
+            	}
+            	else {
+					// Check if the jars were removed
+        			int jarCount = 0;
+        			try {
+						// Count the number of jars in the project.
+						// We don't actually know how many jars SHOULD be in
+						// there, but if there are none, this is a clear
+						// indication that the project was cleaned out.
+						for (IResource f : project.members()) {
+							if ("jar".equals(f.getFileExtension())) {
+								++jarCount;
+							}
+						}
+					} catch (CoreException ex) {
+			            logException(ex);
+					}
+        			if (jarCount==0) {
+                		runtimeProjectMissing = true;
+        			}
+            	}
+        	}
+        }
+        
+        if (selectedRuntime.getPath() == null || runtimeProjectMissing) {
+			// This is the Bundle Runtime and it doesn't exist yet, or needs
+			// to be rebuilt. Remove the old IRuntime entry from our list.
+            List<IRuntime> runtimes = new ArrayList<IRuntime>();
+        	for (IRuntime rt : getConfiguredRuntimes()) {
+        		if (!rt.getId().equals(selectedRuntime.getId()))
+        			runtimes.add(rt);
+        	}
+        	setRuntimes(runtimes.toArray(new IRuntime[runtimes.size()]));
+        	selectedRuntime = null;
         }
         if (useDefault) {
             return getDefaultRuntime();
         }
         return selectedRuntime;
     }
-
+    
     protected String createStringFromRuntimes(IRuntime[] runtimes) {
         String result = "";
         for (IRuntime runtime: runtimes) {
@@ -344,6 +466,8 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
             String[] runtimeStrings = s.split("###");
             for (String runtimeString: runtimeStrings) {
                 String[] properties = runtimeString.split("#");
+                if (properties.length<2)
+                	continue;
                 IRuntime runtime = createNewRuntime();
                 runtime.setName(properties[0]);
                 String location = properties[1];
@@ -504,7 +628,7 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
     ///////////////////////////////////////////////////////////////////////////////////////
     // to be implemented
     ///////////////////////////////////////////////////////////////////////////////////////
-    abstract public String getBundleRuntimeLocation();
+    abstract public String getRuntimeWorkspaceLocation();
     abstract public String getRuntimePreferenceKey();
 	abstract public String getRuntimeRecognizerId();
     abstract public String getSettingsFilename();

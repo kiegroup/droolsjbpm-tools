@@ -26,9 +26,14 @@ import org.eclipse.jdt.core.JavaModelException;
 public interface IRuntimeManager {
 	IRuntime getDefaultRuntime();
 	IRuntime[] getConfiguredRuntimes();
+	IRuntime getBundleRuntime();
 	String getBundleRuntimeName();
 	String getBundleRuntimeVersion();
 	IRuntime createNewRuntime();
+	IRuntime downloadOrCreateBundleRuntime(IProgressMonitor monitor);
+	IRuntime downloadOrCreateRuntime(IRuntime runtime, IProgressMonitor monitor);
+	IRuntime downloadBundleRuntime(IProgressMonitor monitor);
+	IRuntime downloadRuntime(IRuntime runtime, IProgressMonitor monitor);
 	IRuntime createBundleRuntime(String location);
 	IRuntime getEffectiveRuntime(IRuntime selectedRuntime, boolean useDefault);
 	void setRuntimes(IRuntime[] runtimes);

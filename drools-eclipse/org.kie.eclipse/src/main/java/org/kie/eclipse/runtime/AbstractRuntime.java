@@ -17,11 +17,11 @@ package org.kie.eclipse.runtime;
 
 public abstract class AbstractRuntime implements IRuntime {
 
-	private String version;
-	private String name;
-	private String path;
-	private boolean isDefault;
-	private String[] jars;
+	protected String version;
+	protected String name;
+	protected String path;
+	protected boolean isDefault;
+	protected String[] jars;
 
 	@Override
 	public String getVersion() {
@@ -81,4 +81,12 @@ public abstract class AbstractRuntime implements IRuntime {
 	
 	public void setProduct(String string) {
 	}
+	
+	public String getId() {
+		return createRuntimeId(getProduct(), getVersion());
+	}
+
+    public static String createRuntimeId(String product, String version) {
+    	return product + "_" + version;
+    }
 }

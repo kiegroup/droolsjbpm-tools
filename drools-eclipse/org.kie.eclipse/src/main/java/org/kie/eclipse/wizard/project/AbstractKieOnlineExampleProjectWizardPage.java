@@ -461,6 +461,9 @@ public abstract class AbstractKieOnlineExampleProjectWizardPage extends WizardPa
     @Override
 	public IRuntime getRuntime() {
     	IRuntime effectiveRuntime = getRuntimeManager().getEffectiveRuntime(null, true);
+    	if (effectiveRuntime==null) {
+    		effectiveRuntime = getRuntimeManager().downloadOrCreateBundleRuntime(null);
+    	}
     	return effectiveRuntime;
     }
 

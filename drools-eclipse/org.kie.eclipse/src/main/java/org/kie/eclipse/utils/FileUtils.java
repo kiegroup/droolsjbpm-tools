@@ -15,6 +15,7 @@
 
 package org.kie.eclipse.utils;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -165,8 +166,9 @@ public class FileUtils {
 		SubProgressMonitor spm = new SubProgressMonitor(monitor, length/buffersize);
 		InputStream istream = conn.getInputStream();
 		OutputStream ostream = null;
+		final int blocks = length/buffersize;
 		try {
-			spm.beginTask("Downloading "+url.getFile()+" from "+url.getHost(), length/buffersize);
+			spm.beginTask("Downloading "+url.getFile()+" from "+url.getHost(), blocks);
 			jarFile = java.io.File.createTempFile(url.getFile(), null);
 			if (istream!=null) {
 				ostream = new FileOutputStream(jarFile);
@@ -174,9 +176,12 @@ public class FileUtils {
 				int read = 0;
 				byte[] bytes = new byte[buffersize];
 	
-				while ((read = istream.read(bytes)) != -1) {
+				int block = 1;
+				while ((read = istream.read(bytes)) != -1 && !spm.isCanceled()) {
+					spm.setTaskName("Downloading "+url.toString()+" "+block);
 					ostream.write(bytes, 0, read);
 					spm.worked(1);
+					++block;
 				}
 			}
 		}
@@ -190,6 +195,8 @@ public class FileUtils {
 				ostream.flush();
 				ostream.close();
 			}
+			if (spm.isCanceled())
+				return null;
 			spm.done();
 		}
 		return jarFile;
@@ -227,6 +234,21 @@ public class FileUtils {
 		project.getProject().setDescription(description, monitor);
 	}
 
+	public static void addBPMN2Builder(IJavaProject project, IProgressMonitor monitor) throws CoreException {
+	    IProjectDescription description = project.getProject().getDescription();
+	    ICommand[] commands = description.getBuildSpec();
+	    ICommand[] newCommands = new ICommand[commands.length + 1];
+	    System.arraycopy(commands, 0, newCommands, 0, commands.length);
+	
+	    ICommand javaCommand = description.newCommand();
+	    javaCommand.setBuilderName("org.eclipse.bpmn2.modeler.core.bpmn2Builder");
+	    javaCommand.setBuilderName("org.eclipse.wst.validation.validationbuilder");
+	    newCommands[commands.length] = javaCommand;
+	    
+	    description.setBuildSpec(newCommands);
+	    project.getProject().setDescription(description, monitor);
+	}
+
 	public static void addJavaNature(IProjectDescription projectDescription) {
 	    List<String> list = new ArrayList<String>();
 	    list.addAll(Arrays.asList(projectDescription.getNatureIds()));
@@ -240,18 +262,25 @@ public class FileUtils {
 	    list.add("org.eclipse.m2e.core.maven2Nature");
 	    projectDescription.setNatureIds((String[]) list.toArray(new String[list.size()]));
 	}
-    
+
+	public static void addBPMN2Nature(IProjectDescription projectDescription) {
+	    List<String> list = new ArrayList<String>();
+	    list.addAll(Arrays.asList(projectDescription.getNatureIds()));
+	    list.add("org.eclipse.bpmn2.modeler.core.bpmn2Nature");
+	    projectDescription.setNatureIds((String[]) list.toArray(new String[list.size()]));
+	}
+
     public static void createMavenArtifacts(IJavaProject project, String groupId, String artifactId, String version, IProgressMonitor monitor) {
         try {
         	String projectName = project.getProject().getName();
         	if (groupId==null || groupId.isEmpty())
-        		groupId = projectName + ".group.id";
+        		groupId = projectName + ".group";
             if (artifactId==null || artifactId.isEmpty())
-            	artifactId = projectName + ".id";
+            	artifactId = projectName;
             if (version==null || version.isEmpty())
-            	version = "1.0";
+            	version = "1.0.0-SNAPSHOT";
 			createProjectFile(project, monitor, generatePomProperties(groupId, artifactId, version), "src/main/resources/META-INF/maven", "pom.properties");
-            createProjectFile(project, monitor, generatePom(groupId, artifactId, version), null, "pom.xml");
+            createProjectFile(project, monitor, generateEmptyPom(groupId, artifactId, version), null, "pom.xml");
 		}
 		catch (CoreException e) {
 			e.printStackTrace();
@@ -312,19 +341,45 @@ public class FileUtils {
 				+ "\n" + "version=" + version + "\n";
 		return new ByteArrayInputStream(pom.getBytes());
 	}
-
-	public static InputStream generatePom(String groupId, String artifactId, String version) {
+	
+	public static InputStream generateEmptyPom(String groupId, String artifactId, String version) {
 	    String pom =
-	            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-	            "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-	            "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n" +
-	            "  <modelVersion>4.0.0</modelVersion>\n" +
-	            "\n" +
-	            "  <groupId>" + groupId + "</groupId>\n" +
-	            "  <artifactId>" + artifactId + "</artifactId>\n" +
-	            "  <version>" + version + "</version>\n" +
-	            "</project>\n";
-	    return new ByteArrayInputStream(pom.getBytes());
+	        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+	        "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+	        "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n" +
+	        "  <modelVersion>4.0.0</modelVersion>\n" +
+	        "\n" +
+	        "  <groupId>" + groupId + "</groupId>\n" +
+	        "  <artifactId>" + artifactId + "</artifactId>\n" +
+	        "  <version>" + version + "</version>\n" +
+	        "</project>\n";
+	    return new ByteArrayInputStream(pom.toString().getBytes());
+	}
+	
+	public static InputStream generatePom(InputStream template, String runtimeVersion, String groupId, String artifactId, String version) {
+		BufferedInputStream is = new BufferedInputStream(template);
+		StringBuilder contents = new StringBuilder();
+		java.util.Scanner scanner = new java.util.Scanner(is);
+		while (true) {
+			try {
+				String line = scanner.nextLine();
+				if (line.contains("<groupId>###"))
+					line = line.replaceFirst("###", groupId);
+				else if (line.contains("<artifactId>###"))
+					line = line.replaceFirst("###", artifactId);
+				else if (line.contains("<version>###"))
+					line = line.replaceFirst("###", version);
+				else if (line.contains("<runtime.version>###"))
+					line = line.replaceFirst("###", runtimeVersion);
+				contents.append(line);
+				contents.append("\n");
+			}
+			catch (Exception e) {
+				scanner.close();
+				break;
+			}
+		}
+	    return new ByteArrayInputStream(contents.toString().getBytes());
 	}
 
     public static void createOutputLocation(IJavaProject project, String folderName, IProgressMonitor monitor)

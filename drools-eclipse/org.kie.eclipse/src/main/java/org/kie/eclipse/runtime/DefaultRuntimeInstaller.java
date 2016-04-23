@@ -15,33 +15,69 @@
 
 package org.kie.eclipse.runtime;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jgit.fnmatch.FileNameMatcher;
+import org.kie.eclipse.utils.FileUtils;
 
 public class DefaultRuntimeInstaller extends AbstractRuntimeInstaller {
 
 	public static DefaultRuntimeInstaller INSTANCE = new DefaultRuntimeInstaller();
 
-	public DefaultRuntimeInstaller() {}
-	
-	@Override
-	public String install(String runtimeId, String location, IProgressMonitor monitor) {
-		FileNameMatcher fn;
-		AbstractRuntimeInstaller installer = FACTORY.getInstaller(runtimeId);
-		if (installer==null) {
-			return "No installer found for "+runtimeId;
-		}
-		return null;
-	}
-	
-	public static Collection<? extends IRuntimeInstaller> getInstallers() {
-		return FACTORY.createInstallers();
+	public DefaultRuntimeInstaller() {
 	}
 
 	@Override
-	public String getRuntimeId() {
-		return getProduct() + "_" + getVersion();
+	public IRuntime install(IRuntimeManager runtimeManager, String runtimeId, final IProject project, IProgressMonitor monitor) {
+		FileNameMatcher fn;
+		AbstractRuntimeInstaller installer = FACTORY.getInstaller(runtimeId);
+		if (installer == null) {
+			return null; // "No installer found for "+runtimeId;
+		}
+		final IRuntime runtime = runtimeManager.createNewRuntime();
+		runtime.setName(getRuntimeName());
+		runtime.setVersion(getVersion());
+		runtime.setPath(project.getLocation().toString());
+		// runtime.setJars(jarsCreated.toArray(new String[jarsCreated.size()]));
+
+		SubMonitor subMonitor = SubMonitor.convert(monitor, getRepositories().size());
+		for (Repository repo : getRepositories()) {
+			try {
+				URL url = new URL(repo.getUrl());
+				java.io.File jarFile = FileUtils.downloadFile(url, subMonitor);
+				if (jarFile==null) {
+					return null;
+				}
+				System.out.println("Finished downloading "+jarFile.getAbsolutePath());
+				FileUtils.extractJarFile(jarFile, project, subMonitor);
+				System.out.println("Finished extracting "+jarFile.getName()+" to "+project.getLocation());
+				runtimeManager.recognizeJars(runtime);
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
+			subMonitor.worked(1);
+		}
+		
+		return runtime;
+	}
+
+	public static Collection<? extends IRuntimeInstaller> getInstallers() {
+		return FACTORY.createInstallers();
 	}
 }

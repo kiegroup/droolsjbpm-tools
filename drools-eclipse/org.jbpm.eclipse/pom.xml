@@ -70,6 +70,7 @@
                 jbpm-flow-builder,
                 jbpm-bpmn2,
                 jbpm-audit,
+                jbpm-test,
                 junit,
                 mvel2,
                 antlr-runtime,
@@ -117,6 +118,10 @@
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-audit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-test</artifactId>
     </dependency>
 
     <dependency>

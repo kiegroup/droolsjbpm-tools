@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
@@ -32,6 +33,13 @@ public abstract class AbstractRuntimeInstaller implements IRuntimeInstaller {
 	
 	public final static String KIE_RUNTIME_INSTALLER = "org.kie.eclipse.runtimeInstaller";
 	public static AbstractRuntimeInstaller.Factory FACTORY = new AbstractRuntimeInstaller.Factory();
+
+	protected String id;
+	protected String product;
+	protected String version;
+	protected String runtimeName;
+	protected int priority;
+	protected List<Repository> repositories;
 
 	/**
 	 * Represents a "repository" definition in the KIE Runtime Installer extension point.
@@ -157,7 +165,7 @@ public abstract class AbstractRuntimeInstaller implements IRuntimeInstaller {
 				            	// replace lower priority installers with higher priority
 				            	AbstractRuntimeInstaller oldInstaller = installers.get(installer.version);
 				            	if (oldInstaller==null || installer.priority>oldInstaller.priority)
-						            installers.put(installer.version, installer);
+						            installers.put(installer.getRuntimeId(), installer);
 			                }
 			        	}
 			        	else if ("artifacts".equals(e.getName())) {
@@ -189,15 +197,6 @@ public abstract class AbstractRuntimeInstaller implements IRuntimeInstaller {
 			return installers.values();
 		}
 	}
-
-	protected String id;
-	protected String product;
-	protected String version;
-	protected String runtimeName;
-	protected int priority;
-	protected List<Repository> repositories;
-	
-	public abstract String install(String runtimeId, String location, IProgressMonitor monitor);
 	
 	public String getId() {
 		return id;
@@ -231,10 +230,24 @@ public abstract class AbstractRuntimeInstaller implements IRuntimeInstaller {
 		this.runtimeName = runtimeName;
 	}
 	
+	public String getRuntimeId() {
+		return AbstractRuntime.createRuntimeId(getProduct(), getVersion());
+	}
+	
 	public List<Repository> getRepositories() {
 		if (repositories==null) {
 			repositories = new ArrayList<Repository>();
 		}
 		return repositories;
+	}
+	
+	public Hashtable<String, ArtifactList> getArtifacts() {
+		if (artifacts==null)
+			artifacts = new Hashtable<String, ArtifactList>();
+		return artifacts;
+	}
+	
+	public ArtifactList getArtifacts(String artifactId) {
+		return getArtifacts().get(artifactId);
 	}
 }
