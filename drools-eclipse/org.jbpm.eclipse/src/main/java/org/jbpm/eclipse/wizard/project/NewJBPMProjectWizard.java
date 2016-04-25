@@ -106,8 +106,22 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
 	    	}
     	}
 	    super.createInitialContent(javaProject, monitor);
+	    createLoggerFile(javaProject, monitor);
 	}
 
+    private void createLoggerFile(IJavaProject project, IProgressMonitor monitor) throws CoreException {
+	    String fileName = "org/jbpm/eclipse/wizard/project/logback-test.xml.template";
+        IFolder folder = project.getProject().getFolder("src/main/resources");
+        FileUtils.createFolder(folder, monitor);
+        IFile file = folder.getFile("logback-test.xml");
+        InputStream inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
+        if (!file.exists()) {
+            file.create(inputstream, true, monitor);
+        } else {
+            file.setContents(inputstream, true, false, monitor);
+        }
+    }
+    
     /**
      * Create the sample process file.
      * @throws IOException 

@@ -33,6 +33,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -375,13 +376,9 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
         	selectedRuntime = createNewRuntime();
         
         if (selectedRuntime.getPath() != null) {
-        	// If this really is the Bundle Runtime project,
-        	// remove the "lib" segment if there is one
         	IPath runtimeRootPath = new Path(selectedRuntime.getPath());
-        	if ("lib".equals(runtimeRootPath.lastSegment()))
-        		runtimeRootPath = runtimeRootPath.removeLastSegments(1);
         	if (runtimeLocation.equals(runtimeRootPath.lastSegment()))
-        		// then remove the Bundle Runtime project name. 
+        		// remove the Bundle Runtime project name. 
         		runtimeRootPath = runtimeRootPath.removeLastSegments(1);
 
 			// if the absolute path matches the Workspace Root path, then this
@@ -405,21 +402,24 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
             	}
             	else {
 					// Check if the jars were removed
-        			int jarCount = 0;
+            		final int result[] = new int[] {0};
         			try {
 						// Count the number of jars in the project.
 						// We don't actually know how many jars SHOULD be in
 						// there, but if there are none, this is a clear
 						// indication that the project was cleaned out.
-						for (IResource f : project.members()) {
-							if ("jar".equals(f.getFileExtension())) {
-								++jarCount;
+        				project.accept(new IResourceVisitor() {
+							@Override
+							public boolean visit(IResource resource) throws CoreException {
+								if (resource instanceof IFile && "jar".equals(resource.getFileExtension()))
+									result[0]++;
+								return true;
 							}
-						}
+						});
 					} catch (CoreException ex) {
 			            logException(ex);
 					}
-        			if (jarCount==0) {
+        			if (result[0]==0) {
                 		runtimeProjectMissing = true;
         			}
             	}

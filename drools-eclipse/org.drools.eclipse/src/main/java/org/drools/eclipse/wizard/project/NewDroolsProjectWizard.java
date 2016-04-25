@@ -24,6 +24,7 @@ import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.preferences.DroolsProjectPreferencePage;
 import org.drools.eclipse.util.DroolsRuntime;
 import org.drools.eclipse.util.DroolsRuntimeManager;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -107,6 +108,20 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
     	else {
     		super.createInitialContent(javaProject, monitor);
     	}
+	    createLoggerFile(javaProject, monitor);
+    }
+
+    private void createLoggerFile(IJavaProject project, IProgressMonitor monitor) throws CoreException {
+	    String fileName = "org/drools/eclipse/wizard/project/logback-test.xml.template";
+        IFolder folder = project.getProject().getFolder("src/main/resources");
+        FileUtils.createFolder(folder, monitor);
+        IFile file = folder.getFile("logback-test.xml");
+        InputStream inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
+        if (!file.exists()) {
+            file.create(inputstream, true, monitor);
+        } else {
+            file.setContents(inputstream, true, false, monitor);
+        }
     }
     
     @Override
