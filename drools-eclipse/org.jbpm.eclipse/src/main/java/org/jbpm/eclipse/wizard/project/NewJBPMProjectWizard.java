@@ -192,6 +192,12 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
 	        } else {
 	            file.setContents(inputstream, true, false, monitor);
 	        }
+	        
+        	String projectName = project.getProject().getName();
+            String groupId = "com.sample";
+            String artifactId = projectName;
+            String version = "1.0.0-SNAPSHOT";
+			FileUtils.createProjectFile(project, monitor, FileUtils.generatePomProperties(groupId, artifactId, version), "src/main/resources/META-INF/maven", "pom.properties");
     	}
     	catch (CoreException ex) {
     		ex.printStackTrace();

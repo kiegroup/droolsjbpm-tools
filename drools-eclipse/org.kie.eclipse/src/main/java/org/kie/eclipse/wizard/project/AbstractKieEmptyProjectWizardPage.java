@@ -223,7 +223,10 @@ public abstract class AbstractKieEmptyProjectWizardPage extends KieProjectWizard
 	}
 	
 	public boolean shouldCreateKJarProject() {
-		return true;
+		String version = getRuntime().getVersion();
+		if (version!=null && (version.startsWith("6") || version.startsWith("7")))
+			return true;
+		return false;
 	}
 
     private void fillRuntimesCombo() {
