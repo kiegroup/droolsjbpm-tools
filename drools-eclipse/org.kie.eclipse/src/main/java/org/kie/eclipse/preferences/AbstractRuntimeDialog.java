@@ -214,6 +214,7 @@ public abstract class AbstractRuntimeDialog extends Dialog {
     		boolean alreadyInstalled = false;
         	for (IRuntime rt : runtimeManager.getConfiguredRuntimes()) {
         		if (rt.getProduct().equals(installer.getProduct())
+        				&& rt.getVersion()!=null
         				&& rt.getVersion().equals(installer.getVersion())) {
         			alreadyInstalled = true;
         			break;

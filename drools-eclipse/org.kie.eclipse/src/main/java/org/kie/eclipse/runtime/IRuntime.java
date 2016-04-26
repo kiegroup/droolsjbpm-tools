@@ -15,7 +15,7 @@
 
 package org.kie.eclipse.runtime;
 
-public interface IRuntime {
+public interface IRuntime extends Comparable<IRuntime> {
 
 	/**
 	 * Identifies the version number of this Runtime

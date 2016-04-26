@@ -627,7 +627,7 @@
          <installer
             id="drools.runtime_4.0.x_installer"
             product="drools"
-            version="4.0.x"
+            version="4.0.7"
             runtimeName="Drools 4.0.x Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
@@ -643,7 +643,7 @@
          <installer
             id="drools.runtime_5.0.x_installer"
             product="drools"
-            version="5.0.x"
+            version="5.0.1"
             runtimeName="Drools 5.0.x Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
@@ -668,7 +668,7 @@
          <installer
             id="drools.runtime_5.1.x_installer"
             product="drools"
-            version="5.1.x"
+            version="5.1.1"
             runtimeName="Drools 5.1.x Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
@@ -693,7 +693,7 @@
          <installer
             id="drools.runtime_5.2.x_installer"
             product="drools"
-            version="5.2.x"
+            version="5.2.0"
             runtimeName="Drools 5.2.x Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
@@ -716,7 +716,7 @@
          <installer
             id="drools.runtime_5.3.x_installer"
             product="drools"
-            version="5.3.x"
+            version="5.3.0"
             runtimeName="Drools 5.3.x Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
@@ -739,7 +739,7 @@
          <installer
             id="drools.runtime_5.4.x_installer"
             product="drools"
-            version="5.4.x"
+            version="5.4.0"
             runtimeName="Drools 5.4.x Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
@@ -762,7 +762,7 @@
          <installer
             id="drools.runtime_5.5.x_installer"
             product="drools"
-            version="5.5.x"
+            version="5.5.0"
             runtimeName="Drools 5.5.x Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
@@ -785,7 +785,7 @@
          <installer
             id="drools.runtime_5.6.x_installer"
             product="drools"
-            version="5.6.x"
+            version="5.6.0"
             runtimeName="Drools 5.6.x Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
@@ -808,7 +808,7 @@
          <installer
             id="drools.runtime_6.0.x_installer"
             product="drools"
-            version="6.0.x"
+            version="6.0.0"
             runtimeName="Drools 6.0.x Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
@@ -827,7 +827,7 @@
          <installer
             id="drools.runtime_6.1.x_installer"
             product="drools"
-            version="6.1.x"
+            version="6.1.0"
             runtimeName="Drools 6.1.x Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
@@ -846,7 +846,7 @@
          <installer
             id="drools.runtime_6.2.x_installer"
             product="drools"
-            version="6.2.x"
+            version="6.2.0"
             runtimeName="Drools 6.2.x Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
@@ -865,7 +865,7 @@
          <installer
             id="drools.runtime_6.3.x_installer"
             product="drools"
-            version="6.3.x"
+            version="6.3.0"
             runtimeName="Drools 6.3.x Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
@@ -884,7 +884,7 @@
          <installer
             id="drools.runtime_6.4.x_installer"
             product="drools"
-            version="6.4.x"
+            version="6.4.0"
             runtimeName="Drools 6.4.x Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository

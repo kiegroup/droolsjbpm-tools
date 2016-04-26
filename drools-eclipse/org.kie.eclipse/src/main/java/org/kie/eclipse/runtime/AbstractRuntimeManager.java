@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -345,24 +346,45 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
             IRuntime newRuntime = downloadRuntime(runtime, monitor);
             if (newRuntime==null) {
             	// could not download runtime - no installer is defined for runtimeId
-            	// use limited runtime instead?
-            	final IRuntime[] result = new IRuntime[1];
-            	Display.getDefault().asyncExec(new Runnable() {
-					
-					@Override
-					public void run() {
-		            	boolean useBundledRuntime = MessageDialog.openQuestion(Display.getDefault().getActiveShell(),
-		            			"Runtime Download Failed",
-		            			"Could not download the runtime artifacts for "+runtime.getName()+
-		            			"Would you like to create a minimal runtime instead?\n\n\n"+
-		       					"Note: your project may not build and/or execute because of missing dependencies.");
-		                	if (useBundledRuntime)
-		                		result[0] = createBundleRuntime(runtime.getPath());
-		                	else
-		                    	result[0] = null;
-					}
-				});
-            	newRuntime = result[0];
+            	// use limited runtime instead? This will be a runtime created from
+            	// the artifacts bundled with this plugin.
+            	boolean alreadyInstalled = false;
+            	for (IRuntime rt : getConfiguredRuntimes()) {
+            		if (rt.equals(getBundleRuntime())) {
+            			alreadyInstalled = true;
+            			break;
+            		}
+            	}
+            	if (!alreadyInstalled) {
+	            	final IRuntime[] result = new IRuntime[1];
+	            	Display.getDefault().asyncExec(new Runnable() {
+						@Override
+						public void run() {
+			            	boolean useBundledRuntime = MessageDialog.openQuestion(Display.getDefault().getActiveShell(),
+			            			"Runtime Download Failed",
+			            			"Could not download the runtime artifacts for the "+runtime.getName()+".\n"+
+			            			"Would you like to create a minimal runtime for "+getBundleRuntime().getName()+" instead?\n\n\n"+
+			       					"Note: your project may not build and/or execute because of missing dependencies."
+			            		);
+			                	if (useBundledRuntime)
+			                		result[0] = createBundleRuntime(getBundleRuntime().getPath());
+			                	else
+			                    	result[0] = null;
+						}
+					});
+	            	newRuntime = result[0];
+            	}
+            	else {
+	            	Display.getDefault().asyncExec(new Runnable() {
+						@Override
+						public void run() {
+							MessageDialog.openError(Display.getDefault().getActiveShell(),
+									"Runtime Download Failed",
+			            			"Could not download the runtime artifacts for the "+runtime.getName()
+			            	);
+						}
+	            	});
+            	}
             }
             
         	if (newRuntime==null)
@@ -509,6 +531,7 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
 	                }
 	                result.add(runtime);
                 }
+                Collections.sort(result);
             }
         }
         return result.toArray(new IRuntime[result.size()]);

@@ -151,11 +151,11 @@
            <installer
             id="jbpm.runtime_6.0.x_installer"
             product="jbpm"
-            version="6.0.x"
+            version="6.0.1"
             runtimeName="jBPM 6.0.x Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
-               url="http://downloads.jboss.org/jbpm/release/6.0.0.Final/jbpm-6.0.1.Final-bin.zip"
+               url="http://downloads.jboss.org/jbpm/release/6.0.1.Final/jbpm-6.0.1.Final-bin.zip"
                artifacts="jbpm.runtime_6.0.x.artifacts"
                type="zip"/>
          </installer>
@@ -167,7 +167,7 @@
            <installer
             id="jbpm.runtime_6.1.x_installer"
             product="jbpm"
-            version="6.1.x"
+            version="6.1.0"
             runtimeName="jBPM 6.1.x Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
@@ -183,7 +183,7 @@
            <installer
             id="jbpm.runtime_6.2.x_installer"
             product="jbpm"
-            version="6.2.x"
+            version="6.2.0"
             runtimeName="jBPM 6.2.x Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
@@ -199,23 +199,7 @@
          <installer
             id="jbpm.runtime_6.3.x_installer"
             product="jbpm"
-            version="6.3.x"
-            runtimeName="jBPM 6.3.x Runtime"
-            class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
-            <repository
-               url="http://downloads.jboss.org/jbpm/release/6.3.0.Final/jbpm-6.3.0.Final-bin.zip"
-               artifacts="jbpm.runtime_6.3.x.artifacts"
-               type="zip"/>
-         </installer>
-         <artifacts id="jbpm.runtime_6.3.x.artifacts">
-               <artifact include="*.jar"/>
-               <artifact include="lib/*.jar"/>
-         </artifacts>
-
-         <installer
-            id="jbpm.runtime_6.3.x_installer"
-            product="jbpm"
-            version="6.3.x"
+            version="6.3.0"
             runtimeName="jBPM 6.3.x Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
@@ -231,7 +215,7 @@
          <installer
             id="jbpm.runtime_6.4.x_installer"
             product="jbpm"
-            version="6.4.x"
+            version="6.4.0"
             runtimeName="jBPM 6.4.x Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository

@@ -18,7 +18,7 @@ package org.kie.eclipse.runtime;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-public interface IRuntimeInstaller {
+public interface IRuntimeInstaller  extends Comparable<IRuntimeInstaller> {
 	IRuntime install(IRuntimeManager runtimeManager, String runtimeId, IProject project, IProgressMonitor monitor);
 	String getProduct();
 	String getVersion();

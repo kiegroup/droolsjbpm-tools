@@ -47,13 +47,13 @@ public class JBPMRuntimeManager extends AbstractRuntimeManager {
 	 * If the user has not yet created a default Runtime, this
 	 * project will be created, populated and used as the default.
 	 */
-	private static final String JBPM_BUNDLE_RUNTIME_LOCATION = ".drools.runtime";
+	private static final String JBPM_BUNDLE_RUNTIME_LOCATION = ".jbpm.runtime";
 
 	/**
 	 * This is the name of a file contained in the workspace project's
 	 * ".settings" folder used to store the selected runtime name.
 	 */
-	private static final String JBPM_SETTINGS_FILENAME = ".drools.runtime";
+	private static final String JBPM_SETTINGS_FILENAME = ".jbpm.runtime";
 
 	/**
 	 * Name of this plugin.

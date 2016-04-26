@@ -17,16 +17,20 @@ package org.kie.eclipse.runtime;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 
 public abstract class AbstractRuntimeInstaller implements IRuntimeInstaller {
 	static Hashtable<String, AbstractRuntimeInstaller> installers;
+	static List <IRuntimeInstaller> sortedInstallers = new ArrayList<IRuntimeInstaller>();
 	static Hashtable<String, ArtifactList> artifacts;
 	
 	public final static String KIE_RUNTIME_INSTALLER = "org.kie.eclipse.runtimeInstaller";
@@ -175,7 +179,8 @@ public abstract class AbstractRuntimeInstaller implements IRuntimeInstaller {
 			        		artifacts.put(artifactList.id, artifactList);
 			        	}
 			        }
-			        
+					sortedInstallers.addAll(installers.values());
+					Collections.sort(sortedInstallers);
 			    } catch (Exception ex) {
 					MessageDialog.openError(
 							Display.getDefault().getActiveShell(),
@@ -183,8 +188,7 @@ public abstract class AbstractRuntimeInstaller implements IRuntimeInstaller {
 							ex.getMessage());
 			    }
 			}
-			
-			return installers.values();
+			return sortedInstallers;
 		}
 	}
 	
@@ -239,5 +243,10 @@ public abstract class AbstractRuntimeInstaller implements IRuntimeInstaller {
 	
 	public ArtifactList getArtifacts(String artifactId) {
 		return getArtifacts().get(artifactId);
+	}
+
+	@Override
+	public int compareTo(IRuntimeInstaller that) {
+		return this.getRuntimeName().compareTo(that.getRuntimeName());
 	}
 }

@@ -147,11 +147,13 @@ public abstract class AbstractKieEmptyProjectWizardPage extends KieProjectWizard
 
 	protected Composite createJavaControls(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
-        composite.setLayout(new GridLayout(2, false));
+		GridLayout layout = new GridLayout(3, false);
+		layout.marginLeft = 20;
+        composite.setLayout(layout);
         composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         
         final Label runtimesLabel = new Label(composite, SWT.NONE);
-        runtimesLabel.setText("Select a Runtime version:");
+        runtimesLabel.setText("Version:");
         runtimesLabel.setLayoutData(new GridData(GridData.BEGINNING, GridData.CENTER, false, false, 1, 1));
         
         runtimesCombo = new Combo(composite, SWT.READ_ONLY);

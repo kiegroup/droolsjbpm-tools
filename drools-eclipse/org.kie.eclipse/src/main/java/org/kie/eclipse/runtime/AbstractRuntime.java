@@ -92,9 +92,34 @@ public abstract class AbstractRuntime implements IRuntime {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof IRuntime)
-		if (this.getId().equals(((IRuntime)obj).getId()))
-			return true;
+		if (obj instanceof IRuntime) {
+			IRuntime that = ((IRuntime)obj);
+			if (this.getProduct().equals(that.getProduct()) &&
+					this.getVersion()!=null && that.getVersion()!=null) {
+				String thisVersion[] = this.getVersion().split("\\.");
+				String thatVersion[] = that.getVersion().split("\\.");
+				if (thisVersion.length>2 && thatVersion.length>2) {
+					if (thisVersion[0].equals(thatVersion[0]) &&
+							thisVersion[1].equals(thatVersion[1])) {
+						// major and minor versions match.
+						// if update version number of either is "x" it's a match,
+						// otherwise the update version numbers must match
+						if ("x".equals(thisVersion[2]) || "x".equals(thatVersion[2]))
+							return true;
+						return thisVersion[2].equals(thatVersion[2]);
+					}
+				}
+			}
+		}
 		return super.equals(obj);
+	}
+
+	@Override
+	public int compareTo(IRuntime that) {
+		int i = getProduct().compareTo(that.getProduct());
+		if (i==0) {
+			i = getVersion()==null ? -1 : getVersion().compareTo(that.getVersion());
+		}
+		return i;
 	}
 }
