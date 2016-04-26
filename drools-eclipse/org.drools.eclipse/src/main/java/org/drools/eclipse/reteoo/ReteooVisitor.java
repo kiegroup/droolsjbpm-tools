@@ -125,7 +125,7 @@ public class ReteooVisitor extends ReflectiveVisitor {
             if ( node instanceof EntryPointNode ) {
                 list = new ArrayList<ObjectTypeNode>( ((EntryPointNode) node).getObjectTypeNodes().values() );
             } else if ( node instanceof ObjectSource) {
-                list = Arrays.asList( ((ObjectSource) node).getSinkPropagator().getSinks() );
+                list = Arrays.asList( ((ObjectSource) node).getObjectSinkPropagator().getSinks() );
             } else if ( node instanceof LeftTupleSource) {
                 list = Arrays.asList( ((LeftTupleSource) node).getSinkPropagator().getSinks() );
             }

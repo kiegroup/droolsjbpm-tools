@@ -159,7 +159,7 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
     @Override
 	protected void createKJarArtifacts(IJavaProject project, IProgressMonitor monitor) {
         try {
-	        if (startPage.getRuntime().getVersion().startsWith("6")) {
+	        if (startPage.getRuntime().getVersion().startsWith("6") || startPage.getRuntime().getVersion().startsWith("7")) {
 	        	FileUtils.createProjectFile(project, monitor, generateKModule(), "src/main/resources/META-INF", "kmodule.xml");
 	        }
 		}
@@ -206,7 +206,7 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
             createProjectJavaFile(project, "org/drools/eclipse/wizard/project/RuleLauncherSample_4.java.template", "DroolsTest.java");
         } else if (version.startsWith("5")) {
             createProjectJavaFile(project, "org/drools/eclipse/wizard/project/RuleLauncherSample_5.java.template", "DroolsTest.java");
-        } else if (version.startsWith("6")) {
+        } else if (version.startsWith("6") || version.startsWith("7")) {
             createProjectJavaFile(project, "org/drools/eclipse/wizard/project/RuleLauncherSample_6.java.template", "DroolsTest.java");
         }
     }
@@ -222,7 +222,7 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
             createProjectJavaFile(project, "org/drools/eclipse/wizard/project/DecisionTableLauncherSample_4.java.template", "DecisionTableTest.java");
         } else if (version.startsWith("5")) {
             createProjectJavaFile(project, "org/drools/eclipse/wizard/project/DecisionTableLauncherSample_5.java.template", "DecisionTableTest.java");
-        } else if (version.startsWith("6")) {
+        } else if (version.startsWith("6") || version.startsWith("7")) {
             createProjectJavaFile(project, "org/drools/eclipse/wizard/project/DecisionTableLauncherSample_6.java.template", "DecisionTableTest.java");
         }
     }
@@ -244,7 +244,7 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
      * Create the sample rule file.
      */
     private void createRule(IJavaProject project, IProgressMonitor monitor) throws CoreException {
-        if (startPage.getRuntime().getVersion().startsWith("6")) {
+        if (startPage.getRuntime().getVersion().startsWith("6") || startPage.getRuntime().getVersion().startsWith("7")) {
         	FileUtils.createFolder(project, "src/main/resources/rules", monitor);
             createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/Sample.drl.template", "src/main/resources/rules", "Sample.drl");
         } else {
@@ -256,7 +256,7 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
      * Create the sample decision table file.
      */
     private void createDecisionTable(IJavaProject project, IProgressMonitor monitor) throws CoreException {
-        if (startPage.getRuntime().getVersion().startsWith("6")) {
+        if (startPage.getRuntime().getVersion().startsWith("6") || startPage.getRuntime().getVersion().startsWith("7")) {
         	FileUtils.createFolder(project, "src/main/resources/dtables", monitor);
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/Sample.xls.template", "src/main/resources/dtables", "Sample.xls");
     	} else {

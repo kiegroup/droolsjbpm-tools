@@ -89,4 +89,12 @@ public abstract class AbstractRuntime implements IRuntime {
     public static String createRuntimeId(String product, String version) {
     	return product + "_" + version;
     }
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof IRuntime)
+		if (this.getId().equals(((IRuntime)obj).getId()))
+			return true;
+		return super.equals(obj);
+	}
 }

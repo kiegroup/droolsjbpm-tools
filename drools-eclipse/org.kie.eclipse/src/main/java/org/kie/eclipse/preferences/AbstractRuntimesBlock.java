@@ -284,9 +284,11 @@ public abstract class AbstractRuntimesBlock implements ISelectionProvider {
                 			"\nPlease enter a valid version number.");
                 	return;
                 }
-                runtimes.add(result);
-                runtimesList.refresh();
-                runtimesList.setSelection(new StructuredSelection(result));
+                if (!runtimes.contains(result)) {
+	                runtimes.add(result);
+	                runtimesList.refresh();
+	                runtimesList.setSelection(new StructuredSelection(result));
+                }
             }
         }
     }

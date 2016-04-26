@@ -24,7 +24,9 @@ import org.drools.eclipse.builder.DroolsBuilder;
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
@@ -35,10 +37,34 @@ import org.jbpm.eclipse.JBPMEclipsePlugin;
 import org.jbpm.eclipse.preferences.JBPMConstants;
 import org.kie.eclipse.runtime.AbstractRuntimeManager;
 import org.kie.eclipse.runtime.IRuntime;
+import org.kie.eclipse.runtime.IRuntimeRecognizer;
 
 public class JBPMRuntimeManager extends AbstractRuntimeManager {
 
-	private static final String RUNTIME_RECOGNIZER = "org.jbpm.eclipse.runtimeRecognizer";
+	/**
+	 * This is the "hidden" Eclipse Workspace Project name that will hold a copy
+	 * of the jBPM Runtime that is packaged with this plugin.
+	 * If the user has not yet created a default Runtime, this
+	 * project will be created, populated and used as the default.
+	 */
+	private static final String JBPM_BUNDLE_RUNTIME_LOCATION = ".drools.runtime";
+
+	/**
+	 * This is the name of a file contained in the workspace project's
+	 * ".settings" folder used to store the selected runtime name.
+	 */
+	private static final String JBPM_SETTINGS_FILENAME = ".drools.runtime";
+
+	/**
+	 * Name of this plugin.
+	 */
+	private static final String JBPM_BUNDLE_NAME = JBPMEclipsePlugin.PLUGIN_ID;
+
+	/**
+	 * ID of the Runtime Recognizer extension point.
+	 * This implements IRuntimeRecognizer which is used to collect required runtime jars.
+	 */
+	private static final String JBPM_RUNTIME_RECOGNIZER = "org.jbpm.eclipse.runtimeRecognizer";
 
     private static JBPMRuntimeManager manager;
 
@@ -50,7 +76,7 @@ public class JBPMRuntimeManager extends AbstractRuntimeManager {
     
 	@Override
 	public String getRuntimeWorkspaceLocation() {
-    	return ".jbpm.runtime";
+    	return JBPM_BUNDLE_RUNTIME_LOCATION;
 	}
 	
 	@Override
@@ -60,12 +86,11 @@ public class JBPMRuntimeManager extends AbstractRuntimeManager {
 	
 	@Override
 	public String getSettingsFilename() {
-		return ".jbpm.runtime";
+		return JBPM_SETTINGS_FILENAME;
 	}
 	@Override
-    @Deprecated
 	public String getBundleSymbolicName() {
-		return "org.jbpm.eclipse";
+		return JBPM_BUNDLE_NAME;
 	}
 	@Override
 	public IRuntime createNewRuntime() {
@@ -111,7 +136,21 @@ public class JBPMRuntimeManager extends AbstractRuntimeManager {
         project.getProject().setDescription(description, monitor);
 	}
     
-	public String getRuntimeRecognizerId() {
-		return RUNTIME_RECOGNIZER;
+	public IRuntimeRecognizer getRuntimeRecognizer() {
+    	IRuntimeRecognizer recognizer = null;
+        try {
+            IConfigurationElement[] config = Platform.getExtensionRegistry()
+                    .getConfigurationElementsFor(JBPM_RUNTIME_RECOGNIZER);
+            for (IConfigurationElement e : config) {
+                Object o = e.createExecutableExtension("class");
+                if (o instanceof IRuntimeRecognizer) {
+                	recognizer = (IRuntimeRecognizer) o;
+                	break;
+                }
+            }
+        } catch (Exception e) {
+        	logException(e);
+        }
+        return recognizer;
 	}
 }

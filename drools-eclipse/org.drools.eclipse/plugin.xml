@@ -625,10 +625,267 @@
 
    <extension point="org.kie.eclipse.runtimeInstaller">
          <installer
-            id="drools.runtime_6.4.0_installer"
+            id="drools.runtime_4.0.x_installer"
             product="drools"
-            version="6.4.0"
-            runtimeName="Drools 6.4.0 Runtime"
+            version="4.0.x"
+            runtimeName="Drools 4.0.x Runtime"
+            class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
+            <repository
+               url="http://download.jboss.org/drools/release/4.0.7.19894.GA/drools-4.0.7-bin.zip"
+               artifacts="drools.runtime_4.0.x.artifacts"
+               type="zip"/>
+         </installer>
+         <artifacts id="drools.runtime_4.0.x.artifacts">
+               <artifact include="*.jar"/>
+               <artifact include="lib/*.jar"/>
+         </artifacts>
+         
+         <installer
+            id="drools.runtime_5.0.x_installer"
+            product="drools"
+            version="5.0.x"
+            runtimeName="Drools 5.0.x Runtime"
+            class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
+            <repository
+               url="http://download.jboss.org/drools/release/5.0.1.26597.FINAL/drools-5.0-bin.zip"
+               artifacts="drools.runtime_5.0.x.artifacts"
+               type="zip"/>
+            <repository
+               url="http://download.jboss.org/drools/release/5.0.1.26597.FINAL/drools-5.0-solver.zip"
+               artifacts="drools.runtime_5.0.x_solver.artifacts"
+               type="zip"/>
+         </installer>
+         <artifacts id="drools.runtime_5.0.x.artifacts">
+               <artifact include="*.jar"/>
+               <artifact include="lib/*.jar"/>
+         </artifacts>
+         <artifacts id="drools.runtime_5.0.x_solver.artifacts">
+               <artifact include="lib/drools-solver-core*.jar"/>
+               <artifact include="lib/commons-*.jar"/>
+               <artifact include="lib/log4j-*.jar"/>
+         </artifacts>
+         
+         <installer
+            id="drools.runtime_5.1.x_installer"
+            product="drools"
+            version="5.1.x"
+            runtimeName="Drools 5.1.x Runtime"
+            class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
+            <repository
+               url="http://download.jboss.org/drools/release/5.1.1.34858.FINAL/drools-5.1.1-bin.zip"
+               artifacts="drools.runtime_5.1.x.artifacts"
+               type="zip"/>
+            <repository
+               url="http://download.jboss.org/drools/release/5.1.1.34858.FINAL/drools-5.1.1-planner.zip"
+               artifacts="drools.runtime_5.1.x_planner.artifacts"
+               type="zip"/>
+         </installer>
+         <artifacts id="drools.runtime_5.1.x.artifacts">
+               <artifact include="*.jar"/>
+               <artifact include="lib/*.jar"/>
+         </artifacts>
+         <artifacts id="drools.runtime_5.1.x_planner.artifacts">
+               <artifact include="lib/drools-planner-core*.jar"/>
+               <artifact include="lib/commons-*.jar"/>
+               <artifact include="lib/log4j-*.jar"/>
+         </artifacts>
+        
+         <installer
+            id="drools.runtime_5.2.x_installer"
+            product="drools"
+            version="5.2.x"
+            runtimeName="Drools 5.2.x Runtime"
+            class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
+            <repository
+               url="http://download.jboss.org/drools/release/5.2.0.Final/droolsjbpm-integration-distribution-5.2.0.Final.zip"
+               artifacts="drools.runtime_5.2.x.artifacts"
+               type="zip"/>
+            <repository
+               url="http://download.jboss.org/drools/release/5.2.0.Final/drools-planner-distribution-5.2.0.Final.zip"
+               artifacts="drools.runtime_5.2.x.artifacts"
+               type="zip"/>
+            <repository
+               url="http://download.jboss.org/drools/release/5.2.0.Final/drools-distribution-5.2.0.Final.zip"
+               artifacts="drools.runtime_5.2.x.artifacts"
+               type="zip"/>
+         </installer>
+         <artifacts id="drools.runtime_5.2.x.artifacts">
+               <artifact include="*/binaries/*.jar"/>
+         </artifacts>
+        
+         <installer
+            id="drools.runtime_5.3.x_installer"
+            product="drools"
+            version="5.3.x"
+            runtimeName="Drools 5.3.x Runtime"
+            class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
+            <repository
+               url="http://download.jboss.org/drools/release/5.3.0.Final/droolsjbpm-integration-distribution-5.3.0.Final.zip"
+               artifacts="drools.runtime_5.3.x.artifacts"
+               type="zip"/>
+            <repository
+               url="http://download.jboss.org/drools/release/5.3.0.Final/drools-planner-distribution-5.3.0.Final.zip"
+               artifacts="drools.runtime_5.3.x.artifacts"
+               type="zip"/>
+            <repository
+               url="http://download.jboss.org/drools/release/5.3.0.Final/drools-distribution-5.3.0.Final.zip"
+               artifacts="drools.runtime_5.3.x.artifacts"
+               type="zip"/>
+         </installer>
+         <artifacts id="drools.runtime_5.3.x.artifacts">
+               <artifact include="*/binaries/*.jar"/>
+         </artifacts>
+        
+         <installer
+            id="drools.runtime_5.4.x_installer"
+            product="drools"
+            version="5.4.x"
+            runtimeName="Drools 5.4.x Runtime"
+            class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
+            <repository
+               url="http://download.jboss.org/drools/release/5.4.0.Final/droolsjbpm-integration-distribution-5.4.0.Final.zip"
+               artifacts="drools.runtime_5.4.x.artifacts"
+               type="zip"/>
+            <repository
+               url="http://download.jboss.org/drools/release/5.4.0.Final/drools-planner-distribution-5.4.0.Final.zip"
+               artifacts="drools.runtime_5.4.x.artifacts"
+               type="zip"/>
+            <repository
+               url="http://download.jboss.org/drools/release/5.4.0.Final/drools-distribution-5.4.0.Final.zip"
+               artifacts="drools.runtime_5.4.x.artifacts"
+               type="zip"/>
+         </installer>
+         <artifacts id="drools.runtime_5.4.x.artifacts">
+               <artifact include="*/binaries/*.jar"/>
+         </artifacts>
+        
+         <installer
+            id="drools.runtime_5.5.x_installer"
+            product="drools"
+            version="5.5.x"
+            runtimeName="Drools 5.5.x Runtime"
+            class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
+            <repository
+               url="http://download.jboss.org/drools/release/5.5.0.Final/droolsjbpm-integration-distribution-5.5.0.Final.zip"
+               artifacts="drools.runtime_5.5.x.artifacts"
+               type="zip"/>
+            <repository
+               url="http://download.jboss.org/drools/release/5.5.0.Final/drools-planner-distribution-5.5.0.Final.zip"
+               artifacts="drools.runtime_5.5.x.artifacts"
+               type="zip"/>
+            <repository
+               url="http://download.jboss.org/drools/release/5.5.0.Final/drools-distribution-5.5.0.Final.zip"
+               artifacts="drools.runtime_5.5.x.artifacts"
+               type="zip"/>
+         </installer>
+         <artifacts id="drools.runtime_5.5.x.artifacts">
+               <artifact include="*/binaries/*.jar"/>
+         </artifacts>
+        
+         <installer
+            id="drools.runtime_5.6.x_installer"
+            product="drools"
+            version="5.6.x"
+            runtimeName="Drools 5.6.x Runtime"
+            class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
+            <repository
+               url="http://download.jboss.org/drools/release/5.6.0.Final/droolsjbpm-integration-distribution-5.6.0.Final.zip"
+               artifacts="drools.runtime_5.6.x.artifacts"
+               type="zip"/>
+            <repository
+               url="http://download.jboss.org/drools/release/5.6.0.Final/drools-planner-distribution-5.6.0.Final.zip"
+               artifacts="drools.runtime_5.6.x.artifacts"
+               type="zip"/>
+            <repository
+               url="http://download.jboss.org/drools/release/5.6.0.Final/drools-distribution-5.6.0.Final.zip"
+               artifacts="drools.runtime_5.6.x.artifacts"
+               type="zip"/>
+         </installer>
+         <artifacts id="drools.runtime_5.6.x.artifacts">
+               <artifact include="*/binaries/*.jar"/>
+         </artifacts>
+
+         <installer
+            id="drools.runtime_6.0.x_installer"
+            product="drools"
+            version="6.0.x"
+            runtimeName="Drools 6.0.x Runtime"
+            class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
+            <repository
+               url="http://downloads.jboss.org/drools/release/6.0.0.Final/drools-distribution-6.0.0.Final.zip"
+               artifacts="drools.runtime_6.0.x.artifacts"
+               type="zip"/>
+            <repository
+               url="http://downloads.jboss.org/drools/release/6.0.0.Final/droolsjbpm-integration-distribution-6.0.0.Final.zip"
+               artifacts="drools.runtime_6.0.x.artifacts"
+               type="zip"/>
+         </installer>
+         <artifacts id="drools.runtime_6.0.x.artifacts">
+               <artifact include="*/binaries/*.jar"/>
+         </artifacts>
+
+         <installer
+            id="drools.runtime_6.1.x_installer"
+            product="drools"
+            version="6.1.x"
+            runtimeName="Drools 6.1.x Runtime"
+            class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
+            <repository
+               url="http://downloads.jboss.org/drools/release/6.1.0.Final/drools-distribution-6.1.0.Final.zip"
+               artifacts="drools.runtime_6.1.x.artifacts"
+               type="zip"/>
+            <repository
+               url="http://downloads.jboss.org/drools/release/6.1.0.Final/droolsjbpm-integration-distribution-6.1.0.Final.zip"
+               artifacts="drools.runtime_6.1.x.artifacts"
+               type="zip"/>
+         </installer>
+         <artifacts id="drools.runtime_6.1.x.artifacts">
+               <artifact include="*/binaries/*.jar"/>
+         </artifacts>
+
+         <installer
+            id="drools.runtime_6.2.x_installer"
+            product="drools"
+            version="6.2.x"
+            runtimeName="Drools 6.2.x Runtime"
+            class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
+            <repository
+               url="http://downloads.jboss.org/drools/release/6.2.0.Final/drools-distribution-6.2.0.Final.zip"
+               artifacts="drools.runtime_6.2.x.artifacts"
+               type="zip"/>
+            <repository
+               url="http://downloads.jboss.org/drools/release/6.2.0.Final/droolsjbpm-integration-distribution-6.2.0.Final.zip"
+               artifacts="drools.runtime_6.2.x.artifacts"
+               type="zip"/>
+         </installer>
+         <artifacts id="drools.runtime_6.2.x.artifacts">
+               <artifact include="*/binaries/*.jar"/>
+         </artifacts>
+
+         <installer
+            id="drools.runtime_6.3.x_installer"
+            product="drools"
+            version="6.3.x"
+            runtimeName="Drools 6.3.x Runtime"
+            class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
+            <repository
+               url="http://downloads.jboss.org/drools/release/6.3.0.Final/drools-distribution-6.3.0.Final.zip"
+               artifacts="drools.runtime_6.3.x.artifacts"
+               type="zip"/>
+            <repository
+               url="http://downloads.jboss.org/drools/release/6.3.0.Final/droolsjbpm-integration-distribution-6.3.0.Final.zip"
+               artifacts="drools.runtime_6.3.x.artifacts"
+               type="zip"/>
+         </installer>
+         <artifacts id="drools.runtime_6.3.x.artifacts">
+               <artifact include="*/binaries/*.jar"/>
+         </artifacts>
+
+         <installer
+            id="drools.runtime_6.4.x_installer"
+            product="drools"
+            version="6.4.x"
+            runtimeName="Drools 6.4.x Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
                url="http://downloads.jboss.org/drools/release/6.4.0.Final/drools-distribution-6.4.0.Final.zip"

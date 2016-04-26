@@ -33,7 +33,6 @@ public abstract class AbstractKieEmptyProjectWizardPage extends KieProjectWizard
     private boolean isDefaultRuntime = true;
     private IRuntime selectedRuntime;
     private IRuntime effectiveRuntime;
-    private Button projectSpecificRuntime;
     private Combo runtimesCombo;
     private Text pomArtifactIdText;
     private String pomGroupId;
@@ -44,7 +43,7 @@ public abstract class AbstractKieEmptyProjectWizardPage extends KieProjectWizard
     	JAVA_PROJECT,
     	MAVEN_PROJECT,
     };
-    KieProjectBuildType projectBuildType = KieProjectBuildType.MAVEN_PROJECT;
+    KieProjectBuildType projectBuildType = KieProjectBuildType.JAVA_PROJECT;
 
 	abstract protected void createControls(Composite parent);
     abstract public IRuntimeManager getRuntimeManager();
@@ -68,8 +67,8 @@ public abstract class AbstractKieEmptyProjectWizardPage extends KieProjectWizard
         projectTypeRadioButtons.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
         Label projectTypeLabel = new Label(projectTypeRadioButtons, SWT.NONE);
         projectTypeLabel.setText("Build the Project using:");
-        final Button mavenProjectButton = createRadioButton(projectTypeRadioButtons, "Maven (recommended)");
         final Button javaProjectButton = createRadioButton(projectTypeRadioButtons, "Java and "+getProductName()+" Runtime classes");
+        final Button mavenProjectButton = createRadioButton(projectTypeRadioButtons, "Maven");
 
         final Composite mavenControls = createMavenControls((Composite) getControl());
         final Composite javaControls = createJavaControls((Composite) getControl());
@@ -148,38 +147,14 @@ public abstract class AbstractKieEmptyProjectWizardPage extends KieProjectWizard
 
 	protected Composite createJavaControls(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
-        GridLayout layout = new GridLayout(2, false);
-        layout.marginLeft = 20;
-        composite.setLayout(layout);
+        composite.setLayout(new GridLayout(2, false));
         composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         
-        projectSpecificRuntime = new Button(composite, SWT.CHECK);
-        projectSpecificRuntime.setText("Use default Runtime");
-        projectSpecificRuntime.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false, 1, 1));
-        projectSpecificRuntime.setSelection(isDefaultRuntime);
-
-        final Link changeWorkspaceSettingsLink = new Link(composite, SWT.NONE);
-        changeWorkspaceSettingsLink.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, false, false, 1, 1));
-        changeWorkspaceSettingsLink.setText("<A>Manage Runtime definitions...</A>");
-        changeWorkspaceSettingsLink.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-	        	if (showRuntimePreferenceDialog() == Window.OK)
-	        		fillRuntimesCombo();
-			}
-        });
-        
-		final Composite composite2 = new Composite(composite, SWT.NONE);
-        layout = new GridLayout(2, false);
-        layout.marginLeft = 40;
-        composite2.setLayout(layout);
-        composite2.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        
-        final Label runtimesLabel = new Label(composite2, SWT.NONE);
-        runtimesLabel.setText("Use Runtime:");
+        final Label runtimesLabel = new Label(composite, SWT.NONE);
+        runtimesLabel.setText("Select a Runtime version:");
         runtimesLabel.setLayoutData(new GridData(GridData.BEGINNING, GridData.CENTER, false, false, 1, 1));
         
-        runtimesCombo = new Combo(composite2, SWT.READ_ONLY);
+        runtimesCombo = new Combo(composite, SWT.READ_ONLY);
         runtimesCombo.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false, 1, 1));
         runtimesCombo.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
@@ -189,19 +164,23 @@ public abstract class AbstractKieEmptyProjectWizardPage extends KieProjectWizard
                 	selectedRuntime = rt;
                 	effectiveRuntime = null;
                 }
+                isDefaultRuntime = rt.isDefault();
                 setPageComplete(isPageComplete());
             }
         });
-        
-        projectSpecificRuntime.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                isDefaultRuntime = ((Button) e.widget).getSelection();
-                setControlVisible(composite2, !isDefaultRuntime);
-            }
+
+		final Link changeWorkspaceSettingsLink = new Link(composite, SWT.NONE);
+        changeWorkspaceSettingsLink.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, false, false, 1, 1));
+        changeWorkspaceSettingsLink.setText("<A>Manage Runtime definitions...</A>");
+        changeWorkspaceSettingsLink.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+	        	showRuntimePreferenceDialog();
+        		fillRuntimesCombo();
+			}
         });
         
         fillRuntimesCombo();
-        setControlVisible(composite2, !isDefaultRuntime);
 
         return composite;
 	}
@@ -267,28 +246,22 @@ public abstract class AbstractKieEmptyProjectWizardPage extends KieProjectWizard
     	
         setErrorMessage(null);
         runtimesCombo.removeAll();
+        Integer selectedKey = 0;
         Integer key = 0;
         for (IRuntime rt : runtimes) {
         	String name = rt.getName();
         	if (rt.getPath()==null) {
         		name += " (will be created)";
         	}
+        	if (rt.isDefault())
+        		selectedKey = key;
             runtimesCombo.add(name);
             runtimesCombo.setData(key.toString(), rt);
             ++key;
         }
         
-        key = 0; 
-        runtimesCombo.select(key);
-        selectedRuntime = (IRuntime) runtimesCombo.getData(key.toString());
-
-        IRuntime defaultRuntime = runtimeManager.getDefaultRuntime();
-        if (defaultRuntime==null) {
-        	if (runtimes.size()==1)
-        		defaultRuntime = runtimes.get(0);
-        }
-        projectSpecificRuntime.setText("Use the default Runtime (" +
-        		(defaultRuntime == null ? "undefined)" : defaultRuntime.getName() + ")"));
+        runtimesCombo.select(selectedKey);
+        selectedRuntime = (IRuntime) runtimesCombo.getData(selectedKey.toString());
     }
 
     public boolean shouldDownloadRuntime() {

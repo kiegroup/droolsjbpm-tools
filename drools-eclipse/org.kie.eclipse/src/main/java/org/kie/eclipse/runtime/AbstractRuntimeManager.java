@@ -152,7 +152,6 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
     
     private IProject getRuntimeProject(IRuntime runtime) {
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
-    	IPath rootPath = workspace.getRoot().getLocation();
 		IProject project = workspace.getRoot().getProject(runtime.getPath());
     	return project;
     }
@@ -230,6 +229,19 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
     	// definition file.
     	String runtimeId = runtime.getId();
     	IProject project = getRuntimeProject(runtime);
+    	if (!project.exists()) {
+            try {
+	            IWorkspace workspace = ResourcesPlugin.getWorkspace();
+	            final IProjectDescription description = workspace.newProjectDescription(project.getName());
+	            description.setLocation(null);
+				project.create(description, null);
+                project.open(IResource.BACKGROUND_REFRESH,null);
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
+    	}
     	IRuntimeInstaller installer = AbstractRuntimeInstaller.FACTORY.getInstaller(runtimeId);
     	if (installer==null)
     		return null;
@@ -244,7 +256,7 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
     public IRuntime downloadOrCreateRuntime(final IRuntime runtime, final IProgressMonitor monitor) {
 
     	boolean rebuildBundleRuntimeProject = false;
-    	String runtimeLocation = getRuntimeWorkspaceLocation() + "_" + getBundleRuntimeVersion();
+    	String runtimeLocation = getRuntimeWorkspaceLocation() + "_" + runtime.getVersion();
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         
         if (runtime.getPath() != null) {
@@ -316,8 +328,7 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
         	
         	final IProject project = workspace.getRoot().getProject(runtimeLocation);
         	if (!project.exists()) {
-                final IProjectDescription description = workspace
-                        .newProjectDescription(project.getName());
+                final IProjectDescription description = workspace.newProjectDescription(project.getName());
                 description.setLocation(null);
                 try {
 					project.create(description, null);
@@ -328,6 +339,7 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
 					return null;
 				}
         	}
+        	runtime.setPath(runtimeLocation);
         	
         	// and create a new entry for the current version of this plugin
             IRuntime newRuntime = downloadRuntime(runtime, monitor);
@@ -443,7 +455,7 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
         return selectedRuntime;
     }
     
-    protected String createStringFromRuntimes(IRuntime[] runtimes) {
+    private String createStringFromRuntimes(IRuntime[] runtimes) {
         String result = "";
         for (IRuntime runtime: runtimes) {
             result += runtime.getName() + "#" + runtime.getPath() + "#" + runtime.isDefault() + "# ";
@@ -460,7 +472,7 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
         return result;
     }
 
-    protected IRuntime[] createRuntimesFromString(String s) {
+    private IRuntime[] createRuntimesFromString(String s) {
         List<IRuntime> result = new ArrayList<IRuntime>();
         if (s != null && !"".equals(s)) {
             String[] runtimeStrings = s.split("###");
@@ -526,7 +538,13 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
     }
 
     private void setRuntimesInternal(IRuntime[] runtimes) {
-        getPreferenceStore().setValue(getRuntimePreferenceKey(),createStringFromRuntimes(runtimes));
+    	List<IRuntime> uniqueRuntimes = new ArrayList<IRuntime>();
+    	for (IRuntime rt : runtimes) {
+    		if (!uniqueRuntimes.contains(rt))
+    			uniqueRuntimes.add(rt);
+    	}
+    	String s = createStringFromRuntimes(uniqueRuntimes.toArray(new IRuntime[uniqueRuntimes.size()]));
+        getPreferenceStore().setValue(getRuntimePreferenceKey(),s);
     }
 
     
@@ -595,33 +613,29 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
     }
     
     public void recognizeJars(IRuntime runtime) {
-    	IRuntimeRecognizer recognizer = null;
         String path = runtime.getPath();
         if (path != null) {
-            try {
-                IConfigurationElement[] config = Platform.getExtensionRegistry()
-                        .getConfigurationElementsFor(getRuntimeRecognizerId());
-                for (IConfigurationElement e : config) {
-                    Object o = e.createExecutableExtension("class");
-                    if (o instanceof IRuntimeRecognizer) {
-                    	recognizer = (IRuntimeRecognizer) o;
-                        String[] jars = recognizer.recognizeJars(path);
-                        if (jars != null && jars.length > 0) {
-                            runtime.setJars(jars);
-                            runtime.setProduct(recognizer.getProduct());
-                            runtime.setVersion(recognizer.getVersion());
-                            return;
-                        }
-                    }
-                }
-            } catch (Exception e) {
-            	logException(e);
+        	IRuntimeRecognizer recognizer = getRuntimeRecognizer();
+        	if (recognizer==null)
+        		recognizer = new DefaultRuntimeRecognizer();
+            String[] jars = recognizer.recognizeJars(path);
+            if (jars==null || jars.length==0) {
+            	recognizer = new DefaultRuntimeRecognizer();
+            	jars = recognizer.recognizeJars(path);
             }
-
-            recognizer = new DefaultRuntimeRecognizer();
-            runtime.setJars(recognizer.recognizeJars(path));
-            runtime.setProduct(recognizer.getProduct());
-            runtime.setVersion(recognizer.getVersion());
+            if (jars != null && jars.length > 0) {
+                runtime.setJars(jars);
+                if (runtime.getProduct()==null) {
+	                String product = recognizer.getProduct();
+	                if (product!=null && !product.isEmpty())
+	                	runtime.setProduct(product);
+                }
+                if (runtime.getVersion()==null) {
+	                String version = recognizer.getVersion();
+	                if (version!=null && !version.isEmpty())
+	                	runtime.setVersion(version);
+                }
+            }
         }
     }
 
@@ -630,7 +644,7 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
     ///////////////////////////////////////////////////////////////////////////////////////
     abstract public String getRuntimeWorkspaceLocation();
     abstract public String getRuntimePreferenceKey();
-	abstract public String getRuntimeRecognizerId();
+	abstract public IRuntimeRecognizer getRuntimeRecognizer();
     abstract public String getSettingsFilename();
     abstract public String getBundleSymbolicName();
     abstract public IRuntime createNewRuntime();

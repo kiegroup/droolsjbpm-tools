@@ -287,7 +287,7 @@ public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
 	        List<IClasspathEntry> list = new ArrayList<IClasspathEntry>();
 	        list.addAll(Arrays.asList(project.getRawClasspath()));
 	        addSourceFolder(project, list, "src/main/java", monitor);
-            if (startPage.getRuntime().getVersion().startsWith("6")) {
+            if (startPage.getRuntime().getVersion().startsWith("6") || startPage.getRuntime().getVersion().startsWith("7")) {
 	        	addSourceFolder(project, list, "src/main/resources", monitor);
 	        } else {
 	        	addSourceFolder(project, list, "src/main/rules", monitor);

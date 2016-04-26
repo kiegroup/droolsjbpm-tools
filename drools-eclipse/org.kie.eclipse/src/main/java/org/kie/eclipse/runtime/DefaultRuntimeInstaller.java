@@ -47,12 +47,13 @@ public class DefaultRuntimeInstaller extends AbstractRuntimeInstaller {
 		runtime.setPath(project.getLocation().toString());
 		// runtime.setJars(jarsCreated.toArray(new String[jarsCreated.size()]));
 
-		SubMonitor subMonitor = SubMonitor.convert(monitor, getRepositories().size());
+		int totalWork = 2 * getRepositories().size();
+		SubMonitor subMonitor = SubMonitor.convert(monitor, totalWork);
 		for (Repository repo : getRepositories()) {
 			java.io.File jarFile = null;
 			try {
 				URL url = new URL(repo.getUrl());
-				jarFile = FileUtils.downloadFile(url, subMonitor);
+				jarFile = FileUtils.downloadFile(url, subMonitor.newChild(1));
 				if (jarFile==null) {
 					return null;
 				}
@@ -66,16 +67,21 @@ public class DefaultRuntimeInstaller extends AbstractRuntimeInstaller {
 					if (artifact.getExclude()!=null)
 						excludes.add(artifact.getExclude());
 				}
-				
+
 				int fileCount = FileUtils.extractJarFile(jarFile,
 						includes.toArray(new String[includes.size()]),
 						excludes.toArray(new String[excludes.size()]),
-						project, subMonitor);
+						project, subMonitor.newChild(1));
 				// if no files were extracted, return failure
 				if (fileCount==0)
 					return null;
 				
 				runtimeManager.recognizeJars(runtime);
+				// the recognizer doesn't do a very good job of recognizing the
+				// version number and product, but we already know this from the
+				// installer extension point definition.
+				runtime.setVersion(version);
+				runtime.setProduct(product);
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -85,13 +91,13 @@ public class DefaultRuntimeInstaller extends AbstractRuntimeInstaller {
 			}
 			finally {
 				try {
-					jarFile.delete();
+					if (jarFile!=null && jarFile.exists())
+						jarFile.delete();
 				}
 				catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
-			subMonitor.worked(1);
 		}
 		
 		return runtime;

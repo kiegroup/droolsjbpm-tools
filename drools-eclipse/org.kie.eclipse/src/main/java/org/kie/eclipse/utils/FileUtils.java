@@ -50,7 +50,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
@@ -149,6 +149,7 @@ public class FileUtils {
 				}
 			}
 
+			SubMonitor subMonitor = SubMonitor.convert(monitor, jar.size());
 			Enumeration<JarEntry> enumEntries = jar.entries();
 			while (enumEntries.hasMoreElements()) {
 			    JarEntry entry = enumEntries.nextElement();
@@ -171,17 +172,21 @@ public class FileUtils {
 			    		}
 			    	}
 					if (match) {
+						subMonitor.setTaskName("Creating file "+entry.getName());
+
 					    IFile file = project.getFile(entry.getName());
-					    mkdirs(file, monitor);
+					    mkdirs(file, subMonitor);
 					    is = jar.getInputStream(entry);
 					    if (file.exists())
-					    	file.setContents(is, true, false, monitor);
+					    	file.setContents(is, true, false, subMonitor);
 					    else
-					    	file.create(is, true, monitor);
+					    	file.create(is, true, subMonitor);
 					    ++fileCount;
+					    subMonitor.worked(1);
 					}
 			    }
 			}
+			subMonitor.done();
 		}
 		finally {
 			jar.close();
@@ -199,12 +204,12 @@ public class FileUtils {
 		java.io.File jarFile = null;
 		int length = conn.getContentLength();
 		final int buffersize = 1024;
-		SubProgressMonitor spm = new SubProgressMonitor(monitor, length/buffersize);
+		final int blocks = length/buffersize;
+		SubMonitor subMonitor = SubMonitor.convert(monitor, blocks);
 		InputStream istream = conn.getInputStream();
 		OutputStream ostream = null;
-		final int blocks = length/buffersize;
 		try {
-			spm.beginTask("Downloading "+url.getFile()+" from "+url.getHost(), blocks);
+			subMonitor.beginTask("Downloading "+url.getFile()+" from "+url.getHost(), blocks);
 			jarFile = java.io.File.createTempFile(url.getFile(), null);
 			if (istream!=null) {
 				ostream = new FileOutputStream(jarFile);
@@ -214,14 +219,14 @@ public class FileUtils {
 	
 				int block = 1;
 				int lastPercentDone = -1;
-				while ((read = istream.read(bytes)) != -1 && !spm.isCanceled()) {
+				while ((read = istream.read(bytes)) != -1 && !subMonitor.isCanceled()) {
 					int percentDone = (int)(100 * ((float)block / (float)blocks));
 					if (percentDone != lastPercentDone && percentDone<=100) {
-						spm.setTaskName("Downloading "+url.toString()+" "+percentDone+"%");
+						subMonitor.setTaskName("Downloading "+url.toString()+" "+percentDone+"%");
 						lastPercentDone = percentDone;
 					}
 					ostream.write(bytes, 0, read);
-					spm.worked(1);
+					subMonitor.worked(1);
 					++block;
 				}
 			}
@@ -236,9 +241,9 @@ public class FileUtils {
 				ostream.flush();
 				ostream.close();
 			}
-			if (spm.isCanceled())
+			if (subMonitor.isCanceled())
 				return null;
-			spm.done();
+			subMonitor.done();
 		}
 		return jarFile;
 	}
@@ -410,8 +415,14 @@ public class FileUtils {
 					line = line.replaceFirst("###", artifactId);
 				else if (line.contains("<version>###"))
 					line = line.replaceFirst("###", version);
-				else if (line.contains("<runtime.version>###"))
+				else if (line.contains("<runtime.version>###")) {
+					// trim off any version info, for example:
+					// 6.4.0.Final-v20160425-1908-B212
+					// should just be:
+					// 6.4.0.Final
+					runtimeVersion = runtimeVersion.replaceFirst("-.*", "");
 					line = line.replaceFirst("###", runtimeVersion);
+				}
 				contents.append(line);
 				contents.append("\n");
 			}
