@@ -51,7 +51,6 @@ import org.kie.eclipse.wizard.project.AbstractKieProjectStartWizardPage;
 import org.kie.eclipse.wizard.project.AbstractKieProjectWizard;
 import org.kie.eclipse.wizard.project.IKieProjectWizardPage;
 import org.kie.eclipse.wizard.project.IKieSampleFilesProjectWizardPage;
-import org.osgi.framework.Bundle;
 
 /**
  * A wizard to create a new Drools project.
@@ -128,7 +127,7 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 	protected void createMavenArtifacts(IJavaProject project, IProgressMonitor monitor) {
         try {
         	String projectName = project.getProject().getName();
-        	String runtimeVersion = DroolsEclipsePlugin.getDefault().getBundle().getVersion().toString().replace("qualifier", "Final");
+        	String runtimeVersion = startPage.getRuntimeManager().getBundleVersion();
             String groupId = "com.sample";
             String artifactId = projectName;
             String version = "1.0.0-SNAPSHOT";

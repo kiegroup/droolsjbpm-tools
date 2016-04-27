@@ -415,14 +415,8 @@ public class FileUtils {
 					line = line.replaceFirst("###", artifactId);
 				else if (line.contains("<version>###"))
 					line = line.replaceFirst("###", version);
-				else if (line.contains("<runtime.version>###")) {
-					// trim off any version info, for example:
-					// 6.4.0.Final-v20160425-1908-B212
-					// should just be:
-					// 6.4.0.Final
-					runtimeVersion = runtimeVersion.replaceFirst("-.*", "");
+				else if (line.contains("<runtime.version>###"))
 					line = line.replaceFirst("###", runtimeVersion);
-				}
 				contents.append(line);
 				contents.append("\n");
 			}

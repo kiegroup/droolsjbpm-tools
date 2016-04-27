@@ -39,7 +39,6 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -108,6 +107,7 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
     /**
      * Returns the version number of the Runtime that is packaged with this plugin,
      * for example the version number of the org.drools.eclipse plugin.
+     * The version number will be in the form major.minor.patch
      * 
      * @return version number of bundle Runtime.
      */
@@ -115,7 +115,28 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
     	String version = Platform.getBundle( getBundleSymbolicName() ).getVersion().toString();
     	String a[] = version.split("\\.");
     	if (a.length>3) {
-    		return a[0] + "." + a[1] + "." + a[2];
+    		String lastSegment = a[2].replace("qualifier", "Final").replaceFirst("-.*", "");
+    		return a[0] + "." + a[1] + "." + lastSegment;
+    	}
+    	return version;
+    }
+    
+    /**
+     * Returns the version number of this plugin.
+     * This will be in the form major.minor.patch.qualifier
+     * 
+     * @return version number of plugin bundle.
+     */
+    public String getBundleVersion() {
+    	String version = Platform.getBundle( getBundleSymbolicName() ).getVersion().toString();
+    	String a[] = version.split("\\.");
+    	if (a.length>3) {
+			// trim off any version info, for example:
+			// 6.4.0.Final-v20160425-1908-B212
+			// should just be:
+			// 6.4.0.Final
+    		String qualifier = a[3].replace("qualifier", "Final").replaceFirst("-.*", "");
+    		return a[0] + "." + a[1] + "." + a[2] + "." + qualifier;
     	}
     	return version;
     }

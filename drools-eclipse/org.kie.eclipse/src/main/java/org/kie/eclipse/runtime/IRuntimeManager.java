@@ -29,6 +29,7 @@ public interface IRuntimeManager {
 	IRuntime getBundleRuntime();
 	String getBundleRuntimeName();
 	String getBundleRuntimeVersion();
+	String getBundleVersion();
 	IRuntime createNewRuntime();
 	IRuntime downloadOrCreateBundleRuntime(IProgressMonitor monitor);
 	IRuntime downloadOrCreateRuntime(IRuntime runtime, IProgressMonitor monitor);

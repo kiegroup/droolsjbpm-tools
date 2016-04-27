@@ -25,6 +25,7 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -57,13 +58,15 @@ public abstract class AbstractRuntimeDialog extends Dialog {
     private Combo runtimesCombo;
     private Button selectExistingButton;
     private Button downloadNewButton;
+    private Text errorMessageText;
     private String product;
     private IRuntimeInstaller selectedInstaller;
     private List<IRuntime> runtimes;
+    private boolean editMode;
 
     private Listener textModifyListener = new Listener() {
         public void handleEvent(Event e) {
-            getButton(IDialogConstants.OK_ID).setEnabled(validate());
+            validate();
         }
     };
     
@@ -82,7 +85,12 @@ public abstract class AbstractRuntimeDialog extends Dialog {
         
         Label label = new Label(composite, SWT.WRAP);
         label.setFont(composite.getFont());
-        label.setText("Either select an existing Runtime on your file system or download a new one.");
+        if (editMode) {
+        	label.setText("Edit the selected Runtime:");
+        }
+        else {
+        	label.setText("Select an existing Runtime on your file system or download a new one:");
+        }
         label.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2,1));
 
         GridData gd = new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1, 1);
@@ -153,6 +161,12 @@ public abstract class AbstractRuntimeDialog extends Dialog {
             }
         });
         
+        errorMessageText = new Text(composite, SWT.READ_ONLY | SWT.WRAP);
+        errorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
+                | GridData.HORIZONTAL_ALIGN_FILL));
+        errorMessageText.setBackground(errorMessageText.getDisplay()
+                .getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+        
         fillRuntimesCombo();
         if (runtimesCombo.getItemCount()==0) {
         	runtimesCombo.setVisible(false);
@@ -166,7 +180,7 @@ public abstract class AbstractRuntimeDialog extends Dialog {
 			public void widgetSelected(SelectionEvent e) {
 				setControlVisible(selectExistingGroup, true);
 				setControlVisible(downloadNewGroup, false);
-	            getButton(IDialogConstants.OK_ID).setEnabled(validate());
+	            validate();
 			}
 			
 			@Override
@@ -178,7 +192,7 @@ public abstract class AbstractRuntimeDialog extends Dialog {
 			public void widgetSelected(SelectionEvent e) {
 				setControlVisible(selectExistingGroup, false);
 				setControlVisible(downloadNewGroup, true);
-	            getButton(IDialogConstants.OK_ID).setEnabled(validate());
+	            validate();
 			}
 			
 			@Override
@@ -189,7 +203,16 @@ public abstract class AbstractRuntimeDialog extends Dialog {
 	    selectExistingButton.setSelection(true);
 		setControlVisible(selectExistingGroup, true);
 		setControlVisible(downloadNewGroup, false);
-        
+		
+	    if (editMode) {
+	    	setControlVisible(selectExistingButton, false);
+	    	setControlVisible(downloadNewButton, false);
+	    }
+	    
+        validate();
+		
+        applyDialogFont(composite);
+       
         return composite;
     }
 
@@ -240,43 +263,87 @@ public abstract class AbstractRuntimeDialog extends Dialog {
 
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
-        newShell.setText("New Runtime");
+        if (editMode)
+        	newShell.setText("Edit Runtime");
+        else
+        	newShell.setText("Add Runtime");
     }
     
     protected Point getInitialSize() {
-        return new Point(500, 250);
+    	Point p = super.getInitialSize();
+    	p.x += p.x/10;
+    	p.y += p.y/10;
+    	return p;
     }
 
     public void setRuntime(IRuntime runtime) {
         this.runtime = runtime;
+        if (runtime!=null)
+        	editMode = true;
     }
 
-    private boolean validate() {
+    private void validate() {
+    	setErrorMessage(null);
     	if (selectExistingButton.getSelection()) {
 	        String name = nameText.getText();
 	        if (name == null || "".equals(name.trim())) {
-	            return false;
+	            setErrorMessage("Name is required");
+	            return;
 	        }
 	        if (runtime == null || !name.equals(runtime.getName())) {
 	            for (IRuntime runtime: runtimes) {
 	                if (name.equals(runtime.getName())) {
-	                    return false;
+	                    setErrorMessage("The Runtime \""+name+"\" is already registered");
+	    	            return;
 	                }
 	            }
 	        }
+
 	        String location = pathText.getText();
-	        if (location != null) {
+	        if (location != null && !location.isEmpty()) {
 	            File file = new File(location);
-	            if (file.exists() && file.isDirectory()) {
-	                return true;
+	            if (!file.exists() || !file.isDirectory()) {
+	            	setErrorMessage("Path does not exist or is not a directory");
+	            	return;
 	            }
+	        }
+	        else {
+	        	setErrorMessage("Path is required");
+	            return;
+	        }
+	        
+	        String version = versionText.getText();
+        	int major = -1;
+        	int minor = -1;
+        	int patch = -1;
+
+        	String parts[] = version.split("\\.");
+	        if (parts.length!=3) {
+	        	setErrorMessage("Version must be in the form major#.minor#.patch#");
+	        }
+	        else {
+	        	try {
+	        		major = Integer.parseInt(parts[0]);
+	        		minor = Integer.parseInt(parts[1]);
+	        		patch = Integer.parseInt(parts[2]);
+	        	}
+	        	catch (Exception e) {
+	        		if (major==-1) {
+	        			setErrorMessage("Version major number is invalid");
+	        		}
+	        		else if (minor==-1) {
+	        			setErrorMessage("Version minor number is invalid");
+	        		}
+	        		else if (patch==-1) {
+	        			setErrorMessage("Version patch number is invalid");
+	        		}
+	        	}
 	        }
     	}
     	else if (downloadNewButton.getSelection()) {
-    		if (runtimesCombo.getItemCount()>0)
-    			return true;
+    		if (runtimesCombo.getItemCount()==0)
+    			setErrorMessage("No new Runtime installers were found");
     	}
-        return false;
     }
 
     private void browse() {
@@ -284,7 +351,7 @@ public abstract class AbstractRuntimeDialog extends Dialog {
         String dirName = pathText.getText();
 
         DirectoryDialog dialog = new DirectoryDialog(getShell());
-        dialog.setMessage("Select the runtime directory.");
+        dialog.setMessage("Select the Runtime directory.");
         dialog.setFilterPath(dirName);
         selectedDirectory = dialog.open();
 
@@ -293,17 +360,17 @@ public abstract class AbstractRuntimeDialog extends Dialog {
         }
     }
 
-    private void downloadRuntime() {
-    	final IRuntime rt = runtimeManager.createNewRuntime();
-    	rt.setName(selectedInstaller.getRuntimeName());
-    	rt.setProduct(selectedInstaller.getProduct());
-    	rt.setVersion(selectedInstaller.getVersion());
-//    	runtime.setPath("."+product+".runtime_"+selectedInstaller.getVersion());
+    private IRuntime downloadRuntime() {
+    	final IRuntime result[] = new IRuntime[] {null};
     	
     	IRunnableWithProgress op = new IRunnableWithProgress() {
 			@Override
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-		    	runtime = runtimeManager.downloadOrCreateRuntime(rt, monitor);
+		    	final IRuntime rt = runtimeManager.createNewRuntime();
+		    	rt.setName(selectedInstaller.getRuntimeName());
+		    	rt.setProduct(selectedInstaller.getProduct());
+		    	rt.setVersion(selectedInstaller.getVersion());
+				result[0] = runtimeManager.downloadOrCreateRuntime(rt, monitor);
 			}
 		};
     	try {
@@ -313,23 +380,50 @@ public abstract class AbstractRuntimeDialog extends Dialog {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+    	return result[0];
     }
 
     public IRuntime getResult() {
         return runtime;
     }
 
-    protected void okPressed() {
-    	if (selectExistingButton.getSelection()) {
-	        runtime = getRuntimeManager().createNewRuntime();
-	        runtime.setName(nameText.getText());
-	        runtime.setPath(pathText.getText());
-	        runtime.setVersion(versionText.getText());
+    @Override
+	protected void buttonPressed(int buttonId) {
+        if (buttonId == IDialogConstants.OK_ID) {
+        	if (selectExistingButton.getSelection()) {
+    	        runtime = getRuntimeManager().createNewRuntime();
+    	        runtime.setName(nameText.getText());
+    	        runtime.setPath(pathText.getText());
+    	        runtime.setVersion(versionText.getText());
+        	}
+        	else {
+        		downloadRuntime();
+        	}
+        } else {
+            runtime = null;
+        }
+        super.buttonPressed(buttonId);
+    }
+
+    public void setErrorMessage(String errorMessage) {
+    	if (errorMessageText != null && !errorMessageText.isDisposed()) {
+    		errorMessageText.setText(errorMessage == null ? " \n " : errorMessage); //$NON-NLS-1$
+    		// Disable the error message text control if there is no error, or
+    		// no error text (empty or whitespace only).  Hide it also to avoid
+    		// color change.
+    		// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=130281
+    		boolean hasError = errorMessage != null && (StringConverter.removeWhiteSpaces(errorMessage)).length() > 0;
+    		errorMessageText.setEnabled(hasError);
+    		errorMessageText.setVisible(hasError);
+    		errorMessageText.getParent().layout();
+    		errorMessageText.getParent().update();
+    		// Access the ok button by id, in case clients have overridden button creation.
+    		// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=113643
+    		Control button = getButton(IDialogConstants.OK_ID);
+    		if (button != null) {
+    			button.setEnabled(errorMessage == null);
+    		}
     	}
-    	else {
-    		downloadRuntime();
-    	}
-        super.okPressed();
     }
 
     abstract protected IRuntimeManager getRuntimeManager();

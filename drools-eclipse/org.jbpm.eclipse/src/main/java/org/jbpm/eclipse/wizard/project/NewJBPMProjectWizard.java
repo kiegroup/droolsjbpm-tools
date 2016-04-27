@@ -208,7 +208,7 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
 	protected void createMavenArtifacts(IJavaProject project, IProgressMonitor monitor) {
 		try {
         	String projectName = project.getProject().getName();
-        	String runtimeVersion = JBPMEclipsePlugin.getDefault().getBundle().getVersion().toString().replace("qualifier", "Final");
+        	String runtimeVersion = startPage.getRuntimeManager().getBundleVersion();
             String groupId = "com.sample";
             String artifactId = projectName;
             String version = "1.0.0-SNAPSHOT";
