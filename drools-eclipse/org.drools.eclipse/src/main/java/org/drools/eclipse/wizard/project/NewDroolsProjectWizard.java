@@ -101,6 +101,7 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 			createMavenArtifacts(javaProject, monitor);
     	}
     	else if (startPage.getInitialProjectContent() == IKieProjectWizardPage.EMPTY_PROJECT) {
+    		createDefaultPackages(javaProject, monitor);
 			createKJarArtifacts(javaProject, monitor);
 			createMavenArtifacts(javaProject, monitor);
     	}
@@ -108,6 +109,17 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
     		super.createInitialContent(javaProject, monitor);
     	}
 	    createLoggerFile(javaProject, monitor);
+    }
+
+    private void createDefaultPackages(IJavaProject project, IProgressMonitor monitor) throws CoreException {
+		IFolder folder = project.getProject().getFolder("src/main/java/com/sample");
+		FileUtils.createFolder(folder, monitor);
+		folder = project.getProject().getFolder("src/main/resources/rules");
+		FileUtils.createFolder(folder, monitor);
+		folder = project.getProject().getFolder("src/main/resources/dtables");
+		FileUtils.createFolder(folder, monitor);
+		folder = project.getProject().getFolder("src/main/resources/process");
+		FileUtils.createFolder(folder, monitor);
     }
 
     private void createLoggerFile(IJavaProject project, IProgressMonitor monitor) throws CoreException {

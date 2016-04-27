@@ -98,7 +98,10 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
     @Override
 	protected void createInitialContent(IJavaProject javaProject, IProgressMonitor monitor)
             throws CoreException, JavaModelException, IOException {
-    	if (startPage.getInitialProjectContent() == IKieProjectWizardPage.SAMPLE_FILES_PROJECT) {
+    	if (startPage.getInitialProjectContent()==IKieProjectWizardPage.EMPTY_PROJECT) {
+    		createDefaultPackages(javaProject, monitor);
+    	}
+    	else if (startPage.getInitialProjectContent() == IKieProjectWizardPage.SAMPLE_FILES_PROJECT) {
     		String exampleType = sampleFilesProjectPage.getSampleType();
     		createProcess(javaProject, monitor, exampleType);
 	    	if (sampleFilesProjectPage.shouldCreateJUnitFile()) {
@@ -109,6 +112,13 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
 	    createLoggerFile(javaProject, monitor);
 	}
 
+    private void createDefaultPackages(IJavaProject project, IProgressMonitor monitor) throws CoreException {
+		IFolder folder = project.getProject().getFolder("src/main/java/com/sample");
+		FileUtils.createFolder(folder, monitor);
+		folder = project.getProject().getFolder("src/main/resources/com/sample");
+		FileUtils.createFolder(folder, monitor);
+    }
+    
     private void createLoggerFile(IJavaProject project, IProgressMonitor monitor) throws CoreException {
 	    String fileName = "org/jbpm/eclipse/wizard/project/logback-test.xml.template";
         IFolder folder = project.getProject().getFolder("src/main/resources");
