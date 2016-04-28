@@ -384,7 +384,7 @@ public abstract class AbstractKieOnlineExampleProjectWizardPage extends WizardPa
 						String filename = k.getId() + "_" + k.getVersion() + ".jar";
 						URL url = new URL(getRepositoryUrl() + "/plugins/" + filename);
 						java.io.File jarFile = FileUtils.downloadFile(url, monitor);
-						FileUtils.extractJarFile(jarFile, project, monitor);
+						FileUtils.extractJarFile(jarFile, null, null, project, monitor);
 						// delete this temporary file
 						jarFile.delete();
 						project.refreshLocal(IProject.DEPTH_INFINITE, monitor);
@@ -461,6 +461,9 @@ public abstract class AbstractKieOnlineExampleProjectWizardPage extends WizardPa
     @Override
 	public IRuntime getRuntime() {
     	IRuntime effectiveRuntime = getRuntimeManager().getEffectiveRuntime(null, true);
+    	if (effectiveRuntime==null) {
+    		effectiveRuntime = getRuntimeManager().downloadOrCreateBundleRuntime(null);
+    	}
     	return effectiveRuntime;
     }
 

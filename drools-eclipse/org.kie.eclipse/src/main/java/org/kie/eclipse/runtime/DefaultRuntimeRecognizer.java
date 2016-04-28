@@ -43,12 +43,13 @@ public class DefaultRuntimeRecognizer implements IRuntimeRecognizer {
     private void addJarNames(File file, List<String> list) {
         File[] files = file.listFiles();
         for (int i = 0; i < files.length; i++) {
-            if (files[i].isDirectory() && "lib".equals(files[i].getName())) {
+            if (files[i].isDirectory()) {
                 addJarNames(files[i], list);
             } else if (files[i].getPath().endsWith(".jar")) {
                 list.add(files[i].getAbsolutePath());
                 File jarFile = files[i];
-                if (jarFile.getName().startsWith("drools-core")) {
+                if ((product==null||product.isEmpty() || version==null||version.isEmpty()) &&
+                		(jarFile.getName().startsWith("drools-core") || jarFile.getName().startsWith("jbpm-bpmn2"))) {
                 	// get the runtime version from drools-core.jar
                 	JarFile jar = null;
                 	try {
@@ -63,7 +64,10 @@ public class DefaultRuntimeRecognizer implements IRuntimeRecognizer {
     	        					version += "." + v[1];
     	        				if (v.length>2)
     	        					version += "." + v[2];
-    	        				product = "drools";
+    	        				if (jarFile.getName().startsWith("drools-"))
+    	        					product = "drools";
+    	        				else
+    	        					product = "jbpm";
     	        			}
     	        		}
                 	}

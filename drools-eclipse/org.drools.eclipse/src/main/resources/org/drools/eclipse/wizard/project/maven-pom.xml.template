@@ -9,8 +9,8 @@
   <artifactId>###</artifactId>
   <version>###</version>
 
-  <name>jBPM :: Sample Maven Project</name>
-  <description>A sample jBPM Maven project</description>
+  <name>Drools :: Sample Maven Project</name>
+  <description>A sample Drools Maven project</description>
 
   <properties>
     <runtime.version>###</runtime.version>
@@ -36,6 +36,16 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-api</artifactId>
+      <version>${runtime.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+      <version>${runtime.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-decisiontables</artifactId>
       <version>${runtime.version}</version>
     </dependency>
 

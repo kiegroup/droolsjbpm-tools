@@ -20,6 +20,10 @@ import org.kie.eclipse.runtime.AbstractRuntime;
 
 public class JBPMRuntime extends AbstractRuntime {
 	
+	public JBPMRuntime() {
+		name = "jBPM";
+	}
+	
 	@Override
 	public String getProduct() {
 		return "jbpm";

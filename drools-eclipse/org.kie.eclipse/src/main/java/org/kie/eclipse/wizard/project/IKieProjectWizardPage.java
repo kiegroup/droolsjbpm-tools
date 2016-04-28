@@ -3,6 +3,7 @@ package org.kie.eclipse.wizard.project;
 import java.util.Collection;
 
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.wizard.IWizardPage;
 
 public interface IKieProjectWizardPage extends IWizardPage {

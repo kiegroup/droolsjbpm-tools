@@ -17,11 +17,11 @@ package org.kie.eclipse.runtime;
 
 public abstract class AbstractRuntime implements IRuntime {
 
-	private String version;
-	private String name;
-	private String path;
-	private boolean isDefault;
-	private String[] jars;
+	protected String version;
+	protected String name;
+	protected String path;
+	protected boolean isDefault;
+	protected String[] jars;
 
 	@Override
 	public String getVersion() {
@@ -80,5 +80,62 @@ public abstract class AbstractRuntime implements IRuntime {
 	abstract public String getProduct();
 	
 	public void setProduct(String string) {
+	}
+	
+	public String getId() {
+		return createRuntimeId(getProduct(), getVersion());
+	}
+
+    public static String createRuntimeId(String product, String version) {
+    	return product + "_" + version;
+    }
+
+    public static String getProductFromId(String runtimeId) {
+    	int i = runtimeId.lastIndexOf("_");
+    	if (i>0) {
+    		return runtimeId.substring(0,i);
+    	}
+    	return null;
+    }
+
+    public static String getVersionFromId(String runtimeId) {
+    	int i = runtimeId.lastIndexOf("_");
+    	if (i>0) {
+    		return runtimeId.substring(i+1);
+    	}
+    	return null;
+    }
+    
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof IRuntime) {
+			IRuntime that = ((IRuntime)obj);
+			if (this.getProduct().equals(that.getProduct()) &&
+					this.getVersion()!=null && that.getVersion()!=null) {
+				String thisVersion[] = this.getVersion().split("\\.");
+				String thatVersion[] = that.getVersion().split("\\.");
+				if (thisVersion.length>2 && thatVersion.length>2) {
+					if (thisVersion[0].equals(thatVersion[0]) &&
+							thisVersion[1].equals(thatVersion[1])) {
+						// major and minor versions match.
+						// if update version number of either is "x" it's a match,
+						// otherwise the update version numbers must match
+						if ("x".equalsIgnoreCase(thisVersion[2]) || "x".equalsIgnoreCase(thatVersion[2]))
+							return true;
+						return thisVersion[2].equals(thatVersion[2]);
+					}
+				}
+			}
+		}
+		return super.equals(obj);
+	}
+
+	@Override
+	public int compareTo(IRuntime that) {
+		int i = getProduct().compareTo(that.getProduct());
+		if (i==0) {
+			i = getVersion()==null ? -1 : getVersion().compareTo(that.getVersion());
+		}
+		return i;
 	}
 }

@@ -133,7 +133,7 @@
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-packaging-plugin</artifactId>
         <configuration>
-          <format>'${BUILD_ALIAS}-v'yyyyMMdd-HHmm'-B212'</format>
+          <format>'${BUILD_ALIAS}-v'yyyyMMdd-HHmm</format>
           <archiveSite>true</archiveSite>
           <environments>
             <environment>

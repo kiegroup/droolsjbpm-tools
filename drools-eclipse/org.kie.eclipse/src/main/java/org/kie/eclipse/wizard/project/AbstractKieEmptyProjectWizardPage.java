@@ -1,11 +1,17 @@
 package org.kie.eclipse.wizard.project;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -15,6 +21,8 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.kie.eclipse.runtime.IRuntime;
 import org.kie.eclipse.runtime.IRuntimeManager;
 
@@ -25,16 +33,24 @@ public abstract class AbstractKieEmptyProjectWizardPage extends KieProjectWizard
     private boolean isDefaultRuntime = true;
     private IRuntime selectedRuntime;
     private IRuntime effectiveRuntime;
-    private Button projectSpecificRuntime;
     private Combo runtimesCombo;
+    private Text pomArtifactIdText;
+    private String pomGroupId;
+    private String pomArtifactId;
+    private String pomVersion;
     
-	private boolean createMavenProject = true;
-	private boolean createKJarProject = true;
+    protected enum KieProjectBuildType {
+    	JAVA_PROJECT,
+    	MAVEN_PROJECT,
+    };
+    KieProjectBuildType projectBuildType = KieProjectBuildType.JAVA_PROJECT;
 
 	abstract protected void createControls(Composite parent);
     abstract public IRuntimeManager getRuntimeManager();
     abstract protected IRuntime createRuntime();
     abstract public int showRuntimePreferenceDialog();
+    abstract public String getProductName();
+	abstract public String getProductId();
 	
 	public AbstractKieEmptyProjectWizardPage(String pageName) {
 		super(pageName);
@@ -45,32 +61,103 @@ public abstract class AbstractKieEmptyProjectWizardPage extends KieProjectWizard
 	@Override
 	public void createControl(Composite parent) {
 		super.createControl(parent);
-		createRuntimeControls((Composite) getControl());
-		createKJarControls((Composite) getControl());
+		
+		Composite projectTypeRadioButtons = new Composite((Composite) getControl(), SWT.NONE);
+        projectTypeRadioButtons.setLayout(new GridLayout(3, false));
+        projectTypeRadioButtons.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+        Label projectTypeLabel = new Label(projectTypeRadioButtons, SWT.NONE);
+        projectTypeLabel.setText("Build the Project using:");
+        final Button javaProjectButton = createRadioButton(projectTypeRadioButtons, "Java and "+getProductName()+" Runtime classes");
+        final Button mavenProjectButton = createRadioButton(projectTypeRadioButtons, "Maven");
+
+        final Composite mavenControls = createMavenControls((Composite) getControl());
+        final Composite javaControls = createJavaControls((Composite) getControl());
+
+        mavenProjectButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (((Button) e.widget).getSelection()) {
+					projectBuildType = KieProjectBuildType.MAVEN_PROJECT;
+					setControlVisible(javaControls, false);
+					setControlVisible(mavenControls, true);
+				}
+			}
+		});
+		javaProjectButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (((Button) e.widget).getSelection()) {
+					projectBuildType = KieProjectBuildType.JAVA_PROJECT;
+					setControlVisible(javaControls, true);
+					setControlVisible(mavenControls, false);
+				}
+			}
+		});
+
+        // create a Maven project by default
+		boolean isMavenProject = projectBuildType==KieProjectBuildType.MAVEN_PROJECT;
+        mavenProjectButton.setSelection(isMavenProject);
+        javaProjectButton.setSelection(!isMavenProject);
+		setControlVisible(mavenControls, isMavenProject);
+		setControlVisible(javaControls, !isMavenProject);
+
 		createControls((Composite) getControl());
 	}
 	
-	protected Composite createRuntimeControls(Composite parent) {
+	protected Composite createMavenControls(Composite parent) {
+        final Composite composite = new Composite(parent, SWT.NONE);
+        GridLayout layout = new GridLayout(2, false);
+        layout.marginLeft = 20;
+        composite.setLayout(layout);
+        composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+        String text;
+        createLabel(composite, "Group ID:");
+        text = getPomGroupId();
+        final Text pomGroupIdText = createText(composite, text);
+        pomGroupIdText.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent e) {
+				pomGroupId = pomGroupIdText.getText();
+			}
+		});
+        
+        createLabel(composite, "Artifact ID:");
+        text = getPomArtifactId();
+        pomArtifactIdText = createText(composite, text);
+        pomArtifactIdText.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent e) {
+				pomArtifactId = pomArtifactIdText.getText();
+			}
+		});
+        
+        createLabel(composite, "Version:");
+        text = getPomVersion();
+        final Text pomVersionText = createText(composite, text);
+        pomVersionText.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent e) {
+				pomVersion = pomVersionText.getText();
+			}
+		});
+        
+        return composite;
+	}
+
+	protected Composite createJavaControls(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
-        composite.setLayout(new GridLayout(3, false));
+		GridLayout layout = new GridLayout(3, false);
+		layout.marginLeft = 20;
+        composite.setLayout(layout);
         composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         
-        projectSpecificRuntime = new Button(composite, SWT.CHECK);
-        projectSpecificRuntime.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false, 3, 1));
-        projectSpecificRuntime.setSelection(isDefaultRuntime);
-        projectSpecificRuntime.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                isDefaultRuntime = ((Button) e.widget).getSelection();
-                runtimesCombo.setEnabled(!isDefaultRuntime);
-            }
-        });
-        
-        Label nameLabel = new Label(composite, SWT.NONE);
-        nameLabel.setLayoutData(new GridData(GridData.BEGINNING, GridData.CENTER, false, false, 1, 1));
-        nameLabel.setText("Use Runtime:");
+        final Label runtimesLabel = new Label(composite, SWT.NONE);
+        runtimesLabel.setText("Version:");
+        runtimesLabel.setLayoutData(new GridData(GridData.BEGINNING, GridData.CENTER, false, false, 1, 1));
         
         runtimesCombo = new Combo(composite, SWT.READ_ONLY);
-        runtimesCombo.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, false, false, 1, 1));
+        runtimesCombo.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false, 1, 1));
         runtimesCombo.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
             	Integer key = runtimesCombo.getSelectionIndex();
@@ -79,18 +166,19 @@ public abstract class AbstractKieEmptyProjectWizardPage extends KieProjectWizard
                 	selectedRuntime = rt;
                 	effectiveRuntime = null;
                 }
+                isDefaultRuntime = rt.isDefault();
                 setPageComplete(isPageComplete());
             }
         });
-        
-        final Link changeWorkspaceSettingsLink = new Link(composite, SWT.NONE);
-        changeWorkspaceSettingsLink.setLayoutData(new GridData(GridData.END, GridData.CENTER, true, false, 1, 1));
-        changeWorkspaceSettingsLink.setText("<A>Change Workspace Settings...</A>");
+
+		final Link changeWorkspaceSettingsLink = new Link(composite, SWT.NONE);
+        changeWorkspaceSettingsLink.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, false, false, 1, 1));
+        changeWorkspaceSettingsLink.setText("<A>Manage Runtime definitions...</A>");
         changeWorkspaceSettingsLink.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-	        	if (showRuntimePreferenceDialog() == Window.OK)
-	        		fillRuntimesCombo();
+	        	showRuntimePreferenceDialog();
+        		fillRuntimesCombo();
 			}
         });
         
@@ -103,57 +191,42 @@ public abstract class AbstractKieEmptyProjectWizardPage extends KieProjectWizard
 	public boolean isPageComplete() {
 		return super.isPageComplete() && runtimes.size() > 0;
 	}
-    
-	protected Composite createKJarControls(Composite parent) {
-    	GridData gd;
-        final Composite composite = new Composite(parent, SWT.NONE);
-        composite.setLayout(new GridLayout(1, false));
-        gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.grabExcessHorizontalSpace = true;
-        gd.horizontalAlignment = GridData.FILL;
-        gd.horizontalSpan = 2;
-        gd.verticalIndent = 10;
-        gd.horizontalIndent = 16;
-        composite.setLayoutData(gd);
-
-        final Button createMavenProjectButton = new Button(composite, SWT.CHECK);
-        createMavenProjectButton.setText("Create as Maven Project");
-		createMavenProjectButton.setToolTipText("Generates a default Maven \"Project Object Model\" (POM) File");
-        createMavenProjectButton.setSelection(createMavenProject);
-        
-        final Button createKJarProjectButton = new Button(composite, SWT.CHECK);
-        createKJarProjectButton.setText("Create as KJar Project");
-        createKJarProjectButton.setToolTipText("Generates a default KJar Module Descriptor as well as the necessary Maven artifacts");
-        createKJarProjectButton.setSelection(createKJarProject);
-
-        createMavenProjectButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				createMavenProject = createMavenProjectButton.getSelection();
-			}
-        });
-        createKJarProjectButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				createKJarProject = createKJarProjectButton.getSelection();
-				if (createKJarProject) {
-					createMavenProjectButton.setSelection(true);
-					createMavenProjectButton.setEnabled(false);
-				}
-				else
-					createMavenProjectButton.setEnabled(true);
-			}
-        });
-        
-        return composite;
+	
+	@Override
+    protected boolean validatePage() {
+		if (pomArtifactIdText!=null) {
+			pomArtifactIdText.setText(getProjectName());
+		}
+		return super.validatePage();
 	}
 	
+	public String getPomGroupId() {
+		if (pomGroupId==null)
+			return "com.sample";
+		return pomGroupId;
+	}
+	
+	public String getPomArtifactId() {
+		if (pomArtifactId==null)
+			return getProjectName();
+		return pomArtifactId;
+	}
+	
+	public String getPomVersion() {
+		if (pomVersion==null)
+			return "1.0.0-SNAPSHOT";
+		return pomVersion;
+	}
+		
 	public boolean shouldCreateMavenProject() {
-		return createMavenProject;
+		return projectBuildType==KieProjectBuildType.MAVEN_PROJECT;
 	}
 	
 	public boolean shouldCreateKJarProject() {
-		return createKJarProject;
+		String version = getRuntime().getVersion();
+		if (version!=null && (version.startsWith("6") || version.startsWith("7")))
+			return true;
+		return false;
 	}
 
     private void fillRuntimesCombo() {
@@ -175,38 +248,54 @@ public abstract class AbstractKieEmptyProjectWizardPage extends KieProjectWizard
 	    	setControlVisible(runtimesCombo, true);
 	    	isDefaultRuntime = true;
     	}
-    	runtimesCombo.setEnabled(!isDefaultRuntime);
     	
         setErrorMessage(null);
         runtimesCombo.removeAll();
+        Integer selectedKey = 0;
         Integer key = 0;
         for (IRuntime rt : runtimes) {
         	String name = rt.getName();
         	if (rt.getPath()==null) {
         		name += " (will be created)";
         	}
+        	if (rt.isDefault())
+        		selectedKey = key;
             runtimesCombo.add(name);
             runtimesCombo.setData(key.toString(), rt);
             ++key;
         }
         
-        key = 0; 
-        runtimesCombo.select(key);
-        selectedRuntime = (IRuntime) runtimesCombo.getData(key.toString());
-
-        IRuntime defaultRuntime = runtimeManager.getDefaultRuntime();
-        if (defaultRuntime==null) {
-        	if (runtimes.size()==1)
-        		defaultRuntime = runtimes.get(0);
-        }
-        projectSpecificRuntime.setText("Use default Runtime (" +
-        		(defaultRuntime == null ? "undefined)" : defaultRuntime.getName() + ")"));
-        projectSpecificRuntime.setEnabled(isDefaultRuntime);
+        runtimesCombo.select(selectedKey);
+        selectedRuntime = (IRuntime) runtimesCombo.getData(selectedKey.toString());
     }
 
-    public IRuntime getRuntime() {
-    	if (effectiveRuntime==null)
+    public boolean shouldDownloadRuntime() {
+    	if (shouldCreateMavenProject()) {
+    		// maven projects don't need a runtime.
+    		// just return the bundle runtime
+    		return false;
+    	}
+    	if (effectiveRuntime==null) {
         	effectiveRuntime = runtimeManager.getEffectiveRuntime(selectedRuntime, isDefaultRuntime);
+			if (effectiveRuntime == null) {
+				return true;
+			}
+    	}
+    	return false;
+    }
+    
+    public IRuntime getRuntime() {
+    	if (this.shouldCreateMavenProject()) {
+    		// maven projects don't need a runtime.
+    		// just return the bundle runtime
+    		return runtimeManager.getBundleRuntime();
+    	}
+    	if (effectiveRuntime==null) {
+        	effectiveRuntime = runtimeManager.getEffectiveRuntime(selectedRuntime, isDefaultRuntime);
+			if (effectiveRuntime == null) {
+				effectiveRuntime = runtimeManager.downloadOrCreateBundleRuntime(getProgressMonitor());
+        	}
+    	}
     	return effectiveRuntime;
     }
     
@@ -217,5 +306,9 @@ public abstract class AbstractKieEmptyProjectWizardPage extends KieProjectWizard
 	@Override
 	public IWizardPage getNextPage() {
 		return null;
+	}
+    
+	public KieProjectBuildType getProjectBuildType() {
+		return projectBuildType;
 	}
 }
