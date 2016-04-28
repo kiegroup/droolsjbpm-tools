@@ -37,13 +37,10 @@ public class DefaultRuntimeInstaller extends AbstractRuntimeInstaller {
 
 	@Override
 	public IRuntime install(IRuntimeManager runtimeManager, String runtimeId, final IProject project, IProgressMonitor monitor) {
-		AbstractRuntimeInstaller installer = FACTORY.getInstaller(runtimeId);
-		if (installer == null) {
-			return null; // "No installer found for "+runtimeId;
-		}
 		final IRuntime runtime = runtimeManager.createNewRuntime();
+		String version = AbstractRuntime.getVersionFromId(runtimeId);
 		runtime.setName(getRuntimeName());
-		runtime.setVersion(getVersion());
+		runtime.setVersion(version);
 		runtime.setPath(project.getLocation().toString());
 		// runtime.setJars(jarsCreated.toArray(new String[jarsCreated.size()]));
 

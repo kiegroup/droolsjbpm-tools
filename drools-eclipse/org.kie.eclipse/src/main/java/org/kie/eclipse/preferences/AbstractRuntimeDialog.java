@@ -236,12 +236,15 @@ public abstract class AbstractRuntimeDialog extends Dialog {
     			continue;
     		boolean alreadyInstalled = false;
         	for (IRuntime rt : runtimeManager.getConfiguredRuntimes()) {
-        		if (rt.getProduct().equals(installer.getProduct())
-        				&& rt.getVersion()!=null
-        				&& rt.getVersion().equals(installer.getVersion())) {
-        			alreadyInstalled = true;
-        			break;
+        		String id = rt.getId();
+        		for (String iid : installer.getRuntimeIds()) {
+    				if (id.equals(iid)) {
+            			alreadyInstalled = true;
+            			break;
+    				}
         		}
+    			if (alreadyInstalled)
+    				break;
         	}
         	if (!alreadyInstalled) {
 	        	String name = installer.getRuntimeName();
@@ -369,7 +372,7 @@ public abstract class AbstractRuntimeDialog extends Dialog {
 		    	final IRuntime rt = runtimeManager.createNewRuntime();
 		    	rt.setName(selectedInstaller.getRuntimeName());
 		    	rt.setProduct(selectedInstaller.getProduct());
-		    	rt.setVersion(selectedInstaller.getVersion());
+		    	rt.setVersion(selectedInstaller.getVersions()[0]);
 				result[0] = runtimeManager.downloadOrCreateRuntime(rt, monitor);
 			}
 		};

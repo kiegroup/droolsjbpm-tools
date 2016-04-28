@@ -84,7 +84,7 @@ This extension defines a mapping of a Drools/jBPM Runtime version with a loader/
          <attribute name="version" type="string" use="required">
             <annotation>
                <documentation>
-                  The Runtime ID that this installer will support. This should be in the form of &quot;m.n.s&quot; where m is a major version, n is an optional minor version and s is an optional service release number.
+                  The list of version numbers, separated by a space, that this installer will support. This should be in the form of &quot;m.n.p&quot; where &quot;m&quot; is a major version, &quot;n&quot; is the minor version and &quot;p&quot; is the patch number.
                </documentation>
             </annotation>
          </attribute>
@@ -103,13 +103,6 @@ This extension defines a mapping of a Drools/jBPM Runtime version with a loader/
                <appInfo>
                   <meta.attribute kind="java" basedOn="org.kie.eclipse.runtime.AbstractRuntimeInstaller:"/>
                </appInfo>
-            </annotation>
-         </attribute>
-         <attribute name="priority" type="string">
-            <annotation>
-               <documentation>
-                  This value is used to sort the list of &lt;a href=&quot;#e.installer&quot;&gt;installer&lt;/a&gt; definitions. Higher priority values take precedence over lower priorities. This allows contributing extension plugins to override the default installer for a given runtimeId, by assigning a priority greater than 1.
-               </documentation>
             </annotation>
          </attribute>
       </complexType>

@@ -90,6 +90,22 @@ public abstract class AbstractRuntime implements IRuntime {
     	return product + "_" + version;
     }
 
+    public static String getProductFromId(String runtimeId) {
+    	int i = runtimeId.lastIndexOf("_");
+    	if (i>0) {
+    		return runtimeId.substring(0,i);
+    	}
+    	return null;
+    }
+
+    public static String getVersionFromId(String runtimeId) {
+    	int i = runtimeId.lastIndexOf("_");
+    	if (i>0) {
+    		return runtimeId.substring(i+1);
+    	}
+    	return null;
+    }
+    
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof IRuntime) {
@@ -104,7 +120,7 @@ public abstract class AbstractRuntime implements IRuntime {
 						// major and minor versions match.
 						// if update version number of either is "x" it's a match,
 						// otherwise the update version numbers must match
-						if ("x".equals(thisVersion[2]) || "x".equals(thatVersion[2]))
+						if ("x".equalsIgnoreCase(thisVersion[2]) || "x".equalsIgnoreCase(thatVersion[2]))
 							return true;
 						return thisVersion[2].equals(thatVersion[2]);
 					}

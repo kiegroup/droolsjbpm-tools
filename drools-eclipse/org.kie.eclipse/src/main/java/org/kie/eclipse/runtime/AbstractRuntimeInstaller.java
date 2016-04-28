@@ -18,12 +18,12 @@ package org.kie.eclipse.runtime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
@@ -38,9 +38,8 @@ public abstract class AbstractRuntimeInstaller implements IRuntimeInstaller {
 
 	protected String id;
 	protected String product;
-	protected String version;
+	protected String versions[];
 	protected String runtimeName;
-	protected int priority;
 	protected List<Repository> repositories;
 
 	/**
@@ -126,7 +125,12 @@ public abstract class AbstractRuntimeInstaller implements IRuntimeInstaller {
 		
 		public AbstractRuntimeInstaller getInstaller(String runtimeId) {
 			createInstallers();
-			return installers.get(runtimeId);
+			// check for an exact match on runtime ID (product + version) first
+			AbstractRuntimeInstaller installer = installers.get(runtimeId);
+			if (installer==null) {
+				// 
+			}
+			return installer;
 		}
 
 		public Collection<? extends IRuntimeInstaller> createInstallers() {
@@ -142,7 +146,7 @@ public abstract class AbstractRuntimeInstaller implements IRuntimeInstaller {
 			                	AbstractRuntimeInstaller installer = (AbstractRuntimeInstaller) o;
 				            	installer.id = e.getAttribute("id");
 				            	installer.product = e.getAttribute("product");
-				            	installer.version = e.getAttribute("version");
+				            	installer.versions = e.getAttribute("version").split(" ");
 				            	installer.runtimeName = e.getAttribute("runtimeName");
 				            	for (IConfigurationElement r : e.getChildren("repository")) {
 				            		Repository repository = new Repository();
@@ -151,16 +155,10 @@ public abstract class AbstractRuntimeInstaller implements IRuntimeInstaller {
 				            		repository.artifactsId = r.getAttribute("artifacts");
 				            		installer.getRepositories().add(repository);
 				            	}
-				            	try {
-				            		installer.priority = Integer.getInteger(e.getAttribute("priority"));
+
+				            	for (String runtimeId : installer.getRuntimeIds()) {
+			            			installers.put(runtimeId, installer);
 				            	}
-				            	catch (Exception ex) {
-				            		installer.priority = 1;
-				            	}
-				            	// replace lower priority installers with higher priority
-				            	AbstractRuntimeInstaller oldInstaller = installers.get(installer.version);
-				            	if (oldInstaller==null || installer.priority>oldInstaller.priority)
-						            installers.put(installer.getRuntimeId(), installer);
 			                }
 			        	}
 			        	else if ("artifacts".equals(e.getName())) {
@@ -179,13 +177,16 @@ public abstract class AbstractRuntimeInstaller implements IRuntimeInstaller {
 			        		artifacts.put(artifactList.id, artifactList);
 			        	}
 			        }
-					sortedInstallers.addAll(installers.values());
+			        
+			        Set<IRuntimeInstaller> unique = new HashSet<IRuntimeInstaller>(installers.values());
+					sortedInstallers.addAll(unique);
 					Collections.sort(sortedInstallers);
 			    } catch (Exception ex) {
+			    	ex.printStackTrace();
 					MessageDialog.openError(
 							Display.getDefault().getActiveShell(),
 							"Error",
-							ex.getMessage());
+							ex.toString() + "\n" + ex.getMessage());
 			    }
 			}
 			return sortedInstallers;
@@ -208,24 +209,21 @@ public abstract class AbstractRuntimeInstaller implements IRuntimeInstaller {
 		this.product = product;
 	}
 
-	public String getVersion() {
-		return version;
-	}
-
-	public void setVersion(String version) {
-		this.version = version;
+	public String[] getVersions() {
+		return versions;
 	}
 
 	public String getRuntimeName() {
 		return runtimeName;
 	}
-
-	public void setRuntimeName(String runtimeName) {
-		this.runtimeName = runtimeName;
-	}
 	
-	public String getRuntimeId() {
-		return AbstractRuntime.createRuntimeId(getProduct(), getVersion());
+	public String[] getRuntimeIds() {
+		String[] runtimeIds = new String[getVersions().length];
+		int i =0;
+		for (String v : getVersions()) {
+			runtimeIds[i++] = AbstractRuntime.createRuntimeId(getProduct(), v);
+		}
+		return runtimeIds;
 	}
 	
 	public List<Repository> getRepositories() {

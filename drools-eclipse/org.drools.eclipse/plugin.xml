@@ -627,7 +627,7 @@
          <installer
             id="drools.runtime_4.0.x_installer"
             product="drools"
-            version="4.0.7"
+            version="4.0.0 4.0.1 4.0.2 4.0.3 4.0.4 4.0.5 4.0.6 4.0.7"
             runtimeName="Drools 4.0.x Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
@@ -643,7 +643,7 @@
          <installer
             id="drools.runtime_5.0.x_installer"
             product="drools"
-            version="5.0.1"
+            version="5.0.0 5.0.1"
             runtimeName="Drools 5.0.x Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
@@ -668,7 +668,7 @@
          <installer
             id="drools.runtime_5.1.x_installer"
             product="drools"
-            version="5.1.1"
+            version="5.1.0 5.1.1"
             runtimeName="Drools 5.1.x Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
@@ -694,7 +694,7 @@
             id="drools.runtime_5.2.x_installer"
             product="drools"
             version="5.2.0"
-            runtimeName="Drools 5.2.x Runtime"
+            runtimeName="Drools 5.2.0 Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
                url="http://download.jboss.org/drools/release/5.2.0.Final/droolsjbpm-integration-distribution-5.2.0.Final.zip"
@@ -717,7 +717,7 @@
             id="drools.runtime_5.3.x_installer"
             product="drools"
             version="5.3.0"
-            runtimeName="Drools 5.3.x Runtime"
+            runtimeName="Drools 5.3.0 Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
                url="http://download.jboss.org/drools/release/5.3.0.Final/droolsjbpm-integration-distribution-5.3.0.Final.zip"
@@ -740,7 +740,7 @@
             id="drools.runtime_5.4.x_installer"
             product="drools"
             version="5.4.0"
-            runtimeName="Drools 5.4.x Runtime"
+            runtimeName="Drools 5.4.0 Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
                url="http://download.jboss.org/drools/release/5.4.0.Final/droolsjbpm-integration-distribution-5.4.0.Final.zip"
@@ -763,7 +763,7 @@
             id="drools.runtime_5.5.x_installer"
             product="drools"
             version="5.5.0"
-            runtimeName="Drools 5.5.x Runtime"
+            runtimeName="Drools 5.5.0 Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
                url="http://download.jboss.org/drools/release/5.5.0.Final/droolsjbpm-integration-distribution-5.5.0.Final.zip"
@@ -786,7 +786,7 @@
             id="drools.runtime_5.6.x_installer"
             product="drools"
             version="5.6.0"
-            runtimeName="Drools 5.6.x Runtime"
+            runtimeName="Drools 5.6.0 Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
                url="http://download.jboss.org/drools/release/5.6.0.Final/droolsjbpm-integration-distribution-5.6.0.Final.zip"
@@ -808,7 +808,7 @@
          <installer
             id="drools.runtime_6.0.x_installer"
             product="drools"
-            version="6.0.0"
+            version="6.0.0 6.0.1"
             runtimeName="Drools 6.0.x Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
@@ -828,7 +828,7 @@
             id="drools.runtime_6.1.x_installer"
             product="drools"
             version="6.1.0"
-            runtimeName="Drools 6.1.x Runtime"
+            runtimeName="Drools 6.1.0 Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
                url="http://downloads.jboss.org/drools/release/6.1.0.Final/drools-distribution-6.1.0.Final.zip"
@@ -847,7 +847,7 @@
             id="drools.runtime_6.2.x_installer"
             product="drools"
             version="6.2.0"
-            runtimeName="Drools 6.2.x Runtime"
+            runtimeName="Drools 6.2.0 Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
                url="http://downloads.jboss.org/drools/release/6.2.0.Final/drools-distribution-6.2.0.Final.zip"
@@ -866,7 +866,7 @@
             id="drools.runtime_6.3.x_installer"
             product="drools"
             version="6.3.0"
-            runtimeName="Drools 6.3.x Runtime"
+            runtimeName="Drools 6.3.0 Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
                url="http://downloads.jboss.org/drools/release/6.3.0.Final/drools-distribution-6.3.0.Final.zip"
@@ -885,7 +885,7 @@
             id="drools.runtime_6.4.x_installer"
             product="drools"
             version="6.4.0"
-            runtimeName="Drools 6.4.x Runtime"
+            runtimeName="Drools 6.4.0 Runtime"
             class="org.kie.eclipse.runtime.DefaultRuntimeInstaller">
             <repository
                url="http://downloads.jboss.org/drools/release/6.4.0.Final/drools-distribution-6.4.0.Final.zip"

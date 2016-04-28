@@ -21,8 +21,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 public interface IRuntimeInstaller  extends Comparable<IRuntimeInstaller> {
 	IRuntime install(IRuntimeManager runtimeManager, String runtimeId, IProject project, IProgressMonitor monitor);
 	String getProduct();
-	String getVersion();
-	String getRuntimeId(); // this is just a concatenation of the product and version strings
+	String[] getVersions();
+	String[] getRuntimeIds(); // this is just a concatenation of the product and version strings
 	String getRuntimeName();
 	
 }
