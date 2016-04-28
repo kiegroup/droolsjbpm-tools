@@ -659,14 +659,23 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
     public void recognizeJars(IRuntime runtime) {
         String path = runtime.getPath();
         if (path != null) {
-        	IRuntimeRecognizer recognizer = getRuntimeRecognizer();
-        	if (recognizer==null)
+        	// try all of the runtime recognizers defined in the Drools/jBPM
+        	// plugin.xml "runtimeRecognizer" extension point
+        	IRuntimeRecognizer recognizer = null;
+        	String[] jars = null;
+        	for (IRuntimeRecognizer r : getRuntimeRecognizers()) {
+                jars = r.recognizeJars(path);
+                if (jars != null && jars.length > 0) {
+                	recognizer = r;
+                	break;
+                }
+        	}
+        	// fallback is to use a runtime created by the Drools/jBPM
+        	// runtime installer {@see DefaultRuntimeInstaller}
+        	if (recognizer==null) {
         		recognizer = new DefaultRuntimeRecognizer();
-            String[] jars = recognizer.recognizeJars(path);
-            if (jars==null || jars.length==0) {
-            	recognizer = new DefaultRuntimeRecognizer();
-            	jars = recognizer.recognizeJars(path);
-            }
+        		jars = recognizer.recognizeJars(path);
+        	}
             if (jars != null && jars.length > 0) {
                 runtime.setJars(jars);
                 if (runtime.getProduct()==null) {
@@ -688,7 +697,7 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
     ///////////////////////////////////////////////////////////////////////////////////////
     abstract public String getRuntimeWorkspaceLocation();
     abstract public String getRuntimePreferenceKey();
-	abstract public IRuntimeRecognizer getRuntimeRecognizer();
+	abstract public IRuntimeRecognizer[] getRuntimeRecognizers();
     abstract public String getSettingsFilename();
     abstract public String getBundleSymbolicName();
     abstract public IRuntime createNewRuntime();

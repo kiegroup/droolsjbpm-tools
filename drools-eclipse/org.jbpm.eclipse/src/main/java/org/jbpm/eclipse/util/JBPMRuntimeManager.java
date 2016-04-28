@@ -136,21 +136,20 @@ public class JBPMRuntimeManager extends AbstractRuntimeManager {
         project.getProject().setDescription(description, monitor);
 	}
     
-	public IRuntimeRecognizer getRuntimeRecognizer() {
-    	IRuntimeRecognizer recognizer = null;
+	public IRuntimeRecognizer[] getRuntimeRecognizers() {
+    	List<IRuntimeRecognizer> recognizer = new ArrayList<IRuntimeRecognizer>();
         try {
             IConfigurationElement[] config = Platform.getExtensionRegistry()
                     .getConfigurationElementsFor(JBPM_RUNTIME_RECOGNIZER);
             for (IConfigurationElement e : config) {
                 Object o = e.createExecutableExtension("class");
                 if (o instanceof IRuntimeRecognizer) {
-                	recognizer = (IRuntimeRecognizer) o;
-                	break;
+                	recognizer.add( (IRuntimeRecognizer) o);
                 }
             }
         } catch (Exception e) {
         	logException(e);
         }
-        return recognizer;
+        return recognizer.toArray(new IRuntimeRecognizer[recognizer.size()]);
 	}
 }
