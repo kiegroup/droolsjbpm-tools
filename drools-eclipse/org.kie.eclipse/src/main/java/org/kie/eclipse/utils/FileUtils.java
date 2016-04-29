@@ -15,6 +15,7 @@
 
 package org.kie.eclipse.utils;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -45,7 +46,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
@@ -118,15 +119,17 @@ public class FileUtils {
 		return file.delete();
 	}
 	
-	public static void extractJarFile(java.io.File jarFile, IProject project, IProgressMonitor monitor)
+	public static int extractJarFile(java.io.File jarFile, IProject project, IProgressMonitor monitor)
 			throws IOException, CoreException {
 		JarFile jar = new java.util.jar.JarFile(jarFile);
 	    InputStream is = null;
+	    int fileCount = 0;
 		try {
 //			System.out.println("Jar: "+jar.getName());
 //			for (Entry<Object, Object> e : jar.getManifest().getMainAttributes().entrySet()) {
 //				System.out.println("  "+e.getKey() + "=" + e.getValue());
 //			}
+			SubMonitor subMonitor = SubMonitor.convert(monitor, jar.size());
 			Enumeration<JarEntry> enumEntries = jar.entries();
 			while (enumEntries.hasMoreElements()) {
 			    JarEntry entry = enumEntries.nextElement();
@@ -137,6 +140,7 @@ public class FileUtils {
 			    	}
 			    }
 			    else {
+					subMonitor.setTaskName("Creating file "+entry.getName());
 				    IFile file = project.getFile(entry.getName());
 				    mkdirs(file, monitor);
 				    is = jar.getInputStream(entry);
@@ -144,14 +148,18 @@ public class FileUtils {
 				    	file.setContents(is, true, false, monitor);
 				    else
 				    	file.create(is, true, monitor);
+				    ++fileCount;
+				    subMonitor.worked(1);
 			    }
 			}
+			subMonitor.done();
 		}
 		finally {
 			jar.close();
 			if (is!=null)
 				is.close();
 		}
+		return fileCount;
 	}
 
 	public static java.io.File downloadFile(URL url, IProgressMonitor monitor) throws IOException {
@@ -162,11 +170,12 @@ public class FileUtils {
 		java.io.File jarFile = null;
 		int length = conn.getContentLength();
 		final int buffersize = 1024;
-		SubProgressMonitor spm = new SubProgressMonitor(monitor, length/buffersize);
+		final int blocks = length/buffersize;
+		SubMonitor subMonitor = SubMonitor.convert(monitor, blocks);
 		InputStream istream = conn.getInputStream();
 		OutputStream ostream = null;
 		try {
-			spm.beginTask("Downloading "+url.getFile()+" from "+url.getHost(), length/buffersize);
+			subMonitor.beginTask("Downloading "+url.getFile()+" from "+url.getHost(), blocks);
 			jarFile = java.io.File.createTempFile(url.getFile(), null);
 			if (istream!=null) {
 				ostream = new FileOutputStream(jarFile);
@@ -174,9 +183,17 @@ public class FileUtils {
 				int read = 0;
 				byte[] bytes = new byte[buffersize];
 	
-				while ((read = istream.read(bytes)) != -1) {
+				int block = 1;
+				int lastPercentDone = -1;
+				while ((read = istream.read(bytes)) != -1 && !subMonitor.isCanceled()) {
+					int percentDone = (int)(100 * ((float)block / (float)blocks));
+					if (percentDone != lastPercentDone && percentDone<=100) {
+						subMonitor.setTaskName("Downloading "+url.toString()+" "+percentDone+"%");
+						lastPercentDone = percentDone;
+					}
 					ostream.write(bytes, 0, read);
-					spm.worked(1);
+					subMonitor.worked(1);
+					++block;
 				}
 			}
 		}
@@ -190,7 +207,9 @@ public class FileUtils {
 				ostream.flush();
 				ostream.close();
 			}
-			spm.done();
+			if (subMonitor.isCanceled())
+				return null;
+			subMonitor.done();
 		}
 		return jarFile;
 	}
@@ -227,6 +246,21 @@ public class FileUtils {
 		project.getProject().setDescription(description, monitor);
 	}
 
+	public static void addBPMN2Builder(IJavaProject project, IProgressMonitor monitor) throws CoreException {
+	    IProjectDescription description = project.getProject().getDescription();
+	    ICommand[] commands = description.getBuildSpec();
+	    ICommand[] newCommands = new ICommand[commands.length + 1];
+	    System.arraycopy(commands, 0, newCommands, 0, commands.length);
+	
+	    ICommand javaCommand = description.newCommand();
+	    javaCommand.setBuilderName("org.eclipse.bpmn2.modeler.core.bpmn2Builder");
+	    javaCommand.setBuilderName("org.eclipse.wst.validation.validationbuilder");
+	    newCommands[commands.length] = javaCommand;
+	    
+	    description.setBuildSpec(newCommands);
+	    project.getProject().setDescription(description, monitor);
+	}
+
 	public static void addJavaNature(IProjectDescription projectDescription) {
 	    List<String> list = new ArrayList<String>();
 	    list.addAll(Arrays.asList(projectDescription.getNatureIds()));
@@ -241,17 +275,24 @@ public class FileUtils {
 	    projectDescription.setNatureIds((String[]) list.toArray(new String[list.size()]));
 	}
     
+	public static void addBPMN2Nature(IProjectDescription projectDescription) {
+	    List<String> list = new ArrayList<String>();
+	    list.addAll(Arrays.asList(projectDescription.getNatureIds()));
+	    list.add("org.eclipse.bpmn2.modeler.core.bpmn2Nature");
+	    projectDescription.setNatureIds((String[]) list.toArray(new String[list.size()]));
+	}
+
     public static void createMavenArtifacts(IJavaProject project, String groupId, String artifactId, String version, IProgressMonitor monitor) {
         try {
         	String projectName = project.getProject().getName();
         	if (groupId==null || groupId.isEmpty())
-        		groupId = projectName + ".group.id";
+        		groupId = projectName + ".group";
             if (artifactId==null || artifactId.isEmpty())
-            	artifactId = projectName + ".id";
+            	artifactId = projectName;
             if (version==null || version.isEmpty())
-            	version = "1.0";
+            	version = "1.0.0-SNAPSHOT";
 			createProjectFile(project, monitor, generatePomProperties(groupId, artifactId, version), "src/main/resources/META-INF/maven", "pom.properties");
-            createProjectFile(project, monitor, generatePom(groupId, artifactId, version), null, "pom.xml");
+            createProjectFile(project, monitor, generateEmptyPom(groupId, artifactId, version), null, "pom.xml");
 		}
 		catch (CoreException e) {
 			e.printStackTrace();
@@ -313,7 +354,7 @@ public class FileUtils {
 		return new ByteArrayInputStream(pom.getBytes());
 	}
 
-	public static InputStream generatePom(String groupId, String artifactId, String version) {
+	public static InputStream generateEmptyPom(String groupId, String artifactId, String version) {
 	    String pom =
 	            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 	            "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
@@ -324,7 +365,33 @@ public class FileUtils {
 	            "  <artifactId>" + artifactId + "</artifactId>\n" +
 	            "  <version>" + version + "</version>\n" +
 	            "</project>\n";
-	    return new ByteArrayInputStream(pom.getBytes());
+	    return new ByteArrayInputStream(pom.toString().getBytes());
+	}
+	
+	public static InputStream generatePom(InputStream template, String runtimeVersion, String groupId, String artifactId, String version) {
+		BufferedInputStream is = new BufferedInputStream(template);
+		StringBuilder contents = new StringBuilder();
+		java.util.Scanner scanner = new java.util.Scanner(is);
+		while (true) {
+			try {
+				String line = scanner.nextLine();
+				if (line.contains("<groupId>###"))
+					line = line.replaceFirst("###", groupId);
+				else if (line.contains("<artifactId>###"))
+					line = line.replaceFirst("###", artifactId);
+				else if (line.contains("<version>###"))
+					line = line.replaceFirst("###", version);
+				else if (line.contains("<runtime.version>###"))
+					line = line.replaceFirst("###", runtimeVersion);
+				contents.append(line);
+				contents.append("\n");
+			}
+			catch (Exception e) {
+				scanner.close();
+				break;
+			}
+		}
+	    return new ByteArrayInputStream(contents.toString().getBytes());
 	}
 
     public static void createOutputLocation(IJavaProject project, String folderName, IProgressMonitor monitor)

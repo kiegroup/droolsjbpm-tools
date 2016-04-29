@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -33,20 +34,24 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.swt.widgets.Display;
 
 public abstract class AbstractRuntimeManager implements IRuntimeManager {
 
     private ArrayList<IRuntimeManagerListener> listeners = new ArrayList<IRuntimeManagerListener>();
+    private IRuntime bundleRuntime = null;
+    
     /**
      * Add a listener to this model
      */
@@ -99,222 +104,7 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
     	}
     }
 
-    /**
-     * Returns the version number of the Runtime that is packaged with this plugin,
-     * for example the version number of the org.drools.eclipse plugin.
-     * 
-     * @return version number of bundle Runtime.
-     */
-    public String getBundleRuntimeVersion() {
-    	String version = Platform.getBundle( getBundleSymbolicName() ).getVersion().toString();
-    	String a[] = version.split("\\.");
-    	if (a.length>3) {
-    		return a[0] + "." + a[1] + "." + a[2];
-    	}
-    	return version;
-    }
-    
-    public String getBundleRuntimeName() {
-    	String product = createNewRuntime().getProduct();
-    	if (product!=null && product.length()>0) {
-    		char c = Character.toUpperCase(product.charAt(0));
-    		product = c + product.substring(1);
-    		return product + " " + getBundleRuntimeVersion();
-    	}
-    	return "Runtime " + getBundleRuntimeVersion();
-    }
-    
-    public IRuntime createBundleRuntime(String location) {
-        List<String> jars = new ArrayList<String>();
-        // get all drools jars from drools eclipse plugin
-        String s = getBundleLocation();
-        File file = (new Path(s)).toFile();
-        File[] files = file.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            if (files[i].isDirectory() && files[i].getName().equals("lib")) {
-                File[] jarFiles = files[i].listFiles();
-                for (int j = 0; j < jarFiles.length; j++) {
-                    if (jarFiles[j].getPath().endsWith(".jar")) {
-                        jars.add(jarFiles[j].getAbsolutePath());
-                    }
-                }
-            }
-        }
-
-        // search for latest eclipse jdt jar
-        try {
-            jars.add(FileLocator.getBundleFile(Platform.getBundle("org.eclipse.jdt.core")).getAbsolutePath());
-        } catch (IOException ex) {
-            logException(ex);
-        }
-
-
-        // copy jars to specified location
-        String separator = "";
-        if (!location.endsWith(File.separator)) {
-            separator = File.separator;
-        }
-        List<String> jarsCreated = new ArrayList<String>();
-        for (String jar: jars) {
-            try {
-                File jarFile = new File(jar);
-                FileChannel inChannel = new FileInputStream(jarFile).getChannel();
-                String createdJar = location + separator + jarFile.getName();
-                FileChannel outChannel = new FileOutputStream(new File(createdJar)).getChannel();
-                try {
-                    inChannel.transferTo(0, inChannel.size(), outChannel);
-                    jarsCreated.add(createdJar);
-                }
-                catch (IOException e) {
-                    throw e;
-                }
-                finally {
-                    if (inChannel != null) inChannel.close();
-                    if (outChannel != null) outChannel.close();
-                }
-            } catch (Throwable t) {
-                logException(t);
-            }
-        }
-
-    	IRuntime runtime = createNewRuntime();
-        runtime.setName(getBundleRuntimeName());
-        runtime.setVersion(getBundleRuntimeVersion());
-        runtime.setPath(location);
-        runtime.setJars(jarsCreated.toArray(new String[jarsCreated.size()]));
-        
-        return runtime;
-    }
-
-    private String getBundleLocation() {
-        try {
-            return FileLocator.toFileURL(Platform.getBundle(getBundleSymbolicName())
-                .getEntry("/")).getFile().toString();
-        } catch (IOException e) {
-            logException(e);
-        }
-        return null;
-    }
-
     public IRuntime getEffectiveRuntime(IRuntime selectedRuntime, boolean useDefault) {
-    	
-    	// The bundle runtime project may have been deleted; if so, we need to rebuild it
-    	boolean rebuildBundleRuntimeProject = false;
-    	String bundleRuntimeLocation = getBundleRuntimeLocation() + "_" + getBundleRuntimeVersion();
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        
-        if (selectedRuntime==null)
-        	selectedRuntime = createNewRuntime();
-        
-        if (selectedRuntime.getPath() != null) {
-        	// If this really is the Bundle Runtime project,
-        	// remove the "lib" segment if there is one
-        	IPath runtimeRootPath = new Path(selectedRuntime.getPath());
-        	if ("lib".equals(runtimeRootPath.lastSegment()))
-        		runtimeRootPath = runtimeRootPath.removeLastSegments(1);
-        	if (bundleRuntimeLocation.equals(runtimeRootPath.lastSegment()))
-        		// then remove the Bundle Runtime project name. 
-        		runtimeRootPath = runtimeRootPath.removeLastSegments(1);
-
-			// if the absolute path matches the Workspace Root path, then this
-			// is the Bundle Runtime Project
-        	IPath rootPath = workspace.getRoot().getLocation();
-        	if (rootPath.equals(runtimeRootPath)) {
-        		IProject project = workspace.getRoot().getProject(bundleRuntimeLocation);
-        		// If the project exists and is not open, try to open it
-        		if (!project.isOpen()) {
-	                try {
-						project.open(IResource.BACKGROUND_REFRESH,null);
-					} catch (CoreException ex) {
-			            logException(ex);
-					}
-        		}
-				// If the project does not exist, we need to create it. This is
-				// an indication that the project was previously deleted by the
-				// user.
-            	if (!project.exists()) {
-            		rebuildBundleRuntimeProject = true;
-            	}
-            	else {
-					// Check if the "lib" folder was deleted, or if the jars
-					// were removed
-        			int jarCount = 0;
-            		IFolder lib = project.getFolder("lib");
-            		if (!lib.exists()) {
-            			try {
-							// The "lib" folder is gone, might as well rebuild
-							// the entire project
-							project.delete(true, null);
-		            		rebuildBundleRuntimeProject = true;
-						} catch (CoreException ex) {
-				            logException(ex);
-						}
-            		}
-            		else {
-	        			try {
-							// Count the number of jars in the "lib" folder.
-							// We don't actually know how many jars SHOULD be in
-							// there, but if there are none, this is a clear
-							// indication that the "lib" folder was cleaned out.
-							for (IResource f : lib.members()) {
-								if ("jar".equals(f.getFileExtension())) {
-									++jarCount;
-								}
-							}
-						} catch (CoreException ex) {
-				            logException(ex);
-						}
-					}
-        			if (jarCount==0) {
-                		rebuildBundleRuntimeProject = true;
-        			}
-            	}
-        	}
-        }
-        
-        List<IRuntime> runtimes = new ArrayList<IRuntime>();
-    	for (IRuntime rt : getConfiguredRuntimes())
-    		runtimes.add(rt);
-    	
-        if (selectedRuntime.getPath() == null || rebuildBundleRuntimeProject || runtimes.size()==0) {
-			// This is the Bundle Runtime and it doesn't exist yet, or needs
-			// to be rebuilt. Create a "hidden" workspace project.
-			// But first, remove the old IRuntime entry from our list.
-        	for (IRuntime rt : runtimes) {
-        		if (rt.getName().equals(selectedRuntime.getName())) {
-                	runtimes.remove(rt);
-                	break;
-        		}
-        	}
-        	
-        	final IProject project = workspace.getRoot().getProject(bundleRuntimeLocation);
-        	// The "lib" folder will contain the runtime jars.
-        	final IFolder lib = project.getFolder("lib");
-        	if (!project.exists() || !lib.exists()) {
-                final IProjectDescription description = workspace
-                        .newProjectDescription(project.getName());
-                description.setLocation(null);
-                try {
-					project.create(description, null);
-	                project.open(IResource.BACKGROUND_REFRESH,null);
-	                lib.create(true, true, null);
-				} catch (CoreException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-        	}
-        	
-        	// and create a new entry
-            String location = lib.getLocation().removeTrailingSeparator().toString();
-            selectedRuntime = createBundleRuntime(location);
-            if (runtimes.size()==0)
-            	useDefault = true;
-            
-            selectedRuntime.setDefault(useDefault);
-        	runtimes.add(selectedRuntime);
-        	// finally rebuild the IRuntime definitions in User Preferences
-        	setRuntimes(runtimes.toArray(new IRuntime[runtimes.size()]));
-        }
         if (useDefault) {
             return getDefaultRuntime();
         }
@@ -344,6 +134,8 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
             String[] runtimeStrings = s.split("###");
             for (String runtimeString: runtimeStrings) {
                 String[] properties = runtimeString.split("#");
+                if (properties.length<2)
+                	continue;
                 IRuntime runtime = createNewRuntime();
                 runtime.setName(properties[0]);
                 String location = properties[1];
@@ -373,6 +165,7 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
 	                }
 	                result.add(runtime);
                 }
+                Collections.sort(result);
             }
         }
         return result.toArray(new IRuntime[result.size()]);
@@ -402,7 +195,13 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
     }
 
     private void setRuntimesInternal(IRuntime[] runtimes) {
-        getPreferenceStore().setValue(getRuntimePreferenceKey(),createStringFromRuntimes(runtimes));
+    	List<IRuntime> uniqueRuntimes = new ArrayList<IRuntime>();
+    	for (IRuntime rt : runtimes) {
+    		if (!uniqueRuntimes.contains(rt))
+    			uniqueRuntimes.add(rt);
+    	}
+    	String s = createStringFromRuntimes(uniqueRuntimes.toArray(new IRuntime[uniqueRuntimes.size()]));
+        getPreferenceStore().setValue(getRuntimePreferenceKey(),s);
     }
 
     
@@ -470,43 +269,50 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
         return runtime.getJars();
     }
     
-    public void recognizeJars(IRuntime runtime) {
-    	IRuntimeRecognizer recognizer = null;
+    public int recognizeJars(IRuntime runtime) {
         String path = runtime.getPath();
         if (path != null) {
-            try {
-                IConfigurationElement[] config = Platform.getExtensionRegistry()
-                        .getConfigurationElementsFor(getRuntimeRecognizerId());
-                for (IConfigurationElement e : config) {
-                    Object o = e.createExecutableExtension("class");
-                    if (o instanceof IRuntimeRecognizer) {
-                    	recognizer = (IRuntimeRecognizer) o;
-                        String[] jars = recognizer.recognizeJars(path);
+        	// try all of the runtime recognizers defined in the Drools/jBPM
+        	// plugin.xml "runtimeRecognizer" extension point
+        	IRuntimeRecognizer recognizer = null;
+        	String[] jars = null;
+        	for (IRuntimeRecognizer r : getRuntimeRecognizers()) {
+                jars = r.recognizeJars(path);
                         if (jars != null && jars.length > 0) {
-                            runtime.setJars(jars);
-                            runtime.setProduct(recognizer.getProduct());
-                            runtime.setVersion(recognizer.getVersion());
-                            return;
-                        }
-                    }
+                	recognizer = r;
+                	break;
                 }
-            } catch (Exception e) {
-            	logException(e);
+                        }
+        	// fallback is to use a runtime created by the Drools/jBPM
+        	// runtime installer {@see DefaultRuntimeInstaller}
+        	if (recognizer==null) {
+        		recognizer = new DefaultRuntimeRecognizer();
+        		jars = recognizer.recognizeJars(path);
+                    }
+            if (jars != null && jars.length > 0) {
+                runtime.setJars(jars);
+                if (runtime.getProduct()==null) {
+	                String product = recognizer.getProduct();
+	                if (product!=null && !product.isEmpty())
+	                	runtime.setProduct(product);
+                }
+                if (runtime.getVersion()==null) {
+	                String version = recognizer.getVersion();
+	                if (version!=null && !version.isEmpty())
+	                	runtime.setVersion(version);
+                }
+                return jars.length;
             }
-
-            recognizer = new DefaultRuntimeRecognizer();
-            runtime.setJars(recognizer.recognizeJars(path));
-            runtime.setProduct(recognizer.getProduct());
-            runtime.setVersion(recognizer.getVersion());
         }
+        return 0;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////
     // to be implemented
     ///////////////////////////////////////////////////////////////////////////////////////
-    abstract public String getBundleRuntimeLocation();
+    abstract public String getRuntimeWorkspaceLocation();
     abstract public String getRuntimePreferenceKey();
-	abstract public String getRuntimeRecognizerId();
+	abstract public IRuntimeRecognizer[] getRuntimeRecognizers();
     abstract public String getSettingsFilename();
     abstract public String getBundleSymbolicName();
     abstract public IRuntime createNewRuntime();
