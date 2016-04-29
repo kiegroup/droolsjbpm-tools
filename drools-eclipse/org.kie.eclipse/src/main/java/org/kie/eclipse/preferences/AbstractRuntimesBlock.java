@@ -284,9 +284,11 @@ public abstract class AbstractRuntimesBlock implements ISelectionProvider {
                 			"\nPlease enter a valid version number.");
                 	return;
                 }
-                runtimes.add(result);
-                runtimesList.refresh();
-                runtimesList.setSelection(new StructuredSelection(result));
+                if (!runtimes.contains(result)) {
+	                runtimes.add(result);
+	                runtimesList.refresh();
+	                setSelection(new StructuredSelection(result));
+                }
             }
         }
     }
@@ -297,6 +299,8 @@ public abstract class AbstractRuntimesBlock implements ISelectionProvider {
         if (runtime == null) {
             return;
         }
+        
+        boolean isDefault = runtime.isDefault();
         AbstractRuntimeDialog dialog = createEditingDialog(getShell(), runtimes);
         dialog.setRuntime(runtime);
         if (dialog.open() == Window.OK) {
@@ -317,12 +321,13 @@ public abstract class AbstractRuntimesBlock implements ISelectionProvider {
                 			"\nPlease enter a valid version number.");
                 	return;
                 }
-                // replace with the edited VM
+                // replace with the edited Runtime
+                result.setDefault(isDefault);
                 int index = runtimes.indexOf(runtime);
                 runtimes.remove(index);
                 runtimes.add(index, result);
                 runtimesList.refresh();
-                runtimesList.setSelection(new StructuredSelection(result));
+                setSelection(new StructuredSelection(result));
             }
         }
     }

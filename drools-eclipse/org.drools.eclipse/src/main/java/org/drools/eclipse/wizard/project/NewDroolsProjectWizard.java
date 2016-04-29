@@ -19,22 +19,16 @@ package org.drools.eclipse.wizard.project;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
-import org.drools.eclipse.builder.DroolsBuilder;
 import org.drools.eclipse.preferences.DroolsProjectPreferencePage;
 import org.drools.eclipse.util.DroolsRuntime;
 import org.drools.eclipse.util.DroolsRuntimeManager;
-import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
@@ -106,22 +100,65 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 			createMavenArtifacts(javaProject, monitor);
     	}
     	else if (startPage.getInitialProjectContent() == IKieProjectWizardPage.EMPTY_PROJECT) {
+    		createDefaultPackages(javaProject, monitor);
 			createKJarArtifacts(javaProject, monitor);
 			createMavenArtifacts(javaProject, monitor);
     	}
-    	else
+    	else {
     		super.createInitialContent(javaProject, monitor);
+    	}
+	    createLoggerFile(javaProject, monitor);
+    }
+    
+    private void createDefaultPackages(IJavaProject project, IProgressMonitor monitor) throws CoreException {
+		IFolder folder = project.getProject().getFolder("src/main/java/com/sample");
+		FileUtils.createFolder(folder, monitor);
+		folder = project.getProject().getFolder("src/main/resources/rules");
+		FileUtils.createFolder(folder, monitor);
+		folder = project.getProject().getFolder("src/main/resources/dtables");
+		FileUtils.createFolder(folder, monitor);
+		folder = project.getProject().getFolder("src/main/resources/process");
+		FileUtils.createFolder(folder, monitor);
+    }
+
+    private void createLoggerFile(IJavaProject project, IProgressMonitor monitor) throws CoreException {
+	    String fileName = "org/drools/eclipse/wizard/project/logback-test.xml.template";
+        IFolder folder = project.getProject().getFolder("src/main/resources");
+        FileUtils.createFolder(folder, monitor);
+        IFile file = folder.getFile("logback-test.xml");
+        InputStream inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
+        if (!file.exists()) {
+            file.create(inputstream, true, monitor);
+        } else {
+            file.setContents(inputstream, true, false, monitor);
+        }
     }
     
     @Override
 	protected void createMavenArtifacts(IJavaProject project, IProgressMonitor monitor) {
         try {
         	String projectName = project.getProject().getName();
-            String groupId = projectName + ".group";
-            String artifactId = projectName + ".artifact";
-            String version = "1.0";
+        	String runtimeVersion = startPage.getRuntime().getVersion();
+            String groupId = "com.sample";
+            String artifactId = projectName;
+            String version = "1.0.0-SNAPSHOT";
+        	if (startPage.getInitialProjectContent() == IKieProjectWizardPage.SAMPLE_FILES_PROJECT) {
+        		groupId = sampleFilesProjectPage.getPomGroupId();
+        		artifactId = sampleFilesProjectPage.getPomArtifactId();
+        		version = sampleFilesProjectPage.getPomVersion();
+        	}
+        	else if (startPage.getInitialProjectContent() == IKieProjectWizardPage.EMPTY_PROJECT) {
+        		groupId = emptyProjectPage.getPomGroupId();
+        		artifactId = emptyProjectPage.getPomArtifactId();
+        		version = emptyProjectPage.getPomVersion();
+        	}
+        	
 			FileUtils.createProjectFile(project, monitor, FileUtils.generatePomProperties(groupId, artifactId, version), "src/main/resources/META-INF/maven", "pom.properties");
-            FileUtils.createProjectFile(project, monitor, FileUtils.generatePom(groupId, artifactId, version), null, "pom.xml");
+			String fileName = "org/drools/eclipse/wizard/project/maven-pom.xml.template";
+			InputStream inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
+            FileUtils.createProjectFile(project, monitor, 
+            		FileUtils.generatePom(inputstream, runtimeVersion, groupId, artifactId, version),
+            		null, "pom.xml");
 		}
 		catch (CoreException e) {
 			// TODO Auto-generated catch block
@@ -134,6 +171,12 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
         try {
 	        if (startPage.getRuntime().getVersion().startsWith("6")) {
 	        	FileUtils.createProjectFile(project, monitor, generateKModule(), "src/main/resources/META-INF", "kmodule.xml");
+
+	        	String projectName = project.getProject().getName();
+	            String groupId = "com.sample";
+	            String artifactId = projectName;
+	            String version = "1.0.0-SNAPSHOT";
+				FileUtils.createProjectFile(project, monitor, FileUtils.generatePomProperties(groupId, artifactId, version), "src/main/resources/META-INF/maven", "pom.properties");
 	        }
 		}
 		catch (CoreException e) {
@@ -344,6 +387,7 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 	 * Implementation for the Empty Project Wizard Page
 	 */
 	class EmptyDroolsProjectWizardPage extends AbstractKieEmptyProjectWizardPage implements IKieSampleFilesProjectWizardPage {
+		
 		public EmptyDroolsProjectWizardPage(String pageName) {
 			super(pageName);
 			setTitle("Create New Empty Drools Project");
@@ -352,13 +396,6 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 
 		@Override
 		protected void createControls(Composite parent) {
-		}
-		
-		@Override
-		protected Composite createKJarControls(Composite parent) {
-	        Composite composite = new Composite(parent, SWT.NONE);
-	        composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-	        return composite;
 		}
 		
 		@Override
@@ -379,8 +416,13 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 		}
 		
 		@Override
-		public boolean shouldCreateMavenProject() {
-			return false;
+		public String getProductName() {
+			return "Drools";
+		}
+
+		@Override
+		public String getProductId() {
+			return "drools";
 		}
 	}
 	
@@ -389,21 +431,13 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 	 */
 	class SampleDroolsProjectWizardPage extends EmptyDroolsProjectWizardPage {
 	    private boolean addSampleRule = true;
-	    private boolean addSampleJavaRuleCode = false;
 	    private boolean addSampleDecisionTableCode = true;
-	    private boolean addSampleJavaDecisionTableCode = false;
 	    private boolean addSampleRuleFlow = true;
-	    private boolean addSampleJavaRuleFlowCode = false;
 
 		public SampleDroolsProjectWizardPage(String pageName) {
 			super(pageName);
-			setTitle("Create New Drools Projects with Sample Files");
+			setTitle("Create New Drools Project with Sample Files");
 			setDescription("Select the sample files to be included");
-		}
-
-		@Override
-		protected Composite createKJarControls(Composite parent) {
-			return null;
 		}
 
 		@Override
@@ -416,12 +450,6 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 	        composite.setLayoutData(gd);
 	        composite.setLayoutData(gd);
 
-	        /*
-	         * FIXME: there's no sense in having separate checkboxes for
-	         * any of the Java generation items because these are required!
-	         * The rule and decision table will not compile without the
-	         * Java classes.
-	         */
 	        final Button addSampleRuleButton = createCheckBox(composite,
 	            "Add a sample HelloWorld rule file to this project.");
 	        addSampleRuleButton.setSelection(addSampleRule);
@@ -431,14 +459,6 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 	                addSampleRule = ((Button) e.widget).getSelection();
 	            }
 	        });
-//	        final Button addSampleJavaRuleCodeButton = createCheckBox2(addSampleRuleButton, composite,
-//	            "Add a Java class for loading and executing the HelloWorld rules.");
-//	        addSampleJavaRuleCodeButton.setSelection(addSampleJavaRuleCode);
-//	        addSampleJavaRuleCodeButton.addSelectionListener(new SelectionAdapter() {
-//	            public void widgetSelected(SelectionEvent e) {
-//	                addSampleJavaRuleCode = ((Button) e.widget).getSelection();
-//	            }
-//	        });
 	        
 	        final Button addSampleDecisionTableCodeButton = createCheckBox(composite,
 	            "Add a sample HelloWorld decision table file to this project.");
@@ -449,14 +469,6 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 	                addSampleDecisionTableCode = ((Button) e.widget).getSelection();
 	            }
 	        });
-//	        final Button addSampleJavaDecisionTableCodeButton = createCheckBox2(addSampleDecisionTableCodeButton, composite,
-//	            "Add a Java class for loading and executing the HelloWorld decision table.");
-//	        addSampleJavaDecisionTableCodeButton.setSelection(addSampleJavaDecisionTableCode);
-//	        addSampleJavaDecisionTableCodeButton.addSelectionListener(new SelectionAdapter() {
-//	            public void widgetSelected(SelectionEvent e) {
-//	                addSampleJavaDecisionTableCode = ((Button) e.widget).getSelection();
-//	            }
-//	        });
 	        
 	        final Button addSampleRuleFlowButton = createCheckBox(composite,
 	            "Add a sample HelloWorld process file to this project.");
@@ -467,50 +479,6 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 	                addSampleRuleFlow = ((Button) e.widget).getSelection();
 	            }
 	        });
-//	        final Button addSampleJavaRuleFlowCodeButton = createCheckBox2(addSampleRuleFlowButton, composite,
-//	            "Add a Java class for loading and executing the HelloWorld process.");
-//	        addSampleJavaRuleFlowCodeButton.setSelection(addSampleJavaRuleFlowCode);
-//	        addSampleJavaRuleFlowCodeButton.addSelectionListener(new SelectionAdapter() {
-//	            public void widgetSelected(SelectionEvent e) {
-//	                addSampleJavaRuleFlowCode = ((Button) e.widget).getSelection();
-//	            }
-//	        });
-
-		}
-	    
-	    private Button createCheckBox(Composite group, String label) {
-	        Button button = new Button(group, SWT.CHECK | SWT.LEFT);
-	        button.setText(label);
-	        GridData data = new GridData();
-	        button.setLayoutData(data);
-	        return button;
-	    }
-	    
-	    private Button createCheckBox2(final Button dependent, Composite group, String label) {
-	        Button button = new Button(group, SWT.CHECK | SWT.LEFT);
-	        button.setText(label);
-	        GridData data = new GridData();
-	        data.horizontalIndent = 20;
-	        button.setLayoutData(data);
-	        button.addSelectionListener(new SelectionAdapter() {
-	            @Override
-				public void widgetSelected(SelectionEvent e) {
-	                boolean selected = ((Button) e.widget).getSelection();
-	                if (selected) {
-	                	dependent.setSelection(true);
-	                	dependent.setEnabled(false);
-	                }
-	                else
-	                	dependent.setEnabled(true);
-	            }
-	        });
-	        
-	        return button;
-	    }
-		
-		@Override
-		public boolean shouldCreateMavenProject() {
-			return false;
 		}
 
 	    public boolean shouldCreateRuleFile() {
