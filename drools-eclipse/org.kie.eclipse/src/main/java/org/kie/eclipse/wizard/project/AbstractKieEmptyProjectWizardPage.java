@@ -1,13 +1,8 @@
 package org.kie.eclipse.wizard.project;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -22,7 +17,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.actions.WorkspaceModifyOperation;
+import org.kie.eclipse.runtime.AbstractRuntime.Version;
 import org.kie.eclipse.runtime.IRuntime;
 import org.kie.eclipse.runtime.IRuntimeManager;
 
@@ -235,8 +230,8 @@ public abstract class AbstractKieEmptyProjectWizardPage extends KieProjectWizard
 	}
 	
 	public boolean shouldCreateKJarProject() {
-		String version = getRuntime().getVersion();
-		if (version!=null && (version.startsWith("6") || version.startsWith("7")))
+		Version version = getRuntime().getVersion();
+		if (version.getMajor()>=6)
 			return true;
 		return false;
 	}

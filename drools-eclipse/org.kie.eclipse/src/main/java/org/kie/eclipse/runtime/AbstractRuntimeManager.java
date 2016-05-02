@@ -18,11 +18,7 @@ package org.kie.eclipse.runtime;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,25 +28,14 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceVisitor;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.swt.widgets.Display;
+import org.kie.eclipse.runtime.AbstractRuntime.Version;
 
 public abstract class AbstractRuntimeManager implements IRuntimeManager {
 
     private ArrayList<IRuntimeManagerListener> listeners = new ArrayList<IRuntimeManagerListener>();
-    private IRuntime bundleRuntime = null;
     
     /**
      * Add a listener to this model
@@ -269,43 +254,48 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
         return runtime.getJars();
     }
     
-    public int recognizeJars(IRuntime runtime) {
-        String path = runtime.getPath();
-        if (path != null) {
-        	// try all of the runtime recognizers defined in the Drools/jBPM
-        	// plugin.xml "runtimeRecognizer" extension point
-        	IRuntimeRecognizer recognizer = null;
-        	String[] jars = null;
-        	for (IRuntimeRecognizer r : getRuntimeRecognizers()) {
-                jars = r.recognizeJars(path);
-                        if (jars != null && jars.length > 0) {
-                	recognizer = r;
-                	break;
-                }
-                        }
-        	// fallback is to use a runtime created by the Drools/jBPM
-        	// runtime installer {@see DefaultRuntimeInstaller}
-        	if (recognizer==null) {
-        		recognizer = new DefaultRuntimeRecognizer();
-        		jars = recognizer.recognizeJars(path);
-                    }
-            if (jars != null && jars.length > 0) {
-                runtime.setJars(jars);
-                if (runtime.getProduct()==null) {
-	                String product = recognizer.getProduct();
-	                if (product!=null && !product.isEmpty())
-	                	runtime.setProduct(product);
-                }
-                if (runtime.getVersion()==null) {
-	                String version = recognizer.getVersion();
-	                if (version!=null && !version.isEmpty())
-	                	runtime.setVersion(version);
-                }
-                return jars.length;
-            }
-        }
-        return 0;
-    }
+	public int recognizeJars(IRuntime runtime) {
+		String path = runtime.getPath();
+		if (path != null) {
+			// try all of the runtime recognizers defined in the Drools/jBPM
+			// plugin.xml "runtimeRecognizer" extension point
+			IRuntimeRecognizer recognizer = null;
+			String[] jars = null;
+			for (IRuntimeRecognizer r : getRuntimeRecognizers()) {
+				jars = r.recognizeJars(path);
+				if (jars != null && jars.length > 0) {
+					recognizer = r;
+					break;
+				}
+			}
+			// fallback is to use a runtime created by the Drools/jBPM
+			// runtime installer {@see DefaultRuntimeInstaller}
+			if (recognizer == null) {
+				recognizer = new DefaultRuntimeRecognizer();
+				jars = recognizer.recognizeJars(path);
+			}
+			if (jars != null && jars.length > 0) {
+				Version version = runtime.getVersion();
+				String product = runtime.getProduct();
+				List<Version> versions = recognizer.getProducts().get(product);
+				if (versions!=null && versions.size()>0) {
+					// we found at least one version of the runtime product
+					if (!version.isValid() || !versions.contains(version)) {
+						// runtime does not specify a version, so pick
+						// the latest version of the product found in
+						// the runtime location
+						Collections.sort(versions, Collections.reverseOrder());
+						if (versions.size()>0) {
+							runtime.setVersion(versions.get(0).toString());
+						}
+					}
+					runtime.setJars(jars);
+				}
+				return jars.length;
+			}
+		}
+		return 0;
+	}
 
     ///////////////////////////////////////////////////////////////////////////////////////
     // to be implemented

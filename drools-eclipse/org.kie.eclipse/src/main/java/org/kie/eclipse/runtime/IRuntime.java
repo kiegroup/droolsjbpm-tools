@@ -15,13 +15,15 @@
 
 package org.kie.eclipse.runtime;
 
+import org.kie.eclipse.runtime.AbstractRuntime.Version;
+
 public interface IRuntime extends Comparable<IRuntime> {
 
 	/**
 	 * Identifies the version number of this Runtime
 	 * @return Runtime version number
 	 */
-	String getVersion();
+	Version getVersion();
 	void setVersion(String version);
 	/**
 	 * Identifies the product name, either "drools", "jbpm" or "kie" or something else?
