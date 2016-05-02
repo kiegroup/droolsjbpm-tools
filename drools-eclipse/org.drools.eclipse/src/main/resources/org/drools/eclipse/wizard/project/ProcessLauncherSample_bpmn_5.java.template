@@ -24,7 +24,7 @@ public class ProcessTest {
             StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
             KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "test");
             // start a new process instance
-            ksession.startProcess("com.sample.ruleflow");
+            ksession.startProcess("com.sample.bpmn.hello");
             logger.close();
         } catch (Throwable t) {
             t.printStackTrace();
@@ -33,7 +33,7 @@ public class ProcessTest {
 
     private static KnowledgeBase readKnowledgeBase() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newClassPathResource("ruleflow.rf"), ResourceType.DRF);
+        kbuilder.add(ResourceFactory.newClassPathResource("sample.bpmn"), ResourceType.DRF);
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (errors.size() > 0) {
             for (KnowledgeBuilderError error: errors) {

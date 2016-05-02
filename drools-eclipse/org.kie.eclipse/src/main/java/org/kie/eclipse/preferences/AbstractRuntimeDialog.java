@@ -44,6 +44,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Widget;
+import org.kie.eclipse.runtime.AbstractRuntime;
 import org.kie.eclipse.runtime.AbstractRuntimeInstaller;
 import org.kie.eclipse.runtime.IRuntime;
 import org.kie.eclipse.runtime.IRuntimeInstaller;
@@ -64,7 +66,7 @@ public abstract class AbstractRuntimeDialog extends Dialog {
 
     private Listener textModifyListener = new Listener() {
         public void handleEvent(Event e) {
-            validate();
+            validate(e.widget);
         }
     };
     
@@ -112,7 +114,7 @@ public abstract class AbstractRuntimeDialog extends Dialog {
         versionLabel.setText("Version:");
         versionLabel.setLayoutData(new GridData(GridData.END, GridData.CENTER, false, false, 1, 1));
         versionText = new Text(composite, SWT.SINGLE | SWT.BORDER);
-        versionText.setText(runtime == null || runtime.getName() == null ? "" : runtime.getVersion());
+        versionText.setText(runtime == null || runtime.getName() == null ? "" : runtime.getVersion().toString());
         versionText.addListener(SWT.Modify, textModifyListener);
         versionText.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false, 2, 1));
         
@@ -121,7 +123,7 @@ public abstract class AbstractRuntimeDialog extends Dialog {
         errorMessageText.setBackground(errorMessageText.getDisplay()
                 .getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
 	    
-        validate();
+        validate(null);
 		
         return composite;
     }
@@ -151,57 +153,63 @@ public abstract class AbstractRuntimeDialog extends Dialog {
         	editMode = true;
     }
 
-    private void validate() {
+    private void validate(Widget widget) {
     	setErrorMessage(null);
-		String name = nameText.getText();
-		if (name == null || "".equals(name.trim())) {
-			setErrorMessage("Name is required");
-			return;
-		}
-		if (runtime == null || !name.equals(runtime.getName())) {
-			for (IRuntime runtime : runtimes) {
-				if (name.equals(runtime.getName())) {
-					setErrorMessage("The Runtime \"" + name + "\" is already registered");
-					return;
-				}
-			}
-		}
-
-		String location = pathText.getText();
-		if (location != null && !location.isEmpty()) {
-			File file = new File(location);
-			if (!file.exists() || !file.isDirectory()) {
-				setErrorMessage("Path does not exist or is not a directory");
+    	if (widget==nameText || widget==null) {
+			String name = nameText.getText();
+			if (name == null || "".equals(name.trim())) {
+				setErrorMessage("Name is required");
 				return;
 			}
-		} else {
-			setErrorMessage("Path is required");
-			return;
-		}
-
-		String version = versionText.getText();
-		int major = -1;
-		int minor = -1;
-		int patch = -1;
-
-		String parts[] = version.split("\\.");
-		if (parts.length != 3) {
-			setErrorMessage("Version must be in the form major#.minor#.patch#");
-		} else {
-			try {
-				major = Integer.parseInt(parts[0]);
-				minor = Integer.parseInt(parts[1]);
-				patch = Integer.parseInt(parts[2]);
-			} catch (Exception e) {
-				if (major == -1) {
-					setErrorMessage("Version major number is invalid");
-				} else if (minor == -1) {
-					setErrorMessage("Version minor number is invalid");
-				} else if (patch == -1) {
-					setErrorMessage("Version patch number is invalid");
+			if (runtime == null || !name.equals(runtime.getName())) {
+				for (IRuntime runtime : runtimes) {
+					if (name.equals(runtime.getName())) {
+						setErrorMessage("The Runtime \"" + name + "\" is already registered");
+						return;
+					}
 				}
 			}
-		}
+    	}
+    	
+    	if (widget==pathText || widget==null) {
+			String location = pathText.getText();
+			if (location != null && !location.isEmpty()) {
+				File file = new File(location);
+				if (!file.exists() || !file.isDirectory()) {
+					setErrorMessage("Path does not exist or is not a directory");
+					return;
+				}
+				IRuntime r = getRuntimeManager().createNewRuntime();
+				r.setVersion(null);
+				r.setPath(location);
+				getRuntimeManager().recognizeJars(r);
+				int jarCount = r.getJars()==null ? 0 : r.getJars().length;
+				if (jarCount>0) {
+					if (!versionText.getText().equals(r.getVersion().toString())) {
+						versionText.setText(r.getVersion().toString());
+						widget = versionText;
+					}
+					if (nameText.getText().isEmpty()) {
+						nameText.setText(r.getName() + " " + r.getVersion().toString());
+						validate(nameText);
+					}
+				}
+				else {
+					setErrorMessage("The given Path does not contain any " + r.getName() + " Runtime jars");
+				}
+			} else {
+				setErrorMessage("Path is required");
+				return;
+			}
+    	}
+    	
+    	if (widget==versionText || widget==null) {
+			String version = versionText.getText();
+			String error = AbstractRuntime.Version.validate(version);
+			if (error!=null)
+				setErrorMessage(error);
+
+    	}
     }
 
     private void browse() {

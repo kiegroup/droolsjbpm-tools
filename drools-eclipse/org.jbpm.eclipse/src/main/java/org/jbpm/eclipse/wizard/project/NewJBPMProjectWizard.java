@@ -18,13 +18,17 @@ package org.jbpm.eclipse.wizard.project;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
@@ -48,6 +52,7 @@ import org.kie.eclipse.wizard.project.AbstractKieProjectStartWizardPage;
 import org.kie.eclipse.wizard.project.AbstractKieProjectWizard;
 import org.kie.eclipse.wizard.project.IKieProjectWizardPage;
 import org.kie.eclipse.wizard.project.IKieSampleFilesProjectWizardPage;
+import org.kie.eclipse.runtime.AbstractRuntime.Version;
 
 /**
  * A wizard to create a new jBPM project.
@@ -95,6 +100,16 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
         }
     }
 
+    protected void addSourceFolders(IJavaProject project, IProgressMonitor monitor) throws JavaModelException, CoreException {
+    	if (startPage.getInitialProjectContent()!=IKieProjectWizardPage.ONLINE_EXAMPLE_PROJECT) {
+	        List<IClasspathEntry> list = new ArrayList<IClasspathEntry>();
+	        list.addAll(Arrays.asList(project.getRawClasspath()));
+	        addSourceFolder(project, list, "src/main/java", monitor);
+        	addSourceFolder(project, list, "src/main/resources", monitor);
+	        project.setRawClasspath((IClasspathEntry[]) list.toArray(new IClasspathEntry[list.size()]), null);
+    	}
+    }
+
     @Override
 	protected void createInitialContent(IJavaProject javaProject, IProgressMonitor monitor)
             throws CoreException, JavaModelException, IOException {
@@ -136,35 +151,54 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
      * Create the sample process file.
      * @throws IOException 
      */
-    private void createProcess(IJavaProject project, IProgressMonitor monitor, String exampleType) throws CoreException, IOException {
-    	// create the process (sample.bpmn) file
-	    String fileName = "org/jbpm/eclipse/wizard/project/" + exampleType + ".bpmn.template";
-        IFolder folder = null;
-//        if (sampleFilesProjectPage.shouldCreateMavenProject())
-        	folder = project.getProject().getFolder("src/main/resources/com/sample");
-//        else
-//        	folder = project.getProject().getFolder("src/main/resources");
-        FileUtils.createFolder(folder, monitor);
-        IFile file = folder.getFile("sample.bpmn");
-        InputStream inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
-        if (!file.exists()) {
-            file.create(inputstream, true, monitor);
-        } else {
-            file.setContents(inputstream, true, false, monitor);
-        }
+	private void createProcess(IJavaProject project, IProgressMonitor monitor, String exampleType)
+			throws CoreException, IOException {
+		// create the process (sample.bpmn) file
+		String fileName = "org/jbpm/eclipse/wizard/project/" + exampleType + ".bpmn.template";
+		IFolder folder = null;
+		folder = project.getProject().getFolder("src/main/resources/com/sample");
+		FileUtils.createFolder(folder, monitor);
+		IFile file = folder.getFile("sample.bpmn");
+		InputStream inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
+		if (!file.exists()) {
+			file.create(inputstream, true, monitor);
+		} else {
+			file.setContents(inputstream, true, false, monitor);
+		}
 
-        // create a Java main class to invoke the process
-    	String s = "org/jbpm/eclipse/wizard/project/ProcessMain-" + exampleType + ".java.template";
-        folder = project.getProject().getFolder("src/main/java");
-            IPackageFragmentRoot packageFragmentRoot = project
-                    .getPackageFragmentRoot(folder);
-            IPackageFragment packageFragment = packageFragmentRoot
-                    .createPackageFragment("com.sample", true, monitor);
-        inputstream = getClass().getClassLoader()
-                    .getResourceAsStream(s);
-            packageFragment.createCompilationUnit("ProcessMain.java", new String(
-            		FileUtils.readStream(inputstream)), true, monitor);
-        }
+		// create a Java main class to invoke the process
+		fileName = "org/jbpm/eclipse/wizard/project/ProcessMain-" + exampleType + ".java";
+		IRuntime runtime = startPage.getRuntime();
+		if (runtime.getVersion().getMajor() == 5) {
+			fileName += ".v5.template";
+		} else {
+			fileName += ".template";
+		}
+		
+		folder = project.getProject().getFolder("src/main/java");
+		IPackageFragmentRoot packageFragmentRoot = project.getPackageFragmentRoot(folder);
+		IPackageFragment packageFragment = packageFragmentRoot.createPackageFragment("com.sample", true, monitor);
+		inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
+		packageFragment.createCompilationUnit("ProcessMain.java", new String(FileUtils.readStream(inputstream)), true,
+				monitor);
+
+		
+		// create persistence.xml
+		if (runtime.getVersion().getMajor() == 5) {
+			if ("advanced".equals(exampleType)) {
+	        	folder = project.getProject().getFolder("src/main/resources/META-INF");
+	    		FileUtils.createFolder(folder, monitor);
+	            inputstream = getClass().getClassLoader().getResourceAsStream(
+	            	"org/jbpm/eclipse/wizard/project/ProcessLauncher-advanced-persistence.xml.template");
+	            file = folder.getFile("persistence.xml");
+	            if (!file.exists()) {
+	                file.create(inputstream, true, monitor);
+	            } else {
+	                file.setContents(inputstream, true, false, monitor);
+	            }
+			}
+		}
+	}
 
     /**
      * Create the sample process junit test file.
@@ -173,7 +207,7 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
 			throws JavaModelException, IOException {
 		String s = "org/jbpm/eclipse/wizard/project/ProcessJUnit-" + exampleType + ".java";
 		IRuntime runtime = startPage.getRuntime();
-		if (runtime.getVersion().startsWith("5")) {
+		if (runtime.getVersion().getMajor()==5) {
 			s += ".v5.template";
 		} else {
 			s += ".template";
@@ -218,7 +252,7 @@ public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
 	protected void createMavenArtifacts(IJavaProject project, IProgressMonitor monitor) {
 		try {
         	String projectName = project.getProject().getName();
-        	String runtimeVersion = startPage.getRuntime().getVersion();
+        	String runtimeVersion = startPage.getRuntime().getVersion().toString();
             String groupId = "com.sample";
             String artifactId = projectName;
             String version = "1.0.0-SNAPSHOT";
