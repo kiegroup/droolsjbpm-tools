@@ -41,10 +41,11 @@ public abstract class AbstractRuntimeRecognizer implements IRuntimeRecognizer {
 		
 		// identify the product
 		String product = null;
-        if (file.getName().startsWith("drools-")) {
+		String name = file.getName();
+        if (name.startsWith("drools-")) {
         	product = "drools";
         }
-        else if (file.getName().startsWith("jbpm-")) {
+        else if (name.startsWith("jbpm-")) {
         	product = "jbpm";
         }
         if (product!=null && file.getName().endsWith(".jar")) {
@@ -52,21 +53,43 @@ public abstract class AbstractRuntimeRecognizer implements IRuntimeRecognizer {
         	JarFile jar = null;
         	try {
         		jar = new java.util.jar.JarFile(file);
+        		Version version = null;
         		for (Entry<Object, Object> a : jar.getManifest().getMainAttributes().entrySet()) {
         			if ("Bundle-Version".equals(a.getKey().toString())) {
-        				Version version = new Version((String) a.getValue());
-        				List<Version> productVersions = products.get(product);
-        				if (productVersions!=null) {
-	    					if (!productVersions.contains(version)) {
-	    						productVersions.add(version);
-	    					}
-        				}
-        				else {
-        					productVersions = new ArrayList<Version>();
-        					productVersions.add(version);
-        					products.put(product,productVersions);
-        				}
+        				version = new Version((String) a.getValue());
+        				break;
         			}
+        		}
+        		if (version==null) {
+        			// jar contains no manifest or Bundle Version not specified
+        			// use Implementation Version specified in older runtimes
+            		for (Entry<Object, Object> a : jar.getManifest().getMainAttributes().entrySet()) {
+            			if ("Implementation-Version".equals(a.getKey().toString())) {
+            				version = new Version((String) a.getValue());
+            				break;
+            			}
+            		}
+        		}
+        		if (version==null) {
+        			// no luck, try to guess version from file name
+        			String versionPart = name.replaceFirst(".*([0-9]+\\.[0-9]+\\.[0-9]+\\..*)", "$1").replace(".jar", "");
+        			if (Version.validate(versionPart)==null) {
+        				version = new Version(versionPart);
+        			}
+        		}
+        		if (version!=null) {
+//        			System.out.println("File: "+name+" contains "+product+" "+version.toString());
+    				List<Version> productVersions = products.get(product);
+    				if (productVersions!=null) {
+    					if (!productVersions.contains(version)) {
+    						productVersions.add(version);
+    					}
+    				}
+    				else {
+    					productVersions = new ArrayList<Version>();
+    					productVersions.add(version);
+    					products.put(product,productVersions);
+    				}
         		}
         	}
         	catch (Exception e) {

@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.kie.eclipse.runtime.AbstractRuntime.Version;
+import org.kie.eclipse.Activator;
 
 public abstract class AbstractRuntimeManager implements IRuntimeManager {
 
@@ -290,6 +291,12 @@ public abstract class AbstractRuntimeManager implements IRuntimeManager {
 						}
 					}
 					runtime.setJars(jars);
+					if (versions.size()>1) {
+						Activator.logError(
+								"The Runtime at '"+runtime.getPath()+"' "
+								+"may have more than one version of installed jar files "
+								+"for the "+runtime.getProduct()+" product.", new Throwable());
+					}
 				}
 				return jars.length;
 			}
