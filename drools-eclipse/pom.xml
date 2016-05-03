@@ -118,7 +118,7 @@
           <artifact>
             <groupId>org.jboss.tools.integration-stack</groupId>
             <artifactId>target-platform</artifactId>
-            <version>4.3.1-SNAPSHOT</version>
+            <version>4.3.1.Final</version>
             <type>target</type>
             <classifier>base</classifier>
           </artifact>
@@ -133,7 +133,7 @@
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-packaging-plugin</artifactId>
         <configuration>
-          <format>'${BUILD_ALIAS}-v'yyyyMMdd-HHmm'-B212'</format>
+          <format>'${BUILD_ALIAS}-v'yyyyMMdd-HHmm'-B${BUILD_NUMBER}'</format>
           <archiveSite>true</archiveSite>
           <environments>
             <environment>
