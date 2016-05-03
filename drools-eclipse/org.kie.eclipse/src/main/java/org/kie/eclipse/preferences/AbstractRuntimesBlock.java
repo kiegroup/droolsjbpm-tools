@@ -277,17 +277,10 @@ public abstract class AbstractRuntimesBlock implements ISelectionProvider {
         if (dialog.open() == Window.OK) {
             IRuntime result = dialog.getResult();
             if (result != null) {
-                runtimeManager.recognizeJars(result);
-                Version version = result.getVersion();
-                if (!version.isValid()) {
-                	MessageDialog.openError(getShell(), "Missing Version",
-                			"Could not determine the version of Runtime "+result.getName()+
-                			"\nPlease enter a valid version number.");
-                	return;
-                }
                 if (!runtimes.contains(result)) {
 	                runtimes.add(result);
-	                runtimesList.refresh();
+	                fPrevSelection = null;
+	                runtimesList.setInput(runtimes);
 	                setSelection(new StructuredSelection(result));
                 }
             }
@@ -307,27 +300,13 @@ public abstract class AbstractRuntimesBlock implements ISelectionProvider {
         if (dialog.open() == Window.OK) {
             IRuntime result = dialog.getResult();
             if (result != null) {
-            	// save the possibly updated version...
-            	Version newVersion = result.getVersion();
-            	// ...because this will change it:
-                runtimeManager.recognizeJars(result);
-                if (newVersion.isValid())
-                	result.setVersion(newVersion.toString());
-                else {
-                	newVersion = result.getVersion();
-                }
-                if (!newVersion.isValid()) {
-                	MessageDialog.openError(getShell(), "Missing Version",
-                			"Could not determine the version of Runtime "+result.getName()+
-                			"\nPlease enter a valid version number.");
-                	return;
-                }
                 // replace with the edited Runtime
                 result.setDefault(isDefault);
                 int index = runtimes.indexOf(runtime);
                 runtimes.remove(index);
                 runtimes.add(index, result);
-                runtimesList.refresh();
+                fPrevSelection = null;
+                runtimesList.setInput(runtimes);
                 setSelection(new StructuredSelection(result));
             }
         }

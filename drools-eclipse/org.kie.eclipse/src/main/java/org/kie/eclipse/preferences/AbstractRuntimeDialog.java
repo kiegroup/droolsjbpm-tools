@@ -17,25 +17,19 @@
 package org.kie.eclipse.preferences;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
@@ -46,21 +40,16 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 import org.kie.eclipse.runtime.AbstractRuntime;
-import org.kie.eclipse.runtime.AbstractRuntimeInstaller;
 import org.kie.eclipse.runtime.IRuntime;
-import org.kie.eclipse.runtime.IRuntimeInstaller;
 import org.kie.eclipse.runtime.IRuntimeManager;
 
 public abstract class AbstractRuntimeDialog extends Dialog {
 
-	private IRuntimeManager runtimeManager;
     private IRuntime runtime;
     private Text nameText;
     private Text pathText;
     private Text versionText;
     private Text errorMessageText;
-    private String product;
-    private IRuntime selectedRuntime;
     private List<IRuntime> runtimes;
     private boolean editMode;
 
@@ -74,8 +63,7 @@ public abstract class AbstractRuntimeDialog extends Dialog {
         super(parent);
         setBlockOnOpen(true);
         this.runtimes = runtimes;
-        this.runtimeManager = getRuntimeManager();
-        this.product = runtimeManager.createNewRuntime().getProduct();
+        runtime = getRuntimeManager().createNewRuntime();
         setShellStyle(getShellStyle() | SWT.RESIZE);
     }
     
@@ -88,7 +76,7 @@ public abstract class AbstractRuntimeDialog extends Dialog {
         nameLabel.setText("Name:");
         nameLabel.setLayoutData(new GridData(GridData.END, GridData.CENTER, false, false, 1, 1));
         nameText = new Text(composite, SWT.SINGLE | SWT.BORDER);
-        nameText.setText(runtime == null || runtime.getName() == null ? "" : runtime.getName());
+        nameText.setText(editMode ? runtime.getName() : "");
         nameText.addListener(SWT.Modify, textModifyListener);
         nameText.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false, 2, 1));
 
@@ -96,7 +84,7 @@ public abstract class AbstractRuntimeDialog extends Dialog {
         pathLabel.setText("Path:");
         pathLabel.setLayoutData(new GridData(GridData.END, GridData.CENTER, false, false, 1, 1));
         pathText = new Text(composite, SWT.SINGLE | SWT.BORDER);
-        pathText.setText(runtime == null || runtime.getPath() == null ? "" : runtime.getPath());
+        pathText.setText(editMode ? runtime.getPath() : "");
         pathText.addListener(SWT.Modify, textModifyListener);
         pathText.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false, 1, 1));
         Button selectButton = new Button(composite, SWT.PUSH | SWT.LEFT);
@@ -114,7 +102,7 @@ public abstract class AbstractRuntimeDialog extends Dialog {
         versionLabel.setText("Version:");
         versionLabel.setLayoutData(new GridData(GridData.END, GridData.CENTER, false, false, 1, 1));
         versionText = new Text(composite, SWT.SINGLE | SWT.BORDER);
-        versionText.setText(runtime == null || runtime.getName() == null ? "" : runtime.getVersion().toString());
+        versionText.setText(editMode ? runtime.getVersion().toString() : "");
         versionText.addListener(SWT.Modify, textModifyListener);
         versionText.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false, 2, 1));
         
@@ -148,9 +136,10 @@ public abstract class AbstractRuntimeDialog extends Dialog {
     }
 
     public void setRuntime(IRuntime runtime) {
-        this.runtime = runtime;
-        if (runtime!=null)
+        if (runtime!=null) {
+            this.runtime = runtime;
         	editMode = true;
+        }
     }
 
     private void validate(Widget widget) {
@@ -161,7 +150,7 @@ public abstract class AbstractRuntimeDialog extends Dialog {
 				setErrorMessage("Name is required");
 				return;
 			}
-			if (runtime == null || !name.equals(runtime.getName())) {
+			if (!name.equals(runtime.getName())) {
 				for (IRuntime runtime : runtimes) {
 					if (name.equals(runtime.getName())) {
 						setErrorMessage("The Runtime \"" + name + "\" is already registered");
@@ -185,7 +174,7 @@ public abstract class AbstractRuntimeDialog extends Dialog {
 				getRuntimeManager().recognizeJars(r);
 				int jarCount = r.getJars()==null ? 0 : r.getJars().length;
 				if (jarCount>0) {
-					if (!versionText.getText().equals(r.getVersion().toString())) {
+					if (versionText.getText().isEmpty()) {
 						versionText.setText(r.getVersion().toString());
 						widget = versionText;
 					}
@@ -193,6 +182,9 @@ public abstract class AbstractRuntimeDialog extends Dialog {
 						nameText.setText(r.getName() + " " + r.getVersion().toString());
 						validate(nameText);
 					}
+					if (editMode)
+						r.setVersion(runtime.getVersion().toString());
+					runtime = r;
 				}
 				else {
 					setErrorMessage("The given Path does not contain any " + r.getName() + " Runtime jars");
@@ -233,16 +225,17 @@ public abstract class AbstractRuntimeDialog extends Dialog {
     @Override
 	protected void buttonPressed(int buttonId) {
         if (buttonId == IDialogConstants.OK_ID) {
-	        runtime = getRuntimeManager().createNewRuntime();
 	        runtime.setName(nameText.getText());
 	        runtime.setPath(pathText.getText());
-	        runtime.setVersion(versionText.getText());
-	        if (getRuntimeManager().recognizeJars(runtime)==0) {
-	        	MessageDialog.openError(getShell(), "Invalid Runtime Directory",
-	        			"No Runtime was found in the specified path "+pathText.getText());
-	        	runtime = null;
-	        	return;
+	        if (runtime.getJars()==null || runtime.getJars().length==0) {
+	        	getRuntimeManager().recognizeJars(runtime);
+		        if (runtime.getJars()==null || runtime.getJars().length==0) {
+		        	MessageDialog.openError(getShell(), "Invalid Runtime Directory",
+		        			"No Runtime was found in the specified path "+pathText.getText());
+		        	return;
+		        }
 	        }
+	        runtime.setVersion(versionText.getText());
         } else {
             runtime = null;
         }

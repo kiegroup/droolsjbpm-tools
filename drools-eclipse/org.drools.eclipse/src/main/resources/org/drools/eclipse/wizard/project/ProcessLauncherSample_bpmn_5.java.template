@@ -15,6 +15,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 /**
  * This is a sample file to launch a process.
  */
+@SuppressWarnings("restriction")
 public class ProcessTest {
 
     public static final void main(String[] args) {
@@ -33,7 +34,7 @@ public class ProcessTest {
 
     private static KnowledgeBase readKnowledgeBase() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newClassPathResource("sample.bpmn"), ResourceType.DRF);
+        kbuilder.add(ResourceFactory.newClassPathResource("sample.bpmn"), ResourceType.BPMN2);
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (errors.size() > 0) {
             for (KnowledgeBuilderError error: errors) {

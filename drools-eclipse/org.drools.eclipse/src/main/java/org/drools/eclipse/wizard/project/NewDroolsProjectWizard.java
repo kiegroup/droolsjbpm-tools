@@ -161,23 +161,29 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
             String groupId = "com.sample";
             String artifactId = projectName;
             String version = "1.0.0-SNAPSHOT";
+            boolean shouldCreateMavenProject = false;
         	if (startPage.getInitialProjectContent() == IKieProjectWizardPage.SAMPLE_FILES_PROJECT) {
         		groupId = sampleFilesProjectPage.getPomGroupId();
         		artifactId = sampleFilesProjectPage.getPomArtifactId();
         		version = sampleFilesProjectPage.getPomVersion();
+        		shouldCreateMavenProject = sampleFilesProjectPage.shouldCreateMavenProject();
         	}
         	else if (startPage.getInitialProjectContent() == IKieProjectWizardPage.EMPTY_PROJECT) {
         		groupId = emptyProjectPage.getPomGroupId();
         		artifactId = emptyProjectPage.getPomArtifactId();
         		version = emptyProjectPage.getPomVersion();
+        		shouldCreateMavenProject = emptyProjectPage.shouldCreateMavenProject();
         	}
         	
 			FileUtils.createProjectFile(project, monitor, FileUtils.generatePomProperties(groupId, artifactId, version), "src/main/resources/META-INF/maven", "pom.properties");
-			String fileName = "org/drools/eclipse/wizard/project/maven-pom.xml.template";
-			InputStream inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
-            FileUtils.createProjectFile(project, monitor, 
-            		FileUtils.generatePom(inputstream, runtimeVersion, groupId, artifactId, version),
-            		null, "pom.xml");
+			
+			if (shouldCreateMavenProject) {
+				String fileName = "org/drools/eclipse/wizard/project/maven-pom.xml.template";
+				InputStream inputstream = getClass().getClassLoader().getResourceAsStream(fileName);
+				FileUtils.createProjectFile(project, monitor, 
+	            		FileUtils.generatePom(inputstream, runtimeVersion, groupId, artifactId, version),
+	            		null, "pom.xml");
+			}
 		}
 		catch (CoreException e) {
 			// TODO Auto-generated catch block
