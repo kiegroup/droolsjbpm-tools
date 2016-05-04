@@ -71,7 +71,8 @@ public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
     abstract protected void createMavenArtifacts(IJavaProject project, IProgressMonitor monitor);
     abstract protected void createKJarArtifacts(IJavaProject project, IProgressMonitor monitor);
     abstract protected void createOutputLocation(IJavaProject project, IProgressMonitor monitor) throws JavaModelException, CoreException;
-    
+    abstract protected void addSourceFolders(IJavaProject project, IProgressMonitor monitor) throws JavaModelException, CoreException;
+
     public void addPages() {
         super.addPages();
         startPage = (IKieProjectStartWizardPage) createStartPage(START_PAGE);
@@ -104,6 +105,7 @@ public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
             protected void execute(IProgressMonitor monitor)
                     throws CoreException {
                 try {
+            		startPage.setProgressMonitor(monitor);
                     IJavaProject project = JavaCore.create(newProjectHandle);
                     createRuntimeSettings(project, monitor);
                     createOutputLocation(project, monitor);
@@ -133,6 +135,8 @@ public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
         WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
             protected void execute(IProgressMonitor monitor)
                     throws CoreException {
+        		startPage.setProgressMonitor(monitor);
+            	
                 createProject(description, newProjectHandle, monitor);
             }
         };
@@ -166,6 +170,7 @@ public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
     
     protected void addNatures(IProjectDescription projectDescription) {
     	FileUtils.addJavaNature(projectDescription);
+    	FileUtils.addBPMN2Nature(projectDescription);
     	boolean shouldAddMavenNature = false;
     	if (startPage.getInitialProjectContent()==IKieProjectWizardPage.EMPTY_PROJECT)
     		shouldAddMavenNature = emptyProjectPage.shouldCreateMavenProject();
@@ -216,6 +221,7 @@ public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
 
     protected void addBuilders(IJavaProject project, IProgressMonitor monitor) throws CoreException {
     	FileUtils.addJavaBuilder(project, monitor);
+    	FileUtils.addBPMN2Builder(project, monitor);
     	boolean shouldAddMavenBuilder = false;
     	if (startPage.getInitialProjectContent()==IKieProjectWizardPage.EMPTY_PROJECT)
     		shouldAddMavenBuilder = emptyProjectPage.shouldCreateMavenProject();
@@ -240,20 +246,6 @@ public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
     		shouldAddMavenLibrary = sampleFilesProjectPage.shouldCreateMavenProject();
     	if (shouldAddMavenLibrary) {
     		FileUtils.addMavenLibraries(project, monitor);
-    	}
-    }
-
-    protected void addSourceFolders(IJavaProject project, IProgressMonitor monitor) throws JavaModelException, CoreException {
-    	if (startPage.getInitialProjectContent()!=IKieProjectWizardPage.ONLINE_EXAMPLE_PROJECT) {
-	        List<IClasspathEntry> list = new ArrayList<IClasspathEntry>();
-	        list.addAll(Arrays.asList(project.getRawClasspath()));
-	        addSourceFolder(project, list, "src/main/java", monitor);
-            if (startPage.getRuntime().getVersion().startsWith("6")) {
-	        	addSourceFolder(project, list, "src/main/resources", monitor);
-	        } else {
-	        	addSourceFolder(project, list, "src/main/rules", monitor);
-	        }
-	        project.setRawClasspath((IClasspathEntry[]) list.toArray(new IClasspathEntry[list.size()]), null);
     	}
     }
 

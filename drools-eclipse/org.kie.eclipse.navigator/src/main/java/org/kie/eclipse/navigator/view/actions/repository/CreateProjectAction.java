@@ -59,7 +59,7 @@ public class CreateProjectAction extends KieNavigatorAction {
 
         if (dlg.open()==Window.OK) {
         	JsonObject properties = dlg.getResult();
-        	String name = properties.get("name").asString();
+        	String name = properties.get("name").asString().trim();
             IKieProjectHandler project = new KieProjectHandler(repository, name);
             project.setProperties(properties);
 	        try {

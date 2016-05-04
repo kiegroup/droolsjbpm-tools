@@ -40,4 +40,7 @@ public class DroolsRuntimesPreferencePage extends AbstractRuntimesPreferencePage
 		return new DroolsRuntimesBlock();
 	}
 
+	protected String getDownloadHelpURL() {
+		return "http://www.drools.org/download/download.html";
+	}
 }
