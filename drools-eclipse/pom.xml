@@ -62,6 +62,11 @@
             <id>ban-uberjars</id>
             <phase>none</phase>
           </execution>
+          <!-- Does not work properly together with the tycho-plugin -->
+          <execution>
+            <id>ban-blacklisted-dependencies</id>
+            <phase>none</phase>
+          </execution>
         </executions>
       </plugin>
       <plugin>
