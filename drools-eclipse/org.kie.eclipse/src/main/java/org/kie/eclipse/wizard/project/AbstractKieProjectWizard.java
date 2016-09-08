@@ -230,8 +230,7 @@ public abstract class AbstractKieProjectWizard extends BasicNewResourceWizard {
     	if (shouldAddMavenBuilder) {
     		FileUtils.addMavenBuilder(project, monitor);
     	}
-    	else
-    		startPage.getRuntimeManager().addBuilder(project, monitor);
+   		startPage.getRuntimeManager().addBuilder(project, monitor);
     }
     
     protected void setClasspath(IJavaProject project, IProgressMonitor monitor)

@@ -249,13 +249,16 @@ public class FileUtils {
 	public static void addBPMN2Builder(IJavaProject project, IProgressMonitor monitor) throws CoreException {
 	    IProjectDescription description = project.getProject().getDescription();
 	    ICommand[] commands = description.getBuildSpec();
-	    ICommand[] newCommands = new ICommand[commands.length + 1];
+	    ICommand[] newCommands = new ICommand[commands.length + 2];
 	    System.arraycopy(commands, 0, newCommands, 0, commands.length);
 	
-	    ICommand javaCommand = description.newCommand();
-	    javaCommand.setBuilderName("org.eclipse.bpmn2.modeler.core.bpmn2Builder");
-	    javaCommand.setBuilderName("org.eclipse.wst.validation.validationbuilder");
-	    newCommands[commands.length] = javaCommand;
+	    ICommand bpmn2BuilderCommand = description.newCommand();
+	    bpmn2BuilderCommand.setBuilderName("org.eclipse.bpmn2.modeler.core.bpmn2Builder");
+	    newCommands[commands.length] = bpmn2BuilderCommand;
+	    
+	    ICommand wstValidationCommand = description.newCommand();
+	    wstValidationCommand.setBuilderName("org.eclipse.wst.validation.validationbuilder");
+	    newCommands[commands.length+1] = wstValidationCommand;
 	    
 	    description.setBuildSpec(newCommands);
 	    project.getProject().setDescription(description, monitor);
