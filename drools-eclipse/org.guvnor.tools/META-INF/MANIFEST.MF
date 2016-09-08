@@ -12,10 +12,16 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.compare,
  org.guvnor.eclipse.webdav
-Export-Package: org.guvnor.tools,org.guvnor.tools.actions,org.guvnor.t
- ools.perspectives,org.guvnor.tools.preferences,org.guvnor.tools.prope
- rties,org.guvnor.tools.utils,org.guvnor.tools.utils.webdav,org.guvnor
- .tools.views,org.guvnor.tools.views.model,org.guvnor.tools.wizards
+Export-Package: org.guvnor.tools,
+ org.guvnor.tools.actions,
+ org.guvnor.tools.perspectives,
+ org.guvnor.tools.preferences,
+ org.guvnor.tools.properties,
+ org.guvnor.tools.utils,
+ org.guvnor.tools.utils.webdav,
+ org.guvnor.tools.views,
+ org.guvnor.tools.views.model,
+ org.guvnor.tools.wizards
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
