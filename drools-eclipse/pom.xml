@@ -118,7 +118,7 @@
           <artifact>
             <groupId>org.jboss.tools.integration-stack</groupId>
             <artifactId>target-platform</artifactId>
-            <version>4.3.1.Final</version>
+            <version>4.4.0.CR1-SNAPSHOT</version>
             <type>target</type>
             <classifier>base</classifier>
           </artifact>
