@@ -2,7 +2,7 @@
 <feature
       id="org.guvnor.tools.feature"
       label="%featurename"
-      version="6.5.0.qualifier"
+      version="6.5.0.Final"
       provider-name="%providername"
       license-feature="org.jboss.tools.foundation.license.feature"
       license-feature-version="0.0.0">
@@ -32,14 +32,14 @@
          id="org.guvnor.eclipse.webdav"
          download-size="0"
          install-size="0"
-         version="6.5.0.qualifier"
+         version="6.5.0.Final"
          unpack="false"/>
 
    <plugin
          id="org.guvnor.tools"
          download-size="0"
          install-size="0"
-         version="6.5.0.qualifier"
+         version="6.5.0.Final"
          unpack="false"/>
 
 </feature>

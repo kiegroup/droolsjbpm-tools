@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Drools Eclipse Plug-in
 Bundle-SymbolicName: org.drools.eclipse;singleton:=true
-Bundle-Version: 6.5.0.qualifier
+Bundle-Version: 6.5.0.Final
 Bundle-Activator: org.drools.eclipse.DroolsEclipsePlugin
 Bundle-Vendor: JBoss by Red Hat
 Bundle-Localization: plugin

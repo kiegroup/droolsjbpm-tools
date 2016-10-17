@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Common plugin for Drools/jBPM
 Bundle-SymbolicName: org.kie.eclipse;singleton:=true
-Bundle-Version: 6.5.0.qualifier
+Bundle-Version: 6.5.0.Final
 Bundle-Activator: org.kie.eclipse.Activator
 Bundle-Vendor: JBoss by Red Hat
 Bundle-Localization: plugin

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %BundleName
 Bundle-SymbolicName: org.jboss.tools.runtime.drools.detector;singleton:=true
-Bundle-Version: 6.5.0.qualifier
+Bundle-Version: 6.5.0.Final
 Bundle-Activator: org.jboss.tools.runtime.drools.detector.RuntimeDroolsActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

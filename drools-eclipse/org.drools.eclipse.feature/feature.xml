@@ -2,7 +2,7 @@
 <feature
       id="org.drools.eclipse.feature"
       label="%featurename"
-      version="6.5.0.qualifier"
+      version="6.5.0.Final"
       provider-name="%providername"
       license-feature="org.jboss.tools.foundation.license.feature"
       license-feature-version="0.0.0">
@@ -56,7 +56,7 @@
          id="org.drools.eclipse"
          download-size="0"
          install-size="0"
-         version="6.5.0.qualifier"
+         version="6.5.0.Final"
          unpack="false"/>
 
 </feature>

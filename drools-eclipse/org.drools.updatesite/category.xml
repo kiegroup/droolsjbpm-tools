@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="org.drools.eclipse.feature_6.5.0.qualifier" id="org.drools.eclipse.feature" version="6.5.0.qualifier">
+   <feature url="org.drools.eclipse.feature_6.5.0.Final" id="org.drools.eclipse.feature" version="6.5.0.Final">
       <category name="droolsjbpm"/>
    </feature>
-   <feature url="org.drools.eclipse.feature.source_6.5.0.qualifier" id="org.drools.eclipse.feature.source" version="6.5.0.qualifier">
+   <feature url="org.drools.eclipse.feature.source_6.5.0.Final" id="org.drools.eclipse.feature.source" version="6.5.0.Final">
       <category name="droolsjbpm"/>
    </feature>
-   <feature url="org.guvnor.tools.feature_6.5.0.qualifier" id="org.guvnor.tools.feature" version="6.5.0.qualifier">
+   <feature url="org.guvnor.tools.feature_6.5.0.Final" id="org.guvnor.tools.feature" version="6.5.0.Final">
       <category name="droolsjbpm"/>
    </feature>
-   <feature url="org.guvnor.tools.feature.source_6.5.0.qualifier" id="org.guvnor.tools.feature.source" version="6.5.0.qualifier">
+   <feature url="org.guvnor.tools.feature.source_6.5.0.Final" id="org.guvnor.tools.feature.source" version="6.5.0.Final">
       <category name="droolsjbpm"/>
    </feature>
-   <feature url="org.jbpm.eclipse.feature_6.5.0.qualifier" id="org.jbpm.eclipse.feature" version="6.5.0.qualifier">
+   <feature url="org.jbpm.eclipse.feature_6.5.0.Final" id="org.jbpm.eclipse.feature" version="6.5.0.Final">
       <category name="droolsjbpm"/>
    </feature>
-   <feature url="org.jbpm.eclipse.feature.source_6.5.0.qualifier" id="org.jbpm.eclipse.feature.source" version="6.5.0.qualifier">
+   <feature url="org.jbpm.eclipse.feature.source_6.5.0.Final" id="org.jbpm.eclipse.feature.source" version="6.5.0.Final">
       <category name="droolsjbpm"/>
    </feature>
-   <feature url="org.jboss.tools.runtime.drools.detector.feature_6.5.0.qualifier.jar" id="org.jboss.tools.runtime.drools.detector.feature" version="6.5.0.qualifier">
+   <feature url="org.jboss.tools.runtime.drools.detector.feature_6.5.0.Final.jar" id="org.jboss.tools.runtime.drools.detector.feature" version="6.5.0.Final">
       <category name="droolsjbpm"/>
    </feature>
-   <feature url="org.jboss.tools.runtime.drools.detector.feature.source_6.5.0.qualifier" id="org.jboss.tools.runtime.drools.detector.feature.source" version="6.5.0.qualifier">
+   <feature url="org.jboss.tools.runtime.drools.detector.feature.source_6.5.0.Final" id="org.jboss.tools.runtime.drools.detector.feature.source" version="6.5.0.Final">
       <category name="droolsjbpm"/>
    </feature>
-   <feature url="features/org.kie.eclipse.feature_6.5.0.qualifier.jar" id="org.kie.eclipse.feature" version="6.5.0.qualifier">
+   <feature url="features/org.kie.eclipse.feature_6.5.0.Final.jar" id="org.kie.eclipse.feature" version="6.5.0.Final">
       <category name="droolsjbpm"/>
    </feature>
-   <feature url="org.kie.eclipse.feature.source_6.5.0.qualifier" id="org.kie.eclipse.feature.source" version="6.5.0.qualifier">
+   <feature url="org.kie.eclipse.feature.source_6.5.0.Final" id="org.kie.eclipse.feature.source" version="6.5.0.Final">
       <category name="droolsjbpm"/>
    </feature>
-   <feature url="org.kie.eclipse.navigator.feature_6.5.0.qualifier.jar" id="org.kie.eclipse.navigator.feature" version="6.5.0.qualifier">
+   <feature url="org.kie.eclipse.navigator.feature_6.5.0.Final.jar" id="org.kie.eclipse.navigator.feature" version="6.5.0.Final">
       <category name="droolsjbpm"/>
    </feature>
-   <feature url="org.kie.eclipse.navigator.feature.source_6.5.0.qualifier" id="org.kie.eclipse.navigator.feature.source" version="6.5.0.qualifier">
+   <feature url="org.kie.eclipse.navigator.feature.source_6.5.0.Final" id="org.kie.eclipse.navigator.feature.source" version="6.5.0.Final">
       <category name="droolsjbpm"/>
    </feature>
    <category-def name="droolsjbpm" label="Drools and jBPM">

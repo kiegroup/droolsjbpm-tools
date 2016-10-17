@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %plugin.name
 Bundle-SymbolicName: org.guvnor.tools;singleton:=true
-Bundle-Version: 6.5.0.qualifier
+Bundle-Version: 6.5.0.Final
 Bundle-Activator: org.guvnor.tools.Activator
 Bundle-Vendor: %plugin.provider
 Bundle-Localization: plugin
