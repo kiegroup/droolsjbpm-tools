@@ -118,68 +118,15 @@ public class DroolsRuntimeManager {
                 }
             }
         }
-        // get eclipse jdt jar
-        String pluginRootString = Platform.getInstallLocation().getURL().getPath() + "plugins/";
-        File pluginRoot = new Path(pluginRootString).toFile();
-        files = pluginRoot.listFiles();
-        boolean found = false;
-        // search for eclipse jdt 3.9.x jar
-        for (int i = 0; i < files.length; i++) {
-            if (files[i].getAbsolutePath().indexOf("org.eclipse.jdt.core_3.9") > -1) {
-                jars.add(files[i].getAbsolutePath());
-                found = true;
-                break;
-            }
+
+        // search for latest eclipse jdt jar
+        try {
+            jars.add(FileLocator.getBundleFile(Platform.getBundle("org.eclipse.jdt.core")).getAbsolutePath());
+        } catch (IOException ex) {
+            DroolsEclipsePlugin.log(ex);
         }
-        // search for eclipse jdt 3.8.x jar
-        if (!found) {
-	        for (int i = 0; i < files.length; i++) {
-	            if (files[i].getAbsolutePath().indexOf("org.eclipse.jdt.core_3.8") > -1) {
-	                jars.add(files[i].getAbsolutePath());
-	                found = true;
-	                break;
-	            }
-	        }
-        }
-        // search for eclipse jdt 3.7.x jar
-        if (!found) {
-	        for (int i = 0; i < files.length; i++) {
-	            if (files[i].getAbsolutePath().indexOf("org.eclipse.jdt.core_3.7") > -1) {
-	                jars.add(files[i].getAbsolutePath());
-	                found = true;
-	                break;
-	            }
-	        }
-        }
-        // search for eclipse jdt 3.6.x jar
-        if (!found) {
-	        for (int i = 0; i < files.length; i++) {
-	            if (files[i].getAbsolutePath().indexOf("org.eclipse.jdt.core_3.6") > -1) {
-	                jars.add(files[i].getAbsolutePath());
-	                found = true;
-	                break;
-	            }
-	        }
-        }
-        // if not found, search for eclipse jdt 3.5.x jar
-        if (!found) {
-            for (int i = 0; i < files.length; i++) {
-                if (files[i].getAbsolutePath().indexOf("org.eclipse.jdt.core_3.5") > -1) {
-                    jars.add(files[i].getAbsolutePath());
-                    found = true;
-                    break;
-                }
-            }
-        }
-        // if not found, search for eclipse jdt 3.4.x jar
-        if (!found) {
-            for (int i = 0; i < files.length; i++) {
-                if (files[i].getAbsolutePath().indexOf("org.eclipse.jdt.core_3.4") > -1) {
-                    jars.add(files[i].getAbsolutePath());
-                    break;
-                }
-            }
-        }
+
+
         // copy jars to specified location
         if (!location.endsWith(File.separator)) {
             location = location + File.separator;
