@@ -18,25 +18,19 @@ package org.drools.eclipse.util;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.kie.eclipse.runtime.IRuntimeRecognizer;
+import org.kie.eclipse.runtime.AbstractRuntimeRecognizer;
 
-public class SOAPlatform4RuntimeRecognizer implements IRuntimeRecognizer {
-
-	// TODO: determine actual version and installed product from jar manifests
-	String version = "4.0.X";
-	String product = "drools";
+public class SOAPlatform4RuntimeRecognizer extends AbstractRuntimeRecognizer {
 
     public String[] recognizeJars(String path) {
         IPath jbossrulesesbPath = new Path(path).append("jboss-as/server/default/deploy/jbrules.esb");
         File jbossrulesesb = jbossrulesesbPath.toFile();
         if (jbossrulesesb.isDirectory()) {
-            List<String> list = new ArrayList<String>();
             // the SOA platform
+            clearFiles();
             File[] files = jbossrulesesb.listFiles(new FilenameFilter() {
 
                 public boolean accept(File dir, String name) {
@@ -51,7 +45,7 @@ public class SOAPlatform4RuntimeRecognizer implements IRuntimeRecognizer {
 
             });
             for (int i = 0; i < files.length; i++) {
-                list.add(files[i].getAbsolutePath());
+                addFile(files[i]);
             }
             IPath jbossesbsarPath = new Path(path).append("jboss-as/server/default/deploy/jbossesb.sar/lib");
             File jbossesbsar=jbossesbsarPath.toFile();
@@ -78,26 +72,15 @@ public class SOAPlatform4RuntimeRecognizer implements IRuntimeRecognizer {
                     return null;
                 }
                 for (int i = 0; i < files.length; i++) {
-                    list.add(files[i].getAbsolutePath());
+                    addFile(files[i]);
                 }
             } else {
                 // could not find MVEL, this is probably not a SOA-P v4 runtime
                 // but possibly a SOA-P v5 one
                 return null;
             }
-            return list.toArray(new String[list.size()]);
+            return getFiles();
         }
         return null;
     }
-
-	@Override
-	public String getVersion() {
-		return version;
-	}
-
-	@Override
-	public String getProduct() {
-		return product;
-	}
-
 }
