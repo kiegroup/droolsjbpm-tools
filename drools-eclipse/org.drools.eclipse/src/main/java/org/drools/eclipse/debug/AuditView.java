@@ -62,6 +62,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.ObjectInputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -167,7 +168,7 @@ public class AuditView extends AbstractDebugView {
         try {
             Method m = log.getClass().getMethod( "getEngine" );
             return ((String)m.invoke( log )).equalsIgnoreCase("RETEOO");
-        } catch (Exception e) {
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             return false;
         }
     }
