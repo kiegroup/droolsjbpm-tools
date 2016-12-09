@@ -1,5 +1,6 @@
 package org.kie.eclipse.navigator.view.utils;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jgit.lib.Repository;
@@ -30,6 +31,7 @@ public class ViewUtils {
 			page.showView(SERVERS_VIEW_ID, null, IWorkbenchPage.VIEW_ACTIVATE);
 			return true;
 		} catch (Exception e) {
+			MessageDialog.openError(win.getShell(), "Unable to Open View", "An error occurred whilst trying to open the Servers View\nIs it possible the WST UI is not installed?");
 		}
 		return false;
 	}

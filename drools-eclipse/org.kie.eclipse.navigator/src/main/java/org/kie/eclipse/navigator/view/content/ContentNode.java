@@ -10,6 +10,7 @@
  ******************************************************************************/ 
 package org.kie.eclipse.navigator.view.content;
 
+import org.kie.eclipse.Activator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Display;
@@ -61,7 +62,7 @@ public abstract class ContentNode<T extends IContainerNode<?>> implements IConte
 			return getRoot().getNavigator();
 		}
 		catch (Exception e) {
-			System.out.println(e.getMessage());
+			Activator.logError(e.getMessage(), e);
 		}
 		return null;
 	}

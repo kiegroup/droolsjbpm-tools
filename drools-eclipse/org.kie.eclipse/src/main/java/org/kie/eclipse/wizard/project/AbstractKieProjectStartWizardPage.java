@@ -3,6 +3,7 @@ package org.kie.eclipse.wizard.project;
 import java.util.Collection;
 
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -20,6 +21,7 @@ import org.kie.eclipse.runtime.IRuntimeManager;
 public class AbstractKieProjectStartWizardPage extends WizardPage implements IKieProjectStartWizardPage {
 
 	private int initialProjectContent = IKieProjectWizardPage.EMPTY_PROJECT;
+	private IProgressMonitor progressMonitor;
 
 	public AbstractKieProjectStartWizardPage(String pageName) {
 		super(pageName);
@@ -196,5 +198,13 @@ public class AbstractKieProjectStartWizardPage extends WizardPage implements IKi
 		if (initialProjectContent==IKieProjectWizardPage.ONLINE_EXAMPLE_PROJECT)
 			return getWizard().getPage(AbstractKieProjectWizard.ONLINE_EXAMPLE_PROJECT_PAGE);
 		return null;
+	}
+	
+	public IProgressMonitor getProgressMonitor() {
+		return progressMonitor;
+	}
+
+	public void setProgressMonitor(IProgressMonitor progressMonitor) {
+		this.progressMonitor = progressMonitor;
 	}
 }

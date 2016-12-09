@@ -14,7 +14,7 @@ public class ProcessTest extends JbpmJUnitBaseTestCase {
 
 	@Test
 	public void testProcess() {
-		RuntimeManager manager = createRuntimeManager("sample.bpmn");
+		RuntimeManager manager = createRuntimeManager("com/sample/sample.bpmn");
 		RuntimeEngine engine = getRuntimeEngine(null);
 		KieSession ksession = engine.getKieSession();
 		

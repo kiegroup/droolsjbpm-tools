@@ -18,24 +18,18 @@ package org.drools.eclipse.util;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.kie.eclipse.runtime.IRuntimeRecognizer;
+import org.kie.eclipse.runtime.AbstractRuntimeRecognizer;
 
-public class SOAPlatform5RuntimeRecognizer implements IRuntimeRecognizer {
-
-	// TODO: determine actual version and installed product from jar manifests
-	String version = "5.0.X";
-	String product = "drools";
+public class SOAPlatform5RuntimeRecognizer extends AbstractRuntimeRecognizer {
 
     public String[] recognizeJars(String path) {
         IPath jbossrulesesbPath = new Path(path).append("jboss-as/server/default/deploy/jbrules.esb");
         File jbossrulesesb = jbossrulesesbPath.toFile();
         if (jbossrulesesb.isDirectory()) {
-            List<String> list = new ArrayList<String>();
+            clearFiles();
             // the SOA platform
             File[] files = jbossrulesesb.listFiles(new FilenameFilter() {
 
@@ -51,7 +45,7 @@ public class SOAPlatform5RuntimeRecognizer implements IRuntimeRecognizer {
 
             });
             for (int i = 0; i < files.length; i++) {
-                list.add(files[i].getAbsolutePath());
+                addFile(files[i]);
             }
             IPath jbossesbsarPath = new Path(path).append("jboss-as/server/default/deployers/esb.deployer/lib");
             File jbossesbsar=jbossesbsarPath.toFile();
@@ -78,22 +72,11 @@ public class SOAPlatform5RuntimeRecognizer implements IRuntimeRecognizer {
                     return null;
                 }
                 for (int i = 0; i < files.length; i++) {
-                    list.add(files[i].getAbsolutePath());
+                	addFile(files[i]);
                 }
             }
-            return list.toArray(new String[list.size()]);
+            return getFiles();
         }
         return null;
     }
-
-	@Override
-	public String getVersion() {
-		return version;
-	}
-
-	@Override
-	public String getProduct() {
-		return product;
-	}
-
 }

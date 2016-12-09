@@ -164,7 +164,7 @@ public abstract class AbstractKieOnlineExampleProjectWizardPage extends WizardPa
 	
 		    				if (refs.size()>0) {
 			    	            for (Ref ref : refs) {
-	//		    	                System.out.println("Ref: " + ref.getName());
+	//		    	                Activator.println("Ref: " + ref.getName());
 			    	                String a[] = ref.getName().split("/");
 			    	                if (a.length==3) {
 			    	                	String tagUrl = null;
@@ -282,19 +282,20 @@ public abstract class AbstractKieOnlineExampleProjectWizardPage extends WizardPa
 								// for example, setting the "Architecture" field in feature.xml
 								// (in the Overview page) to "Drools 6.0.x" produces this:
 								//           (osgi.arch=Drools 6.x)
-								System.out.println(p);
+								Activator.println(p);
 							}
 						}
-						System.out.println("IU Properties:");
+						Activator.println("IU Properties:");
 						for (Entry<String, String> pe : iu.getProperties().entrySet()) {
-							System.out.println("    "+pe.getKey()+"="+pe.getValue());
+							Activator.println("    "+pe.getKey()+"="+pe.getValue());
 						}
 						for (ITouchpointData tp : iu.getTouchpointData()) {
-							System.out.println("IU Touchpoints:");
+							Activator.println("IU Touchpoints:");
 							for (Entry<String, ITouchpointInstruction> tpe : tp.getInstructions().entrySet()) {
-								System.out.println("    "+tpe.getKey()+"="+tpe.getValue());
+								Activator.println("    "+tpe.getKey()+"="+tpe.getValue());
 							}
 						}
+
 						String text = iu.getProperty(IInstallableUnit.PROP_DESCRIPTION, "df_LT");
 						String url = iu.getProperty(IInstallableUnit.PROP_DESCRIPTION_URL);
 						if (text != null && !text.isEmpty()) {

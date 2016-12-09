@@ -27,9 +27,7 @@ import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -38,7 +36,6 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.kie.eclipse.runtime.AbstractRuntimeManager;
-import org.kie.eclipse.runtime.DefaultRuntimeRecognizer;
 import org.kie.eclipse.runtime.IRuntime;
 import org.kie.eclipse.runtime.IRuntimeRecognizer;
 
@@ -46,9 +43,8 @@ public class DroolsRuntimeManager extends AbstractRuntimeManager {
 
 	/**
 	 * This is the "hidden" Eclipse Workspace Project name that will hold a copy
-	 * of the Drools Runtime that is packaged with this plugin; currently just a
-	 * simple project with a "lib" folder containing all of the required Drools
-	 * Runtime jars. If the user has not yet created a default Runtime, this
+	 * of the Drools Runtime that is packaged with this plugin.
+	 * If the user has not yet created a default Runtime, this
 	 * project will be created, populated and used as the default.
 	 */
 	private static final String DROOLS_BUNDLE_RUNTIME_LOCATION = ".drools.runtime";
@@ -62,9 +58,13 @@ public class DroolsRuntimeManager extends AbstractRuntimeManager {
 	/**
 	 * Name of this plugin.
 	 */
-	private static final String DROOLS_BUNDLE_NAME = "org.drools.eclipse";
+	private static final String DROOLS_BUNDLE_NAME = DroolsEclipsePlugin.PLUGIN_ID;
 
-	private static final String RUNTIME_RECOGNIZER = "org.drools.eclipse.runtimeRecognizer";
+	/**
+	 * ID of the Runtime Recognizer extension point.
+	 * This implements IRuntimeRecognizer which is used to collect required runtime jars.
+	 */
+	private static final String DROOLS_RUNTIME_RECOGNIZER = "org.drools.eclipse.runtimeRecognizer";
 
 	private static DroolsRuntimeManager manager;
 
@@ -75,7 +75,7 @@ public class DroolsRuntimeManager extends AbstractRuntimeManager {
 	}
 
 	@Override
-	public String getBundleRuntimeLocation() {
+	public String getRuntimeWorkspaceLocation() {
 		return DROOLS_BUNDLE_RUNTIME_LOCATION;
 	}
 
@@ -140,7 +140,20 @@ public class DroolsRuntimeManager extends AbstractRuntimeManager {
 		
 	}
     
-	public String getRuntimeRecognizerId() {
-		return RUNTIME_RECOGNIZER;
+	public IRuntimeRecognizer[] getRuntimeRecognizers() {
+    	List<IRuntimeRecognizer> recognizer = new ArrayList<IRuntimeRecognizer>();
+        try {
+            IConfigurationElement[] config = Platform.getExtensionRegistry()
+                    .getConfigurationElementsFor(DROOLS_RUNTIME_RECOGNIZER);
+            for (IConfigurationElement e : config) {
+                Object o = e.createExecutableExtension("class");
+                if (o instanceof IRuntimeRecognizer) {
+                	recognizer.add( (IRuntimeRecognizer) o);
+                }
+            }
+        } catch (Exception e) {
+        	logException(e);
+        }
+        return recognizer.toArray(new IRuntimeRecognizer[recognizer.size()]);
 	}
 }

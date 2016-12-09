@@ -16,9 +16,11 @@ package org.kie.eclipse.server;
 import java.util.List;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.wst.server.core.IServer;
 import org.kie.eclipse.IKieConstants;
+import org.osgi.service.prefs.Preferences;
 
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -122,6 +124,22 @@ public abstract class KieResourceHandler implements IKieResourceHandler {
 	@Override
 	public JsonObject getProperties() {
 		return properties;
+	}
+	
+	public static void removeServerPreferences(IServer server) {
+		try {
+			String name = getCanonicalName(server.getName());
+			IEclipsePreferences preferences = InstanceScope.INSTANCE.getNode(org.kie.eclipse.Activator.PLUGIN_ID);
+			for (String key : preferences.keys()) {
+				if (key.startsWith(name + IKieConstants.PREF_PATH_SEPARATOR)) {
+					preferences.remove(key);
+				}
+			}
+			preferences.flush();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	protected static String getCanonicalName(String name) {

@@ -16,19 +16,25 @@
 
 package org.kie.eclipse.preferences;
 
+import java.net.URL;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.PlatformUI;
 import org.kie.eclipse.runtime.IRuntime;
 import org.kie.eclipse.runtime.IRuntimeManager;
 import org.kie.eclipse.runtime.IRuntimeManagerListener;
@@ -78,6 +84,37 @@ public abstract class AbstractRuntimesPreferencePage extends PreferencePage
         gd.horizontalSpan = 1;
         gd.widthHint = 300;
         l.setLayoutData(gd);
+
+        final String downloadHelpURL = getDownloadHelpURL();
+        Label helpLabel = null;
+        if (downloadHelpURL!=null) {
+        	helpLabel = new Label(ancestor, SWT.WRAP);
+        	helpLabel.setFont(ancestor.getFont());
+            gd = new GridData(GridData.FILL_HORIZONTAL);
+            gd.horizontalSpan = 1;
+            gd.verticalIndent = 12;
+            helpLabel.setLayoutData(gd);
+
+            final Link link = new Link(ancestor, SWT.NONE);
+            gd = new GridData(GridData.FILL_HORIZONTAL);
+            gd.horizontalSpan = 1;
+            gd.verticalIndent = 0;
+            link.setLayoutData(gd);
+	        link.setText("<A>Click here to learn how to download and install a Runtime</A>");
+	        link.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					URL url;
+					try {
+						url = new URL(downloadHelpURL);
+						PlatformUI.getWorkbench().getBrowserSupport().createBrowser("Download JBoss Runtime").openURL(url);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+				}
+	        });
+        }        
+        
         l = new Label(ancestor, SWT.NONE);
         gd = new GridData(GridData.FILL_HORIZONTAL);
         gd.heightHint = 1;
@@ -110,6 +147,13 @@ public abstract class AbstractRuntimesPreferencePage extends PreferencePage
                 }
             }
         });
+        if (runtimesBlock.getRuntimes().length==0) {
+        	helpLabel.setText("Don't have any installed Runtimes yet?");
+        }
+        else {
+        	helpLabel.setText("Need to find the latest Runtime?");
+        }
+        
         applyDialogFont(ancestor);
         return ancestor;
     }
@@ -139,6 +183,10 @@ public abstract class AbstractRuntimesPreferencePage extends PreferencePage
 		});
 	}
 
+	protected String getDownloadHelpURL() {
+		return null;
+	}
+	
     abstract protected IRuntimeManager getRuntimeManager();
     abstract protected AbstractRuntimesBlock createRuntimesBlock();
 }
