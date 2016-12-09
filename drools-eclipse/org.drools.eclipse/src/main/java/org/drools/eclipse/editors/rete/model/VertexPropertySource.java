@@ -16,11 +16,6 @@
 
 package org.drools.eclipse.editors.rete.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.core.spi.Constraint;
 import org.drools.eclipse.reteoo.AccumulateNodeVertex;
 import org.drools.eclipse.reteoo.AlphaNodeVertex;
@@ -36,7 +31,6 @@ import org.drools.eclipse.reteoo.NotNodeVertex;
 import org.drools.eclipse.reteoo.ObjectTypeNodeVertex;
 import org.drools.eclipse.reteoo.PropagationQueuingNodeVertex;
 import org.drools.eclipse.reteoo.QueryElementNodeVertex;
-import org.drools.eclipse.reteoo.QueryRiaFixerNodeVertex;
 import org.drools.eclipse.reteoo.QueryTerminalNodeVertex;
 import org.drools.eclipse.reteoo.ReteVertex;
 import org.drools.eclipse.reteoo.RightInputAdapterNodeVertex;
@@ -46,6 +40,11 @@ import org.drools.eclipse.reteoo.WindowNodeVertex;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Providing IPropertySource for property sheets that show
@@ -221,8 +220,6 @@ public class VertexPropertySource
             initConditionalBranchNodeProperties( (ConditionalBranchNodeVertex) vertex, descriptorList, values );
         } else if ( vertex instanceof QueryElementNodeVertex ) {
             initQueryElementNodeProperties( (QueryElementNodeVertex) vertex, descriptorList, values );
-        } else if ( vertex instanceof QueryRiaFixerNodeVertex ) {
-            initQueryRiaFixerNodeProperties( (QueryRiaFixerNodeVertex) vertex, descriptorList, values );
         } else if ( vertex instanceof TimerNodeVertex ) {
             initTimerNodeProperties( (TimerNodeVertex) vertex, descriptorList, values );
         } else if ( vertex instanceof WindowNodeVertex ) {
@@ -492,13 +489,6 @@ public class VertexPropertySource
 	private void initQueryElementNodeProperties(QueryElementNodeVertex vertex,
 			List descriptorList, Map valueMap) {
 		addProperty(PROP_NAME, VERTEX_QUERY_ELEMENT, descriptorList, valueMap);
-		addProperty(PROP_ID, Integer.toString(vertex.getId()), descriptorList,
-				valueMap);
-	}
-
-	private void initQueryRiaFixerNodeProperties(QueryRiaFixerNodeVertex vertex,
-			List descriptorList, Map valueMap) {
-		addProperty(PROP_NAME, VERTEX_QUERY_RIA_FIXER, descriptorList, valueMap);
 		addProperty(PROP_ID, Integer.toString(vertex.getId()), descriptorList,
 				valueMap);
 	}
