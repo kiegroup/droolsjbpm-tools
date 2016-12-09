@@ -33,7 +33,7 @@ public class CreateOrganizationAction extends KieNavigatorAction {
         
         if (dlg.open()==Window.OK) {
         	JsonObject properties = dlg.getResult();
-        	String name = properties.get("name").asString();
+        	String name = properties.get("name").asString().trim();
             KieOrganizationHandler organization = new KieOrganizationHandler(server, name);
             organization.setProperties(properties);
             

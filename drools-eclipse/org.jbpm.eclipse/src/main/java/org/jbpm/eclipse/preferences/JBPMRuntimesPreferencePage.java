@@ -36,4 +36,8 @@ public class JBPMRuntimesPreferencePage extends AbstractRuntimesPreferencePage {
 	protected AbstractRuntimesBlock createRuntimesBlock() {
 		return new JBPMRuntimesBlock();
 	}
+
+	protected String getDownloadHelpURL() {
+		return "http://www.jbpm.org/download/download.html";
+	}
 }
