@@ -16,19 +16,8 @@
 
 package org.drools.eclipse.debug;
 
-import java.io.EOFException;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.ObjectInputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.StreamException;
 import org.drools.core.audit.WorkingMemoryLog;
 import org.drools.core.audit.event.ActivationLogEvent;
 import org.drools.core.audit.event.LogEvent;
@@ -68,8 +57,19 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.StreamException;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.ObjectInputStream;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 
 public class AuditView extends AbstractDebugView {
 
@@ -109,7 +109,7 @@ public class AuditView extends AbstractDebugView {
     @SuppressWarnings("unchecked")
     public void refresh() {
         drools4 = false;
-        boolean phreak = false;
+        boolean reteoo = false;
         if (logFileName == null) {
             getViewer().setInput(null);
             return;
@@ -124,7 +124,9 @@ public class AuditView extends AbstractDebugView {
                     if (object instanceof WorkingMemoryLog) {
                     	WorkingMemoryLog log = (WorkingMemoryLog) object;
                     	eventList.addAll(log.getEvents());
-                    	phreak |= log.getEngine().equalsIgnoreCase("PHREAK");
+                        // TODO check drools version based on the content of the xml file
+                        // instead of using the actual runtime class.
+                        reteoo |= isReteoo( log );
                     } else if (object instanceof LogEvent) {
                         eventList.add((LogEvent) object);
                     } else if (object instanceof List) {
@@ -146,16 +148,28 @@ public class AuditView extends AbstractDebugView {
         } catch (Throwable t) {
             DroolsEclipsePlugin.log(t);
         }
-        if (phreak) {
-            getViewer().setInput(createPhreakEventList(eventList));
+        if (reteoo) {
+            getViewer().setInput(createEventList(eventList));
         } else if (drools4) {
             getViewer().setInput(createDrools4EventList(eventList));
         } else {
-            getViewer().setInput(createEventList(eventList));
+            getViewer().setInput(createPhreakEventList(eventList));
         }
         // TODO: this is necessary because otherwise, the show cause action
         // cannot find the cause event if it hasn't been shown yet
         ((TreeViewer) getViewer()).expandAll();
+    }
+
+    private boolean isReteoo(WorkingMemoryLog log) {
+        // From Drools 7 phreak is the only available engine.
+        // Tries to check via reflection if the WorkingMemoryLog class has a getEngine() method
+        // (only available on drools 6) and use it if so.
+        try {
+            Method m = log.getClass().getMethod( "getEngine" );
+            return ((String)m.invoke( log )).equalsIgnoreCase("RETEOO");
+        } catch (Exception e) {
+            return false;
+        }
     }
     
     protected List<Event> createPhreakEventList(List<LogEvent> logEvents) {
