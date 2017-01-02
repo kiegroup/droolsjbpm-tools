@@ -57,7 +57,6 @@ import org.kie.eclipse.wizard.project.IKieSampleFilesProjectWizardPage;
 /**
  * A wizard to create a new jBPM project.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">kris verlaenen </a>
  */
 public class NewJBPMProjectWizard extends AbstractKieProjectWizard {
 

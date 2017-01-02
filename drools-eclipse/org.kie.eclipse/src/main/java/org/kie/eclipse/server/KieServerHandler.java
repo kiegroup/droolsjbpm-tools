@@ -8,7 +8,6 @@
  * Contributors:
  * Red Hat, Inc. - initial API and implementation
  *
- * @author Bob Brodt
  ******************************************************************************/
 
 package org.kie.eclipse.server;
