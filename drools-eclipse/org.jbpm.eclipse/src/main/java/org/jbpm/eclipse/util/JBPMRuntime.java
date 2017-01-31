@@ -20,6 +20,11 @@ import org.kie.eclipse.runtime.AbstractRuntime;
 
 public class JBPMRuntime extends AbstractRuntime {
 	
+	public JBPMRuntime() {
+		name = "jBPM";
+		version = new Version("6.4.0.Final");
+	}
+	
 	@Override
 	public String getProduct() {
 		return "jbpm";

@@ -3,9 +3,14 @@ package org.kie.eclipse.utils;
 import java.io.File;
 import java.net.URISyntaxException;
 
-import org.eclipse.egit.ui.UIUtils;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.core.variables.IStringVariableManager;
+import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.jgit.transport.URIish;
-import org.kie.eclipse.IKieConstants;
+import org.eclipse.jgit.util.FS;
 import org.kie.eclipse.IKieConstants;
 import org.kie.eclipse.server.IKieRepositoryHandler;
 import org.kie.eclipse.server.IKieServerHandler;
@@ -19,7 +24,7 @@ public class PreferencesUtils implements IKieConstants {
 	public static String getRepoRoot(IKieRepositoryHandler repository) {
 		IKieServerHandler server = (IKieServerHandler) repository.getRoot();
 	    boolean useDefaultGitPath = server.getPreference(IKieConstants.PREF_USE_DEFAULT_GIT_PATH, false);
-		String defaultRepoRoot = UIUtils.getDefaultRepositoryDir();
+		String defaultRepoRoot = getDefaultRepositoryDir();
 		String repoRoot;
 		if (useDefaultGitPath) {
 			repoRoot = defaultRepoRoot;
@@ -61,5 +66,47 @@ public class PreferencesUtils implements IKieConstants {
 			e.printStackTrace();
 		}
 		return uri;
+	}
+
+	// FIXME: As soon as I find out how to get the default git repository directory root
+	// from EGit, this needs to go away - there's a bunch of code here that was copied
+	// directly from the EGit RepositoryUtil class
+	private static final String core_defaultRepositoryDir = "core_defaultRepositoryDir"; //$NON-NLS-1$
+	private static final String deprecated_defaultRespositoryDir = "default_repository_dir"; //$NON-NLS-1$
+	private static final String egitPluginId = "org.eclipse.egit.core"; //$NON-NLS-1$
+	private static final String deprecatedEgitPreferences = "org.eclipse.egit.ui"; //$NON-NLS-1$
+	
+	public static String getDefaultRepositoryDir() {
+		String key = core_defaultRepositoryDir;
+		String dir = getDeprecatedRepoRootPreference();
+		IEclipsePreferences p = InstanceScope.INSTANCE.getNode(egitPluginId);
+		if (dir == null) {
+			dir = p.get(key, getDefaultDefaultRepositoryDir());
+		}
+
+		IStringVariableManager manager = VariablesPlugin.getDefault().getStringVariableManager();
+		String result;
+		try {
+			result = manager.performStringSubstitution(dir);
+		} catch (CoreException e) {
+			result = ""; //$NON-NLS-1$
+		}
+		if (result == null || result.isEmpty()) {
+			result = ResourcesPlugin.getWorkspace().getRoot().getRawLocation().toOSString();
+		}
+		return result;
+	}
+	
+	private static String getDefaultDefaultRepositoryDir() {
+		return new File(FS.DETECTED.userHome(), "git").getPath(); //$NON-NLS-1$
+	}
+	
+	private static String getDeprecatedRepoRootPreference() {
+		IEclipsePreferences p = InstanceScope.INSTANCE.getNode(deprecatedEgitPreferences);
+		String value = p.get(deprecated_defaultRespositoryDir, null);
+		if (value != null && value.isEmpty()) {
+			value = null;
+		}
+		return value;
 	}
 }

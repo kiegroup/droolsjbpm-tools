@@ -15,13 +15,15 @@
 
 package org.kie.eclipse.runtime;
 
-public interface IRuntime {
+import org.kie.eclipse.runtime.AbstractRuntime.Version;
+
+public interface IRuntime extends Comparable<IRuntime> {
 
 	/**
 	 * Identifies the version number of this Runtime
 	 * @return Runtime version number
 	 */
-	String getVersion();
+	Version getVersion();
 	void setVersion(String version);
 	/**
 	 * Identifies the product name, either "drools", "jbpm" or "kie" or something else?
@@ -30,6 +32,8 @@ public interface IRuntime {
 	String getProduct();
 	// probably not needed:
 	void setProduct(String string);
+	
+	String getId();
 	
 	/**
 	 * Returns a descriptive name of this Runtime. The name, not the ID, uniquely identifies
