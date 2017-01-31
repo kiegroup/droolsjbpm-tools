@@ -53,6 +53,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.kie.eclipse.runtime.AbstractRuntime.Version;
 import org.kie.eclipse.runtime.IRuntime;
 import org.kie.eclipse.runtime.IRuntimeManager;
 
@@ -87,7 +88,7 @@ public abstract class AbstractRuntimesBlock implements ISelectionProvider {
                     case 0:
                         return runtime.getName();
                     case 1:
-                    	return runtime.getVersion();
+                    	return runtime.getVersion().toString();
                     case 2:
                         return runtime.getPath();
                 }
@@ -276,17 +277,12 @@ public abstract class AbstractRuntimesBlock implements ISelectionProvider {
         if (dialog.open() == Window.OK) {
             IRuntime result = dialog.getResult();
             if (result != null) {
-                runtimeManager.recognizeJars(result);
-                String version = result.getVersion();
-                if (version==null || version.isEmpty()) {
-                	MessageDialog.openError(getShell(), "Missing Version",
-                			"Could not determine the version of Runtime "+result.getName()+
-                			"\nPlease enter a valid version number.");
-                	return;
+                if (!runtimes.contains(result)) {
+	                runtimes.add(result);
+	                fPrevSelection = null;
+	                runtimesList.setInput(runtimes);
+	                setSelection(new StructuredSelection(result));
                 }
-                runtimes.add(result);
-                runtimesList.refresh();
-                runtimesList.setSelection(new StructuredSelection(result));
             }
         }
     }
@@ -297,32 +293,21 @@ public abstract class AbstractRuntimesBlock implements ISelectionProvider {
         if (runtime == null) {
             return;
         }
+        
+        boolean isDefault = runtime.isDefault();
         AbstractRuntimeDialog dialog = createEditingDialog(getShell(), runtimes);
         dialog.setRuntime(runtime);
         if (dialog.open() == Window.OK) {
             IRuntime result = dialog.getResult();
             if (result != null) {
-            	// save the possibly updated version...
-            	String newVersion = result.getVersion();
-            	// ...because this will change it:
-                runtimeManager.recognizeJars(result);
-                if (newVersion!=null && !newVersion.isEmpty())
-                	result.setVersion(newVersion);
-                else {
-                	newVersion = result.getVersion();
-                }
-                if (newVersion==null || newVersion.isEmpty()) {
-                	MessageDialog.openError(getShell(), "Missing Version",
-                			"Could not determine the version of Runtime "+result.getName()+
-                			"\nPlease enter a valid version number.");
-                	return;
-                }
-                // replace with the edited VM
+                // replace with the edited Runtime
+                result.setDefault(isDefault);
                 int index = runtimes.indexOf(runtime);
                 runtimes.remove(index);
                 runtimes.add(index, result);
-                runtimesList.refresh();
-                runtimesList.setSelection(new StructuredSelection(result));
+                fPrevSelection = null;
+                runtimesList.setInput(runtimes);
+                setSelection(new StructuredSelection(result));
             }
         }
     }

@@ -27,6 +27,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -62,6 +64,9 @@ import org.eclipse.wst.server.core.ServerEvent;
 import org.kie.eclipse.navigator.KieNavigatorContentRoot;
 import org.kie.eclipse.navigator.view.content.IContentNode;
 import org.kie.eclipse.navigator.view.utils.ViewUtils;
+import org.kie.eclipse.server.KieResourceHandler;
+import org.osgi.service.prefs.BackingStoreException;
+import org.osgi.service.prefs.Preferences;
 
 /**
  * A view of servers, their modules, and status.
@@ -460,6 +465,7 @@ public class KieNavigatorView extends CommonNavigator implements IKieNavigatorVi
 				KieNavigatorContentRoot root = new KieNavigatorContentRoot(KieNavigatorView.this);
 				treeViewer.setInput(root);
 				toggleDefaultPage();
+				KieResourceHandler.removeServerPreferences(server);
 			}
 		});
 	}

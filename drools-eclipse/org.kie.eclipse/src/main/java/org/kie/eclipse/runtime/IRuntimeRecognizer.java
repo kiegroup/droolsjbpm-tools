@@ -16,9 +16,13 @@
 
 package org.kie.eclipse.runtime;
 
+import java.util.Hashtable;
+import java.util.List;
+
+import org.kie.eclipse.runtime.AbstractRuntime.Version;
+
 public interface IRuntimeRecognizer {
 
     String[] recognizeJars(String path);
-    String getVersion();
-    String getProduct();
+    Hashtable<String, List<Version>> getProducts();
 }

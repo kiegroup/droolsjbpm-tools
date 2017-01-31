@@ -11,7 +11,7 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <process processType="Private" isExecutable="true" id="com.sample.bpmn.hello" name="Hello World" >
+  <process id="com.sample.bpmn.hello" tns:packageName="defaultPackage" name="Hello World" isExecutable="true" processType="Private">
 
     <!-- nodes -->
     <scriptTask id="_2" name="Hello" >

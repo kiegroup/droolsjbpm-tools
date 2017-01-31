@@ -29,9 +29,9 @@ public class CreateRepositoryRequestDialog extends AbstractKieRequestDialog {
 			public String isValid(JsonObject object) {
 				JsonValue jv;
 				jv = object.get("name");
-				String name = jv==null ? null : jv.asString();
+				String name = jv==null ? null : jv.asString().trim();
 				jv = object.get("gitURL");
-				String gitURL = jv==null ? null : jv.asString();
+				String gitURL = jv==null ? null : jv.asString().trim();
 				if (name!=null && !name.isEmpty()) {
 					try {
 						for (IKieRepositoryHandler rep : organization.getRepositories()) {

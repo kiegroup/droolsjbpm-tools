@@ -21,7 +21,7 @@ public class ProcessTest extends JbpmJUnitTestCase {
 
 	@Test
 	public void testProcess() {
-		StatefulKnowledgeSession ksession = createKnowledgeSession("sample.bpmn");
+		StatefulKnowledgeSession ksession = createKnowledgeSession("com/sample/sample.bpmn");
 		TaskService taskService = getTaskService(ksession);
 		
 		ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.hello");
