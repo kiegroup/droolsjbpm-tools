@@ -39,7 +39,7 @@ import org.jbpm.process.core.context.variable.Variable;
  * Dialog for editing variables.
  */
 public class VariableDialog extends EditBeanDialog<Variable> {
-    
+
     private Text nameText;
     private DataTypeCombo dataTypeCombo;
     private DataTypeEditorComposite dataTypeEditorComposite;
@@ -48,13 +48,13 @@ public class VariableDialog extends EditBeanDialog<Variable> {
     public VariableDialog(Shell parentShell) {
         super(parentShell, "Edit Variable");
     }
-    
+
     protected Control createDialogArea(Composite parent) {
         final Composite composite = (Composite) super.createDialogArea(parent);
         GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 2;
         composite.setLayout(gridLayout);
-        
+
         Label nameLabel = new Label(composite, SWT.NONE);
         nameLabel.setText("Name: ");
         nameText = new Text(composite, SWT.NONE);
@@ -67,7 +67,7 @@ public class VariableDialog extends EditBeanDialog<Variable> {
 
         Label typeLabel = new Label(composite, SWT.NONE);
         typeLabel.setText("Type: ");
-        
+
         dataTypeCombo = new DataTypeCombo(composite,
             SWT.NONE, DefaultDataTypeRegistry.getInstance());
         DataType dataType = getValue().getType();
@@ -80,9 +80,9 @@ public class VariableDialog extends EditBeanDialog<Variable> {
                 composite.layout();
             }
         });
-        
+
         new Label(composite, SWT.NONE);
-        
+
         dataTypeEditorComposite = new DataTypeEditorComposite(composite,
             SWT.NONE, DefaultDataTypeRegistry.getInstance());
         gridData = new GridData();
@@ -96,7 +96,7 @@ public class VariableDialog extends EditBeanDialog<Variable> {
                 composite.layout();
             }
         });
-        
+
         Label valueLabel = new Label(composite, SWT.NONE);
         valueLabel.setText("Value: ");
         gridData = new GridData();
@@ -110,26 +110,28 @@ public class VariableDialog extends EditBeanDialog<Variable> {
         editorComposite.setLayoutData(gridData);
         editorComposite.setDataType(dataType);
         editorComposite.setValue(((Variable) getValue()).getValue());
-        
+
         Composite bottom = new Composite(composite, SWT.NONE);
         gridData = new GridData();
         gridData.grabExcessVerticalSpace = true;
         gridData.horizontalSpan = 2;
         bottom.setLayoutData(gridData);
-        
+
         return composite;
     }
-    
+
     protected Variable updateValue(Variable value) {
         Variable variable = (Variable) getValue();
         String name = nameText.getText();
+        DataType dataType = dataTypeEditorComposite.getDataType();
         if ("".equals(name)) {
             throw new IllegalArgumentException("Name should not be empty");
         }
         variable.setName(name);
-        variable.setType(dataTypeEditorComposite.getDataType());
+        variable.setType(dataType);
+        variable.setMetaData("ItemSubjectRef", dataType.getStringType());
         variable.setValue(editorComposite.getValue());
         return variable;
     }
-    
+
 }
