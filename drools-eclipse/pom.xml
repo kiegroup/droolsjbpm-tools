@@ -25,6 +25,9 @@
     <!-- disabling javadoc as it seems to interfere with source generation:
          http://dev.eclipse.org/mhonarc/lists/tycho-user/msg04453.html -->
     <maven.javadoc.skip>true</maven.javadoc.skip>
+    <!-- There are duplicated classes between the standard and 'p2.eclipse-plugin:*' dependencies. There is no
+         easy way to fix this other than introduce complex configs. -->
+    <enforcer.failOnDuplicatedClasses>false</enforcer.failOnDuplicatedClasses>
   </properties>
 
   <modules>
