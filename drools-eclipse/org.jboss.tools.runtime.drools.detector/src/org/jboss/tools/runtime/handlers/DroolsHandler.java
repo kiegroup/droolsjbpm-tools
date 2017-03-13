@@ -40,6 +40,7 @@ import org.drools.eclipse.util.DroolsRuntimeManager;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.jboss.tools.runtime.core.model.AbstractRuntimeDetectorDelegate;
 import org.jboss.tools.runtime.core.model.RuntimeDefinition;
+import org.kie.eclipse.runtime.IRuntime;
 
 public class DroolsHandler extends AbstractRuntimeDetectorDelegate {
 
@@ -51,11 +52,13 @@ public class DroolsHandler extends AbstractRuntimeDetectorDelegate {
 
     @Override
     public void initializeRuntimes(List<RuntimeDefinition> serverDefinitions) {
-        DroolsRuntime[] existingRuntimes = (DroolsRuntime[]) DroolsRuntimeManager.getDefault().getConfiguredRuntimes();
+        IRuntime[] existingRuntimes = DroolsRuntimeManager.getDefault().getConfiguredRuntimes();
         List<DroolsRuntime> droolsRuntimes = new ArrayList<DroolsRuntime>();
         if (existingRuntimes != null) {
-            for (DroolsRuntime runtime : existingRuntimes) {
-                droolsRuntimes.add(runtime);
+            for (IRuntime runtime : existingRuntimes) {
+            	if (runtime instanceof DroolsRuntime) {
+            		droolsRuntimes.add((DroolsRuntime)runtime);
+            	}
             }
         }
         initializeInternal(serverDefinitions, droolsRuntimes);
@@ -101,11 +104,11 @@ public class DroolsHandler extends AbstractRuntimeDetectorDelegate {
     }
     
     private static DroolsRuntime getRuntimeForLocation(String loc) {
-        DroolsRuntime[] droolsRuntimes = (DroolsRuntime[]) DroolsRuntimeManager.getDefault().getConfiguredRuntimes();
-        for (DroolsRuntime dr : droolsRuntimes) {
+        IRuntime[] droolsRuntimes = DroolsRuntimeManager.getDefault().getConfiguredRuntimes();
+        for (IRuntime dr : droolsRuntimes) {
             String location = dr.getPath();
-            if (location != null && location.equals(loc)) {
-                return dr;
+            if (location != null && location.equals(loc) && dr instanceof DroolsRuntime) {
+                return (DroolsRuntime) dr;
             }
         }
         return null;
