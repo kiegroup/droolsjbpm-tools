@@ -39,9 +39,9 @@
   </repositories>
 
   <scm>
-    <connection>scm:git:git@github.com:droolsjbpm/droolsjbpm-tools.git</connection>
-    <developerConnection>scm:git:git@github.com:droolsjbpm/droolsjbpm-tools.git</developerConnection>
-    <url>https://github.com/droolsjbpm/droolsjbpm-tools</url>
+    <connection>scm:git:git@github.com:kiegroup/droolsjbpm-tools.git</connection>
+    <developerConnection>scm:git:git@github.com:kiegroup/droolsjbpm-tools.git</developerConnection>
+    <url>https://github.com/kiegroup/droolsjbpm-tools</url>
   </scm>
 
   <modules>
