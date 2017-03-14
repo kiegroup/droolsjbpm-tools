@@ -43,8 +43,8 @@ public class CreateProjectRequestDialog extends AbstractKieRequestDialog {
 				final IWorkspaceRoot wsr = ResourcesPlugin.getWorkspace().getRoot();
 				JsonValue jv;
 				jv = object.get("name");
-				String name = jv==null ? null : jv.asString();
-				if (name!=null && !name.trim().isEmpty()) {
+				String name = jv==null ? null : jv.asString().trim();
+				if (name!=null && !name.isEmpty()) {
 					name = name.trim();
 					try {
 						for (IKieProjectHandler p : repository.getProjects()) {
@@ -119,7 +119,7 @@ public class CreateProjectRequestDialog extends AbstractKieRequestDialog {
 		JsonObject object = super.getResult();
 		JsonValue jv = object.get(ARTIFACT_ID);
 		if (jv!=null)
-			artifactIdValue = jv.asString();
+			artifactIdValue = jv.asString().trim();
 		object.remove(ARTIFACT_ID);
 		return rtn;
 	}

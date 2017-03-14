@@ -28,6 +28,7 @@
     <!-- There are duplicated classes between the standard and 'p2.eclipse-plugin:*' dependencies. There is no
          easy way to fix this other than introduce complex configs. -->
     <enforcer.failOnDuplicatedClasses>false</enforcer.failOnDuplicatedClasses>
+    <BUILD_ALIAS>Final</BUILD_ALIAS>
   </properties>
 
   <modules>
@@ -125,7 +126,7 @@
           <artifact>
             <groupId>org.jboss.tools.integration-stack</groupId>
             <artifactId>target-platform</artifactId>
-            <version>4.3.1-SNAPSHOT</version>
+            <version>4.4.2.Final</version>
             <type>target</type>
             <classifier>base</classifier>
           </artifact>
@@ -140,6 +141,7 @@
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-packaging-plugin</artifactId>
         <configuration>
+          <format>'${BUILD_ALIAS}-v'yyyyMMdd-HHmm'-B${BUILD_NUMBER}'</format>
           <archiveSite>true</archiveSite>
           <environments>
             <environment>
@@ -205,5 +207,4 @@
       </plugin>
     </plugins>
   </build>
-<version>7.0.0-SNAPSHOT</version>
 </project>

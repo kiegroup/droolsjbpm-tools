@@ -2,7 +2,6 @@ package org.kie.eclipse.navigator.preferences;
 
 import java.io.File;
 
-import org.eclipse.egit.ui.UIUtils;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
@@ -16,6 +15,7 @@ import org.eclipse.wst.server.core.IServer;
 import org.kie.eclipse.IKieConstants;
 import org.kie.eclipse.server.IKieResourceHandler;
 import org.kie.eclipse.server.KieServerHandler;
+import org.kie.eclipse.utils.PreferencesUtils;
 
 public class ServerPropertyPage extends AbstractKiePropertyPage {
 
@@ -73,7 +73,7 @@ public class ServerPropertyPage extends AbstractKiePropertyPage {
 		gitPathEditor.setEmptyStringAllowed(checked);
 		
 		if (!checked && gitPathEditor.getStringValue().isEmpty()) {
-			String defaultRepoPath = UIUtils.getDefaultRepositoryDir();
+			String defaultRepoPath = PreferencesUtils.getDefaultRepositoryDir();
 			String repoPath = getResourceHandler().getPreferenceName(null).replace(IKieConstants.PREF_PATH_SEPARATOR.charAt(0), File.separator.charAt(0));
 			if (defaultRepoPath!=null)
 				defaultRepoPath += File.separator + repoPath;

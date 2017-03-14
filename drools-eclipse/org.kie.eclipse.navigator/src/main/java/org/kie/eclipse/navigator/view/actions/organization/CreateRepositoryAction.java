@@ -34,7 +34,7 @@ public class CreateRepositoryAction extends KieNavigatorAction {
         
         if (dlg.open()== Window.OK){
         	JsonObject properties = dlg.getResult();
-        	String name = properties.get("name").asString();
+        	String name = properties.get("name").asString().trim();
         	KieRepositoryHandler repository = new KieRepositoryHandler(organization, name);
         	repository.setProperties(properties);
             
