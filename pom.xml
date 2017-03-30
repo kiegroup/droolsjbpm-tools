@@ -44,9 +44,12 @@
     <url>https://github.com/droolsjbpm/droolsjbpm-tools</url>
   </scm>
 
-  <modules>
+  <!-- this module was disabled since a dependency http://download.jboss.org/jbosstools/updates/requirements/webtools/R-3.6.3-20150216091848
+  was moved to another path and this brings the build to fail -->
+
+  <!-- <modules>
     <module>drools-eclipse</module>
-  </modules>
+  </modules> -->
 
   <profiles>
     <profile>
