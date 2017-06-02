@@ -22,7 +22,7 @@ public class DroolsRuntime extends AbstractRuntime {
 
 	public DroolsRuntime() {
 		name = "Drools";
-		version = new Version("6.4.0.Final");
+		version = new Version("7.0.0.Final");
 	}
 	
 	@Override

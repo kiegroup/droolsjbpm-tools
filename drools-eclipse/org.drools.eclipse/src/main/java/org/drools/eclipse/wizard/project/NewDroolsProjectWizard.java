@@ -120,7 +120,7 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
 	        List<IClasspathEntry> list = new ArrayList<IClasspathEntry>();
 	        list.addAll(Arrays.asList(project.getRawClasspath()));
 	        addSourceFolder(project, list, "src/main/java", monitor);
-            if (startPage.getRuntime().getVersion().getMajor()==6) {
+            if (startPage.getRuntime().getVersion().getMajor()>=6) {
 	        	addSourceFolder(project, list, "src/main/resources", monitor);
 	        } else {
 	        	addSourceFolder(project, list, "src/main/rules", monitor);

@@ -22,7 +22,7 @@ public class JBPMRuntime extends AbstractRuntime {
 	
 	public JBPMRuntime() {
 		name = "jBPM";
-		version = new Version("6.4.0.Final");
+		version = new Version("7.0.0.Final");
 	}
 	
 	@Override
