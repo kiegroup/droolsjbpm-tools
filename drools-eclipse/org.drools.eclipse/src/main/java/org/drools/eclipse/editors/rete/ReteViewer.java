@@ -56,8 +56,7 @@ import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.swt.SWT;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.drools.core.impl.KnowledgeBaseFactory;
 
 /**
  * GEF-based RETE Viewer
@@ -153,7 +152,7 @@ public class ReteViewer extends GraphicalEditor {
                 InternalKnowledgePackage pkg = drlInfo.getPackage();
                 RuleBaseConfiguration config = new RuleBaseConfiguration();
                 config.setClassLoader(newLoader);
-                ruleBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(config);
+                ruleBase = KnowledgeBaseFactory.newKnowledgeBase(config);
                 if (pkg != null) {
                     ruleBase.addPackage(pkg);
                 }
