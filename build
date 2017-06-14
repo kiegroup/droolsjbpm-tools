@@ -1,3 +1,0 @@
-#!/bin/sh
-# Set a default value for BUILD_NUMBER (provided by Jenkins) for local builds
-mvn clean install -DBUILD_NUMBER=1
