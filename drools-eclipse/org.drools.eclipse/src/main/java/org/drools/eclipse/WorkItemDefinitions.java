@@ -24,11 +24,11 @@ import java.util.Set;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.eclipse.util.ProjectClassLoader;
-import org.drools.core.process.core.ParameterDefinition;
-import org.drools.core.process.core.WorkDefinition;
-import org.drools.core.process.core.datatype.DataType;
-import org.drools.core.process.core.impl.ParameterDefinitionImpl;
-import org.drools.core.process.core.impl.WorkDefinitionExtensionImpl;
+import org.jbpm.process.core.ParameterDefinition;
+import org.jbpm.process.core.WorkDefinition;
+import org.jbpm.process.core.datatype.DataType;
+import org.jbpm.process.core.impl.ParameterDefinitionImpl;
+import org.jbpm.process.core.impl.WorkDefinitionExtensionImpl;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;

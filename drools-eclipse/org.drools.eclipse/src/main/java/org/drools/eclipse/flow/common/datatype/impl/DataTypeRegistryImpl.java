@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.eclipse.flow.common.datatype.DataTypeRegistry;
-import org.drools.core.process.core.datatype.DataTypeFactory;
+import org.jbpm.process.core.datatype.DataTypeFactory;
 
 /**
  * Default implementation of a datatype registry.

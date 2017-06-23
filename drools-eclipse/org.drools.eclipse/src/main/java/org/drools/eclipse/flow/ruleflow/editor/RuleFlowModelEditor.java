@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.core.xml.SemanticModules;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.WorkItemDefinitions;
 import org.drools.eclipse.flow.common.editor.GenericModelEditor;
@@ -37,9 +38,6 @@ import org.drools.eclipse.flow.ruleflow.core.StartNodeWrapper;
 import org.drools.eclipse.flow.ruleflow.core.WorkItemWrapper;
 import org.drools.eclipse.flow.ruleflow.editor.editpart.RuleFlowEditPartFactory;
 import org.drools.eclipse.util.ProjectClassLoader;
-import org.drools.core.process.core.WorkDefinition;
-import org.drools.core.process.core.WorkDefinitionExtension;
-import org.drools.core.xml.SemanticModules;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPartFactory;
@@ -56,9 +54,10 @@ import org.jbpm.compiler.xml.ProcessSemanticModule;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.compiler.xml.XmlRuleFlowProcessDumper;
 import org.jbpm.compiler.xml.processes.RuleFlowMigrator;
+import org.jbpm.process.core.WorkDefinition;
+import org.jbpm.process.core.WorkDefinitionExtension;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.kie.api.definition.process.Process;
-import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 
 /**
  * Graphical editor for a RuleFlow.
