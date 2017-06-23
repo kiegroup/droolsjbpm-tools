@@ -18,7 +18,7 @@ package org.drools.eclipse.flow.ruleflow.view.property.task;
 
 import org.drools.eclipse.flow.common.view.property.BeanDialogCellEditor;
 import org.drools.eclipse.flow.common.view.property.EditBeanDialog;
-import org.drools.core.process.core.Work;
+import org.jbpm.process.core.Work;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
