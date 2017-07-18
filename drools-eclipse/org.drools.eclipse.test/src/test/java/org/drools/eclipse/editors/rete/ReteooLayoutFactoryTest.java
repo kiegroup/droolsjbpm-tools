@@ -165,7 +165,7 @@ public class ReteooLayoutFactoryTest {
         PackageDescr packageDescr = parser.parse(null, drl);
         KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
         builder.addPackage(packageDescr);
-        InternalKnowledgePackage pkg = builder.getPackage();
+        InternalKnowledgePackage pkg = builder.getPackage("org.drools.examples");
         KnowledgeBaseImpl ruleBase = (KnowledgeBaseImpl) KnowledgeBaseFactory.newKnowledgeBase();
         ruleBase.addPackage(pkg);
 

@@ -57,7 +57,7 @@ public class DebugViewsTest {
         KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
         builder.addPackageFromDrl(source);
         KnowledgeBaseImpl ruleBase = (KnowledgeBaseImpl) KnowledgeBaseFactory.newKnowledgeBase();
-        ruleBase.addPackage(builder.getPackage());
+        ruleBase.addPackage(builder.getPackage("com.sample"));
         KieSession session = ruleBase.newKieSession();
         session.setGlobal("s", "String");
         List list = new ArrayList();
@@ -90,7 +90,7 @@ public class DebugViewsTest {
         KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
         builder.addPackageFromDrl(source);
         KnowledgeBaseImpl ruleBase = (KnowledgeBaseImpl) KnowledgeBaseFactory.newKnowledgeBase();
-        ruleBase.addPackage(builder.getPackage());
+        ruleBase.addPackage(builder.getPackage("com.sample"));
         KieSession session = ruleBase.newKieSession();
         List list = new ArrayList();
         session.setGlobal("list", list);
