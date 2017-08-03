@@ -168,8 +168,13 @@ public class AuditView extends AbstractDebugView {
         try {
             Method m = log.getClass().getMethod( "getEngine" );
             return ((String)m.invoke( log )).equalsIgnoreCase("RETEOO");
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+        // because project target JavaSE-1.6 cannot use try-multicatch. 
+        } catch (NoSuchMethodException e) {
             return false;
+        } catch (InvocationTargetException e) {
+        	return false;
+        } catch (IllegalAccessException e) {
+        	return false;
         }
     }
     
