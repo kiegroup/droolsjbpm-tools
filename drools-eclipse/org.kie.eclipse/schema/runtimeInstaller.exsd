@@ -274,12 +274,10 @@ This value is used as the default target path for all Artifacts unless overridde
                &lt;artifact name=&quot;drools-compiler*.jar&quot;/&gt;
                &lt;artifact name=&quot;drools-core*.jar&quot;/&gt;
                &lt;artifact name=&quot;drools-decisiontables*.jar&quot;/&gt;
-               &lt;artifact name=&quot;drools-jsr94*.jar&quot;/&gt;
                &lt;artifact name=&quot;drools-templates*.jar&quot;/&gt;
                &lt;artifact name=&quot;jbpm-bpmn2*.jar&quot;/&gt;
                &lt;artifact name=&quot;jbpm-flow-builder*.jar&quot;/&gt;
                &lt;artifact name=&quot;jbpm-flow*.jar&quot;/&gt;
-               &lt;artifact name=&quot;jsr94*.jar&quot;/&gt;
                &lt;artifact name=&quot;kie-api*.jar&quot;/&gt;
                &lt;artifact name=&quot;kie-internal*.jar&quot;/&gt;
                &lt;artifact name=&quot;mvel2*.jar&quot;/&gt;
