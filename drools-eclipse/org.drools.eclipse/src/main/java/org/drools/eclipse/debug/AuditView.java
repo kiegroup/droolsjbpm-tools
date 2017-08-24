@@ -118,6 +118,8 @@ public class AuditView extends AbstractDebugView {
         List<LogEvent> eventList = new ArrayList<LogEvent>();
         try {
             XStream xstream = new XStream();
+            String[] voidDeny = {"void.class", "Void.class"};
+            xstream.denyTypes(voidDeny);
             ObjectInputStream in = xstream.createObjectInputStream( new FileReader(logFileName) );
             try {
                 while (true) {
