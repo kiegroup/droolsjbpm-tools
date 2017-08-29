@@ -85,14 +85,6 @@
         <resolver>p2</resolver>
         <ignoreTychoRepositories>true</ignoreTychoRepositories>
         <environments>
-        <!-- having some problems with 32 bit mac OSX
-         Could not determine SWT implementation fragment bundle for environment {osgi.os=macosx, osgi.ws=cocoa, org.eclipse.update.install.features=true, osgi.arch=x86}
-          <environment>
-            <os>macosx</os>
-            <ws>cocoa</ws>
-            <arch>x86</arch>
-          </environment>
-         -->
           <environment>
             <os>macosx</os>
             <ws>cocoa</ws>
@@ -126,7 +118,7 @@
           <artifact>
             <groupId>org.jboss.tools.integration-stack</groupId>
             <artifactId>target-platform</artifactId>
-            <version>4.4.0.Final</version>
+            <version>4.5.0.Final</version>
             <type>target</type>
             <classifier>base</classifier>
           </artifact>
@@ -144,11 +136,6 @@
           <format>'${BUILD_ALIAS}-v'yyyyMMdd-HHmm'-B${BUILD_NUMBER}'</format>
           <archiveSite>true</archiveSite>
           <environments>
-            <environment>
-              <os>macosx</os>
-              <ws>cocoa</ws>
-              <arch>x86</arch>
-            </environment>
             <environment>
               <os>macosx</os>
               <ws>cocoa</ws>
