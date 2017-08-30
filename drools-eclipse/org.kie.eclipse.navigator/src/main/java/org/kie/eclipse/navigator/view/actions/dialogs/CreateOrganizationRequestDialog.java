@@ -25,9 +25,9 @@ public class CreateOrganizationRequestDialog extends AbstractKieRequestDialog {
 			public String isValid(JsonObject object) {
 				JsonValue jv;
 				jv = object.get("name");
-				String name = jv==null ? null : jv.asString();
+				String name = jv==null ? null : jv.asString().trim();
 				jv = object.get("owner");
-				String owner = jv==null ? null : jv.asString();
+				String owner = jv==null ? null : jv.asString().trim();
 				if (name!=null && !name.isEmpty()) {
 					try {
 						for (IKieOrganizationHandler org : server.getOrganizations()) {

@@ -16,26 +16,26 @@
 
 package org.drools.eclipse.debug;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.common.InternalAgenda;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.spi.AgendaGroup;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.Match;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -57,8 +57,8 @@ public class DebugViewsTest {
         KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
         builder.addPackageFromDrl(source);
         KnowledgeBaseImpl ruleBase = (KnowledgeBaseImpl) KnowledgeBaseFactory.newKnowledgeBase();
-        ruleBase.addPackage(builder.getPackage());
-        StatefulKnowledgeSession session = ruleBase.newStatefulKnowledgeSession();
+        ruleBase.addPackage(builder.getPackage("com.sample"));
+        KieSession session = ruleBase.newKieSession();
         session.setGlobal("s", "String");
         List list = new ArrayList();
         list.add("Value");
@@ -90,8 +90,8 @@ public class DebugViewsTest {
         KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
         builder.addPackageFromDrl(source);
         KnowledgeBaseImpl ruleBase = (KnowledgeBaseImpl) KnowledgeBaseFactory.newKnowledgeBase();
-        ruleBase.addPackage(builder.getPackage());
-        StatefulKnowledgeSession session = ruleBase.newStatefulSession();
+        ruleBase.addPackage(builder.getPackage("com.sample"));
+        KieSession session = ruleBase.newKieSession();
         List list = new ArrayList();
         session.setGlobal("list", list);
         session.insert("String1");
@@ -120,7 +120,7 @@ public class DebugViewsTest {
     @Test
     public void testWorkingMemoryView() throws Exception {
     	KnowledgeBaseImpl ruleBase = (KnowledgeBaseImpl) KnowledgeBaseFactory.newKnowledgeBase();
-    	StatefulKnowledgeSession session = ruleBase.newStatefulSession();
+        KieSession session = ruleBase.newKieSession();
         session.insert("Test1");
         session.insert("Test2");
         Object[] objects = ((StatefulKnowledgeSessionImpl)session).iterateObjectsToList().toArray();

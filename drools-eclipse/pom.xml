@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>droolsjbpm-tools</artifactId>
-    <version>7.0.0-SNAPSHOT</version>
+    <version>8.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-eclipse</artifactId>
@@ -25,6 +25,10 @@
     <!-- disabling javadoc as it seems to interfere with source generation:
          http://dev.eclipse.org/mhonarc/lists/tycho-user/msg04453.html -->
     <maven.javadoc.skip>true</maven.javadoc.skip>
+    <!-- There are duplicated classes between the standard and 'p2.eclipse-plugin:*' dependencies. There is no
+         easy way to fix this other than introduce complex configs. -->
+    <enforcer.failOnDuplicatedClasses>false</enforcer.failOnDuplicatedClasses>
+    <BUILD_ALIAS>Final</BUILD_ALIAS>
   </properties>
 
   <modules>
@@ -62,6 +66,11 @@
             <id>ban-uberjars</id>
             <phase>none</phase>
           </execution>
+          <!-- Does not work properly together with the tycho-plugin -->
+          <execution>
+            <id>ban-blacklisted-dependencies</id>
+            <phase>none</phase>
+          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -76,14 +85,6 @@
         <resolver>p2</resolver>
         <ignoreTychoRepositories>true</ignoreTychoRepositories>
         <environments>
-        <!-- having some problems with 32 bit mac OSX
-         Could not determine SWT implementation fragment bundle for environment {osgi.os=macosx, osgi.ws=cocoa, org.eclipse.update.install.features=true, osgi.arch=x86}
-          <environment>
-            <os>macosx</os>
-            <ws>cocoa</ws>
-            <arch>x86</arch>
-          </environment>
-         -->
           <environment>
             <os>macosx</os>
             <ws>cocoa</ws>
@@ -117,7 +118,7 @@
           <artifact>
             <groupId>org.jboss.tools.integration-stack</groupId>
             <artifactId>target-platform</artifactId>
-            <version>4.3.1-SNAPSHOT</version>
+            <version>4.5.0.Final</version>
             <type>target</type>
             <classifier>base</classifier>
           </artifact>
@@ -132,13 +133,9 @@
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-packaging-plugin</artifactId>
         <configuration>
+          <format>'${BUILD_ALIAS}-v'yyyyMMdd-HHmm'-B${BUILD_NUMBER}'</format>
           <archiveSite>true</archiveSite>
           <environments>
-            <environment>
-              <os>macosx</os>
-              <ws>cocoa</ws>
-              <arch>x86</arch>
-            </environment>
             <environment>
               <os>macosx</os>
               <ws>cocoa</ws>
@@ -197,5 +194,5 @@
       </plugin>
     </plugins>
   </build>
-<version>7.0.0-SNAPSHOT</version>
+<version>8.0.0-SNAPSHOT</version>
 </project>

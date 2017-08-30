@@ -613,8 +613,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                                           DROOLS_ICON ) );
                     KnowledgeBuilderConfigurationImpl config = new KnowledgeBuilderConfigurationImpl( ProjectClassLoader.getProjectClassLoader( getEditor() ),
                                                                                                       null );
-                    Map<String, String> accumulateFunctions = config.getAccumulateFunctionsMap();
-                    for (String accumulateFunction : accumulateFunctions.keySet()) {
+                    for (String accumulateFunction : config.getAccumulateFunctionNames()) {
                         list.add( new RuleCompletionProposal( documentOffset - prefix.length(),
                                                               prefix.length(),
                                                               "accumulate " + accumulateFunction,

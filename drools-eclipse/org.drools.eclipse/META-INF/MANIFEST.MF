@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Drools Eclipse Plug-in
 Bundle-SymbolicName: org.drools.eclipse;singleton:=true
-Bundle-Version: 7.0.0.qualifier
+Bundle-Version: 8.0.0.qualifier
 Bundle-Activator: org.drools.eclipse.DroolsEclipsePlugin
 Bundle-Vendor: JBoss by Red Hat
 Bundle-Localization: plugin
@@ -35,17 +35,17 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ltk.ui.refactoring;bundle-version="3.4.0",
  org.eclipse.swt,
  org.eclipse.jgit,
- org.kie.eclipse
+ org.kie.eclipse,
+ org.eclipse.osgi
 Eclipse-LazyStart: true
 Eclipse-BuddyPolicy: registered
 Bundle-ClassPath: .,
  lib/kie-api.jar,
  lib/kie-internal.jar,
+ lib/uberfire-maven-support.jar,
  lib/drools-core.jar,
  lib/drools-compiler.jar,
  lib/drools-decisiontables.jar,
- lib/drools-jsr94.jar,
- lib/jsr94.jar,
  lib/junit.jar,
  lib/drools-templates.jar,
  lib/mvel2.jar,
@@ -61,9 +61,13 @@ Bundle-ClassPath: .,
  lib/slf4j-api.jar,
  lib/protobuf-java.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: org.drools.eclipse.builder,
+Export-Package: org.drools.compiler.compiler,
+ org.drools.compiler.lang.descr,
+ org.drools.eclipse,
+ org.drools.eclipse.builder,
  org.drools.eclipse.util,
- org.drools.eclipse.wizard.project
+ org.drools.eclipse.wizard.project,
+ org.kie.internal.builder
 Import-Package: org.kie.eclipse.preferences,
  org.kie.eclipse.runtime,
  org.kie.eclipse.utils,

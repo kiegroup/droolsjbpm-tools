@@ -16,7 +16,7 @@
 
 package org.drools.eclipse.flow.common.view.datatype.editor;
 
-import org.drools.core.process.core.datatype.DataType;
+import org.jbpm.process.core.datatype.DataType;
 
 
 /**

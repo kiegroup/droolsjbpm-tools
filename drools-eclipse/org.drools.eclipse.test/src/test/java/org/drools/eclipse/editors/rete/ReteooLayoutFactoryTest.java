@@ -24,27 +24,26 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-import org.junit.Test;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.definition.KnowledgePackage;
-
-import static org.junit.Assert.*;
-
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.eclipse.editors.rete.model.ReteGraph;
 import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.eclipse.editors.rete.model.ReteGraph;
 import org.drools.eclipse.reteoo.AlphaNodeVertex;
 import org.drools.eclipse.reteoo.BaseVertex;
 import org.drools.eclipse.reteoo.EntryPointNodeVertex;
 import org.drools.eclipse.reteoo.LeftInputAdapterNodeVertex;
 import org.drools.eclipse.reteoo.ObjectTypeNodeVertex;
 import org.drools.eclipse.reteoo.ReteVertex;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.eclipse.reteoo.ReteooVisitor;
 import org.drools.eclipse.reteoo.RuleTerminalNodeVertex;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 
 /**
  * 
@@ -166,7 +165,7 @@ public class ReteooLayoutFactoryTest {
         PackageDescr packageDescr = parser.parse(null, drl);
         KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
         builder.addPackage(packageDescr);
-        InternalKnowledgePackage pkg = builder.getPackage();
+        InternalKnowledgePackage pkg = builder.getPackage("org.drools.examples");
         KnowledgeBaseImpl ruleBase = (KnowledgeBaseImpl) KnowledgeBaseFactory.newKnowledgeBase();
         ruleBase.addPackage(pkg);
 

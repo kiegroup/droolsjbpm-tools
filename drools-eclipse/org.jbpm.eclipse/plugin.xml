@@ -220,7 +220,6 @@
                <artifact name="jbpm-bpmn2*.jar"/>
                <artifact name="jbpm-flow-builder*.jar"/>
                <artifact name="jbpm-flow*.jar"/>
-               <artifact name="jsr94*.jar"/>
                <artifact name="kie-api*.jar"/>
                <artifact name="kie-internal*.jar"/>
                <artifact name="mvel2*.jar"/>
@@ -234,9 +233,7 @@
                <artifact name="drools-compiler*.jar"/>
                <artifact name="drools-core*.jar"/>
                <artifact name="drools-decisiontables*.jar"/>
-               <artifact name="drools-jsr94*.jar"/>
                <artifact name="drools-templates*.jar"/>
-               <artifact name="jsr94*.jar"/>
                <artifact name="poi-ooxml*.jar"/>
                <artifact name="poi-*.jar"/>
                <artifact name="protobuf-java*.jar"/>

@@ -51,7 +51,7 @@ public class KieCredentialsProvider extends CredentialsProvider {
 		CredentialItem.Username userItem = null;
 		CredentialItem.Password passwordItem = null;
 		for (final CredentialItem item : items) {
-			System.out.println("Credentials.get: " + item.getPromptText());
+//			System.out.println("Credentials.get: " + item.getPromptText());
 			if (item instanceof CredentialItem.Username)
 				userItem = (CredentialItem.Username) item;
 			else if (item instanceof CredentialItem.Password)
