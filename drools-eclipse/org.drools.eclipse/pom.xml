@@ -88,7 +88,7 @@
               <includeArtifactIds>
                 kie-api,
                 kie-internal,
-                uberfire-maven-support,
+                kie-soup-maven-support,
                 drools-core,
                 drools-compiler,
                 guvnor-api,

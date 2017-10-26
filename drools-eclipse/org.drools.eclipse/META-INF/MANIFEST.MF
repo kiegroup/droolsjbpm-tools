@@ -42,7 +42,7 @@ Eclipse-BuddyPolicy: registered
 Bundle-ClassPath: .,
  lib/kie-api.jar,
  lib/kie-internal.jar,
- lib/uberfire-maven-support.jar,
+ lib/kie-soup-maven-support.jar,
  lib/drools-core.jar,
  lib/drools-compiler.jar,
  lib/drools-decisiontables.jar,
