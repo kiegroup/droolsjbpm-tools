@@ -96,6 +96,7 @@
                 drools-decisiontables,
                 junit,
                 drools-templates,
+                kie-soup-commons,
                 kie-soup-project-datamodel-api,
                 kie-soup-project-datamodel-commons,
                 mvel2,
@@ -145,12 +146,17 @@
     </dependency>
     <dependency>
       <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-commons</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.soup</groupId>
       <artifactId>kie-soup-project-datamodel-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.soup</groupId>
       <artifactId>kie-soup-project-datamodel-commons</artifactId>
     </dependency>
+
 
     <dependency>
       <groupId>org.jbpm</groupId>
