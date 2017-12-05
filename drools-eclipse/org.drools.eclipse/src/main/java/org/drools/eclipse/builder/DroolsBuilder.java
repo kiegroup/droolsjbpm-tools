@@ -124,10 +124,38 @@ public class DroolsBuilder extends IncrementalProjectBuilder {
         removeProblemsFor( getProject() );
         IJavaProject project = JavaCore.create( getProject() );
 
-        isKieProject = false;
-        DroolsBuilderVisitor droolsBuilderVisitor = new DroolsBuilderVisitor();
-        getProject().accept( droolsBuilderVisitor );
-        droolsBuilderVisitor.build();
+        ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader newLoader = ProjectClassLoader.getProjectClassLoader( project );
+        try {
+            Thread.currentThread().setContextClassLoader( newLoader );
+            IClasspathEntry[] classpathEntries = project.getRawClasspath();
+            for ( int i = 0; i < classpathEntries.length; i++ ) {
+                if ( DroolsClasspathContainer.DROOLS_CLASSPATH_CONTAINER_PATH.equals( classpathEntries[i].getPath().toString() ) ) {
+                    String[] jars = DroolsRuntimeManager.getDefault().getRuntimeJars( getProject() );
+                    if ( jars == null || jars.length == 0 ) {
+                        IRuntime runtime = DroolsRuntimeManager.getDefault().getRuntime( getProject() );
+                        IMarker marker = getProject().createMarker( IDroolsModelMarker.DROOLS_MODEL_PROBLEM_MARKER );
+                        if ( runtime == null ) {
+                            marker.setAttribute( IMarker.MESSAGE,
+                                                 "Could not find default Drools runtime" );
+                        } else {
+                            marker.setAttribute( IMarker.MESSAGE,
+                                                 "Could not find Drools runtime " + runtime );
+                        }
+                        marker.setAttribute( IMarker.SEVERITY,
+                                             IMarker.SEVERITY_ERROR );
+                        return;
+                    }
+                }
+            }
+    
+            isKieProject = false;
+            DroolsBuilderVisitor droolsBuilderVisitor = new DroolsBuilderVisitor();
+            getProject().accept( droolsBuilderVisitor );
+            droolsBuilderVisitor.build();
+        } finally {
+            Thread.currentThread().setContextClassLoader( oldLoader );
+        }
     }
 
     protected void incrementalBuild(IResourceDelta delta,
