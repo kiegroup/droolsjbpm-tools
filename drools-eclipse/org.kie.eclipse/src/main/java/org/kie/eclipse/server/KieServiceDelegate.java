@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.IWorkbench;
@@ -34,8 +36,6 @@ import org.eclipse.wst.server.core.IServer;
 import org.eclipse.wst.server.core.ServerPort;
 import org.kie.eclipse.Activator;
 import org.kie.eclipse.IKieConstants;
-
-import com.eclipsesource.json.JsonObject;
 
 /**
  *
@@ -60,7 +60,7 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 
 	private static int STATUS_REQUEST_DELAY = 1000;
 	private static int STATUS_REQUEST_TIMEOUT = 60000;
-	
+
 	/**
 	 * @param server
 	 */
@@ -88,7 +88,7 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 		String creds = getUsername() + ":" + getPassword();
 		conn.setRequestProperty("Authorization", "Basic " + Base64Util.encode(creds));
 	}
-	
+
 	protected String httpGet(String request) throws IOException {
 		String host = getKieRESTUrl();
 		URL url = new URL(host + "/" + request);
@@ -140,7 +140,7 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 
 	/**
 	 * Send an HTTP POST request to the KIE console.
-	 * 
+	 *
 	 * @param request - the request URL fragment; see the Drools REST API
 	 *            documentation for details
 	 * @param body - the JSON object required by the request
@@ -166,7 +166,7 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 			writer.close();
 			os.flush();
 		}
-		
+
 		String response = new BufferedReader(new InputStreamReader((conn.getInputStream()))).readLine();
 		Activator.println("[POST] response: "+response);
 
@@ -189,7 +189,7 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 
 	/**
 	 * Sends a job status request to the KIE Server.
-	 * 
+	 *
 	 * @param jobId - the job ID from a previous HTTP POST or DELETE request
 	 * @return a string composed of a status word (e.g. "SUCCESS" or
 	 *         "BAD_REQUEST") followed by a colon delimiter and a detailed
@@ -198,7 +198,7 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 	 */
 	public String getJobStatus(final String jobId, final String title) throws IOException, InterruptedException {
 		final AtomicReference<String> ar = new AtomicReference<String>();
-		
+
 		IWorkbench wb = PlatformUI.getWorkbench();
 		IProgressService ps = wb.getProgressService();
 		try {
@@ -224,7 +224,7 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 								ar.set(status + ":" + result);
 							stopTime = System.currentTimeMillis();
 							pm.worked(STATUS_REQUEST_DELAY);
-							
+
 							Activator.println("status="+status);
 							Activator.println("result="+result);
 						}
@@ -251,7 +251,7 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 
 		return ar.get();
 	}
-	
+
 	public void deleteJob(String jobId) {
 		try {
 			httpDelete("jobs/" + jobId);
@@ -260,7 +260,7 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 			// ignore
 		}
 	}
-	
+
 	public String getUsername() {
 		return handler.getPreference(IKieConstants.PREF_SERVER_USERNAME, "");
 	}
@@ -280,7 +280,7 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 				try {
 					kieApplication = app;
 					Activator.print("Trying " + getKieRESTUrl() + "...");
-					httpGet("organizationalunits");
+					httpGetSpaces();
 					Activator.println("success!");
 				}
 				catch (Exception e) {
@@ -295,7 +295,7 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 					try {
 						kieApplication = s;
 						Activator.print("Trying " + getKieRESTUrl() + "...");
-						httpGet("organizationalunits");
+						httpGetSpaces();
 						handler.putPreference(IKieConstants.PREF_SERVER_KIE_APPLICATION_NAME, s);
 						Activator.println("success!");
 						break;
@@ -371,4 +371,18 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 		}
 		return "http://" + getServer().getHost() + ":" + getHttpPort() + "/" + kieApp + "/rest";
 	}
+
+
+
+	//
+
+
+
+	protected JsonArray httpGetSpaces() throws IOException {
+		return JsonArray.readFrom(httpGet("spaces"));
+	}
+
+    protected JsonArray httpGetProjects(final IKieOrganizationHandler organizationHandler) throws IOException {
+        return JsonArray.readFrom(httpGet("spaces/" + organizationHandler.getName() + "/projects"));
+    }
 }
