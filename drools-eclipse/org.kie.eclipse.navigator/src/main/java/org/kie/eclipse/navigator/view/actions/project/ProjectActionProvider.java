@@ -24,7 +24,5 @@ public class ProjectActionProvider extends KieNavigatorActionProvider {
         super.init(aSite);
         importAction = new ImportProjectAction(aSite.getStructuredViewer());
         addAction(importAction);
-        addAction(new DeleteProjectAction(aSite.getStructuredViewer()));
-//        addAction(new ShowPropertiesAction(aSite));
     }
 }

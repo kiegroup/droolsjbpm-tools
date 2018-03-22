@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import org.kie.eclipse.server.IKieOrganizationHandler;
@@ -40,7 +41,7 @@ public class Kie60Service extends KieServiceDelegate {
     public List<IKieOrganizationHandler> getOrganizations(final IKieServerHandler server) throws IOException {
         final List<IKieOrganizationHandler> ret = new ArrayList<IKieOrganizationHandler>();
 
-        for (final JsonValue spaceJson : httpGetSpaces()) {
+        for (final JsonValue spaceJson : httpGetOrganizations()) {
             ret.add(newKieOrganizationHandler(server, spaceJson.asObject()));
         }
 
@@ -51,7 +52,7 @@ public class Kie60Service extends KieServiceDelegate {
     public List<IKieRepositoryHandler> getRepositories(final IKieServerHandler server) throws IOException {
         final List<IKieRepositoryHandler> ret = new ArrayList<IKieRepositoryHandler>();
 
-        for (final JsonValue spaceJson : httpGetSpaces()) {
+        for (final JsonValue spaceJson : httpGetOrganizations()) {
             final IKieOrganizationHandler organization = newKieOrganizationHandler(server, spaceJson.asObject());
             for (final JsonValue projectJson : organization.getProperties().get("projects").asArray()) {
                 ret.add(newKieRepositoryHandler(organization, projectJson.asObject()));
@@ -65,7 +66,7 @@ public class Kie60Service extends KieServiceDelegate {
     public List<IKieRepositoryHandler> getRepositories(final IKieOrganizationHandler organization) throws IOException {
         final List<IKieRepositoryHandler> ret = new ArrayList<IKieRepositoryHandler>();
 
-        for (final JsonValue projectJson : httpGetProjects(organization)) {
+        for (final JsonValue projectJson : httpGetRepositories(organization)) {
             ret.add(newKieRepositoryHandler(organization, projectJson.asObject()));
         }
 
@@ -91,6 +92,16 @@ public class Kie60Service extends KieServiceDelegate {
         return repository;
     }
 
+    @Override
+    protected JsonArray httpGetOrganizations() throws IOException {
+        return JsonArray.readFrom(httpGet("spaces/"));
+    }
+
+    @Override
+    protected JsonArray httpGetRepositories(final IKieOrganizationHandler organizationHandler) throws IOException {
+        return JsonArray.readFrom(httpGet("spaces/" + organizationHandler.getName() + "/projects"));
+    }
+
     //
     //
     //
@@ -108,36 +119,7 @@ public class Kie60Service extends KieServiceDelegate {
         runJob("Request to create organization '" + organization.getName() + "'", new Requester.Action() {
             @Override
             public String execute() throws IOException {
-                return httpPost("organizationalunits", organization.getProperties());
-            }
-        });
-    }
-
-    @Override
-    public void createRepository(final IKieRepositoryHandler repository) throws IOException {
-        runJob("Request to create repository '" + repository.getName() + "'", new Requester.Action() {
-            @Override
-            public String execute() throws IOException {
-                return httpPost("repositories", repository.getProperties());
-            }
-        });
-    }
-
-    public void addRepository(final IKieRepositoryHandler repository, final IKieOrganizationHandler organization) throws IOException {
-        runJob("Request to add repository '" + repository.getName() + "'", new Requester.Action() {
-            @Override
-            public String execute() throws IOException {
-                return httpPost("organizationalunits/" + organization.getName() + "/repositories/" + repository.getName(), null);
-            }
-        });
-    }
-
-    @Override
-    public void createProject(final IKieProjectHandler project) throws IOException {
-        runJob("Request to create project '" + project.getName() + "'", new Requester.Action() {
-            @Override
-            public String execute() throws IOException {
-                return httpPost("repositories/" + project.getParent().getName() + "/projects/", project.getProperties());
+                return httpPost("spaces/", organization.getProperties());
             }
         });
     }
@@ -147,80 +129,89 @@ public class Kie60Service extends KieServiceDelegate {
         runJob("Request to delete organization '" + organization.getName() + "'", new Requester.Action() {
             @Override
             public String execute() throws IOException {
-                return httpDelete("organizationalunits/" + organization.getName());
-            }
-        });
-    }
-
-    @Override
-    public void deleteRepository(final IKieRepositoryHandler repository, final boolean removeOnly) throws IOException {
-        runJob("Request to delete repository '" + repository.getName() + "'", new Requester.Action() {
-            @Override
-            public String execute() throws IOException {
-                if (removeOnly) {
-                    final String organization = repository.getParent().getName(); // only remove the repo from its organizational unit
-                    return httpDelete("organizationalunits/" + organization + "/repositories/" + repository.getName());
-                } else {
-                    return httpDelete("repositories/" + repository.getName()); // completely obliterate the repository
-                }
-            }
-        });
-    }
-
-    @Override
-    public void deleteProject(final IKieProjectHandler project) throws IOException {
-        runJob("Request to delete project '" + project.getName() + "'", new Requester.Action() {
-            @Override
-            public String execute() throws IOException {
-                return httpDelete("repositories/" + project.getParent().getName() + "/projects/" + project.getName());
+                return httpDelete("spaces/" + organization.getName());
             }
         });
     }
 
     @Override
     public void updateOrganization(final String oldName, final IKieOrganizationHandler organization) throws IOException {
-        runJob("Request to update Organization '" + organization.getName() + "'", new Requester.Action() {
+        //Updating organization properties is not supported yet.
+    }
+
+    //Repository
+
+    @Override
+    public void createRepository(final IKieRepositoryHandler repository) throws IOException {
+        runJob("Request to create repository '" + repository.getName() + "'", new Requester.Action() {
             @Override
             public String execute() throws IOException {
-                final JsonObject properties = new JsonObject(organization.getProperties());
-                properties.remove("repositories"); // remove illegal properties
-                return httpPost("organizationalunits/" + oldName, properties);
+                return httpPost("spaces/" + repository.getParent().getName() + "/projects/", repository.getProperties());
             }
         });
     }
 
+    public void addRepository(final IKieRepositoryHandler repository, final IKieOrganizationHandler organization) throws IOException {
+        //Adding a repository is not supported yet.
+    }
+
+    @Override
+    public void deleteRepository(final IKieRepositoryHandler repository, final boolean removeOnly) throws IOException {
+        final String spaceName = repository.getParent().getName();
+        runJob("Request to delete repository '" + repository.getName() + "'", new Requester.Action() {
+            @Override
+            public String execute() throws IOException {
+                return httpDelete("spaces/" + spaceName + "/projects/" + repository.getName());
+            }
+        });
+    }
+
+    @Override
+    public void createProject(final IKieProjectHandler project) throws IOException {
+        //Creating a project is the same as creating a Repository.
+    }
+
+    @Override
+    public void deleteProject(final IKieProjectHandler project) throws IOException {
+        //Deleting a project is the same as deleting a Repository.
+    }
+
     public void mavenCompile(final IKieProjectHandler project, final JsonObject params) throws IOException {
+        final String spaceName = project.getParent().getParent().getName();
         runJob("Request to compile Project '" + project.getName() + "'", new Requester.Action() {
             @Override
             public String execute() throws IOException {
-                return httpPost("repositories/" + project.getParent().getName() + "/projects/maven/compile/", params);
+                return httpPost("spaces/" + spaceName + "/projects/" + project.getName() + "/maven/compile/", params);
             }
         });
     }
 
     public void mavenInstall(final IKieProjectHandler project, final JsonObject params) throws IOException {
+        final String spaceName = project.getParent().getParent().getName();
         runJob("Request to install Project '" + project.getName() + "'", new Requester.Action() {
             @Override
             public String execute() throws IOException {
-                return httpPost("repositories/" + project.getParent().getName() + "/projects/maven/install/", params);
+                return httpPost("spaces/" + spaceName + "/projects/" + project.getName() + "/maven/install/", params);
             }
         });
     }
 
     public void mavenTest(final IKieProjectHandler project, final JsonObject params) throws IOException {
+        final String spaceName = project.getParent().getParent().getName();
         runJob("Request to test Project '" + project.getName() + "'", new Requester.Action() {
             @Override
             public String execute() throws IOException {
-                return httpPost("repositories/" + project.getParent().getName() + "/projects/maven/test/", params);
+                return httpPost("spaces/" + spaceName + "/projects/" + project.getName() + "/maven/test/", params);
             }
         });
     }
 
     public void mavenDeploy(final IKieProjectHandler project, final JsonObject params) throws IOException {
+        final String spaceName = project.getParent().getParent().getName();
         runJob("Request to deploy Project '" + project.getName() + "'", new Requester.Action() {
             @Override
             public String execute() throws IOException {
-                return httpPost("repositories/" + project.getParent().getName() + "/projects/maven/deploy/", params);
+                return httpPost("spaces/" + spaceName + "/projects/" + project.getName() + "/maven/deploy/", params);
             }
         });
     }

@@ -16,8 +16,8 @@ public class OrganizationPropertyPage extends AbstractKieJsonPropertyPage {
 		}
 		else {
 			addField(new ReadonlyStringFieldEditor("Organization Name", getResourceHandler().getName(), getFieldEditorParent()));
-			addField(new StringFieldEditor("owner", "Owner", getFieldEditorParent()));
-			addField(new StringFieldEditor("defaultGroupId", "Default Group ID", getFieldEditorParent()));
+			addField(new ReadonlyStringFieldEditor("owner", "Owner", getFieldEditorParent()));
+			addField(new ReadonlyStringFieldEditor("defaultGroupId", "Default Group ID", getFieldEditorParent()));
 		}
 	}
 	

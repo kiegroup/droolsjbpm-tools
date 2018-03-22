@@ -280,7 +280,7 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 				try {
 					kieApplication = app;
 					Activator.print("Trying " + getKieRESTUrl() + "...");
-					httpGetSpaces();
+					httpGetOrganizations();
 					Activator.println("success!");
 				}
 				catch (Exception e) {
@@ -295,7 +295,7 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 					try {
 						kieApplication = s;
 						Activator.print("Trying " + getKieRESTUrl() + "...");
-						httpGetSpaces();
+						httpGetOrganizations();
 						handler.putPreference(IKieConstants.PREF_SERVER_KIE_APPLICATION_NAME, s);
 						Activator.println("success!");
 						break;
@@ -378,11 +378,7 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 
 
 
-	protected JsonArray httpGetSpaces() throws IOException {
-		return JsonArray.readFrom(httpGet("spaces"));
-	}
+	protected abstract JsonArray httpGetOrganizations() throws IOException;
 
-    protected JsonArray httpGetProjects(final IKieOrganizationHandler organizationHandler) throws IOException {
-        return JsonArray.readFrom(httpGet("spaces/" + organizationHandler.getName() + "/projects"));
-    }
+    protected abstract JsonArray httpGetRepositories(final IKieOrganizationHandler organizationHandler) throws IOException;
 }

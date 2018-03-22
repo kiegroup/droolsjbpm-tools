@@ -9,12 +9,10 @@ public class OrganizationActionProvider extends KieNavigatorActionProvider {
 	public OrganizationActionProvider() {
 	}
 
-	public void init(ICommonActionExtensionSite aSite) {
+	public void init(final ICommonActionExtensionSite aSite) {
 		super.init(aSite);
-		addAction(new AddRepositoryAction(aSite.getStructuredViewer()));
 		addAction(new CreateRepositoryAction(aSite.getStructuredViewer()));
 		addAction(new DeleteOrganizationAction(aSite.getStructuredViewer()));
-//        addAction(new ShowPropertiesAction(aSite));
 	}
 
 }
