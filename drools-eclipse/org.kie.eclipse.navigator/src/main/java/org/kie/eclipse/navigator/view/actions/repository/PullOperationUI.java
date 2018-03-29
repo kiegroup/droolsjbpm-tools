@@ -61,6 +61,9 @@ public class PullOperationUI extends JobChangeAdapter implements IKieConstants {
 
 	private final PullOperation pullOperation;
 
+	/**
+	 * @param repositories
+	 */
 	public PullOperationUI(RepositoryNode container) {
 		this.repoNode = container;
 		final IKieRepositoryHandler handler = (IKieRepositoryHandler) container.getHandler();

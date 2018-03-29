@@ -52,9 +52,4 @@ public class Requester {
 
         String execute() throws IOException;
     }
-
-    public interface FailAction {
-        void execute(final JobFailedException e) throws IOException;
-
-    }
 }

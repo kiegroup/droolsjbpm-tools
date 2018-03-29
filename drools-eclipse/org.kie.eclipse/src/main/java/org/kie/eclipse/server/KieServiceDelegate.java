@@ -373,11 +373,6 @@ public abstract class KieServiceDelegate implements IKieServiceDelegate, IKieCon
 	}
 
 
-
-	//
-
-
-
 	protected abstract JsonArray httpGetOrganizations() throws IOException;
 
     protected abstract JsonArray httpGetRepositories(final IKieOrganizationHandler organizationHandler) throws IOException;

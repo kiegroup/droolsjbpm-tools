@@ -10,11 +10,11 @@ public class RepositoryPropertyPage extends AbstractKieJsonPropertyPage {
 	
 	@Override
 	protected void createFieldEditors() {
-		IKieRepositoryHandler repositoryHandler = (IKieRepositoryHandler) getResourceHandler();
-		addField(new ReadonlyStringFieldEditor("Repository Name", repositoryHandler.getName(), getFieldEditorParent()));
-		addField(new ReadonlyStringFieldEditor("Organizational Unit", repositoryHandler.getParent().getName(), getFieldEditorParent()));
-		addField(new ReadonlyStringFieldEditor("Remote Git URL", PreferencesUtils.getRepoURI(repositoryHandler).toString(), getFieldEditorParent()));
-		addField(new ReadonlyStringFieldEditor("Local Git Directory", PreferencesUtils.getRepoPath(repositoryHandler), getFieldEditorParent()));
+		IKieRepositoryHandler repository = (IKieRepositoryHandler) getResourceHandler();
+		addField(new ReadonlyStringFieldEditor("Repository Name", repository.getName(), getFieldEditorParent()));
+		addField(new ReadonlyStringFieldEditor("Organizational Unit", repository.getParent().getName(), getFieldEditorParent()));
+		addField(new ReadonlyStringFieldEditor("Remote Git URL", PreferencesUtils.getRepoURI(repository).toString(), getFieldEditorParent()));
+		addField(new ReadonlyStringFieldEditor("Local Git Directory", PreferencesUtils.getRepoPath(repository), getFieldEditorParent()));
 
 		addField(new StringFieldEditor("description", "Description", getFieldEditorParent()));
 		addField(new StringFieldEditor("userName", "User Name", getFieldEditorParent()));

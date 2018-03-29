@@ -102,18 +102,6 @@ public class Kie60Service extends KieServiceDelegate {
         return JsonArray.readFrom(httpGet("spaces/" + organizationHandler.getName() + "/projects"));
     }
 
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-
     @Override
     public void createOrganization(final IKieOrganizationHandler organization) throws IOException {
         runJob("Request to create organization '" + organization.getName() + "'", new Requester.Action() {

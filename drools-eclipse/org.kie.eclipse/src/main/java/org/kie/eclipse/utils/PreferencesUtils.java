@@ -18,8 +18,8 @@ import org.kie.eclipse.server.IKieServiceDelegate;
 
 public class PreferencesUtils implements IKieConstants {
 
-    public PreferencesUtils() {
-    }
+	public PreferencesUtils() {
+	}
 
     public static String getRepoRoot(final IKieRepositoryHandler repository) {
         final IKieServerHandler server = (IKieServerHandler) repository.getRoot();
