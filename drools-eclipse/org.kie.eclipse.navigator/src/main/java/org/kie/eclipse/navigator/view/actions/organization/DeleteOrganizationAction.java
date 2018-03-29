@@ -5,34 +5,31 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.kie.eclipse.navigator.view.actions.KieNavigatorAction;
 import org.kie.eclipse.navigator.view.content.IContainerNode;
 import org.kie.eclipse.server.IKieOrganizationHandler;
-import org.kie.eclipse.server.IKieServiceDelegate;
 
 public class DeleteOrganizationAction extends KieNavigatorAction {
 
-	public DeleteOrganizationAction(ISelectionProvider provider) {
-		super(provider, "Delete Organization...");
-	}
+    public DeleteOrganizationAction(final ISelectionProvider provider) {
+        super(provider, "Delete Organization...");
+    }
 
-	public void run() {
-        IContainerNode<?> container = getContainer();
-        if (container==null)
-        	return;
-        
-        IKieOrganizationHandler organization = (IKieOrganizationHandler) container.getHandler();
-        IKieServiceDelegate delegate = getDelegate();
+    public void run() {
+        final IContainerNode<?> container = getContainer();
+        if (container == null) {
+            return;
+        }
 
-        boolean doit = MessageDialog.openConfirm(
-				getShell(), "Delete Organizational Unit",
-				"Are you sure you want to delete the Organizational Unit " + container.getName() + "?");
-        
-		if (doit) {
+        final boolean deleteConfirmed = MessageDialog.openConfirm(
+                getShell(),
+                "Delete Organizational Unit",
+                "Are you sure you want to delete the Organizational Unit '" + container.getName() + "'?");
+
+        if (deleteConfirmed) {
             try {
-            	delegate.deleteOrganization(organization);
-            	refreshViewer(container.getParent());
-            }
-            catch (Exception e) {
-            	handleException(e);
+                getDelegate().deleteOrganization((IKieOrganizationHandler) container.getHandler());
+                refreshViewer(container.getParent());
+            } catch (final Exception e) {
+                handleException(e);
             }
         }
-	}
+    }
 }

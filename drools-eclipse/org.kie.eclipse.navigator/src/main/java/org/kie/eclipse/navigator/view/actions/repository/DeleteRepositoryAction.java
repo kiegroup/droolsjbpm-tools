@@ -1,40 +1,35 @@
 package org.kie.eclipse.navigator.view.actions.repository;
 
-import java.io.IOException;
-
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.kie.eclipse.navigator.view.actions.KieNavigatorAction;
 import org.kie.eclipse.navigator.view.content.IContainerNode;
 import org.kie.eclipse.server.IKieRepositoryHandler;
-import org.kie.eclipse.server.IKieServiceDelegate;
 
 public class DeleteRepositoryAction extends KieNavigatorAction {
 
-	protected DeleteRepositoryAction(ISelectionProvider provider, String text) {
-		super(provider, text);
-	}
+    public DeleteRepositoryAction(final ISelectionProvider selectionProvider) {
+        super(selectionProvider, "Delete Repository...");
+    }
 
-	public DeleteRepositoryAction(ISelectionProvider selectionProvider) {
-		this(selectionProvider, "Remove Repository...");
-	}
+    public void run() {
+        final IContainerNode<?> container = getContainer();
+        if (container == null) {
+            return;
+        }
 
-	@Override
-	public String getToolTipText() {
-		return "Remove this Git Repository from the Organizational Unit and optionally delete the Repository";
-	}
+        final boolean deleteConfirmed = MessageDialog.openConfirm(
+                getShell(),
+                "Delete Project",
+                "Are you sure you want to delete the Repository '" + container.getName() + "'?");
 
-	public void run() {
-		IContainerNode<?> container = getContainer();
-		if (container==null)
-			return;
-
-		IKieServiceDelegate delegate = getDelegate();
-
-		try {
-			delegate.deleteRepository((IKieRepositoryHandler) container.getHandler(), false);
-			refreshViewer(container.getRoot());
-		} catch (IOException e) {
-			handleException(e);
-		}
-	}
+        if (deleteConfirmed) {
+            try {
+                getDelegate().deleteRepository((IKieRepositoryHandler) container.getHandler(), false);
+                refreshViewer(container.getParent());
+            } catch (final Exception e) {
+                handleException(e);
+            }
+        }
+    }
 }
