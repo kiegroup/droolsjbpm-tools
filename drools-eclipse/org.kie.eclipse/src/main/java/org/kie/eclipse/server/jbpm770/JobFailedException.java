@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.eclipse.server.jbpm60;
+package org.kie.eclipse.server.jbpm770;
 
 public class JobFailedException extends Exception {
 

@@ -10,7 +10,7 @@
  *
  ******************************************************************************/
 
-package org.kie.eclipse.server.jbpm60;
+package org.kie.eclipse.server.jbpm770;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,11 +29,11 @@ import org.kie.eclipse.server.KieProjectHandler;
 import org.kie.eclipse.server.KieRepositoryHandler;
 import org.kie.eclipse.server.KieServiceDelegate;
 
-public class Kie60Service extends KieServiceDelegate {
+public class Kie770Service extends KieServiceDelegate {
 
     private final Requester requester;
 
-    public Kie60Service() {
+    public Kie770Service() {
         requester = new Requester(this);
     }
 

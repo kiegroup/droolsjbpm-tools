@@ -152,15 +152,15 @@
 		name="Wildfly 8.x"
 		point="org.kie.eclipse.serviceImpl">
 		<containerBinding
-			class="org.kie.eclipse.server.jbpm60.Kie60Service"
+			class="org.kie.eclipse.server.jbpm770.Kie770Service"
 			serverId="org.jboss.ide.eclipse.as.wildfly.*">
 		</containerBinding>
 		<containerBinding
-			class="org.kie.eclipse.server.jbpm60.Kie60Service"
+			class="org.kie.eclipse.server.jbpm770.Kie770Service"
 			serverId="org.jboss.ide.eclipse.as.eap.*">
 		</containerBinding>
 		<containerBinding
-			class="org.kie.eclipse.server.jbpm60.Kie60Service"
+			class="org.kie.eclipse.server.jbpm770.Kie770Service"
 			serverId="org.jboss.ide.eclipse.as.*">
 		</containerBinding>
 	</extension>
