@@ -17,12 +17,12 @@ import java.util.List;
 /**
  *
  */
-public class KieOrganizationHandler extends KieResourceHandler implements IKieOrganizationHandler {
+public class KieSpaceHandler extends KieResourceHandler implements IKieSpaceHandler {
 
 	/**
 	 * 
 	 */
-	public KieOrganizationHandler(IKieServerHandler service, String name) {
+	public KieSpaceHandler(IKieServerHandler service, String name) {
 		super(service, name);
 	}
 

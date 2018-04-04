@@ -27,13 +27,13 @@ import org.kie.eclipse.utils.GitUtils;
 /**
  *
  */
-public class RepositoryNode extends ContainerNode<OrganizationNode> implements IPreferenceChangeListener {
+public class RepositoryNode extends ContainerNode<SpaceNode> implements IPreferenceChangeListener {
 	
 	/**
 	 * @param parent
 	 * @param name
 	 */
-	protected RepositoryNode(OrganizationNode parent, IKieRepositoryHandler repository) {
+	protected RepositoryNode(SpaceNode parent, IKieRepositoryHandler repository) {
 		super(parent, repository);
 		init();
 	}

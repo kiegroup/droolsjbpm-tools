@@ -32,21 +32,21 @@ public interface IKieServiceDelegate {
 	void setHandler(IKieResourceHandler handler);
 	IKieResourceHandler getHandler();
 	
-	List<IKieOrganizationHandler> getOrganizations(IKieServerHandler service) throws IOException;
-	List<IKieRepositoryHandler> getRepositories(IKieOrganizationHandler organization) throws IOException;
+	List<IKieSpaceHandler> getSpaces(IKieServerHandler service) throws IOException;
+	List<IKieRepositoryHandler> getRepositories(IKieSpaceHandler space) throws IOException;
 	List<IKieRepositoryHandler> getRepositories(IKieServerHandler server) throws IOException;
 	List<IKieProjectHandler> getProjects(IKieRepositoryHandler repository) throws IOException;
 
-	void createOrganization(IKieOrganizationHandler organization) throws IOException;
+	void createSpace(IKieSpaceHandler space) throws IOException;
 	void createRepository(IKieRepositoryHandler repository) throws IOException;
-	void addRepository(IKieRepositoryHandler repository, IKieOrganizationHandler organization) throws IOException;
+	void addRepository(IKieRepositoryHandler repository, IKieSpaceHandler space) throws IOException;
 	void createProject(IKieProjectHandler project) throws IOException;
 
-	void deleteOrganization(IKieOrganizationHandler organization) throws IOException;
+	void deleteSpace(IKieSpaceHandler space) throws IOException;
 	void deleteRepository(IKieRepositoryHandler repository, boolean removeOnly) throws IOException;
 	void deleteProject(IKieProjectHandler project) throws IOException;
 
-	void updateOrganization(String oldName, IKieOrganizationHandler organization) throws IOException;
+	void updateSpace(String oldName, IKieSpaceHandler space) throws IOException;
 	void updateRepository(String oldName, IKieRepositoryHandler repository) throws IOException;
 	void updateProject(String oldName, IKieProjectHandler project) throws IOException;
 

@@ -20,11 +20,11 @@ import java.util.List;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
-import org.kie.eclipse.server.IKieOrganizationHandler;
+import org.kie.eclipse.server.IKieSpaceHandler;
 import org.kie.eclipse.server.IKieProjectHandler;
 import org.kie.eclipse.server.IKieRepositoryHandler;
 import org.kie.eclipse.server.IKieServerHandler;
-import org.kie.eclipse.server.KieOrganizationHandler;
+import org.kie.eclipse.server.KieSpaceHandler;
 import org.kie.eclipse.server.KieProjectHandler;
 import org.kie.eclipse.server.KieRepositoryHandler;
 import org.kie.eclipse.server.KieServiceDelegate;
@@ -38,11 +38,11 @@ public class Kie770Service extends KieServiceDelegate {
     }
 
     @Override
-    public List<IKieOrganizationHandler> getOrganizations(final IKieServerHandler server) throws IOException {
-        final List<IKieOrganizationHandler> ret = new ArrayList<IKieOrganizationHandler>();
+    public List<IKieSpaceHandler> getSpaces(final IKieServerHandler server) throws IOException {
+        final List<IKieSpaceHandler> ret = new ArrayList<IKieSpaceHandler>();
 
-        for (final JsonValue spaceJson : httpGetOrganizations()) {
-            ret.add(newKieOrganizationHandler(server, spaceJson.asObject()));
+        for (final JsonValue spaceJson : httpGetSpaces()) {
+            ret.add(newKieSpaceHandler(server, spaceJson.asObject()));
         }
 
         return ret;
@@ -52,10 +52,10 @@ public class Kie770Service extends KieServiceDelegate {
     public List<IKieRepositoryHandler> getRepositories(final IKieServerHandler server) throws IOException {
         final List<IKieRepositoryHandler> ret = new ArrayList<IKieRepositoryHandler>();
 
-        for (final JsonValue spaceJson : httpGetOrganizations()) {
-            final IKieOrganizationHandler organization = newKieOrganizationHandler(server, spaceJson.asObject());
-            for (final JsonValue projectJson : organization.getProperties().get("projects").asArray()) {
-                ret.add(newKieRepositoryHandler(organization, projectJson.asObject()));
+        for (final JsonValue spaceJson : httpGetSpaces()) {
+            final IKieSpaceHandler space = newKieSpaceHandler(server, spaceJson.asObject());
+            for (final JsonValue projectJson : space.getProperties().get("projects").asArray()) {
+                ret.add(newKieRepositoryHandler(space, projectJson.asObject()));
             }
         }
 
@@ -63,11 +63,11 @@ public class Kie770Service extends KieServiceDelegate {
     }
 
     @Override
-    public List<IKieRepositoryHandler> getRepositories(final IKieOrganizationHandler organization) throws IOException {
+    public List<IKieRepositoryHandler> getRepositories(final IKieSpaceHandler space) throws IOException {
         final List<IKieRepositoryHandler> ret = new ArrayList<IKieRepositoryHandler>();
 
-        for (final JsonValue projectJson : httpGetRepositories(organization)) {
-            ret.add(newKieRepositoryHandler(organization, projectJson.asObject()));
+        for (final JsonValue projectJson : httpGetRepositories(space)) {
+            ret.add(newKieRepositoryHandler(space, projectJson.asObject()));
         }
 
         return ret;
@@ -80,51 +80,51 @@ public class Kie770Service extends KieServiceDelegate {
         return new ArrayList<IKieProjectHandler>(Collections.singletonList(project));
     }
 
-    private IKieOrganizationHandler newKieOrganizationHandler(final IKieServerHandler server, final JsonObject spaceJson) {
-        final KieOrganizationHandler organization = new KieOrganizationHandler(server, spaceJson.get("name").asString());
-        organization.setProperties(spaceJson);
-        return organization;
+    private IKieSpaceHandler newKieSpaceHandler(final IKieServerHandler server, final JsonObject spaceJson) {
+        final KieSpaceHandler space = new KieSpaceHandler(server, spaceJson.get("name").asString());
+        space.setProperties(spaceJson);
+        return space;
     }
 
-    private IKieRepositoryHandler newKieRepositoryHandler(final IKieOrganizationHandler organization, final JsonObject projectJson) {
-        final KieRepositoryHandler repository = new KieRepositoryHandler(organization, projectJson.get("name").asString());
+    private IKieRepositoryHandler newKieRepositoryHandler(final IKieSpaceHandler space, final JsonObject projectJson) {
+        final KieRepositoryHandler repository = new KieRepositoryHandler(space, projectJson.get("name").asString());
         repository.setProperties(projectJson);
         return repository;
     }
 
     @Override
-    protected JsonArray httpGetOrganizations() throws IOException {
+    protected JsonArray httpGetSpaces() throws IOException {
         return JsonArray.readFrom(httpGet("spaces/"));
     }
 
     @Override
-    protected JsonArray httpGetRepositories(final IKieOrganizationHandler organizationHandler) throws IOException {
-        return JsonArray.readFrom(httpGet("spaces/" + organizationHandler.getName() + "/projects"));
+    protected JsonArray httpGetRepositories(final IKieSpaceHandler space) throws IOException {
+        return JsonArray.readFrom(httpGet("spaces/" + space.getName() + "/projects"));
     }
 
     @Override
-    public void createOrganization(final IKieOrganizationHandler organization) throws IOException {
-        runJob("Request to create organization '" + organization.getName() + "'", new Requester.Action() {
+    public void createSpace(final IKieSpaceHandler space) throws IOException {
+        runJob("Request to create space '" + space.getName() + "'", new Requester.Action() {
             @Override
             public String execute() throws IOException {
-                return httpPost("spaces/", organization.getProperties());
+                return httpPost("spaces/", space.getProperties());
             }
         });
     }
 
     @Override
-    public void deleteOrganization(final IKieOrganizationHandler organization) throws IOException {
-        runJob("Request to delete organization '" + organization.getName() + "'", new Requester.Action() {
+    public void deleteSpace(final IKieSpaceHandler space) throws IOException {
+        runJob("Request to delete space '" + space.getName() + "'", new Requester.Action() {
             @Override
             public String execute() throws IOException {
-                return httpDelete("spaces/" + organization.getName());
+                return httpDelete("spaces/" + space.getName());
             }
         });
     }
 
     @Override
-    public void updateOrganization(final String oldName, final IKieOrganizationHandler organization) throws IOException {
-        //Updating organization properties is not supported yet.
+    public void updateSpace(final String oldName, final IKieSpaceHandler space) throws IOException {
+        //Updating space properties is not supported yet.
     }
 
     //Repository
@@ -139,7 +139,7 @@ public class Kie770Service extends KieServiceDelegate {
         });
     }
 
-    public void addRepository(final IKieRepositoryHandler repository, final IKieOrganizationHandler organization) throws IOException {
+    public void addRepository(final IKieRepositoryHandler repository, final IKieSpaceHandler space) throws IOException {
         //Adding a repository is not supported yet.
     }
 

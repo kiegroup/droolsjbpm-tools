@@ -33,11 +33,11 @@ public class KieRepositoryHandler extends KieResourceHandler implements IKieRepo
 	Repository repository;
 
 	/**
-	 * @param organization
+	 * @param space
 	 * @param string
 	 */
-	public KieRepositoryHandler(IKieOrganizationHandler organization, String name) {
-		super(organization, name);
+	public KieRepositoryHandler(IKieSpaceHandler space, String name) {
+		super(space, name);
 	}
 
 	@Override

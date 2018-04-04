@@ -5,18 +5,18 @@ import com.eclipsesource.json.JsonValue;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.kie.eclipse.navigator.Activator;
-import org.kie.eclipse.server.IKieOrganizationHandler;
+import org.kie.eclipse.server.IKieSpaceHandler;
 import org.kie.eclipse.server.IKieRepositoryHandler;
 
 public class CreateRepositoryRequestDialog extends AbstractKieRequestDialog {
 
-    IKieOrganizationHandler organization;
+    IKieSpaceHandler space;
     KieRequestDialogTextField name;
     KieRequestDialogTextField description;
     KieRequestDialogTextField version;
     KieRequestDialogTextField groupId;
 
-    public CreateRepositoryRequestDialog(Shell shell, final IKieOrganizationHandler organization) {
+    public CreateRepositoryRequestDialog(Shell shell, final IKieSpaceHandler space) {
         super(shell, "Repository", new IKieRequestValidator() {
             @Override
             public String isValid(JsonObject object) {
@@ -25,9 +25,9 @@ public class CreateRepositoryRequestDialog extends AbstractKieRequestDialog {
                 String name = jv == null ? null : jv.asString().trim();
                 if (name != null && !name.isEmpty()) {
                     try {
-                        for (IKieRepositoryHandler rep : organization.getRepositories()) {
+                        for (IKieRepositoryHandler rep : space.getRepositories()) {
                             if (rep.getName().equals(name)) {
-                                return "Repository '" + name + "' already exists in this Organizational Unit";
+                                return "Repository '" + name + "' already exists in this Space";
                             }
                         }
                     } catch (Exception e) {
@@ -39,7 +39,7 @@ public class CreateRepositoryRequestDialog extends AbstractKieRequestDialog {
             }
         });
         setTitleImage(Activator.getImage("icons/wizban/repository.png"));
-        this.organization = organization;
+        this.space = space;
     }
 
     @Override

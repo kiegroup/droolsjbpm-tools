@@ -1,15 +1,15 @@
-package org.kie.eclipse.navigator.view.actions.organization;
+package org.kie.eclipse.navigator.view.actions.space;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.kie.eclipse.navigator.view.actions.KieNavigatorAction;
 import org.kie.eclipse.navigator.view.content.IContainerNode;
-import org.kie.eclipse.server.IKieOrganizationHandler;
+import org.kie.eclipse.server.IKieSpaceHandler;
 
-public class DeleteOrganizationAction extends KieNavigatorAction {
+public class DeleteSpaceAction extends KieNavigatorAction {
 
-    public DeleteOrganizationAction(final ISelectionProvider provider) {
-        super(provider, "Delete Organization...");
+    public DeleteSpaceAction(final ISelectionProvider provider) {
+        super(provider, "Delete Space...");
     }
 
     public void run() {
@@ -20,12 +20,12 @@ public class DeleteOrganizationAction extends KieNavigatorAction {
 
         final boolean deleteConfirmed = MessageDialog.openConfirm(
                 getShell(),
-                "Delete Organizational Unit",
-                "Are you sure you want to delete the Organizational Unit '" + container.getName() + "'?");
+                "Delete Space",
+                "Are you sure you want to delete the Space '" + container.getName() + "'?");
 
         if (deleteConfirmed) {
             try {
-                getDelegate().deleteOrganization((IKieOrganizationHandler) container.getHandler());
+                getDelegate().deleteSpace((IKieSpaceHandler) container.getHandler());
                 refreshViewer(container.getParent());
             } catch (final Exception e) {
                 handleException(e);

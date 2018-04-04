@@ -132,19 +132,19 @@ public class KieServerHandler extends KieResourceHandler implements IKieServerHa
 	}
 
 	/* (non-Javadoc)
-	 * @see org.kie.eclipse.navigator.view.server.IKieService#getOrganizations()
+	 * @see org.kie.eclipse.navigator.view.server.IKieService#getSpaces()
 	 */
 	@Override
-	public List<IKieOrganizationHandler> getOrganizations() throws IOException {
-		return getDelegate().getOrganizations(this);
+	public List<IKieSpaceHandler> getSpaces() throws IOException {
+		return getDelegate().getSpaces(this);
 	}
 
 	/* (non-Javadoc)
-	 * @see org.kie.eclipse.navigator.view.server.IKieService#getRepositories(org.kie.eclipse.navigator.view.server.IKieOrganization)
+	 * @see org.kie.eclipse.navigator.view.server.IKieService#getRepositories(org.kie.eclipse.navigator.view.server.IKieSpaceHandler)
 	 */
 	@Override
-	public List<IKieRepositoryHandler> getRepositories(IKieOrganizationHandler organization) throws IOException {
-		return getDelegate().getRepositories(organization);
+	public List<IKieRepositoryHandler> getRepositories(IKieSpaceHandler space) throws IOException {
+		return getDelegate().getRepositories(space);
 	}
 
 	/* (non-Javadoc)
@@ -161,10 +161,10 @@ public class KieServerHandler extends KieResourceHandler implements IKieServerHa
 			children = new ArrayList<IKieResourceHandler>();
 		if (children.isEmpty()) {
 			List<IKieRepositoryHandler> allRepositories = getDelegate().getRepositories(this);
-			List<IKieOrganizationHandler> organizations = getDelegate().getOrganizations(this);
+			List<IKieSpaceHandler> spaces = getDelegate().getSpaces(this);
 			for (IKieRepositoryHandler r1 : allRepositories) {
 				boolean contained = false;
-				for (IKieOrganizationHandler o : organizations) {
+				for (IKieSpaceHandler o : spaces) {
 					for (IKieRepositoryHandler r2 : o.getRepositories()) {
 						if (r1.getName().equals(r2.getName())) {
 							contained = true;
@@ -175,7 +175,7 @@ public class KieServerHandler extends KieResourceHandler implements IKieServerHa
 				if (!contained)
 					children.add(r1);
 			}
-			children.addAll(organizations);
+			children.addAll(spaces);
 		}
 		return children;
 	}

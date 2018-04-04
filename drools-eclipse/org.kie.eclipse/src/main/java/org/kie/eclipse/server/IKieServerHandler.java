@@ -20,7 +20,7 @@ import java.util.List;
  */
 public interface IKieServerHandler extends IKieResourceHandler {
 
-	List<IKieOrganizationHandler> getOrganizations() throws IOException;
-	List<IKieRepositoryHandler> getRepositories(IKieOrganizationHandler organization) throws IOException;
+	List<IKieSpaceHandler> getSpaces() throws IOException;
+	List<IKieRepositoryHandler> getRepositories(IKieSpaceHandler space) throws IOException;
 	List<IKieProjectHandler> getProjects(IKieRepositoryHandler repository) throws IOException;
 }

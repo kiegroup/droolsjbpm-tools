@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.kie.eclipse.navigator.view.content.IContainerNode;
-import org.kie.eclipse.server.IKieOrganizationHandler;
+import org.kie.eclipse.server.IKieSpaceHandler;
 import org.kie.eclipse.server.IKieProjectHandler;
 import org.kie.eclipse.server.IKieRepositoryHandler;
 import org.kie.eclipse.server.IKieResourceHandler;
@@ -54,8 +54,8 @@ public abstract class AbstractKieJsonPropertyPage extends AbstractKiePropertyPag
 				IKieResourceHandler handler = getResourceHandler();
 				IKieServiceDelegate delegate = handler.getDelegate();
 				try {
-					if (handler instanceof IKieOrganizationHandler) {
-						delegate.updateOrganization(oldName, (IKieOrganizationHandler)handler);
+					if (handler instanceof IKieSpaceHandler) {
+						delegate.updateSpace(oldName, (IKieSpaceHandler)handler);
 					}
 					else if (handler instanceof IKieRepositoryHandler) {
 						delegate.updateRepository(oldName, (IKieRepositoryHandler)handler);
