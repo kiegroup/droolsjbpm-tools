@@ -20,11 +20,9 @@ public class ProjectActionProvider extends KieNavigatorActionProvider {
 	}
 
 	@Override
-	public void init(ICommonActionExtensionSite aSite) {
+	public void init(final ICommonActionExtensionSite aSite) {
         super.init(aSite);
         importAction = new ImportProjectAction(aSite.getStructuredViewer());
         addAction(importAction);
-        addAction(new DeleteProjectAction(aSite.getStructuredViewer()));
-//        addAction(new ShowPropertiesAction(aSite));
     }
 }

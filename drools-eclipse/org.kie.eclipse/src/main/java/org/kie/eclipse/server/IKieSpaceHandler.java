@@ -18,7 +18,7 @@ import java.util.List;
 /**
  *
  */
-public interface IKieOrganizationHandler extends IKieResourceHandler {
+public interface IKieSpaceHandler extends IKieResourceHandler {
 
 	List<IKieRepositoryHandler> getRepositories() throws Exception;
 }

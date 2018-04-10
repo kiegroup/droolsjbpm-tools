@@ -31,17 +31,13 @@ import org.kie.eclipse.utils.PreferencesUtils;
 public class KieRepositoryHandler extends KieResourceHandler implements IKieRepositoryHandler, IKieConstants {
 
 	Repository repository;
-	
+
 	/**
-	 * @param organization
+	 * @param space
 	 * @param string
 	 */
-	public KieRepositoryHandler(IKieOrganizationHandler organization, String name) {
-		super(organization, name);
-	}
-
-	public KieRepositoryHandler(IKieServerHandler server, String name) {
-		super(server, name);
+	public KieRepositoryHandler(IKieSpaceHandler space, String name) {
+		super(space, name);
 	}
 
 	@Override
@@ -125,7 +121,7 @@ public class KieRepositoryHandler extends KieResourceHandler implements IKieRepo
 	public boolean isLoaded() {
 		return repository != null;
 	}
-	
+
 	@Override
 	public Repository getRepository() {
 		return repository;

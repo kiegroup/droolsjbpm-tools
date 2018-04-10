@@ -84,19 +84,9 @@ public class ActionUtils {
 			config.setPackedGitMMAP(false);
 			config.install();
 
-			String host = delegate.getServer().getHost();
-			int port = delegate.getGitPort();
 			String username = delegate.getUsername();
 			String password = delegate.getPassword();
-			URIish uri = PreferencesUtils.getRepoURI(host, port, username, handler.getName());
-			// LoginDialog dlg = new LoginDialog(getShell(), uri);
-			// dlg.setUsername(username);
-			// dlg.setPassword(password);
-			// if (dlg.open() != Dialog.OK)
-			// return;
-			// username = dlg.getUsername();
-			// password = dlg.getPassword();
-			uri = PreferencesUtils.getRepoURI(host, port, username, handler.getName());
+			URIish uri = PreferencesUtils.getRepoURI(handler);
 			final String localPath = PreferencesUtils.getRepoPath(handler);
 			File localDir = new File(localPath);
 			if (localDir.exists()) {
@@ -284,7 +274,7 @@ public class ActionUtils {
 		final IProject project = workspace.getRoot().getProject(projectName);
 		final RepositoryNode repoNode = (RepositoryNode)projectNode.getParent();
 		Repository repository = ((KieRepositoryHandler) repoNode.getHandler()).getRepository();
-		final IPath location = new Path(repository.getWorkTree().toString()).append(projectName);
+		final IPath location = new Path(repository.getWorkTree().toString());
 		
 		if (project.exists()) {
 			if (!project.isOpen()) {

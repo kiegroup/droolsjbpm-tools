@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.internal.dialogs.PropertyDialog;
 import org.kie.eclipse.IKieConstants;
 import org.kie.eclipse.navigator.view.content.IContentNode;
-import org.kie.eclipse.navigator.view.content.OrganizationNode;
+import org.kie.eclipse.navigator.view.content.SpaceNode;
 import org.kie.eclipse.navigator.view.content.ProjectNode;
 import org.kie.eclipse.navigator.view.content.RepositoryNode;
 import org.kie.eclipse.navigator.view.content.ServerNode;
@@ -105,8 +105,8 @@ public abstract class AbstractKiePropertyPage extends FieldEditorPropertyPage im
 		IContentNode<?> node = getContentNode();
 		if (node instanceof ServerNode)
 			return "org.kie.eclipse.navigator.serverPropertyPage";
-		if (node instanceof OrganizationNode)
-			return "org.kie.eclipse.navigator.organizationPropertyPage";
+		if (node instanceof SpaceNode)
+			return "org.kie.eclipse.navigator.spacePropertyPage";
 		if (node instanceof RepositoryNode)
 			return "org.kie.eclipse.navigator.repositoryPropertyPage";
 		if (node instanceof ProjectNode)

@@ -19,7 +19,7 @@ public class Activator extends AbstractUIPlugin {
 
 	public final static String IMG_SERVER_STARTED = "server_started.gif";
 	public final static String IMG_SERVER_STOPPED = "server_stopped.gif";
-	public final static String IMG_ORGANIZATION = "organization.gif";
+	public final static String IMG_SPACE = "space.gif";
 	public final static String IMG_PROJECT = "project.gif";
 	public final static String IMG_PROJECT_CLOSED = "project_closed.gif";
 	public final static String IMG_REPOSITORY = "repository.gif";
@@ -66,7 +66,7 @@ public class Activator extends AbstractUIPlugin {
         super.initializeImageRegistry(reg);
         reg.put(IMG_SERVER_STARTED, loadImageDescriptor(IMG_SERVER_STARTED));
         reg.put(IMG_SERVER_STOPPED, loadImageDescriptor(IMG_SERVER_STOPPED));
-        reg.put(IMG_ORGANIZATION, loadImageDescriptor(IMG_ORGANIZATION));
+        reg.put(IMG_SPACE, loadImageDescriptor(IMG_SPACE));
         reg.put(IMG_PROJECT, loadImageDescriptor(IMG_PROJECT));
         reg.put(IMG_PROJECT_CLOSED, loadImageDescriptor(IMG_PROJECT_CLOSED));
         reg.put(IMG_REPOSITORY, loadImageDescriptor(IMG_REPOSITORY));

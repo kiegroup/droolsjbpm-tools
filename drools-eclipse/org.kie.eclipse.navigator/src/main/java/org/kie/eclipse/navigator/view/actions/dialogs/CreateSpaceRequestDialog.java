@@ -2,16 +2,15 @@ package org.kie.eclipse.navigator.view.actions.dialogs;
 
 import java.io.IOException;
 
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.kie.eclipse.navigator.Activator;
-import org.kie.eclipse.server.IKieOrganizationHandler;
 import org.kie.eclipse.server.IKieServerHandler;
+import org.kie.eclipse.server.IKieSpaceHandler;
 
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
-
-public class CreateOrganizationRequestDialog extends AbstractKieRequestDialog {
+public class CreateSpaceRequestDialog extends AbstractKieRequestDialog {
 
 	IKieServerHandler server;
 	KieRequestDialogTextField name;
@@ -19,8 +18,8 @@ public class CreateOrganizationRequestDialog extends AbstractKieRequestDialog {
 	KieRequestDialogTextField owner;
 	KieRequestDialogTextField defaultGroupId;
 	
-	public CreateOrganizationRequestDialog(Shell shell, final IKieServerHandler server) {
-		super(shell, "Organizational Unit", new IKieRequestValidator() {
+	public CreateSpaceRequestDialog(Shell shell, final IKieServerHandler server) {
+		super(shell, "Space", new IKieRequestValidator() {
 			@Override
 			public String isValid(JsonObject object) {
 				JsonValue jv;
@@ -30,9 +29,9 @@ public class CreateOrganizationRequestDialog extends AbstractKieRequestDialog {
 				String owner = jv==null ? null : jv.asString().trim();
 				if (name!=null && !name.isEmpty()) {
 					try {
-						for (IKieOrganizationHandler org : server.getOrganizations()) {
-							if (org.getName().equals(name))
-								return "Organizational Unit '"+name+"' already exists";
+						for (IKieSpaceHandler space : server.getSpaces()) {
+							if (space.getName().equals(name))
+								return "Space '"+name+"' already exists";
 						}
 					}
 					catch (IOException e) {
@@ -46,13 +45,13 @@ public class CreateOrganizationRequestDialog extends AbstractKieRequestDialog {
 				return null;
 			}
         });
-		setTitleImage(Activator.getImage("icons/wizban/organization.png"));
+		setTitleImage(Activator.getImage("icons/wizban/space.png"));
 		this.server = server;
 	}
     
 	@Override
 	protected void createFields(Composite composite) {
-        setMessage("Enter the Organizational Unit details");
+        setMessage("Enter the Space details");
 
 		name = new KieRequestDialogTextField(composite, "Name:", "", properties, "name");
 		name.setChangeListener(new IKieRequestChangeListener() {

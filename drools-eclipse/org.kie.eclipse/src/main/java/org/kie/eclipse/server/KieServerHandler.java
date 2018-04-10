@@ -30,9 +30,9 @@ public class KieServerHandler extends KieResourceHandler implements IKieServerHa
 
     private final IServer server;
 	private IKieServiceDelegate delegate;
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public KieServerHandler(IServer server) {
 		super(null,server.getName());
@@ -47,14 +47,14 @@ public class KieServerHandler extends KieResourceHandler implements IKieServerHa
 	@Override
 	public void dispose() {
 	}
-	
+
 	@Override
 	public IKieServiceDelegate getDelegate() {
 		if (delegate==null)
 			delegate = loadDelegate();
 		return delegate;
 	}
-	
+
 	protected IKieServiceDelegate loadDelegate() {
 		IKieServiceDelegate result = null;
 		try {
@@ -86,10 +86,10 @@ public class KieServerHandler extends KieResourceHandler implements IKieServerHa
 		} catch (Exception ex) {
 			Activator.logError(ex.getMessage(), ex);
 		}
-		
+
 		return result;
 	}
-	
+
 	public static boolean isSupportedServer(IServer server) {
 		IConfigurationElement[] config = Platform.getExtensionRegistry()
 				.getConfigurationElementsFor(IKieConstants.KIE_SERVICE_IMPL_ID);
@@ -106,12 +106,12 @@ public class KieServerHandler extends KieResourceHandler implements IKieServerHa
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Return the version number of the KIE Workbench that is installed on the
 	 * given server. If the server is not running or not responsive, use a value
 	 * from the Preference Store.
-	 * 
+	 *
 	 * @param server
 	 * @return
 	 */
@@ -130,21 +130,21 @@ public class KieServerHandler extends KieResourceHandler implements IKieServerHa
 	public String getServerTypeId() {
 		return server.getServerType().getId();
 	}
-	
+
 	/* (non-Javadoc)
-	 * @see org.kie.eclipse.navigator.view.server.IKieService#getOrganizations()
+	 * @see org.kie.eclipse.navigator.view.server.IKieService#getSpaces()
 	 */
 	@Override
-	public List<IKieOrganizationHandler> getOrganizations() throws IOException {
-		return getDelegate().getOrganizations(this);
+	public List<IKieSpaceHandler> getSpaces() throws IOException {
+		return getDelegate().getSpaces(this);
 	}
 
 	/* (non-Javadoc)
-	 * @see org.kie.eclipse.navigator.view.server.IKieService#getRepositories(org.kie.eclipse.navigator.view.server.IKieOrganization)
+	 * @see org.kie.eclipse.navigator.view.server.IKieService#getRepositories(org.kie.eclipse.navigator.view.server.IKieSpaceHandler)
 	 */
 	@Override
-	public List<IKieRepositoryHandler> getRepositories(IKieOrganizationHandler organization) throws IOException {
-		return getDelegate().getRepositories(organization);
+	public List<IKieRepositoryHandler> getRepositories(IKieSpaceHandler space) throws IOException {
+		return getDelegate().getRepositories(space);
 	}
 
 	/* (non-Javadoc)
@@ -161,10 +161,10 @@ public class KieServerHandler extends KieResourceHandler implements IKieServerHa
 			children = new ArrayList<IKieResourceHandler>();
 		if (children.isEmpty()) {
 			List<IKieRepositoryHandler> allRepositories = getDelegate().getRepositories(this);
-			List<IKieOrganizationHandler> organizations = getDelegate().getOrganizations(this);
+			List<IKieSpaceHandler> spaces = getDelegate().getSpaces(this);
 			for (IKieRepositoryHandler r1 : allRepositories) {
 				boolean contained = false;
-				for (IKieOrganizationHandler o : organizations) {
+				for (IKieSpaceHandler o : spaces) {
 					for (IKieRepositoryHandler r2 : o.getRepositories()) {
 						if (r1.getName().equals(r2.getName())) {
 							contained = true;
@@ -175,36 +175,24 @@ public class KieServerHandler extends KieResourceHandler implements IKieServerHa
 				if (!contained)
 					children.add(r1);
 			}
-			children.addAll(organizations);
-		}		
+			children.addAll(spaces);
+		}
 		return children;
 	}
-	
-	public boolean isServerRunning() {
-		return server.getServerState() == IServer.STATE_STARTED;
-	}
-	
-	protected String getKieVersionPreferenceKey() {
-		return server.getId()+"/kieVersion";
-	}
-	
-	protected String getKieOrganizationsPreferenceKey() {
-		return server.getId()+"/organizations";
-	}
-	
-	protected String getKieRepositoriesPreferenceKey() {
-		return server.getId()+"/repositories";
-	}
-	
-	protected String getKieProjectsPreferenceKey() {
-		return server.getId()+"/projects";
-	}
-	
+
+    public boolean isServerRunning() {
+        return server.getServerState() == IServer.STATE_STARTED;
+    }
+
+    protected String getKieVersionPreferenceKey() {
+        return server.getId()+"/kieVersion";
+    }
+
 	@Override
 	public boolean isLoaded() {
 		return isServerRunning();
 	}
-	
+
 	@Override
 	public IServer getServer() {
 		return server;

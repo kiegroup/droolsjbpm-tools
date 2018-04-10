@@ -1,4 +1,4 @@
-package org.kie.eclipse.navigator.view.actions.organization;
+package org.kie.eclipse.navigator.view.actions.space;
 
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.window.Window;
@@ -6,7 +6,7 @@ import org.eclipse.swt.widgets.Display;
 import org.kie.eclipse.navigator.view.actions.KieNavigatorAction;
 import org.kie.eclipse.navigator.view.actions.dialogs.CreateRepositoryRequestDialog;
 import org.kie.eclipse.navigator.view.content.IContainerNode;
-import org.kie.eclipse.server.IKieOrganizationHandler;
+import org.kie.eclipse.server.IKieSpaceHandler;
 import org.kie.eclipse.server.IKieServiceDelegate;
 import org.kie.eclipse.server.KieRepositoryHandler;
 
@@ -27,15 +27,15 @@ public class CreateRepositoryAction extends KieNavigatorAction {
         if (container==null)
         	return;
         
-        IKieOrganizationHandler organization = (IKieOrganizationHandler) container.getHandler();
+        IKieSpaceHandler space = (IKieSpaceHandler) container.getHandler();
         IKieServiceDelegate delegate = getDelegate();
 
-        CreateRepositoryRequestDialog dlg = new CreateRepositoryRequestDialog(Display.getDefault().getActiveShell(), organization);
+        CreateRepositoryRequestDialog dlg = new CreateRepositoryRequestDialog(Display.getDefault().getActiveShell(), space);
         
         if (dlg.open()== Window.OK){
         	JsonObject properties = dlg.getResult();
         	String name = properties.get("name").asString().trim();
-        	KieRepositoryHandler repository = new KieRepositoryHandler(organization, name);
+        	KieRepositoryHandler repository = new KieRepositoryHandler(space, name);
         	repository.setProperties(properties);
             
             try {

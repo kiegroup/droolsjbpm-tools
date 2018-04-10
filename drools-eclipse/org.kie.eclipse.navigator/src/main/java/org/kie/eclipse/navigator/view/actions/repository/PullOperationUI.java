@@ -73,19 +73,9 @@ public class PullOperationUI extends JobChangeAdapter implements IKieConstants {
 		this.shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 		this.repoName = handler.getName();
 
-		String host = delegate.getServer().getHost();
-		int port = delegate.getGitPort();
+
 		String username = delegate.getUsername();
 		String password = delegate.getPassword();
-		URIish uri = PreferencesUtils.getRepoURI(host, port, username, repoName);
-		// LoginDialog dlg = new LoginDialog(shell, uri);
-		// dlg.setUsername(username);
-		// dlg.setPassword(password);
-		// if (dlg.open() != Dialog.OK)
-		// return;
-		// username = dlg.getUsername();
-		// password = dlg.getPassword();
-		uri = PreferencesUtils.getRepoURI(host, port, username, repoName);
 		final CredentialsProvider credentialsProvider = new KieCredentialsProvider(serverHandler, username, password);
 
 		int timeout = serverHandler.getPreference(PREF_REMOTE_TIMEOUT, 60);
