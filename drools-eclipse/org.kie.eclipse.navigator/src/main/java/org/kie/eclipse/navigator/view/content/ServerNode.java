@@ -21,7 +21,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.wst.server.core.IServer;
 import org.kie.eclipse.IKieConstants;
 import org.kie.eclipse.navigator.view.IKieNavigatorView;
-import org.kie.eclipse.server.IKieOrganizationHandler;
+import org.kie.eclipse.server.IKieSpaceHandler;
 import org.kie.eclipse.server.IKieRepositoryHandler;
 import org.kie.eclipse.server.IKieResourceHandler;
 import org.kie.eclipse.server.KieServerHandler;
@@ -55,8 +55,8 @@ public class ServerNode extends ContainerNode implements IPropertyChangeListener
 		while (iter.hasNext()) {
 			IKieResourceHandler h = iter.next();
 			IContentNode<?> n = null;
-			if (h instanceof IKieOrganizationHandler)
-				n = new OrganizationNode(this,(IKieOrganizationHandler)h);
+			if (h instanceof IKieSpaceHandler)
+				n = new SpaceNode(this, (IKieSpaceHandler)h);
 			else if (h instanceof IKieRepositoryHandler)
 				n = new RepositoryNode(this,(IKieRepositoryHandler)h);
 			if (n!=null)

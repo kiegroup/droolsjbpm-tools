@@ -117,11 +117,11 @@
 		</actionProvider>
 		
 		<actionProvider
-			class="org.kie.eclipse.navigator.view.actions.organization.OrganizationActionProvider"
+			class="org.kie.eclipse.navigator.view.actions.space.SpaceActionProvider"
 			appearsBefore="org.eclipse.ui.navigator.resources.PropertiesActionProvider"
-			id="org.kie.eclipse.navigator.view.content.organization">
+			id="org.kie.eclipse.navigator.view.content.space">
 			<enablement>
-				<instanceof value="org.kie.eclipse.navigator.view.content.OrganizationNode">
+				<instanceof value="org.kie.eclipse.navigator.view.content.SpaceNode">
 				</instanceof>
 			</enablement>
 		</actionProvider>
@@ -152,15 +152,15 @@
 		name="Wildfly 8.x"
 		point="org.kie.eclipse.serviceImpl">
 		<containerBinding
-			class="org.kie.eclipse.server.jbpm60.Kie60Service"
+			class="org.kie.eclipse.server.jbpm770.Kie770Service"
 			serverId="org.jboss.ide.eclipse.as.wildfly.*">
 		</containerBinding>
 		<containerBinding
-			class="org.kie.eclipse.server.jbpm60.Kie60Service"
+			class="org.kie.eclipse.server.jbpm770.Kie770Service"
 			serverId="org.jboss.ide.eclipse.as.eap.*">
 		</containerBinding>
 		<containerBinding
-			class="org.kie.eclipse.server.jbpm60.Kie60Service"
+			class="org.kie.eclipse.server.jbpm770.Kie770Service"
 			serverId="org.jboss.ide.eclipse.as.*">
 		</containerBinding>
 	</extension>
@@ -189,7 +189,7 @@
                   value="org.kie.eclipse.navigator.view.content.ServerNode">
               </instanceof>
               <instanceof
-                  value="org.kie.eclipse.navigator.view.content.OrganizationNode">
+                  value="org.kie.eclipse.navigator.view.content.SpaceNode">
               </instanceof>
               <instanceof
                   value="org.kie.eclipse.navigator.view.content.RepositoryNode">
@@ -208,15 +208,15 @@
  <extension
        point="org.eclipse.ui.propertyPages">
     <page
-          class="org.kie.eclipse.navigator.preferences.OrganizationPropertyPage"
-          id="org.kie.eclipse.navigator.organizationPropertyPage"
+          class="org.kie.eclipse.navigator.preferences.SpacePropertyPage"
+          id="org.kie.eclipse.navigator.spacePropertyPage"
           category="org.kie.eclipse.navigator.serverPropertyPage"
-          icon="icons/organization.gif"
-          name="Organizational Unit">
+          icon="icons/space.gif"
+          name="Space">
           <enabledWhen>
             <or>
               <instanceof
-                  value="org.kie.eclipse.navigator.view.content.OrganizationNode">
+                  value="org.kie.eclipse.navigator.view.content.SpaceNode">
               </instanceof>
               <instanceof
                   value="org.kie.eclipse.navigator.view.content.RepositoryNode">
@@ -237,7 +237,7 @@
     <page
           class="org.kie.eclipse.navigator.preferences.RepositoryPropertyPage"
           id="org.kie.eclipse.navigator.repositoryPropertyPage"
-          category="org.kie.eclipse.navigator.organizationPropertyPage"
+          category="org.kie.eclipse.navigator.spacePropertyPage"
           icon="icons/repository.gif"
           name="Repository">
           <enabledWhen>

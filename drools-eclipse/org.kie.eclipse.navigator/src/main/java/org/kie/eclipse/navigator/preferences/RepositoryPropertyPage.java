@@ -12,7 +12,7 @@ public class RepositoryPropertyPage extends AbstractKieJsonPropertyPage {
 	protected void createFieldEditors() {
 		IKieRepositoryHandler repository = (IKieRepositoryHandler) getResourceHandler();
 		addField(new ReadonlyStringFieldEditor("Repository Name", repository.getName(), getFieldEditorParent()));
-		addField(new ReadonlyStringFieldEditor("Organizational Unit", repository.getParent().getName(), getFieldEditorParent()));
+		addField(new ReadonlyStringFieldEditor("Space", repository.getParent().getName(), getFieldEditorParent()));
 		addField(new ReadonlyStringFieldEditor("Remote Git URL", PreferencesUtils.getRepoURI(repository).toString(), getFieldEditorParent()));
 		addField(new ReadonlyStringFieldEditor("Local Git Directory", PreferencesUtils.getRepoPath(repository), getFieldEditorParent()));
 

@@ -19,7 +19,7 @@ import org.kie.eclipse.navigator.Activator;
 import org.kie.eclipse.navigator.view.content.IContainerNode;
 import org.kie.eclipse.navigator.view.content.IContentNode;
 import org.kie.eclipse.navigator.view.content.IErrorNode;
-import org.kie.eclipse.navigator.view.content.OrganizationNode;
+import org.kie.eclipse.navigator.view.content.SpaceNode;
 import org.kie.eclipse.navigator.view.content.ProjectNode;
 import org.kie.eclipse.navigator.view.content.RepositoryNode;
 import org.kie.eclipse.navigator.view.content.ServerNode;
@@ -48,8 +48,8 @@ public class KieNavigatorLabelProvider extends LabelProvider {
 			if (((ServerNode) element).getServer().getServerState() == IServer.STATE_STARTED)
 				return Activator.getImageDescriptor(Activator.IMG_SERVER_STARTED).createImage();
 			return Activator.getImageDescriptor(Activator.IMG_SERVER_STOPPED).createImage();
-		} else if (element instanceof OrganizationNode) {
-			return Activator.getImageDescriptor(Activator.IMG_ORGANIZATION).createImage();
+		} else if (element instanceof SpaceNode) {
+			return Activator.getImageDescriptor(Activator.IMG_SPACE).createImage();
 		} else if (element instanceof RepositoryNode) {
 			if (((RepositoryNode) element).isResolved())
 				return Activator.getImageDescriptor(Activator.IMG_REPOSITORY).createImage();

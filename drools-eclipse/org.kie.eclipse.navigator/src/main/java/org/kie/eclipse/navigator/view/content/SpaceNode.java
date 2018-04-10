@@ -16,21 +16,21 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.kie.eclipse.server.IKieOrganizationHandler;
+import org.kie.eclipse.server.IKieSpaceHandler;
 import org.kie.eclipse.server.IKieRepositoryHandler;
 import org.kie.eclipse.server.IKieResourceHandler;
 
 /**
  *
  */
-public class OrganizationNode extends ContainerNode<ServerNode> {
+public class SpaceNode extends ContainerNode<ServerNode> {
 	
 	/**
 	 * @param parent
 	 * @param name
 	 */
-	protected OrganizationNode(ServerNode parent, IKieOrganizationHandler organization) {
-		super(parent, organization);
+	protected SpaceNode(ServerNode parent, IKieSpaceHandler space) {
+		super(parent, space);
 	}
 	
 	@Override
