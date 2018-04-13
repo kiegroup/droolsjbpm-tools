@@ -24,6 +24,7 @@ import org.eclipse.draw2d.Connection;
 import org.eclipse.draw2d.ConnectionEndpointLocator;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
+import org.jbpm.workflow.core.node.Split;
 
 public class ConnectionWrapperEditPart extends ElementConnectionEditPart {
 
@@ -61,6 +62,21 @@ public class ConnectionWrapperEditPart extends ElementConnectionEditPart {
             endpointLocator.setVDistance(15);
             sourceLabel = new Label(label);
             connection.add(sourceLabel, endpointLocator);
+        }
+        if (sourceLabel != null && getConnectionWrapper().getConnection().getFrom() instanceof Split) {
+            Split split = (Split)getConnectionWrapper().getConnection().getFrom();
+            if (split.getType() == Split.TYPE_OR ||  split.getType() == Split.TYPE_XOR) {
+                String constraint = split.getConstraint(getConnectionWrapper().getConnection()).getConstraint();
+                if (constraint == null || constraint.length() == 0) {
+                    sourceLabel.setToolTip(null);
+                } else {
+                    if (sourceLabel.getToolTip() == null) {
+                        Label tooltip = new Label();
+                        sourceLabel.setToolTip(tooltip);
+                    }
+                    ((Label) sourceLabel.getToolTip()).setText(constraint);                                       
+                }
+            }
         }
     }
     
