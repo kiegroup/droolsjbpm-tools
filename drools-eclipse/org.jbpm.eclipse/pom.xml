@@ -26,13 +26,13 @@
             <id>clean lib</id>
             <phase>clean</phase>
             <configuration>
-              <tasks>
+              <target>
                 <delete>
                   <fileset dir="lib" includes="**/*.jar" excludes="**/.svn"/>
                 </delete>
                 <delete dir="help/shared"/>
                 <delete dir="help/eclipse"/>
-              </tasks>
+              </target>
             </configuration>
             <goals>
               <goal>run</goal>

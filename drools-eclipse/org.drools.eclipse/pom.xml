@@ -29,36 +29,13 @@
             <id>clean lib</id>
             <phase>clean</phase>
             <configuration>
-              <tasks>
+              <target>
                 <delete>
                   <fileset dir="lib" includes="**/*.jar" excludes="**/.svn"/>
                 </delete>
                 <delete dir="help/shared"/>
                 <delete dir="help/eclipse"/>
-              </tasks>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-
-          <execution>
-            <id>unzip manual</id>
-            <phase>process-resources</phase>
-            <configuration>
-              <tasks>
-                <!--unzip src="lib/drools-docs-introduction-eclipse.war" dest="help/introduction" /-->
-                <!--<unzip src="lib/drools-docs-expert-eclipse.war" dest="help/expert" />-->
-                <!--<unzip src="lib/drools-docs-fusion-eclipse.war" dest="help/fusion" />-->
-                <!--<unzip src="lib/drools-docs-flow-eclipse.war" dest="help/flow" />--><!-- TODO flow has been renamed to jbpm -->
-                <!--<unzip src="lib/drools-docs-guvnor-eclipse.war" dest="help/guvnor" />-->
-
-                <!--<delete file="lib/drools-docs-introduction-eclipse.war" />-->
-                <!--<delete file="lib/drools-docs-expert-eclipse.war" />--><!-- TODO flow has been renamed to jbpm -->
-                <!--<delete file="lib/drools-docs-fusion-eclipse.war" />-->
-                <!--<delete file="lib/drools-docs-flow-eclipse.war" />-->
-                <!--<delete file="lib/drools-docs-guvnor-eclipse.war" />-->
-              </tasks>
+              </target>
             </configuration>
             <goals>
               <goal>run</goal>
