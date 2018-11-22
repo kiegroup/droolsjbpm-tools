@@ -16,7 +16,7 @@
  */
 package org.drools.compiler.commons.jci.compilers;
 
-import org.drools.compiler.commons.jci.problems.CompilationProblem;
+import org.kie.internal.jci.CompilationProblem;
 import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.commons.jci.stores.ResourceStore;
 import org.drools.core.common.ProjectClassLoader;
