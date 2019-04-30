@@ -1,4 +1,4 @@
-package com.sample
+package com.sample.rules
  
 import com.sample.DroolsTest.Message;
  
