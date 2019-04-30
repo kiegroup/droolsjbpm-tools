@@ -132,11 +132,11 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
     private void createDefaultPackages(IJavaProject project, IProgressMonitor monitor) throws CoreException {
 		IFolder folder = project.getProject().getFolder("src/main/java/com/sample");
 		FileUtils.createFolder(folder, monitor);
-		folder = project.getProject().getFolder("src/main/resources/rules");
+		folder = project.getProject().getFolder("src/main/resources/com/sample/rules");
 		FileUtils.createFolder(folder, monitor);
-		folder = project.getProject().getFolder("src/main/resources/dtables");
+		folder = project.getProject().getFolder("src/main/resources/com/sample/dtables");
 		FileUtils.createFolder(folder, monitor);
-		folder = project.getProject().getFolder("src/main/resources/process");
+		folder = project.getProject().getFolder("src/main/resources/com/sample/process");
 		FileUtils.createFolder(folder, monitor);
     }
 
@@ -216,17 +216,17 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
     	sb.append("<kmodule xmlns=\"http://jboss.org/kie/6.0.0/kmodule\">\n");
     	
         if (sampleFilesProjectPage.shouldCreateRuleFile() || sampleFilesProjectPage.shouldCreateJavaRuleFile()) {
-        	sb.append("    <kbase name=\"rules\" packages=\"rules\">\n");
+        	sb.append("    <kbase name=\"rules\" packages=\"com.sample.rules\">\n");
         	sb.append("        <ksession name=\"ksession-rules\"/>\n");
         	sb.append("    </kbase>\n");
         }
         if (sampleFilesProjectPage.shouldCreateDecisionTableFile() || sampleFilesProjectPage.shouldCreateJavaDecisionTableFile()) {
-        	sb.append("    <kbase name=\"dtables\" packages=\"dtables\">\n");
+        	sb.append("    <kbase name=\"dtables\" packages=\"com.sample.dtables\">\n");
         	sb.append("        <ksession name=\"ksession-dtables\"/>\n");
         	sb.append("    </kbase>\n");
         }
         if (sampleFilesProjectPage.shouldCreateRuleFlowFile() || sampleFilesProjectPage.shouldCreateJavaRuleFlowFile()) {
-        	sb.append("    <kbase name=\"process\" packages=\"process\">\n");
+        	sb.append("    <kbase name=\"process\" packages=\"com.sample.process\">\n");
         	sb.append("        <ksession name=\"ksession-process\"/>\n");
         	sb.append("    </kbase>\n");
         }
@@ -286,8 +286,8 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
      */
     private void createRule(IJavaProject project, IProgressMonitor monitor) throws CoreException {
         if (startPage.getRuntime().getVersion().getMajor()>=6) {
-        	FileUtils.createFolder(project, "src/main/resources/rules", monitor);
-            createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/Sample.drl.template", "src/main/resources/rules", "Sample.drl");
+        	FileUtils.createFolder(project, "src/main/resources/com/sample/rules", monitor);
+            createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/Sample.drl.template", "src/main/resources/com/sample/rules", "Sample.drl");
         } else {
             createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/Sample.drl.template", "src/main/rules", "Sample.drl");
         }
@@ -298,8 +298,8 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
      */
     private void createDecisionTable(IJavaProject project, IProgressMonitor monitor) throws CoreException {
         if (startPage.getRuntime().getVersion().getMajor()>=6) {
-        	FileUtils.createFolder(project, "src/main/resources/dtables", monitor);
-        	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/Sample.xls.template", "src/main/resources/dtables", "Sample.xls");
+        	FileUtils.createFolder(project, "src/main/resources/com/sample/dtables", monitor);
+        	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/Sample.xls.template", "src/main/resources/com/sample/dtables", "Sample.xls");
     	} else {
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/Sample.xls.template", "src/main/rules", "Sample.xls");
     	}
@@ -320,8 +320,8 @@ public class NewDroolsProjectWizard extends AbstractKieProjectWizard {
         } else if (version.getMajor()==5) {
         	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/sample.bpmn.template", "src/main/rules", "sample.bpmn");
         } else {
-        	FileUtils.createFolder(project, "src/main/resources/process", monitor);
-        	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/sample.bpmn.template", "src/main/resources/process", "sample.bpmn");
+        	FileUtils.createFolder(project, "src/main/resources/com/sample/process", monitor);
+        	createProjectFile(project, monitor, "org/drools/eclipse/wizard/project/sample.bpmn.template", "src/main/resources/com/sample/process", "sample.bpmn");
         }
     }
 
