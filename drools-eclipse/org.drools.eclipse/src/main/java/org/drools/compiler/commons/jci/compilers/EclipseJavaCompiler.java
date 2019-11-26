@@ -16,10 +16,17 @@
  */
 package org.drools.compiler.commons.jci.compilers;
 
-import org.kie.internal.jci.CompilationProblem;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Locale;
+import java.util.Map;
+import java.util.StringTokenizer;
+
 import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.commons.jci.stores.ResourceStore;
-import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.IoUtils;
 import org.eclipse.jdt.core.compiler.IProblem;
@@ -37,15 +44,7 @@ import org.eclipse.jdt.internal.compiler.env.INameEnvironment;
 import org.eclipse.jdt.internal.compiler.env.NameEnvironmentAnswer;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Locale;
-import java.util.Map;
-import java.util.StringTokenizer;
+import org.kie.internal.jci.CompilationProblem;
 
 /**
  * Eclipse compiler implementation
