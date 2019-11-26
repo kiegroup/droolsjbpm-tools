@@ -67,6 +67,8 @@
                 kie-internal,
                 kie-soup-maven-support,
                 drools-core,
+                drools-core-dynamic,
+                drools-core-reflective,
                 drools-compiler,
                 guvnor-api,
                 droolsjbpm-ide-common,
