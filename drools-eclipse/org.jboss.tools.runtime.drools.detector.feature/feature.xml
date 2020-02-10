@@ -2,7 +2,7 @@
 <feature
       id="org.jboss.tools.runtime.drools.detector.feature"
       label="%featureName"
-      version="7.33.0.qualifier"
+      version="7.33.1.qualifier"
       provider-name="%providerName"
       plugin="org.jboss.tools.runtime.drools.detector"
       license-feature="org.jboss.tools.foundation.license.feature"
