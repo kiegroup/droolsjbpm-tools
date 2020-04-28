@@ -83,6 +83,7 @@
                 antlr-runtime,
                 poi,
                 poi-ooxml,
+                kie-soup-xstream,
                 xmlpull,
                 xpp3_min,
                 xstream,
@@ -158,6 +159,10 @@
       <artifactId>antlr-runtime</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-xstream</artifactId>
+    </dependency>
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
