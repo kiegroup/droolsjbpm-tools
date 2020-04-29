@@ -33,6 +33,7 @@ import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.eclipse.editors.rete.model.ReteGraph;
 import org.drools.eclipse.reteoo.AlphaNodeVertex;
+import org.drools.eclipse.reteoo.AlphaTerminalNodeVertex;
 import org.drools.eclipse.reteoo.BaseVertex;
 import org.drools.eclipse.reteoo.EntryPointNodeVertex;
 import org.drools.eclipse.reteoo.LeftInputAdapterNodeVertex;
@@ -129,7 +130,7 @@ public class ReteooLayoutFactoryTest {
 
         Class[] expectedTypes = new Class[]{ReteVertex.class, EntryPointNodeVertex.class,
             ObjectTypeNodeVertex.class, ObjectTypeNodeVertex.class, AlphaNodeVertex.class, 
-            AlphaNodeVertex.class, LeftInputAdapterNodeVertex.class, LeftInputAdapterNodeVertex.class,
+            AlphaNodeVertex.class, AlphaTerminalNodeVertex.class, AlphaTerminalNodeVertex.class,
             RuleTerminalNodeVertex.class, RuleTerminalNodeVertex.class};
 
         for ( int i = 0; i < yOrder.length; i++ ) {
