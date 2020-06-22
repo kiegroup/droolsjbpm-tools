@@ -16,6 +16,11 @@
 
 package org.drools.eclipse.editors.rete.model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.core.spi.Constraint;
 import org.drools.eclipse.reteoo.AccumulateNodeVertex;
 import org.drools.eclipse.reteoo.AlphaNodeVertex;
@@ -29,7 +34,6 @@ import org.drools.eclipse.reteoo.JoinNodeVertex;
 import org.drools.eclipse.reteoo.LeftInputAdapterNodeVertex;
 import org.drools.eclipse.reteoo.NotNodeVertex;
 import org.drools.eclipse.reteoo.ObjectTypeNodeVertex;
-import org.drools.eclipse.reteoo.PropagationQueuingNodeVertex;
 import org.drools.eclipse.reteoo.QueryElementNodeVertex;
 import org.drools.eclipse.reteoo.QueryTerminalNodeVertex;
 import org.drools.eclipse.reteoo.ReteVertex;
@@ -40,11 +44,6 @@ import org.drools.eclipse.reteoo.WindowNodeVertex;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Providing IPropertySource for property sheets that show
@@ -208,10 +207,6 @@ public class VertexPropertySource
             initReteNodeProperties( (ReteVertex) vertex,
                                     descriptorList,
                                     values );
-        } else if ( vertex instanceof PropagationQueuingNodeVertex ) {
-            initPropagationQueuingNodeProperties( (PropagationQueuingNodeVertex) vertex,
-                                                  descriptorList,
-                                                  values );
         } else if ( vertex instanceof EntryPointNodeVertex ) {
             initEntryPointNodeProperties( (EntryPointNodeVertex) vertex,
                                           descriptorList,
@@ -439,21 +434,6 @@ public class VertexPropertySource
                      valueMap );
         addProperty( PROP_QUERY,
                      node.getQueryName(),
-                     descriptorList,
-                     valueMap );
-
-    }
-
-    private void initPropagationQueuingNodeProperties(PropagationQueuingNodeVertex vertex,
-                                                      List<IPropertyDescriptor> descriptorList,
-                                                      Map<String, NodeValue> valueMap) {
-        addProperty( PROP_NAME,
-                     VERTEX_PROPAGATION_QUEUING,
-                     descriptorList,
-                     valueMap );
-
-        addProperty( PROP_ID,
-                     Integer.toString( vertex.getId() ),
                      descriptorList,
                      valueMap );
 
