@@ -65,7 +65,8 @@ Bundle-ClassPath: .,
  lib/jbpm-flow.jar,
  lib/jbpm-flow-builder.jar,
  lib/slf4j-api.jar,
- lib/protobuf-java.jar
+ lib/protobuf-java.jar,
+ lib/commons-math3.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.drools.compiler.compiler,
  org.drools.compiler.lang.descr,
