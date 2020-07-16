@@ -90,7 +90,8 @@
                 jbpm-flow,
                 jbpm-flow-builder,
                 slf4j-api,
-                protobuf-java
+                protobuf-java,
+                commons-math3
               </includeArtifactIds>
             </configuration>
           </execution>
