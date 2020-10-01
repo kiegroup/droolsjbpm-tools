@@ -17,7 +17,7 @@
 package org.drools.eclipse.reteoo;
 
 import org.drools.core.base.ClassFieldReader;
-import oorg.drools.mvel.MVELConstraint;
+import org.drools.mvel.MVELConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.Constraint;
 import org.drools.core.spi.FieldValue;
