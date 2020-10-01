@@ -45,7 +45,7 @@ import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
-import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.mvel.java.JavaDialectConfiguration;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.util.StringUtils;
 import org.drools.core.xml.SemanticModules;

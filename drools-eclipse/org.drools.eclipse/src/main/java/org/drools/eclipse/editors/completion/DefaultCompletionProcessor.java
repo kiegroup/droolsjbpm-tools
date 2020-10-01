@@ -30,7 +30,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.drools.compiler.lang.descr.GlobalDescr;
-import org.drools.compiler.rule.builder.dialect.java.KnowledgeHelperFixer;
+import org.drools.mvel.asm.KnowledgeHelperFixer;
 import org.drools.core.util.StringUtils;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
