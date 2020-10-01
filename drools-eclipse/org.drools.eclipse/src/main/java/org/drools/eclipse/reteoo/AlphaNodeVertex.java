@@ -17,7 +17,7 @@
 package org.drools.eclipse.reteoo;
 
 import org.drools.core.base.ClassFieldReader;
-import org.drools.core.rule.constraint.MvelConstraint;
+import oorg.drools.mvel.MVELConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.Constraint;
 import org.drools.core.spi.FieldValue;
@@ -50,8 +50,8 @@ public class AlphaNodeVertex extends BaseVertex {
      */
     public String getHtml() {
         AlphaNodeFieldConstraint constraint = this.node.getConstraint();
-        if (constraint instanceof MvelConstraint) {
-        	MvelConstraint mvelConstraint = (MvelConstraint) constraint;
+        if (constraint instanceof MVELConstraint) {
+            MVELConstraint mvelConstraint = (MVELConstraint) constraint;
             return NODE_NAME + "<BR/>expression : " + mvelConstraint.toString();
         }
         return NODE_NAME + "<BR/>";
@@ -79,8 +79,8 @@ public class AlphaNodeVertex extends BaseVertex {
      */
     public String getFieldName() {
         AlphaNodeFieldConstraint constraint = this.node.getConstraint();
-        if (constraint instanceof MvelConstraint) {
-        	MvelConstraint mvelConstraint = (MvelConstraint) constraint;
+        if (constraint instanceof MVELConstraint) {
+            MVELConstraint mvelConstraint = (MVELConstraint) constraint;
             InternalReadAccessor accessor = mvelConstraint.getFieldExtractor();
             if (accessor instanceof ClassFieldReader) {
                 return ((ClassFieldReader) accessor).getFieldName();
@@ -96,8 +96,8 @@ public class AlphaNodeVertex extends BaseVertex {
      */
     public String getEvaluator() {
         AlphaNodeFieldConstraint constraint = this.node.getConstraint();
-        if (constraint instanceof MvelConstraint) {
-        	MvelConstraint mvelConstraint = (MvelConstraint) constraint;
+        if (constraint instanceof MVELConstraint) {
+            MVELConstraint mvelConstraint = (MVELConstraint) constraint;
             return mvelConstraint.toString();
         }
         return null;
@@ -110,8 +110,8 @@ public class AlphaNodeVertex extends BaseVertex {
      */
     public String getValue() {
         AlphaNodeFieldConstraint constraint = this.node.getConstraint();
-        if (constraint instanceof MvelConstraint) {
-        	MvelConstraint mvelConstraint = (MvelConstraint) constraint;
+        if (constraint instanceof MVELConstraint) {
+            MVELConstraint mvelConstraint = (MVELConstraint) constraint;
         	FieldValue field = mvelConstraint.getField();
             return field != null ? field.toString() : null;
         }

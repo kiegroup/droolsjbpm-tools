@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.base.mvel.MVELDebugHandler;
+import org.drools.mvel.expr.MVELDebugHandler;
 import org.drools.eclipse.debug.core.DroolsDebugModel;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
