@@ -32,17 +32,18 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.Location;
 import org.drools.compiler.lang.descr.GlobalDescr;
-import org.drools.mvel.builder.MVELConsequenceBuilder;
-import org.drools.mvel.builder.MVELDialect;
-import org.drools.mvel.MVELDialectRuntimeData;
+import org.drools.core.base.ClassFieldInspector;
 import org.drools.core.spi.KnowledgeHelper;
-import org.drools.core.util.asm.ClassFieldInspector;
-import org.drools.eclipse.DRLInfo.RuleInfo;
 import org.drools.eclipse.DRLInfo;
+import org.drools.eclipse.DRLInfo.RuleInfo;
 import org.drools.eclipse.DroolsEclipsePlugin;
 import org.drools.eclipse.DroolsPluginImages;
 import org.drools.eclipse.editors.AbstractRuleEditor;
 import org.drools.eclipse.util.ProjectClassLoader;
+import org.drools.mvel.MVELDialectRuntimeData;
+import org.drools.mvel.asm.ClassFieldInspectorImpl;
+import org.drools.mvel.builder.MVELConsequenceBuilder;
+import org.drools.mvel.builder.MVELDialect;
 import org.eclipse.jdt.core.CompletionProposal;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.internal.ui.text.java.JavaCompletionProposal;
@@ -340,7 +341,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
                                 p.setImage(METHOD_ICON);
                                 list.add(p);
                             }
-                            ClassFieldInspector inspector = new ClassFieldInspector(clazz);
+                            ClassFieldInspectorImpl inspector = new ClassFieldInspectorImpl(clazz);
                             Map<String, Class<?>> types = inspector.getFieldTypes();
                             Iterator<String> iterator2 = inspector.getFieldNames().keySet().iterator();
                             while (iterator2.hasNext()) {
@@ -704,7 +705,7 @@ public class RuleCompletionProcessor extends DefaultCompletionProcessor {
         try {
             Class<?> clazz = resolver.resolveType(className);
             if (clazz != null) {
-                Class<?> clazzz = new ClassFieldInspector(clazz).getFieldTypes().get(propertyName);
+                Class<?> clazzz = new ClassFieldInspectorImpl(clazz).getFieldTypes().get(propertyName);
                 if (clazzz != null) {
                     return clazzz.getName();
                 }
