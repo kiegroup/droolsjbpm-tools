@@ -70,6 +70,7 @@
                 drools-core-dynamic,
                 drools-core-reflective,
                 drools-compiler,
+                drools-mvel,
                 guvnor-api,
                 droolsjbpm-ide-common,
                 drools-decisiontables,
