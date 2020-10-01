@@ -9,6 +9,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/drools-core.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/drools-compiler.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/drools-decisiontables.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/drools-mvel.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/drools-jsr94.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jsr94.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/junit.jar"/>
