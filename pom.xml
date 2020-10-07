@@ -52,9 +52,10 @@
     <url>https://github.com/kiegroup/droolsjbpm-tools</url>
   </scm>
 
+  <!-- AF-1799: Temporary removal for testing purposes to check the CI.
   <modules>
     <module>drools-eclipse</module>
-  </modules>
+  </modules>-->
 
   <dependencyManagement>
     <dependencies>
