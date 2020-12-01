@@ -6,6 +6,7 @@
 	<classpathentry kind="src" path="src/main/resources/"/>
 	<classpathentry exported="true" kind="lib" path="lib/kie-api.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/kie-internal.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/kie-memory-compiler.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/drools-core.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/drools-compiler.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/drools-decisiontables.jar"/>
