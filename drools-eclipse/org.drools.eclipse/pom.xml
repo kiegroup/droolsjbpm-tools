@@ -66,6 +66,7 @@
                 kie-api,
                 kie-internal,
                 kie-soup-maven-support,
+                kie-memory-compiler,
                 drools-core,
                 drools-core-dynamic,
                 drools-core-reflective,
@@ -109,6 +110,10 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-internal</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-memory-compiler</artifactId>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
