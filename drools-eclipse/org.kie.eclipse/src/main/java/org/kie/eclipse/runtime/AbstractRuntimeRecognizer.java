@@ -55,16 +55,16 @@ public abstract class AbstractRuntimeRecognizer implements IRuntimeRecognizer {
         		jar = new java.util.jar.JarFile(file);
         		Version version = null;
         		for (Entry<Object, Object> a : jar.getManifest().getMainAttributes().entrySet()) {
-        			if ("Bundle-Version".equals(a.getKey().toString())) {
+        			if ("Implementation-Version".equals(a.getKey().toString())) {
         				version = new Version((String) a.getValue());
         				break;
         			}
         		}
         		if (version==null) {
-        			// jar contains no manifest or Bundle Version not specified
-        			// use Implementation Version specified in older runtimes
+        			// jar contains no manifest or Implementation Version not specified
+        			// use Bundle Version specified in older runtimes
             		for (Entry<Object, Object> a : jar.getManifest().getMainAttributes().entrySet()) {
-            			if ("Implementation-Version".equals(a.getKey().toString())) {
+            			if ("Bundle-Version".equals(a.getKey().toString())) {
             				version = new Version((String) a.getValue());
             				break;
             			}
