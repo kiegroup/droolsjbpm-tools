@@ -56,7 +56,7 @@ public class EndNodeWrapper extends AbstractNodeWrapper {
 
     public Object getPropertyValue(Object id) {
         if (TERMINATE.equals(id)) {
-            return getEndNode().isTerminate() ? new Integer(0) : new Integer(1);
+            return getEndNode().isTerminate() ? Integer.valueOf(0) : Integer.valueOf(1);
         }
         return super.getPropertyValue(id);
     }

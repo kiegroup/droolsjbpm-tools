@@ -260,7 +260,7 @@ public abstract class DefaultElementWrapper implements ElementWrapper, IProperty
     }
 
     public static Integer RGBToInteger(RGB rgb) {
-        return new Integer((rgb.blue << 16) | (rgb.green << 8) | rgb.red);
+        return Integer.valueOf((rgb.blue << 16) | (rgb.green << 8) | rgb.red);
     }
 
     public static RGB integerToRGB(Integer color) {

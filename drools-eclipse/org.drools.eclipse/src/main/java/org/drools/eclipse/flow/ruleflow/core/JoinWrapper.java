@@ -77,7 +77,7 @@ public class JoinWrapper extends AbstractNodeWrapper {
 
     public Object getPropertyValue(Object id) {
         if (TYPE.equals(id)) {
-            return new Integer(getJoin().getType());
+            return Integer.valueOf(getJoin().getType());
         }
         if (N.equals(id)) {
             return getJoin().getN() == null ? "" : getJoin().getN();

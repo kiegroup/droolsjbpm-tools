@@ -49,7 +49,7 @@ public class IntegerEditor extends Composite implements Editor {
             return null;
         }
         try {
-            return new Integer(valueString);
+            return Integer.valueOf(valueString);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("The value " + valueString
                 + " is not a valid integer.");

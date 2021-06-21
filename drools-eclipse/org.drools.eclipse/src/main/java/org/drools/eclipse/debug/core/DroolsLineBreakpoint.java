@@ -60,7 +60,7 @@ public class DroolsLineBreakpoint extends JavaLineBreakpoint {
 
     private static Map<String, Object> createAttributesMap(int lineNumber) {
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put( IDroolsDebugConstants.DRL_LINE_NUMBER, new Integer( lineNumber ) );
+        map.put( IDroolsDebugConstants.DRL_LINE_NUMBER, Integer.valueOf( lineNumber ) );
         return map;
     }
 

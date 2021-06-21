@@ -116,7 +116,7 @@ public class SplitWrapper extends AbstractNodeWrapper {
 
     public Object getPropertyValue(Object id) {
         if (TYPE.equals(id)) {
-            return new Integer(getSplit().getType());
+            return Integer.valueOf(getSplit().getType());
         }
         if (CONSTRAINTS.equals(id)) {
             return getSplit().getType() == Split.TYPE_XOR

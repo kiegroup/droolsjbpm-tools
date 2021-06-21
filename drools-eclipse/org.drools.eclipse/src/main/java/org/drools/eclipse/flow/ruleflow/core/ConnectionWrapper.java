@@ -98,7 +98,7 @@ public class ConnectionWrapper extends ElementConnection {
                         " - nb points = " + xy.length);
                 }
                 try {
-                    result.add(new Point(new Integer(xy[0]), new Integer(xy[1])));
+                    result.add(new Point(Integer.valueOf(xy[0]), Integer.valueOf(xy[1])));
                 } catch (NumberFormatException e) {
                     throw new IllegalArgumentException("Could not parse bendpoint " + bendpoint, e);
                 }

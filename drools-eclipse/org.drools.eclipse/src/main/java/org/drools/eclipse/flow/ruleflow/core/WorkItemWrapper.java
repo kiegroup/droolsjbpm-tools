@@ -127,7 +127,7 @@ public class WorkItemWrapper extends StateBasedNodeWrapper {
     
     public Object getPropertyValue(Object id) {
         if (WAIT_FOR_COMPLETION.equals(id)) {
-            return getWorkItemNode().isWaitForCompletion() ? new Integer(0) : new Integer(1);
+            return getWorkItemNode().isWaitForCompletion() ? Integer.valueOf(0) : Integer.valueOf(1);
         } else if (PARAMETER_MAPPING.equals(id)) {
             return getWorkItemNode().getInMappings();
         } else if (RESULT_MAPPING.equals(id)) {

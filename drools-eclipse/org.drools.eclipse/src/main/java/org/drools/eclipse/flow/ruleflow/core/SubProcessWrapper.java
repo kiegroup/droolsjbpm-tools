@@ -88,10 +88,10 @@ public class SubProcessWrapper extends StateBasedNodeWrapper {
             return processId == null ? "" : processId;
         }
         if (WAIT_FOR_COMPLETION.equals(id)) {
-            return getSubProcessNode().isWaitForCompletion() ? new Integer(0) : new Integer(1);
+            return getSubProcessNode().isWaitForCompletion() ? Integer.valueOf(0) : Integer.valueOf(1);
         }
         if (INDEPENDENT.equals(id)) {
-            return getSubProcessNode().isIndependent() ? new Integer(0) : new Integer(1);
+            return getSubProcessNode().isIndependent() ? Integer.valueOf(0) : Integer.valueOf(1);
         }
         if (PARAMETER_IN_MAPPING.equals(id)) {
             return getSubProcessNode().getInMappings();
