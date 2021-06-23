@@ -57,7 +57,7 @@ public final class DroolsPairMatcher implements ICharacterPairMatcher {
         char[] chars = document.get(offset, document.getLength() - offset).toCharArray();
         for (int i = 0; i < chars.length; i++) {
             if (chars[i] == leftChar) {
-                stack.push(new Character(chars[i]));
+                stack.push(Character.valueOf(chars[i]));
                 continue;
             }
             if (chars[i] == rightChar) {
@@ -78,7 +78,7 @@ public final class DroolsPairMatcher implements ICharacterPairMatcher {
         char[] chars = document.get(0, offset - 1).toCharArray();
         for (int i = chars.length - 1; i >= 0; i--) {
             if (chars[i] == rightChar) {
-                stack.push(new Character(chars[i]));
+                stack.push(Character.valueOf(chars[i]));
                 continue;
             }
             if (chars[i] == leftChar) {

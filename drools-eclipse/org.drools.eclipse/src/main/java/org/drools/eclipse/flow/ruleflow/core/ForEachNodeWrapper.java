@@ -113,9 +113,9 @@ public class ForEachNodeWrapper extends CompositeNodeWrapper {
         } else if (COLLECTION_EXPRESSION.equals(id)) {
             getForEachNode().setCollectionExpression((String) value);
         } else if (START_NODE.equals(id)) {
-            getForEachNode().linkIncomingConnections(Node.CONNECTION_DEFAULT_TYPE, new Long((String) value), Node.CONNECTION_DEFAULT_TYPE);
+            getForEachNode().linkIncomingConnections(Node.CONNECTION_DEFAULT_TYPE, Long.valueOf((String) value), Node.CONNECTION_DEFAULT_TYPE);
         } else if (END_NODE.equals(id)) {
-            getForEachNode().linkOutgoingConnections(new Long((String) value), Node.CONNECTION_DEFAULT_TYPE, Node.CONNECTION_DEFAULT_TYPE);
+            getForEachNode().linkOutgoingConnections(Long.valueOf((String) value), Node.CONNECTION_DEFAULT_TYPE, Node.CONNECTION_DEFAULT_TYPE);
         } else {
             super.setPropertyValue(id, value);
         }

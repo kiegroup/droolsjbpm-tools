@@ -415,7 +415,7 @@ public class AuditView extends AbstractDebugView {
                     }
                     event.addSubEvents(newActivations);
                     newActivations.clear();
-                    objectMap.put(new Long(((ObjectLogEvent) inEvent).getFactId()), event);
+                    objectMap.put(Long.valueOf(((ObjectLogEvent) inEvent).getFactId()), event);
                     break;
                 case LogEvent.UPDATED:
                     inObjectEvent = (ObjectLogEvent) inEvent;
@@ -427,7 +427,7 @@ public class AuditView extends AbstractDebugView {
                     }
                     event.addSubEvents(newActivations);
                     newActivations.clear();
-                    Event assertEvent = objectMap.get(new Long(((ObjectLogEvent) inEvent).getFactId()));
+                    Event assertEvent = objectMap.get(Long.valueOf(((ObjectLogEvent) inEvent).getFactId()));
                     if (assertEvent != null) {
                         event.setCauseEvent(assertEvent);
                     }
@@ -442,7 +442,7 @@ public class AuditView extends AbstractDebugView {
                     }
                     event.addSubEvents(newActivations);
                     newActivations.clear();
-                    assertEvent = objectMap.get(new Long(((ObjectLogEvent) inEvent).getFactId()));
+                    assertEvent = objectMap.get(Long.valueOf(((ObjectLogEvent) inEvent).getFactId()));
                     if (assertEvent != null) {
                         event.setCauseEvent(assertEvent);
                     }
@@ -624,7 +624,7 @@ public class AuditView extends AbstractDebugView {
                     }
                     event.addSubEvents(newActivations);
                     newActivations.clear();
-                    objectMap.put(new Long(((ObjectLogEvent) inEvent).getFactId()), event);
+                    objectMap.put(Long.valueOf(((ObjectLogEvent) inEvent).getFactId()), event);
                     break;
                 case LogEvent.UPDATED:
                     inObjectEvent = (ObjectLogEvent) inEvent;
@@ -636,7 +636,7 @@ public class AuditView extends AbstractDebugView {
                     }
                     event.addSubEvents(newActivations);
                     newActivations.clear();
-                    Event assertEvent = objectMap.get(new Long(((ObjectLogEvent) inEvent).getFactId()));
+                    Event assertEvent = objectMap.get(Long.valueOf(((ObjectLogEvent) inEvent).getFactId()));
                     if (assertEvent != null) {
                         event.setCauseEvent(assertEvent);
                     }
@@ -651,7 +651,7 @@ public class AuditView extends AbstractDebugView {
                     }
                     event.addSubEvents(newActivations);
                     newActivations.clear();
-                    assertEvent = objectMap.get(new Long(((ObjectLogEvent) inEvent).getFactId()));
+                    assertEvent = objectMap.get(Long.valueOf(((ObjectLogEvent) inEvent).getFactId()));
                     if (assertEvent != null) {
                         event.setCauseEvent(assertEvent);
                     }

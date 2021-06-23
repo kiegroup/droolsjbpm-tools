@@ -64,7 +64,7 @@ public class MetaDataDialog extends EditBeanDialog<Map<String, Object>> implemen
             String name = item.getText();
             String text = item.getText(1);
             if ("x".equals(name) || "y".equals(name) || "width".equals(name) || "height".equals(name) || "color".equals(name)) {
-                mapping.put(name, new Integer(text));
+                mapping.put(name, Integer.valueOf(text));
             } else {
                 mapping.put(item.getText(0), item.getText(1));
             }

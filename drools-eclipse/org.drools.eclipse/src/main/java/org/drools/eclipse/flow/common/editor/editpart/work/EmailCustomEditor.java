@@ -297,7 +297,7 @@ public class EmailCustomEditor extends EditBeanDialog<Work> implements WorkEdito
 
         protected Object getValue(Object element) {
             Recipient p = ((Recipient) element);
-            return new Integer(Arrays.binarySearch(this.values, p.getType()));
+            return Integer.valueOf(Arrays.binarySearch(this.values, p.getType()));
         }
 
         protected void setValue(Object element, Object value) {

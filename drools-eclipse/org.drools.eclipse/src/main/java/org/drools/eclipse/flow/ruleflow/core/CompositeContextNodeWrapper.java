@@ -156,14 +156,14 @@ public class CompositeContextNodeWrapper extends CompositeNodeWrapper {
         } else if (START_NODE.equals(id)) {
             try {
                 getCompositeNode().linkIncomingConnections(
-                    Node.CONNECTION_DEFAULT_TYPE, new Long((String) value), Node.CONNECTION_DEFAULT_TYPE);
+                    Node.CONNECTION_DEFAULT_TYPE, Long.valueOf((String) value), Node.CONNECTION_DEFAULT_TYPE);
             } catch (IllegalArgumentException e) {
                 // could not link
             }
         } else if (END_NODE.equals(id)) {
             try {
                 getCompositeNode().linkOutgoingConnections(
-                    new Long((String) value), Node.CONNECTION_DEFAULT_TYPE, Node.CONNECTION_DEFAULT_TYPE);
+                    Long.valueOf((String) value), Node.CONNECTION_DEFAULT_TYPE, Node.CONNECTION_DEFAULT_TYPE);
             } catch (IllegalArgumentException e) {
                 // could not link
             }

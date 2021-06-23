@@ -51,9 +51,9 @@ public abstract class ProcessWrapper implements ElementContainer, IPropertySourc
     public static final int CHANGE_ELEMENTS = 1;
     public static final int CHANGE_ROUTER_LAYOUT = 2;
 
-    public static final Integer ROUTER_LAYOUT_MANUAL = new Integer(0);
-    public static final Integer ROUTER_LAYOUT_MANHATTAN = new Integer(1);
-    public static final Integer ROUTER_LAYOUT_SHORTEST_PATH = new Integer(2);
+    public static final Integer ROUTER_LAYOUT_MANUAL = Integer.valueOf(0);
+    public static final Integer ROUTER_LAYOUT_MANHATTAN = Integer.valueOf(1);
+    public static final Integer ROUTER_LAYOUT_SHORTEST_PATH = Integer.valueOf(2);
 
     public static final String NAME = "name";
     public static final String VERSION = "version";

@@ -63,7 +63,7 @@ public class DynamicNodeWrapper extends CompositeNodeWrapper {
     
     public Object getPropertyValue(Object id) {
         if (AUTO_COMPLETE.equals(id)) {
-            return getDynamicNode().isAutoComplete() ? new Integer(0) : new Integer(1);
+            return getDynamicNode().isAutoComplete() ? Integer.valueOf(0) : Integer.valueOf(1);
         }
         return super.getPropertyValue(id);
     }

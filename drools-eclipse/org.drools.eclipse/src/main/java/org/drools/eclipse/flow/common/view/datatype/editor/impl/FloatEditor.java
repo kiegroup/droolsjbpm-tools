@@ -49,7 +49,7 @@ public class FloatEditor extends Composite implements Editor {
             return null;
         }
         try {
-            return new Float(valueString);
+            return Float.valueOf(valueString);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("The value " + valueString
                 + " is not a valid float.");
