@@ -57,7 +57,7 @@ public class LeftInputAdapterNodeVertex extends BaseVertex {
      * @see org.drools.core.reteoo.BaseNodeVertex#getFillColor()
      */
     public Color getFillColor() {
-        return ColorConstants.yellow;
+        return ColorConstants.orange;
     }
 
 }

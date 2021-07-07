@@ -68,7 +68,7 @@ public class AlphaNodeVertex extends BaseVertex {
      * @see org.drools.core.reteoo.BaseNodeVertex#getFillColor()
      */
     public Color getFillColor() {
-        return ColorConstants.blue;
+        return ColorConstants.red;
     }
 
     /**

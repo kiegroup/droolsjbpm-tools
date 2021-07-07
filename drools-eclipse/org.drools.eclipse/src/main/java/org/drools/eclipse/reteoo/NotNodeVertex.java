@@ -57,7 +57,7 @@ public class NotNodeVertex extends BaseVertex {
      * @see org.drools.core.reteoo.BaseNodeVertex#getFillColor()
      */
     public Color getFillColor() {
-        return ColorConstants.cyan;
+        return ColorConstants.yellow;
     }
 
     /**
