@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: jBPM Eclipse Plug-in
 Bundle-SymbolicName: org.jbpm.eclipse;singleton:=true
-Bundle-Version: 7.49.0.qualifier
+Bundle-Version: 7.58.0.qualifier
 Bundle-Activator: org.jbpm.eclipse.JBPMEclipsePlugin
 Bundle-Vendor: JBoss by Red Hat
 Bundle-Localization: plugin
@@ -29,7 +29,7 @@ Bundle-ClassPath: .,
  lib/antlr-runtime.jar,
  lib/xstream.jar,
  lib/slf4j-api.jar
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.jbpm.eclipse
 Import-Package: org.drools.eclipse.builder,
  org.drools.eclipse.util
