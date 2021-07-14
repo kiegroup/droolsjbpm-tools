@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %BundleName
 Bundle-SymbolicName: org.jboss.tools.runtime.drools.detector;singleton:=true
-Bundle-Version: 7.49.0.qualifier
+Bundle-Version: 7.58.0.qualifier
 Bundle-Activator: org.jboss.tools.runtime.drools.detector.RuntimeDroolsActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -11,7 +11,7 @@ Require-Bundle: org.eclipse.ui,
  org.drools.eclipse
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: %BundleVendor
 Bundle-Localization: plugin
 Import-Package: org.kie.eclipse.preferences,

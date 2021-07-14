@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Kie Navigator
 Bundle-SymbolicName: org.kie.eclipse.navigator;singleton:=true
-Bundle-Version: 7.49.0.qualifier
+Bundle-Version: 7.58.0.qualifier
 Bundle-Activator: org.kie.eclipse.navigator.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.forms,
@@ -17,7 +17,7 @@ Require-Bundle: org.eclipse.ui,
  org.kie.eclipse,
  org.eclipse.ui.workbench,
  org.eclipse.ui.ide
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Import-Package: com.jcraft.jsch,
  org.drools.eclipse.util,

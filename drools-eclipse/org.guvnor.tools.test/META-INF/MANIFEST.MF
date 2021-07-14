@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Drools Guvnor Eclipse Test Plugin
 Bundle-SymbolicName: org.guvnor.tools.test
-Bundle-Version: 7.49.0.qualifier
+Bundle-Version: 7.58.0.qualifier
 Bundle-Vendor: JBoss, a division of Red Hat
 Fragment-Host: org.guvnor.tools
 Bundle-Localization: plugin
@@ -13,4 +13,4 @@ Require-Bundle: org.junit;bundle-version="[4.8.1,5.0.0)",
  org.eclipse.jdt.launching;bundle-version="3.5.0",
  org.eclipse.jst.j2ee;bundle-version="1.1.300"
 Bundle-ClassPath: .
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

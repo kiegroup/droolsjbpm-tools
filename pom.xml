@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-parent</artifactId>
-    <version>7.49.0-SNAPSHOT</version>
+    <version>7.58.0-SNAPSHOT</version>
     <!-- relativePath causes out-of-date problems on hudson slaves -->
     <!--<relativePath>../droolsjbpm-build-bootstrap/pom.xml</relativePath>-->
   </parent>
@@ -24,7 +24,7 @@
     <!-- Set a default value for BUILD_NUMBER (provided by Jenkins) for local builds. -->
     <!-- This is generally wrong, but it at least enables the default 'mvn clean install' build. -->
     <BUILD_NUMBER>1</BUILD_NUMBER>
-    <!-- There are duplicated classes between the standard and 'p2.eclipse-plugin:*' dependencies. There is no easy way to fix this other than introduce complex configs. 
+    <!-- There are duplicated classes between the standard and 'p2.eclipse-plugin:*' dependencies. There is no easy way to fix this other than introduce complex configs.
         This is leaking from drools-eclipse submodule because of Maven 3.6.3 switch? -->
     <enforcer.failOnDuplicatedClasses>false</enforcer.failOnDuplicatedClasses>
   </properties>
