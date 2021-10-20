@@ -25,6 +25,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
@@ -85,7 +86,7 @@ public class RuleFlowModelEditor extends GenericModelEditor {
         result.setName(name.substring(0, name.length() - 3));
         return result;
     }
-    
+
     public RuleFlowProcessWrapper getRuleFlowModel() {
         return (RuleFlowProcessWrapper) getModel();
     }
@@ -96,7 +97,7 @@ public class RuleFlowModelEditor extends GenericModelEditor {
             refreshPalette(((IFileEditorInput) input).getFile());
         }
     }
-    
+
     private void refreshPalette(IFile file) {
         if (getPaletteRoot().getChildren().size() <= 2) {
             // work items category not visible
@@ -154,6 +155,13 @@ public class RuleFlowModelEditor extends GenericModelEditor {
                         MessageDialog.openError(
                             getSite().getShell(), "Parsing work item definitions", t.getMessage());
                     }
+
+                    entries.sort(new Comparator<CombinedTemplateCreationEntry>() {
+                        @Override
+                        public int compare(CombinedTemplateCreationEntry o1, CombinedTemplateCreationEntry o2) {
+                            return o1.getLabel().compareToIgnoreCase(o2.getLabel());
+                        }
+                    });
                     drawer.setChildren(entries);
                 } finally {
                     Thread.currentThread().setContextClassLoader(oldLoader);
@@ -167,7 +175,7 @@ public class RuleFlowModelEditor extends GenericModelEditor {
     protected void writeModel(OutputStream os) throws IOException {
         writeModel(os, true);
     }
-    
+
     protected void writeModel(OutputStream os, boolean includeGraphics) throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(os);
         try {
@@ -179,8 +187,8 @@ public class RuleFlowModelEditor extends GenericModelEditor {
         }
         writer.close();
     }
-    
-    
+
+
     protected void createModel(InputStream is) {
         try
         {

@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.drools.eclipse.DroolsEclipsePlugin;
@@ -97,7 +98,7 @@ public class BPMNModelEditor extends GenericModelEditor {
         result.setId("com.sample.process");
         return result;
     }
-    
+
     public RuleFlowProcessWrapper getRuleFlowModel() {
         return (RuleFlowProcessWrapper) getModel();
     }
@@ -108,7 +109,7 @@ public class BPMNModelEditor extends GenericModelEditor {
             refreshPalette(((IFileEditorInput) input).getFile());
         }
     }
-    
+
     private void refreshPalette(IFile file) {
         IJavaProject javaProject = getJavaProject();
         if (javaProject != null) {
@@ -133,7 +134,7 @@ public class BPMNModelEditor extends GenericModelEditor {
 	                            } else {
 	                                label = workDefinition.getName();
 	                            }
-	
+
 	                            URL iconUrl = null;
 	                            if (icon != null) {
 	                                iconUrl = newLoader.getResource(icon);
@@ -163,6 +164,13 @@ public class BPMNModelEditor extends GenericModelEditor {
 	                        MessageDialog.openError(
 	                            getSite().getShell(), "Parsing work item definitions", t.getMessage());
 	                    }
+
+                        entries.sort(new Comparator<CombinedTemplateCreationEntry>() {
+                            @Override
+                            public int compare(CombinedTemplateCreationEntry o1, CombinedTemplateCreationEntry o2) {
+                                return o1.getLabel().compareToIgnoreCase(o2.getLabel());
+                            }
+                        });
 	                    drawer.setChildren(entries);
                     }
                 } finally {
@@ -177,7 +185,7 @@ public class BPMNModelEditor extends GenericModelEditor {
     protected void writeModel(OutputStream os) throws IOException {
         writeModel(os, true);
     }
-    
+
     protected void writeModel(OutputStream os, boolean includeGraphics) throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(os, "UTF-8");
         try {
@@ -201,8 +209,8 @@ public class BPMNModelEditor extends GenericModelEditor {
         }
         writer.close();
     }
-    
-    
+
+
     protected void createModel(InputStream is) {
         try
         {
@@ -243,7 +251,7 @@ public class BPMNModelEditor extends GenericModelEditor {
             DroolsEclipsePlugin.log(t);
         }
     }
-    
+
     private void correctEventNodeSize(Node[] nodes) {
         for (Node node: nodes) {
             if (node instanceof StartNode
@@ -294,5 +302,5 @@ public class BPMNModelEditor extends GenericModelEditor {
             }
         }
     }
-    
+
 }
